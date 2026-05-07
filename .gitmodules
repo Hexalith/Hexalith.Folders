@@ -1,0 +1,12 @@
+[submodule "Hexalith.Tenants"]
+	path = Hexalith.Tenants
+	url = https://github.com/Hexalith/Hexalith.Tenants.git
+[submodule "Hexalith.AI.Tools"]
+	path = Hexalith.AI.Tools
+	url = https://github.com/Hexalith/Hexalith.AI.Tools.git
+[submodule "Hexalith.EventStore"]
+	path = Hexalith.EventStore
+	url = https://github.com/Hexalith/Hexalith.EventStore.git
+[submodule "Hexalith.FrontComposer"]
+	path = Hexalith.FrontComposer
+	url = https://github.com/Hexalith/Hexalith.FrontComposer.git
