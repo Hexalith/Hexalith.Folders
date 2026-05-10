@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "produced_by": "jobs/preflight-predev-hardening.py",
+  "timestamp": "2026-05-10T17:02:56Z",
+  "repo": "D:\\Hexalith.Folders",
+  "result": "fail",
+  "bootstrap_actions": [],
+  "checks": [
+    {
+      "id": 1,
+      "name": "sprint-status.yaml parses as YAML",
+      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
+      "result": "pass",
+      "details": "PARSE OK",
+      "file_size_bytes": 7746,
+      "line_count": 157,
+      "top_level_keys": [
+        "development_status",
+        "generated",
+        "last_updated",
+        "project",
+        "project_key",
+        "story_location",
+        "tracking_system"
+      ],
+      "development_status_count": 100
+    },
+    {
+      "id": 2,
+      "name": "artifacts root exists",
+      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts",
+      "result": "pass",
+      "details": "directory exists"
+    },
+    {
+      "id": 3,
+      "name": "lessons ledger readable",
+      "path": "D:\\Hexalith.Folders\\_bmad-output\\process-notes\\story-creation-lessons.md",
+      "result": "pass",
+      "details": "file readable"
+    },
+    {
+      "id": 4,
+      "name": "status-artifact consistency",
+      "story_keys_checked": 86,
+      "result": "pass",
+      "details": "no drift across 86 story keys"
+    },
+    {
+      "id": 5,
+      "name": "working tree cleanliness",
+      "command": [
+        "git",
+        "status",
+        "--porcelain",
+        "--",
+        ".",
+        ":(exclude)_bmad-output/process-notes/predev-preflight-*.json",
+        ":(exclude)_bmad-output/process-notes/predev-preflight-latest.json",
+        ":(exclude)_bmad-output/process-notes/code-review-preflight-*.json",
+        ":(exclude)_bmad-output/process-notes/code-review-preflight-latest.json",
+        ":(exclude)_bmad-output/process-notes/preflight-*.json",
+        ":(exclude)_bmad-output/process-notes/preflight-latest.json"
+      ],
+      "exit_code": 0,
+      "stdout": "?? _bmad-output/project-context.md\n",
+      "stderr": "",
+      "dirty_path_count": 1,
+      "result": "fail",
+      "details": "1 dirty path(s)"
+    }
+  ],
+  "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
+}

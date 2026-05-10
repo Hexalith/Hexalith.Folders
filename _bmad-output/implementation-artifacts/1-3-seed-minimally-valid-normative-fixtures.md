@@ -17,6 +17,7 @@ so that contract, parity, redaction, encoding, and load tests have stable inputs
 3. `tests/load`, `tests/tools/parity-oracle-generator`, `docs/exit-criteria/_template.md`, and `docs/adrs/0000-template.md` exist with ownership notes linking them to later CI or release-readiness stories.
 4. The seeded fixtures do not contain real tenant data, provider tokens, credential material, file contents, repository secrets, or production URLs.
 5. Build or test verification for this story succeeds without provider credentials, tenant data, running Dapr sidecars, Aspire topology, GitHub, Forgejo, or initialized nested submodules.
+6. Each fixture or template includes enough ownership metadata to identify its owning future workstream, intended future test use, known omissions, and whether its values are non-policy placeholders.
 
 ## Tasks / Subtasks
 
@@ -27,27 +28,30 @@ so that contract, parity, redaction, encoding, and load tests have stable inputs
 - [ ] Seed `tests/fixtures/audit-leakage-corpus.json`. (AC: 1, 2, 4)
   - [ ] Use valid JSON with a schema/version marker, intent/ownership note, and a small sentinel set covering secret-shaped strings, credential-shaped values, file-path metadata, branch names, commit-message metadata, and provider diagnostic payload metadata.
   - [ ] Mark the corpus intentionally minimal and owned by later sentinel-redaction CI work; do not claim exhaustive security coverage in this story.
-  - [ ] Keep every value synthetic and obviously non-secret.
+  - [ ] Keep every value synthetic, metadata-only, and obviously non-secret; avoid real tenant, user, organization, repository, provider, file-path, URL, email, customer-derived, or production-looking values.
 - [ ] Seed `tests/fixtures/parity-contract.schema.json`. (AC: 1, 2)
   - [ ] Use valid JSON Schema, preferably draft 2020-12, with the minimum row shape needed for later generated parity-oracle validation.
   - [ ] Include placeholders for transport-parity dimensions such as auth outcome, error code set, idempotency key rule, audit metadata keys, correlation field path, and terminal states.
   - [ ] Include placeholders for behavioral-parity dimensions such as pre-SDK error class, idempotency-key sourcing, correlation-ID sourcing, CLI exit code, and MCP failure kind.
-  - [ ] Do not implement the parity oracle generator or complete operation inventory in this story.
+  - [ ] Define only a fixture/oracle input shape, not the public product contract shape; do not implement the parity oracle generator or complete operation inventory in this story.
 - [ ] Seed `tests/fixtures/previous-spine.yaml`. (AC: 1, 2)
   - [ ] Use valid YAML with a version/source marker and an intentionally empty or minimal operation list.
   - [ ] Document that Phase 1 Contract Spine work replaces this seed with a copy of the v1 spine for symmetric drift detection.
+  - [ ] Treat this as a synthetic placeholder fixture, not an OpenAPI document or partial Contract Spine; do not add an `openapi:` root key.
   - [ ] Do not author `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; Contract Spine authoring belongs to Story 1.6 and later Phase 1 stories.
 - [ ] Seed `tests/fixtures/idempotency-encoding-corpus.json`. (AC: 1, 2, 4)
   - [ ] Use valid JSON with synthetic canonicalization cases for NFC, NFD, NFKC, NFKD, zero-width-joiner, casing, and ULID casing inputs.
   - [ ] Record expected intent at a high level only if the canonical hash algorithm is not yet implemented; later idempotency stories own final equivalence assertions.
   - [ ] Keep sample payloads metadata-only and free of file contents or secrets.
 - [ ] Add ownership notes for deferred artifact areas. (AC: 3)
-  - [ ] Ensure `tests/load/` contains a README or minimal project note identifying capacity-smoke and release calibration ownership.
-  - [ ] Ensure `tests/tools/parity-oracle-generator/` contains a README or placeholder note identifying Phase 1 Contract Spine and parity-oracle generator ownership.
-  - [ ] Ensure `docs/exit-criteria/_template.md` exists and names required fields for C1-C13 evidence without filling policy decisions prematurely.
-  - [ ] Ensure `docs/adrs/0000-template.md` exists and is a reusable ADR template, not a completed ADR.
+  - [ ] Ensure `tests/load/` contains a README or minimal project note identifying capacity-smoke and release calibration ownership, non-goals, and mutation rules.
+  - [ ] Ensure `tests/tools/parity-oracle-generator/` contains a README or placeholder note identifying Phase 1 Contract Spine and parity-oracle generator ownership, non-goals, and mutation rules.
+  - [ ] Ensure `docs/exit-criteria/_template.md` exists and names required fields for C1-C13 evidence without filling policy decisions prematurely; mark unresolved policy fields as placeholders.
+  - [ ] Ensure `docs/adrs/0000-template.md` exists and is a reusable ADR template, not a completed ADR or architecture decision.
 - [ ] Add parseability and ownership verification. (AC: 2, 5)
   - [ ] Prefer a small test in the existing scaffold test project that parses all JSON/YAML fixture files and asserts ownership notes exist for deferred artifact areas.
+  - [ ] Verify JSON fixtures load as JSON and YAML fixtures load as YAML through existing repository libraries or the lightest available scaffold mechanism; do not add a new parser package unless it is already centrally available.
+  - [ ] Add a banned-content check for obvious secrets, provider tokens, connection strings, production URLs, local absolute paths, real tenant/provider identifiers, file contents, diffs, generated context payloads, and customer-derived values.
   - [ ] If Story 1.1 has not provided a usable test project yet, add the lightest local script or documentation check that fits the scaffold without creating a parallel test framework.
   - [ ] Verify `dotnet build Hexalith.Folders.slnx` when the scaffold supports it; otherwise record the exact scaffold prerequisite that blocks build verification.
 
@@ -59,6 +63,8 @@ so that contract, parity, redaction, encoding, and load tests have stable inputs
 - Do not implement Contract Spine endpoints, OpenAPI operation inventory, NSwag generation, parity-oracle generation, sentinel-redaction pipeline, provider adapters, lifecycle domain logic, load tests, CI workflows, CLI commands, MCP tools, or UI pages.
 - Do not turn placeholder artifacts into final policy decisions. C3 retention, C4 input limits, C6 state-transition implementation, C9 sensitive-metadata classification, and C13 parity semantics are owned by later stories and release-readiness work.
 - Do not modify sibling submodules (`Hexalith.Tenants`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.AI.Tools`). Use them only as read-only references.
+- Minimal valid means the smallest synthetic metadata-only artifact that parses successfully and demonstrates required structural fields without asserting final policy behavior.
+- This story does not define Contract Spine OpenAPI, parity oracle behavior, redaction pipeline behavior, load thresholds, provider-specific behavior, or final policy semantics.
 
 ### Required Fixture Outputs
 
@@ -81,9 +87,9 @@ If Story 1.1 already created one or more of these files as empty placeholders, r
 
 - `audit-leakage-corpus.json` should be a metadata-only sentinel corpus. It should contain synthetic samples that later redaction tests can iterate without exposing real data.
 - `parity-contract.schema.json` should validate a future `parity-contract.yaml` row shape after conversion or fixture loading. Keep it small, but include both transport and behavioral parity categories so later stories do not erase CLI/MCP behavior behind the SDK wrapper.
-- `previous-spine.yaml` is a seed for symmetric drift detection. It is not the Contract Spine and should not be treated as source of truth for public API behavior.
+- `previous-spine.yaml` is a seed for symmetric drift detection. It is not the Contract Spine, should not contain an `openapi:` root, and should not be treated as source of truth for public API behavior.
 - `idempotency-encoding-corpus.json` should preserve tricky Unicode and casing cases that later `ComputeIdempotencyHash()` work must consume.
-- Ownership notes must make the future owner clear: Phase 1 Contract Spine and parity stories own parity fixtures, redaction/audit stories own leakage expansion, idempotency stories own canonical hash expectations, capacity/release stories own load evidence, and architecture/release governance owns exit criteria and ADRs.
+- Ownership notes must make the future owner clear: Phase 1 Contract Spine and parity stories own parity fixtures, redaction/audit stories own leakage expansion, idempotency stories own canonical hash expectations, capacity/release stories own load evidence, and architecture/release governance owns exit criteria and ADRs. Each note should state owner, purpose, known omissions, non-goals, and mutation rules.
 
 ### Previous Story Intelligence
 
@@ -101,6 +107,7 @@ Story 1.2 defines root reproducibility and submodule policy. Keep the same guard
 - Tests should parse JSON and YAML with the same libraries already present in the repo or standard .NET tooling already referenced centrally. Avoid adding a new parser package only for this story unless the scaffold already depends on it.
 - Validate that required ownership notes exist, but avoid brittle assertions on full prose.
 - Security checks should verify no obvious real secret markers are introduced, while leaving comprehensive sentinel scanning to later redaction pipeline stories.
+- Parseability and safety tests should read fixture files directly and must not start application hosts, Aspire, Dapr, Redis, Keycloak, Testcontainers, GitHub, Forgejo, provider SDK authentication, external network calls, or submodule initialization.
 
 ### References
 
@@ -127,6 +134,7 @@ Story 1.2 defines root reproducibility and submodule policy. Keep the same guard
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-10 | Party-mode review applied fixture validity, banned-content, non-operative placeholder, and offline verification clarifications. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
 ## Dev Agent Record
@@ -140,3 +148,28 @@ TBD by dev-story agent
 ### Completion Notes List
 
 ### File List
+
+## Party-Mode Review
+
+- Date/time: 2026-05-10T18:00:47Z
+- Selected story key: `1-3-seed-minimally-valid-normative-fixtures`
+- Command/skill invocation used: `/bmad-party-mode 1-3-seed-minimally-valid-normative-fixtures; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor), John (Product Manager)
+- Findings summary:
+  - Clarify that "minimal valid" means parseable, synthetic, metadata-only structure without final policy semantics.
+  - Tighten `previous-spine.yaml` so it remains a synthetic placeholder and cannot become a partial Contract Spine OpenAPI artifact.
+  - Tighten `parity-contract.schema.json` so it defines fixture/oracle input shape only, not product contract shape or parity behavior.
+  - Add explicit banned-content and offline verification boundaries for fixture smoke tests.
+  - Clarify ownership notes for deferred load, parity, exit-criteria, and ADR artifacts.
+- Changes applied:
+  - Added AC6 for fixture/template ownership metadata.
+  - Added synthetic-only hygiene requirements and banned-content verification guidance.
+  - Added non-goal language for Contract Spine, parity oracle, redaction pipeline, load thresholds, provider behavior, and final policy semantics.
+  - Added parseability and direct-file verification guidance that avoids app hosts, external services, network calls, and nested submodule initialization.
+  - Added change-log evidence for this party-mode review.
+- Findings deferred:
+  - Final Contract Spine OpenAPI shape remains Story 1.6.
+  - Actual parity oracle generation and comparison semantics remain deferred.
+  - Redaction policy behavior and enforcement pipeline remain deferred.
+  - Load-test thresholds, environments, and provider-specific scenarios remain deferred.
+- Final recommendation: ready-for-dev
