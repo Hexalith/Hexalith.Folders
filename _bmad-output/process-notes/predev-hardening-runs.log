@@ -1,3 +1,4 @@
 2026-05-10T16:13:28Z	create-story	1-1-establish-a-consumer-buildable-module-scaffold	ok	created ready-for-dev story; preflight soft warning 2026-05-10T16:11:35Z stdout "?? _bmad-output/process-notes/\n"
 2026-05-10T16:21:17Z	failed	-	failed	preflight hard fail; json=_bmad-output/process-notes/predev-preflight-latest.json timestamp=2026-05-10T16:21:17Z check="working tree cleanliness" details="1 dirty path(s)" stdout="?? _bmad-output/process-notes/story-creation-lessons.md\n"
 2026-05-10T16:27:18Z	failed	-	failed	preflight hard fail; json=_bmad-output/process-notes/predev-preflight-latest.json timestamp=2026-05-10T16:27:03Z check="working tree cleanliness" details="1 dirty path(s)" stdout="?? _bmad-output/process-notes/story-creation-lessons.md\n"
+2026-05-10T16:35:42Z	create-story	1-2-establish-root-configuration-and-submodule-policy	ok	created ready-for-dev story
