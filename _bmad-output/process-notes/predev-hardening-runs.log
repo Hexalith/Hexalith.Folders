@@ -2,3 +2,4 @@
 2026-05-10T16:21:17Z	failed	-	failed	preflight hard fail; json=_bmad-output/process-notes/predev-preflight-latest.json timestamp=2026-05-10T16:21:17Z check="working tree cleanliness" details="1 dirty path(s)" stdout="?? _bmad-output/process-notes/story-creation-lessons.md\n"
 2026-05-10T16:27:18Z	failed	-	failed	preflight hard fail; json=_bmad-output/process-notes/predev-preflight-latest.json timestamp=2026-05-10T16:27:03Z check="working tree cleanliness" details="1 dirty path(s)" stdout="?? _bmad-output/process-notes/story-creation-lessons.md\n"
 2026-05-10T16:35:42Z	create-story	1-2-establish-root-configuration-and-submodule-policy	ok	created ready-for-dev story
+2026-05-10T16:47:06Z	create-story	1-3-seed-minimally-valid-normative-fixtures	ok	created ready-for-dev story

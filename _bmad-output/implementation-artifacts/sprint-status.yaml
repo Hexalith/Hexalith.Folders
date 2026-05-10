@@ -46,7 +46,7 @@ development_status:
   epic-1: in-progress
   1-1-establish-a-consumer-buildable-module-scaffold: ready-for-dev
   1-2-establish-root-configuration-and-submodule-policy: ready-for-dev
-  1-3-seed-minimally-valid-normative-fixtures: backlog
+  1-3-seed-minimally-valid-normative-fixtures: ready-for-dev
   1-4-author-phase-0-5-pre-spine-workshop-deliverables: backlog
   1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: backlog
   1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: backlog
