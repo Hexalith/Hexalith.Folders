@@ -15,6 +15,8 @@ stepsCompleted:
   - step-10-nonfunctional
   - step-11-polish
   - step-12-complete
+  - step-v-validation-complete-2026-05-07
+  - step-e-edit-applied-2026-05-07
 inputDocuments:
   - "_bmad-output/planning-artifacts/product-brief-Hexalith.Folders.md"
   - "_bmad-output/planning-artifacts/research/technical-hexalith-tenants-integration-for-folder-management-application-research-2026-05-05.md"
@@ -36,6 +38,10 @@ workflowType: 'prd'
 releaseMode: phased
 status: complete
 completedAt: '2026-05-07'
+lastEdited: '2026-05-07'
+editHistory:
+  - date: '2026-05-07'
+    changes: 'Validation polish: 11 wording edits removing subjective adjective and CQRS pattern leakage. Edit workflow: added Journey 9 (Tenant Administrator folder access and lifecycle); added Journey Requirements Summary bullets; added FR-section objective cross-reference; added Deferred Quantitative Targets — Architecture Exit Criteria subsection (C1–C5).'
 ---
 
 # Product Requirements Document - Hexalith.Folders
@@ -91,7 +97,7 @@ AI tool integrations succeed when the same core folder capabilities are availabl
 
 ### Business Success
 
-Three-month success means the MVP is easy enough for developers to use without deep knowledge of the internal storage, Git provider, or event-sourcing implementation. A developer should be able to configure a provider, create a repository-backed folder, perform file changes, and commit those changes through CLI or MCP with minimal setup friction.
+Three-month success means a developer can complete the canonical workflow — configure a provider, create a repository-backed folder, perform file changes, and commit those changes through CLI or MCP — without requiring knowledge of the internal storage, Git provider, or event-sourcing implementation.
 
 Twelve-month success means adoption by Hexalith agent and chatbot workflows. The product is strategically successful when Hexalith.Folders becomes the default workspace persistence layer for agentic file work instead of each chatbot or automation component implementing its own temporary folders, Git CLI calls, token handling, and cleanup logic.
 
@@ -224,6 +230,16 @@ The value moment is accountable traceability without data exposure. The reviewer
 
 This journey reveals requirements for metadata-only audit events, audit projections, path-level change metadata, commit SHA capture, lock lifecycle audit, denial event capture, secret/file-content exclusion, and incident-support queries.
 
+### Journey 9: Tenant Administrator Manages Folder Access and Lifecycle
+
+Elise, the tenant administrator from Journey 6, returns to the day-to-day operation of her tenant. Her concern is no longer "can isolation be proven" but "can I run the tenant cleanly". She needs to grant folder access to users, groups, roles, and delegated service agents as her teams onboard new chatbots, retire old ones, and rotate ownership; she needs to inspect effective permissions for a folder so that an audit ask ("who can write here today?") has a concrete answer; and she needs to retire folders whose tasks are finished without erasing the audit evidence that future incident reviews depend on.
+
+Elise grants folder access to a new automation team and verifies through the same surface that the grant took effect — the effective-permissions view shows the grant, the actor identity, and the verb scope. Months later, when a chatbot project is retired, Elise archives the folder. The folder enters a clearly archived lifecycle state, mutating commands are denied with a stable error, but the metadata-only audit trail, lock lifecycle history, last commit reference, and operation timeline remain queryable for the duration of the tenant's retention policy. No file contents, provider tokens, or credential material are revealed by the archived view; the same denial and isolation guarantees that protect active folders also protect archived ones.
+
+The value moment is operational confidence. Elise can run her tenant — granting and revoking folder access, retiring folders, and answering audit questions — using the same product semantics, cross-surface parity, and metadata-only audit posture that the rest of the canonical workflow already enforces.
+
+This journey reveals requirements for tenant-administrator folder access grant and revoke (FR5), effective-permissions inspection (FR6), folder lifecycle and archive (FR11–FR13), audit and status preservation for archived folders (FR14), denial of mutating operations on archived folders, retention-bound audit visibility, and cross-surface parity for tenant-administration commands and queries.
+
 ### Journey Requirements Summary
 
 The journeys reveal these required capability areas:
@@ -246,6 +262,8 @@ The journeys reveal these required capability areas:
 - Cross-tenant access prevention before file, workspace, credential, repository, lock, commit, provider, or audit access.
 - Safe error shapes that avoid unauthorized resource enumeration.
 - Consistent API, CLI, and MCP command/query semantics.
+- Tenant-administrator folder access grant and revoke for users, groups, roles, and delegated service agents, with effective-permissions inspection.
+- Folder lifecycle including archive with retention-bound, metadata-only audit and status visibility for archived folders.
 - Provider contract tests for GitHub and Forgejo readiness, repository creation, file/commit workflows, credential failures, permission failures, conflicts, rate limits, timeouts, and provider drift.
 - Future repair workflows for interrupted tasks, stale locks, dirty workspaces, provider sync failures, and drift, explicitly outside the MVP read-only console.
 
@@ -392,7 +410,7 @@ Required error fields:
 - `clientAction`
 - `details`
 
-Required error categories include authentication failure, tenant authorization denied, folder ACL denied, cross-tenant access denied, provider readiness failed, credential reference missing or invalid, provider permission insufficient, provider unavailable, provider rate limited, repository conflict, duplicate binding, workspace not ready, workspace locked, stale or interrupted lock, dirty workspace, path validation failed, file operation failed, commit failed, unknown provider outcome, reconciliation required, idempotency conflict, unsupported provider capability, projection unavailable, and audit access denied.
+Required error categories include authentication failure, tenant authorization denied, folder ACL denied, cross-tenant access denied, provider readiness failed, credential reference missing or invalid, provider permission insufficient, provider unavailable, provider rate limited, repository conflict, duplicate binding, workspace not ready, workspace locked, stale or interrupted lock, dirty workspace, path validation failed, file operation failed, commit failed, unknown provider outcome, reconciliation required, idempotency conflict, unsupported provider capability, read-model unavailable, and audit access denied.
 
 Error responses should indicate whether the client may retry, must refresh state, must request authorization, must change input, or must escalate provider/configuration failure.
 
@@ -462,7 +480,7 @@ The MVP must include these quality gates:
 - Idempotency tests proving no duplicate domain events and no duplicate provider commits.
 - Tenant isolation tests proving no cross-tenant read, write, lock, commit, provider, audit, or projection access.
 - Path security tests for traversal, absolute paths, mixed separators, encoded traversal, reserved names, Unicode normalization, symlinks, and case sensitivity.
-- Projection replay determinism from an empty read model.
+- Read-model determinism: rebuilding views from an empty read model must produce equivalent state from the same ordered event stream.
 - Golden schema tests for DTO versioning and error mapping.
 - Provider failure tests for timeout, 401, 403, 404, 409, 429, 5xx, branch protection, missing repository, deleted repository, stale clone, credential revocation, and provider drift.
 - Provider contract tests for GitHub and Forgejo must cover readiness, repository binding, branch/ref handling, file operations, commit behavior, credential-reference usage, retry/idempotency behavior, and unknown outcome handling before either provider is marked ready.
@@ -475,13 +493,27 @@ Implementation should avoid separate business logic paths for API, CLI, MCP, and
 
 Provider readiness must stay narrowly scoped to health, capability discovery, credential reference validation, repository policy validation, and workspace safety. It must not become a broad provider administration platform.
 
-The read-only operations console should remain projection-based and non-authoritative. Repair workflows remain post-MVP.
+The read-only operations console should remain read-model–based and non-authoritative. Repair workflows remain post-MVP.
 
 If API/CLI/MCP/SDK scope threatens MVP delivery, the fallback is to keep the REST API and one SDK as canonical first, then implement CLI and MCP as thin adapters over that contract.
 
 ### Architecture Decisions Needed Next
 
 The PRD defines product requirements rather than final architecture. Architecture must resolve Git-backed workspace implementation mechanics, file content transport model, large-file and binary policy, provider capability contract shape, projection compaction strategy, lock lease/expiry defaults, and file-operation batch atomicity before implementation stories are finalized.
+
+### Deferred Quantitative Targets — Architecture Exit Criteria
+
+The PRD intentionally defers the following numeric targets to the architecture review. Each target must be set, recorded, and validated before MVP release. Architecture may revise these targets only with documented rationale.
+
+| ID | Target | PRD Source | Status |
+| --- | --- | --- | --- |
+| C1 | Concurrent capacity targets: maximum concurrent tenants, folders per tenant, active workspaces per tenant, and concurrent agent tasks per tenant | NFR Scalability and Capacity (constraint that capacity targets must avoid assuming a single tenant, single repository, or single active workspace) | TBD by architecture review |
+| C2 | Status-freshness target: maximum acceptable lag between an emitted lifecycle event and its appearance in status/audit views under normal operation | NFR Observability, Auditability, and Replay | TBD by architecture review |
+| C3 | Retention durations per data class: audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, and cleanup records | NFR Data Retention and Cleanup | TBD by architecture review |
+| C4 | Bounded MVP input limits: maximum files per context query, maximum bytes per query response, maximum result count, and maximum query duration | NFR Performance and Query Bounds | TBD by architecture review |
+| C5 | Concrete scalability quantifiers replacing the word "multiple" in the NFR scalability constraint, derived from C1 | NFR Scalability and Capacity | TBD by architecture review |
+
+Each target must be (a) set as a concrete number with a measurement method, (b) validated through implementation benchmarks before MVP release, and (c) recorded in the Architecture document and referenced from this PRD via update.
 
 ## Project Scoping & Phased Development
 
@@ -560,6 +592,8 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 
 ## Functional Requirements
 
+Functional Requirements are organized by capability area. Each block traces back to the User Journeys above and to the broader Hexalith.Folders objective stated in the Executive Summary: provide a tenant-scoped, auditable, recoverable folder lifecycle for agentic file work, accessible through API, CLI, MCP, and SDK with consistent semantics.
+
 ### Capability Contract Terms
 
 - FR1: Users can distinguish logical folders, repositories, workspaces, tasks, locks, providers, context queries, audit records, and status records through consistent product terminology.
@@ -626,9 +660,9 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 ### Error, Status, and Diagnostics Contract
 
 - FR43: The system can expose a canonical error taxonomy across supported surfaces.
-- FR44: The error taxonomy can distinguish validation failure, authentication failure, tenant denial, folder policy denial, credential failure, provider unavailable, unsupported capability, repository conflict, branch/ref conflict, lock conflict, stale workspace, path policy denial, commit failure, projection unavailable, duplicate operation, and transient infrastructure failure.
+- FR44: The error taxonomy can distinguish validation failure, authentication failure, tenant denial, folder policy denial, credential failure, provider unavailable, unsupported capability, repository conflict, branch/ref conflict, lock conflict, stale workspace, path policy denial, commit failure, read-model unavailable, duplicate operation, and transient infrastructure failure.
 - FR45: The system can expose canonical workspace and task states including `ready`, `locked`, `dirty`, `committed`, `failed`, and `inaccessible`.
-- FR46: The system can explain final state, retry eligibility, and operational evidence after workspace preparation, lock, file operation, commit, provider, or projection failure.
+- FR46: The system can explain final state, retry eligibility, and operational evidence after workspace preparation, lock, file operation, commit, provider, or read-model failure.
 
 ### Cross-Surface Contract
 
@@ -651,7 +685,7 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 
 ### Security and Tenant Isolation
 
-- Tenant isolation must be enforced on every command, query, event, projection, lock, repository binding, context query, cleanup view, provider callback, and audit record.
+- Tenant isolation must be enforced on every command, query, event, read-model view, lock, repository binding, context query, cleanup view, provider callback, and audit record.
 - Cross-tenant access leaks are zero-tolerance defects. No object from tenant A may be retrievable, inferable, lockable, committed, queried, audited, or visible from tenant B.
 - Tenant isolation tests must cover API responses, errors, events, logs, metrics labels, projections, cache keys, lock keys, temporary paths, provider credentials, repository bindings, background jobs, provider callbacks, audit records, and context-query results.
 - File contents, diffs, prompts, provider tokens, credential material, secrets, remote URLs with embedded credentials, generated context payloads, and unauthorized resource existence must not appear in events, logs, traces, metrics, projections, diagnostics, audit records, provider payload snapshots, exception messages, command arguments, or console responses.
@@ -666,7 +700,7 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 
 - Every lifecycle step must expose terminal and non-terminal state, including `Pending`, `InProgress`, `Succeeded`, `Failed`, and `Cancelled` where cancellation is supported.
 - Required observable lifecycle states include `ProviderReady`, `RepositoryBound`, `WorkspacePrepared`, `Locked`, `FilesChanged`, `CommitPending`, `Committed`, `CleanupPending`, and `Cleaned`.
-- Repository-backed task lifecycle operations must leave an inspectable final or intermediate state after interruption, provider failure, commit failure, lock contention, projection delay, or retry.
+- Repository-backed task lifecycle operations must leave an inspectable final or intermediate state after interruption, provider failure, commit failure, lock contention, read-model lag, or retry.
 - Idempotency keys are required for workspace preparation, lock acquisition, file mutation, commit, and cleanup request operations.
 - A repeated call with the same idempotency key and equivalent payload must return the same logical result; the same key with a conflicting payload must return an idempotency conflict.
 - Idempotent lifecycle operations must not create duplicate domain events, duplicate provider writes, duplicate file changes, duplicate repositories, or duplicate commits.
@@ -716,9 +750,9 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 - Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
 - Allowed audit metadata must be explicitly classified. File paths, commit messages, repository names, branch names, and provider error payloads must be treated as potentially sensitive metadata.
 - Sensitive audit metadata such as file paths, branch names, commit messages, repository names, and provider diagnostic payloads must be classified and protected through access control, hashing, truncation, or redaction where appropriate.
-- Operations-console views must be projection-based, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata.
-- Projection replay from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
-- Lifecycle events must appear in status/audit projections within a defined projection-latency target under normal operation.
+- Operations-console views must be read-model–based, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata.
+- Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
+- Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
 - The system must expose operational signals for provider readiness failures, stale projections, lock conflicts, dirty workspaces, failed commits, inaccessible workspaces, retryability, and cleanup status.
 - Backup or recovery expectations must preserve durable events or authoritative records needed to rebuild status, audit, and timeline projections.
 
@@ -742,6 +776,6 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 ### Verification Expectations
 
 - Each NFR category must have at least one automated verification path or documented manual validation path before MVP release.
-- Security, tenant isolation, idempotency, provider contract, projection replay, and cross-surface contract compatibility NFRs must have automated tests.
+- Security, tenant isolation, idempotency, provider contract, read-model determinism, and cross-surface contract compatibility NFRs must have automated tests.
 - Performance, accessibility, retention, backup/recovery, and operations-console usability NFRs must have release validation evidence before MVP acceptance.
 - Security verification must include dependency/package scanning, generated artifact review, and least-privilege provider credential validation.

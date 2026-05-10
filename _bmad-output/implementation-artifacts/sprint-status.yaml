@@ -1,0 +1,131 @@
+# generated: 2026-05-10
+# last_updated: 2026-05-10
+# project: Hexalith.Folders
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: {project-root}/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-05-10
+last_updated: 2026-05-10
+project: Hexalith.Folders
+project_key: NOKEY
+tracking_system: file-system
+story_location: "{project-root}/_bmad-output/implementation-artifacts"
+
+development_status:
+  # Epic 1: Foundation — Solution Scaffolding & Contract Spine
+  epic-1: backlog
+  1-1-scaffold-solution-skeleton-mirroring-hexalith-tenants: backlog
+  1-2-establish-root-configuration-and-submodule-policy: backlog
+  1-3-seed-normative-test-fixtures-and-placeholder-artifacts: backlog
+  1-4-author-phase-0-5-pre-spine-workshop-deliverables: backlog
+  1-5-define-per-command-idempotency-equivalence-parity-dimensions-and-finalize-adapter-parity-contract: backlog
+  1-6-author-openapi-v1-contract-spine-with-extension-vocabulary: backlog
+  1-7-wire-nswag-sdk-generation-with-per-command-computeidempotencyhash-helpers: backlog
+  1-8-generate-the-c13-parity-oracle-and-validate-it-against-parity-contract-schema-json: backlog
+  1-9-wire-ci-gates: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Tenant-Scoped Folder Management
+  epic-2: backlog
+  2-1-stand-up-domain-service-host-with-tenants-integration-and-fail-closed-local-projection: backlog
+  2-2-implement-organization-aggregate-acl-baseline: backlog
+  2-3-create-folders-within-a-tenant: backlog
+  2-4-grant-and-revoke-folder-access-for-users-groups-roles-and-delegated-service-agents: backlog
+  2-5-inspect-effective-permissions-for-a-folder-or-task-context: backlog
+  2-6-enforce-layered-authorization-with-cross-tenant-denial-and-safe-error-shapes: backlog
+  2-7-inspect-folder-lifecycle-and-binding-status: backlog
+  2-8-archive-folders-with-retention-bound-audit-and-status-preservation: backlog
+  2-9-react-to-tenants-events-through-worker-handlers: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Provider Readiness & Repository Binding
+  epic-3: backlog
+  3-1-configure-provider-binding-and-credential-reference-for-a-tenant: backlog
+  3-2-define-igitprovider-port-with-n-provider-capability-model-and-capability-difference-exposure: backlog
+  3-3-implement-github-provider-adapter-using-octokit: backlog
+  3-4-implement-forgejo-provider-adapter-with-per-version-snapshots-and-oasdiff-drift-detection: backlog
+  3-5-validate-provider-readiness-with-safe-diagnostics-and-stable-reason-codes: backlog
+  3-6-create-repository-backed-folder-and-bind-existing-repository: backlog
+  3-7-define-branch-ref-policy-for-repository-backed-folder-tasks: backlog
+  3-8-inspect-tenant-readiness-and-per-provider-readiness-evidence: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Repository-Backed Task Lifecycle (Workspace → Lock → Files → Commit)
+  epic-4: backlog
+  4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: backlog
+  4-2-prepare-workspace-from-a-ready-repository-backed-folder: backlog
+  4-3-acquire-task-scoped-workspace-lock-with-deterministic-single-active-writer-enforcement: backlog
+  4-4-inspect-lock-state-and-release-the-workspace-lock: backlog
+  4-5-add-change-and-remove-files-with-workspace-root-confinement-and-path-policy-enforcement: backlog
+  4-6-query-file-context-with-policy-boundaries: backlog
+  4-7-inspect-workspace-lock-dirty-state-last-commit-failed-operation-and-projection-currency: backlog
+  4-8-surface-workspace-cleanup-status-without-repair-automation: backlog
+  4-9-propagate-idempotency-keys-correlation-task-ids-end-to-end-with-two-tier-ttl-and-replay-semantics: backlog
+  4-10-commit-workspace-changes-with-task-correlation-metadata-and-unknown-outcome-reconciliation: backlog
+  4-11-surface-canonical-error-taxonomy-workspace-states-and-operational-evidence-after-any-failure: backlog
+  4-12-emit-metadata-only-audit-and-integrate-opentelemetry-observability-with-structured-logging: backlog
+  4-13-validate-canonical-lifecycle-through-replay-projection-sentinel-path-security-encoding-isolation-and-capacity-tests: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Cross-Surface Adapters — CLI, MCP, SDK Parity
+  epic-5: backlog
+  5-1-ship-sdk-convenience-helpers-samples-and-quickstart: backlog
+  5-2-implement-cli-commands-with-full-behavioral-parity-rules: backlog
+  5-3-implement-mcp-server-tools-resources-and-failure-kind-set: backlog
+  5-4-consume-parity-oracle-in-cli-tests-and-mcp-tests-for-behavioral-parity-columns: backlog
+  5-5-end-to-end-cross-surface-parity-scenario-and-cross-adapter-invariants: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Read-Only Operations Console & Audit Reviewer Flows
+  epic-6: backlog
+  6-1-audit-and-operation-timeline-query-endpoints: backlog
+  6-2-scaffold-blazor-server-console-with-fluent-ui-oidc-auth-and-tenant-folder-navigation: backlog
+  6-3-render-operator-disposition-labels-as-the-primary-visual-with-technical-state-as-secondary-metadata: backlog
+  6-4-implement-sensitive-metadata-redaction-affordance-with-lock-icon: backlog
+  6-5-build-folder-detail-workspace-status-provider-health-and-audit-trail-pages: backlog
+  6-6-implement-incident-mode-last-resort-read-path-with-three-ux-guardrails: backlog
+  6-7-enforce-ops-console-performance-budget-and-perceived-wait-ux: backlog
+  6-8-verify-no-mutation-enforcement-and-wcag-2-2-aa-accessibility: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Production Hardening & Release Readiness
+  epic-7: backlog
+  7-1-deploy-production-dapr-deny-by-default-access-control-with-mtls-and-negative-test-conformance: backlog
+  7-2-configure-pluggable-production-oidc-and-dapr-secret-store-integration: backlog
+  7-3-build-container-images-per-service-with-stable-dapr-app-ids-and-kubernetes-friendly-deployment: backlog
+  7-4-wire-full-ci-cd-pipeline-and-publish-nuget-release-packages: backlog
+  7-5-calibrate-capacity-tests-pin-c1-c2-c5-numerical-targets: backlog
+  7-6-enforce-c3-retention-cleanup-observability-and-tenant-deletion-runbook: backlog
+  7-7-wire-production-observability-pluggable-opentelemetry-exporters-health-checks-monitored-snapshots-alerts: backlog
+  7-8-publish-full-documentation-deliverables-and-adrs: backlog
+  epic-7-retrospective: optional
