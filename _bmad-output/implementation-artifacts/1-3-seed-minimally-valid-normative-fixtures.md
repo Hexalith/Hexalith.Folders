@@ -17,7 +17,7 @@ so that contract, parity, redaction, encoding, and load tests have stable inputs
 3. `tests/load`, `tests/tools/parity-oracle-generator`, `docs/exit-criteria/_template.md`, and `docs/adrs/0000-template.md` exist with ownership notes linking them to later CI or release-readiness stories.
 4. The seeded fixtures do not contain real tenant data, provider tokens, credential material, file contents, repository secrets, or production URLs.
 5. Build or test verification for this story succeeds without provider credentials, tenant data, running Dapr sidecars, Aspire topology, GitHub, Forgejo, or initialized nested submodules.
-6. Each fixture or template includes enough ownership metadata to identify its owning future workstream, intended future test use, known omissions, and whether its values are non-policy placeholders.
+6. Each fixture or template includes stable, machine-checkable ownership metadata identifying its owning future workstream, intended future test use, known omissions, mutation rules, and whether each value set is a non-policy placeholder or an intentionally synthetic sentinel.
 
 ## Tasks / Subtasks
 
@@ -29,6 +29,7 @@ so that contract, parity, redaction, encoding, and load tests have stable inputs
   - [ ] Use valid JSON with a schema/version marker, intent/ownership note, and a small sentinel set covering secret-shaped strings, credential-shaped values, file-path metadata, branch names, commit-message metadata, and provider diagnostic payload metadata.
   - [ ] Mark the corpus intentionally minimal and owned by later sentinel-redaction CI work; do not claim exhaustive security coverage in this story.
   - [ ] Keep every value synthetic, metadata-only, and obviously non-secret; avoid real tenant, user, organization, repository, provider, file-path, URL, email, customer-derived, or production-looking values.
+  - [ ] Tag intentionally secret-shaped samples with explicit synthetic-sentinel metadata so the story's banned-content check can distinguish allowed sentinel fixtures from accidental real credentials.
 - [ ] Seed `tests/fixtures/parity-contract.schema.json`. (AC: 1, 2)
   - [ ] Use valid JSON Schema, preferably draft 2020-12, with the minimum row shape needed for later generated parity-oracle validation.
   - [ ] Include placeholders for transport-parity dimensions such as auth outcome, error code set, idempotency key rule, audit metadata keys, correlation field path, and terminal states.
@@ -43,15 +44,18 @@ so that contract, parity, redaction, encoding, and load tests have stable inputs
   - [ ] Use valid JSON with synthetic canonicalization cases for NFC, NFD, NFKC, NFKD, zero-width-joiner, casing, and ULID casing inputs.
   - [ ] Record expected intent at a high level only if the canonical hash algorithm is not yet implemented; later idempotency stories own final equivalence assertions.
   - [ ] Keep sample payloads metadata-only and free of file contents or secrets.
+  - [ ] Include code-point labels or escaped Unicode forms for invisible and normalization-sensitive samples so future maintainers can review the corpus without guessing which characters are present.
 - [ ] Add ownership notes for deferred artifact areas. (AC: 3)
   - [ ] Ensure `tests/load/` contains a README or minimal project note identifying capacity-smoke and release calibration ownership, non-goals, and mutation rules.
   - [ ] Ensure `tests/tools/parity-oracle-generator/` contains a README or placeholder note identifying Phase 1 Contract Spine and parity-oracle generator ownership, non-goals, and mutation rules.
   - [ ] Ensure `docs/exit-criteria/_template.md` exists and names required fields for C1-C13 evidence without filling policy decisions prematurely; mark unresolved policy fields as placeholders.
   - [ ] Ensure `docs/adrs/0000-template.md` exists and is a reusable ADR template, not a completed ADR or architecture decision.
+  - [ ] Use a consistent ownership metadata shape where practical: `owner_workstream`, `future_test_use`, `known_omissions`, `mutation_rules`, `non_policy_placeholder`, and `synthetic_data_only`.
 - [ ] Add parseability and ownership verification. (AC: 2, 5)
   - [ ] Prefer a small test in the existing scaffold test project that parses all JSON/YAML fixture files and asserts ownership notes exist for deferred artifact areas.
   - [ ] Verify JSON fixtures load as JSON and YAML fixtures load as YAML through existing repository libraries or the lightest available scaffold mechanism; do not add a new parser package unless it is already centrally available.
   - [ ] Add a banned-content check for obvious secrets, provider tokens, connection strings, production URLs, local absolute paths, real tenant/provider identifiers, file contents, diffs, generated context payloads, and customer-derived values.
+  - [ ] Make the banned-content check fail closed for untagged secret-shaped strings while allowing only explicitly tagged synthetic sentinel samples in `audit-leakage-corpus.json`.
   - [ ] If Story 1.1 has not provided a usable test project yet, add the lightest local script or documentation check that fits the scaffold without creating a parallel test framework.
   - [ ] Verify `dotnet build Hexalith.Folders.slnx` when the scaffold supports it; otherwise record the exact scaffold prerequisite that blocks build verification.
 
@@ -90,6 +94,9 @@ If Story 1.1 already created one or more of these files as empty placeholders, r
 - `previous-spine.yaml` is a seed for symmetric drift detection. It is not the Contract Spine, should not contain an `openapi:` root, and should not be treated as source of truth for public API behavior.
 - `idempotency-encoding-corpus.json` should preserve tricky Unicode and casing cases that later `ComputeIdempotencyHash()` work must consume.
 - Ownership notes must make the future owner clear: Phase 1 Contract Spine and parity stories own parity fixtures, redaction/audit stories own leakage expansion, idempotency stories own canonical hash expectations, capacity/release stories own load evidence, and architecture/release governance owns exit criteria and ADRs. Each note should state owner, purpose, known omissions, non-goals, and mutation rules.
+- Secret-shaped sentinel values must be obviously synthetic, tagged as intentional sentinels, and excluded from any claim that the repository contains real secrets or production data.
+- Invisible or normalization-sensitive Unicode samples should be paired with labels or escaped code-point descriptions so reviewers and future tests can distinguish fixture intent from accidental editor corruption.
+- Template files should use placeholder markers for unresolved evidence or decision fields; they must not read as completed release evidence, final policy, or an accepted architecture decision.
 
 ### Previous Story Intelligence
 
@@ -106,7 +113,7 @@ Story 1.2 defines root reproducibility and submodule policy. Keep the same guard
 - Use the existing test framework from the scaffold when available. A focused fixture smoke test is enough for this story.
 - Tests should parse JSON and YAML with the same libraries already present in the repo or standard .NET tooling already referenced centrally. Avoid adding a new parser package only for this story unless the scaffold already depends on it.
 - Validate that required ownership notes exist, but avoid brittle assertions on full prose.
-- Security checks should verify no obvious real secret markers are introduced, while leaving comprehensive sentinel scanning to later redaction pipeline stories.
+- Security checks should verify no obvious real secret markers are introduced, while leaving comprehensive sentinel scanning to later redaction pipeline stories. The check should include a narrow allow-list for intentionally tagged synthetic sentinel samples so it catches accidental secrets without blocking the required leakage corpus.
 - Parseability and safety tests should read fixture files directly and must not start application hosts, Aspire, Dapr, Redis, Keycloak, Testcontainers, GitHub, Forgejo, provider SDK authentication, external network calls, or submodule initialization.
 
 ### References
@@ -134,6 +141,7 @@ Story 1.2 defines root reproducibility and submodule policy. Keep the same guard
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-10 | Applied `bmad-advanced-elicitation` hardening for synthetic sentinel tagging, machine-checkable ownership metadata, Unicode fixture reviewability, and banned-content false-positive boundaries. | Codex |
 | 2026-05-10 | Party-mode review applied fixture validity, banned-content, non-operative placeholder, and offline verification clarifications. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
@@ -172,4 +180,28 @@ TBD by dev-story agent
   - Actual parity oracle generation and comparison semantics remain deferred.
   - Redaction policy behavior and enforcement pipeline remain deferred.
   - Load-test thresholds, environments, and provider-specific scenarios remain deferred.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-10T23:03:07Z
+- Selected story key: `1-3-seed-minimally-valid-normative-fixtures`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-3-seed-minimally-valid-normative-fixtures`
+- Batch 1 method names: Security Audit Personas; Failure Mode Analysis; Pre-mortem Analysis; Self-Consistency Validation; Critique and Refine
+- Reshuffled Batch 2 method names: Expert Panel Review; Architecture Decision Records; Comparative Analysis Matrix; Occam's Razor Application; First Principles Analysis
+- Findings summary:
+  - Secret-shaped fixture values need explicit synthetic-sentinel metadata so safety checks do not either miss accidental credentials or reject the intended leakage corpus.
+  - Ownership metadata needs stable fields that a focused smoke test can verify without brittle prose matching.
+  - Unicode normalization fixtures need visible labels or escaped code-point descriptions because invisible characters are easy to corrupt during review.
+  - Template artifacts need placeholder markers so they do not look like completed release evidence or accepted ADR decisions.
+- Changes applied:
+  - Tightened AC6 around machine-checkable ownership metadata and synthetic sentinel classification.
+  - Added tasks for sentinel tagging, Unicode/code-point labeling, consistent ownership fields, and fail-closed banned-content validation.
+  - Added minimal-content guidance for synthetic sentinels, normalization-sensitive samples, and template placeholders.
+  - Clarified test guidance so intentionally tagged sentinels are allowed while untagged secret-shaped strings still fail.
+- Findings deferred:
+  - Final redaction taxonomy and enforcement pipeline remain owned by later redaction/audit stories.
+  - Final idempotency hash equivalence assertions remain owned by later idempotency stories.
+  - Final Contract Spine and parity oracle semantics remain owned by Story 1.6 and parity stories.
+  - Exact smoke-test implementation mechanism remains open to the dev-story agent.
 - Final recommendation: ready-for-dev
