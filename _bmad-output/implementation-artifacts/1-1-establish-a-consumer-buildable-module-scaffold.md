@@ -17,6 +17,7 @@ so that consumers and later stories have a stable, convention-compliant module b
 3. From a clean checkout with only root-level submodules initialized, `dotnet restore Hexalith.Folders.slnx` and `dotnet build Hexalith.Folders.slnx` succeed without provider credentials, tenant data, private production feeds, production secrets, running Aspire, Dapr, Keycloak, Redis, or initialized nested submodules.
 4. The scaffold reuses sibling-module conventions from `Hexalith.Tenants` and `Hexalith.EventStore` instead of introducing a generic or independent project template.
 5. Root-level submodules may be used as references, but nested submodules must not be initialized, updated, or required by this story.
+6. Scaffold verification treats the canonical solution inventory and allowed reference graph as contract checks: missing required projects, unexpected buildable `Hexalith.Folders.*` projects, forbidden direct references, per-project package versions, and per-project target-framework drift fail the story.
 
 ## Tasks / Subtasks
 
@@ -38,10 +39,12 @@ so that consumers and later stories have a stable, convention-compliant module b
   - [ ] `src/Hexalith.Folders.AppHost`
   - [ ] `src/Hexalith.Folders.ServiceDefaults`
   - [ ] `src/Hexalith.Folders.Testing`
+  - [ ] Ensure these are the only buildable `src/Hexalith.Folders.*` projects added by this story; later behavior surfaces must remain out of scope.
 - [ ] Create the expected test and sample projects. (AC: 1, 3)
   - [ ] Mirror `src/` with `tests/Hexalith.Folders.*.Tests` projects, including `Contracts`, core `Folders`, `Server`, `Client`, `Cli`, `Mcp`, `UI`, `Workers`, `Testing`, and `IntegrationTests`.
   - [ ] Create `samples/Hexalith.Folders.Sample` and `samples/Hexalith.Folders.Sample.Tests`.
   - [ ] Add minimal scaffolding smoke tests that can run without Dapr, provider credentials, tenant seed data, or initialized nested submodules.
+  - [ ] Do not add separate AppHost, Aspire, or ServiceDefaults test projects unless they are compile-only and needed to enforce the scaffold contract.
 - [ ] Wire project references in dependency direction only. (AC: 2, 4)
   - [ ] `Contracts` owns DTO and contract placeholders only. It must not reference `Hexalith.EventStore`, `Hexalith.Tenants`, Server, Client, CLI, MCP, UI, Workers, or core domain behavior.
   - [ ] `Hexalith.Folders` references `Contracts` and only the sibling Hexalith infrastructure needed for domain compilation.
@@ -52,6 +55,7 @@ so that consumers and later stories have a stable, convention-compliant module b
   - [ ] `Workers` owns future process managers and reconcilers; keep external provider behavior as placeholders only in this story.
   - [ ] `AppHost` wires local Aspire topology only enough to compile; it must not require running Keycloak, Dapr, Redis, provider credentials, or tenant data for `dotnet build`.
   - [ ] Add a scaffold smoke test for the allowed project-reference graph, including forbidden references from `Contracts` to behavior or infrastructure projects and forbidden dependencies from `Client` to Server, UI, CLI, MCP, or Workers.
+  - [ ] Implement the reference-graph smoke test from project files or solution metadata, not from hand-maintained string lists that can diverge from the scaffold.
 - [ ] Add scaffold-only placeholders and normative directories. (AC: 1, 3)
   - [ ] Add `docs/exit-criteria/_template.md` and `docs/adrs/0000-template.md`.
   - [ ] Add `tests/fixtures/audit-leakage-corpus.json`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/previous-spine.yaml`, and `tests/fixtures/idempotency-encoding-corpus.json` as minimal valid placeholders.
@@ -61,9 +65,10 @@ so that consumers and later stories have a stable, convention-compliant module b
   - [ ] Run `dotnet restore Hexalith.Folders.slnx`.
   - [ ] Run `dotnet build Hexalith.Folders.slnx`.
   - [ ] Confirm root build configuration provides `net10.0`, central package management, nullable, implicit usings, warnings-as-errors, and `LangVersion=latest` without per-project version drift.
+  - [ ] Confirm project package references omit `Version` metadata except where the SDK or NuGet tooling requires a documented exception.
   - [ ] Confirm the build does not require secrets, provider credentials, tenant data, production Dapr components, or nested submodule initialization.
   - [ ] Confirm no recursive submodule command is needed; if submodules must be initialized locally, use only root-level submodules.
-  - [ ] Record any intentionally empty projects in completion notes so reviewers can distinguish scaffold placeholders from missing implementation.
+  - [ ] Record any intentionally empty projects, omitted optional test projects, SDK/package deviations, and non-runnable placeholder directories in completion notes so reviewers can distinguish scaffold placeholders from missing implementation.
 
 ## Dev Notes
 
@@ -72,6 +77,7 @@ so that consumers and later stories have a stable, convention-compliant module b
 - This story creates a buildable module scaffold only. It does not author the OpenAPI Contract Spine, parity oracle, idempotency helpers, provider adapters, lifecycle state machine, REST endpoints, CLI commands, MCP tools, UI diagnostic pages, or production workflows.
 - Do not turn placeholder projects into partial implementations. Later stories own contract authoring, provider readiness, workspace lifecycle, parity, audit, and operations console behavior.
 - Do not initialize or update nested submodules. The scaffold may reference root-level sibling submodules already present in this repository, especially `Hexalith.Tenants` and `Hexalith.EventStore`, but nested submodule state must not be a build prerequisite.
+- Do not introduce generated clients, OpenAPI documents, provider-specific configuration, runnable topology assumptions, CLI verbs, MCP tools, UI pages, or lifecycle models to make the scaffold feel complete.
 
 ### Required Project Shape
 
@@ -129,6 +135,8 @@ The scaffold story owns only these canonical solution projects. Additional funct
 
 `docs/adrs`, `docs/exit-criteria`, `tests/fixtures`, and `tests/tools/parity-oracle-generator` are scaffold directories or fixture/tool placeholders, not separate solution projects unless a later story makes them buildable projects.
 
+The source, test, and sample inventories above are exact for this story. Additional buildable projects under `src`, `tests`, or `samples` must be deferred unless they are required only to keep the listed scaffold projects compiling and are explicitly recorded in completion notes.
+
 ### Allowed Reference Graph
 
 - `Hexalith.Folders.Contracts` has no domain, host, adapter, worker, UI, EventStore, Tenants, or behavior dependencies.
@@ -181,6 +189,7 @@ The scaffold story owns only these canonical solution projects. Additional funct
 ### Testing Guidance
 
 - Add at least one scaffold smoke test that asserts the solution contains the expected project names and that key project references do not point in the wrong direction.
+- Prefer parsing `.slnx` and `.csproj` metadata for inventory and reference-graph checks so the tests fail when the actual scaffold drifts from the story contract.
 - Keep integration tests compile-only or skipped with an explicit reason until the stories that wire Dapr, EventStore, Tenants, and provider adapters exist.
 - The verification command for this story is `dotnet build Hexalith.Folders.slnx` from the repository root.
 
@@ -220,6 +229,7 @@ The scaffold story owns only these canonical solution projects. Additional funct
 |---|---|---|
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-10 | Party-mode review applied scaffold inventory, dependency graph, clean-build, and submodule guard clarifications. | Codex |
+| 2026-05-10 | Advanced elicitation pass applied exact-inventory, metadata-driven smoke-test, compile-only placeholder, and deferral guardrails. | Codex |
 
 ## Party-Mode Review
 
@@ -240,6 +250,38 @@ The scaffold story owns only these canonical solution projects. Additional funct
   - Do not decide OpenAPI, endpoint shape, provider adapters, MCP tool schema, CLI verbs, lifecycle modeling, or idempotency policy in this scaffold story.
   - Do not add a runnable load-test project unless it compiles with zero external infrastructure and zero behavioral assumptions.
   - Keep integration tests and fixtures compile-safe placeholders without implying EventStore, Tenants, provider, or lifecycle runtime behavior.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-10T19:54:57Z
+- Selected story key: `1-1-establish-a-consumer-buildable-module-scaffold`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-1-establish-a-consumer-buildable-module-scaffold`
+- Batch 1 method names:
+  - Red Team vs Blue Team
+  - Security Audit Personas
+  - Failure Mode Analysis
+  - Pre-mortem Analysis
+  - Self-Consistency Validation
+- Reshuffled Batch 2 method names:
+  - Architecture Decision Records
+  - Comparative Analysis Matrix
+  - Challenge from Critical Perspective
+  - First Principles Analysis
+  - Critique and Refine
+- Findings summary:
+  - The story needed a firmer distinction between required scaffold inventory and tempting extra buildable surfaces.
+  - The reference-graph and inventory proof needed to be driven by actual solution/project metadata so tests catch scaffold drift.
+  - Placeholder and optional-hosting areas needed clearer compile-only rules to avoid accidental runtime, provider, topology, or generated-client scope.
+  - Completion evidence needed to call out intentionally empty projects, omitted optional tests, and SDK/package exceptions.
+- Changes applied:
+  - Added AC6 for exact inventory, forbidden references, package-version, and target-framework drift checks.
+  - Added tasks to keep source inventory exact, avoid unnecessary AppHost/Aspire/ServiceDefaults test projects, parse project metadata for smoke tests, and verify package references omit inline versions.
+  - Added scope and testing notes that defer generated clients, OpenAPI documents, provider configuration, runnable topology, CLI/MCP behavior, UI pages, and lifecycle models.
+  - Expanded completion-note expectations for omitted optional tests, SDK/package deviations, and non-runnable placeholder directories.
+- Findings deferred:
+  - Do not decide concrete OpenAPI generation, CLI verb names, MCP tool schemas, UI diagnostic routes, provider configuration shape, lifecycle state names, or runnable deployment topology in this scaffold story.
+  - Do not require dedicated AppHost, Aspire, or ServiceDefaults test projects unless the implementation discovers a compile-only reason and records it.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
