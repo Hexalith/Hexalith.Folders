@@ -11,3 +11,4 @@
 2026-05-10T19:08:42Z	party-mode-review	1-4-author-phase-0-5-pre-spine-workshop-deliverables	ok	party-mode trace applied; story guardrails tightened
 2026-05-10T19:36:23Z	party-mode-review	1-5-finalize-idempotency-equivalence-and-adapter-parity-rules	ok	party-mode trace applied; story guardrails tightened
 2026-05-10T19:54:57Z	advanced-elicitation	1-1-establish-a-consumer-buildable-module-scaffold	ok	advanced elicitation trace applied; story guardrails tightened
+2026-05-10T20:04:34Z	failed	-	failed	preflight hard fail; json=_bmad-output/process-notes/predev-preflight-latest.json; timestamp=2026-05-10T20:04:03Z; fail name="working tree cleanliness" details="2 dirty path(s)" stdout=" M _bmad-output/implementation-artifacts/sprint-status.yaml\n?? _bmad-output/implementation-artifacts/1-6-author-contract-spine-foundation-and-shared-extension-vocabulary.md\n"
