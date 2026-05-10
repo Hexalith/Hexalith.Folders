@@ -5,3 +5,4 @@
 2026-05-10T16:47:06Z	create-story	1-3-seed-minimally-valid-normative-fixtures	ok	created ready-for-dev story
 2026-05-10T17:06:53Z	create-story	1-4-author-phase-0-5-pre-spine-workshop-deliverables	ok	created ready-for-dev story; preflight soft warning 2026-05-10T17:02:56Z stdout "?? _bmad-output/project-context.md\n"
 2026-05-10T17:12:31Z	create-story	1-5-finalize-idempotency-equivalence-and-adapter-parity-rules	ok	created ready-for-dev story; preflight soft warning 2026-05-10T17:09:00Z stdout "?? _bmad-output/project-context.md\n"
+2026-05-10T17:21:46Z	party-mode-review	1-1-establish-a-consumer-buildable-module-scaffold	ok	party-mode trace applied; preflight soft warning 2026-05-10T17:14:33Z stdout "?? _bmad-output/project-context.md\n"
