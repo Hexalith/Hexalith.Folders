@@ -1,0 +1,13 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.2.2">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <UserSecretsId>hexalith-folders</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.UI\Hexalith.Folders.UI.csproj" />
+  </ItemGroup>
+</Project>

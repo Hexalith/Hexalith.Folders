@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>folders</ToolCommandName>
+    <IsPackable>true</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <RootNamespace>Hexalith.Folders.Cli</RootNamespace>
+    <AssemblyName>Hexalith.Folders.Cli</AssemblyName>
+    <Description>Hexalith Folders command-line adapter scaffold.</Description>
+    <PackageTags>folders;dapr;eventsourcing;dotnet;cli</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.Cli.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
+  </ItemGroup>
+</Project>

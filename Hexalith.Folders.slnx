@@ -1,0 +1,41 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj" />
+    <Project Path="samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="AGENTS.md" />
+    <File Path="CLAUDE.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj" />
+    <Project Path="src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj" />
+    <Project Path="src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
+    <Project Path="src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj" />
+    <Project Path="src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj" />
+    <Project Path="src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj" />
+    <Project Path="src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj" />
+    <Project Path="src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj" />
+    <Project Path="src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj" />
+    <Project Path="src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj" />
+    <Project Path="src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj" />
+    <Project Path="src/Hexalith.Folders/Hexalith.Folders.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj" />
+  </Folder>
+</Solution>

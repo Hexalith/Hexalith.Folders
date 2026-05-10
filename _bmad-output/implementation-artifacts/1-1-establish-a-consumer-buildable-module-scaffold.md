@@ -1,6 +1,6 @@
 # Story 1.1: Establish a consumer-buildable module scaffold
 
-Status: ready-for-dev
+Status: in-progress
 
 Created: 2026-05-10
 

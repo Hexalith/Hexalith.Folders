@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.Server.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.IntegrationTests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.ServiceDefaults\Hexalith.Folders.ServiceDefaults.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <RootNamespace>Hexalith.Folders.UI</RootNamespace>
+    <EnableContainer>true</EnableContainer>
+    <ContainerRepository>folders-ui</ContainerRepository>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.UI.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
+  </ItemGroup>
+</Project>
