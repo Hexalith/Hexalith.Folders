@@ -7,20 +7,23 @@ stepsCompleted:
 inputDocuments:
   - "_bmad-output/planning-artifacts/prd.md"
   - "_bmad-output/planning-artifacts/architecture.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-story-split.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-correction.md"
 project_name: 'Hexalith.Folders'
 user_name: 'Jerome'
 date: '2026-05-10'
 status: 'complete'
 completedAt: '2026-05-10'
 epicCount: 7
-storyCount: 60
+storyCount: 86
 ---
 
 # Hexalith.Folders - Epic Breakdown
 
 ## Overview
 
-This document provides the complete epic and story breakdown for Hexalith.Folders, decomposing the requirements from the PRD and Architecture into implementable stories.
+This document provides the complete epic and story breakdown for Hexalith.Folders, decomposing the requirements from the PRD, Architecture, and approved sprint/readiness-correction proposals into implementable stories.
 
 ## Requirements Inventory
 
@@ -347,6 +350,17 @@ These come from the Architecture document and represent technical/infrastructure
 - AR-DOC-04: Error catalog with REST status, CLI exit behavior, SDK error/result behavior, retryability, client action, audit/logging expectations.
 - AR-DOC-05: Tenant-deletion runbook at `docs/runbooks/tenant-deletion.md` (authored Phase 4); ADR template at `docs/adrs/0000-template.md` (authored Phase 0); contract-terms reference at `docs/contract-terms.md`.
 
+#### Approved Readiness-Correction Requirements
+
+- AR-PROPOSAL-01: Apply the approved backlog corrections from `sprint-change-proposal-2026-05-10.md`, `sprint-change-proposal-2026-05-10-readiness-story-split.md`, and `sprint-change-proposal-2026-05-10-readiness-correction.md` before sprint planning or implementation.
+- AR-PROPOSAL-02: Reframe Epic 1 as consumer-facing contract value: a scaffolded module plus canonical OpenAPI v1 Contract Spine that prevents drift across REST, SDK, CLI, and MCP before downstream feature work depends on it.
+- AR-PROPOSAL-03: Reframe Epic 7 as an MVP release-readiness gate for NFR validation and release evidence rather than a normal feature epic.
+- AR-PROPOSAL-04: Remove forward-story acceptance dependencies from Stories 4.3, 4.11, 6.3, 6.4, and 4.4 so each story is independently completable in sequence.
+- AR-PROPOSAL-05: Split combined or oversized stories into independently reviewable units: Contract Spine authoring, CI gate families, repository creation vs existing-repository binding, file mutation policy/write/delete flows, lifecycle validation risk families, cross-surface parity concerns, CI/CD vs release publishing, and documentation vs ADR/runbook deliverables.
+- AR-PROPOSAL-06: Preserve 57/57 FR coverage while renumbering affected stories and updating intra-document story references after the approved splits.
+- AR-PROPOSAL-07: Add an NFR traceability bridge: every PRD NFR bullet must map to an epic/story acceptance criterion, architecture exit criterion artifact, automated test gate, or documented release-validation evidence; release fails if any PRD NFR bullet remains unmapped.
+- AR-PROPOSAL-08: Synchronize `D:\Hexalith.Folders\_bmad-output\implementation-artifacts\sprint-status.yaml` after `epics.md` is revised, then rerun implementation readiness before sprint planning proceeds.
+
 ### UX Design Requirements
 
 No standalone UX Design Specification document was produced for this MVP. UX/UI requirements for the read-only operations console are captured under **Additional Requirements → Read-Only Operations Console (Frontend)** (AR-UI-01 through AR-UI-07), driven by Architecture decisions F-1 through F-7. Story authoring should treat those AR items with the same rigor as UX-DRs from a UX spec.
@@ -383,7 +397,7 @@ No standalone UX Design Specification document was produced for this MVP. UX/UI 
 - FR28: Epic 4 — lock state transitions (active, expired, stale, abandoned, interrupted, released)
 - FR29: Epic 4 — workspace lock release
 - FR30: Epic 4 — workspace cleanup status visibility for completed/failed/interrupted/abandoned task lifecycles
-- FR31: Epic 4 — workspace/task/audit/provider status currency inspection
+- FR31: Epic 4 and Epic 6 — lifecycle status currency produced by the task lifecycle and surfaced for operators
 - FR32: Epic 4 — file add/change/remove (PutFileInline ≤256KB + PutFileStream multipart)
 - FR33: Epic 4 — file-operation policy violation rejection (workspace boundary, path, branch/ref, lock, tenant, provider, folder)
 - FR34: Epic 4 — context queries via tree, metadata, search, glob, bounded range reads
@@ -395,15 +409,15 @@ No standalone UX Design Specification document was produced for this MVP. UX/UI 
 - FR40: Epic 4 — failed/incomplete/duplicate/retried/conflicting operation reporting with stable status and audit evidence
 - FR41: Epic 4 — idempotent lifecycle retries with stable task/operation/correlation IDs
 - FR42: Epic 4 — duplicate logical operation rejection on retry-identity or intent conflict
-- FR43: Epic 4 — canonical error taxonomy across surfaces (foundation in Epic 1; full set realized here)
+- FR43: Epic 1 and Epic 4 — canonical error taxonomy defined in the Contract Spine and realized by lifecycle behavior
 - FR44: Epic 4 — full error category set (validation/auth/tenant/folder ACL/credential/provider/capability/repository/branch/lock/workspace/path/commit/read-model/duplicate/transient)
 - FR45: Epic 4 — canonical workspace/task states (`ready`, `locked`, `dirty`, `committed`, `failed`, `inaccessible`) per C6 matrix
 - FR46: Epic 4 — final-state explanation + retry eligibility + operational evidence after any lifecycle failure
-- FR47: Epic 1 (artifact authoring); endpoint completeness implemented across Epics 2–4
+- FR47: Epic 1 and Epic 5 — versioned REST contract authored first, then proven through cross-surface parity
 - FR48: Epic 5 — CLI canonical lifecycle parity
 - FR49: Epic 5 — MCP canonical lifecycle parity
-- FR50: Epic 5 — SDK canonical lifecycle parity
-- FR51: Epic 5 — cross-surface equivalence via C13 parity oracle (transport + behavioral parity columns)
+- FR50: Epic 1 and Epic 5 — SDK generated from the Contract Spine and proven through canonical lifecycle parity
+- FR51: Epic 1 and Epic 5 — cross-surface equivalence defined by the Contract Spine/parity oracle and validated across surfaces
 - FR52: Epic 6 — read-only ops console projection consumption (readiness, binding, workspace, lock, dirty, commit, failure, provider, credential-ref, sync)
 - FR53: Epic 6 — metadata-only audit trail inspection (success/denied/failed/retried/duplicate)
 - FR54: Epic 6 — incident reconstruction from immutable audit metadata
@@ -413,1347 +427,1186 @@ No standalone UX Design Specification document was produced for this MVP. UX/UI 
 
 ## Epic List
 
-### Epic 1: Foundation — Solution Scaffolding & Contract Spine
+### Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
+API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before feature work begins.
+**FRs covered:** FR1, FR2, FR3, FR43, FR47, FR50, FR51
 
-Platform engineers can scaffold the module against the Hexalith ecosystem and lock a canonical OpenAPI v1 Contract Spine that drives every surface (REST, SDK, CLI, MCP) — with CI gates (server-vs-spine, symmetric drift, NSwag golden-file, parity-contract schema, exit-criteria-presence, pattern-examples compile, sentinel corpus, encoding-equivalence) preventing drift before any feature lands.
-
-**FRs covered:** FR1, FR2, FR3, FR47 (artifact authoring; endpoint completeness delivered by Epics 2–4)
-
-### Epic 2: Tenant-Scoped Folder Management
-
-Tenant administrators and authorized actors can create, inspect, and archive folders within a tenant with cross-tenant isolation enforced before any resource access, fail-closed-on-stale local tenant projection, mid-task auth revalidation, and metadata-only audit preserving evidence even for archived folders.
-
+### Epic 2: Tenant-Scoped Folder Access And Lifecycle
+Tenant administrators and authorized actors can create folders, manage access, inspect effective permissions, archive folders, and receive safe authorization evidence with cross-tenant isolation enforced before any resource access.
 **FRs covered:** FR4, FR5, FR6, FR8, FR9, FR10, FR11, FR12, FR13, FR14
 
-### Epic 3: Provider Readiness & Repository Binding
+### Epic 3: Provider Readiness And Repository Binding
+Platform engineers and authorized actors can configure Git providers, validate readiness, create repository-backed folders, bind existing repositories, define branch/ref policy, and inspect provider capability evidence without exposing secrets.
+**FRs covered:** FR7, FR15, FR16, FR17, FR18, FR19, FR20, FR21, FR22, FR23, FR57
 
-Platform engineers can configure GitHub and Forgejo provider bindings + credential references, validate provider readiness with safe diagnostics + reason codes, expose capability differences explicitly, and bind folders to repositories — gating all subsequent repository-backed task work behind a green readiness check.
+### Epic 4: Repository-Backed Workspace Task Lifecycle
+Developers and AI agents can prepare workspaces, acquire locks, mutate files safely, query bounded context, commit changes, and receive deterministic failure, status, idempotency, and redaction behavior through the canonical repository-backed task lifecycle.
+**FRs covered:** FR24, FR25, FR26, FR27, FR28, FR29, FR30, FR31, FR32, FR33, FR34, FR35, FR37, FR38, FR39, FR40, FR41, FR42, FR43, FR44, FR45, FR46, FR55
 
-**FRs covered:** FR7, FR15, FR16, FR17, FR18, FR19, FR20, FR21, FR22, FR23
+### Epic 5: Cross-Surface Workflow Parity
+API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalent operation identity, errors, idempotency, audit behavior, authorization outcomes, terminal states, and mixed-surface handoff.
+**FRs covered:** FR47, FR48, FR49, FR50, FR51
 
-### Epic 4: Repository-Backed Task Lifecycle (Workspace → Lock → Files → Commit)
+### Epic 6: Read-Only Operations Console And Audit Review
+Operators and audit reviewers can inspect readiness, locks, dirty state, failures, commits, timelines, provider evidence, and metadata-only audit records through a read-only console without mutation or file-content exposure.
+**FRs covered:** FR31, FR36, FR45, FR46, FR52, FR53, FR54, FR55, FR56, FR57
 
-Developers and AI agents can prepare a workspace, acquire a task-scoped lock, add/change/remove files, query file context (tree/search/glob/range), commit Git-backed changes idempotently, and inspect stable terminal or intermediate state when interrupted — proving the MVP's canonical job. Honors the C6 11-state transition matrix, two-tier idempotency TTLs, single-active-writer locks, working-copy ephemerality, and unknown-provider-outcome → reconciliation_required (no silent retry).
+### Release Readiness Workstream 7: MVP Operational Acceptance And Evidence
+Release reviewers, operators, and maintainers can accept the MVP for production only when safety, contract, deployment, observability, retention, documentation, package-traceability, and NFR evidence are complete.
+**FRs covered:** Cross-cutting validation for all FRs; no new product FR scope.
 
-**FRs covered:** FR24, FR25, FR26, FR27, FR28, FR29, FR30, FR31, FR32, FR33, FR34, FR35, FR37, FR38, FR39, FR40, FR41, FR42, FR43, FR44, FR45, FR46, FR55 (write-side redaction)
+## Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
 
-### Epic 5: Cross-Surface Adapters — CLI, MCP, SDK Parity
+API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before feature work begins.
 
-Operators using the CLI, AI tools using the MCP server, and developers using the SDK can perform the complete canonical task lifecycle with identical canonical-error categories, idempotency replay semantics, correlation/task-id propagation, audit metadata, authorization decisions, and terminal states — validated by xUnit theory data sourced from the C13 parity oracle (transport-parity columns in SDK+REST tests; behavioral-parity columns in CLI+MCP tests).
+### Story 1.1: Establish a consumer-buildable module scaffold
 
-**FRs covered:** FR48, FR49, FR50, FR51
-
-### Epic 6: Read-Only Operations Console & Audit Reviewer Flows
-
-Operators and audit reviewers can diagnose workspace, lock, provider, commit, and failure state through a WCAG 2.2 AA Blazor Server console with operator-disposition labels (`auto-recovering` / `awaiting-human` / `terminal-until-intervention` / `degraded-but-serving`) as the primary visual; reconstruct incidents from metadata-only audit trails; render redacted fields with a visible lock-icon affordance (never silent truncation); and continue diagnosis through `/_admin/incident-stream` when projections are degraded — with persistent red banner, disposition labels alongside raw events, one-click correlationId+timestamp copy, 400ms skeleton state, and 2s "still loading… [cancel]" affordance.
-
-**FRs covered:** FR36 (negative scope enforcement), FR52, FR53, FR54, FR55 (read-side rendering with classification), FR56, FR57
-
-### Epic 7: Production Hardening & Release Readiness
-
-Platform operators can deploy Hexalith.Folders to production with measured tenant isolation, accessibility, performance, retention, and incident-response readiness — final C1 capacity targets, C2 status-freshness target, C3 retention durations, and C5 scalability quantifiers pinned and validated through NBomber capacity tests; production Dapr deny-by-default + mTLS validated by `dapr-policy-conformance` negative tests; pluggable production OIDC; container images per service; full documentation deliverables; tenant-deletion runbook; backup/recovery validation.
-
-**FRs covered:** None directly (no new FRs); validates NFR54–58 (retention/cleanup) and NFR64–67 (release-validation evidence) for the integrated system.
-
-## Epic 1: Foundation — Solution Scaffolding & Contract Spine
-
-Platform engineers can scaffold the module against the Hexalith ecosystem (Hexalith.Tenants baseline + Hexalith.EventStore.Admin.* surfaces) and lock a canonical OpenAPI v1 Contract Spine that drives every cross-surface generation (REST, SDK, CLI, MCP) — with CI gates preventing drift before any feature lands. The deliverables of this epic are an empty-but-coherent codebase, a frozen contract artifact, a parity oracle, and a CI pipeline that every subsequent epic builds on.
-
-### Story 1.1: Scaffold solution skeleton mirroring Hexalith.Tenants
-
-As a platform engineer,
-I want a solution skeleton with all 13 src projects, 11 test projects, and sample projects laid out per the Hexalith.Tenants baseline,
-So that every subsequent story has a stable, convention-compliant home to add code without convention drift.
+As a platform engineer and downstream consumer,
+I want the Hexalith.Folders solution scaffold to build with the approved project layout,
+So that consumers and later stories have a stable, convention-compliant module baseline.
 
 **Acceptance Criteria:**
 
-**Given** a fresh repository with the existing root submodules (Hexalith.AI.Tools, Hexalith.EventStore, Hexalith.FrontComposer, Hexalith.Tenants)
-**When** the scaffolding script (or manual `dotnet new sln` + project creation) runs
-**Then** `Hexalith.Folders.slnx` exists at the repository root in `.slnx` format
-**And** `src/` contains 13 projects: `Hexalith.Folders.Contracts`, `Hexalith.Folders`, `Hexalith.Folders.Server`, `Hexalith.Folders.Client`, `Hexalith.Folders.Cli`, `Hexalith.Folders.Mcp`, `Hexalith.Folders.UI`, `Hexalith.Folders.Workers`, `Hexalith.Folders.Aspire`, `Hexalith.Folders.AppHost`, `Hexalith.Folders.ServiceDefaults`, `Hexalith.Folders.Testing` (plus any provider/host helpers required)
-**And** `tests/` mirrors `src/` 1:1 with corresponding `*.Tests` projects, plus `Hexalith.Folders.IntegrationTests`
-**And** `samples/` contains `Hexalith.Folders.Sample` and `Hexalith.Folders.Sample.Tests`
-**And** every project file uses `<TargetFramework>net10.0</TargetFramework>`, `<Nullable>enable</Nullable>`, `<ImplicitUsings>enable</ImplicitUsings>`, `<LangVersion>latest</LangVersion>`, `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` (mirroring Tenants `Directory.Build.props`)
-**And** `dotnet build Hexalith.Folders.slnx` succeeds with zero warnings on a clean machine
-
-**Given** a developer searches for project naming conventions
-**When** they list project files
-**Then** all projects follow the `Hexalith.Folders.{Surface}` naming pattern (per AR-PATTERN-01) and there are no `dotnet new aspire-starter` artifacts or non-Hexalith starter remnants
+**Given** an empty Hexalith.Folders repository
+**When** the scaffold is created
+**Then** `Hexalith.Folders.slnx` contains the expected src, test, and sample projects
+**And** project references follow the architecture dependency direction and target .NET 10
+**And** `dotnet build` succeeds for the scaffold without requiring provider credentials, tenant data, or initialized nested submodules.
 
 ### Story 1.2: Establish root configuration and submodule policy
 
-As a platform engineer,
-I want root configuration files (Directory.Build.props, Directory.Packages.props, global.json, nuget.config, .editorconfig, .gitmodules) configured per Hexalith ecosystem conventions with central package management pinning Hexalith.* to 3.15.1,
-So that every project inherits consistent compilation, package versions, and submodule policy without per-project drift.
+As a maintainer,
+I want root repository configuration and root-level submodule policy established,
+So that builds are reproducible and nested submodules are not initialized accidentally.
 
 **Acceptance Criteria:**
 
-**Given** repository root configuration is missing or incomplete
-**When** the configuration story is implemented
-**Then** `Directory.Build.props` mirrors `Hexalith.Tenants/Directory.Build.props` with `<LangVersion>latest</LangVersion>`, `<Nullable>enable</Nullable>`, `<ImplicitUsings>enable</ImplicitUsings>`, `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`, file-scoped namespace enforcement, and editorconfig integration
-**And** `Directory.Packages.props` enables central package management (`<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>`) and pins `Hexalith.EventStore.*` and `Hexalith.Tenants.*` to `3.15.1`, `Aspire.Hosting.AppHost` to `13.3.0`, `CommunityToolkit.Aspire.Hosting.Dapr` to `13.0.0`, `Octokit` to `14.0.0`, `ModelContextProtocol` to `1.3.0`
-**And** `global.json` pins the .NET 10 SDK
-**And** `nuget.config` declares the official `nuget.org` source and (where applicable) Hexalith package feed
-**And** `.editorconfig` enforces 4-space indent for `*.cs`, 2-space for `*.json`/`*.yaml`, file-scoped namespaces, and `using` ordering (System / Microsoft / Hexalith / third-party / project-local)
+**Given** the scaffolded repository
+**When** root configuration is added
+**Then** `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, `.editorconfig`, `.gitmodules`, and `Hexalith.Folders.slnx` exist
+**And** setup guidance forbids recursive nested-submodule initialization unless explicitly requested.
 
-**Given** a developer runs submodule operations
-**When** they reference Hexalith ecosystem dependencies
-**Then** `.gitmodules` contains only root-level submodule entries (Hexalith.AI.Tools, Hexalith.EventStore, Hexalith.FrontComposer, Hexalith.Tenants)
-**And** `git submodule update --init` (without `--recursive`) is the documented init command in `CLAUDE.md` and any setup scripts
-**And** no nested submodule reference is present in `.gitmodules` (per CLAUDE.md submodule policy)
-
-### Story 1.3: Seed normative test fixtures and placeholder artifacts
-
-As a platform engineer,
-I want the normative shared fixtures (`audit-leakage-corpus.json`, `parity-contract.schema.json`, `previous-spine.yaml`, `idempotency-encoding-corpus.json`) and exit-criteria/ADR template placeholders seeded under `tests/fixtures/` and `docs/`,
-So that subsequent CI gates and pre-spine deliverables have stable artifact locations to write into without inventing paths.
-
-**Acceptance Criteria:**
-
-**Given** repository scaffolding is in place
-**When** the fixtures story is implemented
-**Then** `tests/fixtures/audit-leakage-corpus.json` exists with at least 10 sentinel patterns spanning categories: secret-shaped paths, branch names with token-shaped values, commit messages with email/credential patterns, file-content markers, and provider tokens
-**And** `tests/fixtures/idempotency-encoding-corpus.json` exists with NFC, NFD, NFKC, NFKD, zero-width-joiner, and ULID-case variants for at least 5 representative idempotency-key inputs
-**And** `tests/fixtures/parity-contract.schema.json` exists as a JSON Schema document defining the row shape with both transport-parity columns (`auth_outcome_class`, `error_code_set`, `idempotency_key_rule`, `audit_metadata_keys`, `correlation_field_path`, `terminal_states`) and behavioral-parity columns (`pre_sdk_error_class`, `idempotency_key_sourcing`, `correlation_id_sourcing`, `cli_exit_code`, `mcp_failure_kind`)
-**And** `tests/fixtures/previous-spine.yaml` exists as an empty seed file ready to receive the v1 Contract Spine snapshot for symmetric drift detection
-
-**Given** subsequent stories need exit-criteria and ADR locations
-**When** documentation scaffolding is checked
-**Then** `docs/exit-criteria/_template.md` exists describing decision-owner, decision-authority, artifact-location, decision-deadline, and measurement-tool fields per §"Exit Criteria Operations Plan"
-**And** `docs/adrs/0000-template.md` exists with the standard ADR template (Title, Status, Context, Decision, Consequences)
-**And** `docs/contract-terms.md` exists as a stub for the FR1–FR3 vocabulary reference, listing the terms `folder`, `repository`, `workspace`, `task`, `lock`, `provider`, `context query`, `audit record`, `status record`
-**And** `tests/load/Hexalith.Folders.LoadTests.csproj` and `tests/tools/parity-oracle-generator/` exist as scaffolded placeholders ready for Phase 9 capacity tests and Phase 1 oracle generation respectively
-
-### Story 1.4: Author Phase 0.5 Pre-Spine Workshop deliverables (C3 retention, C4 input limits, S-2 OIDC, C6 transition matrix consolidation)
-
-As a platform engineer working with the Tech Lead and PM,
-I want C3 retention durations, C4 input limits, S-2 OIDC parameters, and the C6 workspace state transition matrix recorded under `docs/exit-criteria/` and `docs/architecture/` with concrete values,
-So that the Contract Spine (Story 1.6) can encode `maxItems`/`maxLength`/`maxBytes`/`maxResultCount`, the D-7 commit-TTL, OIDC validation parameters, and lifecycle states without TBDs.
-
-**Acceptance Criteria:**
-
-**Given** the architecture defers C3, C4, S-2 issuer/audience pinning, and C6 to Phase 0.5
-**When** the Pre-Spine Workshop deliverables are authored
-**Then** `docs/exit-criteria/c3-retention.md` records concrete retention durations per data class (audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, cleanup records) with rationale, decision owner (Tech Lead), and decision authority (Legal + PM)
-**And** `docs/exit-criteria/c4-input-limits.md` records concrete numeric values for maximum files per context query, maximum bytes per query response, maximum result count, and maximum query duration with rationale and measurement method
-**And** `docs/architecture/workspace-state-transition-matrix.md` consolidates the C6 11-state matrix (`requested`, `preparing`, `ready`, `locked`, `changes_staged`, `dirty`, `committed`, `failed`, `inaccessible`, `unknown_provider_outcome`, `reconciliation_required`) with operator-disposition labels (`auto-recovering` / `awaiting-human` / `terminal-until-intervention` / `degraded-but-serving`) and every documented `(from, event) → (to, side effect)` transition
-
-**Given** the deployment configuration template is part of the workshop output
-**When** the OIDC parameters are pinned per environment
-**Then** the deployment configuration template (e.g., `src/Hexalith.Folders.Server/appsettings.template.json` or equivalent) records `JwtBearerOptions` with `ClockSkew = 30s`, `RequireExpirationTime = true`, `RequireSignedTokens = true`, `ValidateIssuer = true`, `ValidateAudience = true`, `ValidateLifetime = true`, `ValidateIssuerSigningKey = true`, JWKS `AutomaticRefreshInterval = 10m`, `RefreshInterval = 1m`, with placeholder issuer/audience pinned per environment (Development, Staging, Production)
-**And** `docs/exit-criteria/c3-retention.md` and `docs/exit-criteria/c4-input-limits.md` are referenced from the architecture document update so that the Contract Spine authoring story can pull values without ambiguity
-
-### Story 1.5: Define per-command idempotency-equivalence, parity-dimensions, and finalize Adapter Parity Contract
-
-As a platform engineer,
-I want every mutating command's `x-hexalith-idempotency-equivalence` field list (lexicographic order) declared, every operation's `x-hexalith-parity-dimensions` declared (with mutating ops declaring `idempotency_key_rule` and query ops declaring `read_consistency_class`), and the §"Adapter Parity Contract" finalized with concrete rules per adapter,
-So that the Contract Spine + parity oracle generator can produce drift-resistant artifacts on first author.
-
-**Acceptance Criteria:**
-
-**Given** the architecture lists the mutating commands and queries
-**When** the per-command annotations and Adapter Parity Contract are authored
-**Then** every mutating command in the architecture command list (ValidateProviderReadiness, CreateFolder, BindRepository, PrepareWorkspace, LockWorkspace, ReleaseWorkspaceLock, AddFile, ChangeFile, RemoveFile, CommitWorkspace, plus archive/grant/revoke commands) has a documented `x-hexalith-idempotency-equivalence` field list in lexicographic order, recorded under `docs/architecture/idempotency-equivalence.md` (or the architecture document)
-**And** every operation has a documented `x-hexalith-parity-dimensions` entry; mutating operations declare `idempotency_key_rule`; query operations declare `read_consistency_class` (one of `snapshot-per-task` / `read-your-writes` / `eventually-consistent`)
-
-**Given** the Adapter Parity Contract is partially specified in the architecture
-**When** the contract is finalized
-**Then** the architecture §"Adapter Parity Contract" or a new `docs/architecture/adapter-parity-contract.md` records concrete rules per adapter (SDK / CLI / MCP) for: idempotency-key sourcing, correlation-id sourcing, task-id sourcing, credential sourcing, pre-SDK error class, post-SDK error projection, audit metadata keys, terminal states
-**And** the canonical CLI exit-code mapping table (0/64/65/66/67/68/69/70/71/72/73/74/75/1) is published as a reference table
-**And** the canonical MCP failure-kind set is published with one-to-one mapping to canonical error categories
-
-### Story 1.6: Author OpenAPI v1 Contract Spine with extension vocabulary
-
-As an API consumer (REST / SDK / CLI / MCP),
-I want a single canonical OpenAPI 3.1 Contract Spine artifact at `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` defining every capability group's operations, schemas, errors, idempotency annotations, and lifecycle states,
-So that all four surfaces are generated from one source of truth and cross-surface drift is mechanically impossible.
-
-**Acceptance Criteria:**
-
-**Given** Pre-Spine Workshop deliverables are complete (Stories 1.4 and 1.5)
-**When** the Contract Spine is authored
-**Then** `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` exists with `openapi: 3.1.0` and the URL versioning prefix `/api/v1/`
-**And** the spine declares operations grouped by the eight capability groups (provider-readiness, folders, workspaces, files, commits, audit, ops-console, context-queries)
-**And** the file-content transport is bimodal: `PutFileInline` (≤256KB JSON) and `PutFileStream` (multipart `application/octet-stream`) per D-9
-**And** the spine declares the extension vocabulary `x-hexalith-idempotency-key`, `x-hexalith-idempotency-equivalence`, `x-hexalith-idempotency-ttl-tier`, `x-hexalith-correlation`, `x-hexalith-lifecycle-states`, `x-hexalith-parity-dimensions`, `x-hexalith-audit-metadata-keys`, `x-hexalith-sensitive-metadata-tier` with JSON Schema references in `src/Hexalith.Folders.Contracts/openapi/extensions/`
-**And** every mutating operation declares `x-hexalith-idempotency-equivalence` (lexicographic field list) and `x-hexalith-idempotency-ttl-tier` (one of `mutation` / `commit`)
-**And** every operation declares `x-hexalith-parity-dimensions` per Story 1.5
-
-**Given** the C3 and C4 values from Story 1.4
-**When** the spine encodes input limits and lifecycle states
-**Then** every context-query operation declares `maxItems`, `maxLength`, `maxBytes`, `maxResultCount` from `docs/exit-criteria/c4-input-limits.md`
-**And** the spine declares `x-hexalith-lifecycle-states` listing the C6 11 states with operator-disposition labels
-**And** the error response schemas use RFC 9457 `application/problem+json` with the canonical error fields (`category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, `details`)
-**And** every operation that returns workspace state references the C6 state catalog rather than free-form strings
-**And** `tests/fixtures/previous-spine.yaml` is updated with a frozen copy of the v1 spine to seed the symmetric-drift gate
-
-### Story 1.7: Wire NSwag SDK generation with per-command ComputeIdempotencyHash() helpers
-
-As an SDK consumer,
-I want `Hexalith.Folders.Client` generated from the Contract Spine via NSwag with a per-command `ComputeIdempotencyHash()` helper auto-generated using the `x-hexalith-idempotency-equivalence` field list,
-So that consumers never reimplement payload canonicalization and idempotency replay semantics are identical across every caller.
-
-**Acceptance Criteria:**
-
-**Given** the Contract Spine exists at `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
-**When** `dotnet build src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj` runs
-**Then** NSwag executes as a build target consuming the spine and emits typed client methods, request/response DTOs, and per-command `ComputeIdempotencyHash()` helpers into `src/Hexalith.Folders.Client/Generated/`
-**And** the generated `ComputeIdempotencyHash()` for every mutating command DTO produces a deterministic SHA-256 hash over the lexicographically ordered fields declared in `x-hexalith-idempotency-equivalence`, with values canonicalized as NFC-normalized UTF-8
-**And** the bimodal file transport produces two distinct typed methods `PutFileInlineAsync` and `PutFileStreamAsync` (no `oneOf` union types)
-
-**Given** the generated SDK exists
-**When** unit tests run
-**Then** every command DTO has at least one generated `ComputeIdempotencyHash()` equivalence test that asserts (a) two payloads with the same equivalence-fields produce the same hash, (b) two payloads with differing non-equivalence fields produce the same hash, (c) two payloads with differing equivalence fields produce different hashes
-**And** the `idempotency-encoding-corpus.json` corpus is iterated by an encoding-equivalence test asserting that NFC/NFD/NFKC/NFKD/zero-width-joiner/ULID-case variants of the same logical key produce the same hash
-**And** generated files are excluded from manual edits (they live under `Generated/` with an `<auto-generated/>` marker)
-
-### Story 1.8: Generate the C13 parity oracle and validate it against parity-contract.schema.json
-
-As a parity-test consumer (SDK / REST / CLI / MCP test projects),
-I want `tests/fixtures/parity-contract.yaml` generated from the Contract Spine by `tests/tools/parity-oracle-generator/`, validated against `tests/fixtures/parity-contract.schema.json`, and consumed as xUnit theory data,
-So that adding a Contract Spine command without a parity row, omitting required parity dimensions, or removing an operation without deprecation entry mechanically fails the build.
-
-**Acceptance Criteria:**
-
-**Given** the Contract Spine, NSwag-generated SDK, and `parity-contract.schema.json` exist
-**When** the parity-oracle-generator tool runs (as a CI step or build target)
-**Then** `tests/fixtures/parity-contract.yaml` is produced with one row per Contract Spine operation, populating both transport-parity columns (`auth_outcome_class`, `error_code_set`, `idempotency_key_rule`, `audit_metadata_keys`, `correlation_field_path`, `terminal_states`) and behavioral-parity columns (`pre_sdk_error_class`, `idempotency_key_sourcing`, `correlation_id_sourcing`, `cli_exit_code`, `mcp_failure_kind`)
-**And** the generator runs the per-class completeness assertion: mutating operations missing `idempotency_key_rule` cause generation failure; query operations missing `read_consistency_class` cause generation failure
-
-**Given** `parity-contract.yaml` is generated
-**When** validation runs
-**Then** the generator validates the output against `parity-contract.schema.json` before writing; schema-validation failures stop the build with a clear error pointing to the offending row
-**And** the symmetric-drift gate compares the current spine to `tests/fixtures/previous-spine.yaml`; operations removed without a deprecation-window entry fail the build
-**And** an integration test in `Hexalith.Folders.Contracts.Tests` asserts every Contract Spine operation has exactly one row in `parity-contract.yaml`
-
-### Story 1.9: Wire CI gates (server-vs-spine, golden-file, sentinel, encoding, exit-criteria-presence, pattern-examples, cache-key prefix)
+### Story 1.3: Seed minimally valid normative fixtures
 
 As a maintainer,
-I want a comprehensive CI pipeline (`.github/workflows/ci.yml` + supporting workflow files) that enforces server-vs-spine validation, NSwag golden-file consistency, sentinel-corpus redaction, idempotency-encoding equivalence, exit-criteria presence, pattern-examples compilation, cache-key tenant-prefix lint, and parity oracle consumption,
-So that drift, redaction leaks, missing exit-criteria artifacts, and stale documentation snippets fail the build mechanically and consistently across every PR.
+I want normative fixtures and artifact templates to be minimally valid and owned by later gates,
+So that contract, parity, redaction, encoding, and load tests have stable inputs rather than empty placeholders.
 
 **Acceptance Criteria:**
 
-**Given** the Contract Spine, NSwag pipeline, and parity oracle exist
-**When** a PR opens
-**Then** `.github/workflows/ci.yml` runs the BLOCKING server-vs-spine validation gate that compares the OpenAPI emitted by `Microsoft.AspNetCore.OpenApi` from `Hexalith.Folders.Server` to `hexalith.folders.v1.yaml` and fails on any divergence
-**And** the NSwag golden-file gate runs `dotnet build` on `Hexalith.Folders.Client` and then `git diff --exit-code src/Hexalith.Folders.Client/Generated/` failing if generated outputs were hand-edited
-**And** the parity-contract schema-validation gate runs the parity-oracle generator and validates the output against `parity-contract.schema.json` before any test consumes it
-**And** the symmetric-drift gate compares the current Contract Spine to `tests/fixtures/previous-spine.yaml` and fails on operation removal without a deprecation entry
+**Given** the scaffolded repository
+**When** fixture placeholders are seeded
+**Then** the audit leakage corpus, parity schema, previous spine, and idempotency encoding corpus exist under `tests/fixtures` with minimal valid content
+**And** fixture schemas or smoke validation prove the files are parseable and intentionally incomplete where applicable
+**And** `tests/load`, `tests/tools/parity-oracle-generator`, `docs/exit-criteria/_template.md`, and `docs/adrs/0000-template.md` exist with ownership notes linking them to later CI or release-readiness stories.
 
-**Given** the redaction and encoding fixtures exist
-**When** the CI pipeline runs
-**Then** the sentinel-corpus iteration job runs sentinel tests against every output pipeline that any project emits (logs, traces, metrics labels, events, audit records, console payloads, provider diagnostics, error responses) and fails on any sentinel match in `audit-leakage-corpus.json`
-**And** the idempotency-encoding-equivalence gate iterates `idempotency-encoding-corpus.json` and asserts every variant of the same logical key produces the same hash from `ComputeIdempotencyHash()`
-**And** the cache-key tenant-prefix lint (Roslyn analyzer or grep-based) enforces that every cache-key construction in the codebase begins with `{tenantId}:` prefix; violations fail the build
-**And** the exit-criteria-presence gate fails the release pipeline when any C0–C13 row in §"Exit Criteria Operations Plan" lacks an artifact link
-**And** the pattern-examples compile gate compiles every C# snippet in §"Pattern Examples" of the architecture document against pinned package versions and fails on compilation error
+### Story 1.4: Author Phase 0.5 Pre-Spine Workshop deliverables
 
-## Epic 2: Tenant-Scoped Folder Management
+As an architect and maintainer,
+I want Contract Spine blocking decisions resolved,
+So that the canonical contract starts with real retention, input-limit, state, and auth values.
 
-Tenant administrators and authorized actors can create, inspect, and archive folders within a tenant with cross-tenant isolation enforced before any resource access, fail-closed-on-stale local tenant projection, layered authorization (JWT → claim transform → tenant projection → folder ACL → EventStore validators → Dapr policy), and metadata-only audit preserving evidence even after a folder is archived.
+**Acceptance Criteria:**
 
-### Story 2.1: Stand up domain service host with Tenants integration and fail-closed local projection
+**Given** the architecture exit-criteria plan
+**When** the Pre-Spine Workshop deliverables are authored
+**Then** C3 retention and C4 input-limit artifacts exist under `docs/exit-criteria`
+**And** S-2 OIDC validation parameters and the C6 transition-matrix implementation mapping are documented.
+
+### Story 1.5: Finalize idempotency equivalence and adapter parity rules
+
+As an adapter implementer,
+I want idempotency equivalence and parity dimensions defined before endpoints are authored,
+So that REST, SDK, CLI, and MCP cannot drift on operation identity or error handling.
+
+**Acceptance Criteria:**
+
+**Given** the approved commands and queries
+**When** adapter-parity metadata is defined
+**Then** every mutating command has an `x-hexalith-idempotency-equivalence` field list
+**And** every operation declares required parity dimensions and read-consistency or idempotency rules.
+
+### Story 1.6: Author Contract Spine foundation and shared extension vocabulary
+
+As an API consumer and adapter implementer,
+I want shared OpenAPI conventions and Hexalith extensions defined,
+So that every capability group uses the same contract language.
+
+**Acceptance Criteria:**
+
+**Given** the Phase 0.5 decisions are complete
+**When** the OpenAPI 3.1 Contract Spine foundation is authored
+**Then** shared conventions for auth, idempotency, correlation, pagination, freshness, errors, lifecycle states, audit metadata, and sensitive metadata are present
+**And** all `x-hexalith-*` extensions required by architecture C0 are declared.
+
+### Story 1.7: Author tenant, folder, provider, and repository-binding contract groups
+
+As an API consumer and adapter implementer,
+I want tenant, folder, provider, and repository-binding operations represented in the Contract Spine,
+So that access and provider readiness capabilities are canonical before implementation begins.
+
+**Acceptance Criteria:**
+
+**Given** the shared contract vocabulary exists
+**When** these contract groups are authored
+**Then** folder lifecycle, ACL, effective-permissions, provider-binding, provider-readiness, repository creation, repository binding, and branch/ref policy operations have schemas
+**And** each operation declares its required metadata explicitly:
+- all operations declare canonical error categories, authorization requirements, audit classification, correlation ID behavior, and parity dimensions
+- mutating operations declare idempotency-key requirements and idempotency-equivalence fields
+- read/query operations declare freshness, pagination/filtering, authorization-denial shape, and read-consistency expectations
+
+### Story 1.8: Author workspace and lock contract groups
+
+As an API consumer and adapter implementer,
+I want workspace preparation and lock operations represented in the Contract Spine,
+So that task lifecycle entry and concurrency behavior are canonical before implementation.
+
+**Acceptance Criteria:**
+
+**Given** the shared contract vocabulary exists
+**When** workspace and lock contract groups are authored
+**Then** prepare, lock, release, lock-inspection, state-transition, and retry-eligibility operations have schemas
+**And** workspace and lock operations declare authorization requirements, idempotency-key requirements, idempotency-equivalence fields, canonical error categories, audit classification, correlation ID behavior, retry eligibility, lease/expiry semantics, and parity dimensions.
+
+### Story 1.9: Author file mutation and context query contract groups
+
+As an API consumer and adapter implementer,
+I want file mutation and context query operations represented in the Contract Spine,
+So that file changes and read-only context access preserve the same policy boundaries across surfaces.
+
+**Acceptance Criteria:**
+
+**Given** workspace and lock contract groups exist
+**When** file and context contract groups are authored
+**Then** file add/change/remove, tree, metadata, search, glob, and bounded range-read operations have schemas
+**And** path, binary, range, result-limit, content-boundary, and secret-safe response rules are declared
+**And** mutating file operations declare idempotency and audit metadata, while context queries declare freshness, pagination or result bounds, redaction behavior, authorization-denial shape, and parity dimensions.
+
+### Story 1.10: Author commit and workspace-status contract groups
+
+As an API consumer and adapter implementer,
+I want commit and status operations represented in the Contract Spine,
+So that clean committed states, failed states, and unknown provider outcomes are reported consistently.
+
+**Acceptance Criteria:**
+
+**Given** lifecycle command contract groups exist
+**When** commit and status contract groups are authored
+**Then** commit, commit evidence, workspace status, task status, provider outcome, and reconciliation status operations have schemas
+**And** final state, retry eligibility, retry-after, correlation, canonical error metadata, audit evidence, provider unknown-outcome handling, reconciliation status, idempotency behavior for commit commands, and parity dimensions are declared.
+
+### Story 1.11: Author audit and ops-console query contract groups
+
+As an operator and audit reviewer,
+I want audit and ops-console query operations represented in the Contract Spine,
+So that diagnostics and incident reconstruction use metadata-only read models.
+
+**Acceptance Criteria:**
+
+**Given** lifecycle status contract groups exist
+**When** audit and ops-console query contract groups are authored
+**Then** audit trail, operation timeline, readiness, lock, dirty-state, failed-operation, provider-status, and sync-status queries have schemas
+**And** schemas exclude file contents, diffs, provider tokens, credential material, secrets, and unauthorized resource existence
+**And** audit and ops-console query schemas declare sensitive-metadata classification, redaction shape, authorization-denial shape, pagination/filtering, freshness, correlation ID behavior, and parity dimensions.
+
+### Story 1.12: Wire NSwag SDK generation with idempotency helpers
+
+As an SDK consumer,
+I want generated typed clients and idempotency-hash helpers from the Contract Spine,
+So that .NET callers use the same operation shapes and retry identity semantics as REST.
+
+**Acceptance Criteria:**
+
+**Given** the Contract Spine file exists
+**When** SDK generation runs
+**Then** NSwag emits reproducible generated clients and DTOs
+**And** mutating command DTOs expose `ComputeIdempotencyHash()` based on declared equivalence fields.
+
+### Story 1.13: Generate the C13 parity oracle
+
+As a maintainer,
+I want the C13 parity oracle generated from the Contract Spine,
+So that cross-surface tests consume one source of truth for transport and behavioral parity.
+
+**Acceptance Criteria:**
+
+**Given** the Contract Spine declares parity metadata
+**When** the parity-oracle generator runs
+**Then** `tests/fixtures/parity-contract.yaml` is generated and schema-validated
+**And** rows include both transport-parity and behavioral-parity columns.
+
+### Story 1.14: Wire Contract Spine drift and generated-client CI gates
+
+As a maintainer,
+I want contract drift and generated-client consistency gates wired into CI,
+So that surface divergence fails before feature implementation can depend on it.
+
+**Acceptance Criteria:**
+
+**Given** the Contract Spine and generated client exist
+**When** CI runs
+**Then** server-vs-spine validation, symmetric drift detection, NSwag golden-file consistency, and parity-oracle schema validation run
+**And** any drift without an approved deprecation or regenerated artifact fails the build.
+
+### Story 1.15: Wire safety invariant CI gates
+
+As a maintainer,
+I want safety invariant gates wired into CI,
+So that implementation cannot leak secrets, file contents, or tenant data through generated or runtime artifacts.
+
+**Acceptance Criteria:**
+
+**Given** the sentinel corpus exists
+**When** CI runs
+**Then** sentinel-corpus redaction tests and forbidden-field scanning execute against configured output channels
+**And** detected file content, token, credential, generated-context, or unauthorized-resource leakage fails the build.
+
+### Story 1.16: Wire exit-criteria and parity completeness gates
+
+As a maintainer,
+I want governance and completeness gates wired into CI,
+So that missing release evidence, unstable idempotency encoding, stale examples, or unsafe tenant cache keys block implementation.
+
+**Acceptance Criteria:**
+
+**Given** the fixture and exit-criteria artifacts exist
+**When** CI runs
+**Then** idempotency-encoding equivalence, pattern-example compilation, exit-criteria presence, tenant-prefixed cache-key lint, and parity completeness checks execute
+**And** missing required evidence or metadata fails the build.
+
+## Epic 2: Tenant-Scoped Folder Access And Lifecycle
+
+Tenant administrators and authorized actors can create folders, manage access, inspect effective permissions, archive folders, and receive safe authorization evidence with cross-tenant isolation enforced before any resource access.
+
+### Story 2.1: Stand up domain service host with Tenants integration
 
 As a platform engineer,
-I want `Hexalith.Folders.Server` running as a domain service host inside the Aspire AppHost, subscribing to `system.tenants.events`, building a local fail-closed `FolderTenantAccessProjection`, and exposing a `TenantsAvailabilityCheck` health endpoint, plus a `TenantContextProvenanceMiddleware` that rejects payload-tenant authority,
-So that every subsequent folder operation can authorize against a tenant identity that is verifiable, available under bounded staleness, and never trusted from request payloads.
+I want the Folders service hosted with Tenants integration and a fail-closed local tenant projection,
+So that every folder operation has tenant identity and availability semantics before domain behavior is added.
 
 **Acceptance Criteria:**
 
-**Given** the Aspire AppHost has EventStore (`AppId=eventstore`), Tenants (`AppId=tenants`), and Folders.Server (`AppId=folders`) registered
-**When** the AppHost starts locally
-**Then** `dotnet run --project src/Hexalith.Folders.AppHost` brings up EventStore + Tenants + Folders.Server + Keycloak + Dapr sidecars + Redis state store + Redis Streams pub/sub with Aspire dashboard at `https://localhost:17000`
-**And** `Hexalith.Folders.Server` starts via `AddEventStore()` / `UseEventStore()`, exposes `MapPost("/process")` and `MapPost("/project")` endpoints, and registers itself as `AppId=folders` for Dapr service invocation
-**And** `Hexalith.Folders.Client.Subscription.MapTenantEventSubscription` consumes `system.tenants.events` via Dapr pub/sub and writes to `FolderTenantAccessProjection` in Dapr state under tenant-prefixed keys (per C10)
-
-**Given** the local tenant-access projection is operational
-**When** Tenants availability is checked
-**Then** `/health/ready` reports degraded when Tenants pub/sub is unavailable beyond the configured staleness budget
-**And** `TenantsAvailabilityCheck` returns the projection's last-update timestamp and degraded-mode flag
-**And** read paths continue under bounded staleness; mutations require fresh authorization (synchronous Tenants query or rejection) per cross-cutting concern #20
-
-**Given** a request arrives at any REST endpoint
-**When** `TenantContextProvenanceMiddleware` runs
-**Then** the authoritative tenant is taken from the JWT `eventstore:tenant` claim transformed by Hexalith.EventStore — never from the request body or query parameters
-**And** any tenant identifier present in a request payload is treated as input that must validate against the auth-context tenant; mismatches return `tenant_access_denied` with safe error shape (no resource enumeration)
-**And** an integration test in `Hexalith.Folders.Server.Tests` asserts a request with mismatched payload tenant vs. JWT tenant is rejected with the same canonical error category that an unauthorized cross-tenant request would receive
+**Given** the scaffolded service host exists
+**When** Tenants integration is wired
+**Then** the service subscribes to `system.tenants.events` and builds `FolderTenantAccessProjection`
+**And** stale or unavailable tenant data fails closed for mutations.
 
 ### Story 2.2: Implement Organization aggregate ACL baseline
 
 As a tenant administrator,
-I want an `OrganizationAggregate` per managed tenant where the minimum tenant + folder access controls are configured (verbs, default ACL templates, role-to-verb maps),
-So that every folder created in this tenant inherits a coherent ACL baseline before it has any folder-specific overrides.
+I want organization-level folder access controls represented in the domain,
+So that folder permissions can be granted consistently to users, groups, roles, and delegated service agents.
 
 **Acceptance Criteria:**
 
-**Given** a managed tenant exists in `FolderTenantAccessProjection`
-**When** `ConfigureTenantAccessControls` is submitted via the EventStore command API by an authorized tenant administrator
-**Then** `OrganizationAggregate.Handle(ConfigureTenantAccessControls, OrganizationState?, CommandEnvelope)` is invoked as a pure function and returns `DomainResult.Success` containing `TenantAccessControlsConfigured` event with envelope metadata (`tenantId`, `domain=organizations`, `aggregateId`, `messageId`, `correlationId`, `causationId`, `timestamp`, `userId`, `eventTypeName`)
-**And** aggregate identity is `{managedTenantId}:organizations:{organizationId}` and never `system:organizations:*`
-**And** the resulting `OrganizationState` lists the configured verbs (create, configure provider binding, prepare workspace, lock workspace, read metadata, read file content where allowed, mutate files, commit, query status, query audit, view ops console)
-**And** the aggregate handler is pure: no Dapr calls, no HTTP, no file I/O, no time-of-day reads (uses `envelope.Timestamp`), no random calls
-
-**Given** the configuration is persisted
-**When** the projection rebuilds from the event stream
-**Then** rebuilding produces equivalent state from the same ordered event stream (read-model determinism)
-**And** an aggregate test asserts that an unauthorized actor (lacking the tenant administrator role per `eventstore:permission`) submitting `ConfigureTenantAccessControls` is rejected with `tenant_access_denied`
-**And** an Idempotency-Key with same payload returns the same result; same key with different payload returns `idempotency_conflict`
+**Given** an organization aggregate exists
+**When** ACL baseline commands are processed
+**Then** allowed principals and delegated actors are persisted as metadata-only events
+**And** no credential material or unauthorized resource detail appears in events.
 
 ### Story 2.3: Create folders within a tenant
 
-As an authorized actor (tenant administrator or developer with create permission),
-I want to create logical folders within my tenant via `POST /api/v1/folders` (and the equivalent EventStore `CreateFolder` command),
-So that subsequent provider-readiness checks, repository binding, and workspace work have a folder to attach to.
+As an authorized actor,
+I want to create logical folders inside my tenant,
+So that repository-backed workspace tasks have a tenant-scoped logical home.
 
 **Acceptance Criteria:**
 
-**Given** the actor has `eventstore:permission=command:submit` and the tenant ACL grants `folder:create`
-**When** `CreateFolder` is submitted with an `Idempotency-Key`, `X-Correlation-Id`, and folder name + optional description
-**Then** `FolderAggregate.Handle(CreateFolder, FolderState?, CommandEnvelope)` returns `DomainResult.Success` with a `FolderCreated` event including the assigned opaque ULID `folderId`, the actor identity, and a `tenant-sensitive` classified folder name
-**And** aggregate identity is `{managedTenantId}:folders:{folderId}` (never `system:folders:*`); folderId is opaque ULID per AR-PATTERN-01
-**And** the REST endpoint `POST /api/v1/folders` returns `202 Accepted` with `folderId`, `correlationId`, and a status-poll URL; never blocks on EventStore persistence
-**And** the response uses camelCase JSON, ISO-8601-Z timestamps, and `application/problem+json` for any error
+**Given** the actor has create permission
+**When** `CreateFolder` is accepted
+**Then** a folder aggregate is created with an opaque identifier and active lifecycle state
+**And** tenant scope comes from auth context, not request payload authority.
 
-**Given** the `FolderCreated` event is published
-**When** the `FolderListProjection` handler processes it
-**Then** the folder appears in `FolderListProjection` keyed by `{tenantId}:folder-list:{folderId}` (per C10 cache-key tenant-prefix invariant)
-**And** an `AuditProjection` entry is emitted with metadata-only fields (tenant, folderId, actor, operationId, correlationId, timestamp, eventTypeName=`FolderCreated`); no file contents or secrets appear
-**And** sentinel-redaction tests over `audit-leakage-corpus.json` find no leak in the folder name field (confirmed against the `tenant-sensitive` classification at the projection level)
-**And** a cross-tenant negative test asserts that a request from tenant B cannot read or list a folder created by tenant A; the denial returns the same error category as a missing folder (`not_found` or `tenant_access_denied`) with safe error shape
-
-### Story 2.4: Grant and revoke folder access for users, groups, roles, and delegated service agents
+### Story 2.4: Grant and revoke folder access
 
 As a tenant administrator,
-I want to grant and revoke folder-scoped access for users, groups, roles, and delegated service agents via `GrantFolderAccess` / `RevokeFolderAccess` commands,
-So that I can onboard automation teams, retire chatbot projects, and rotate ownership without losing audit history.
+I want to grant and revoke folder access for permitted principals,
+So that access to folders can evolve without changing repository bindings.
 
 **Acceptance Criteria:**
 
-**Given** an existing folder owned by tenant T and an actor with `folder:configure-acl` permission on that folder
-**When** `GrantFolderAccess` is submitted specifying `principal` (one of `user`, `group`, `role`, `service-agent`), `principalId`, and `verbs` (subset of the verb catalog)
-**Then** `FolderAggregate.Handle(GrantFolderAccess, FolderState, CommandEnvelope)` returns `DomainResult.Success` with `FolderAccessGranted` event capturing `principal`, `principalId`, `verbs`, `actor`, `timestamp`, `correlationId`
-**And** `RevokeFolderAccess` with the same `principal` + `principalId` produces `FolderAccessRevoked` with no remaining verbs for that principal
-**And** the resulting state is reflected in `FolderAclProjection` keyed by `{tenantId}:folder-acl:{folderId}`
-**And** revoking a non-existent grant returns `DomainResult.NoOp` (idempotent) rather than rejecting
+**Given** a folder exists and the administrator has ACL permission
+**When** access is granted or revoked
+**Then** effective ACL metadata changes are recorded and projected
+**And** revoked access is honored within the C7 freshness budget.
 
-**Given** a grant or revoke is replayed with the same `Idempotency-Key`
-**When** the equivalent payload is submitted
-**Then** the same logical result is returned; a same-key + different-payload submission returns `idempotency_conflict`
-**And** an audit entry is written for both grant and revoke operations with metadata only (no file contents, no token material, principal identifier classified per S-6 sensitive-metadata classifier)
-**And** a cross-tenant negative test asserts that tenant B cannot grant or revoke access on a folder belonging to tenant A; the denial happens before any folder lookup occurs
+### Story 2.5: Inspect effective permissions
 
-### Story 2.5: Inspect effective permissions for a folder or task context
-
-As an authorized actor (tenant administrator or audit reviewer),
-I want to query effective permissions for a folder or task context via `GET /api/v1/folders/{folderId}/effective-permissions`,
-So that I can answer "who can write here today?" with concrete evidence drawn from the projected ACL.
+As an authorized actor,
+I want to inspect effective permissions for a folder or task context,
+So that I can explain who can perform work before a task begins.
 
 **Acceptance Criteria:**
 
-**Given** an existing folder with grants from Story 2.4 and an actor with `folder:read-acl` permission
-**When** `GET /api/v1/folders/{folderId}/effective-permissions[?principal={id}]` is called
-**Then** the response returns the resolved permission set: per principal, the verb list, grant source (direct, group, role), grant timestamp, and granting actor; metadata only (no token material, no credential references)
-**And** the response is `eventually-consistent` per Story 1.5 read-consistency declaration, with `X-Hexalith-Freshness` header indicating the projection age
-**And** the request is denied with `tenant_access_denied` if the actor lacks `folder:read-acl` or if the folder belongs to a different tenant; denial uses safe error shape (no resource enumeration)
+**Given** a folder exists
+**When** an authorized actor requests effective permissions
+**Then** the response shows allowed actions and principal sources
+**And** it omits unauthorized resource existence and secret material.
 
-**Given** the principal lookup spans group and role membership
-**When** the projection resolves effective permissions
-**Then** the resolution honors group membership and role assignments from the local `FolderTenantAccessProjection` and the folder's own `FolderAclProjection`
-**And** an authorization-evidence audit entry is emitted with actor, query type, target folderId, correlationId, timestamp, and result classification (`allowed` or `denied`)
+### Story 2.6: Enforce layered authorization with safe denials
 
-### Story 2.6: Enforce layered authorization with cross-tenant denial and safe error shapes
-
-As any system component executing a folder operation,
-I want layered authorization (JWT validation → Hexalith.EventStore claim transform → local fail-closed tenant-access projection → folder ACL check → EventStore validators) to run before any folder, repository, credential, lock, file, audit, provider, or context information is exposed,
-So that cross-tenant access is denied before any resource is touched and denials never enumerate unauthorized resources.
+As a system component executing a folder operation,
+I want layered authorization to run before resource access,
+So that cross-tenant access is denied without enumeration or leakage.
 
 **Acceptance Criteria:**
 
-**Given** any request arrives at `Hexalith.Folders.Server` for a folder operation
-**When** the authorization pipeline runs
-**Then** `TenantAccessAuthorizer` first validates the JWT, then uses the `eventstore:tenant` claim, then consults `FolderTenantAccessProjection` (fail-closed when stale beyond budget), then checks `FolderAclAuthorizer` against `FolderAclProjection`, and only then dispatches to the aggregate
-**And** every layer's decision is captured in an audit-evidence record (`actor`, `tenant`, `folderId`, `verb`, `decision`, `reason`, `correlationId`, `timestamp`)
-**And** a cross-tenant request (correct JWT for tenant A, target folder owned by tenant B) is denied at the tenant layer; the response returns `tenant_access_denied` with safe error shape — no folder name, repository name, or existence indicator is leaked
-**And** a tenant-correct but ACL-insufficient request is denied at the folder ACL layer with `folder_acl_denied` and the same safe-error shape
-
-**Given** the local `FolderTenantAccessProjection` is stale beyond the freshness budget
-**When** an authorization decision is required
-**Then** for read paths, the projection is consulted under bounded staleness; the response includes `X-Hexalith-Freshness`
-**And** for mutating paths, fail-closed behavior triggers a synchronous Tenants query or rejection with `tenant_access_unknown` (retryable per `clientAction=wait_and_retry`)
-**And** an isolation-test suite covers API responses, errors, events, logs, metrics labels, projections, cache keys, lock keys, temporary paths, provider credentials, repository bindings, audit records, and context-query results — asserting no cross-tenant leakage in any output channel
+**Given** a request targets a folder resource
+**When** authorization runs
+**Then** JWT, tenant projection, folder ACL, EventStore validators, and Dapr policy are evaluated before access
+**And** denied requests return safe error shapes and metadata-only denial evidence.
 
 ### Story 2.7: Inspect folder lifecycle and binding status
 
 As an authorized actor,
-I want to inspect a folder's lifecycle state, binding metadata, and creation/archive timestamps via `GET /api/v1/folders/{folderId}` and list folders via `GET /api/v1/folders`,
-So that operators and tenant administrators can answer "which folders exist, who owns them, and what is their current state" without needing direct EventStore access.
+I want to inspect folder lifecycle and binding status,
+So that I can tell whether a folder is active, archived, unbound, or repository-backed.
 
 **Acceptance Criteria:**
 
-**Given** an actor with `folder:read-metadata` permission and existing folders in the tenant
-**When** `GET /api/v1/folders/{folderId}` is called
-**Then** the response includes `folderId` (opaque ULID), `tenantId`, folder name (sensitivity-classified per S-6), description, lifecycle state (`active` or `archived` for MVP), creation actor + timestamp, last-update timestamp, and binding metadata if a repository is bound (handled in Epic 3) with provider name + binding identifier — never any credential material or repository URL with embedded credentials
-**And** `GET /api/v1/folders` returns a paginated list of folders for the authenticated tenant; pagination follows the conventions declared in Story 1.6 Contract Spine
-**And** the response sets `X-Correlation-Id` and `X-Hexalith-Freshness`; consistency model is `eventually-consistent` per the spine declaration
-**And** a cross-tenant request returns `not_found`-shaped denial; existence of folders in the other tenant is not leaked
+**Given** the actor has folder read permission
+**When** folder status is requested
+**Then** lifecycle and binding metadata are returned
+**And** provider credentials, tokens, and embedded credential URLs are never returned.
 
-**Given** the actor lacks `folder:read-metadata`
-**When** any folder query is attempted
-**Then** the request is denied with `folder_acl_denied` using safe error shape; an audit entry captures the denial
-
-### Story 2.8: Archive folders with retention-bound audit and status preservation
+### Story 2.8: Archive folders with audit preservation
 
 As a tenant administrator,
-I want to archive a folder via `ArchiveFolder` so that mutating operations are denied with a stable error while metadata-only audit, lock lifecycle history, last commit reference, and operation timeline remain queryable for the tenant's retention policy duration,
-So that I can retire chatbot projects without erasing the audit evidence future incident reviews depend on.
+I want to archive folders when policy allows,
+So that retired work is no longer active while audit and status evidence remain available.
 
 **Acceptance Criteria:**
 
-**Given** an actor with `folder:archive` permission on an active folder
-**When** `ArchiveFolder` is submitted with an `Idempotency-Key` and `X-Correlation-Id`
-**Then** `FolderAggregate.Handle(ArchiveFolder, FolderState, CommandEnvelope)` returns `DomainResult.Success` with `FolderArchived` event including `actor`, `timestamp`, `correlationId`, and the archive lifecycle reason
-**And** `FolderState` transitions to `archived`; the archive timestamp is preserved
-**And** subsequent mutating commands (CreateFolder against the same id, GrantFolderAccess, ConfigureProviderBinding, PrepareWorkspace, LockWorkspace, AddFile, ChangeFile, RemoveFile, CommitWorkspace) are rejected with stable error category `folder_archived` using safe error shape
-
-**Given** a folder is archived
-**When** an authorized actor queries archived-folder metadata or audit
-**Then** `GET /api/v1/folders/{folderId}` returns the folder with `lifecycleState=archived`, archive timestamp, last commit reference (if any), and lock lifecycle history; metadata-only — no file contents, no provider tokens, no credential material
-**And** `GET /api/v1/folders/{folderId}/audit-trail` continues to return the operation timeline for the duration of the tenant's `c3-retention.md` retention period
-**And** the same denial and isolation guarantees that protect active folders also protect archived ones (cross-tenant negative test confirms)
-**And** when the C3 retention period expires for a given record class, the cleanup process removes the eligible records but does NOT remove audit evidence required to reconstruct completed/failed/denied/retried/duplicate/interrupted operations (per NFR58)
+**Given** a folder is eligible for archive
+**When** `ArchiveFolder` is accepted
+**Then** lifecycle state becomes archived and future mutating task commands are rejected
+**And** audit and status evidence remain queryable under retention policy.
 
 ### Story 2.9: React to Tenants events through Worker handlers
 
-As the system,
-I want `Hexalith.Folders.Workers` to react to `system.tenants.events` via four handlers (`TenantDisabledHandler`, `UserRemovedFromTenantHandler`, `UserRoleChangedHandler`, `TenantConfigurationSetHandler`) that submit follow-up commands to update folder ACLs and processed `folders.*` configuration keys only,
-So that tenant administrative changes (disabling a tenant, removing a user, role rotation, configuration updates) reflect in folder authorization within the C7 freshness budget without any Folders-internal admin path being needed.
+As a system component,
+I want worker handlers to react to tenant lifecycle and membership events,
+So that Folders authorization stays aligned with tenant administration.
 
 **Acceptance Criteria:**
 
-**Given** Hexalith.Tenants emits a `TenantDisabled` event
-**When** `TenantDisabledHandler` processes it from `system.tenants.events`
-**Then** the handler updates `FolderTenantAccessProjection` to mark the tenant disabled (no future authorization decisions for that tenant succeed) and submits a follow-up command to mark all affected folders inaccessible for new mutations (existing locks proceed to revalidation per Epic 4)
-**And** the handler is idempotent by causation/correlation ID per AR-WORKER-01
+**Given** a relevant Tenants event is published
+**When** the Folders worker receives it
+**Then** local tenant-access projections and folder authorization metadata are updated idempotently
+**And** only `folders.*` configuration keys are processed.
 
-**Given** Hexalith.Tenants emits `UserRemovedFromTenant` for principal P in tenant T
-**When** `UserRemovedFromTenantHandler` processes it
-**Then** the handler iterates folders in tenant T where P holds direct grants and submits `RevokeFolderAccess` for each; group/role grants are recomputed via the projection without per-folder commands
-**And** an audit entry is emitted for each revoke with `causationId` linking to the Tenants event
+## Epic 3: Provider Readiness And Repository Binding
 
-**Given** Hexalith.Tenants emits `UserRoleChanged` for principal P in tenant T
-**When** `UserRoleChangedHandler` processes it
-**Then** the handler updates `FolderTenantAccessProjection` to reflect the new role-to-verb mapping; effective-permissions queries (Story 2.5) reflect the change within the C7 freshness budget
+Platform engineers and authorized actors can configure Git providers, validate readiness, create repository-backed folders, bind existing repositories, define branch/ref policy, and inspect provider capability evidence without exposing secrets.
 
-**Given** Hexalith.Tenants emits `TenantConfigurationSet` with keys including `folders.*` and other namespaces
-**When** `TenantConfigurationSetHandler` processes it
-**Then** only `folders.*` keys are processed; other namespaces are ignored
-**And** processed keys update `FolderTenantAccessProjection` or trigger follow-up commands as appropriate
-**And** all four handlers run sentinel-redaction tests asserting no Tenants-event payload field leaks into Folders logs/audit beyond classified metadata
-
-## Epic 3: Provider Readiness & Repository Binding
-
-Platform engineers can configure GitHub and Forgejo provider bindings + credential references on a tenant's `OrganizationAggregate`, validate provider readiness with stable safe-reason codes before any repository-backed folder is created, expose capability differences between providers explicitly, define branch/ref policy, and bind folders to repositories — preventing avoidable runtime failures by failing fast at provisioning time rather than mid-task.
-
-### Story 3.1: Configure provider binding and credential reference for a tenant
+### Story 3.1: Configure provider binding and credential reference
 
 As a platform engineer,
-I want to configure a Git provider binding (GitHub or Forgejo) with a credential reference and repository naming policy on the tenant's `OrganizationAggregate` via `ConfigureProviderBinding`,
-So that subsequent readiness checks and repository-backed folder operations have an authoritative provider configuration to evaluate against without storing or echoing token material.
+I want to configure a provider binding and credential reference for a tenant,
+So that repository-backed folder creation can be gated by known provider configuration.
 
 **Acceptance Criteria:**
 
-**Given** an authorized tenant administrator with `tenant:configure-provider` permission and an active `OrganizationAggregate` from Story 2.2
-**When** `ConfigureProviderBinding` is submitted with `providerKind` (`github` or `forgejo`), `credentialReferenceId`, `repositoryNamingPolicy`, and `defaultBranchPolicy`
-**Then** `OrganizationAggregate.Handle(ConfigureProviderBinding, OrganizationState, CommandEnvelope)` returns `DomainResult.Success` with `ProviderBindingConfigured` event including the binding identifier, providerKind, credentialReferenceId (reference only — never token material), naming policy, and default branch policy
-**And** the credential reference resolves through Hexalith.Tenants or a Dapr secret store; the resolved token is loaded only at provider-call time inside the provider adapter and never written to any event, projection, log, trace, audit record, or error response
-**And** `OrganizationState` reflects the active binding; subsequent `ConfigureProviderBinding` for the same providerKind updates the binding (idempotent if equivalent payload; rejects with `idempotency_conflict` on differing payload with same key)
+**Given** the actor has provider configuration permission
+**When** a binding is configured
+**Then** provider kind, binding ID, credential reference ID, naming policy, and branch policy are recorded
+**And** token material is never stored or returned.
 
-**Given** the binding is persisted
-**When** an authorized actor queries `GET /api/v1/organizations/{organizationId}/provider-bindings`
-**Then** the response returns provider, binding identifier, credentialReferenceId, repository naming policy, default branch policy, last-update timestamp, and binding state — never any token, raw credential material, repository URL with embedded credentials, or unauthorized provider details (FR21)
-**And** sensitive metadata classification per S-6 is applied: branch-policy values are `tenant-sensitive` by default; the response respects per-tenant overrides
-**And** sentinel-redaction tests over `audit-leakage-corpus.json` find no leak in event payloads or query responses
+### Story 3.2: Define IGitProvider port and capability model
 
-### Story 3.2: Define IGitProvider port with N-provider capability model and capability-difference exposure
-
-As an architect (and downstream provider adapter author),
-I want a capability-discoverable `IGitProvider` port surfaced from `Hexalith.Folders/Providers/Abstractions/`, plus a query exposing the capability matrix per provider,
-So that GitHub and Forgejo capability differences are reported explicitly rather than inferred by clients from failed operations, and adding a third provider does not require port redesign.
+As a provider adapter implementer,
+I want an N-provider capability-discoverable Git provider port,
+So that GitHub, Forgejo, and future providers can expose differences without changing product semantics.
 
 **Acceptance Criteria:**
 
-**Given** the architecture's provider abstractions location
-**When** the port is defined
-**Then** `IGitProvider` declares the methods needed by the canonical lifecycle: `ValidateReadinessAsync`, `CreateOrBindRepositoryAsync`, `PrepareWorkspaceAsync`, `ApplyFileOperationsAsync`, `CommitAsync`, `GetProviderStatusAsync`, `CleanupAsync` — each taking a `ProviderRequest` carrying `tenantId`, `correlationId`, `taskId`, `bindingId`, and operation-specific payload, and returning a `ProviderResult` with `outcome` (`succeeded` / `known-failure` / `unknown-outcome`), categorized failure (per `ProviderFailureCategory`), and retryability
-**And** `ProviderCapabilities` exposes a typed feature-flag set (e.g., `SupportsBranchProtection`, `SupportsForcePushPolicy`, `SupportsRepositoryCreate`, `SupportsLfs`, `SupportsScopedTokens`, `MaxFileSize`, `RateLimitWindow`) — extensible without breaking existing adapters
-**And** `ProviderFailureCategory` enumerates `timeout`, `unauthorized`, `forbidden`, `not_found`, `conflict`, `rate_limited`, `server_error`, `branch_protection`, `repository_missing_or_deleted`, `stale_clone`, `credential_revoked`, `provider_unavailable`, `unknown_outcome`
+**Given** provider adapters are implemented behind a port
+**When** capabilities are queried
+**Then** supported operations, branch/ref behavior, file limits, credential mode, and failure categories are exposed as metadata
+**And** the model is not hardcoded to exactly two providers.
 
-**Given** `IGitProvider` is implemented by GitHub and Forgejo adapters (Stories 3.3 and 3.4)
-**When** an authorized actor calls `GET /api/v1/provider-capabilities?providerKind={github|forgejo}` (or a comparison endpoint returning both)
-**Then** the response returns the typed capability matrix per provider
-**And** an explicit "capability difference" view is available enumerating dimensions where the providers diverge (e.g., GitHub Apps fine-grained permissions vs Forgejo scoped tokens; branch-protection model differences) per FR22
-**And** `tests/Hexalith.Folders.Tests/Providers/ProviderPortConformance/` contains a conformance suite asserting both adapters implement every port method and report capabilities consistently
-
-### Story 3.3: Implement GitHub provider adapter using Octokit
+### Story 3.3: Implement GitHub provider adapter
 
 As a platform engineer,
-I want `Hexalith.Folders.Providers.GitHub.GitHubProvider` implementing `IGitProvider` using Octokit 14.0.0 with GitHub Apps fine-grained permissions, a `GitHubFailureClassifier`, and per-tenant rate-limit token bucket scaffolding,
-So that GitHub-backed folders can complete the canonical lifecycle with categorized failure reporting and unknown-outcome handling that never duplicates repositories, file changes, or commits.
+I want a GitHub provider adapter using Octokit,
+So that tenants can create and bind GitHub repositories through the canonical provider port.
 
 **Acceptance Criteria:**
 
-**Given** `IGitProvider` from Story 3.2 and the Octokit 14.0.0 dependency pinned in `Directory.Packages.props`
-**When** `GitHubProvider` is implemented
-**Then** every `IGitProvider` method delegates to Octokit calls inside `Hexalith.Folders.Providers.GitHub` and the Octokit reference is not surfaced beyond that namespace
-**And** `GitHubReadinessChecker` validates: provider availability, credential reference resolves to a valid token, token has required permissions for the canonical lifecycle (repo creation, branch policy, file ops, commit), default branch policy is valid, repository naming policy is valid
-**And** `GitHubFailureClassifier` maps Octokit exceptions and HTTP status to `ProviderFailureCategory` covering timeout, 401, 403, 404, 409, 429, 5xx, branch-protection, missing-or-deleted repository, stale clone, credential revocation
-**And** unknown-outcome handling: when an Octokit call times out or returns ambiguous state, `GitHubProvider` returns `ProviderResult { outcome = unknown-outcome }` and never silently retries — escalating to `reconciliation_required` per AR-PROVIDER-05
+**Given** a GitHub binding and credential reference exist
+**When** readiness, repository, branch/ref, file, commit, and status operations are called
+**Then** the adapter returns canonical provider results and failure categories
+**And** ambiguous provider outcomes return `unknown_provider_outcome` rather than silent retry.
 
-**Given** the provider adapter is deployed
-**When** the per-tenant rate-limit token bucket scaffolding from `Hexalith.Folders.Workers.RateLimiting.PerTenantTokenBucket` is consulted
-**Then** user-driven calls per tenant are throttled per-tenant; bucket exhaustion returns `rate_limited` with the next-attempt hint
-**And** the hermetic-PR-gate provider contract test suite at `tests/Hexalith.Folders.Tests/Providers/GitHub/` exercises pinned fixtures covering readiness, repository creation, branch handling, file operations, commit, every failure category, retry/idempotency behavior, and unknown-outcome handling
-**And** sentinel-redaction tests assert no provider tokens, raw URLs with embedded credentials, or Octokit exception messages containing secrets leak into events, logs, traces, projections, audit records, or error responses
-
-### Story 3.4: Implement Forgejo provider adapter with per-version snapshots and oasdiff drift detection
+### Story 3.4: Implement Forgejo provider adapter and drift detection
 
 As a platform engineer,
-I want `Hexalith.Folders.Providers.Forgejo.ForgejoProvider` implementing `IGitProvider` as a typed HttpClient wrapper fed by per-version `swagger.v1.json` snapshots, with a `supported-versions.json` matrix, a hermetic-PR-gate contract suite, and a nightly oasdiff drift-detection workflow,
-So that Forgejo-backed folders complete the canonical lifecycle and per-instance OpenAPI variation is detected as drift before it causes runtime failures.
+I want a Forgejo provider adapter with version snapshots and schema drift detection,
+So that Forgejo support is verified against pinned API behavior.
 
 **Acceptance Criteria:**
 
-**Given** the Forgejo per-instance OpenAPI behavior
-**When** `ForgejoProvider` is implemented
-**Then** the adapter is a hand-written typed HttpClient wrapper inside `Hexalith.Folders.Providers.Forgejo` with no generated client; capability methods use Forgejo scoped-token authentication
-**And** `tests/contracts/forgejo/<version>/swagger.v1.json` snapshots are checked in for the test matrix declared in `tests/contracts/forgejo/supported-versions.json` (minimum: latest stable, latest LTS, n-1 minor, plus any pinned customer instance)
-**And** `ForgejoFailureClassifier` maps HTTP status to the same `ProviderFailureCategory` set used by GitHub (Story 3.3) so cross-provider parity tests can assert equivalent error categorization
+**Given** supported Forgejo versions are listed
+**When** contract tests and nightly drift checks run
+**Then** schema drift is classified as warning or failure according to policy
+**And** readiness cannot report ready for an unsupported or failing provider version.
 
-**Given** `.github/workflows/nightly-drift.yml` runs daily plus a weekly `HEAD` poll
-**When** oasdiff compares the live Forgejo OpenAPI to each pinned snapshot
-**Then** additive changes (new optional fields, new operations) emit a `warn` with a CI annotation
-**And** breaking changes (removed fields, type narrowing, removed operations, security-scheme changes) `fail` the nightly job and surface a CI annotation pointing to the affected snapshot file
-**And** a fixture-to-failure-mode coverage matrix is asserted in CI: every entry in `ProviderFailureCategory` has at least one fixture in `tests/contracts/forgejo/<version>/`
-**And** response-equivalence tests compare GitHub adapter and Forgejo adapter port-shape outcomes for the same logical operation; divergence requires explicit acknowledgment in the architecture document via the FR22 capability-difference matrix from Story 3.2
+### Story 3.5: Validate provider readiness with safe diagnostics
 
-### Story 3.5: Validate provider readiness with safe diagnostics and stable reason codes
-
-As a platform engineer or tenant administrator,
-I want to validate that a tenant's provider binding is ready for the canonical lifecycle via `ValidateProviderReadiness`, receiving a stable reason code, retryability hint, remediation category, and correlation ID — and seeing the result projected in `ProviderReadinessProjection`,
-So that I can correct provider configuration before any agent task fails halfway through repository creation or commit.
+As a platform engineer,
+I want to validate provider readiness before repository-backed creation or binding,
+So that configuration failures are caught before workspace tasks begin.
 
 **Acceptance Criteria:**
 
-**Given** a tenant `OrganizationAggregate` with a configured provider binding from Story 3.1
-**When** `ValidateProviderReadiness` is submitted with the binding identifier and an `Idempotency-Key`
-**Then** `OrganizationAggregate.Handle(ValidateProviderReadiness, OrganizationState, CommandEnvelope)` invokes the configured provider's `ValidateReadinessAsync` (Octokit for GitHub or typed HttpClient for Forgejo) via a process-manager worker; the worker submits a follow-up `ProviderReadinessValidated` or `ProviderReadinessFailed` command using the original correlation/causation IDs
-**And** the resulting event includes a stable reason code from the catalog: `missing_credential_reference`, `credential_invalid`, `insufficient_permissions`, `provider_unavailable`, `unsupported_capability`, `invalid_branch_policy`, `repository_naming_policy_invalid`, `repository_conflict`, `rate_limited`, `unknown_outcome`
-**And** the response includes `retryable` (boolean), `clientAction` (one of `wait_and_retry`, `change_input`, `request_authorization`, `escalate`), `remediationCategory`, `providerReference`, `correlationId`, `timestamp` — never any credential material or token
+**Given** a tenant has provider binding metadata
+**When** readiness validation runs
+**Then** the result includes ready/failed state, safe reason code, retryability, remediation category, provider reference, and correlation ID
+**And** secrets and credential values are not included.
 
-**Given** the readiness event is projected
-**When** `GET /api/v1/provider-readiness?bindingId={id}` is called
-**Then** `ProviderReadinessProjection` returns the latest readiness state per binding (`ready`, `failed`, `unknown`, `revalidating`), reason code, retryability, last-validation timestamp, and last-failure timestamp
-**And** an idempotency-replayed validation with the same key returns the same readiness result when provider evidence is unchanged; if provider evidence has changed, a fresh validation is performed and the new result replaces the old projection
-**And** sentinel-redaction tests assert no credential material leaks into the readiness diagnostics, audit records, or error responses (FR17)
-
-### Story 3.6: Create repository-backed folder and bind existing repository
+### Story 3.6: Create a new repository-backed folder
 
 As an authorized actor,
-I want to either create a new Git-backed repository for an existing folder via `CreateRepositoryBackedFolder` (or extend `CreateFolder` from Story 2.3) or bind a folder to an existing repository via `BindRepository`, gated by a green provider-readiness check,
-So that the folder transitions from `requested` to `preparing` to `ready` in the C6 workspace state machine and subsequent workspace tasks have a real Git target to operate on.
+I want to create a new provider repository for an existing logical folder after readiness passes,
+So that a tenant folder can become repository-backed through a controlled provisioning path.
 
 **Acceptance Criteria:**
 
-**Given** an existing folder from Story 2.3, a configured provider binding from Story 3.1, and a `ProviderReadinessProjection` showing `ready` for that binding from Story 3.5
-**When** `CreateRepositoryBackedFolder` is submitted (either as a one-shot command or as `CreateFolder` + provider arguments) with an `Idempotency-Key` and `X-Hexalith-Task-Id`
-**Then** `FolderAggregate.Handle(CreateRepositoryBackedFolder, FolderState, CommandEnvelope)` returns `DomainResult.Success` with `FolderGitRepositoryRequested` event including the providerKind, bindingId, requested repository name, and default branch policy reference
-**And** the folder transitions from `requested` to `preparing` per the C6 transition matrix; `RepositoryProvisioningWorkflow` in `Hexalith.Folders.Workers` reacts and calls the provider's `CreateOrBindRepositoryAsync` via the provider port
-**And** on success, the worker submits `MarkRepositoryBound` which produces `RepositoryBound` event; folder transitions to `ready`
-**And** on known failure, the worker submits `MarkRepositoryBindingFailed` with categorized reason; folder transitions to `failed`
-**And** on unknown outcome, the worker submits `MarkProviderOutcomeUnknown`; folder transitions to `unknown_provider_outcome`; reconciler is scheduled per AR-PROVIDER-05 (no silent retry)
+**Given** a logical folder exists and provider readiness is green
+**When** `CreateRepositoryBackedFolder` is accepted
+**Then** repository provisioning is requested idempotently and folder state moves toward ready according to C6
+**And** repository creation failures use stable provider and repository error categories.
 
-**Given** an authorized actor wants to bind to an existing repository
-**When** `BindRepository` is submitted with the existing-repository identifier
-**Then** equivalent state transitions happen via `BindRepositoryRequested` → provider's `CreateOrBindRepositoryAsync` (in bind mode) → `RepositoryBound` or failure
-**And** the system rejects duplicate bindings (same provider + same repository identifier already bound) with `repository_conflict`
-**And** the system rejects cross-tenant bindings (a folder in tenant A cannot bind a repository already bound by tenant B) with `tenant_access_denied` using safe error shape
-**And** an Idempotency-Key replay with the same payload returns the same result; same key + different payload returns `idempotency_conflict`
+### Story 3.7: Bind an existing repository to a folder
 
-### Story 3.7: Define branch/ref policy for repository-backed folder tasks
-
-As an authorized actor (tenant administrator or platform engineer),
-I want to define the branch/ref policy used by repository-backed folder tasks via `DefineBranchRefPolicy` (organization-scoped default + per-folder override),
-So that workspace preparation, file operations, and commits in Epic 4 always target a deterministic, policy-compliant branch.
+As an authorized actor,
+I want to bind an existing provider repository to an existing logical folder,
+So that pre-created repositories can participate in the canonical lifecycle without sharing repository-creation failure paths.
 
 **Acceptance Criteria:**
 
-**Given** an `OrganizationAggregate` with an active provider binding
-**When** `DefineBranchRefPolicy` is submitted with `policyKind` (e.g., `protected-default-branch`, `feature-branch-per-task`, `main-only`), default branch name, allowed ref-name patterns, and force-push posture (always disallowed in MVP for protected branches)
-**Then** `OrganizationAggregate.Handle(DefineBranchRefPolicy, OrganizationState, CommandEnvelope)` returns `DomainResult.Success` with `BranchRefPolicyConfigured` event
-**And** subsequent `ValidateProviderReadiness` (Story 3.5) re-runs and incorporates the branch/ref policy into the readiness evaluation; an invalid policy produces `invalid_branch_policy` reason code
-**And** a per-folder override can be applied via `DefineFolderBranchRefPolicy` on `FolderAggregate`; precedence is folder override > organization default
+**Given** a logical folder exists and provider readiness is green
+**When** `BindRepository` validates repository access and branch/ref compatibility
+**Then** binding metadata is recorded and projected
+**And** repository access failures do not expose unauthorized repository existence.
 
-**Given** a branch/ref policy is configured
-**When** any subsequent workspace-preparation or commit operation runs (Epic 4)
-**Then** the policy is consulted to derive the target branch/ref; operations targeting branches outside the policy are rejected with `branch_ref_policy_denied`
-**And** the policy is exposed in folder/binding metadata responses (Story 3.1) without revealing token material
-**And** sentinel tests verify branch names treated as `tenant-sensitive` per S-6 are redacted in cross-tenant operator views
+### Story 3.8: Define branch and ref policy
 
-### Story 3.8: Inspect tenant readiness and per-provider readiness evidence
-
-As a platform engineer or tenant administrator,
-I want to inspect whether a tenant is ready to run repository-backed workspace tasks via `GET /api/v1/tenants/{tenantId}/readiness` (FR7) and `GET /api/v1/provider-readiness?providerKind={kind}` (FR23),
-So that I get a single answer to "can my agents do real work today?" backed by readiness projection + provider contract test evidence.
+As an authorized actor,
+I want to define or select branch/ref policy for repository-backed tasks,
+So that workspace preparation and commits use predictable refs.
 
 **Acceptance Criteria:**
 
-**Given** an actor with `tenant:read-readiness` permission on a tenant with at least one configured provider binding
-**When** `GET /api/v1/tenants/{tenantId}/readiness` is called
-**Then** the response aggregates `ProviderReadinessProjection` rows for every binding the tenant has configured and returns `tenantReadiness` (`ready` if all bindings ready; `partial` if some ready and some failed; `failed` if no bindings ready; `unknown` if any are revalidating)
-**And** each per-binding entry includes providerKind, bindingId, lastValidationTimestamp, reason code if not ready, retryability, and remediation category
-**And** the response sets `X-Hexalith-Freshness` and uses `eventually-consistent` semantics
+**Given** a repository-backed folder exists
+**When** branch/ref policy is configured
+**Then** the selected policy is stored as metadata and validated against provider capabilities
+**And** incompatible policies return stable branch/ref conflict errors.
 
-**Given** the live-nightly-drift contract test suite from Story 3.4 produces evidence about provider behavior
-**When** `GET /api/v1/provider-readiness?providerKind=github|forgejo` is called by a platform engineer with `platform:read-provider-evidence` permission
-**Then** the response returns the latest contract-suite outcome for that provider: pass/fail per capability area (readiness, repository binding, branch/ref handling, file operations, commit, status, failure behavior), last-run timestamp, and any active drift annotations
-**And** the response excludes any tenant-specific data; this is platform-level evidence about the provider itself
-**And** failed contract entries include the safe failure category and the affected capability area without exposing internal stack traces or secrets
+### Story 3.9: Inspect tenant and per-provider readiness evidence
 
-## Epic 4: Repository-Backed Task Lifecycle (Workspace → Lock → Files → Commit)
+As a platform engineer,
+I want to inspect tenant and provider readiness evidence,
+So that I can diagnose provider setup before agents run workspace tasks.
 
-Developers and AI agents can complete the canonical repository-backed task lifecycle: prepare a workspace from a `ready` folder, acquire a task-scoped exclusive lock, add/change/remove files (with workspace-root confinement, path canonicalization, traversal rejection, symlink policy, binary/large-file policy, encoding/Unicode normalization, case-collision handling), query file context via tree/search/glob/bounded range reads, commit Git-backed changes idempotently, and inspect stable terminal or intermediate state on interruption. The lifecycle honors the C6 11-state transition matrix, two-tier idempotency TTLs (`mutation = 24h`; `commit = retention-period(C3)`), single-active-writer locks per tenant/folder/workspace scope, working-copy ephemerality (D-8), `unknown_provider_outcome → reconciliation_required` (no silent retry per AR-PROVIDER-05), the canonical error taxonomy (FR43–FR46), bounded MVP input limits (NFR25), and metadata-only audit + redaction (FR55 write-side).
+**Acceptance Criteria:**
+
+**Given** provider bindings and capability results exist
+**When** readiness evidence is requested
+**Then** provider support evidence for GitHub and Forgejo is returned as safe metadata
+**And** credential material, tokens, and secret diagnostics are excluded.
+
+## Epic 4: Repository-Backed Workspace Task Lifecycle
+
+Developers and AI agents can prepare workspaces, acquire locks, mutate files safely, query bounded context, commit changes, and receive deterministic failure, status, idempotency, and redaction behavior through the canonical repository-backed task lifecycle.
 
 ### Story 4.1: Implement Folder aggregate state machine with C6 transition matrix
 
-As a platform engineer,
-I want `FolderStateTransitions.cs` implementing the C6 11-state transition matrix (every `(currentState, eventType)` → `DomainResult` outcome including reconciliation paths) and `FolderAggregate.Apply` methods for every event family, plus the C6 transition-matrix coverage CI gate,
-So that the workspace state machine is canonical and any unlisted `(state, event)` pair rejects with `state_transition_invalid` rather than allowing undefined transitions to leak into projections and audit.
+As a domain developer,
+I want the Folder aggregate to implement the C6 transition matrix,
+So that every lifecycle command produces a defined transition or explicit rejection.
 
 **Acceptance Criteria:**
 
-**Given** the C6 enumerated matrix from `docs/architecture/workspace-state-transition-matrix.md` (Story 1.4)
-**When** `FolderStateTransitions.cs` is implemented in `src/Hexalith.Folders/Aggregates/Folder/`
-**Then** the file is a switch expression over `(currentState, eventType)` returning `DomainResult` (`Success(events)`, `Rejection(reason)`, or `NoOp`) covering all documented transitions: `(none) → requested`, `requested → preparing`, `requested → failed`, `requested → unknown_provider_outcome`, `preparing → ready`, `preparing → failed`, `preparing → unknown_provider_outcome`, `ready → locked`, `ready → inaccessible`, `ready → reconciliation_required`, `locked → changes_staged`, `locked → ready`, `locked → dirty`, `locked → inaccessible`, `changes_staged → changes_staged`, `changes_staged → committed`, `changes_staged → failed`, `changes_staged → unknown_provider_outcome`, `changes_staged → dirty`, `committed → ready`, `dirty → reconciliation_required`, `failed → reconciliation_required`, `failed → ready`, `inaccessible → ready`, `unknown_provider_outcome → ready`, `unknown_provider_outcome → committed`, `unknown_provider_outcome → failed`, `unknown_provider_outcome → reconciliation_required`, `reconciliation_required → ready`, `reconciliation_required → committed`, `reconciliation_required → failed`
-**And** any `(state, event)` pair not enumerated returns `Rejection(state_transition_invalid)`; idempotency record per AR-IDEMP-01 captures the rejection inspectably
-**And** `FolderState.Apply` methods exist for every event in the architecture's event vocabulary; replaying any ordered event stream produces equivalent state (read-model determinism, NFR50)
-
-**Given** the matrix-coverage CI gate from Story 1.9
-**When** the aggregate-test suite runs
-**Then** for every state in the catalog and every event type, at least one xUnit test asserts the documented outcome (positive transition OR explicit rejection with `state_transition_invalid`)
-**And** CI fails if a new state or event is added without corresponding test coverage
-**And** `FolderAggregate` handlers are pure: no Dapr/HTTP/file/secret/DB calls; time read from `envelope.Timestamp`; randomness derived from `causationId` per AR-DOMAIN-03
+**Given** the C6 matrix is documented
+**When** folder commands are handled
+**Then** valid transitions emit metadata-only events and invalid transitions reject with `state_transition_invalid`
+**And** aggregate tests cover every state/event pair.
 
 ### Story 4.2: Prepare workspace from a ready repository-backed folder
 
-As an authorized actor with a task in flight,
-I want to prepare a workspace via `PrepareWorkspace` against a folder in `ready` state with a bound repository,
-So that the working copy is materialized inside the per-AppHost ephemeral root and the folder transitions to `preparing` then back to `ready` (or to `failed` / `unknown_provider_outcome` per C6) ready to receive a task lock.
+As a developer or AI agent,
+I want to prepare a workspace from a ready repository-backed folder,
+So that file work starts from a known provider and branch/ref state.
 
 **Acceptance Criteria:**
 
-**Given** a folder in `ready` state with `RepositoryBound` event applied (from Story 3.6) and an actor with `workspace:prepare` permission
-**When** `PrepareWorkspace` is submitted with `Idempotency-Key`, `X-Correlation-Id`, `X-Hexalith-Task-Id`, and the target branch/ref derived from the policy in Story 3.7
-**Then** `FolderAggregate.Handle(PrepareWorkspace, FolderState, CommandEnvelope)` returns `DomainResult.Success` with `WorkspacePreparationRequested` event; folder transitions `ready → preparing`
-**And** `WorkspacePreparationWorkflow` in `Hexalith.Folders.Workers` reacts: `WorkingCopyManager` materializes the working copy at `/var/lib/hexalith-folders/work/{tenantId}/{folderId}/{taskId}` (D-8); on success, the worker submits `MarkWorkspacePrepared` producing `WorkspacePrepared` event; folder transitions `preparing → ready`
-**And** on known failure, worker submits `MarkWorkspacePreparationFailed`; folder transitions to `failed` with categorized reason
-**And** on unknown outcome, worker submits `MarkProviderOutcomeUnknown`; folder transitions to `unknown_provider_outcome`; reconciler scheduled — never silent retry
+**Given** provider readiness, repository binding, branch/ref policy, and task context are valid
+**When** `PrepareWorkspace` is accepted
+**Then** workspace preparation starts idempotently and exposes status visibility
+**And** unknown provider outcome enters reconciliation rather than silent retry.
 
-**Given** an Idempotency-Key replay
-**When** equivalent `PrepareWorkspace` is submitted with the same key
-**Then** the same logical result is returned (existing workspace, not re-prepared); same key + different payload returns `idempotency_conflict`
-**And** the working-copy directory is treated as an "acceptably lost on restart" cache per concern #21; restart rebuilds it from events + provider on next preparation
-**And** REST returns `202 Accepted` with `correlationId` and a status-poll URL; command-acknowledge p95 < 1 second per NFR21
-**And** sentinel-redaction tests assert no working-copy paths or repository URLs with embedded credentials leak into events, projections, logs, traces, audit records, or error responses
+### Story 4.3: Acquire task-scoped workspace lock
 
-### Story 4.3: Acquire task-scoped workspace lock with deterministic single-active-writer enforcement
-
-As an authorized actor,
-I want to acquire a task-scoped workspace lock via `LockWorkspace` with deterministic conflict response when another task holds the lock, lease-renewal interval and auth-revalidation interval per C7,
-So that mutating commands and commits run with a single active writer per tenant/folder/workspace scope and lock contention never produces mixed writes or overlapping commits.
+As a developer or AI agent,
+I want to acquire a task-scoped workspace lock,
+So that concurrent work cannot create mixed writes or lost updates.
 
 **Acceptance Criteria:**
 
-**Given** a folder in `ready` state with a prepared workspace, an actor with `workspace:lock` permission, and no current lock holder
-**When** `LockWorkspace` is submitted with `Idempotency-Key`, `X-Hexalith-Task-Id`, requested lease seconds (within policy bounds), and `X-Correlation-Id`
-**Then** `FolderAggregate.Handle(LockWorkspace, FolderState, CommandEnvelope)` returns `DomainResult.Success` with `WorkspaceLocked` event capturing `taskId`, `leaseUntilUtc = envelope.Timestamp + leaseSeconds`, `actor`, `correlationId`
-**And** folder transitions `ready → locked`; lock state, owner, age, expiry, and retry eligibility are exposed via the workspace-status query (Story 4.7)
-**And** auth-revalidation is scheduled per the C7 two-number contract; the lease-renewal interval and auth-revalidation interval default per architecture and are tunable per tenant
-
-**Given** another task already holds the lock
-**When** a competing `LockWorkspace` is submitted by a different task
-**Then** the response returns `workspace_locked` (CLI exit 67; MCP failure-kind `workspace_locked`) with safe metadata: lock state, lock owner taskId (if authorized), lock age, retry-eligibility window
-**And** the denial is deterministic across REST/CLI/MCP/SDK per the C13 parity oracle
-**And** an Idempotency-Key replay of the original lock with equivalent payload returns the same lock result; lock is reentrant for the same taskId; conflicting attempts return deterministic lock-conflict error
-
-**Given** a tenant-access revocation arrives mid-task per AR-AUTHZ-04
-**When** auth-revalidation runs on the held lock within the freshness budget (C7)
-**Then** the lock state visibly transitions to `inaccessible` per C6; subsequent mutating commands from the original task receive `tenant_access_denied`
-**And** the revalidation behavior is asserted by an integration test simulating Tenants disabling the tenant mid-task
+**Given** a workspace is ready and no conflicting lock exists
+**When** `AcquireWorkspaceLock` is accepted
+**Then** folder state transitions `ready` to `locked`
+**And** `FolderState` and emitted event metadata capture owner, age/expiry basis, and retry-eligibility metadata for later projections.
 
 ### Story 4.4: Inspect lock state and release the workspace lock
 
 As an authorized actor,
-I want to inspect lock metadata via `GET /api/v1/folders/{folderId}/workspace/lock` (FR26) and release the lock via `ReleaseWorkspaceLock` (FR29) when ownership and policy allow,
-So that operators and tasks can answer "who owns this lock, when does it expire, can I acquire it?" and clean release returns the folder to `ready`.
+I want to inspect and release a workspace lock when policy allows,
+So that completed or abandoned task ownership is visible and controlled.
 
 **Acceptance Criteria:**
 
-**Given** an actor with `workspace:read-status` on a folder
-**When** `GET /api/v1/folders/{folderId}/workspace/lock` is called
-**Then** the response returns lock state (`held`, `released`, `expired`, `stale`, `abandoned`, `interrupted`), owner taskId (only if the caller is the owner or has `workspace:read-lock-owner` privilege), lease-until timestamp, lock age, and retry-eligibility window — or a 404-shaped response if no lock exists, with safe error shape preventing existence enumeration
-**And** the C6-defined lock states (`active`, `expired`, `stale`, `abandoned`, `interrupted`, `released`) are surfaced through observable transitions (FR28); each transition emits a metadata-only audit record
+**Given** a lock exists
+**When** lock state is inspected or release is requested
+**Then** permitted lock metadata is returned and valid release changes state according to C6
+**And** if mutations have been applied, release is rejected because the state model requires commit before clean release or expiry to dirty.
 
-**Given** the lock holder requests release
-**When** `ReleaseWorkspaceLock` is submitted with the matching `X-Hexalith-Task-Id` and an `Idempotency-Key`
-**Then** if no mutations have been applied (no `FileMutated` events since lock), `FolderAggregate` produces `WorkspaceLockReleased`; folder transitions `locked → ready`
-**And** if mutations have been applied (folder is in `changes_staged`), release is rejected with `state_transition_invalid` — the actor must commit (Story 4.10) or accept that lock-lease expiry will move the folder to `dirty`
-**And** a non-holder attempting release receives `tenant_access_denied` with safe error shape; lock ownership is not leaked
-
-### Story 4.5: Add, change, and remove files with workspace-root confinement and path policy enforcement
+### Story 4.5: Enforce workspace path policy before file mutations
 
 As a developer or AI agent holding the workspace lock,
-I want to add, change, and remove files via `AddFile` / `ChangeFile` / `RemoveFile` (REST `PutFileInline` ≤256KB or `PutFileStream` multipart per D-9), with workspace-root confinement, path canonicalization, traversal rejection, symlink policy, binary/large-file policy, encoding/Unicode normalization, and case-collision handling enforced before any provider write,
-So that file operations are deterministic, secure, and bounded — never escaping the workspace, never duplicating events on retry, and never leaking file contents into events or audit.
+I want every file path normalized and validated before mutation,
+So that no file operation can escape the workspace or create ambiguous provider-specific paths.
 
 **Acceptance Criteria:**
 
-**Given** a folder in `locked` or `changes_staged` state with a held lock and an actor whose taskId matches the lock owner
-**When** `AddFile` is submitted with workspace-root-relative path, content (inline JSON for ≤256KB or multipart octet-stream for larger), `Idempotency-Key`, `X-Hexalith-Task-Id`, and `X-Correlation-Id`
-**Then** `FolderAggregate.Handle(AddFile, FolderState, CommandEnvelope)` validates the path: workspace-root confinement (no escape via `../`, absolute paths, or mixed separators); canonical NFC-normalized Unicode form; traversal rejection (per cross-cutting concern #7); symlink policy (rejected by default); binary/large-file policy per architecture decisions; reserved-name handling; case-collision detection
-**And** path-validation failure returns `path_policy_denied` (CLI exit 69; MCP failure-kind `validation_error`) with safe error shape — never echoing the offending path to error responses if it could leak intent
-**And** on success, the aggregate emits `FileMutated` event with metadata only: path (sensitivity-classified), `contentHash`, `byteLength`, `mediaType`, `operationId`, `taskId`, `correlationId`, `actor`, `timestamp` — never file contents
-**And** folder transitions `locked → changes_staged` (first mutation) or `changes_staged → changes_staged` (subsequent); lease is renewed per C7
+**Given** a file mutation command is submitted
+**When** path validation runs
+**Then** traversal, absolute paths, mixed separators, reserved names, symlink escapes, Unicode ambiguity, and case collisions are rejected
+**And** denials use `path_policy_denied` without unsafe path echoing.
 
-**Given** an actor without the lock attempts file mutation
-**When** any `AddFile` / `ChangeFile` / `RemoveFile` is submitted
-**Then** the request is rejected with `workspace_locked` if held by another task, or `state_transition_invalid` if folder state forbids mutation (e.g., `archived`, `failed`, `inaccessible`)
-**And** an Idempotency-Key replay of the same logical mutation returns the same result; same key + different payload returns `idempotency_conflict`
-**And** path-security tests covering traversal (`../`, `..\\`, encoded `%2e%2e`), absolute paths, mixed separators, encoded traversal, reserved names (Windows reserved like `CON`, `PRN`, `NUL`; Unix special), Unicode normalization (NFC vs NFD), symlinks, and case-sensitivity collisions all return `path_policy_denied` and never reach the provider
+### Story 4.6: Add and change files with inline and streamed content transport
 
-**Given** the file-content transport is bimodal (D-9)
-**When** the inline endpoint receives a payload >256KB
-**Then** the server returns `413 Payload Too Large` with `X-Hexalith-Retry-As: stream` header; the SDK's `UploadFileAsync` convenience helper auto-retries via `PutFileStreamAsync`
-**And** sentinel-redaction tests confirm file contents never appear in events, projections, logs, traces, metrics labels, audit records, or error responses; the corpus iterates over content-hash and byte-length references only
-**And** changes are persisted to the working copy by `WorkspaceWorkflows.WorkingCopyManager` only after the aggregate event is persisted; the working copy never holds authoritative state
-
-### Story 4.6: Query file context (tree, metadata, search, glob, bounded range reads) with policy boundaries
-
-As a developer or AI agent (whether or not holding the lock),
-I want to request file context via tree, metadata, search, glob, and bounded range reads with policy boundaries (permitted paths, excluded paths, binary handling, range/result limits, secret-safe responses) and tenant + folder ACL + path policy authorization running before any query execution,
-So that AI agents can ground responses in real file context without unbounded workspace scans, secret leakage, or cross-tenant exposure.
+As a developer or AI agent holding the workspace lock,
+I want to add or change files through bounded inline and streamed transports,
+So that writes are deterministic, retry-safe, and aligned with D-9.
 
 **Acceptance Criteria:**
 
-**Given** an actor with `folder:read-context` permission and a workspace in any non-`requested`/`preparing`/`inaccessible` state
-**When** `GET /api/v1/folders/{folderId}/tree` / `/files/{path}/metadata` / `/search` / `/glob` / `/files/{path}/range?offset={o}&length={l}` is called with the bounded MVP input limits from C4
-**Then** `AuthorizationOrder` runs per cross-cutting concern #18: JWT validation → tenant claim validation → local tenant-access projection check (fail-closed-on-stale) → folder ACL check → path policy check (include/exclude/binary/large-file/range/result-limit) — and only THEN executes the query
-**And** the response respects the C4 limits encoded in the OpenAPI `maxItems`, `maxLength`, `maxBytes`, `maxResultCount`; truncated responses set `truncated: true` and `truncationReason`
-**And** the response is `eventually-consistent` per Story 1.5 read-consistency; `X-Hexalith-Freshness` header reports projection age; query p95 < 2 seconds for bounded MVP inputs (NFR23)
+**Given** path policy passes and the caller owns the lock
+**When** add or change is submitted through inline or multipart transport
+**Then** size, binary, and media limits are enforced before provider writes
+**And** events record content hash, byte length, media type, task, operation, and correlation metadata without file contents.
 
-**Given** sensitive content patterns
-**When** the result-shaping pipeline runs
-**Then** sentinel-secret tests over `audit-leakage-corpus.json` iterate the search and glob results and the partial-read responses; CI fails on any sentinel match
-**And** binary files are handled per policy (excluded by default; opted-in via explicit query parameter only when ACL permits)
-**And** denied context queries (insufficient ACL, excluded path, range exceeded) produce metadata-only audit evidence with `actor`, `tenant`, `folderId`, `query type`, `policy reason`, `correlationId`, `timestamp`, and safe error category — never echoing the disallowed path content
-**And** a cross-tenant negative test confirms tenant B cannot enumerate or read files in tenant A's folder; denial happens before any query executes
+### Story 4.7: Remove files with metadata-only events and provider-safe ordering
 
-### Story 4.7: Inspect workspace, lock, dirty state, last commit, failed operation, and projection currency
-
-As any authorized actor (developer, operator, audit reviewer),
-I want to inspect workspace status via `GET /api/v1/folders/{folderId}/workspace/status` returning canonical state (`ready`, `locked`, `dirty`, `committed`, `failed`, `inaccessible`, plus lifecycle states per C6) plus lock metadata, dirty-state evidence, last commit reference, last failed operation, and projection currency (FR31 / FR45 / FR52),
-So that callers and operators always have a single trustworthy answer to "what is this workspace doing right now?"
+As a developer or AI agent holding the workspace lock,
+I want to remove files through the same policy pipeline as writes,
+So that deletes are auditable, idempotent, and cannot bypass workspace or tenant boundaries.
 
 **Acceptance Criteria:**
 
-**Given** an actor with `workspace:read-status` permission
-**When** `GET /api/v1/folders/{folderId}/workspace/status` is called
-**Then** the response returns the current canonical workspace state from the C6 catalog (`ready`, `locked`, `dirty`, `committed`, `failed`, `inaccessible`) with operator-disposition label per F-4 (`auto-recovering` / `awaiting-human` / `terminal-until-intervention` / `degraded-but-serving`)
-**And** the response includes lock metadata (state, owner if authorized, age, expiry, retry eligibility), dirty-state indicator + changed-path metadata count if applicable, last commit reference (commit SHA + timestamp + author identity classified per S-6), last failed operation (category + reason + retryability), and projection currency (`X-Hexalith-Freshness`, projection lag if degraded)
-**And** status query p95 < 500 ms for bounded MVP inputs per NFR22
+**Given** a delete request targets a permitted workspace-relative path
+**When** `RemoveFile` is accepted
+**Then** the provider-safe delete operation is ordered with the task changes
+**And** emitted events remain metadata-only and idempotent.
 
-**Given** projections are stale beyond the C2 freshness target
-**When** the status query is executed
-**Then** the response sets `X-Hexalith-Freshness` to a value indicating staleness; operator-disposition label may be `degraded-but-serving`
-**And** `accepted-but-not-yet-projected` commands are distinguished from projected state; the response indicates whether a recently-submitted command's effect has been projected
-**And** sentinel-redaction tests confirm no provider tokens, file contents, or secrets leak into the status response
+### Story 4.8: Query file context with policy boundaries
 
-### Story 4.8: Surface workspace cleanup status without repair automation
-
-As an operator,
-I want to inspect workspace cleanup status (FR30) for completed, failed, interrupted, or abandoned task lifecycles via `GET /api/v1/folders/{folderId}/workspace/cleanup`,
-So that I have visibility into whether a workspace's working copy has been cleaned, is pending cleanup, or has cleanup-failure evidence — without expecting MVP repair automation.
+As a developer or AI agent,
+I want file tree, metadata, search, glob, and bounded range-read queries,
+So that task context is useful without unbounded scans or secret exposure.
 
 **Acceptance Criteria:**
 
-**Given** a folder where a task has completed, failed, been interrupted, or abandoned
-**When** `GET /api/v1/folders/{folderId}/workspace/cleanup` is called by an operator with `workspace:read-cleanup` permission
-**Then** the response returns the cleanup state per task: `cleaned`, `cleanup_pending`, `cleanup_failed`, `cleanup_skipped`, or `not_applicable`
-**And** for `cleanup_failed`, the response includes a stable reason code, retryability, last-attempt timestamp, and correlation ID — never any working-copy filesystem paths beyond classified metadata
-**And** cleanup failures appear as operational signals per NFR52; observable through status, reason code, retryability, timestamp, and correlation ID
+**Given** the actor has context-query permission
+**When** a context query runs
+**Then** tenant, folder ACL, path policy, binary/large-file policy, and range/result limits are enforced before execution
+**And** denied queries produce metadata-only audit evidence.
 
-**Given** the MVP non-goal "no repair automation"
-**When** an operator inspects cleanup state
-**Then** no mutation path is offered to retry cleanup, discard, rebuild, or release stale locks; the response is read-only diagnostic
-**And** subsequent post-MVP repair workflows are explicitly out of scope for this story; an architecture note in the response documentation cross-references the post-MVP roadmap
-**And** the cleanup workflow `WorkspaceCleanupWorkflow` in `Hexalith.Folders.Workers` runs deterministically on completion/failure events; its outcome populates this projection but does not retry on its own
+### Story 4.9: Inspect workspace and projection currency
 
-### Story 4.9: Propagate idempotency keys, correlation, task IDs end-to-end with two-tier TTL and replay semantics
-
-As any caller,
-I want every mutating command on the canonical lifecycle (PrepareWorkspace, LockWorkspace, ReleaseWorkspaceLock, AddFile, ChangeFile, RemoveFile, CommitWorkspace) to require an `Idempotency-Key`, propagate `X-Correlation-Id` and `X-Hexalith-Task-Id` end-to-end (REST → SDK → EventStore envelope → projection → audit), and respect two-tier idempotency TTL (`mutation = 24h`; `commit = retention-period(C3)`) with deterministic replay semantics,
-So that retries on transient failures, network glitches, or unknown provider outcomes never duplicate domain events, provider writes, file changes, repositories, or commits.
+As an authorized actor,
+I want to inspect workspace, lock, dirty state, last commit, failed operation, and projection currency,
+So that callers and operators have one trustworthy status answer.
 
 **Acceptance Criteria:**
 
-**Given** any mutating command on the canonical lifecycle
-**When** the command is submitted without an `Idempotency-Key`
-**Then** the request is rejected at the middleware layer with `validation_error` (CLI exit 69; MCP failure-kind `validation_error`); no aggregate handler is invoked
-**And** when submitted with an `Idempotency-Key` (≤128 chars, opaque), the server canonicalizes the payload using the NSwag-generated `ComputeIdempotencyHash()` from Story 1.7 over the lexicographically ordered fields declared in `x-hexalith-idempotency-equivalence`
-**And** the canonicalized hash + key combination is stored in `IdempotencyRecordStore` (Dapr state) with TTL per D-7: `mutation = 24h` for prepare/lock/file/cleanup, `commit = retention-period(C3)` for commit operations
+**Given** lifecycle events have been emitted
+**When** workspace status is requested
+**Then** canonical state, lock metadata, dirty evidence, last commit, last failure, and freshness metadata are returned
+**And** stale or unavailable read-model state is classified explicitly.
 
-**Given** an Idempotency-Key replay
-**When** the same key is submitted with equivalent payload (same hash)
-**Then** the original logical result is returned without re-invoking the aggregate handler or the provider
-**And** when the same key is submitted with a different payload (different hash), the response is `idempotency_conflict` (CLI exit 68; MCP failure-kind `idempotency_conflict`)
-**And** correlation and task IDs propagate via headers (`X-Correlation-Id`, `X-Hexalith-Task-Id`) and through the EventStore envelope's `correlationId` and `causationId`; an integration test asserts the chain end-to-end through REST → SDK → EventStore → projection → audit projection
+### Story 4.10: Surface workspace cleanup status without repair automation
 
-**Given** the encoding-equivalence corpus from Story 1.3
-**When** the idempotency hash is computed for variant inputs
-**Then** NFC/NFD/NFKC/NFKD/zero-width-joiner/ULID-case variants of the same logical key all produce the same hash; the encoding-equivalence CI gate from Story 1.9 enforces this
-**And** an isolation test confirms that the same Idempotency-Key submitted by tenant A and tenant B produce independent records (cache key is `{tenantId}:idempotency:{key}` per C10 cache-key tenant-prefix invariant)
-
-### Story 4.10: Commit workspace changes with task/correlation metadata and unknown-outcome reconciliation
-
-As an authorized actor with the workspace lock and `changes_staged`,
-I want to commit workspace changes via `CommitWorkspace` with task, operation, correlation, actor, author, branch/ref, commit message, and changed-path metadata attached, exposing the resulting commit SHA + timestamps and entering `committed` state on success — entering `unknown_provider_outcome` on ambiguous provider response (no silent retry) and `failed` on categorized failure,
-So that the canonical task lifecycle terminates in observable state with full evidence for audit reconstruction.
+As an operator or developer,
+I want cleanup status visible after completed, failed, interrupted, or abandoned tasks,
+So that working-copy state is understandable without MVP repair controls.
 
 **Acceptance Criteria:**
 
-**Given** a folder in `changes_staged` with the lock held by the calling task
-**When** `CommitWorkspace` is submitted with `Idempotency-Key`, `X-Hexalith-Task-Id`, `X-Correlation-Id`, branch/ref (validated against policy from Story 3.7), commit message, and author identity
-**Then** `FolderAggregate.Handle(CommitWorkspace, FolderState, CommandEnvelope)` returns `DomainResult.Success` with `CommitRequested` event including all metadata; folder remains in `changes_staged` while the commit is in flight
-**And** `CommitWorkflow` in `Hexalith.Folders.Workers` reacts; the worker calls the provider's `CommitAsync` via the provider port (Octokit for GitHub, typed HttpClient for Forgejo); on success, the worker submits `MarkCommitSucceeded` producing `CommitSucceeded` event with commit SHA, provider reference, changed-path metadata; folder transitions `changes_staged → committed`
-**And** the lease release is scheduled; folder eventually transitions `committed → ready` via `WorkspaceLockReleased` per C6
+**Given** a task lifecycle has cleanup implications
+**When** cleanup status is queried
+**Then** pending, succeeded, failed, or status-only cleanup state is visible with reason, retryability, timestamp, and correlation ID
+**And** no repair, discard, or hidden mutation action is exposed.
 
-**Given** a known provider failure (timeout / 4xx / 5xx / branch-protection / etc.)
-**When** the worker classifies the failure
-**Then** `MarkCommitFailed` is submitted; folder transitions `changes_staged → failed` with categorized reason; audit record captures the failure category, retryability, and provider reference
-**And** on unknown outcome (provider call did not confirm), `MarkProviderOutcomeUnknown` is submitted; folder transitions `changes_staged → unknown_provider_outcome`; reconciler is scheduled per AR-PROVIDER-05 — never silent retry
+### Story 4.11: Propagate idempotency keys, correlation, and task IDs
 
-**Given** an idempotent replay of the same commit
-**When** equivalent `CommitWorkspace` is submitted with the same key
-**Then** if the original commit succeeded, the same commit SHA is returned
-**And** if the original commit is in `unknown_provider_outcome`, the reconciler runs `RepositoryReconciler.GetProviderStatusAsync` to determine whether the commit landed upstream; on confirmation, the folder transitions to `committed` (replay returns success) or `failed` (replay returns categorized failure)
-**And** the commit-TTL idempotency record persists for `retention-period(C3)` per D-7 so reconciliation queries against historical commits remain valid
-
-### Story 4.11: Surface canonical error taxonomy, workspace states, and operational evidence after any failure
-
-As any caller (REST / SDK / CLI / MCP),
-I want a canonical error taxonomy across the lifecycle (validation, authentication, tenant denial, folder ACL denial, credential, provider unavailable, unsupported capability, repository conflict, branch/ref conflict, lock conflict, stale workspace, path policy denial, commit failure, read-model unavailable, duplicate operation, transient infrastructure) with the canonical workspace/task states (`ready` / `locked` / `dirty` / `committed` / `failed` / `inaccessible`) per FR45,
-So that final state, retry eligibility, and operational evidence are explainable after any workspace preparation, lock, file operation, commit, provider, or read-model failure (FR46).
+As a caller,
+I want mutating lifecycle commands to require idempotency and propagate correlation and task IDs,
+So that retries never duplicate events, provider writes, file changes, repositories, or commits.
 
 **Acceptance Criteria:**
 
-**Given** the canonical error catalog from the architecture (S-2 through provider failure taxonomy)
-**When** any lifecycle command produces a failure
-**Then** the response uses RFC 9457 `application/problem+json` with required fields: `category` (one of the canonical categories per FR44), `code` (stable string constant), `message`, `correlationId`, `retryable` (boolean), `clientAction` (one of `wait_and_retry`, `change_input`, `request_authorization`, `escalate`), `details`
-**And** the canonical category set covers FR44: `validation_error`, `authentication_failure`, `tenant_access_denied`, `folder_acl_denied`, `cross_tenant_access_denied`, `credential_failure`, `provider_unavailable`, `unsupported_capability`, `repository_conflict`, `branch_ref_conflict`, `workspace_locked`, `stale_workspace`, `path_policy_denied`, `commit_failure`, `read_model_unavailable`, `idempotency_conflict`, `transient_infrastructure_failure`, `provider_outcome_unknown`, `reconciliation_required`, `state_transition_invalid`, `not_found`, `redacted`
+**Given** a mutating lifecycle command is submitted
+**When** idempotency validation runs
+**Then** same key plus equivalent payload returns the same logical result and conflicting payload returns idempotency conflict
+**And** correlation and task IDs propagate to events, projections, audit, logs, and traces.
 
-**Given** a failure occurred during workspace preparation, lock, file operation, commit, provider, or read-model access
-**When** the actor inspects status (Story 4.7) or audit (Story 4.12)
-**Then** the response explains the final state per the C6 matrix, retry eligibility (boolean), retry-after hint when known, the causation chain (event sequence that led to the state), correlation ID, and the categorized reason
-**And** `unknown_provider_outcome` is distinguished from `failed`: the former is "we don't know if it landed" with a reconciliation path; the latter is "we know it did not land" with a reason code
-**And** an integration test asserts the same logical failure produces identical canonical category, code, retryable flag, and clientAction across REST / SDK responses (CLI/MCP parity is asserted in Epic 5)
+### Story 4.12: Commit workspace changes with unknown-outcome reconciliation
 
-### Story 4.12: Emit metadata-only audit and integrate OpenTelemetry observability with structured logging
-
-As an operator or audit reviewer,
-I want every successful, denied, failed, retried, duplicate, lock, file, commit, provider-readiness, and status-transition operation to emit a metadata-only audit record with `tenantId`, `actor`, `taskId`, `operationId`, `correlationId`, `folderId`, `provider`, `repositoryBindingId`, `timestamp`, `result`, `duration`, `state transition`, sanitized error category — and OpenTelemetry traces (correlation/causation/task IDs as span attributes) + structured logs (Microsoft.Extensions.Logging templates) per AR-AUDIT-04..06,
-So that incident reconstruction works from metadata alone without any file contents or secrets leaking into events, logs, traces, metrics, projections, audit records, diagnostics, or console responses (FR55 write-side).
+As a developer or AI agent,
+I want to commit workspace changes with task, actor, author, branch/ref, commit message, changed-path, operation, and correlation metadata,
+So that repository-backed work reaches a clean committed state or an inspectable failure state.
 
 **Acceptance Criteria:**
 
-**Given** any aggregate or worker emits an event or makes a provider call
-**When** the audit pipeline runs
-**Then** an entry is written to `AuditProjection` (D-10) under `Hexalith.Folders.Server` projection endpoints with the metadata-only field set above; sentinel-redaction tests over `audit-leakage-corpus.json` find no leak
-**And** sensitive metadata (paths, branch names, commit messages, repository names) is classified per S-6 / C9 (default `tenant-sensitive`); per-tenant override allows `confidential` (hashed at write time)
-**And** audit records cover allowed and denied operations alike (FR53); denied operations include the policy reason without enumerating disallowed resources
+**Given** changes are staged and the caller owns the lock
+**When** `CommitWorkspace` is accepted
+**Then** successful commit records commit reference and transitions to `committed`
+**And** ambiguous provider response transitions to `unknown_provider_outcome` and schedules reconciliation without silent retry.
 
-**Given** OpenTelemetry SDK exports OTLP per AR-AUDIT-05
-**When** any lifecycle operation runs
-**Then** spans capture `tenantId`, `correlationId`, `causationId`, `taskId` as attributes; metrics include per-tenant operation counters and projection-lag gauges; structured logs use named parameters with `tenantId`, `correlationId`, `causationId`, `taskId`, `aggregateId`, `eventTypeName`
-**And** sentinel tests confirm no log value matches a forbidden pattern (file contents, secrets, provider tokens, raw credential references)
-**And** the redaction-formatter applies the S-6 classifier to all log/trace/audit outputs; classified values render as the configured form (visible / hashed / truncated / redacted)
+### Story 4.13: Surface canonical errors and operational evidence after failure
 
-### Story 4.13: Validate canonical lifecycle through replay, projection, sentinel, path-security, encoding, isolation, and capacity tests
+As a caller using REST, SDK, CLI, or MCP,
+I want failures reported through the canonical error taxonomy and workspace states,
+So that final state, retry eligibility, and client action are explainable.
+
+**Acceptance Criteria:**
+
+**Given** a lifecycle command or status surface returns a failure available by this point
+**When** the response is produced
+**Then** it includes final state per C6, retry eligibility, retry-after hint when known, correlation ID, and categorized reason
+**And** metadata needed by later audit/projection stories is included without changing the canonical error shape.
+
+### Story 4.14: Emit metadata-only audit and observability
+
+As an operator and audit reviewer,
+I want lifecycle operations to emit metadata-only audit, traces, metrics, and structured logs,
+So that incidents can be reconstructed without exposing file contents or secrets.
+
+**Acceptance Criteria:**
+
+**Given** any successful, denied, failed, retried, duplicate, lock, file, commit, provider-readiness, or state-transition operation occurs
+**When** audit and observability records are emitted
+**Then** tenant, actor, task, operation, correlation, folder, provider, timestamp, result, duration, state transition, and sanitized error category are recorded
+**And** file contents, diffs, tokens, credentials, and secrets are excluded.
+
+### Story 4.15: Validate lifecycle replay and projection determinism
 
 As a maintainer,
-I want the canonical lifecycle covered by replay tests, projection determinism tests, sentinel-redaction tests, path-security tests, encoding-equivalence tests, cross-tenant isolation tests, and a Phase-9-calibratable capacity test harness in `tests/load/`,
-So that the lifecycle's invariants — purity, replay determinism, secret-safety, path security, encoding stability, isolation, and bounded capacity — are mechanically asserted on every PR.
+I want replay and projection determinism tests for the canonical lifecycle,
+So that aggregate state and read models can be rebuilt consistently from durable events.
 
 **Acceptance Criteria:**
 
-**Given** the FolderAggregate, projections, and worker pipeline exist
-**When** the test suite runs in CI
-**Then** replay tests (AR-TEST-02) cover every event family in the architecture event vocabulary; replaying any ordered event stream into an empty `FolderState` produces equivalent state; tombstone tests confirm archived/terminated folders reject subsequent commands
-**And** projection tests (AR-TEST-03) confirm `WorkspaceStatusProjection`, `FolderListProjection`, `FolderAclProjection`, `ProviderReadinessProjection`, and `AuditProjection` are deterministic from the same ordered event stream and idempotent on duplicate event delivery
-**And** sentinel tests (AR-TEST-06) iterate `audit-leakage-corpus.json` over every output pipeline (events, projections, logs, traces, metrics labels, audit records, console payloads, provider diagnostics, error responses); CI fails on any match
-**And** path-security tests (AR-TEST-07) cover traversal, absolute paths, mixed separators, encoded traversal, reserved names, Unicode normalization, symlinks, and case sensitivity; all produce `path_policy_denied` and never reach the provider
-**And** encoding-equivalence tests (AR-TEST-08) iterate `idempotency-encoding-corpus.json`; all variants produce the same hash
+**Given** canonical lifecycle event streams exist
+**When** replay and projection tests run
+**Then** aggregate state and read models rebuild to equivalent deterministic state
+**And** nondeterministic freshness fields are explicitly excluded from determinism assertions.
 
-**Given** capacity targets are deferred to Phase 9 (C1)
-**When** `tests/load/Hexalith.Folders.LoadTests.csproj` is set up
-**Then** NBomber scenarios cover workspace prepare → lock → mutate → commit at multiple concurrency profiles; the harness is parameterized so Phase 9 calibration only needs to set numeric targets per `docs/exit-criteria/c1-capacity.md`
-**And** cross-tenant isolation tests (AR-TEST-09) cover API responses, errors, events, logs, metrics labels, projections, cache keys, lock keys, temporary paths, provider credentials, repository bindings, background jobs, provider callbacks, audit records, and context-query results — asserting zero cross-tenant leak in any output channel
-**And** a provider rate-limit chaos test injects synthetic 429 storms (AR-WORKER-03 / I-8); CI fails if the reconciliation queue grows unboundedly or if C12 drift signal does not fire within SLO
+### Story 4.16: Validate lifecycle security boundaries
 
-## Epic 5: Cross-Surface Adapters — CLI, MCP, SDK Parity
+As a maintainer,
+I want sentinel-redaction, path-security, encoding-equivalence, and cross-tenant isolation tests for the lifecycle,
+So that secret safety, path safety, encoding stability, and tenant isolation are checked mechanically.
 
-The SDK-as-canonical reframe collapses *transport* parity to SDK-vs-REST; *behavioral* parity (pre-SDK errors, post-SDK error projection, side-channel parameter sourcing) remains per-adapter. This epic implements `Hexalith.Folders.Cli` and `Hexalith.Folders.Mcp` as adapters wrapping `Hexalith.Folders.Client`, ships SDK convenience helpers, and proves cross-surface equivalence through the C13 parity oracle and an end-to-end parity scenario.
+**Acceptance Criteria:**
+
+**Given** lifecycle operations and fixtures exist
+**When** security boundary tests run
+**Then** sentinel, path, encoding, and cross-tenant negative cases fail on any leak or unsafe acceptance
+**And** denied operations produce safe error shapes and metadata-only audit evidence.
+
+### Story 4.17: Seed lifecycle capacity test harness
+
+As a maintainer,
+I want the NBomber lifecycle capacity harness seeded with prepare, lock, mutate, and commit scenarios,
+So that lifecycle scenarios capture capacity dimensions early and provide reusable evidence for release calibration.
+
+**Acceptance Criteria:**
+
+**Given** the lifecycle operations are available
+**When** capacity harness scaffolding runs
+**Then** parameterized scenarios exist without final production thresholds
+**And** the harness records enough dimensions for tenant, folder, workspace, task, and operation concurrency calibration.
+
+## Epic 5: Cross-Surface Workflow Parity
+
+API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalent operation identity, errors, idempotency, audit behavior, authorization outcomes, terminal states, and mixed-surface handoff.
 
 ### Story 5.1: Ship SDK convenience helpers, samples, and quickstart
 
-As an SDK consumer (developer integrating Hexalith.Folders into a chatbot or automation),
-I want `Hexalith.Folders.Client` to provide a hand-written `UploadFileAsync(stream)` convenience helper that picks `PutFileInlineAsync` or `PutFileStreamAsync` based on stream length, plus retry/idempotency helpers, typed errors, async patterns, and a working sample at `samples/Hexalith.Folders.Sample/`,
-So that single-call ergonomics for the bimodal D-9 file transport are preserved without forcing every consumer to handle the size-threshold + 413-retry logic.
+As an SDK consumer,
+I want ergonomic helpers, samples, and quickstart material,
+So that I can use the canonical lifecycle without learning internal transport details.
 
 **Acceptance Criteria:**
 
-**Given** the NSwag-generated SDK from Story 1.7 with typed `PutFileInlineAsync` and `PutFileStreamAsync` methods
-**When** `Hexalith.Folders.Client.Convenience.UploadFileAsync(Stream content, UploadFileOptions options, CancellationToken)` is called
-**Then** the helper inspects `content.Length` (when seekable) or buffers up to 256KB to determine inline-vs-stream eligibility; ≤256KB calls `PutFileInlineAsync` with the buffered bytes; >256KB calls `PutFileStreamAsync` with the streamed content
-**And** on `413 Payload Too Large` from `PutFileInlineAsync` (e.g., when stream length is unknown and the buffer exceeds the threshold), the helper auto-retries via `PutFileStreamAsync` using the `X-Hexalith-Retry-As: stream` response header signal
-**And** correlation and task IDs are propagated through both code paths; idempotency-key generation is NEVER automatic — the caller must supply one or register an `IIdempotencyKeyProvider` per the Adapter Parity Contract
+**Given** generated SDK methods exist
+**When** helpers and samples are added
+**Then** upload convenience, idempotency guidance, correlation/task ID handling, and a local AppHost sample are documented
+**And** helpers do not introduce lifecycle semantics absent from the Contract Spine.
 
-**Given** developers want to integrate
-**When** `samples/Hexalith.Folders.Sample/` is built
-**Then** the sample demonstrates the canonical task lifecycle end-to-end: configure provider readiness → create folder → bind repository → prepare workspace → lock → write files via `UploadFileAsync` → query context → commit → inspect status — using the SDK against a local Aspire AppHost
-**And** typed exceptions (`HexalithFoldersException` with canonical `category`, `code`, `correlationId`, `retryable`, `clientAction`, `details` per A-8) are demonstrated in the sample's catch blocks
-**And** an SDK quickstart at `docs/sdk/quickstart.md` walks a new consumer from package install to first successful commit, referencing the sample
+### Story 5.2: Implement CLI commands with behavioral-parity rules
 
-### Story 5.2: Implement CLI commands with full behavioral-parity rules
-
-As an operator,
-I want `Hexalith.Folders.Cli` built on System.CommandLine 2.x wrapping `Hexalith.Folders.Client`, with hierarchical commands mirroring REST capability groups, JSON + human output formatters (the human formatter showing operator-disposition labels per F-4), credential precedence per the Adapter Parity Contract, and the canonical exit-code mapping (0/64/65/66/67/68/69/70/71/72/73/74/75/1),
-So that operators can drive the canonical lifecycle from the terminal with deterministic exit codes for shell pipelines and semantically equivalent behavior to REST/SDK.
+As a CLI user,
+I want commands that mirror the canonical lifecycle,
+So that terminal workflows behave like SDK and REST workflows.
 
 **Acceptance Criteria:**
 
-**Given** the SDK from Stories 1.7 and 5.1 and the canonical exit-code mapping from Story 1.5
-**When** `Hexalith.Folders.Cli.Program.Main` runs
-**Then** the CLI exposes hierarchical commands rooted at `hexalith-folders` with subcommands per capability group: `provider readiness validate`, `folder create|list|get|archive`, `folder access grant|revoke`, `workspace prepare|lock|release|status|cleanup`, `file add|change|remove`, `commit create`, `context tree|search|glob|read`, `audit query`
-**And** every mutating command requires `--idempotency-key <key>` OR explicit `--allow-auto-key` opt-in (CLI generates a ULID and prints it to stderr for retry traceability); missing → exit code 64 (`USAGE_ERROR`)
-**And** every task-scoped command requires `--task-id <id>`; missing → exit code 64
-**And** `--correlation-id <id>` overrides the auto-generated per-invocation correlation id; sub-calls within the invocation propagate the same id
+**Given** the SDK client is available
+**When** CLI commands are implemented
+**Then** provider, folder, workspace, file, commit, context, and audit commands wrap SDK behavior
+**And** pre-SDK errors, idempotency-key sourcing, correlation sourcing, and exit codes follow the Adapter Parity Contract.
 
-**Given** credentials must be resolved per the Adapter Parity Contract precedence
-**When** the CLI authenticates
-**Then** credential precedence is `HEXALITH_TOKEN` env var → `~/.hexalith/credentials.json` (per-tenant section) → `--token <jwt>` flag; missing → exit code 65 (`CREDENTIAL_MISSING`)
-**And** the CLI's `--output` flag selects `json` (machine-readable, stable shape) or `human` (compact rendering with operator-disposition labels)
-**And** post-SDK errors map to exit codes per the canonical table (Story 1.5): `0=success`, `64=client_configuration_error`, `65=credential_missing`, `66=tenant_access_denied`, `67=workspace_locked`, `68=idempotency_conflict`, `69=validation_error`, `70=provider_failure_known`, `71=provider_outcome_unknown`, `72=reconciliation_required`, `73=not_found`, `74=state_transition_invalid`, `75=redacted`, `1=internal_error`
-**And** `correlationId` is always emitted to stderr alongside any non-zero exit so operators can correlate with audit records
+### Story 5.3: Implement MCP tools, resources, and failure kinds
 
-### Story 5.3: Implement MCP server tools, resources, and failure-kind set
-
-As an AI tool integration,
-I want `Hexalith.Folders.Mcp` built on ModelContextProtocol C# SDK 1.3.0 wrapping `Hexalith.Folders.Client`, exposing one tool per canonical command (PrepareWorkspaceTool, LockWorkspaceTool, WriteFileTool, CommitWorkspaceTool, ReadFileTool, SearchFolderTool, GetWorkspaceStatusTool) and resources (FolderTreeResource, AuditTrailResource), with the canonical MCP failure-kind set per the Adapter Parity Contract,
-So that AI agents discover and invoke the canonical lifecycle through MCP semantics with identical authorization, error-category, and idempotency behavior to REST/CLI/SDK.
+As an MCP client,
+I want tools and resources for the canonical lifecycle,
+So that AI tools can work with folders without direct filesystem or provider ownership.
 
 **Acceptance Criteria:**
 
-**Given** the SDK from Stories 1.7 and 5.1 and the MCP failure-kind catalog from Story 1.5
-**When** `Hexalith.Folders.Mcp.Program.Main` runs
-**Then** the server publishes a manifest at `Hexalith.Folders.Mcp/Manifest/server-manifest.json` declaring every tool with JSON Schema input fields including `idempotencyKey` (required for mutating tools), `correlationId` (optional; server generates ULID if omitted, always echoed in tool result), `taskId` (required for task-scoped tools)
-**And** every tool wraps a single `Hexalith.Folders.Client` SDK method; the MCP layer adds no business logic
-**And** MCP server config supports `auth.token` or `auth.tokenFile` per the Adapter Parity Contract; missing → server-startup error or per-tool MCP failure `kind = "credential_missing"`
+**Given** the SDK client is available
+**When** MCP tools and resources are implemented
+**Then** one tool per canonical command/query is available where appropriate
+**And** failures map to the canonical MCP failure-kind set with correlation ID, code, retryability, and client action.
 
-**Given** any tool invocation fails
-**When** the MCP layer projects the failure
-**Then** the result includes `kind ∈ {usage_error, credential_missing, tenant_access_denied, workspace_locked, idempotency_conflict, validation_error, provider_failure_known, provider_outcome_unknown, reconciliation_required, not_found, state_transition_invalid, redacted, internal_error}` plus `correlationId`, `code`, `retryable`, `clientAction`
-**And** the `kind` set is one-to-one with canonical error categories — never collapse multiple categories into a single `kind` for MCP convenience
-**And** `WriteFileTool` auto-picks the bimodal transport equivalent to the SDK convenience helper (Story 5.1) without exposing the size threshold to MCP callers
-**And** `FolderTreeResource` and `AuditTrailResource` honor the C8 read-consistency declarations and emit `X-Hexalith-Freshness` equivalents in the resource metadata
-
-### Story 5.4: Consume parity oracle in *.Cli.Tests and *.Mcp.Tests for behavioral-parity columns
+### Story 5.4: Consume parity oracle in CLI and MCP tests
 
 As a maintainer,
-I want `tests/Hexalith.Folders.Cli.Tests/` and `tests/Hexalith.Folders.Mcp.Tests/` to consume `tests/fixtures/parity-contract.yaml` (Story 1.8) as xUnit theory data, asserting the behavioral-parity columns (`pre_sdk_error_class`, `idempotency_key_sourcing`, `correlation_id_sourcing`, `cli_exit_code`, `mcp_failure_kind`) per operation,
-So that adding a new operation to the Contract Spine without populating the per-adapter behavioral parity row mechanically fails the build (per AR-PARITY-01).
+I want CLI and MCP tests to consume behavioral-parity oracle columns,
+So that adapter behavior cannot drift from the canonical contract.
 
 **Acceptance Criteria:**
 
-**Given** the parity oracle and schema from Story 1.8
-**When** `tests/Hexalith.Folders.Cli.Tests/ParityOracleTests.cs` runs
-**Then** an xUnit theory consumes `parity-contract.yaml` row-by-row; for each row, an isolated test invokes the corresponding CLI command and asserts: pre-SDK error class matches `pre_sdk_error_class`; idempotency-key sourcing follows `idempotency_key_sourcing`; correlation-id sourcing follows `correlation_id_sourcing`; CLI exit code on the documented failure path matches `cli_exit_code`
-**And** an equivalent `tests/Hexalith.Folders.Mcp.Tests/ParityOracleTests.cs` asserts MCP failure-kind matches `mcp_failure_kind` and the same behavioral dimensions
+**Given** `parity-contract.yaml` exists
+**When** CLI and MCP tests run
+**Then** behavioral-parity columns drive assertions for pre-SDK errors, key sourcing, correlation sourcing, exit codes, and failure kinds
+**And** missing rows or unsupported categories fail tests.
 
-**Given** the schema-validation gate from Story 1.9
-**When** the parity-oracle generator emits a row missing a required behavioral column
-**Then** generation fails before tests consume the oracle; CI surfaces the offending row
-**And** Contract Spine adding an operation without a parity-oracle row → CI fails per Story 1.8/1.9 gates
-**And** Contract Spine removing an operation without a deprecation entry in `previous-spine.yaml` → CI fails (symmetric drift gate from Story 1.9)
+### Story 5.5: Validate golden lifecycle parity across REST and SDK
 
-### Story 5.5: End-to-end cross-surface parity scenario and cross-adapter invariants
-
-As a stakeholder validating the MVP "one canonical workflow contract" claim,
-I want `tests/Hexalith.Folders.IntegrationTests/EndToEnd/CrossSurfaceParityScenario.cs` running the canonical task lifecycle (provider readiness → create folder → bind repo → prepare → lock → write files → query context → commit → inspect status → release) through REST, CLI, MCP, and SDK in a single test run, asserting cross-adapter invariants,
-So that the four-surface promise is proven by a single integrated test that fails loudly if any surface drifts in error category, idempotency replay, correlation propagation, or terminal state.
+As a stakeholder validating one canonical workflow contract,
+I want the golden lifecycle scenario executed through REST and SDK,
+So that transport parity is proven before CLI and MCP adapter behavior is layered on.
 
 **Acceptance Criteria:**
 
-**Given** the Aspire AppHost from Story 2.1 with EventStore + Tenants + Folders.Server + Workers + Keycloak running
-**When** the end-to-end scenario test runs
-**Then** the canonical lifecycle executes once through REST (HttpClient), once through SDK (`Hexalith.Folders.Client`), once through CLI (process invocation), and once through MCP (tool invocation); each path uses the same tenant, the same folder/binding, and equivalent operation identity
-**And** for the same logical operation across surfaces, the canonical category, code, retryable flag, and clientAction returned are **identical** (transport-parity invariant)
-**And** idempotency replay semantics are identical: same key + equivalent payload returns the same logical result; same key + different payload returns `idempotency_conflict` with consistent error category
-**And** correlation-id, when caller-supplied, is **echoed unchanged** through all four surfaces
+**Given** REST endpoints and SDK client are available
+**When** the golden lifecycle scenario runs through both surfaces
+**Then** operation identity, authorization, errors, idempotency, audit metadata, correlation, and terminal states match oracle expectations
+**And** any transport drift fails loudly.
 
-**Given** the cross-adapter invariants from the architecture's §"Adapter Parity Contract"
-**When** invariant assertions run
-**Then** pre-SDK error classes (configuration, credential-missing) and post-SDK error classes are **mutually exclusive** — an assertion confirms no operation can return both
-**And** idempotency-key sourcing differs per adapter as documented (SDK = caller/DI never auto; CLI = flag or `--allow-auto-key`; MCP = required tool-input field) — but the **resulting record key + canonical hash** is identical across surfaces for the same logical payload
-**And** the audit projection (Story 4.12) shows one logical operation per (tenant, taskId, operationId, correlationId) regardless of the surface that submitted it; an assertion confirms no double-emission per surface
-**And** the test runs as part of the CI parity-tests workflow and is also runnable locally via a single `dotnet test` invocation
+### Story 5.6: Validate behavioral parity across CLI and MCP
 
-## Epic 6: Read-Only Operations Console & Audit Reviewer Flows
+As a stakeholder validating adapter behavior,
+I want CLI and MCP behavior tested against the same canonical lifecycle rules,
+So that adapter-specific UX does not change product semantics.
 
-A WCAG 2.2 AA Blazor Server + Microsoft Fluent UI read-only console reading exclusively from projections (no direct EventStore aggregate access). Operator-disposition labels (`auto-recovering` / `awaiting-human` / `terminal-until-intervention` / `degraded-but-serving`) are the primary visual; technical state names appear as secondary metadata. Sensitive metadata is rendered with a visible lock-icon affordance — never silent truncation. The incident-mode last-resort read path at `/_admin/incident-stream` is available with three UX guardrails when projections degrade. Performance budget separates console flows from end-user budgets and includes perceived-wait UX (skeleton at 400ms, cancel at 2s).
+**Acceptance Criteria:**
+
+**Given** CLI and MCP surfaces wrap the SDK
+**When** behavioral parity tests run
+**Then** credential sourcing, usage errors, idempotency-key sourcing, correlation defaults, CLI exit codes, and MCP failure kinds match the Adapter Parity Contract
+**And** adapters preserve canonical error categories.
+
+### Story 5.7: Validate mixed-surface handoff scenario
+
+As an automation developer,
+I want one task lifecycle to move between REST, SDK, CLI, and MCP using the same IDs,
+So that real integrations can hand off work without losing state or auditability.
+
+**Acceptance Criteria:**
+
+**Given** all four surfaces are available
+**When** provider readiness, create/bind, prepare, lock, write, query, commit, status, and release are split across surfaces
+**Then** task ID, correlation ID, operation IDs, audit records, and terminal state remain coherent
+**And** any surface-specific drift in idempotency replay or error category fails the scenario.
+
+## Epic 6: Read-Only Operations Console And Audit Review
+
+Operators and audit reviewers can inspect readiness, locks, dirty state, failures, commits, timelines, provider evidence, and metadata-only audit records through a read-only console without mutation or file-content exposure.
 
 ### Story 6.1: Audit and operation-timeline query endpoints
 
-As an audit reviewer or operator,
-I want server-side query endpoints `GET /api/v1/audit-events` (with filters: tenant, folderId, taskId, correlationId, time range, operation type, result) and `GET /api/v1/folders/{folderId}/timeline` returning operation timelines for folder, workspace, file, lock, commit, provider, status, and authorization events,
-So that I can reconstruct incidents from metadata alone (FR53, FR54) and trace the causation chain that led to a specific outcome (FR56) without ever needing direct EventStore aggregate access.
+As an audit reviewer,
+I want query endpoints for metadata-only audit and operation timelines,
+So that incidents can be reconstructed without file contents or secrets.
 
 **Acceptance Criteria:**
 
-**Given** the `AuditProjection` from Story 4.12 is populated
-**When** `GET /api/v1/audit-events` is called with filter combinations and the actor has `audit:read` permission for the requested tenant
-**Then** the response returns paginated metadata-only audit records with `tenantId`, `actor`, `taskId`, `operationId`, `correlationId`, `folderId`, `provider`, `repositoryBindingId`, `timestamp`, `result`, `duration`, `eventTypeName`, `stateTransition`, `errorCategory` — never any file contents, secrets, or sensitive content beyond what S-6 classification permits for the requesting actor
-**And** the response is `eventually-consistent` per Story 1.5; `X-Hexalith-Freshness` reports projection age
-**And** denied + retried + duplicate operations all appear in the result set with their classification (FR53)
+**Given** audit projection data exists
+**When** audit or timeline queries run
+**Then** records are paginated, filtered, tenant-scoped, and metadata-only
+**And** sensitive metadata classification is applied consistently.
 
-**Given** an actor with `folder:read-timeline` permission and a folder with a populated event history
-**When** `GET /api/v1/folders/{folderId}/timeline?operationTypes=workspace,file,lock,commit,provider,authorization&since=&until=` is called
-**Then** the response returns chronologically ordered operation events with the causation chain (each event links to its `causationId` so the chain is reconstructible)
-**And** the same metadata-only fields apply; sensitive paths/branch names/commit messages render per S-6 classification with redaction tier honored
-**And** sentinel-redaction tests over `audit-leakage-corpus.json` find no leak in any audit or timeline response
-**And** a cross-tenant negative test confirms an actor in tenant B cannot retrieve audit or timeline data for tenant A; denial uses safe error shape
-
-### Story 6.2: Scaffold Blazor Server console with Fluent UI, OIDC auth, and tenant/folder navigation
-
-As a platform engineer,
-I want `Hexalith.Folders.UI` running as a Blazor Server application with SignalR live updates, Microsoft Fluent UI Blazor (`Microsoft.FluentUI.AspNetCore.Components`) component library, OIDC authentication against the same identity provider as the backend, and a top-level tenant + folder navigation shell,
-So that operators and audit reviewers have a single accessible web surface that consumes only projection endpoints (never direct EventStore aggregate access) and respects the same authorization stack as the API.
-
-**Acceptance Criteria:**
-
-**Given** the Aspire AppHost from Story 2.1 with Folders.Server + Keycloak (or production OIDC provider)
-**When** `Hexalith.Folders.UI` starts as `AppId=folders-ui`
-**Then** the application authenticates via OIDC using the same `JwtBearer` parameters from Story 1.4 (S-2); login is via the configured provider; sign-out works correctly
-**And** the application consumes `Hexalith.Folders.Client` SDK only — no direct EventStore command/query API references; no aggregate-write paths; no service invocation outside projection endpoints (FR36 / AR-UI-07)
-**And** Microsoft Fluent UI Blazor components are used throughout; the layout uses semantic HTML headings, visible focus states, and readable table structures (foundations for NFR59–63)
-
-**Given** an authenticated operator with multi-tenant access lands on the home page
-**When** they navigate
-**Then** the top-level shell shows a tenant selector populated from the actor's tenant claims; once a tenant is selected, a folder selector lists folders the actor has `folder:read-metadata` for
-**And** SignalR delivers live status updates to currently-rendered folder/workspace views; updates trigger debounced re-renders (no flicker)
-**And** the navigation passes a keyboard-only test: every primary route is reachable via Tab/Shift-Tab/Enter/Esc
-
-### Story 6.3: Render operator-disposition labels as the primary visual with technical state as secondary metadata
-
-As an operator on-call at 3 AM,
-I want every workspace/folder/provider state in the console to render its operator-disposition label (`auto-recovering` / `awaiting-human` / `terminal-until-intervention` / `degraded-but-serving`) as the primary visual badge with a distinct shape + glyph (not color alone), and the technical state name (`ready`, `locked`, `dirty`, `committed`, `failed`, `inaccessible`, `requested`, `preparing`, `changes_staged`, `unknown_provider_outcome`, `reconciliation_required`) as secondary metadata,
-So that I can read "what is broken and what can safely happen next" before I have to translate engineering vocabulary into incident-response cognition.
-
-**Acceptance Criteria:**
-
-**Given** the C6 transition matrix from Story 1.4 declares operator-disposition labels per state
-**When** `Hexalith.Folders.UI/Services/DispositionLabelMapper.cs` is built
-**Then** the mapper is sourced from (or hand-written and tested against) the C6 enumerated matrix; a unit test asserts that every state in the catalog maps to the documented label and no state is unmapped
-**And** the matrix-coverage CI gate from Story 1.9 fails if a new state is added in the architecture without updating `DispositionLabelMapper`
-
-**Given** any view displays workspace/folder/provider state
-**When** the disposition badge component renders
-**Then** `Hexalith.Folders.UI/Components/OperatorDispositionBadge.razor` renders the label with a distinct shape + glyph + accessible-name attribute; color is supplementary, not primary (NFR61)
-**And** `Hexalith.Folders.UI/Components/TechnicalStateMetadata.razor` renders the technical state name in a smaller, secondary position with sufficient contrast (NFR62)
-**And** the disposition label appears alongside raw event types in incident-stream views (Story 6.6) so operators do not switch vocabularies mid-incident
-**And** a screen-reader announces both label and technical state in a logical order (label first, technical state as secondary)
-
-### Story 6.4: Implement sensitive-metadata redaction affordance with lock-icon — never silent truncation
-
-As an operator diagnosing an incident,
-I want any field that has been redacted by the S-6 sensitive-metadata classifier to render with a visible lock icon and explanatory text "Your tenant policy hides this; contact your administrator" — distinguished from unknown or missing fields (FR55 read-side, F-5),
-So that I do not waste incident time chasing ghosts when a value was hidden by policy rather than missing in the data.
-
-**Acceptance Criteria:**
-
-**Given** an audit, timeline, or status response contains a redacted field per the per-tenant `confidential` classification override (S-6)
-**When** the console renders that field
-**Then** `Hexalith.Folders.UI/Components/RedactedField.razor` displays a lock icon + "Your tenant policy hides this; contact your administrator" with an `aria-label` that screen-readers announce as "redacted by tenant policy"
-**And** an unknown/missing field renders distinctly (e.g., `—` placeholder + "no data" text) with a different `aria-label` so operators can distinguish "policy hides" from "data absent"
-**And** the lock icon affordance also applies to incident-stream views (Story 6.6); redaction rules do not relax under degraded mode
-
-**Given** the architecture's S-6 classifier
-**When** the console fetches audit/timeline/status responses
-**Then** classified fields arrive pre-redacted from the server (where applicable per the per-tenant policy); the console does not perform redaction client-side and does not have access to the unredacted value
-**And** an integration test confirms that a tenant with default `tenant-sensitive` classification sees the value; a tenant with `confidential` override sees the redaction affordance; cross-tenant operator views always see redaction unless the operator has explicit cross-tenant audit permission
-
-### Story 6.5: Build folder detail, workspace status, provider health, and audit trail pages
+### Story 6.2: Scaffold Blazor Server console with Fluent UI
 
 As an operator,
-I want `Folders.razor`, `FolderDetail.razor`, `ProviderHealth.razor`, `AuditTrail.razor`, and `ProviderSupportEvidence.razor` (FR57) pages exposing the read-only diagnostic surface for a tenant — workspace state, lock metadata, dirty state, last commit, last failed operation, provider readiness, audit trail, provider support evidence,
-So that I have one consolidated console view answering "what is the state of this tenant's workspaces today" without needing direct API or database access.
+I want a read-only Blazor Server console with authentication and tenant/folder navigation,
+So that I can diagnose workspace state through a governed UI.
 
 **Acceptance Criteria:**
 
-**Given** an authenticated operator with `folder:read-metadata` for the selected tenant
-**When** `/folders` (Folders.razor) renders
-**Then** the page lists folders with operator-disposition badge (Story 6.3), folder name (S-6 classified), creation timestamp, and bound-repository indicator; pagination follows server conventions
-**And** clicking a folder opens `/folders/{folderId}` (FolderDetail.razor) showing canonical workspace state + disposition label, lock metadata + owner taskId (when authorized) + lease expiry + retry-eligibility window, dirty-state indicator + changed-path count, last commit reference (commit SHA + timestamp + author per S-6 classification), last failed operation (category + reason + retryability), and projection currency
-**And** the page subscribes to SignalR updates for the selected folder so state changes appear live without manual refresh
+**Given** projection query endpoints exist
+**When** the console shell is implemented
+**Then** it uses Fluent UI, OIDC auth, SDK projection queries, and no direct aggregate write paths
+**And** navigation supports tenant and folder diagnostic workflows.
 
-**Given** a platform engineer with `platform:read-provider-evidence` permission
-**When** `/provider-health` (ProviderHealth.razor) renders
-**Then** the page shows per-tenant provider-readiness aggregation from Story 3.8 with disposition badges, last-validation timestamps, and reason codes
-**And** `/provider-support-evidence` (ProviderSupportEvidence.razor) shows the latest contract-suite outcomes per provider (GitHub / Forgejo) with pass/fail per capability area (readiness, repo binding, branch handling, file ops, commit, status, failure behavior) and any active drift annotations from the nightly oasdiff job (FR57)
+### Story 6.3: Render operator-disposition labels as primary visual
 
-**Given** an audit reviewer
-**When** `/folders/{folderId}/audit` (AuditTrail.razor) renders
-**Then** the page consumes `GET /api/v1/folders/{folderId}/timeline` and `GET /api/v1/audit-events?folderId=...` with filterable views (operation type, result, time range, taskId, correlationId)
-**And** every record renders metadata-only with disposition labels and the redaction affordance from Story 6.4 where applicable
-**And** the page provides an export-as-CSV affordance that excludes any field a screen render would have redacted (no policy bypass via export)
-
-### Story 6.6: Implement incident-mode last-resort read path at /_admin/incident-stream with three UX guardrails
-
-As an operator following a runbook link during an incident where projections are degraded,
-I want `/_admin/incident-stream` (`IncidentStream.razor`) — an ACL-checked event-stream view available when projections are degraded — with three UX guardrails: a persistent red "DEGRADED MODE" banner showing the last projection checkpoint, operator-disposition labels rendered alongside raw event types, and a one-click "copy correlationId + timestamp window" affordance,
-So that sleep-deprived operators do not land on a raw event stream with zero scaffolding (per F-6).
+As an operator,
+I want disposition labels to be the primary state visual with technical state secondary,
+So that incident response uses human-actionable language.
 
 **Acceptance Criteria:**
 
-**Given** an operator with `eventstore:permission=admin` (per F-6 ACL gate)
-**When** they navigate to `/_admin/incident-stream`
-**Then** the page authorizes via the same layered authorization stack from Story 2.6; non-admin operators are denied with `tenant_access_denied` using safe error shape
-**And** the page consumes the latest events directly from the EventStore aggregate stream (still ACL-checked, never bypassing tenant boundaries) when projections are degraded; the data path is the documented last-resort
-**And** `Hexalith.Folders.UI/Layout/DegradedModeBanner.razor` renders a persistent red banner across the top: "DEGRADED MODE — events shown may be incomplete or out of order. Last projection checkpoint: HH:MM:SS UTC" — banner is dismissible per session but re-asserts on every navigation
+**Given** workspace state metadata is available
+**When** status components render
+**Then** `OperatorDispositionBadge` and technical-state metadata use the C6 mapping
+**And** the badge and metadata components expose reusable parameters verified by this story's tests so diagnostic views can use the mapping without duplicating logic.
 
-**Given** the page renders raw event types
-**When** each event row is shown
-**Then** the operator-disposition label (Story 6.3) is rendered alongside the raw `eventTypeName` so operators do not switch vocabularies mid-incident
-**And** redacted fields still render with the lock-icon affordance from Story 6.4 — policy redaction does not relax in degraded mode
-**And** `Hexalith.Folders.UI/Components/CorrelationCopyButton.razor` provides a one-click "copy correlationId + timestamp window" affordance per row, copying a JSON object to the clipboard for handoff to other engineers
+### Story 6.4: Implement sensitive-metadata redaction affordance
 
-### Story 6.7: Enforce ops-console performance budget and perceived-wait UX
-
-As an operator under incident load,
-I want the ops console to honor a separate performance budget — p95 page-load < 1.5s primary diagnostic flows, p99 < 3s, degraded-mode flows up to 5s p95 — with perceived-wait UX: visible skeleton state at 400ms and "still loading… [cancel]" affordance at 2s for any in-flight request (per F-7),
-So that the console itself never becomes the new outage perception during real incidents.
+As an operator,
+I want redacted metadata to render differently from unknown or missing data,
+So that policy-hidden fields do not look like system defects.
 
 **Acceptance Criteria:**
 
-**Given** a primary diagnostic page (Folders, FolderDetail, AuditTrail, ProviderHealth)
-**When** the page loads
-**Then** for p95 of requests against bounded MVP inputs, page-load latency is < 1.5s; p99 < 3s
-**And** any in-flight request that has not returned within 400ms shows a `Hexalith.Folders.UI/Components/SkeletonState.razor` placeholder so the page does not look frozen
-**And** any in-flight request that has not returned within 2s shows `Hexalith.Folders.UI/Components/StillLoadingCancel.razor` with a visible "Still loading… [Cancel]" affordance; the cancel action aborts the underlying HTTP request and returns the operator to the previous state without a partial render
+**Given** sensitive metadata is redacted by policy
+**When** the UI renders the field
+**Then** a visible lock-icon affordance and explanatory text are shown
+**And** the redaction component exposes reusable rendering semantics verified by this story's tests so diagnostic views can distinguish redacted, unknown, and missing values consistently.
 
-**Given** the degraded-mode incident-stream view (Story 6.6)
-**When** the page loads
-**Then** the degraded-mode performance budget allows up to 5s p95 (acknowledging the cost of last-resort read paths)
-**And** the same skeleton + cancel affordances apply
-**And** a release-validation evidence path is documented in `docs/exit-criteria/c2-freshness.md` showing how console p95 is measured (browser-based instrumentation + server-side OpenTelemetry trace span correlation)
+### Story 6.5: Author console diagnostic wireflow notes
 
-### Story 6.8: Verify no-mutation enforcement and WCAG 2.2 AA accessibility
-
-As a stakeholder validating MVP non-goals,
-I want a release-validation pass on the ops console proving no mutation paths, no credential reveal, no file-content browsing, no file-editing UI, no raw diff display, no hidden repair actions, no unrestricted filesystem browsing — and full WCAG 2.2 AA conformance for primary diagnostic workflows (NFR59–63),
-So that the MVP non-goal "read-only operations console" is mechanically enforced and operators with disabilities have first-class access to incident response.
+As an operator and accessibility reviewer,
+I want lightweight console wireflow notes for primary diagnostic workflows,
+So that implementation of diagnostic pages follows reviewed information hierarchy, interaction states, and accessibility expectations.
 
 **Acceptance Criteria:**
 
-**Given** the architectural invariant from AR-UI-07
-**When** an automated test suite scans the console's Razor components and routes
-**Then** a test confirms no Razor route maps to a `POST` / `PUT` / `PATCH` / `DELETE` SDK method or EventStore command API path (negative scope enforcement of FR36)
-**And** a test confirms no UI component renders raw credential material, raw token strings, file content beyond classified metadata + content hash, or raw diffs
-**And** the console's HttpClient handler is configured to call only `GET` projection endpoints (`/api/v1/...` projection routes); a test attempts to invoke a mutating endpoint via the UI's HttpClient and asserts rejection at the configuration layer
+**Given** PRD console requirements and architecture decisions F-1 through F-7 exist
+**When** console wireflow notes are authored
+**Then** folder, workspace, provider, audit, incident-mode, redaction, loading, empty, and error states are described under `docs/ux/ops-console-wireflows.md`
+**And** the notes identify keyboard-navigation, focus, non-color-only status, zoom readability, and redaction-vs-missing expectations for Epic 6 stories
+**And** Stories 6.6, 6.7, 6.8, 6.9, and 6.10 cannot begin implementation until `docs/ux/ops-console-wireflows.md` exists and has been reviewed against PRD console requirements and architecture decisions F-1 through F-7.
 
-**Given** a WCAG 2.2 AA accessibility audit
-**When** primary diagnostic workflows are tested with axe-core (or equivalent automated tool) plus manual screen-reader verification
-**Then** every primary workflow (folder list → folder detail → workspace status → audit trail → incident-stream) passes automated axe-core checks
-**And** a keyboard-only walkthrough covers every primary diagnostic flow without mouse use; visible focus states present at every focusable element (NFR62)
-**And** color contrast meets WCAG 2.2 AA across all status, failure, readiness, and lock indicators; status indicators use shape + glyph + label, never color alone (NFR61)
-**And** the console remains readable at 200% browser zoom; tables reflow or scroll appropriately at common operator zoom levels (NFR63)
-**And** a release-validation report records the audit results and lands in `docs/exit-criteria/` per the verification expectations (NFR66)
+### Story 6.6: Build folder and workspace diagnostic pages
 
-## Epic 7: Production Hardening & Release Readiness
+As an operator,
+I want folder and workspace diagnostic pages,
+So that lifecycle, readiness, lock, dirty state, commit state, failure state, and cleanup status are inspectable.
 
-This epic does NOT add user-facing features. It validates the integrated system against production invariants that cannot be proven from local-dev alone: deny-by-default Dapr access control with mTLS, pluggable OIDC, container deployment, capacity targets at scale, retention enforcement, observability exporters, and the full documentation surface — all while pinning the deferred quantitative exit criteria (C1, C2, C3, C5) with measurement evidence.
+**Acceptance Criteria:**
 
-### Story 7.1: Deploy production Dapr deny-by-default access control with mTLS and negative-test conformance
+**Given** projection endpoints, reusable status components, and console wireflow notes exist
+**When** folder and workspace diagnostic pages render
+**Then** pages show authorized lifecycle, readiness, lock, dirty, commit, failure, cleanup, freshness, and correlation metadata
+**And** no file editing, file browsing, raw diff, credential reveal, repair action, or mutation control is present.
+
+### Story 6.7: Build provider readiness and support diagnostic pages
+
+As an operator,
+I want provider readiness and support diagnostic pages,
+So that provider binding, credential-reference status, capability differences, and provider failure evidence are inspectable without secrets.
+
+**Acceptance Criteria:**
+
+**Given** projection endpoints, provider support evidence, and console wireflow notes exist
+**When** provider diagnostic pages render
+**Then** pages show authorized provider binding, credential-reference identifier/status, readiness reason, retryability, remediation category, capability, sync, and failure metadata
+**And** provider tokens, credential values, embedded credential URLs, and unauthorized repository existence are never displayed.
+
+### Story 6.8: Build audit and operation-timeline diagnostic pages
+
+As an audit reviewer and operator,
+I want audit and operation-timeline diagnostic pages,
+So that incidents can be reconstructed from metadata-only evidence.
+
+**Acceptance Criteria:**
+
+**Given** audit projection endpoints and console wireflow notes exist
+**When** audit and timeline pages render
+**Then** records are paginated, filtered, tenant-scoped, and show actor, task, operation, correlation, folder, provider, timestamp, result, duration, state transition, and sanitized error category where authorized
+**And** sensitive metadata classification and redaction affordances are applied consistently.
+
+### Story 6.9: Implement incident-mode last-resort read path
+
+As an operator,
+I want an ACL-checked incident stream when projections are degraded,
+So that diagnosis can continue while read models recover.
+
+**Acceptance Criteria:**
+
+**Given** projections are degraded and the actor has incident permission
+**When** `/_admin/incident-stream` renders
+**Then** it shows a persistent degraded-mode banner, raw event metadata, disposition labels from Story 6.3, and correlation/time-window copy affordance
+**And** redacted values render through the shared redaction component from Story 6.4 with no relaxed policy.
+
+### Story 6.10: Enforce console performance and perceived-wait UX
+
+As an operator,
+I want diagnostic pages to meet console performance budgets and show clear loading states,
+So that the console remains useful during incidents.
+
+**Acceptance Criteria:**
+
+**Given** console pages call projection endpoints
+**When** pages load
+**Then** primary diagnostic flows meet p95 and p99 budgets or produce measured release evidence
+**And** skeleton state appears at 400 ms and a cancel affordance appears at 2 seconds for in-flight requests.
+
+### Story 6.11: Verify no-mutation enforcement and accessibility
+
+As a release reviewer,
+I want the console verified as read-only and WCAG 2.2 AA conformant,
+So that the MVP console satisfies its safety and accessibility promises.
+
+**Acceptance Criteria:**
+
+**Given** the console is feature complete
+**When** verification runs
+**Then** automated and manual checks confirm no mutation paths, credential reveal, file-content browsing, file editing, raw diff display, hidden repair action, or unrestricted filesystem browsing
+**And** keyboard navigation, focus states, semantic headings, readable tables, contrast, zoom readability, and non-color-only indicators meet WCAG 2.2 AA expectations.
+
+## Release Readiness Workstream 7: MVP Operational Acceptance And Evidence
+
+Release reviewers, operators, and maintainers can accept the MVP for production only when safety, contract, deployment, observability, retention, documentation, package-traceability, and NFR evidence are complete.
+
+This workstream is not a product FR-bearing epic. It is a release-readiness gate that consumes evidence from Epics 1-6 and blocks MVP acceptance when required evidence is missing. Sprint planning must treat these items as release governance and hardening work, not as a peer product capability increment.
+
+### Story 7.1: Deploy production Dapr deny-by-default access control
 
 As a platform operator,
-I want the production Dapr access-control YAML to be deny-by-default + mTLS, with app IDs restricted (`folders` may invoke `eventstore` and `tenants`; not `system` admin; pubsub topics declared) and validated by the `dapr-policy-conformance` CI job running `daprd` in a kind cluster with a property-based negative test asserting unauthorized `(sourceAppId, targetAppId, operation)` triples receive `403`,
-So that production tenant isolation rests on tested-not-theoretical Dapr policy.
+I want production Dapr access control to default deny with mTLS and negative-test conformance,
+So that service invocation and pub/sub are constrained beyond local development.
 
 **Acceptance Criteria:**
 
-**Given** the architecture's I-3 production policy specification
-**When** the production `accesscontrol.yaml` and mTLS configuration are authored
-**Then** `defaultAction: deny` is set; explicit allow rules grant `folders` invoke permission to `eventstore` and `tenants` only (never `system` admin); pubsub topic permissions are declared per topic (`{tenantId}.folders.events`, `system.tenants.events`, `deadletter.folders.events`) — never wildcards
-**And** mTLS is enabled across all Dapr sidecar communication; certificate rotation procedure is documented in `docs/runbooks/`
-**And** the production policy YAML lives outside the application repo (per ops convention) but a hermetic copy used by tests lives at `tests/policies/dapr-production.accesscontrol.yaml`
+**Given** production Dapr policy YAML exists
+**When** policy-conformance tests run
+**Then** unauthorized source app, target app, and operation triples receive 403
+**And** policy YAML changes require corresponding negative-test updates.
 
-**Given** `.github/workflows/policy-conformance.yml`
-**When** a PR modifies the policy YAML or its negative tests
-**Then** the conformance job spins up `daprd` in a kind cluster with the policy YAML and runs a property-based negative test that generates unauthorized `(sourceAppId, targetAppId, operation)` triples (covering invoke and pubsub) and asserts every triple receives `403`
-**And** the job blocks merge on policy YAML changes without corresponding negative test additions in the same PR (CI gate from Story 1.9)
-**And** the test surface includes both invoke calls AND pubsub topic publish/subscribe attempts; both must be denied for unauthorized triples
-
-### Story 7.2: Configure pluggable production OIDC and Dapr secret store integration
+### Story 7.2: Configure production OIDC and secret store integration
 
 As a platform operator,
-I want the production deployment to use a pluggable OIDC provider (Keycloak, Microsoft Entra ID, Auth0, or any OIDC-compliant provider) configured per the S-2 frozen `JwtBearerOptions` (clock skew 30s, JWKS auto-refresh 10m / refresh 1m, validate issuer + audience + lifetime + signing key), with provider credentials stored only as references in a Dapr secret store,
-So that production authentication is vendor-neutral, secrets never appear in events/logs/traces/projections, and credential rotation does not require code changes.
+I want pluggable production OIDC and Dapr secret-store integration configured,
+So that authentication and credential references work without storing secret material in Folders.
 
 **Acceptance Criteria:**
 
-**Given** the deployment configuration template from Story 1.4
-**When** a target environment (Staging or Production) is provisioned
-**Then** the OIDC issuer and audience values for that environment are pinned in the deployment configuration; `Hexalith.Folders.Server` reads them via `IConfiguration` binding and applies the S-2 frozen `JwtBearerOptions`
-**And** integration with Microsoft Entra ID, Auth0, and self-hosted Keycloak is documented in `docs/auth/oidc-providers.md`; switching between providers requires only configuration changes, not code changes
-**And** an integration test against a containerized Keycloak (in CI) and against a containerized Entra ID emulator (where available) validates the same canonical authorization decisions
+**Given** production identity and secret-store settings exist
+**When** services start
+**Then** JWT validation uses frozen S-2 parameters and secret access uses references only
+**And** no provider token or credential value is stored in Folders state.
 
-**Given** provider credential references must never resolve to raw tokens in any persisted artifact
-**When** Dapr secret-store integration is configured
-**Then** all provider credential references resolve through a Dapr secret-store component (Azure Key Vault / HashiCorp Vault / Kubernetes Secrets / per environment); the resolved token is loaded only at provider-call time inside the provider adapter
-**And** sentinel-redaction tests run against staging-like deployment artifacts (logs/traces/metrics/audit) to confirm no token material leaks
-**And** secret rotation procedure is documented in `docs/runbooks/secret-rotation.md` with explicit steps for both OIDC signing keys and provider credential references
-
-### Story 7.3: Build container images per service with stable Dapr app IDs and Kubernetes-friendly deployment
+### Story 7.3: Build container images with stable Dapr app IDs
 
 As a platform operator,
-I want one container image per service (`hexalith-folders-server`, `hexalith-folders-workers`, `hexalith-folders-ui`) with a Dapr sidecar deployed alongside each, stable app IDs preserved across environments (`folders`, `folders-workers`, `folders-ui` per I-4), and Kubernetes-friendly (but not Kubernetes-required) deployment manifests,
-So that production deployment can target Kubernetes, container apps, or VM-with-Docker without changing the application or Dapr policy artifacts.
+I want one container image per service with stable Dapr app IDs,
+So that deployment policy applies consistently across environments.
 
 **Acceptance Criteria:**
 
-**Given** the architecture's I-2 + I-4 specifications
-**When** Dockerfiles are authored
-**Then** each service image is multi-stage built (build → runtime), uses the official `mcr.microsoft.com/dotnet/aspnet:10.0` base image, and runs as a non-root user
-**And** images are tagged with semver + git SHA on tagged release; image scanning runs in CI; CVE-failing images block release
-**And** Kubernetes deployment manifests (or equivalent ARM/Bicep templates) are provided under `deploy/kubernetes/` declaring each service's deployment + Dapr sidecar annotation + stable app ID + health-check probes (`/health/live`, `/health/ready`)
+**Given** server, workers, and UI projects build
+**When** container images are produced
+**Then** image metadata and app IDs are stable for local, staging, and production
+**And** deployment manifests attach sidecars and preserve access-control assumptions.
 
-**Given** the application starts in a containerized environment
-**When** stable app IDs are validated
-**Then** `eventstore`, `tenants`, `folders`, `folders-ui`, and `folders-workers` resolve consistently across local Aspire, Staging, and Production environments — the Dapr access-control policy YAML from Story 7.1 portably applies
-**And** a smoke test in Staging exercises the canonical task lifecycle (Story 5.5 cross-surface scenario) end-to-end against the containerized deployment
-**And** rollback procedure is documented; rolling back any single service does not break canonical lifecycle invariants
-
-### Story 7.4: Wire full CI/CD pipeline and publish NuGet release packages
+### Story 7.4: Consolidate baseline build and unit CI gates
 
 As a maintainer,
-I want `.github/workflows/ci.yml`, `contract-tests.yml`, `nightly-drift.yml`, `policy-conformance.yml`, and `release.yml` covering every CI gate from Stories 1.9, 3.4, 5.4, 7.1 — and `release.yml` publishing `Hexalith.Folders.Contracts`, `Hexalith.Folders.Client`, `Hexalith.Folders.Aspire`, and `Hexalith.Folders.Testing` to NuGet on tagged release,
-So that the full pipeline (build, format, lint, unit, contract, parity, sentinel, drift, policy-conformance, capacity, release) runs on every PR and tagged release without manual intervention.
+I want baseline build, format, lint, and unit gates consolidated in PR CI,
+So that every pull request proves the solution is mechanically healthy.
 
 **Acceptance Criteria:**
 
-**Given** all CI gate stories from Epics 1–6 are implemented
-**When** `.github/workflows/ci.yml` runs on PR
-**Then** the pipeline executes (in dependency order with parallelism where possible): build → format → lint (including C10 cache-key tenant-prefix) → unit tests → contract tests (hermetic) → parity tests (C13 transport + behavioral columns) → redaction sentinel tests → encoding-equivalence corpus → C6 transition matrix coverage → exit-criteria-presence → pattern-examples compile gate → NSwag golden-file gate → server-vs-spine BLOCKING validation → symmetric drift gate
-**And** `nightly-drift.yml` runs daily covering the live-Forgejo + live-GitHub provider drift detection (Story 3.4) plus oasdiff schema-diff classification (additive=warn, breaking=fail)
-**And** `policy-conformance.yml` runs on PRs that touch policy YAML or negative tests (Story 7.1)
+**Given** feature implementation projects exist
+**When** `.github/workflows/ci.yml` runs
+**Then** restore, build, format, lint, and unit-test gates execute with stable caching and clear failure categories
+**And** failures block merge.
 
-**Given** a tagged release is created
-**When** `release.yml` runs
-**Then** the workflow builds + tests + packages `Hexalith.Folders.Contracts`, `Hexalith.Folders.Client`, `Hexalith.Folders.Aspire`, and `Hexalith.Folders.Testing` as NuGet packages with semver-versioned identifiers
-**And** packages are published to nuget.org (or the configured Hexalith feed) only after every gate passes
-**And** generated SDK artifacts are traceable to source (NFR10): each NuGet package embeds the source-link metadata and the contract-spine commit SHA used for generation
-**And** an automated dependency/package security scan runs as part of release; scan failures block publish
+### Story 7.5: Consolidate contract and parity CI gates
 
-### Story 7.5: Calibrate capacity tests, pin C1/C2/C5 numerical targets
-
-As an architect (with PM sign-off),
-I want `tests/load/Hexalith.Folders.LoadTests.csproj` calibrated against the production hardware profile pinned in `docs/exit-criteria/c1-capacity.md`, NBomber scenarios covering workspace prepare → lock → mutate → commit at concurrent-tenant + concurrent-task profiles, and the C1 (capacity), C2 (status-freshness), and C5 (scalability quantifiers) numerical values pinned and recorded,
-So that the deferred PRD quantitative targets graduate from TBD to measured-and-pinned before MVP release.
+As a maintainer,
+I want contract and parity gates consolidated in PR CI,
+So that public surface drift is caught before merge.
 
 **Acceptance Criteria:**
 
-**Given** the Phase 9 exit-criteria operations plan
-**When** capacity calibration runs
-**Then** `docs/exit-criteria/c1-capacity.md` records concrete numbers for: maximum concurrent tenants, folders per tenant, active workspaces per tenant, concurrent agent tasks per tenant — with measurement method, target hardware profile pinned in the artifact, and rationale
-**And** `tests/load/` NBomber scenarios are parameterized against the pinned hardware profile; CI nightly capacity job runs at calibrated load against a Staging-like environment and asserts the canonical lifecycle's p95/p99 latency budgets hold (per NFR21–23)
-**And** `docs/exit-criteria/c2-freshness.md` records the maximum acceptable lag between an emitted lifecycle event and its appearance in status/audit views under normal operation; the value is validated by an OpenTelemetry projection-lag metric in Staging
-**And** `docs/exit-criteria/c5-scalability-quantifiers.md` replaces the word "multiple" in NFR Scalability with concrete numeric quantifiers derived from C1
+**Given** Contract Spine, generated client, and parity oracle artifacts exist
+**When** `.github/workflows/ci.yml` runs
+**Then** server-vs-spine validation, generated-client consistency, parity-oracle schema validation, and cross-surface parity checks execute
+**And** failures block merge with actionable artifact names.
 
-**Given** the exit-criteria-presence gate from Story 1.9
-**When** the release pipeline runs
-**Then** the gate confirms every C-row in §"Exit Criteria Operations Plan" has an artifact link with a non-empty body; release fails if any artifact is still TBD or empty
-**And** the release blocker is removable only by populating the artifact, never by editing the gate to skip the row
+### Story 7.6: Consolidate security and redaction CI gates
 
-### Story 7.6: Enforce C3 retention, cleanup observability, and tenant-deletion runbook
-
-As a platform operator (with Legal + PM sign-off on retention policy),
-I want C3 retention durations enforced (audit metadata, workspace status, provider correlation IDs, projections, temporary working files, cleanup records), workspace cleanup observable through status (FR30 / NFR57), and a documented tenant-deletion runbook (which records deleted, tombstoned, retained for audit, anonymized — per NFR55 / AR-DOC-05),
-So that retention obligations are met without erasing audit evidence, cleanup failures are diagnosable, and tenant deletion runs predictably under legal/compliance pressure.
+As a maintainer and security reviewer,
+I want sentinel, redaction, forbidden-field, and tenant cache-key gates consolidated in PR CI,
+So that leaks of file contents, secrets, provider tokens, credential material, or tenant data block merge.
 
 **Acceptance Criteria:**
 
-**Given** `docs/exit-criteria/c3-retention.md` from Story 1.4
-**When** retention enforcement is implemented
-**Then** scheduled cleanup workflows in `Hexalith.Folders.Workers` honor the per-data-class retention durations; expired records (audit metadata, workspace status, provider correlation IDs, projections, temporary working files, cleanup records) are removed at the configured cadence
-**And** cleanup never removes audit evidence required to reconstruct completed/failed/denied/retried/duplicate/interrupted operations (NFR58); a test confirms that an audit record protected by the "evidence required" rule survives even after its data-class retention expires
-**And** cleanup failures emit observable signals: status, reason code, retryability, timestamp, correlation ID (NFR57); operators can see them via the ops console (Story 6.5)
+**Given** security fixtures and redaction pipelines exist
+**When** `.github/workflows/ci.yml` runs
+**Then** sentinel-corpus, redaction, forbidden-field, and tenant-prefixed cache-key checks execute
+**And** failures identify the emitting channel without exposing sensitive payloads.
 
-**Given** the tenant-deletion lifecycle
-**When** `docs/runbooks/tenant-deletion.md` is authored (per AR-DOC-05)
-**Then** the runbook documents which records are deleted, tombstoned, retained for audit, and anonymized — including operational handling for in-flight tasks, held locks, working copies, projections, and Dapr state
-**And** the runbook's operational steps are validated by a Staging dry-run that creates a synthetic tenant, exercises the canonical lifecycle, runs tenant deletion, and confirms tombstone + retention behavior matches the runbook
-**And** the deletion process emits sentinel-redaction-clean audit records throughout; an isolation test confirms no tenant data resurfaces in any other tenant's projection or audit query post-deletion
+### Story 7.7: Add capacity-smoke CI gate
 
-### Story 7.7: Wire production observability — pluggable OpenTelemetry exporters, health checks, monitored snapshots, alerts
+As a maintainer,
+I want a lightweight capacity-smoke gate in PR CI,
+So that obvious lifecycle performance regressions are caught before release calibration.
+
+**Acceptance Criteria:**
+
+**Given** lifecycle capacity harness scenarios exist
+**When** `.github/workflows/ci.yml` runs
+**Then** smoke scenarios for prepare, lock, mutate, commit, and status paths execute with non-production thresholds
+**And** failures block merge while final C1, C2, and C5 targets remain owned by release calibration.
+
+### Story 7.8: Wire scheduled drift and policy-conformance workflows
+
+As a maintainer,
+I want scheduled drift and policy-conformance workflows separate from PR CI,
+So that live provider drift and production policy regressions are caught continuously.
+
+**Acceptance Criteria:**
+
+**Given** provider contract and Dapr policy tests exist
+**When** scheduled workflows run
+**Then** nightly drift and policy-conformance results are reported with clear failure categories
+**And** breaking provider drift or unauthorized policy changes fail the workflow.
+
+### Story 7.9: Publish traceable NuGet release packages
+
+As a downstream consumer,
+I want versioned release packages published only after release gates pass,
+So that consumers receive traceable and semver-versioned packages.
+
+**Acceptance Criteria:**
+
+**Given** a tagged release is created and gates pass
+**When** release publishing runs
+**Then** Contracts, Client, Aspire, and Testing packages are published to the configured feed
+**And** package metadata traces back to source commit, contract version, and release evidence.
+
+### Story 7.10: Calibrate capacity tests and pin C1/C2/C5 targets
+
+As a release reviewer,
+I want capacity and status-freshness targets calibrated with evidence,
+So that scalability claims are measured rather than assumed.
+
+**Acceptance Criteria:**
+
+**Given** the lifecycle capacity harness exists
+**When** calibration runs
+**Then** C1, C2, and C5 artifacts record target numbers, hardware profile, methodology, results, and rationale
+**And** release fails if required target evidence is missing.
+
+### Story 7.11: Enforce C3 retention and tenant-deletion behavior
+
+As an operator and compliance reviewer,
+I want retention, cleanup observability, and tenant-deletion behavior enforced,
+So that lifecycle evidence is retained or removed according to policy.
+
+**Acceptance Criteria:**
+
+**Given** C3 retention policy exists
+**When** retention and deletion validation runs
+**Then** audit metadata, workspace status, provider correlation IDs, projections, temporary files, and cleanup records follow policy
+**And** tenant-deletion handling documents deleted, tombstoned, retained, and anonymized records.
+
+### Story 7.12: Wire production observability and alerts
 
 As a platform operator,
-I want production observability built on OpenTelemetry SDK with pluggable exporters (Jaeger / Tempo / Application Insights / Datadog per environment), health-check endpoints (`/health/live`, `/health/ready`), and monitored snapshots (dead-letter topic depth, projection lag, Dapr sidecar health, Tenants-availability degraded-mode flag),
-So that incidents are detected and diagnosed before customer escalation, and the per-environment exporter choice does not require code changes.
+I want production observability exporters, health checks, monitored snapshots, and alerts wired,
+So that operational failures are visible outside local Aspire.
 
 **Acceptance Criteria:**
 
-**Given** the architecture's I-6 + I-7 specifications
-**When** production observability is configured
-**Then** `Hexalith.Folders.ServiceDefaults.ServiceDefaultsExtensions` configures the OpenTelemetry SDK with OTLP export by default; per-environment overrides bind via `IConfiguration` to switch to Jaeger / Tempo / Application Insights / Datadog without code changes
-**And** traces capture `tenantId`, `correlationId`, `causationId`, `taskId`, `aggregateId`, `eventTypeName` as span attributes; metrics include per-tenant operation counters, projection-lag gauges, dead-letter topic depth, and Dapr sidecar health
-**And** sentinel-redaction tests run on the production-shape exporter output (or a staging equivalent) confirming no forbidden patterns leak
+**Given** production observability settings exist
+**When** services run
+**Then** traces, metrics, logs, health, projection lag, dead-letter depth, provider failures, stale locks, and cleanup failures are exported or alerted
+**And** emitted telemetry respects redaction and sensitive metadata policy.
 
-**Given** monitored snapshots from I-7
-**When** alert rules are configured
-**Then** alert rules cover: dead-letter topic depth > threshold, projection lag > C2 freshness target, Dapr sidecar health degraded, Tenants-availability degraded-mode active, provider rate-limit chaos drift signal, hermetic-PR-gate or live-nightly-drift contract test failure
-**And** alert routing is documented per environment in `docs/runbooks/alerts.md`; runbook entries link each alert to a remediation playbook
-**And** synthetic monitoring exercises the canonical task lifecycle in Production every N minutes (configured per environment) and alerts on regression
+### Story 7.13: Publish API, SDK, CLI, and MCP consumer references
 
-### Story 7.8: Publish full documentation deliverables and ADRs
-
-As a downstream consumer (developer, operator, auditor, or new team member),
-I want the full documentation deliverable set published per AR-DOC-01..05: rendered OpenAPI v1 reference, getting-started guide, auth/tenant/folder-ACL guide, workspace lifecycle + lock state diagrams, file-operation-to-commit flow diagram, tenant/auth/ACL decision flow diagram, CLI reference, MCP tool/resource reference, SDK reference and quickstart, provider integration + provider contract testing guide, operations console + metadata-only audit guide, error catalog, contract-terms reference, ADRs for major decisions, and the tenant-deletion runbook,
-So that consumers and future maintainers can answer their own questions without code archaeology and the architecture's design rationale survives team turnover.
+As a downstream consumer,
+I want API, SDK, CLI, and MCP references published,
+So that I can use the product without reading implementation code.
 
 **Acceptance Criteria:**
 
-**Given** AR-DOC-01..05 enumerates the documentation surface
-**When** the documentation site is published
-**Then** `docs/api/` contains the rendered OpenAPI v1 reference (Redoc / Swagger UI / equivalent) generated from `hexalith.folders.v1.yaml` with schemas, auth requirements, idempotency keys, pagination/filtering conventions, correlation IDs, and per-operation examples
-**And** `docs/getting-started.md` walks a new consumer from package install to first successful commit using the SDK + CLI + MCP — referencing `samples/Hexalith.Folders.Sample/` from Story 5.1
-**And** `docs/auth/tenant-and-folder-acl.md` documents the layered authorization stack from Story 2.6 with the decision flow diagram
-**And** `docs/diagrams/` contains the workspace lifecycle + lock state diagram (sourced from C6 matrix), the file-operation-to-commit flow diagram, and the tenant/auth/ACL decision flow diagram
-**And** `docs/cli/reference.md`, `docs/mcp/reference.md`, `docs/sdk/reference.md` enumerate every command/tool/method with examples
-**And** `docs/providers/integration.md` + `docs/providers/contract-testing.md` document the IGitProvider port and the provider contract testing approach (hermetic-PR-gate + live-nightly-drift modes)
-**And** `docs/operations/console.md` + `docs/operations/audit.md` cover the read-only console workflows and metadata-only audit semantics
-**And** `docs/errors/catalog.md` enumerates every canonical error category with REST status, CLI exit behavior, SDK error/result behavior, retryability, client action, and audit/logging expectations
+**Given** surfaces are implemented
+**When** consumer documentation is generated
+**Then** rendered OpenAPI reference, SDK quickstart, CLI reference, MCP tool/resource reference, examples, auth guidance, and lifecycle diagrams are published
+**And** examples compile or are otherwise validated by CI.
 
-**Given** ADRs preserve design rationale
-**When** the ADR set is authored
-**Then** at minimum the following ADRs land in `docs/adrs/`: ADR-0001 Hexalith.Tenants baseline + EventStore.Admin.* surfaces (Step 3 starter selection); ADR-0002 SDK-as-canonical reframe + Adapter Parity Contract; ADR-0003 OpenAPI 3.1 Contract Spine (C0); ADR-0004 Bimodal file transport (D-9); ADR-0005 Two-tier idempotency TTL (D-7); ADR-0006 Working-copy ephemerality (D-8); ADR-0007 Pluggable production OIDC (S-2); ADR-0008 Provider port N-provider capability model
-**And** every ADR follows the `docs/adrs/0000-template.md` structure (Title, Status, Context, Decision, Consequences) and references the architecture document section it implements
-**And** `docs/contract-terms.md` (Story 1.3 stub) is fully populated with FR1–FR3 vocabulary references
+### Story 7.14: Publish operations and audit documentation
+
+As an operator or audit reviewer,
+I want operations-console and metadata-only audit documentation published,
+So that production diagnosis and incident reconstruction are repeatable.
+
+**Acceptance Criteria:**
+
+**Given** operations console and audit surfaces exist
+**When** operations and audit documentation is published
+**Then** console workflows, metadata-only audit fields, redaction behavior, incident-mode use, alerting handoff, and backup/recovery expectations are documented
+**And** examples avoid file contents, provider tokens, credential material, secrets, and unauthorized resource details.
+
+### Story 7.15: Publish provider and error documentation
+
+As an operator and integration maintainer,
+I want provider integration, retryability, and canonical error documentation published,
+So that provider failures and client actions are diagnosable without reading implementation code.
+
+**Acceptance Criteria:**
+
+**Given** provider contracts and canonical error taxonomy exist
+**When** provider and error documentation is published
+**Then** provider integration/testing, supported versions, drift handling, error catalog, retryability, retry-after behavior, and client action guidance are documented
+**And** GitHub and Forgejo capability differences are explicit.
+
+### Story 7.16: Publish NFR traceability bridge
+
+As a release reviewer,
+I want every PRD NFR bullet mapped to implementation evidence,
+So that MVP acceptance can prove non-functional coverage rather than rely on narrative claims.
+
+**Acceptance Criteria:**
+
+**Given** release gates, architecture exit criteria, and story evidence exist
+**When** `docs/exit-criteria/nfr-traceability.md` is published
+**Then** every PRD NFR bullet maps to story IDs, architecture exit criteria, automated gates, manual validation evidence, or release artifacts
+**And** missing NFR evidence fails the release-readiness review.
+
+### Story 7.17: Publish ADR set and maintenance runbooks
+
+As a future maintainer or architect,
+I want ADRs and lifecycle runbooks published,
+So that design rationale and operational decisions survive handoff and release pressure.
+
+**Acceptance Criteria:**
+
+**Given** MVP release evidence is complete
+**When** ADRs and runbooks are reviewed
+**Then** ADRs cover major contract, provider, idempotency, security, observability, and deployment decisions
+**And** runbooks cover tenant deletion, retention, alerts, rollback, provider drift, reconciliation, and incident-mode operations.

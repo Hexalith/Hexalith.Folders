@@ -42,90 +42,116 @@ tracking_system: file-system
 story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
 development_status:
-  # Epic 1: Foundation — Solution Scaffolding & Contract Spine
+  # Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
   epic-1: backlog
-  1-1-scaffold-solution-skeleton-mirroring-hexalith-tenants: backlog
+  1-1-establish-a-consumer-buildable-module-scaffold: backlog
   1-2-establish-root-configuration-and-submodule-policy: backlog
-  1-3-seed-normative-test-fixtures-and-placeholder-artifacts: backlog
+  1-3-seed-minimally-valid-normative-fixtures: backlog
   1-4-author-phase-0-5-pre-spine-workshop-deliverables: backlog
-  1-5-define-per-command-idempotency-equivalence-parity-dimensions-and-finalize-adapter-parity-contract: backlog
-  1-6-author-openapi-v1-contract-spine-with-extension-vocabulary: backlog
-  1-7-wire-nswag-sdk-generation-with-per-command-computeidempotencyhash-helpers: backlog
-  1-8-generate-the-c13-parity-oracle-and-validate-it-against-parity-contract-schema-json: backlog
-  1-9-wire-ci-gates: backlog
+  1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: backlog
+  1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: backlog
+  1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: backlog
+  1-8-author-workspace-and-lock-contract-groups: backlog
+  1-9-author-file-mutation-and-context-query-contract-groups: backlog
+  1-10-author-commit-and-workspace-status-contract-groups: backlog
+  1-11-author-audit-and-ops-console-query-contract-groups: backlog
+  1-12-wire-nswag-sdk-generation-with-idempotency-helpers: backlog
+  1-13-generate-the-c13-parity-oracle: backlog
+  1-14-wire-contract-spine-drift-and-generated-client-ci-gates: backlog
+  1-15-wire-safety-invariant-ci-gates: backlog
+  1-16-wire-exit-criteria-and-parity-completeness-gates: backlog
   epic-1-retrospective: optional
 
-  # Epic 2: Tenant-Scoped Folder Management
+  # Epic 2: Tenant-Scoped Folder Access And Lifecycle
   epic-2: backlog
-  2-1-stand-up-domain-service-host-with-tenants-integration-and-fail-closed-local-projection: backlog
+  2-1-stand-up-domain-service-host-with-tenants-integration: backlog
   2-2-implement-organization-aggregate-acl-baseline: backlog
   2-3-create-folders-within-a-tenant: backlog
-  2-4-grant-and-revoke-folder-access-for-users-groups-roles-and-delegated-service-agents: backlog
-  2-5-inspect-effective-permissions-for-a-folder-or-task-context: backlog
-  2-6-enforce-layered-authorization-with-cross-tenant-denial-and-safe-error-shapes: backlog
+  2-4-grant-and-revoke-folder-access: backlog
+  2-5-inspect-effective-permissions: backlog
+  2-6-enforce-layered-authorization-with-safe-denials: backlog
   2-7-inspect-folder-lifecycle-and-binding-status: backlog
-  2-8-archive-folders-with-retention-bound-audit-and-status-preservation: backlog
+  2-8-archive-folders-with-audit-preservation: backlog
   2-9-react-to-tenants-events-through-worker-handlers: backlog
   epic-2-retrospective: optional
 
-  # Epic 3: Provider Readiness & Repository Binding
+  # Epic 3: Provider Readiness And Repository Binding
   epic-3: backlog
-  3-1-configure-provider-binding-and-credential-reference-for-a-tenant: backlog
-  3-2-define-igitprovider-port-with-n-provider-capability-model-and-capability-difference-exposure: backlog
-  3-3-implement-github-provider-adapter-using-octokit: backlog
-  3-4-implement-forgejo-provider-adapter-with-per-version-snapshots-and-oasdiff-drift-detection: backlog
-  3-5-validate-provider-readiness-with-safe-diagnostics-and-stable-reason-codes: backlog
-  3-6-create-repository-backed-folder-and-bind-existing-repository: backlog
-  3-7-define-branch-ref-policy-for-repository-backed-folder-tasks: backlog
-  3-8-inspect-tenant-readiness-and-per-provider-readiness-evidence: backlog
+  3-1-configure-provider-binding-and-credential-reference: backlog
+  3-2-define-igitprovider-port-and-capability-model: backlog
+  3-3-implement-github-provider-adapter: backlog
+  3-4-implement-forgejo-provider-adapter-and-drift-detection: backlog
+  3-5-validate-provider-readiness-with-safe-diagnostics: backlog
+  3-6-create-a-new-repository-backed-folder: backlog
+  3-7-bind-an-existing-repository-to-a-folder: backlog
+  3-8-define-branch-and-ref-policy: backlog
+  3-9-inspect-tenant-and-per-provider-readiness-evidence: backlog
   epic-3-retrospective: optional
 
-  # Epic 4: Repository-Backed Task Lifecycle (Workspace → Lock → Files → Commit)
+  # Epic 4: Repository-Backed Workspace Task Lifecycle
   epic-4: backlog
   4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: backlog
   4-2-prepare-workspace-from-a-ready-repository-backed-folder: backlog
-  4-3-acquire-task-scoped-workspace-lock-with-deterministic-single-active-writer-enforcement: backlog
+  4-3-acquire-task-scoped-workspace-lock: backlog
   4-4-inspect-lock-state-and-release-the-workspace-lock: backlog
-  4-5-add-change-and-remove-files-with-workspace-root-confinement-and-path-policy-enforcement: backlog
-  4-6-query-file-context-with-policy-boundaries: backlog
-  4-7-inspect-workspace-lock-dirty-state-last-commit-failed-operation-and-projection-currency: backlog
-  4-8-surface-workspace-cleanup-status-without-repair-automation: backlog
-  4-9-propagate-idempotency-keys-correlation-task-ids-end-to-end-with-two-tier-ttl-and-replay-semantics: backlog
-  4-10-commit-workspace-changes-with-task-correlation-metadata-and-unknown-outcome-reconciliation: backlog
-  4-11-surface-canonical-error-taxonomy-workspace-states-and-operational-evidence-after-any-failure: backlog
-  4-12-emit-metadata-only-audit-and-integrate-opentelemetry-observability-with-structured-logging: backlog
-  4-13-validate-canonical-lifecycle-through-replay-projection-sentinel-path-security-encoding-isolation-and-capacity-tests: backlog
+  4-5-enforce-workspace-path-policy-before-file-mutations: backlog
+  4-6-add-and-change-files-with-inline-and-streamed-content-transport: backlog
+  4-7-remove-files-with-metadata-only-events-and-provider-safe-ordering: backlog
+  4-8-query-file-context-with-policy-boundaries: backlog
+  4-9-inspect-workspace-and-projection-currency: backlog
+  4-10-surface-workspace-cleanup-status-without-repair-automation: backlog
+  4-11-propagate-idempotency-keys-correlation-and-task-ids: backlog
+  4-12-commit-workspace-changes-with-unknown-outcome-reconciliation: backlog
+  4-13-surface-canonical-errors-and-operational-evidence-after-failure: backlog
+  4-14-emit-metadata-only-audit-and-observability: backlog
+  4-15-validate-lifecycle-replay-and-projection-determinism: backlog
+  4-16-validate-lifecycle-security-boundaries: backlog
+  4-17-seed-lifecycle-capacity-test-harness: backlog
   epic-4-retrospective: optional
 
-  # Epic 5: Cross-Surface Adapters — CLI, MCP, SDK Parity
+  # Epic 5: Cross-Surface Workflow Parity
   epic-5: backlog
   5-1-ship-sdk-convenience-helpers-samples-and-quickstart: backlog
-  5-2-implement-cli-commands-with-full-behavioral-parity-rules: backlog
-  5-3-implement-mcp-server-tools-resources-and-failure-kind-set: backlog
-  5-4-consume-parity-oracle-in-cli-tests-and-mcp-tests-for-behavioral-parity-columns: backlog
-  5-5-end-to-end-cross-surface-parity-scenario-and-cross-adapter-invariants: backlog
+  5-2-implement-cli-commands-with-behavioral-parity-rules: backlog
+  5-3-implement-mcp-tools-resources-and-failure-kinds: backlog
+  5-4-consume-parity-oracle-in-cli-and-mcp-tests: backlog
+  5-5-validate-golden-lifecycle-parity-across-rest-and-sdk: backlog
+  5-6-validate-behavioral-parity-across-cli-and-mcp: backlog
+  5-7-validate-mixed-surface-handoff-scenario: backlog
   epic-5-retrospective: optional
 
-  # Epic 6: Read-Only Operations Console & Audit Reviewer Flows
+  # Epic 6: Read-Only Operations Console And Audit Review
   epic-6: backlog
   6-1-audit-and-operation-timeline-query-endpoints: backlog
-  6-2-scaffold-blazor-server-console-with-fluent-ui-oidc-auth-and-tenant-folder-navigation: backlog
-  6-3-render-operator-disposition-labels-as-the-primary-visual-with-technical-state-as-secondary-metadata: backlog
-  6-4-implement-sensitive-metadata-redaction-affordance-with-lock-icon: backlog
-  6-5-build-folder-detail-workspace-status-provider-health-and-audit-trail-pages: backlog
-  6-6-implement-incident-mode-last-resort-read-path-with-three-ux-guardrails: backlog
-  6-7-enforce-ops-console-performance-budget-and-perceived-wait-ux: backlog
-  6-8-verify-no-mutation-enforcement-and-wcag-2-2-aa-accessibility: backlog
+  6-2-scaffold-blazor-server-console-with-fluent-ui: backlog
+  6-3-render-operator-disposition-labels-as-primary-visual: backlog
+  6-4-implement-sensitive-metadata-redaction-affordance: backlog
+  6-5-author-console-diagnostic-wireflow-notes: backlog
+  6-6-build-folder-and-workspace-diagnostic-pages: backlog
+  6-7-build-provider-readiness-and-support-diagnostic-pages: backlog
+  6-8-build-audit-and-operation-timeline-diagnostic-pages: backlog
+  6-9-implement-incident-mode-last-resort-read-path: backlog
+  6-10-enforce-console-performance-and-perceived-wait-ux: backlog
+  6-11-verify-no-mutation-enforcement-and-accessibility: backlog
   epic-6-retrospective: optional
 
-  # Epic 7: Production Hardening & Release Readiness
+  # Release Readiness Workstream 7: MVP Operational Acceptance And Evidence
   epic-7: backlog
-  7-1-deploy-production-dapr-deny-by-default-access-control-with-mtls-and-negative-test-conformance: backlog
-  7-2-configure-pluggable-production-oidc-and-dapr-secret-store-integration: backlog
-  7-3-build-container-images-per-service-with-stable-dapr-app-ids-and-kubernetes-friendly-deployment: backlog
-  7-4-wire-full-ci-cd-pipeline-and-publish-nuget-release-packages: backlog
-  7-5-calibrate-capacity-tests-pin-c1-c2-c5-numerical-targets: backlog
-  7-6-enforce-c3-retention-cleanup-observability-and-tenant-deletion-runbook: backlog
-  7-7-wire-production-observability-pluggable-opentelemetry-exporters-health-checks-monitored-snapshots-alerts: backlog
-  7-8-publish-full-documentation-deliverables-and-adrs: backlog
+  7-1-deploy-production-dapr-deny-by-default-access-control: backlog
+  7-2-configure-production-oidc-and-secret-store-integration: backlog
+  7-3-build-container-images-with-stable-dapr-app-ids: backlog
+  7-4-consolidate-baseline-build-and-unit-ci-gates: backlog
+  7-5-consolidate-contract-and-parity-ci-gates: backlog
+  7-6-consolidate-security-and-redaction-ci-gates: backlog
+  7-7-add-capacity-smoke-ci-gate: backlog
+  7-8-wire-scheduled-drift-and-policy-conformance-workflows: backlog
+  7-9-publish-traceable-nuget-release-packages: backlog
+  7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets: backlog
+  7-11-enforce-c3-retention-and-tenant-deletion-behavior: backlog
+  7-12-wire-production-observability-and-alerts: backlog
+  7-13-publish-api-sdk-cli-and-mcp-consumer-references: backlog
+  7-14-publish-operations-and-audit-documentation: backlog
+  7-15-publish-provider-and-error-documentation: backlog
+  7-16-publish-nfr-traceability-bridge: backlog
+  7-17-publish-adr-set-and-maintenance-runbooks: backlog
   epic-7-retrospective: optional
