@@ -22,6 +22,7 @@ so that every capability group uses the same contract language.
 8. Given future generator and drift gates depend on the foundation, when verification runs, then an OpenAPI-aware offline validator proves the OpenAPI document and extension schema files parse successfully as OpenAPI 3.1, all shared component references resolve, and verification succeeds without Dapr sidecars, Aspire, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, production secrets, network calls, or nested-submodule initialization.
 9. Given the foundation must remain a vocabulary story, when verification scans `x-hexalith-*` usage, then the discovered extension allowlist is exactly `x-hexalith-idempotency-key`, `x-hexalith-idempotency-equivalence`, `x-hexalith-idempotency-ttl-tier`, `x-hexalith-correlation`, `x-hexalith-lifecycle-states`, `x-hexalith-parity-dimensions`, `x-hexalith-audit-metadata-keys`, and `x-hexalith-sensitive-metadata-tier`; `x-hexalith-parity-dimensions` defines reusable vocabulary shape only and does not create endpoint parity assertions, provider matrices, or parity rows.
 10. Given examples are copied into downstream clients and docs, when any OpenAPI, extension, or foundation-note example is added, then it uses synthetic opaque placeholders only and contains no real paths, provider identifiers, tenant IDs, credential-shaped values, provider tokens, file content snippets, diffs, production URLs, or unauthorized resource hints.
+11. Given generators and validators will consume the extension vocabulary, when extension files and foundation notes are authored, then each required `x-hexalith-*` extension has exactly one canonical machine-readable definition with stable field names, and any human-readable notes link to or summarize that definition without redefining conflicting shapes.
 
 ## Tasks / Subtasks
 
@@ -37,17 +38,18 @@ so that every capability group uses the same contract language.
   - [ ] Define tags for the PRD capability groups: provider-readiness, folders, workspaces, files, commits, query-status, audit, ops-console, and context-queries.
   - [ ] Define the security scheme as HTTP bearer JWT or OpenID Connect according to available S-2 evidence; do not hard-code unresolved issuer or audience values, add authentication middleware, add auth handlers, add policy classes, add validators, or add runtime authentication packages.
   - [ ] Use camelCase JSON names, ISO-8601 UTC date-time formats, lowercase hyphen-delimited REST path conventions, and path parameters such as `{folderId}` where later operations will need them.
-  - [ ] Keep the document valid even if paths are empty or limited to a clearly marked foundation-only placeholder. Do not add real operation paths whose schemas belong to later stories.
+  - [ ] Prefer `paths: {}` if the selected validator accepts an empty OpenAPI 3.1 Paths Object; use a clearly marked foundation-only placeholder only when required by local tooling. Do not add real operation paths whose schemas belong to later stories.
 - [ ] Define shared OpenAPI components. (AC: 1, 3, 8)
   - [ ] Limit shared components to reusable OpenAPI primitives: security schemes, standard headers, Problem Details, error response envelopes, parameter/header definitions, pagination/freshness metadata, and extension vocabulary scaffolding; defer concrete operation/resource schemas to later stories.
   - [ ] Add reusable parameters and headers for `Idempotency-Key`, `X-Correlation-Id`, `X-Hexalith-Task-Id`, `X-Hexalith-Freshness`, and `X-Hexalith-Retry-As`.
   - [ ] Add shared pagination/filtering conventions for bounded query families without inventing C4 values; reference C4 decisions when present.
   - [ ] Add shared response components for accepted command, projected status, paged results, freshness metadata, safe authorization denial, validation failure, idempotency conflict, and reconciliation-required outcomes.
-  - [ ] Add an RFC 9457-compatible Problem Details schema with required canonical fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
+  - [ ] Add an RFC 9457-compatible Problem Details schema that preserves standard Problem Details members such as `type`, `title`, `status`, `detail`, and `instance` where applicable, and adds required Hexalith canonical fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
   - [ ] Add shared enums or schema anchors for lifecycle states, read-consistency classes, operator-disposition labels, sensitive metadata tiers, idempotency TTL tiers, canonical error categories, CLI exit codes, and MCP failure kinds.
   - [ ] Ensure examples use synthetic metadata only: no file contents, diffs, provider tokens, credential material, secrets, production issuer URLs, tenant data, or unauthorized resource hints.
 - [ ] Author extension vocabulary schemas. (AC: 2, 3, 4, 8)
   - [ ] Create one schema or documentation file per required extension under `src/Hexalith.Folders.Contracts/openapi/extensions/`, or a single indexed extension vocabulary file if that better fits the toolchain.
+  - [ ] Pick one canonical machine-readable vocabulary representation for the eight extensions; if supporting Markdown notes are added, keep them non-authoritative and point back to the canonical schema or index.
   - [ ] For every extension, document allowed OpenAPI locations, value type or JSON Schema shape, required/optional status, one sanitized example, and whether missing prior-story values must remain reference-pending.
   - [ ] Define `x-hexalith-idempotency-key` for mutating command requirements, adapter sourcing behavior, malformed/missing-key handling, and non-use on queries.
   - [ ] Define `x-hexalith-idempotency-equivalence` as an ordered array of semantic field paths; require lexicographic order and tenant-scoped equivalence.
@@ -73,9 +75,11 @@ so that every capability group uses the same contract language.
   - [ ] Verify shared component `$ref` targets resolve.
   - [ ] Verify no request schema, query parameter, or client-controlled header defines tenant authority; tenant context may appear only as auth/envelope-derived documentation or non-authoritative correlation metadata.
   - [ ] Verify examples and local fixtures are synthetic opaque placeholders and contain no real paths, provider identifiers, tenant IDs, credential-shaped values, provider tokens, file contents, diffs, production URLs, or unauthorized resource hints.
+  - [ ] Verify extension definitions are not duplicated with conflicting value shapes across the OpenAPI file, extension vocabulary files, and foundation notes.
   - [ ] Verify negative-scope guardrails: no SDK generated output, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, EventStore/provider calls inside Contracts, runtime auth implementation, CI workflow gates, final `parity-contract.yaml`, operation-group endpoints, or nested-submodule initialization were added by this story.
 - [ ] Record implementation notes for downstream stories. (AC: 5, 6)
   - [ ] Add a short foundation note near the OpenAPI file or in `docs/contract/` that tells Stories 1.7-1.11 how to consume shared components and extension vocabulary.
+  - [ ] Include downstream authoring rules for unique stable `operationId` values, tenant-authority exclusion from client-controlled inputs, reusable `$ref` usage, idempotency annotation requirements for mutating operations, and read-consistency annotation requirements for query operations.
   - [ ] List any missing Phase 0.5 prerequisites with exact file paths and affected OpenAPI fields.
   - [ ] List downstream owners: Story 1.7 tenant/folder/provider/repository, Story 1.8 workspace/lock, Story 1.9 file/context, Story 1.10 commit/status, Story 1.11 audit/ops-console, Story 1.12 NSwag SDK generation, Story 1.13 parity oracle, Story 1.14+ CI gates.
 
@@ -215,6 +219,7 @@ Extension documentation must include allowed placement and shape:
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-11 | Advanced elicitation clarified canonical extension definitions, empty-path preference, RFC 9457 fields, validation checks, and downstream authoring rules. | Codex |
 | 2026-05-10 | Party-mode review applied extension placement, tenant-authority, validation, and negative-scope guardrails. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
@@ -251,4 +256,28 @@ TBD by dev-story agent
   - Concrete operation paths, operation-specific schemas, and operation-specific error/status mappings remain Stories 1.7-1.11.
   - NSwag configuration, generated SDK helpers, CLI/MCP wrappers, REST handlers, CI gates, and parity oracle rows remain downstream stories.
   - Final unresolved C3/C4/S-2/C6 values remain dependent on the Phase 0.5 decision artifacts.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-11T04:04:23.7473573+02:00
+- Selected story key: `1-6-author-contract-spine-foundation-and-shared-extension-vocabulary`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary`
+- Batch 1 method names: Expert Panel Review; Security Audit Personas; Failure Mode Analysis; Self-Consistency Validation; Critique and Refine
+- Reshuffled Batch 2 method names: First Principles Analysis; Pre-mortem Analysis; Graph of Thoughts; Socratic Questioning; Occam's Razor Application
+- Findings summary:
+  - Extension vocabulary needed a single canonical machine-readable source to avoid drift between OpenAPI, extension files, and foundation notes.
+  - The OpenAPI foundation should prefer an empty Paths Object when tooling allows it so later operation-group stories do not inherit accidental placeholder operations.
+  - Problem Details needed explicit preservation of RFC 9457 standard members in addition to Hexalith canonical fields.
+  - Verification needed a duplicate/conflicting extension-shape check because exact allowlist scanning alone would not catch split-brain vocabulary definitions.
+  - Downstream authoring notes needed to make operationId stability, tenant-authority exclusion, `$ref` reuse, idempotency annotations, and read-consistency annotations explicit for Stories 1.7-1.11.
+- Changes applied:
+  - Added AC11 requiring exactly one canonical machine-readable definition per required `x-hexalith-*` extension.
+  - Clarified empty-path preference, RFC 9457 standard field expectations, and canonical vocabulary ownership in task guidance.
+  - Added verification for conflicting duplicate extension definitions.
+  - Added downstream authoring-note requirements for future operation groups.
+- Findings deferred:
+  - Final C3/C4/S-2/C6 values remain dependent on Phase 0.5 evidence and must stay reference-pending if missing.
+  - Final security scheme flavor, validator implementation mechanism, and one-file-versus-per-extension vocabulary layout remain implementation choices bounded by available scaffold and tooling.
+  - Operation-specific schemas, parity rows, SDK generation, runtime handlers, CLI/MCP tools, and CI gates remain downstream story work.
 - Final recommendation: ready-for-dev
