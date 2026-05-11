@@ -19,6 +19,8 @@ so that the canonical contract starts with real retention, input-limit, state, a
 5. Given Story 1.3 seeded templates and fixtures, when this story is complete, then deliverables reuse `docs/exit-criteria/_template.md` and existing fixture ownership notes without implementing Contract Spine endpoints, SDK generation, provider adapters, domain aggregates, CI workflow gates, authentication middleware, or production infrastructure.
 6. Build or documentation verification for this story succeeds without provider credentials, tenant data, production secrets, running Dapr sidecars, Aspire topology, GitHub, Forgejo, generated SDKs, network access, or initialized nested submodules.
 7. Given the four decision artifacts are authored, when they are reviewed, then each artifact includes `status`, `decision owner`, `approval authority`, `source inputs`, `last reviewed`, `open questions`, `Decision`, `Rationale`, `Verification impact`, and `Deferred implementation` sections so binding defaults, proposed workshop values, and unresolved human decisions are distinguishable.
+8. Given a Phase-1-blocking value is not approved by its named authority, when the artifact is authored, then the value is marked `needs human decision`, the artifact status is not `approved`, and the story completion notes identify the blocker rather than presenting the story as fully ready for Contract Spine authoring.
+9. Given verification is run, when the decision artifacts are checked, then every C3/C4 table row and S-2/C6 mapping entry has explicit provenance, approval state, consuming future artifact, and review date, and verification fails on generic placeholders such as `TBD`, `retain as needed`, production-looking issuer URLs, secret-looking values, or undocumented numeric limits.
 
 ## Tasks / Subtasks
 
@@ -33,12 +35,16 @@ so that the canonical contract starts with real retention, input-limit, state, a
   - [ ] Include value provenance for every duration: source architecture section, Story 1.3 fixture/template, stakeholder workshop note, or explicit `needs human decision`.
   - [ ] State the tenant-isolation implication for each retained data class and avoid copying tenant payload values into examples.
   - [ ] Record decision owner `Tech Lead`, decision authority `Legal + PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
+  - [ ] Classify every duration as `approved`, `proposed workshop value`, or `needs human decision`; do not mix those states in one row without explaining which downstream consumer is blocked.
+  - [ ] Include a commit-idempotency TTL row or note showing how D-7 `commit = retention-period(C3)` inherits from the approved retention decision, or mark it as the explicit Phase 1 blocker.
   - [ ] Do not invent legal commitments without recording the source of the decision; if a stakeholder value is unavailable, record the blocking decision explicitly instead of writing a fake concrete value.
 - [ ] Author `docs/exit-criteria/c4-input-limits.md`. (AC: 2, 5)
   - [ ] Start from `docs/exit-criteria/_template.md` if present.
   - [ ] Define max files, max bytes, max result count, max query duration, timeout behavior, truncation behavior, and included/excluded audit visibility for context-query families.
   - [ ] Map each limit to the Phase 1 Contract Spine fields that must receive the value, including `maxItems`, `maxLength`, `maxBytes`, `maxResultCount`, or equivalent OpenAPI extension metadata, without adding or editing OpenAPI files.
   - [ ] Include value provenance for every limit and state whether it is a binding MVP default, a proposed workshop value, or a `needs human decision` placeholder.
+  - [ ] Define units and boundary semantics for every numeric limit: whether the bound is inclusive, whether it applies before or after authorization/path filtering, and whether timeout/truncation returns partial results or a canonical error.
+  - [ ] State whether each limit is global for MVP or tenant-tunable later; do not introduce tenant-specific configuration files or per-tenant override behavior in this story.
   - [ ] Record decision owner `Architect`, decision authority `PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
   - [ ] Keep values bounded for MVP and note that later capacity calibration can revise them with evidence; do not replace C1/C5 release calibration work.
 - [ ] Document S-2 OIDC validation parameters. (AC: 3)
@@ -46,6 +52,7 @@ so that the canonical contract starts with real retention, input-limit, state, a
   - [ ] Include `ClockSkew = TimeSpan.FromSeconds(30)`, `RequireExpirationTime = true`, `RequireSignedTokens = true`, `ValidateIssuer = true`, `ValidateAudience = true`, `ValidateLifetime = true`, and `ValidateIssuerSigningKey = true`.
   - [ ] Include JWKS retrieval behavior: `AutomaticRefreshInterval = TimeSpan.FromMinutes(10)` and `RefreshInterval = TimeSpan.FromMinutes(1)` for forced refresh after signature-validation failure.
   - [ ] Document that issuer and audience are pinned per environment through syntactically valid non-secret configuration placeholders; do not commit real production issuer URLs, client secrets, provider credentials, or tenant-specific values.
+  - [ ] Use clearly non-production examples such as `.invalid` issuer hosts and placeholder audience names; verification must reject realistic production domains, raw JWTs, client secrets, private keys, certificates, or tenant identifiers.
   - [ ] Document claim provenance: `sub` is principal, `eventstore:tenant` is authoritative tenant after EventStore claim transformation, `eventstore:permission` gates command/query access, and tenant IDs in payloads are inputs to validate, not authority.
   - [ ] Keep the artifact documentation-only; do not add authentication middleware, package configuration, runtime integration, or environment-specific configuration files.
 - [ ] Document C6 transition-matrix implementation mapping. (AC: 4)
@@ -55,11 +62,14 @@ so that the canonical contract starts with real retention, input-limit, state, a
   - [ ] Document that every unlisted `(state, event)` pair must reject with `state_transition_invalid`, keep state unchanged, and remain inspectable through idempotency record behavior.
   - [ ] Document that operator-disposition labels must come from the architecture state catalog and later UI mapping must be generated from or tested against that catalog.
   - [ ] Document the future aggregate-test requirement: every state and every event in the architecture vocabulary needs positive transition or explicit rejection coverage, without adding aggregate tests in this story.
+  - [ ] Include the architecture source date or review date and the exact state/event vocabulary copied from the C6 source so future changes have an obvious drift point to update before implementation.
 - [ ] Add lightweight verification. (AC: 1, 2, 3, 4, 6)
   - [ ] Prefer a documentation test or script that checks the required files exist and contain no unresolved `TBD` placeholders for the Phase-1-blocking fields.
   - [ ] Check that no deliverable includes obvious secret values, provider tokens, production credentials, tenant data, raw file contents, or production-only URLs.
   - [ ] Check that verification evidence confirms no OpenAPI spine files, generated SDK outputs, REST/CLI/MCP/server code, authentication middleware, provider adapters, domain aggregates, aggregate tests, CI workflow gates, infrastructure files, or `FolderStateTransitions.cs` were added by this story.
   - [ ] Check each required artifact contains `status`, `decision owner`, `approval authority`, `source inputs`, `last reviewed`, `open questions`, `Decision`, `Rationale`, `Verification impact`, and `Deferred implementation` sections.
+  - [ ] Check C3/C4 artifacts distinguish `approved`, `proposed workshop value`, and `needs human decision`; if any `needs human decision` remains for a Phase-1-blocking value, record the exact blocked consumer and do not claim Phase 1 is unblocked.
+  - [ ] Check S-2 examples use non-production placeholders and C6 references do not drift from the architecture state/event vocabulary.
   - [ ] If an existing test project is available, integrate the check there; otherwise add the lightest local script or documented manual verification consistent with the current scaffold.
   - [ ] Run the relevant verification command and, when the scaffold supports it, `dotnet build Hexalith.Folders.slnx`.
 
@@ -72,6 +82,7 @@ so that the canonical contract starts with real retention, input-limit, state, a
 - C6 is already enumerated in the architecture. This story documents how implementation must map to it; it must not create `FolderStateTransitions.cs` or aggregate tests.
 - S-2 validation parameters are already specified in architecture. This story records them in an implementation-ready artifact with environment placeholders; it must not wire authentication middleware.
 - Every decision value must show provenance and approval state. If a value is not approved, record it as a proposed workshop value or `needs human decision`; do not present developer-authored estimates as binding stakeholder policy.
+- `needs human decision` is an allowed documentation outcome but not an unblocked Phase 1 outcome. Completion notes must name any blocked C3/C4 consumer, S-2 environment pin, or C6 mapping issue left unresolved.
 - Do not alter sibling submodules (`Hexalith.Tenants`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.AI.Tools`). Use them only as read-only references.
 
 ### Required Deliverables
@@ -143,6 +154,7 @@ Use these exact paths for the four decision artifacts. If an existing architectu
 - Verification should prove the required artifacts exist, required ownership metadata is present, Phase-1-blocking values are not left as unresolved placeholders, and no obvious secret material is committed.
 - Verification should prove each artifact distinguishes binding MVP defaults, proposed workshop values, and unresolved human decisions through provenance and approval metadata.
 - Verification should prove this story did not add implementation, generated contract/client, CI, infrastructure, middleware, aggregate, or aggregate-test files outside the expected documentation/verification surface.
+- Verification should treat undocumented numeric values and realistic secret-looking placeholders as failures. Examples must be synthetic and visibly non-production.
 - Build verification should use `dotnet build Hexalith.Folders.slnx` when the scaffold supports it. If build is blocked by incomplete prior scaffold work, record the exact prerequisite instead of expanding this story's scope.
 - Tests and scripts must not require Dapr sidecars, Aspire topology, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, production secrets, or initialized nested submodules.
 
@@ -177,6 +189,7 @@ Use these exact paths for the four decision artifacts. If an existing architectu
 |---|---|---|
 | 2026-05-10 | Party-mode review applied documentation-only scope, provenance, approval-state, and verification guardrails. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+| 2026-05-11 | Advanced elicitation pass applied authority-state, placeholder-safety, boundary-semantics, and drift-detection hardening. | Codex |
 
 ## Party-Mode Review
 
@@ -198,6 +211,40 @@ Use these exact paths for the four decision artifacts. If an existing architectu
   - Final C3 retention durations require Legal + PM authority when not already approved.
   - Final C4 bounded MVP input limits require PM/API-owner approval when not already approved.
   - OIDC issuer/audience/JWKS policy values and C6 operator-disposition/rejection semantics must retain named security/domain authority provenance in the deliverables.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-11T02:03:59.8559226+02:00
+- Selected story key: `1-4-author-phase-0-5-pre-spine-workshop-deliverables`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-4-author-phase-0-5-pre-spine-workshop-deliverables`
+- Batch 1 method names:
+  - Red Team vs Blue Team
+  - Security Audit Personas
+  - Failure Mode Analysis
+  - Pre-mortem Analysis
+  - Self-Consistency Validation
+- Reshuffled Batch 2 method names:
+  - Architecture Decision Records
+  - Comparative Analysis Matrix
+  - Challenge from Critical Perspective
+  - First Principles Analysis
+  - Critique and Refine
+- Findings summary:
+  - The story needed a stronger distinction between documented unresolved decisions and a genuinely unblocked Phase 1 handoff.
+  - C3/C4 values needed explicit approval-state, boundary semantics, consumer mapping, and D-7 commit-TTL inheritance safeguards.
+  - S-2 examples needed clearer placeholder safety so documentation cannot accidentally normalize production-looking issuer, audience, token, key, or tenant values.
+  - C6 mapping needed a visible drift checkpoint against the architecture state/event vocabulary before later aggregate implementation.
+- Changes applied:
+  - Added acceptance criteria for non-approved Phase-1-blocking values and verification failures on generic placeholders, secret-looking values, or undocumented numeric limits.
+  - Added C3 tasks for per-row approval-state classification and D-7 commit-idempotency TTL inheritance.
+  - Added C4 tasks for inclusive boundary semantics, authorization/filter ordering, partial-result versus canonical-error behavior, and future tenant-tunability notes.
+  - Added S-2 placeholder safety and C6 architecture vocabulary drift checks.
+  - Added verification expectations for blocked consumers, synthetic placeholders, and unresolved human decisions.
+- Findings deferred:
+  - Legal + PM still own final C3 retention approval where values are not already authoritative.
+  - PM still owns final C4 MVP input-limit approval where values are proposed rather than approved.
+  - Security/architecture owners still need to pin real per-environment issuer and audience configuration outside this documentation-only story.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
