@@ -51,7 +51,7 @@ development_status:
   1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: ready-for-dev
   1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: ready-for-dev
   1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: ready-for-dev
-  1-8-author-workspace-and-lock-contract-groups: backlog
+  1-8-author-workspace-and-lock-contract-groups: ready-for-dev
   1-9-author-file-mutation-and-context-query-contract-groups: backlog
   1-10-author-commit-and-workspace-status-contract-groups: backlog
   1-11-author-audit-and-ops-console-query-contract-groups: backlog

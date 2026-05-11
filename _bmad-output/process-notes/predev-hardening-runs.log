@@ -29,3 +29,4 @@
 2026-05-11T10:04:15Z	none	-	none	ready buffer satisfied and all ready stories already hardened; preflight passed 2026-05-11T10:03:29Z
 2026-05-11T11:03:14Z	none	-	none	ready buffer satisfied and all ready stories already hardened; preflight passed 2026-05-11T11:02:25Z
 2026-05-11T12:03:53Z	none	-	none	ready buffer satisfied and all ready stories already hardened; preflight passed 2026-05-11T12:03:21Z
+2026-05-11T18:09:26Z	create-story	1-8-author-workspace-and-lock-contract-groups	ok	created ready-for-dev story; preflight active-dev-story soft warning 2026-05-11T18:05:06Z
