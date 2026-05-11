@@ -92,6 +92,78 @@ public sealed class ScaffoldContractTests
         projectsWithInlineVersions.ShouldBeEmpty();
     }
 
+    [Fact]
+    public void RequiredRootConfigurationFilesExist()
+    {
+        string root = RepositoryRoot();
+        string[] requiredFiles =
+        [
+            ".editorconfig",
+            ".gitmodules",
+            "Directory.Build.props",
+            "Directory.Packages.props",
+            "Hexalith.Folders.slnx",
+            "global.json",
+            "nuget.config"
+        ];
+
+        string[] missingFiles = requiredFiles
+            .Where(file => !File.Exists(Path.Combine(root, file)))
+            .ToArray();
+
+        missingFiles.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void NuGetConfigurationUsesPublicSourceWithoutCredentials()
+    {
+        string root = RepositoryRoot();
+        XDocument nugetConfig = XDocument.Load(Path.Combine(root, "nuget.config"));
+        string content = File.ReadAllText(Path.Combine(root, "nuget.config"));
+
+        nugetConfig.Descendants("packageSources")
+            .Descendants("add")
+            .Select(source => ((string?)source.Attribute("value")) ?? string.Empty)
+            .ShouldBe(["https://api.nuget.org/v3/index.json"]);
+
+        content.ShouldNotContain("packageSourceCredentials", Case.Insensitive);
+        content.ShouldNotContain("cleartextpassword", Case.Insensitive);
+        content.ShouldNotContain("password", Case.Insensitive);
+        content.ShouldNotContain("token", Case.Insensitive);
+        content.ShouldNotContain("%userprofile%", Case.Insensitive);
+        content.ShouldNotContain("$HOME", Case.Insensitive);
+    }
+
+    [Fact]
+    public void SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup()
+    {
+        string root = RepositoryRoot();
+        string[] policyDocuments =
+        [
+            "AGENTS.md",
+            "CLAUDE.md",
+            "README.md"
+        ];
+
+        foreach (string document in policyDocuments)
+        {
+            string path = Path.Combine(root, document);
+            File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root.");
+
+            string content = File.ReadAllText(path);
+            content.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.EventStore Hexalith.FrontComposer Hexalith.Tenants", Case.Insensitive);
+            content.ShouldContain("git submodule update --init --recursive", Case.Insensitive);
+            content.ShouldContain("Nested submodules must only be initialized when a user explicitly requests nested submodule work.", Case.Insensitive);
+        }
+
+        string[] violations = PolicyDocumentPaths(root)
+            .SelectMany(path => RecursiveDefaultSetupViolations(path)
+                .Select(line => $"{Normalize(Path.GetRelativePath(root, path))}:{line.LineNumber}: {line.Text}"))
+            .ToArray();
+
+        violations.ShouldBeEmpty();
+    }
+
     private static string RepositoryRoot()
     {
         DirectoryInfo? directory = new(AppContext.BaseDirectory);
@@ -136,6 +208,80 @@ public sealed class ScaffoldContractTests
         return relative.StartsWith("src/", StringComparison.Ordinal)
             || relative.StartsWith("tests/", StringComparison.Ordinal)
             || relative.StartsWith("samples/", StringComparison.Ordinal);
+    }
+
+    private static IEnumerable<string> PolicyDocumentPaths(string root)
+    {
+        string[] rootDocuments = Directory
+            .EnumerateFiles(root, "*.md", SearchOption.TopDirectoryOnly)
+            .Where(path => IsPolicyDocument(path))
+            .ToArray();
+
+        string docsRoot = Path.Combine(root, "docs");
+        string[] docsDocuments = Directory.Exists(docsRoot)
+            ? Directory.EnumerateFiles(docsRoot, "*.md", SearchOption.AllDirectories)
+                .Where(path => IsPolicyDocument(path))
+                .ToArray()
+            : [];
+
+        return rootDocuments.Concat(docsDocuments);
+    }
+
+    private static IEnumerable<(int LineNumber, string Text)> RecursiveDefaultSetupViolations(string path)
+    {
+        string[] lines = File.ReadAllLines(path);
+        for (int index = 0; index < lines.Length; index++)
+        {
+            if (!ContainsRecursiveSubmoduleSetup(lines[index]))
+            {
+                continue;
+            }
+
+            string context = string.Join(
+                ' ',
+                lines.Skip(Math.Max(0, index - 4)).Take(Math.Min(7, lines.Length - Math.Max(0, index - 4))));
+
+            if (!IsWarningOrNestedOptInContext(context))
+            {
+                yield return (index + 1, lines[index].Trim());
+            }
+        }
+    }
+
+    private static bool IsPolicyDocument(string path)
+    {
+        string relative = Normalize(path);
+        return !relative.Contains("/_bmad", StringComparison.Ordinal)
+            && !relative.Contains("/Hexalith.AI.Tools/", StringComparison.Ordinal)
+            && !relative.Contains("/Hexalith.EventStore/", StringComparison.Ordinal)
+            && !relative.Contains("/Hexalith.FrontComposer/", StringComparison.Ordinal)
+            && !relative.Contains("/Hexalith.Tenants/");
+    }
+
+    private static bool ContainsRecursiveSubmoduleSetup(string line)
+    {
+        string normalized = line.ToLowerInvariant();
+        return normalized.Contains("git submodule", StringComparison.Ordinal)
+                && normalized.Contains("--recursive", StringComparison.Ordinal)
+            || normalized.Contains("git clone", StringComparison.Ordinal)
+                && normalized.Contains("--recurse-submodules", StringComparison.Ordinal)
+            || normalized.Contains("--recurse-submodules", StringComparison.Ordinal)
+            || normalized.Contains("git submodule foreach", StringComparison.Ordinal)
+                && normalized.Contains("--recursive", StringComparison.Ordinal);
+    }
+
+    private static bool IsWarningOrNestedOptInContext(string context)
+    {
+        string normalized = context.ToLowerInvariant();
+        return normalized.Contains("do not", StringComparison.Ordinal)
+            || normalized.Contains("never", StringComparison.Ordinal)
+            || normalized.Contains("avoid", StringComparison.Ordinal)
+            || normalized.Contains("forbid", StringComparison.Ordinal)
+            || normalized.Contains("forbidden", StringComparison.Ordinal)
+            || normalized.Contains("unless", StringComparison.Ordinal)
+            || normalized.Contains("nested submodule", StringComparison.Ordinal)
+            || normalized.Contains("explicitly requests", StringComparison.Ordinal)
+            || normalized.Contains("opt-in", StringComparison.Ordinal);
     }
 
     private static string Normalize(string path) => path.Replace('\\', '/');

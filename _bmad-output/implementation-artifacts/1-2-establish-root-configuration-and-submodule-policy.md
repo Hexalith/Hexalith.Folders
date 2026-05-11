@@ -1,6 +1,6 @@
 # Story 1.2: Establish root configuration and submodule policy
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-10
 
@@ -20,34 +20,34 @@ so that builds are reproducible and nested submodules are not initialized accide
 
 ## Tasks / Subtasks
 
-- [ ] Inspect the Story 1.1 scaffold outputs before changing root files. (AC: 1, 2, 4)
-  - [ ] Verify whether `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, `.editorconfig`, `.gitmodules`, and `Hexalith.Folders.slnx` already exist.
-  - [ ] Preserve valid Story 1.1 project references and placeholder project structure; this story hardens root configuration rather than rebuilding the scaffold.
-  - [ ] Record any missing root files in the dev completion notes before adding them.
-- [ ] Harden shared build and restore configuration. (AC: 1, 2, 4)
-  - [ ] Adapt `Hexalith.Tenants/Directory.Build.props` to `Hexalith.Folders`, preserving `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, deterministic build settings, package metadata, and sibling path detection.
-  - [ ] Ensure sibling path detection is conditional and optional; missing sibling directories or uninitialized nested submodules must not break restore/build.
-  - [ ] Adapt `Hexalith.Tenants/Directory.Packages.props` for central package management; package references in project files must not carry versions unless a project-local version is explicitly justified.
-  - [ ] Add or align `global.json` with the .NET 10 SDK roll-forward convention used by Hexalith.Tenants.
-  - [ ] Add `nuget.config` only for deterministic restore sources and package mapping needed by this repository; do not add credentials or private feed secrets.
-  - [ ] Verify `nuget.config` contains no clear-text credentials, password entries, token placeholders, or machine/user-specific feed paths.
-  - [ ] Add or align `.editorconfig` with sibling-module formatting and analyzer conventions.
-- [ ] Confirm solution and root configuration agree. (AC: 1, 2, 4)
-  - [ ] Verify `Hexalith.Folders.slnx` includes every scaffold project produced by Story 1.1 and no non-root nested submodule project paths.
-  - [ ] Confirm root props do not require running Aspire, Dapr, Keycloak, Redis, GitHub, Forgejo, or tenant seed data at build time.
-  - [ ] Ensure package metadata points to Hexalith.Folders and does not retain copied Hexalith.Tenants package IDs, repository URLs, descriptions, or tags where they would be misleading.
-- [ ] Establish root-level submodule policy. (AC: 3, 5)
-  - [ ] Keep `.gitmodules` limited to root-level entries such as `Hexalith.AI.Tools`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, and `Hexalith.Tenants`.
-  - [ ] Ensure setup guidance in `AGENTS.md`, `CLAUDE.md`, and any root README/setup section says to initialize/update only root-level submodules by default and includes short imperative setup steps with copy-pasteable commands.
-  - [ ] Include the canonical root-only command block and one-sentence rationale in the root README/setup section and agent-facing policy docs.
-  - [ ] Remove or rewrite any setup instruction that uses `git submodule update --init --recursive` unless it is explicitly framed as user-requested nested-submodule work.
-  - [ ] Cover reordered recursive flags, `git clone --recurse-submodules`, `git submodule foreach --recursive`, and script-level recursive setup variants in the guard test.
-  - [ ] Add a lightweight documentation or repository-policy test that fails when setup guidance reintroduces recursive submodule initialization as the default path while allowing deny-list warning text.
-- [ ] Verify reproducibility. (AC: 2, 4, 5)
-  - [ ] Run `dotnet restore Hexalith.Folders.slnx`.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx --no-restore`.
-  - [ ] Run the submodule-policy guard test or equivalent documentation check.
-  - [ ] Record verification commands and results in the dev completion notes.
+- [x] Inspect the Story 1.1 scaffold outputs before changing root files. (AC: 1, 2, 4)
+  - [x] Verify whether `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, `.editorconfig`, `.gitmodules`, and `Hexalith.Folders.slnx` already exist.
+  - [x] Preserve valid Story 1.1 project references and placeholder project structure; this story hardens root configuration rather than rebuilding the scaffold.
+  - [x] Record any missing root files in the dev completion notes before adding them.
+- [x] Harden shared build and restore configuration. (AC: 1, 2, 4)
+  - [x] Adapt `Hexalith.Tenants/Directory.Build.props` to `Hexalith.Folders`, preserving `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, deterministic build settings, package metadata, and sibling path detection.
+  - [x] Ensure sibling path detection is conditional and optional; missing sibling directories or uninitialized nested submodules must not break restore/build.
+  - [x] Adapt `Hexalith.Tenants/Directory.Packages.props` for central package management; package references in project files must not carry versions unless a project-local version is explicitly justified.
+  - [x] Add or align `global.json` with the .NET 10 SDK roll-forward convention used by Hexalith.Tenants.
+  - [x] Add `nuget.config` only for deterministic restore sources and package mapping needed by this repository; do not add credentials or private feed secrets.
+  - [x] Verify `nuget.config` contains no clear-text credentials, password entries, token placeholders, or machine/user-specific feed paths.
+  - [x] Add or align `.editorconfig` with sibling-module formatting and analyzer conventions.
+- [x] Confirm solution and root configuration agree. (AC: 1, 2, 4)
+  - [x] Verify `Hexalith.Folders.slnx` includes every scaffold project produced by Story 1.1 and no non-root nested submodule project paths.
+  - [x] Confirm root props do not require running Aspire, Dapr, Keycloak, Redis, GitHub, Forgejo, or tenant seed data at build time.
+  - [x] Ensure package metadata points to Hexalith.Folders and does not retain copied Hexalith.Tenants package IDs, repository URLs, descriptions, or tags where they would be misleading.
+- [x] Establish root-level submodule policy. (AC: 3, 5)
+  - [x] Keep `.gitmodules` limited to root-level entries such as `Hexalith.AI.Tools`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, and `Hexalith.Tenants`.
+  - [x] Ensure setup guidance in `AGENTS.md`, `CLAUDE.md`, and any root README/setup section says to initialize/update only root-level submodules by default and includes short imperative setup steps with copy-pasteable commands.
+  - [x] Include the canonical root-only command block and one-sentence rationale in the root README/setup section and agent-facing policy docs.
+  - [x] Remove or rewrite any setup instruction that uses `git submodule update --init --recursive` unless it is explicitly framed as user-requested nested-submodule work.
+  - [x] Cover reordered recursive flags, `git clone --recurse-submodules`, `git submodule foreach --recursive`, and script-level recursive setup variants in the guard test.
+  - [x] Add a lightweight documentation or repository-policy test that fails when setup guidance reintroduces recursive submodule initialization as the default path while allowing deny-list warning text.
+- [x] Verify reproducibility. (AC: 2, 4, 5)
+  - [x] Run `dotnet restore Hexalith.Folders.slnx`.
+  - [x] Run `dotnet build Hexalith.Folders.slnx --no-restore`.
+  - [x] Run the submodule-policy guard test or equivalent documentation check.
+  - [x] Record verification commands and results in the dev completion notes.
 
 ## Dev Notes
 
@@ -160,6 +160,7 @@ Story 1.1 created the scaffold story and defined the expected project layout, de
 | 2026-05-10 | Applied `bmad-advanced-elicitation` hardening for optional sibling detection, NuGet credential safety, recursive-command variants, and repository-policy guard precision. | Codex |
 | 2026-05-10 | Applied `bmad-party-mode` review hardening for root-only submodule policy, guard-test criteria, and deterministic build verification. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+| 2026-05-11 | Implemented root configuration hardening, root-only submodule setup guidance, and repository-policy guard tests. | Codex |
 
 ## Party-Mode Review
 
@@ -211,10 +212,36 @@ Story 1.1 created the scaffold story and defined the expected project layout, de
 
 ### Agent Model Used
 
-TBD by dev-story agent
+Codex GPT-5
 
 ### Debug Log References
 
+- `dotnet test .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore --filter FullyQualifiedName~ScaffoldContractTests -v:minimal` failed red phase as expected because `.editorconfig`, `nuget.config`, and canonical setup guidance were missing.
+- `dotnet test .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore --filter FullyQualifiedName~ScaffoldContractTests -v:minimal` passed after adding root files, setup guidance, and policy checks.
+- `dotnet restore .\Hexalith.Folders.slnx` passed.
+- `dotnet build .\Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors.
+- `dotnet test .\Hexalith.Folders.slnx --no-build -v:minimal` passed: 16 tests across 11 test assemblies.
+- `git diff --check` reported no whitespace errors; Git displayed line-ending normalization warnings for touched text files.
+- `rg -n 'PackageReference[^>]*Version=|packageSourceCredentials|cleartextpassword|password|token|%userprofile%|\$HOME' -g '*.csproj' -g 'nuget.config' -g '!Hexalith.EventStore/**' -g '!Hexalith.FrontComposer/**' -g '!Hexalith.Tenants/**' -g '!Hexalith.AI.Tools/**'` found no inline package versions or NuGet credential/token/user-path markers.
+
 ### Completion Notes List
 
+- Story 1.1 scaffold outputs were inspected before root-file changes. `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `.gitmodules`, and `Hexalith.Folders.slnx` already existed; `.editorconfig` and `nuget.config` were missing and were added.
+- Preserved Story 1.1 project structure and solution membership while adding `.editorconfig`, `.gitmodules`, and `nuget.config` to solution items.
+- Hardened root build metadata with deterministic build settings while preserving `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, Hexalith.Folders package metadata, and optional root-level sibling detection.
+- Added `nuget.config` with only the public NuGet v3 source and package-source mapping; no credentials, password entries, token placeholders, or machine/user-specific feed paths were added.
+- Added root `.editorconfig` aligned with sibling-module formatting, naming, namespace, using-placement, and analyzer conventions.
+- Added canonical root-only submodule setup guidance to `AGENTS.md`, `CLAUDE.md`, and `README.md`, including the root-level command block, deny-list example, and rationale for avoiding recursive initialization.
+- Added deterministic repository-policy smoke tests that check required root files, NuGet source safety, canonical setup text, and recursive submodule setup variants while allowing warning/deny-list examples.
+- `.gitmodules` remains a root-level inventory for `Hexalith.Tenants`, `Hexalith.AI.Tools`, `Hexalith.EventStore`, and `Hexalith.FrontComposer`; no nested submodule initialization was run or required.
+
 ### File List
+
+- `.editorconfig`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `Directory.Build.props`
+- `Hexalith.Folders.slnx`
+- `README.md`
+- `nuget.config`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
