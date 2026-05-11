@@ -1,6 +1,6 @@
 # Story 1.5: Finalize idempotency equivalence and adapter parity rules
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-10
 
@@ -24,60 +24,60 @@ so that REST, SDK, CLI, and MCP cannot drift on operation identity or error hand
 
 ## Tasks / Subtasks
 
-- [ ] Inspect prerequisites and preserve story boundaries. (AC: 1, 7)
-  - [ ] Confirm Story 1.3 fixture seeds are present before changing `tests/fixtures/parity-contract.schema.json` or `tests/fixtures/idempotency-encoding-corpus.json`.
-  - [ ] Confirm Story 1.4 Phase 0.5 deliverables exist, especially `docs/exit-criteria/c3-retention.md` and `docs/exit-criteria/c4-input-limits.md`, or record the exact missing prerequisite without fabricating values.
-  - [ ] Do not initialize or update nested submodules; root-level submodules are read-only references unless the user explicitly asks for nested submodules.
-  - [ ] Do not author the OpenAPI Contract Spine file in this story. Story 1.6 owns the foundation and shared extension vocabulary, and later Epic 1 stories own operation groups.
-  - [ ] Do not generate SDK code, REST handlers, CLI commands, MCP tools, parity result rows, NSwag configuration, or behavior in `Hexalith.Folders.Contracts`.
-- [ ] Author the operation metadata rules artifact. (AC: 1, 2, 3)
-  - [ ] Create `docs/contract/idempotency-and-parity-rules.md`, unless an existing contract-rules document clearly owns the same content.
-  - [ ] Add a decision-record section that separates finalized MVP rules from deferred OpenAPI, SDK, REST, CLI, MCP, generated-helper, persistence, and parity-oracle implementation work.
-  - [ ] Include the approved MVP command/query inventory from PRD command/query contract: `ValidateProviderReadiness`, `CreateFolder`, `BindRepository`, `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `AddFile`, `ChangeFile`, `RemoveFile`, `CommitWorkspace`, `GetWorkspaceStatus`, `ListFolderFiles`, `SearchFolderFiles`, `ReadFileRange`, and `GetAuditTrail`.
-  - [ ] Add any additional operation names that Story 1.4 or the current architecture has made unavoidable for Phase 1, such as effective permissions, folder lifecycle/archive, provider support evidence, cleanup status, and operations-console projection queries. Mark them as "Phase 1 inventory candidate" if their exact OpenAPI operation ID remains for Story 1.6+ to freeze.
-  - [ ] For each operation, classify command/query type, mutating versus non-mutating behavior, idempotency requirement, read-consistency expectation where applicable, resource scope, authoritative tenant source, required task/correlation identity, lock requirement, expected state/projection family, canonical error categories, audit metadata keys, parity surfaces, and deferred implementation owner.
-  - [ ] Use stable, machine-checkable table headings and column names for operation inventory, idempotency-equivalence fields, read-consistency class, parity dimensions, adapter-specific outcomes, deferred owner, and verification coverage. Avoid relying on narrative-only rules for data Story 1.6+ or Story 1.13 must consume.
-  - [ ] Keep operation IDs stable enough for Story 1.6+ to translate into OpenAPI, but do not create endpoint paths or schemas here unless needed to explain parity metadata.
-- [ ] Define idempotency equivalence for every mutating command. (AC: 2)
-  - [ ] Define the adopter-facing rule as: same tenant, same operation intent, same semantic request, same target resource identity, same credential scope where behavior changes, and same idempotency key are required for equivalent replay.
-  - [ ] For repository/folder creation or binding commands, include identity-defining fields only; exclude timestamps, generated operation IDs, status labels, diagnostic text, and projection-only fields from equivalence.
-  - [ ] For workspace preparation, include tenant/folder/repository binding identity, task ID, branch/ref policy, provider binding reference, and workspace policy inputs needed to prevent duplicate workspaces.
-  - [ ] For lock acquisition and release, include tenant/folder/workspace scope, task ID, lock intent, expected lock token or owner where applicable, and lease policy fields that affect behavior.
-  - [ ] For file add/change/remove, include operation ID, path metadata, content hash or metadata reference, file-operation kind, task ID, workspace scope, and path-policy-relevant metadata; never include raw file content or diffs in rules or examples.
-  - [ ] For commit, include task ID, workspace scope, branch/ref target, changed-path metadata digest, commit-message classification metadata, author metadata reference, and operation ID. Tie commit TTL to C3 retention rather than the 24-hour mutation tier.
-  - [ ] State that same key across tenants, changed payload semantics, changed credential scope, changed command intent, or changed target resource identity is non-equivalent and must not reveal prior request metadata.
-  - [ ] State that fields are ordered lexicographically for `x-hexalith-idempotency-equivalence` and that consumers must use generated `ComputeIdempotencyHash()` helpers after Story 1.12 instead of hand-rolling canonicalization.
-  - [ ] Define how the rules artifact classifies duplicate JSON keys, null versus omitted values, percent-encoded path equivalence, Unicode normalization form, and casing-sensitive identifiers as equivalent, non-equivalent, or parser-rejected input. Keep parser-policy choices limited to documenting future canonicalization expectations; do not implement canonicalization in this story.
-- [ ] Define read-consistency and parity dimensions for non-mutating operations. (AC: 3)
-  - [ ] Assign read consistency classes using the architecture vocabulary: `snapshot-per-task`, `read-your-writes`, or `eventually-consistent`.
-  - [ ] For context queries, include C4-derived bounds, path policy, include/exclude policy, binary/large-file policy, range limits, result limits, timeout behavior, truncation behavior, and included/excluded audit visibility.
-  - [ ] For audit and timeline queries, require metadata-only responses and C3 retention awareness.
-  - [ ] For status and operations-console projections, distinguish accepted command state from projected state when projection lag exists, and include freshness/correlation metadata.
-  - [ ] Record that non-mutating operations do not accept `Idempotency-Key`; they still require correlation behavior and safe authorization-denial parity.
-  - [ ] Require safe-denial examples for non-mutating reads to avoid revealing whether a tenant, folder, path, task, provider binding, or audit record exists when credentials are missing, wrong-tenant, or insufficient-scope.
-- [ ] Finalize adapter parity contract details. (AC: 4)
-  - [ ] Copy the architecture Adapter Parity Contract into an implementation-facing section or reference it directly from `docs/contract/idempotency-and-parity-rules.md` with all required dimensions intact.
-  - [ ] Preserve SDK behavior: caller-provided idempotency key or DI provider, no SDK auto-generation; correlation may be caller-provided or generated by SDK provider; task ID is caller-provided for task-scoped operations.
-  - [ ] Preserve CLI behavior: `--idempotency-key` or `--allow-auto-key` for mutating commands, `--correlation-id`, required `--task-id` for task-scoped commands, credential precedence `HEXALITH_TOKEN` then `~/.hexalith/credentials.json` then `--token`, and canonical exit codes 0, 64-75, and 1.
-  - [ ] Preserve MCP behavior: required `idempotencyKey` on mutating tool inputs, optional `correlationId`, required `taskId` for task-scoped tools, `auth.token` or `auth.tokenFile` configuration, and the canonical failure-kind set.
-  - [ ] Add a compact SDK/CLI/MCP outcome table covering success, idempotent replay, conflict/non-equivalent replay, missing credentials, wrong-tenant or insufficient-scope credentials, invalid input before SDK call, service-side rejection, accepted task, failed task, unknown task, and post-SDK error projection.
-  - [ ] Assert that CLI/MCP wrapping the SDK does not erase behavioral parity dimensions; pre-SDK errors, post-SDK projection, idempotency-key sourcing, correlation sourcing, and credential sourcing remain testable.
-- [ ] Harden parity schema and encoding fixtures only as far as this story requires. (AC: 5, 6)
-  - [ ] Update `tests/fixtures/parity-contract.schema.json` only for the row-shape and required-column validation needed by C13. Do not generate `tests/fixtures/parity-contract.yaml`.
-  - [ ] Ensure the parity schema can distinguish pre-SDK validation failures, SDK/client errors, server contract errors, credential/authentication failures, tenant authorization failures, task lifecycle failures, CLI exit-code mapping, and MCP failure-kind mapping.
-  - [ ] Ensure the parity schema rejects or flags unknown adapter names, unknown failure kinds, missing correlation/idempotency/task ID expectations, and ambiguous credential-sourcing rules.
-  - [ ] Update `tests/fixtures/idempotency-encoding-corpus.json` only with synthetic metadata-only cases needed by future `ComputeIdempotencyHash()` tests. Do not implement hash helpers.
-  - [ ] Include equivalent and non-equivalent encoding examples for canonical and non-canonical string forms, casing, ordering, whitespace, null versus omitted values, percent-encoding, Unicode normalization, zero-width joiner, ULID casing, malformed idempotency keys, and duplicate-key handling where the chosen parser policy can be documented safely.
-  - [ ] Preserve any existing ownership notes from Story 1.3 and add notes that Story 1.12 and Story 1.13 own helper generation and oracle generation.
-  - [ ] Ensure fixture changes contain no real tenant IDs, provider tokens, remote URLs with credentials, file contents, diffs, generated context payloads, production issuer URLs, or secrets.
-- [ ] Add focused verification. (AC: 5, 6, 7)
-  - [ ] Prefer a lightweight script, documentation test, or existing test project check that parses `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, and `tests/fixtures/idempotency-encoding-corpus.json`.
-  - [ ] Verify that every mutating command has an idempotency-equivalence field list and every query has a read-consistency class.
-  - [ ] Verify that required behavioral-parity columns are present in the parity schema.
-  - [ ] Verify that the encoding corpus is parseable and contains the Unicode/casing categories required by this story.
-  - [ ] Verify that the rules document contains the stable table headings and column names required by AC9, including at least one row for each MVP operation and each Phase 1 inventory candidate explicitly marked as candidate or deferred.
-  - [ ] Verify negative-scope guardrails: no OpenAPI spine file, NSwag config, generated SDK output, REST/CLI/MCP implementation, parity result rows, domain behavior in Contracts, CI workflow gate, or nested-submodule initialization was added by this story.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` when the scaffold supports it. If build is blocked by prior scaffold work, record the exact prerequisite instead of expanding this story's scope.
+- [x] Inspect prerequisites and preserve story boundaries. (AC: 1, 7)
+  - [x] Confirm Story 1.3 fixture seeds are present before changing `tests/fixtures/parity-contract.schema.json` or `tests/fixtures/idempotency-encoding-corpus.json`.
+  - [x] Confirm Story 1.4 Phase 0.5 deliverables exist, especially `docs/exit-criteria/c3-retention.md` and `docs/exit-criteria/c4-input-limits.md`, or record the exact missing prerequisite without fabricating values.
+  - [x] Do not initialize or update nested submodules; root-level submodules are read-only references unless the user explicitly asks for nested submodules.
+  - [x] Do not author the OpenAPI Contract Spine file in this story. Story 1.6 owns the foundation and shared extension vocabulary, and later Epic 1 stories own operation groups.
+  - [x] Do not generate SDK code, REST handlers, CLI commands, MCP tools, parity result rows, NSwag configuration, or behavior in `Hexalith.Folders.Contracts`.
+- [x] Author the operation metadata rules artifact. (AC: 1, 2, 3)
+  - [x] Create `docs/contract/idempotency-and-parity-rules.md`, unless an existing contract-rules document clearly owns the same content.
+  - [x] Add a decision-record section that separates finalized MVP rules from deferred OpenAPI, SDK, REST, CLI, MCP, generated-helper, persistence, and parity-oracle implementation work.
+  - [x] Include the approved MVP command/query inventory from PRD command/query contract: `ValidateProviderReadiness`, `CreateFolder`, `BindRepository`, `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `AddFile`, `ChangeFile`, `RemoveFile`, `CommitWorkspace`, `GetWorkspaceStatus`, `ListFolderFiles`, `SearchFolderFiles`, `ReadFileRange`, and `GetAuditTrail`.
+  - [x] Add any additional operation names that Story 1.4 or the current architecture has made unavoidable for Phase 1, such as effective permissions, folder lifecycle/archive, provider support evidence, cleanup status, and operations-console projection queries. Mark them as "Phase 1 inventory candidate" if their exact OpenAPI operation ID remains for Story 1.6+ to freeze.
+  - [x] For each operation, classify command/query type, mutating versus non-mutating behavior, idempotency requirement, read-consistency expectation where applicable, resource scope, authoritative tenant source, required task/correlation identity, lock requirement, expected state/projection family, canonical error categories, audit metadata keys, parity surfaces, and deferred implementation owner.
+  - [x] Use stable, machine-checkable table headings and column names for operation inventory, idempotency-equivalence fields, read-consistency class, parity dimensions, adapter-specific outcomes, deferred owner, and verification coverage. Avoid relying on narrative-only rules for data Story 1.6+ or Story 1.13 must consume.
+  - [x] Keep operation IDs stable enough for Story 1.6+ to translate into OpenAPI, but do not create endpoint paths or schemas here unless needed to explain parity metadata.
+- [x] Define idempotency equivalence for every mutating command. (AC: 2)
+  - [x] Define the adopter-facing rule as: same tenant, same operation intent, same semantic request, same target resource identity, same credential scope where behavior changes, and same idempotency key are required for equivalent replay.
+  - [x] For repository/folder creation or binding commands, include identity-defining fields only; exclude timestamps, generated operation IDs, status labels, diagnostic text, and projection-only fields from equivalence.
+  - [x] For workspace preparation, include tenant/folder/repository binding identity, task ID, branch/ref policy, provider binding reference, and workspace policy inputs needed to prevent duplicate workspaces.
+  - [x] For lock acquisition and release, include tenant/folder/workspace scope, task ID, lock intent, expected lock token or owner where applicable, and lease policy fields that affect behavior.
+  - [x] For file add/change/remove, include operation ID, path metadata, content hash or metadata reference, file-operation kind, task ID, workspace scope, and path-policy-relevant metadata; never include raw file content or diffs in rules or examples.
+  - [x] For commit, include task ID, workspace scope, branch/ref target, changed-path metadata digest, commit-message classification metadata, author metadata reference, and operation ID. Tie commit TTL to C3 retention rather than the 24-hour mutation tier.
+  - [x] State that same key across tenants, changed payload semantics, changed credential scope, changed command intent, or changed target resource identity is non-equivalent and must not reveal prior request metadata.
+  - [x] State that fields are ordered lexicographically for `x-hexalith-idempotency-equivalence` and that consumers must use generated `ComputeIdempotencyHash()` helpers after Story 1.12 instead of hand-rolling canonicalization.
+  - [x] Define how the rules artifact classifies duplicate JSON keys, null versus omitted values, percent-encoded path equivalence, Unicode normalization form, and casing-sensitive identifiers as equivalent, non-equivalent, or parser-rejected input. Keep parser-policy choices limited to documenting future canonicalization expectations; do not implement canonicalization in this story.
+- [x] Define read-consistency and parity dimensions for non-mutating operations. (AC: 3)
+  - [x] Assign read consistency classes using the architecture vocabulary: `snapshot-per-task`, `read-your-writes`, or `eventually-consistent`.
+  - [x] For context queries, include C4-derived bounds, path policy, include/exclude policy, binary/large-file policy, range limits, result limits, timeout behavior, truncation behavior, and included/excluded audit visibility.
+  - [x] For audit and timeline queries, require metadata-only responses and C3 retention awareness.
+  - [x] For status and operations-console projections, distinguish accepted command state from projected state when projection lag exists, and include freshness/correlation metadata.
+  - [x] Record that non-mutating operations do not accept `Idempotency-Key`; they still require correlation behavior and safe authorization-denial parity.
+  - [x] Require safe-denial examples for non-mutating reads to avoid revealing whether a tenant, folder, path, task, provider binding, or audit record exists when credentials are missing, wrong-tenant, or insufficient-scope.
+- [x] Finalize adapter parity contract details. (AC: 4)
+  - [x] Copy the architecture Adapter Parity Contract into an implementation-facing section or reference it directly from `docs/contract/idempotency-and-parity-rules.md` with all required dimensions intact.
+  - [x] Preserve SDK behavior: caller-provided idempotency key or DI provider, no SDK auto-generation; correlation may be caller-provided or generated by SDK provider; task ID is caller-provided for task-scoped operations.
+  - [x] Preserve CLI behavior: `--idempotency-key` or `--allow-auto-key` for mutating commands, `--correlation-id`, required `--task-id` for task-scoped commands, credential precedence `HEXALITH_TOKEN` then `~/.hexalith/credentials.json` then `--token`, and canonical exit codes 0, 64-75, and 1.
+  - [x] Preserve MCP behavior: required `idempotencyKey` on mutating tool inputs, optional `correlationId`, required `taskId` for task-scoped tools, `auth.token` or `auth.tokenFile` configuration, and the canonical failure-kind set.
+  - [x] Add a compact SDK/CLI/MCP outcome table covering success, idempotent replay, conflict/non-equivalent replay, missing credentials, wrong-tenant or insufficient-scope credentials, invalid input before SDK call, service-side rejection, accepted task, failed task, unknown task, and post-SDK error projection.
+  - [x] Assert that CLI/MCP wrapping the SDK does not erase behavioral parity dimensions; pre-SDK errors, post-SDK projection, idempotency-key sourcing, correlation sourcing, and credential sourcing remain testable.
+- [x] Harden parity schema and encoding fixtures only as far as this story requires. (AC: 5, 6)
+  - [x] Update `tests/fixtures/parity-contract.schema.json` only for the row-shape and required-column validation needed by C13. Do not generate `tests/fixtures/parity-contract.yaml`.
+  - [x] Ensure the parity schema can distinguish pre-SDK validation failures, SDK/client errors, server contract errors, credential/authentication failures, tenant authorization failures, task lifecycle failures, CLI exit-code mapping, and MCP failure-kind mapping.
+  - [x] Ensure the parity schema rejects or flags unknown adapter names, unknown failure kinds, missing correlation/idempotency/task ID expectations, and ambiguous credential-sourcing rules.
+  - [x] Update `tests/fixtures/idempotency-encoding-corpus.json` only with synthetic metadata-only cases needed by future `ComputeIdempotencyHash()` tests. Do not implement hash helpers.
+  - [x] Include equivalent and non-equivalent encoding examples for canonical and non-canonical string forms, casing, ordering, whitespace, null versus omitted values, percent-encoding, Unicode normalization, zero-width joiner, ULID casing, malformed idempotency keys, and duplicate-key handling where the chosen parser policy can be documented safely.
+  - [x] Preserve any existing ownership notes from Story 1.3 and add notes that Story 1.12 and Story 1.13 own helper generation and oracle generation.
+  - [x] Ensure fixture changes contain no real tenant IDs, provider tokens, remote URLs with credentials, file contents, diffs, generated context payloads, production issuer URLs, or secrets.
+- [x] Add focused verification. (AC: 5, 6, 7)
+  - [x] Prefer a lightweight script, documentation test, or existing test project check that parses `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, and `tests/fixtures/idempotency-encoding-corpus.json`.
+  - [x] Verify that every mutating command has an idempotency-equivalence field list and every query has a read-consistency class.
+  - [x] Verify that required behavioral-parity columns are present in the parity schema.
+  - [x] Verify that the encoding corpus is parseable and contains the Unicode/casing categories required by this story.
+  - [x] Verify that the rules document contains the stable table headings and column names required by AC9, including at least one row for each MVP operation and each Phase 1 inventory candidate explicitly marked as candidate or deferred.
+  - [x] Verify negative-scope guardrails: no OpenAPI spine file, NSwag config, generated SDK output, REST/CLI/MCP implementation, parity result rows, domain behavior in Contracts, CI workflow gate, or nested-submodule initialization was added by this story.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` when the scaffold supports it. If build is blocked by prior scaffold work, record the exact prerequisite instead of expanding this story's scope.
 
 ## Dev Notes
 
@@ -219,6 +219,7 @@ If implementation adds `GetEffectivePermissions`, `ArchiveFolder`, `GetFolderLif
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-11 | Implemented Story 1.5 idempotency and parity rules artifact, parity schema hardening, encoding corpus expansion, and focused verification. | Codex |
 | 2026-05-11 | Advanced elicitation applied machine-checkable table structure, parser-policy classification, safe-denial read examples, and verification hardening. | Codex |
 | 2026-05-10 | Party-mode review applied tenant-scoped equivalence, decision-record, fixture-validation, adapter-failure timing, and negative-scope guardrails. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
@@ -250,13 +251,33 @@ If implementation adds `GetEffectivePermissions`, `ArchiveFolder`, `GetFolderLif
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-11: Loaded BMad customization, project context, sprint status, and Story 1.5 before implementation.
+- 2026-05-11: Confirmed clean git worktree before starting story implementation.
+- 2026-05-11: Confirmed Story 1.3 fixture seeds and Story 1.4 C3/C4 exit-criteria artifacts exist; recorded C3/C4 as proposed workshop values where referenced.
+- 2026-05-11: Added failing `ContractRulesArtifactTests` before implementation, then implemented rules/fixtures until the tests passed.
+- 2026-05-11: Verified negative scope: no OpenAPI spine, generated parity rows, SDK output, REST/CLI/MCP implementation, CI workflow gate, or nested submodule initialization was added.
+- 2026-05-11: Ran targeted tests, scaffold fixture tests, solution build, and full solution test suite successfully.
+
 ### Completion Notes List
 
+- Created `docs/contract/idempotency-and-parity-rules.md` with a decision record, MVP operation inventory, Phase 1 inventory candidates, mutating-command equivalence rows, non-mutating read-consistency rows, adapter parity dimensions, adapter outcome mapping, deferred-owner rows, and verification coverage.
+- Hardened `tests/fixtures/parity-contract.schema.json` for C13 transport and behavioral parity columns, bounded adapter names, bounded CLI exit codes, bounded MCP failure kinds, task/correlation/idempotency/credential sourcing fields, and ownership metadata.
+- Expanded `tests/fixtures/idempotency-encoding-corpus.json` with synthetic metadata-only cases for NFC, NFD, NFKC, NFKD, zero-width joiner, casing, ULID casing, ordering, whitespace, null versus omitted values, percent encoding, malformed idempotency keys, and duplicate JSON keys.
+- Added `ContractRulesArtifactTests` to parse and verify the rules document, parity schema, encoding corpus, and negative-scope guardrails.
+- Validation passed: focused Story 1.5 tests, full `Hexalith.Folders.Testing.Tests`, `dotnet build Hexalith.Folders.slnx --no-restore`, and `dotnet test Hexalith.Folders.slnx --no-restore`.
+
 ### File List
+
+- docs/contract/idempotency-and-parity-rules.md
+- tests/fixtures/parity-contract.schema.json
+- tests/fixtures/idempotency-encoding-corpus.json
+- tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+- _bmad-output/implementation-artifacts/1-5-finalize-idempotency-equivalence-and-adapter-parity-rules.md
+- _bmad-output/implementation-artifacts/sprint-status.yaml
 
 ## Advanced Elicitation
 

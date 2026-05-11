@@ -48,7 +48,7 @@ development_status:
   1-2-establish-root-configuration-and-submodule-policy: review
   1-3-seed-minimally-valid-normative-fixtures: review
   1-4-author-phase-0-5-pre-spine-workshop-deliverables: review
-  1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: ready-for-dev
+  1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: review
   1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: ready-for-dev
   1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: ready-for-dev
   1-8-author-workspace-and-lock-contract-groups: ready-for-dev

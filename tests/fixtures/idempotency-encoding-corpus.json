@@ -1,18 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "schema_version": "0.1.0-fixture-seed",
-  "intent": "Minimal synthetic Unicode and casing corpus for future idempotency canonicalization tests.",
+  "schema_version": "0.2.0-story-1-5",
+  "intent": "Synthetic Unicode, casing, ordering, parser-policy, and malformed-key corpus for future idempotency canonicalization tests.",
   "ownership": {
-    "owner_workstream": "Idempotency, encoding, and C13 parity stories",
+    "owner_workstream": "Idempotency, encoding, Story 1.12 helper generation, and C13 parity stories",
     "future_test_use": "Future ComputeIdempotencyHash and adapter parity tests consume these cases after final equivalence rules are defined.",
     "known_omissions": [
       "No final canonical hash algorithm",
-      "No final equivalence assertions",
-      "No transport-specific header encoding matrix"
+      "No transport-specific header encoding matrix",
+      "No generated helper implementation",
+      "No final parity oracle rows"
     ],
     "mutation_rules": [
       "Keep samples metadata-only and synthetic.",
-      "Pair invisible or normalization-sensitive values with code-point labels."
+      "Pair invisible or normalization-sensitive values with code-point labels.",
+      "Document whether each case is equivalent, non-equivalent, or parser-rejected without implementing canonicalization here."
     ],
     "non_policy_placeholder": true,
     "synthetic_data_only": true
@@ -21,53 +23,168 @@
     {
       "id": "nfc-composed-e-acute",
       "category": "NFC",
-      "input": "Caf\u00e9",
-      "code_points": "U+0043 U+0061 U+0066 U+00E9",
-      "expected_intent": "Normalization-sensitive placeholder; final equivalence is deferred."
+      "input": "Cafe\u00e9",
+      "comparison_input": "Cafe\u0301",
+      "field_path": "path_metadata.display_name",
+      "code_points": "U+0043 U+0061 U+0066 U+0065 U+00E9",
+      "equivalence_classification": "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field",
+      "expected_intent": "Normalization-sensitive metadata-only placeholder; final helper owns canonicalization.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     },
     {
       "id": "nfd-decomposed-e-acute",
       "category": "NFD",
       "input": "Cafe\u0301",
+      "comparison_input": "Cafe\u00e9",
+      "field_path": "path_metadata.display_name",
       "code_points": "U+0043 U+0061 U+0066 U+0065 U+0301",
-      "expected_intent": "Normalization-sensitive placeholder; final equivalence is deferred."
+      "equivalence_classification": "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field",
+      "expected_intent": "Decomposed metadata sample paired with NFC case.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     },
     {
       "id": "nfkc-fullwidth-a",
       "category": "NFKC",
       "input": "\uff21-folder",
+      "comparison_input": "A-folder",
+      "field_path": "path_metadata.display_name",
       "code_points": "U+FF21 U+002D U+0066 U+006F U+006C U+0064 U+0065 U+0072",
-      "expected_intent": "Compatibility-normalization placeholder; final equivalence is deferred."
+      "equivalence_classification": "equivalent-only-when-field-declares-compatibility-normalization",
+      "expected_intent": "Compatibility-normalization placeholder.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     },
     {
       "id": "nfkd-roman-numeral-four",
       "category": "NFKD",
       "input": "\u2163-folder",
+      "comparison_input": "IV-folder",
+      "field_path": "path_metadata.display_name",
       "code_points": "U+2163 U+002D U+0066 U+006F U+006C U+0064 U+0065 U+0072",
-      "expected_intent": "Compatibility-decomposition placeholder; final equivalence is deferred."
+      "equivalence_classification": "equivalent-only-when-field-declares-compatibility-normalization",
+      "expected_intent": "Compatibility-decomposition placeholder.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     },
     {
       "id": "zero-width-joiner",
       "category": "zero-width-joiner",
       "input": "folder\u200dname",
+      "comparison_input": "foldername",
+      "field_path": "path_metadata.display_name",
       "code_points": "U+0066 U+006F U+006C U+0064 U+0065 U+0072 U+200D U+006E U+0061 U+006D U+0065",
-      "expected_intent": "Invisible-character placeholder; final equivalence is deferred."
+      "equivalence_classification": "non-equivalent-unless-generated-helper-declares-invisible-character-normalization",
+      "expected_intent": "Invisible-character placeholder with explicit code-point label.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     },
     {
       "id": "case-folding-folder-name",
       "category": "casing",
       "input": "SyntheticFolderName",
       "comparison_input": "syntheticfoldername",
+      "field_path": "path_metadata.display_name",
       "code_points": "ASCII casing sample",
-      "expected_intent": "Case-handling placeholder; final equivalence is deferred."
+      "equivalence_classification": "non-equivalent-by-default-for-casing-sensitive-string-field",
+      "expected_intent": "Folder names remain casing-sensitive unless a field explicitly declares otherwise.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     },
     {
       "id": "ulid-casing",
       "category": "ULID casing",
       "input": "01arz3ndektsv4rrffq69g5fav",
       "comparison_input": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+      "field_path": "operation_id",
       "code_points": "Crockford Base32 casing sample",
-      "expected_intent": "ULID case-handling placeholder; final equivalence is deferred."
+      "equivalence_classification": "equivalent-only-for-fields-declared-ulid-typed",
+      "expected_intent": "ULID case-handling placeholder.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
+    },
+    {
+      "id": "lexicographic-field-order",
+      "category": "ordering",
+      "input": {
+        "tenant_id": "tenant-synthetic-alpha",
+        "task_id": "task-synthetic-001",
+        "operation_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+      },
+      "comparison_input": {
+        "operation_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+        "task_id": "task-synthetic-001",
+        "tenant_id": "tenant-synthetic-alpha"
+      },
+      "field_path": "x_hexalith_idempotency_equivalence",
+      "code_points": "ASCII object-key ordering sample",
+      "equivalence_classification": "equivalent-after-lexicographic-field-ordering",
+      "expected_intent": "Object member order must not affect the generated helper hash.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
+    },
+    {
+      "id": "whitespace-around-metadata",
+      "category": "whitespace",
+      "input": "synthetic-branch",
+      "comparison_input": " synthetic-branch ",
+      "field_path": "branch_ref_target",
+      "code_points": "ASCII whitespace sample",
+      "equivalence_classification": "non-equivalent-unless-schema-declares-trimmed-field",
+      "expected_intent": "Whitespace is semantic for opaque identifiers unless the schema declares trimming.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
+    },
+    {
+      "id": "null-versus-omitted-parent",
+      "category": "null-vs-omitted",
+      "input": {
+        "parent_folder_id": null
+      },
+      "comparison_input": {},
+      "field_path": "parent_folder_id",
+      "code_points": "JSON null versus missing member",
+      "equivalence_classification": "non-equivalent-unless-schema-declares-default-equivalence",
+      "expected_intent": "Null is explicit input and omitted is absent input unless a future schema says otherwise.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
+    },
+    {
+      "id": "percent-encoded-path-separator",
+      "category": "percent-encoding",
+      "input": "folder%2Fchild",
+      "comparison_input": "folder/child",
+      "field_path": "path_metadata.normalized_path",
+      "code_points": "ASCII percent-encoding sample",
+      "equivalence_classification": "equivalent-only-after-single-safe-decode-and-path-policy-validation",
+      "expected_intent": "Path equivalence waits for generated helper and path policy; double decode remains rejected.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
+    },
+    {
+      "id": "malformed-idempotency-key-control-character",
+      "category": "malformed-idempotency-key",
+      "input": "synthetic-key-\u0001",
+      "comparison_input": "synthetic-key",
+      "field_path": "idempotency_key",
+      "code_points": "U+0001 control character",
+      "equivalence_classification": "parser-rejected",
+      "expected_intent": "Malformed keys fail validation and never reach hash computation.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
+    },
+    {
+      "id": "duplicate-json-key-operation-id",
+      "category": "duplicate-json-key",
+      "input": "{\"operation_id\":\"synthetic-a\",\"operation_id\":\"synthetic-b\"}",
+      "comparison_input": "{\"operation_id\":\"synthetic-a\"}",
+      "field_path": "operation_id",
+      "code_points": "ASCII duplicate-key JSON text sample",
+      "equivalence_classification": "parser-rejected",
+      "expected_intent": "Duplicate JSON keys are ambiguous input and must not be canonicalized by adapters.",
+      "synthetic_data_only": true,
+      "contains_payload_material": false
     }
   ]
 }

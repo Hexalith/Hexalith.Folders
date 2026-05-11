@@ -2,40 +2,62 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:hexalith-folders:fixtures:parity-contract-row-seed",
   "title": "Hexalith Folders Parity Contract Row Seed",
-  "description": "Minimal fixture/oracle input shape only. This is not the public product contract and does not define final parity semantics.",
+  "description": "Fixture/oracle input row shape for future C13 parity rows. This is not the public product contract and does not define final OpenAPI semantics.",
   "type": "object",
   "additionalProperties": false,
   "ownership": {
     "owner_workstream": "Phase 1 Contract Spine and C13 parity-oracle stories",
-    "future_test_use": "Future parity oracle validation for REST, SDK, CLI, and MCP behavioral equivalence rows.",
+    "future_test_use": "Future parity oracle validation for REST, SDK, CLI, and MCP transport and behavioral equivalence rows.",
     "known_omissions": [
-      "No complete operation inventory",
+      "No complete generated operation inventory",
       "No final canonical error catalog",
-      "No generated oracle implementation"
+      "No generated oracle implementation",
+      "No final OpenAPI path or schema semantics"
     ],
     "mutation_rules": [
       "Extend row shape only when the corresponding parity story owns the behavior.",
-      "Do not encode public API schema semantics in this fixture schema."
+      "Do not encode public API endpoint or DTO schema semantics in this fixture schema.",
+      "Keep adapter names and failure kinds bounded so unknown values fail before test consumption."
     ],
     "non_policy_placeholder": true,
     "synthetic_data_only": true
   },
   "required": [
     "operation_id",
+    "operation_family",
+    "read_consistency_class",
     "transport_parity",
     "behavioral_parity",
+    "adapter_expectations",
     "ownership"
   ],
   "properties": {
     "operation_id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
+    },
+    "operation_family": {
+      "enum": [
+        "mutating_command",
+        "query_status",
+        "audit",
+        "operations_console_projection"
+      ]
+    },
+    "read_consistency_class": {
+      "enum": [
+        "not_applicable",
+        "snapshot-per-task",
+        "read-your-writes",
+        "eventually-consistent"
+      ]
     },
     "transport_parity": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "auth_outcome",
+        "auth_outcome_class",
         "error_code_set",
         "idempotency_key_rule",
         "audit_metadata_keys",
@@ -43,31 +65,51 @@
         "terminal_states"
       ],
       "properties": {
-        "auth_outcome": {
-          "type": "string"
+        "auth_outcome_class": {
+          "enum": [
+            "tenant_authorized",
+            "tenant_access_denied",
+            "folder_acl_denied",
+            "audit_access_denied",
+            "credential_missing",
+            "safe_not_found"
+          ]
         },
         "error_code_set": {
           "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/canonical_error_category"
           }
         },
         "idempotency_key_rule": {
-          "type": "string"
+          "enum": [
+            "required_for_mutating_command",
+            "required_with_operation_id",
+            "not_accepted_for_non_mutating_operation"
+          ]
         },
         "audit_metadata_keys": {
           "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
           }
         },
         "correlation_field_path": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(headers|problem|result|metadata)\\.[A-Za-z0-9_.-]+$"
         },
         "terminal_states": {
           "type": "array",
+          "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
           }
         }
       }
@@ -79,25 +121,75 @@
         "pre_sdk_error_class",
         "idempotency_key_sourcing",
         "correlation_id_sourcing",
+        "task_id_sourcing",
+        "credential_sourcing",
         "cli_exit_code",
         "mcp_failure_kind"
       ],
       "properties": {
         "pre_sdk_error_class": {
-          "type": "string"
+          "enum": [
+            "none",
+            "usage_error",
+            "client_configuration_error",
+            "credential_missing",
+            "local_validation_error"
+          ]
         },
         "idempotency_key_sourcing": {
-          "type": "string"
+          "enum": [
+            "not_accepted",
+            "caller_provided",
+            "sdk_provider",
+            "cli_flag",
+            "cli_allow_auto_key",
+            "mcp_tool_input"
+          ]
         },
         "correlation_id_sourcing": {
-          "type": "string"
+          "enum": [
+            "caller_provided",
+            "sdk_provider",
+            "sdk_generated",
+            "cli_flag",
+            "cli_generated",
+            "mcp_tool_input",
+            "mcp_generated"
+          ]
+        },
+        "task_id_sourcing": {
+          "enum": [
+            "not_task_scoped",
+            "caller_provided",
+            "cli_flag",
+            "mcp_tool_input"
+          ]
+        },
+        "credential_sourcing": {
+          "enum": [
+            "sdk_configuration",
+            "sdk_access_token_provider",
+            "hexalith_token_env",
+            "hexalith_credentials_file",
+            "cli_token_flag",
+            "mcp_auth_token",
+            "mcp_auth_token_file"
+          ]
         },
         "cli_exit_code": {
-          "type": "integer"
+          "$ref": "#/$defs/cli_exit_code"
         },
         "mcp_failure_kind": {
-          "type": "string"
+          "$ref": "#/$defs/mcp_failure_kind"
         }
+      }
+    },
+    "adapter_expectations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/adapter_name"
       }
     },
     "ownership": {
@@ -105,6 +197,74 @@
     }
   },
   "$defs": {
+    "adapter_name": {
+      "enum": [
+        "rest",
+        "sdk",
+        "cli",
+        "mcp"
+      ]
+    },
+    "canonical_error_category": {
+      "enum": [
+        "success",
+        "client_configuration_error",
+        "credential_missing",
+        "tenant_access_denied",
+        "folder_acl_denied",
+        "audit_access_denied",
+        "workspace_locked",
+        "idempotency_conflict",
+        "validation_error",
+        "input_limit_exceeded",
+        "response_limit_exceeded",
+        "query_timeout",
+        "provider_failure_known",
+        "provider_outcome_unknown",
+        "reconciliation_required",
+        "not_found",
+        "state_transition_invalid",
+        "read_model_unavailable",
+        "redacted",
+        "internal_error"
+      ]
+    },
+    "cli_exit_code": {
+      "enum": [
+        0,
+        1,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75
+      ]
+    },
+    "mcp_failure_kind": {
+      "enum": [
+        "none",
+        "usage_error",
+        "credential_missing",
+        "tenant_access_denied",
+        "workspace_locked",
+        "idempotency_conflict",
+        "validation_error",
+        "provider_failure_known",
+        "provider_outcome_unknown",
+        "reconciliation_required",
+        "not_found",
+        "state_transition_invalid",
+        "redacted",
+        "internal_error"
+      ]
+    },
     "ownership": {
       "type": "object",
       "required": [
@@ -115,21 +275,26 @@
         "non_policy_placeholder",
         "synthetic_data_only"
       ],
+      "additionalProperties": false,
       "properties": {
         "owner_workstream": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "future_test_use": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "known_omissions": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string"
           }
         },
         "mutation_rules": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string"
           }
