@@ -39,10 +39,12 @@ so that access and provider readiness capabilities are canonical before implemen
   - [ ] Define stable `operationId` values for create folder, get folder lifecycle/status, archive folder, list/update folder ACL entries, and get effective permissions.
   - [ ] Model folder identity as opaque IDs and projected metadata; do not make folder names, hierarchy, or paths aggregate identity.
   - [ ] Ensure all authorization-denied responses are safe and metadata-only, without revealing whether a tenant, folder, ACL entry, provider binding, repository binding, or branch/ref policy exists to unauthorized callers.
+  - [ ] Ensure safe-denial examples share one externally indistinguishable response envelope for unauthorized, absent, cross-tenant, and stale-read resources unless an already-authorized diagnostic endpoint explicitly permits more detail.
   - [ ] Ensure mutating operations declare idempotency metadata and reads declare read-consistency/freshness metadata without accepting `Idempotency-Key`.
 - [ ] Author provider binding and provider readiness contract operations. (AC: 1, 2, 4, 5, 6, 8)
   - [ ] Add provider binding reference and readiness operations under provider-readiness or organization/provider capability paths that align with the existing Contract Spine tag model.
   - [ ] Represent credential references as non-secret opaque references and readiness evidence as sanitized metadata; never include credential material, raw provider tokens, or secret-store contents.
+  - [ ] Separate operator-visible readiness diagnostics from consumer-visible safe denials; consumer responses must not reveal credential validity, provider installation identity, provider account ownership, or repository existence.
   - [ ] Model provider capabilities for repository creation, existing repository binding, branch/ref handling, file operations, commit/status behavior, provider errors, and failure behavior without hardcoding exactly two providers into schema shape.
   - [ ] Distinguish provider readiness failed, credential reference missing/invalid, provider permission insufficient, provider unavailable, provider rate limited, unsupported provider capability, and read-model unavailable canonical categories.
   - [ ] Preserve GitHub/Forgejo portability: capability differences are explicit metadata and later contract tests decide support, not assumptions in this story.
@@ -60,12 +62,13 @@ so that access and provider readiness capabilities are canonical before implemen
   - [ ] Use `TODO/reference-pending` only for unresolved approved-source values, with exact source paths or decision owners when known.
 - [ ] Add focused offline validation. (AC: 5, 6, 7, 9, 11)
   - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
-  - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation groups.
+  - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation groups by checking an explicit allow-list derived from the Operation Inventory Seed.
   - [ ] Verify all new operations include required `x-hexalith-*` metadata and that mutating/query operations satisfy their idempotency or read-consistency requirements.
   - [ ] Verify no request payload, query parameter, or client-controlled header defines tenant authority.
   - [ ] Verify examples are synthetic and metadata-only.
   - [ ] Verify safe-denial examples for unauthorized tenant, missing folder, missing provider binding, missing repository binding, and missing branch/ref policy use externally indistinguishable shapes where existence must not be inferred.
   - [ ] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
+  - [ ] Verify provider diagnostic examples are partitioned by audience so consumer-facing contract examples stay redacted while authorized operator-readiness examples remain sanitized and metadata-only.
   - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
   - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
 - [ ] Record downstream authoring notes. (AC: 10, 12)
@@ -110,6 +113,8 @@ docs/contract/tenant-folder-provider-repository-contract-groups.md
 - Folder hierarchy, display names, and paths are projected metadata, not aggregate identity. Folder IDs and repository binding IDs should be opaque.
 - Provider capability metadata must support more than GitHub and Forgejo. Do not encode a two-provider-only union if a generic capability model can represent additional providers.
 - Repository names, branch names, paths, commit messages, provider IDs, and repository binding references are sensitive metadata unless a stricter tenant policy applies.
+- Treat provider binding references, repository binding IDs, and branch/ref policy IDs as tenant-scoped opaque values. They may appear in authorized metadata, but they must not become tenant authority, provider account authority, or proof that a protected external repository exists.
+- Keep provider readiness evidence audience-scoped: consumer-facing contract responses should expose safe status and retry/action guidance, while any richer operator diagnostics must be explicitly authorized, redacted, and free of credential state, provider installation IDs, raw provider payloads, and unauthorized resource hints.
 
 ### Operation Inventory Seed
 
@@ -168,6 +173,8 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 - Validation must run offline without Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, production secrets, network calls, or initialized nested submodules.
 - Validate OpenAPI parse, `$ref` resolution, unique operation IDs, exact `x-hexalith-*` metadata presence, idempotency/read-consistency completeness, safe tenant-authority boundaries, synthetic examples, and negative scope.
 - Include contract-level assertions for safe-denial parity, secret-shaped field names, and non-secret opaque credential references.
+- Include allow-list assertions for the operation IDs and `/api/v1` path prefixes owned by this story so validation fails if workspace/lock, file/context, commit/status, audit timeline, operations-console, runtime, generated-client, CLI, MCP, worker, UI, or CI artifacts appear.
+- Include fixture assertions that consumer-visible safe denials for unauthorized, absent, cross-tenant, missing binding, and missing branch/ref policy cases remain externally indistinguishable while authorized readiness diagnostics remain sanitized.
 - If the full solution is buildable, run `dotnet build Hexalith.Folders.slnx` from the repository root after focused validation. Record exact blockers if build cannot run due to prior scaffold state.
 
 ### References
@@ -203,6 +210,7 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-11 | Advanced elicitation applied operation allow-list, safe-denial fixture, and provider-diagnostic redaction hardening. | Codex |
 | 2026-05-11 | Party-mode review applied contract-only boundary, safe-denial, tenant-authority, placeholder, secret-field, and validation guardrails. | Codex |
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
@@ -226,6 +234,39 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 - Findings deferred:
   - Runtime authorization behavior, provider token exchange, provider adapters, live provider validation, SDK/CLI/MCP/UI consumers, final parity oracle rows, CI gates, and provider behavior tests remain downstream work.
   - Exact unresolved Story 1.5/1.6/C3/C4/S-2/C6 values remain reference-pending rather than invented in this story.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-11T08:04:18Z
+- Selected story key: `1-7-author-tenant-folder-provider-and-repository-binding-contract-groups`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-7-author-tenant-folder-provider-and-repository-binding-contract-groups`
+- Batch 1 method names:
+  - Red Team vs Blue Team
+  - Security Audit Personas
+  - Failure Mode Analysis
+  - Self-Consistency Validation
+  - Critique and Refine
+- Reshuffled Batch 2 method names:
+  - Pre-mortem Analysis
+  - Architecture Decision Records
+  - Comparative Analysis Matrix
+  - Socratic Questioning
+  - Occam's Razor Application
+- Findings summary:
+  - The story already had strong contract-only boundaries, but validation could still pass while accidentally adding a downstream operation unless operation IDs and path prefixes are checked against an explicit allow-list.
+  - Safe-denial requirements needed fixture-level coverage for unauthorized, absent, cross-tenant, missing binding, and missing branch/ref policy cases so implementation does not leak resource existence through variant examples.
+  - Provider readiness needed clearer audience partitioning so authorized operator diagnostics can exist without contaminating consumer-visible safe-denial responses.
+- Changes applied:
+  - Added externally indistinguishable safe-denial envelope guidance for folder lifecycle and access operations.
+  - Added provider readiness guidance separating consumer-visible safe denials from authorized sanitized diagnostics.
+  - Strengthened offline validation with explicit operation allow-list checks, provider diagnostic audience partitioning, and fixture assertions for safe-denial parity.
+  - Added Dev Notes clarifying opaque provider/repository/branch-ref identifiers and audience-scoped readiness evidence.
+  - Updated the Change Log with the advanced-elicitation hardening pass.
+- Findings deferred:
+  - Exact operator diagnostic authorization model remains downstream implementation and operations-console work.
+  - Any final operation inventory changes frozen by Story 1.5 or Story 1.6 must be consumed by the implementation agent rather than invented here.
+  - Runtime authorization behavior, provider adapters, generated SDKs, CLI/MCP/UI consumers, final parity oracle rows, and CI gates remain out of scope.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
