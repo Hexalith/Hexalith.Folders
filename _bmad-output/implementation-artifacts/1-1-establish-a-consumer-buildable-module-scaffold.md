@@ -1,6 +1,6 @@
 # Story 1.1: Establish a consumer-buildable module scaffold
 
-Status: review
+Status: done
 
 Created: 2026-05-10
 
@@ -301,11 +301,21 @@ Codex GPT-5
 
 ### Completion Notes List
 
-- Implemented the canonical scaffold inventory under `src`, `tests`, and `samples` with placeholder-only module surfaces and no provider, OpenAPI, lifecycle, CLI command, MCP tool, UI diagnostic, or worker behavior.
+The scaffold delivery for this story spans multiple commits on `main` rather than a single one. The commit decomposition was retroactively captured during code review (2026-05-11):
+
+- `eb52d15` "feat: Add initial scaffolding for Hexalith.Folders solution" — initial scaffold landing: `Directory.Build.props`, `Directory.Packages.props`, `Hexalith.Folders.slnx`, `global.json`, the 12 `src/Hexalith.Folders.*` project skeletons, the `samples/Hexalith.Folders.Sample` project, the `tests/Hexalith.Folders.Testing.Tests` project (with `ScaffoldContractTests.cs`), and the predev preflight artifacts. At this commit alone, `dotnet restore Hexalith.Folders.slnx` cannot succeed because the slnx references several test projects that land in later commits.
+- `a89706b` "Commit pending workspace changes" — added `src/Hexalith.Folders.Server/Program.cs` and flipped Server to `Microsoft.NET.Sdk.Web`, plus filled in the mirror test projects required by the slnx so restore/build/test succeed end-to-end. AppHost's `Projects.Hexalith_Folders_Server` reference became valid at this commit.
+- `ffe6452` "chore: implement normative fixtures with ownership metadata and parseability tests" — added `tests/fixtures/{audit-leakage-corpus.json, idempotency-encoding-corpus.json, parity-contract.schema.json, previous-spine.yaml}` and the docs templates referenced by the story's task list.
+- `ff7ab6a` "chore: add initial test framework setup with data factories, request headers, and polling utilities" — added the shared testing factories under `src/Hexalith.Folders.Testing` and the corresponding tests under `tests/Hexalith.Folders.Testing.Tests` that the story's testing-guidance section assumes.
+- `6098b45` "Update sprint status and add exit criteria documents" — added the `tests/load/README.md` and `tests/tools/parity-oracle-generator/README.md` non-runnable placeholders called out in the task list.
+
+Implementation specifics:
+
 - Adapted root build configuration to `Hexalith.Folders` with `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, central package management, package metadata, and root-level sibling path detection for `Hexalith.EventStore` and `Hexalith.Tenants`.
-- Added metadata-driven scaffold smoke tests that parse the actual `.slnx` and `.csproj` files to enforce canonical inventory, allowed dependency direction, root target-framework ownership, central package management, and no inline package versions.
-- Added compile-safe test projects for Contracts, core, Server, Client, CLI, MCP, UI, Workers, Testing, IntegrationTests, and sample coverage; no AppHost, Aspire, or ServiceDefaults test projects were added because the scaffold contract is enforced by `Hexalith.Folders.Testing.Tests`.
-- Added normative docs and fixture placeholders. The load-test area is a non-runnable placeholder directory because runnable capacity/load infrastructure is deferred to a later story.
+- The pack policy was set during code review (2026-05-11) to global `IsPackable=false` with explicit opt-ins on `Hexalith.Folders.Contracts`, `Hexalith.Folders` (core), `Hexalith.Folders.Client`, `Hexalith.Folders.Testing`, and `Hexalith.Folders.ServiceDefaults`. Host/adapter/sample projects (`AppHost`, `Aspire`, `Server`, `UI`, `Mcp`, `Workers`, `Sample`) do not produce NuGet packages. `Hexalith.Folders.Cli` packs as a .NET global tool via `PackAsTool=true`.
+- `Hexalith.Folders.Server` and `Hexalith.Folders.UI` both opt into container publishing with intentionally distinct `ContainerRepository` values (`folders` and `folders-ui`) so the read-only console can be deployed and scaled independently of the domain-service host.
+- `Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs` enforces the canonical inventory, allowed dependency direction across all 24 projects, explicit forbidden references (Contracts→behavior, Client→adapter/host), root-owned target-framework / nullable / langversion / warnings-as-errors (with a drift detector that fails the build if any csproj overrides them locally), central package management, no inline package versions, required root configuration files, NuGet-source hygiene, and submodule policy.
+- The load-test and parity-oracle-generator areas are non-runnable placeholder directories because runnable capacity/load infrastructure and the parity oracle generator are deferred to later stories.
 - No nested submodule initialization or recursive submodule command was used or required. Restore/build/test completed without provider credentials, tenant data, production secrets, running Aspire, Dapr, Keycloak, Redis, GitHub, or Forgejo.
 - No SDK or central package deviations were required.
 
@@ -372,3 +382,44 @@ Codex GPT-5
 - `tests/fixtures/previous-spine.yaml`
 - `tests/load/README.md`
 - `tests/tools/parity-oracle-generator/README.md`
+
+## Review Findings
+
+### Review Findings — 2026-05-11 (code-review against commit `eb52d15`)
+
+Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. All three layers completed.
+
+#### Decision-Needed (resolved 2026-05-11)
+
+- [x] [Review][Decision] **Spec-vs-delivery gap: 10 csproj files and several placeholders claimed by this story were not delivered in commit `eb52d15`** — **Resolved:** amend story scope to span the multi-commit window (`eb52d15` + `a89706b` + `ffe6452` + `ff7ab6a` + `6098b45`); Completion Notes rewritten to enumerate each commit's contribution.
+- [x] [Review][Decision] **`Hexalith.Folders.Server` is not buildable as an Aspire project resource in `eb52d15`** — **Resolved:** bundled with previous decision; Server's `Program.cs` and `Microsoft.NET.Sdk.Web` flip recorded as landing in `a89706b`.
+- [x] [Review][Decision] **Container/publish config drift between Server and UI** — **Resolved:** documented as intentional asymmetry; both projects ship containers with distinct `ContainerRepository` values (`folders`, `folders-ui`) so they can be deployed and scaled independently. Comment added in `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`.
+- [x] [Review][Decision] **Pack policy is implicit and produces unintended NuGet packages** — **Resolved:** flipped `Directory.Build.props` default to `IsPackable=false`. Opt-ins added on `Hexalith.Folders.Contracts`, `Hexalith.Folders` (core), `Hexalith.Folders.Client`, `Hexalith.Folders.Testing`, and `Hexalith.Folders.ServiceDefaults`.
+- [x] [Review][Decision] **Completion Notes do not flag the omissions** — **Resolved:** rewrote the `### Completion Notes List` to enumerate the multi-commit delivery and the pack-policy / container decisions captured during this review.
+
+#### Patch (applied 2026-05-11)
+
+- [x] [Review][Patch] **UI minimal-API endpoint binds `moduleName` from query string, not DI** [`src/Hexalith.Folders.UI/Program.cs:6`] — Removed the dead `AddSingleton(_ => FoldersClientModule.Name)` registration and inlined `FoldersClientModule.Name` directly in the endpoint expression. `GET /` now returns the scaffold marker string without query-string dependence.
+- [x] [Review][Patch] **`ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection` omits Aspire, ServiceDefaults, Testing, and `*.Tests` projects** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`] — Extended `ProjectReferencesFollowAllowedDependencyDirection` to cover all 24 projects in `ExpectedSolutionProjects`. Added a new `ForbiddenReferencesAreNotIntroduced` test that asserts explicit forbidden-reference rules for Contracts, Client, and the CLI/MCP/UI adapters.
+- [x] [Review][Patch] **Per-project TFM drift is not tested (Task line 67 mandate)** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`] — Added `ProjectsDoNotOverrideRootBuildConfigurationLocally` test that walks every project in `ExpectedSolutionProjects` and fails if any locally defines `<TargetFramework>`, `<TargetFrameworks>`, `<Nullable>`, `<ImplicitUsings>`, `<LangVersion>`, or `<TreatWarningsAsErrors>`.
+- [x] [Review][Patch] **`Hexalith.Folders.Testing.csproj` is missing `<InternalsVisibleTo Include="Hexalith.Folders.Testing.Tests" />`** [`src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj`] — Added the missing `<InternalsVisibleTo>` entry. Pattern is now consistent across all src projects.
+- [x] [Review][Patch] **Completion Notes rewritten** [`### Completion Notes List`] — Replaced the original notes with a multi-commit decomposition + pack-policy + container-policy summary. (Resolution patch for decision items above.)
+- [x] [Review][Patch] **UI/Server container asymmetry documented** [`src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`] — Added an explanatory comment next to the container properties. (Resolution patch for the container-drift decision.)
+- [x] [Review][Patch] **Pack policy flipped to opt-in** [`Directory.Build.props`, `src/Hexalith.Folders.Contracts/*.csproj`, `src/Hexalith.Folders/*.csproj`, `src/Hexalith.Folders.Client/*.csproj`, `src/Hexalith.Folders.Testing/*.csproj`, `src/Hexalith.Folders.ServiceDefaults/*.csproj`] — Default `IsPackable=false` at root; explicit `IsPackable=true` opt-ins on the five library projects. (Resolution patch for the pack-policy decision.)
+
+#### Deferred
+
+- [x] [Review][Defer] `<InternalsVisibleTo>` in src csprojs references test assemblies that didn't exist at `eb52d15` [`src/Hexalith.Folders.*/*.csproj`] — deferred, self-resolves at HEAD as test projects materialize.
+- [x] [Review][Defer] `Directory.Build.props` declares `HexalithEventStoreRoot` / `HexalithTenantsRoot` MSBuild properties that no csproj or targets file currently consumes [`Directory.Build.props:23-26`] — deferred, intended for future-story consumption.
+- [x] [Review][Defer] Preflight gate `result: "fail"` recorded in `predev-preflight-2026-05-10T200403Z.json` and latest pointer [_bmad-output/process-notes/predev-preflight-latest.json] — deferred, process concern outside code-review scope.
+- [x] [Review][Defer] `.gitmodules` declares `Hexalith.Memories` but `Directory.Build.props` has no detector for it [`Directory.Build.props:3-7`] — deferred, dormant until a downstream story consumes Memories.
+- [x] [Review][Defer] No `Directory.Build.targets` adapted from Hexalith.Tenants — deferred, acceptable deviation; revisit when stories require SourceLink or pack-time MSBuild logic.
+
+#### Dismissed (6)
+
+- AppHost `Program.cs` "missing usings" — Aspire.AppHost.Sdk supplies implicit usings; build is verified at HEAD.
+- AppHost lacks local `<TargetFramework>` override — inheritance from `Directory.Build.props` is the intended pattern.
+- `FoldersAspireModule` "over-engineered" — subjective placeholder concern.
+- Story 1.1 status flip in sprint-status — subsumed by the Decision-Needed scope item.
+- `TreatWarningsAsErrors=true` may trip Aspire generator — speculative; build is verified at HEAD.
+- `<ContinuousIntegrationBuild>` conditional missing from `eb52d15` — added in later commit, present at HEAD.

@@ -69,6 +69,78 @@ public sealed class ScaffoldContractTests
         references["Hexalith.Folders.UI"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
         references["Hexalith.Folders.Workers"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Contracts"], ignoreOrder: true);
         references["Hexalith.Folders.AppHost"].ShouldBe(["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI"], ignoreOrder: true);
+        references["Hexalith.Folders.Aspire"].ShouldBeEmpty();
+        references["Hexalith.Folders.ServiceDefaults"].ShouldBeEmpty();
+        references["Hexalith.Folders.Testing"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
+        references["Hexalith.Folders.Sample"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
+        references["Hexalith.Folders.Sample.Tests"].ShouldBe(["Hexalith.Folders.Sample"], ignoreOrder: true);
+        references["Hexalith.Folders.Contracts.Tests"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
+        references["Hexalith.Folders.Tests"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.Server.Tests"].ShouldBe(["Hexalith.Folders.Server", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.Client.Tests"].ShouldBe(["Hexalith.Folders.Client", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.Cli.Tests"].ShouldBe(["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.Mcp.Tests"].ShouldBe(["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.UI.Tests"].ShouldBe(["Hexalith.Folders.UI", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.Workers.Tests"].ShouldBe(["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.Testing.Tests"].ShouldBe(["Hexalith.Folders.Testing"], ignoreOrder: true);
+        references["Hexalith.Folders.IntegrationTests"].ShouldBe(["Hexalith.Folders.Server", "Hexalith.Folders.Testing"], ignoreOrder: true);
+    }
+
+    [Fact]
+    public void ForbiddenReferencesAreNotIntroduced()
+    {
+        string root = RepositoryRoot();
+        Dictionary<string, HashSet<string>> references = ExpectedSolutionProjects
+            .ToDictionary(
+                project => Path.GetFileNameWithoutExtension(project),
+                project => new HashSet<string>(
+                    ReadProjectReferenceNames(Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar))),
+                    StringComparer.Ordinal),
+                StringComparer.Ordinal);
+
+        // Contracts must remain behavior-free: no infrastructure or sibling-host references.
+        string[] forbiddenFromContracts =
+        [
+            "Hexalith.Folders",
+            "Hexalith.Folders.Server",
+            "Hexalith.Folders.Client",
+            "Hexalith.Folders.Cli",
+            "Hexalith.Folders.Mcp",
+            "Hexalith.Folders.UI",
+            "Hexalith.Folders.Workers",
+            "Hexalith.Folders.Aspire",
+            "Hexalith.Folders.AppHost",
+            "Hexalith.Folders.ServiceDefaults",
+            "Hexalith.Folders.Testing",
+        ];
+        foreach (string forbidden in forbiddenFromContracts)
+        {
+            references["Hexalith.Folders.Contracts"].ShouldNotContain(forbidden);
+        }
+
+        // Client is an SDK boundary: must not reach into Server, UI, CLI, MCP, or Workers.
+        string[] forbiddenFromClient =
+        [
+            "Hexalith.Folders.Server",
+            "Hexalith.Folders.UI",
+            "Hexalith.Folders.Cli",
+            "Hexalith.Folders.Mcp",
+            "Hexalith.Folders.Workers",
+            "Hexalith.Folders.AppHost",
+        ];
+        foreach (string forbidden in forbiddenFromClient)
+        {
+            references["Hexalith.Folders.Client"].ShouldNotContain(forbidden);
+        }
+
+        // Adapters (CLI, MCP, UI) must wrap Client only; they must not pull in core domain or each other.
+        foreach (string adapter in new[] { "Hexalith.Folders.Cli", "Hexalith.Folders.Mcp", "Hexalith.Folders.UI" })
+        {
+            references[adapter].ShouldNotContain("Hexalith.Folders");
+            references[adapter].ShouldNotContain("Hexalith.Folders.Server");
+            references[adapter].ShouldNotContain("Hexalith.Folders.Workers");
+            references[adapter].ShouldNotContain("Hexalith.Folders.AppHost");
+        }
     }
 
     [Fact]
@@ -90,6 +162,41 @@ public sealed class ScaffoldContractTests
         buildProps.Descendants("LangVersion").Single().Value.ShouldBe("latest");
         packagesProps.Descendants("ManagePackageVersionsCentrally").Single().Value.ShouldBe("true");
         projectsWithInlineVersions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ProjectsDoNotOverrideRootBuildConfigurationLocally()
+    {
+        string root = RepositoryRoot();
+        string[] driftingElements =
+        [
+            "TargetFramework",
+            "TargetFrameworks",
+            "Nullable",
+            "ImplicitUsings",
+            "LangVersion",
+            "TreatWarningsAsErrors",
+        ];
+
+        string[] violations = ExpectedSolutionProjects
+            .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
+            .SelectMany(path => FindLocalRootSettingOverrides(path, driftingElements))
+            .ToArray();
+
+        violations.ShouldBeEmpty();
+    }
+
+    private static IEnumerable<string> FindLocalRootSettingOverrides(string projectPath, IEnumerable<string> driftingElements)
+    {
+        XDocument project = XDocument.Load(projectPath);
+        string relative = Normalize(Path.GetRelativePath(RepositoryRoot(), projectPath));
+        foreach (string element in driftingElements)
+        {
+            if (project.Descendants(element).Any())
+            {
+                yield return $"{relative} defines <{element}> locally; root Directory.Build.props owns this setting.";
+            }
+        }
     }
 
     [Fact]

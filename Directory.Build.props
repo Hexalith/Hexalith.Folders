@@ -16,7 +16,10 @@
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
 
-    <IsPackable>true</IsPackable>
+    <!-- Pack policy is opt-in. Production library projects (Contracts, core, Client, Testing,
+         ServiceDefaults) flip <IsPackable>true</IsPackable> in their own csproj. Host/adapter/sample
+         projects inherit the default and do not produce NuGet packages. -->
+    <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
 
     <Authors>Hexalith Contributors</Authors>

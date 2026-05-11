@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
     <IsAspireSharedProject>true</IsAspireSharedProject>
   </PropertyGroup>
   <ItemGroup>

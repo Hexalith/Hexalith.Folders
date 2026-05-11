@@ -3,6 +3,9 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>true</IsPublishable>
     <RootNamespace>Hexalith.Folders.UI</RootNamespace>
+    <!-- UI and Server both opt into container publishing independently; their container repositories
+         are intentionally distinct (folders-ui vs folders) so the read-only console can be deployed
+         and scaled separately from the domain-service host. -->
     <EnableContainer>true</EnableContainer>
     <ContainerRepository>folders-ui</ContainerRepository>
   </PropertyGroup>
