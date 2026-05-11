@@ -1,6 +1,6 @@
 # Story 1.1: Establish a consumer-buildable module scaffold
 
-Status: in-progress
+Status: review
 
 Created: 2026-05-10
 
@@ -21,54 +21,54 @@ so that consumers and later stories have a stable, convention-compliant module b
 
 ## Tasks / Subtasks
 
-- [ ] Create root solution and shared build files. (AC: 1, 2, 4)
-  - [ ] Create `Hexalith.Folders.slnx` using the sibling-module `.slnx` convention.
-  - [ ] Add `global.json` aligned with `Hexalith.Tenants/global.json` unless a newer installed SDK patch is already required by this repository.
-  - [ ] Add `Directory.Build.props` by adapting the `Hexalith.Tenants` file to `Hexalith.Folders`, including `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, package metadata, and root-level sibling path detection for `Hexalith.EventStore` and `Hexalith.Tenants`.
-  - [ ] Add `Directory.Packages.props` with central package management. Start from `Hexalith.Tenants/Directory.Packages.props`; do not invent independent version policy.
-- [ ] Create the expected source projects. (AC: 1, 2, 4)
-  - [ ] `src/Hexalith.Folders.Contracts`
-  - [ ] `src/Hexalith.Folders`
-  - [ ] `src/Hexalith.Folders.Server`
-  - [ ] `src/Hexalith.Folders.Client`
-  - [ ] `src/Hexalith.Folders.Cli`
-  - [ ] `src/Hexalith.Folders.Mcp`
-  - [ ] `src/Hexalith.Folders.UI`
-  - [ ] `src/Hexalith.Folders.Workers`
-  - [ ] `src/Hexalith.Folders.Aspire`
-  - [ ] `src/Hexalith.Folders.AppHost`
-  - [ ] `src/Hexalith.Folders.ServiceDefaults`
-  - [ ] `src/Hexalith.Folders.Testing`
-  - [ ] Ensure these are the only buildable `src/Hexalith.Folders.*` projects added by this story; later behavior surfaces must remain out of scope.
-- [ ] Create the expected test and sample projects. (AC: 1, 3)
-  - [ ] Mirror `src/` with `tests/Hexalith.Folders.*.Tests` projects, including `Contracts`, core `Folders`, `Server`, `Client`, `Cli`, `Mcp`, `UI`, `Workers`, `Testing`, and `IntegrationTests`.
-  - [ ] Create `samples/Hexalith.Folders.Sample` and `samples/Hexalith.Folders.Sample.Tests`.
-  - [ ] Add minimal scaffolding smoke tests that can run without Dapr, provider credentials, tenant seed data, or initialized nested submodules.
-  - [ ] Do not add separate AppHost, Aspire, or ServiceDefaults test projects unless they are compile-only and needed to enforce the scaffold contract.
-- [ ] Wire project references in dependency direction only. (AC: 2, 4)
-  - [ ] `Contracts` owns DTO and contract placeholders only. It must not reference `Hexalith.EventStore`, `Hexalith.Tenants`, Server, Client, CLI, MCP, UI, Workers, or core domain behavior.
-  - [ ] `Hexalith.Folders` references `Contracts` and only the sibling Hexalith infrastructure needed for domain compilation.
-  - [ ] `Server` references core domain, `Contracts`, and `ServiceDefaults`; it is the future REST and EventStore domain-service host.
-  - [ ] `Client` references `Contracts` only unless a compile-only subscription helper requires the explicit Tenants client pattern.
-  - [ ] `Cli` and `Mcp` must compile as adapters and must not add independent business logic.
-  - [ ] `UI` must compile as a read-only console shell and reference `Client`, not core domain.
-  - [ ] `Workers` owns future process managers and reconcilers; keep external provider behavior as placeholders only in this story.
-  - [ ] `AppHost` wires local Aspire topology only enough to compile; it must not require running Keycloak, Dapr, Redis, provider credentials, or tenant data for `dotnet build`.
-  - [ ] Add a scaffold smoke test for the allowed project-reference graph, including forbidden references from `Contracts` to behavior or infrastructure projects and forbidden dependencies from `Client` to Server, UI, CLI, MCP, or Workers.
-  - [ ] Implement the reference-graph smoke test from project files or solution metadata, not from hand-maintained string lists that can diverge from the scaffold.
-- [ ] Add scaffold-only placeholders and normative directories. (AC: 1, 3)
-  - [ ] Add `docs/exit-criteria/_template.md` and `docs/adrs/0000-template.md`.
-  - [ ] Add `tests/fixtures/audit-leakage-corpus.json`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/previous-spine.yaml`, and `tests/fixtures/idempotency-encoding-corpus.json` as minimal valid placeholders.
-  - [ ] Add `tests/load/Hexalith.Folders.LoadTests.csproj` only if it can compile without load infrastructure side effects; otherwise add a placeholder directory note and defer the runnable load project to its capacity story.
-  - [ ] Add `tests/tools/parity-oracle-generator/` placeholder structure without implementing the generator.
-- [ ] Verify and document scaffold build behavior. (AC: 2, 3, 5)
-  - [ ] Run `dotnet restore Hexalith.Folders.slnx`.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx`.
-  - [ ] Confirm root build configuration provides `net10.0`, central package management, nullable, implicit usings, warnings-as-errors, and `LangVersion=latest` without per-project version drift.
-  - [ ] Confirm project package references omit `Version` metadata except where the SDK or NuGet tooling requires a documented exception.
-  - [ ] Confirm the build does not require secrets, provider credentials, tenant data, production Dapr components, or nested submodule initialization.
-  - [ ] Confirm no recursive submodule command is needed; if submodules must be initialized locally, use only root-level submodules.
-  - [ ] Record any intentionally empty projects, omitted optional test projects, SDK/package deviations, and non-runnable placeholder directories in completion notes so reviewers can distinguish scaffold placeholders from missing implementation.
+- [x] Create root solution and shared build files. (AC: 1, 2, 4)
+  - [x] Create `Hexalith.Folders.slnx` using the sibling-module `.slnx` convention.
+  - [x] Add `global.json` aligned with `Hexalith.Tenants/global.json` unless a newer installed SDK patch is already required by this repository.
+  - [x] Add `Directory.Build.props` by adapting the `Hexalith.Tenants` file to `Hexalith.Folders`, including `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, package metadata, and root-level sibling path detection for `Hexalith.EventStore` and `Hexalith.Tenants`.
+  - [x] Add `Directory.Packages.props` with central package management. Start from `Hexalith.Tenants/Directory.Packages.props`; do not invent independent version policy.
+- [x] Create the expected source projects. (AC: 1, 2, 4)
+  - [x] `src/Hexalith.Folders.Contracts`
+  - [x] `src/Hexalith.Folders`
+  - [x] `src/Hexalith.Folders.Server`
+  - [x] `src/Hexalith.Folders.Client`
+  - [x] `src/Hexalith.Folders.Cli`
+  - [x] `src/Hexalith.Folders.Mcp`
+  - [x] `src/Hexalith.Folders.UI`
+  - [x] `src/Hexalith.Folders.Workers`
+  - [x] `src/Hexalith.Folders.Aspire`
+  - [x] `src/Hexalith.Folders.AppHost`
+  - [x] `src/Hexalith.Folders.ServiceDefaults`
+  - [x] `src/Hexalith.Folders.Testing`
+  - [x] Ensure these are the only buildable `src/Hexalith.Folders.*` projects added by this story; later behavior surfaces must remain out of scope.
+- [x] Create the expected test and sample projects. (AC: 1, 3)
+  - [x] Mirror `src/` with `tests/Hexalith.Folders.*.Tests` projects, including `Contracts`, core `Folders`, `Server`, `Client`, `Cli`, `Mcp`, `UI`, `Workers`, `Testing`, and `IntegrationTests`.
+  - [x] Create `samples/Hexalith.Folders.Sample` and `samples/Hexalith.Folders.Sample.Tests`.
+  - [x] Add minimal scaffolding smoke tests that can run without Dapr, provider credentials, tenant seed data, or initialized nested submodules.
+  - [x] Do not add separate AppHost, Aspire, or ServiceDefaults test projects unless they are compile-only and needed to enforce the scaffold contract.
+- [x] Wire project references in dependency direction only. (AC: 2, 4)
+  - [x] `Contracts` owns DTO and contract placeholders only. It must not reference `Hexalith.EventStore`, `Hexalith.Tenants`, Server, Client, CLI, MCP, UI, Workers, or core domain behavior.
+  - [x] `Hexalith.Folders` references `Contracts` and only the sibling Hexalith infrastructure needed for domain compilation.
+  - [x] `Server` references core domain, `Contracts`, and `ServiceDefaults`; it is the future REST and EventStore domain-service host.
+  - [x] `Client` references `Contracts` only unless a compile-only subscription helper requires the explicit Tenants client pattern.
+  - [x] `Cli` and `Mcp` must compile as adapters and must not add independent business logic.
+  - [x] `UI` must compile as a read-only console shell and reference `Client`, not core domain.
+  - [x] `Workers` owns future process managers and reconcilers; keep external provider behavior as placeholders only in this story.
+  - [x] `AppHost` wires local Aspire topology only enough to compile; it must not require running Keycloak, Dapr, Redis, provider credentials, or tenant data for `dotnet build`.
+  - [x] Add a scaffold smoke test for the allowed project-reference graph, including forbidden references from `Contracts` to behavior or infrastructure projects and forbidden dependencies from `Client` to Server, UI, CLI, MCP, or Workers.
+  - [x] Implement the reference-graph smoke test from project files or solution metadata, not from hand-maintained string lists that can diverge from the scaffold.
+- [x] Add scaffold-only placeholders and normative directories. (AC: 1, 3)
+  - [x] Add `docs/exit-criteria/_template.md` and `docs/adrs/0000-template.md`.
+  - [x] Add `tests/fixtures/audit-leakage-corpus.json`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/previous-spine.yaml`, and `tests/fixtures/idempotency-encoding-corpus.json` as minimal valid placeholders.
+  - [x] Add `tests/load/Hexalith.Folders.LoadTests.csproj` only if it can compile without load infrastructure side effects; otherwise add a placeholder directory note and defer the runnable load project to its capacity story.
+  - [x] Add `tests/tools/parity-oracle-generator/` placeholder structure without implementing the generator.
+- [x] Verify and document scaffold build behavior. (AC: 2, 3, 5)
+  - [x] Run `dotnet restore Hexalith.Folders.slnx`.
+  - [x] Run `dotnet build Hexalith.Folders.slnx`.
+  - [x] Confirm root build configuration provides `net10.0`, central package management, nullable, implicit usings, warnings-as-errors, and `LangVersion=latest` without per-project version drift.
+  - [x] Confirm project package references omit `Version` metadata except where the SDK or NuGet tooling requires a documented exception.
+  - [x] Confirm the build does not require secrets, provider credentials, tenant data, production Dapr components, or nested submodule initialization.
+  - [x] Confirm no recursive submodule command is needed; if submodules must be initialized locally, use only root-level submodules.
+  - [x] Record any intentionally empty projects, omitted optional test projects, SDK/package deviations, and non-runnable placeholder directories in completion notes so reviewers can distinguish scaffold placeholders from missing implementation.
 
 ## Dev Notes
 
@@ -230,6 +230,7 @@ The source, test, and sample inventories above are exact for this story. Additio
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-10 | Party-mode review applied scaffold inventory, dependency graph, clean-build, and submodule guard clarifications. | Codex |
 | 2026-05-10 | Advanced elicitation pass applied exact-inventory, metadata-driven smoke-test, compile-only placeholder, and deferral guardrails. | Codex |
+| 2026-05-10 | Implemented scaffold, smoke tests, fixtures, docs placeholders, and verified restore/build/test. | Codex |
 
 ## Party-Mode Review
 
@@ -288,10 +289,86 @@ The source, test, and sample inventories above are exact for this story. Additio
 
 ### Agent Model Used
 
-TBD by dev-story agent
+Codex GPT-5
 
 ### Debug Log References
 
+- `dotnet build .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore -v:minimal` failed before scaffold completion because the test project had no restored assets.
+- `dotnet restore .\Hexalith.Folders.slnx` passed.
+- `dotnet build .\Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors after making `Hexalith.Folders.Server` a minimal executable Web SDK host for AppHost compatibility.
+- `dotnet test .\Hexalith.Folders.slnx --no-build` passed: 13 tests across 11 test assemblies.
+- Final `dotnet restore .\Hexalith.Folders.slnx` passed and final `dotnet build .\Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors.
+
 ### Completion Notes List
 
+- Implemented the canonical scaffold inventory under `src`, `tests`, and `samples` with placeholder-only module surfaces and no provider, OpenAPI, lifecycle, CLI command, MCP tool, UI diagnostic, or worker behavior.
+- Adapted root build configuration to `Hexalith.Folders` with `net10.0`, nullable, implicit usings, warnings-as-errors, `LangVersion=latest`, central package management, package metadata, and root-level sibling path detection for `Hexalith.EventStore` and `Hexalith.Tenants`.
+- Added metadata-driven scaffold smoke tests that parse the actual `.slnx` and `.csproj` files to enforce canonical inventory, allowed dependency direction, root target-framework ownership, central package management, and no inline package versions.
+- Added compile-safe test projects for Contracts, core, Server, Client, CLI, MCP, UI, Workers, Testing, IntegrationTests, and sample coverage; no AppHost, Aspire, or ServiceDefaults test projects were added because the scaffold contract is enforced by `Hexalith.Folders.Testing.Tests`.
+- Added normative docs and fixture placeholders. The load-test area is a non-runnable placeholder directory because runnable capacity/load infrastructure is deferred to a later story.
+- No nested submodule initialization or recursive submodule command was used or required. Restore/build/test completed without provider credentials, tenant data, production secrets, running Aspire, Dapr, Keycloak, Redis, GitHub, or Forgejo.
+- No SDK or central package deviations were required.
+
 ### File List
+
+- `Directory.Build.props`
+- `Directory.Packages.props`
+- `Hexalith.Folders.slnx`
+- `global.json`
+- `docs/adrs/0000-template.md`
+- `docs/exit-criteria/_template.md`
+- `samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj`
+- `samples/Hexalith.Folders.Sample/Program.cs`
+- `samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj`
+- `samples/Hexalith.Folders.Sample.Tests/SampleSmokeTests.cs`
+- `src/Hexalith.Folders/Hexalith.Folders.csproj`
+- `src/Hexalith.Folders/FoldersModule.cs`
+- `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj`
+- `src/Hexalith.Folders.AppHost/Program.cs`
+- `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`
+- `src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj`
+- `src/Hexalith.Folders.Client/FoldersClientModule.cs`
+- `src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj`
+- `src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj`
+- `src/Hexalith.Folders.Cli/Program.cs`
+- `src/Hexalith.Folders.Contracts/FoldersContractMetadata.cs`
+- `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj`
+- `src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj`
+- `src/Hexalith.Folders.Mcp/Program.cs`
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs`
+- `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`
+- `src/Hexalith.Folders.Server/Program.cs`
+- `src/Hexalith.Folders.ServiceDefaults/Extensions.cs`
+- `src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj`
+- `src/Hexalith.Folders.Testing/FoldersTestingModule.cs`
+- `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj`
+- `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`
+- `src/Hexalith.Folders.UI/Program.cs`
+- `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
+- `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`
+- `tests/Hexalith.Folders.Client.Tests/ClientSmokeTests.cs`
+- `tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj`
+- `tests/Hexalith.Folders.Cli.Tests/CliSmokeTests.cs`
+- `tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj`
+- `tests/Hexalith.Folders.Contracts.Tests/ContractsSmokeTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj`
+- `tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj`
+- `tests/Hexalith.Folders.IntegrationTests/IntegrationSmokeTests.cs`
+- `tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj`
+- `tests/Hexalith.Folders.Mcp.Tests/McpSmokeTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj`
+- `tests/Hexalith.Folders.Server.Tests/ServerSmokeTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/Hexalith.Folders.Tests/FoldersModuleSmokeTests.cs`
+- `tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj`
+- `tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj`
+- `tests/Hexalith.Folders.UI.Tests/UiSmokeTests.cs`
+- `tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj`
+- `tests/Hexalith.Folders.Workers.Tests/WorkersSmokeTests.cs`
+- `tests/fixtures/audit-leakage-corpus.json`
+- `tests/fixtures/idempotency-encoding-corpus.json`
+- `tests/fixtures/parity-contract.schema.json`
+- `tests/fixtures/previous-spine.yaml`
+- `tests/load/README.md`
+- `tests/tools/parity-oracle-generator/README.md`
