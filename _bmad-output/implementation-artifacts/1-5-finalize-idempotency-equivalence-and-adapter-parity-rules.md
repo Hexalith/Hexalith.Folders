@@ -20,6 +20,7 @@ so that REST, SDK, CLI, and MCP cannot drift on operation identity or error hand
 6. Given the idempotency encoding-equivalence risk, when this story is complete, then `tests/fixtures/idempotency-encoding-corpus.json` is updated or confirmed to cover NFC, NFD, NFKC, NFKD, zero-width-joiner, string casing, and ULID casing cases with synthetic metadata-only values.
 7. Build or documentation verification for this story succeeds without authoring `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, implementing NSwag generation, generating `tests/fixtures/parity-contract.yaml`, creating REST/CLI/MCP/SDK code, running Dapr sidecars, running Aspire, contacting GitHub or Forgejo, using provider credentials, using tenant data, using production secrets, or initializing nested submodules.
 8. Given the idempotency and parity rules are authored, when they are reviewed for adopter-facing behavior, then the artifact explicitly separates finalized MVP rules from deferred Contract Spine, SDK, CLI, MCP, and REST implementation work; tenant-scoped equivalence is mandatory; negative examples cover cross-tenant key reuse, changed payloads, changed credential scope, missing/malformed keys, pre-SDK validation failures, post-SDK/service failures, and non-equivalent replay.
+9. Given later stories will consume this artifact mechanically, when this story is complete, then the rules document uses stable table headings and column names for operation inventory, mutating-command equivalence, non-mutating read consistency, adapter outcome parity, deferred owner, and verification coverage so Story 1.6+ and Story 1.13 can translate the rules without re-interpreting prose.
 
 ## Tasks / Subtasks
 
@@ -35,6 +36,7 @@ so that REST, SDK, CLI, and MCP cannot drift on operation identity or error hand
   - [ ] Include the approved MVP command/query inventory from PRD command/query contract: `ValidateProviderReadiness`, `CreateFolder`, `BindRepository`, `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `AddFile`, `ChangeFile`, `RemoveFile`, `CommitWorkspace`, `GetWorkspaceStatus`, `ListFolderFiles`, `SearchFolderFiles`, `ReadFileRange`, and `GetAuditTrail`.
   - [ ] Add any additional operation names that Story 1.4 or the current architecture has made unavoidable for Phase 1, such as effective permissions, folder lifecycle/archive, provider support evidence, cleanup status, and operations-console projection queries. Mark them as "Phase 1 inventory candidate" if their exact OpenAPI operation ID remains for Story 1.6+ to freeze.
   - [ ] For each operation, classify command/query type, mutating versus non-mutating behavior, idempotency requirement, read-consistency expectation where applicable, resource scope, authoritative tenant source, required task/correlation identity, lock requirement, expected state/projection family, canonical error categories, audit metadata keys, parity surfaces, and deferred implementation owner.
+  - [ ] Use stable, machine-checkable table headings and column names for operation inventory, idempotency-equivalence fields, read-consistency class, parity dimensions, adapter-specific outcomes, deferred owner, and verification coverage. Avoid relying on narrative-only rules for data Story 1.6+ or Story 1.13 must consume.
   - [ ] Keep operation IDs stable enough for Story 1.6+ to translate into OpenAPI, but do not create endpoint paths or schemas here unless needed to explain parity metadata.
 - [ ] Define idempotency equivalence for every mutating command. (AC: 2)
   - [ ] Define the adopter-facing rule as: same tenant, same operation intent, same semantic request, same target resource identity, same credential scope where behavior changes, and same idempotency key are required for equivalent replay.
@@ -45,12 +47,14 @@ so that REST, SDK, CLI, and MCP cannot drift on operation identity or error hand
   - [ ] For commit, include task ID, workspace scope, branch/ref target, changed-path metadata digest, commit-message classification metadata, author metadata reference, and operation ID. Tie commit TTL to C3 retention rather than the 24-hour mutation tier.
   - [ ] State that same key across tenants, changed payload semantics, changed credential scope, changed command intent, or changed target resource identity is non-equivalent and must not reveal prior request metadata.
   - [ ] State that fields are ordered lexicographically for `x-hexalith-idempotency-equivalence` and that consumers must use generated `ComputeIdempotencyHash()` helpers after Story 1.12 instead of hand-rolling canonicalization.
+  - [ ] Define how the rules artifact classifies duplicate JSON keys, null versus omitted values, percent-encoded path equivalence, Unicode normalization form, and casing-sensitive identifiers as equivalent, non-equivalent, or parser-rejected input. Keep parser-policy choices limited to documenting future canonicalization expectations; do not implement canonicalization in this story.
 - [ ] Define read-consistency and parity dimensions for non-mutating operations. (AC: 3)
   - [ ] Assign read consistency classes using the architecture vocabulary: `snapshot-per-task`, `read-your-writes`, or `eventually-consistent`.
   - [ ] For context queries, include C4-derived bounds, path policy, include/exclude policy, binary/large-file policy, range limits, result limits, timeout behavior, truncation behavior, and included/excluded audit visibility.
   - [ ] For audit and timeline queries, require metadata-only responses and C3 retention awareness.
   - [ ] For status and operations-console projections, distinguish accepted command state from projected state when projection lag exists, and include freshness/correlation metadata.
   - [ ] Record that non-mutating operations do not accept `Idempotency-Key`; they still require correlation behavior and safe authorization-denial parity.
+  - [ ] Require safe-denial examples for non-mutating reads to avoid revealing whether a tenant, folder, path, task, provider binding, or audit record exists when credentials are missing, wrong-tenant, or insufficient-scope.
 - [ ] Finalize adapter parity contract details. (AC: 4)
   - [ ] Copy the architecture Adapter Parity Contract into an implementation-facing section or reference it directly from `docs/contract/idempotency-and-parity-rules.md` with all required dimensions intact.
   - [ ] Preserve SDK behavior: caller-provided idempotency key or DI provider, no SDK auto-generation; correlation may be caller-provided or generated by SDK provider; task ID is caller-provided for task-scoped operations.
@@ -71,6 +75,7 @@ so that REST, SDK, CLI, and MCP cannot drift on operation identity or error hand
   - [ ] Verify that every mutating command has an idempotency-equivalence field list and every query has a read-consistency class.
   - [ ] Verify that required behavioral-parity columns are present in the parity schema.
   - [ ] Verify that the encoding corpus is parseable and contains the Unicode/casing categories required by this story.
+  - [ ] Verify that the rules document contains the stable table headings and column names required by AC9, including at least one row for each MVP operation and each Phase 1 inventory candidate explicitly marked as candidate or deferred.
   - [ ] Verify negative-scope guardrails: no OpenAPI spine file, NSwag config, generated SDK output, REST/CLI/MCP implementation, parity result rows, domain behavior in Contracts, CI workflow gate, or nested-submodule initialization was added by this story.
   - [ ] Run `dotnet build Hexalith.Folders.slnx` when the scaffold supports it. If build is blocked by prior scaffold work, record the exact prerequisite instead of expanding this story's scope.
 
@@ -84,6 +89,7 @@ so that REST, SDK, CLI, and MCP cannot drift on operation identity or error hand
 - Do not wire NSwag SDK generation, generate `ComputeIdempotencyHash()`, generate `tests/fixtures/parity-contract.yaml`, implement REST endpoints, implement CLI commands, implement MCP tools, implement SDK methods, implement domain aggregates, or add CI workflow gates.
 - Do not change the architecture policy that `Hexalith.Folders.Contracts` remains behavior-free.
 - Do not modify sibling submodules (`Hexalith.Tenants`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.AI.Tools`). Use them only as read-only references.
+- Do not treat narrative prose as the only source of truth for required operation metadata. The rules artifact must expose enough stable table structure for later OpenAPI and parity-oracle stories to consume without guessing hidden intent.
 
 ### Expected Deliverables
 
@@ -110,6 +116,7 @@ or another lightweight local verification file that fits the scaffold. Do not cr
 - Finalized MVP rules: tenant-scoped idempotency equivalence, required idempotency keys for replay-sensitive mutating commands, SDK as the typed canonical client, CLI/MCP as behavioral wrappers, metadata-only examples, and behavior-free Contracts.
 - Deferred work: OpenAPI path/schema/header shape, NSwag generation, generated SDK method signatures, CLI command syntax, MCP tool names/envelopes, idempotency persistence implementation, full parity rows, C13 oracle generation, and final C3/C4 Contract Spine mapping.
 - Human-decision state for any rule not already settled by PRD, architecture, Story 1.3, or Story 1.4. Do not encode contested product behavior as fixture truth.
+- Machine-checkable table structure for operation inventory, mutating-command equivalence, non-mutating read consistency, adapter parity outcomes, deferred owner, and verification coverage. If a required column cannot be populated from approved sources, mark the row as a deferred decision instead of inventing a value.
 
 ### Operation Inventory Seed
 
@@ -178,6 +185,7 @@ If implementation adds `GetEffectivePermissions`, `ArchiveFolder`, `GetFolderLif
 - Prefer existing test infrastructure from the scaffold once available; do not add a new parser dependency solely for this story if a standard or already referenced parser can handle the check.
 - Verification should prove required operation rows exist, mutating rows include idempotency-equivalence fields, query rows include read-consistency classes, required parity schema columns exist, and encoding-corpus categories are present.
 - Verification should include negative examples for cross-tenant idempotency-key reuse, changed payloads, changed credential scope, missing or malformed idempotency keys, pre-SDK validation failures, and post-SDK/service failures.
+- Verification should fail on missing AC9 table headings/columns or narrative-only rules for required metadata that later stories must consume mechanically.
 - Build verification should use `dotnet build Hexalith.Folders.slnx` when the scaffold supports it. If not, record the precise missing scaffold prerequisite.
 - Tests and scripts must not require Dapr sidecars, Aspire topology, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, production secrets, or initialized nested submodules.
 
@@ -211,6 +219,7 @@ If implementation adds `GetEffectivePermissions`, `ArchiveFolder`, `GetFolderLif
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-11 | Advanced elicitation applied machine-checkable table structure, parser-policy classification, safe-denial read examples, and verification hardening. | Codex |
 | 2026-05-10 | Party-mode review applied tenant-scoped equivalence, decision-record, fixture-validation, adapter-failure timing, and negative-scope guardrails. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
@@ -248,3 +257,26 @@ TBD by dev-story agent
 ### Completion Notes List
 
 ### File List
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-11T03:03:55.2715395+02:00
+- Selected story key: `1-5-finalize-idempotency-equivalence-and-adapter-parity-rules`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules`
+- Batch 1 method names: Expert Panel Review; Security Audit Personas; Failure Mode Analysis; Comparative Analysis Matrix; Critique and Refine
+- Reshuffled Batch 2 method names: Pre-mortem Analysis; First Principles Analysis; Red Team vs Blue Team; Expand or Contract for Audience; Self-Consistency Validation
+- Findings summary:
+  - Later OpenAPI and parity-oracle stories need stable table structure, not only prose, to consume operation metadata without reinterpretation.
+  - Idempotency edge cases need explicit classification for duplicate keys, null versus omitted values, percent encoding, Unicode normalization, and casing-sensitive identifiers while keeping canonicalization implementation deferred.
+  - Non-mutating safe-denial examples should cover existence leakage across tenant, folder, path, task, provider binding, and audit resources.
+  - Verification should fail when required metadata exists only as narrative text or when Phase 1 candidates are not clearly marked as candidate or deferred.
+- Changes applied:
+  - Added AC9 for stable table headings and column names across operation inventory, equivalence, read consistency, adapter parity, deferred owner, and verification coverage.
+  - Added task coverage for machine-checkable rules tables, parser-policy classification, safe-denial read examples, and AC9 verification.
+  - Added Dev Notes requiring structured metadata tables and deferred decisions instead of invented values.
+  - Updated the Change Log with the advanced-elicitation hardening pass.
+- Findings deferred:
+  - Exact OpenAPI path/schema/header shapes, generated helper behavior, and final parity-oracle rows remain downstream story work.
+  - Parser-policy choices are documented expectations only; canonicalization implementation remains Story 1.12+ work.
+  - Any operation metadata not settled by approved PRD, architecture, Story 1.3, or Story 1.4 sources must remain a deferred decision for the dev-story agent to surface.
+- Final recommendation: ready-for-dev
