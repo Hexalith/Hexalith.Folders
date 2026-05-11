@@ -24,6 +24,9 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
 10. Given downstream stories own file mutation, context query, commit, workspace status, audit, and operations-console groups, when this story is complete, then operation paths and schemas remain limited to workspace preparation, lock, release, lock inspection, state-transition evidence, retry eligibility, lease/expiry semantics, and prerequisite references needed by these operations.
 11. Given the Contract Spine is a mechanical source for later SDK and parity work, when validation runs, then OpenAPI 3.1 parsing succeeds offline, all `$ref` targets resolve, all new `operationId` values are unique and stable, every operation has required `x-hexalith-*` metadata, no client-controlled tenant authority exists, secret-shaped schema fields are rejected, workspace/lock operation IDs match an explicit allow-list, and negative-scope checks prove generated clients/adapters/runtime behavior were not added.
 12. Given workspace interruption and provider uncertainty must be inspectable, when failure and retry shapes are authored, then provider readiness failure, workspace preparation failure, lock conflict, stale lock, expired lock, authorization revocation, provider outcome unknown, reconciliation required, state transition invalid, read-model unavailable, and idempotency conflict map to canonical Problem Details without silent repair, discard, commit, or unauthorized resource enumeration.
+13. Given each workspace/lock operation must be reviewable independently, when `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `GetWorkspaceLock`, `GetWorkspaceRetryEligibility`, and `GetWorkspaceTransitionEvidence` are authored, then each operation declares its owned scope, idempotency or read-consistency vocabulary, authorization outcomes, canonical Problem Details, audit metadata, synthetic examples, parity dimensions, and reused Story 1.6/1.7 components or explicit `TODO(reference-pending)` markers.
+14. Given this is a contract-only story, when OpenAPI descriptions, schemas, examples, notes, and validation assets are authored, then they describe externally observable contract states, evidence shapes, retry eligibility, freshness metadata, lease metadata, and Problem Details only; they do not prescribe worker or process-manager behavior, aggregate logic, event sequencing, storage mechanics, EventStore implementation details, Tenants implementation details, or runtime lock enforcement.
+15. Given adopters need stable diagnostics without policy leakage, when C6 transition evidence, retry eligibility, authorization revocation, and lock lease metadata are exposed, then contract shapes include current state, attempted transition where applicable, result, reason code, evidence timestamp, correlation/audit metadata, read freshness, lock identity, lease status, acquired/effective timestamp, expiry timestamp, and holder/audit reference where appropriate, while deferring exact retry policy, lease duration defaults, renewal policy, clock-skew policy, audit taxonomy expansion, and runtime revocation mechanics to approved source documents.
 
 ## Tasks / Subtasks
 
@@ -32,6 +35,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Inspect Story 1.7 deliverables for tenant/folder/provider/repository/branch-ref components before referencing them. If absent, reference stable planned component names and record the dependency as reference-pending instead of duplicating Story 1.7 scope.
   - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml` if present; treat missing files as prerequisite drift, not permission to invent policy.
   - [ ] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, and `docs/exit-criteria/s2-oidc-validation.md` if present; unresolved values must stay reference-pending.
+  - [ ] Create an operation-by-operation mapping for `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `GetWorkspaceLock`, `GetWorkspaceRetryEligibility`, and `GetWorkspaceTransitionEvidence` covering scope, idempotency or freshness, authorization outcomes, Problem Details, audit metadata, examples, parity dimensions, and component reuse.
   - [ ] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
   - [ ] Do not add runtime behavior, generated SDK output, NSwag configuration, CLI/MCP tools, provider adapters, workers, UI, final parity rows, or CI gates.
   - [ ] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
@@ -58,12 +62,16 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Include freshness metadata and projection-lag behavior where results may lag accepted commands.
   - [ ] Represent C6 states and operator-disposition labels in reusable schemas or references, including `requested`, `preparing`, `ready`, `locked`, `changes_staged`, `dirty`, `committed`, `failed`, `inaccessible`, `unknown_provider_outcome`, and `reconciliation_required`.
   - [ ] Represent retry eligibility as metadata-only: retryable flag, retry-after hint where applicable, canonical reason code, correlation ID, task ID, and current state. Do not expose provider payloads, local paths, raw branch names, file contents, or unauthorized resource existence.
+  - [ ] Define `GetWorkspaceTransitionEvidence` as contract evidence only: current state, attempted transition, result, reason code, evidence timestamp, correlation/audit metadata, and freshness indicator. Do not expose internal event schemas, storage keys, worker behavior, or payload-carried tenant authority.
+  - [ ] Add synthetic examples for valid transition evidence, invalid transition Problem Details, revoked authorization, expired lease, retry eligible, and retry blocked.
   - [ ] Keep commit evidence, dirty-file status, file-context status, audit timeline, and operations-console projection query groups deferred to Stories 1.9 through 1.11.
 - [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 4, 5, 7, 11)
   - [ ] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
   - [ ] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, forward-slash metadata paths only when path metadata is required, and metadata-only examples.
   - [ ] Ensure every mutating operation has `Idempotency-Key` and every non-mutating operation omits it.
+  - [ ] Reuse Story 1.6 idempotency and read-freshness/read-consistency headers, schemas, and extensions where available; if exact names are unresolved, add `TODO(reference-pending)` with the approved source path or decision owner instead of inventing a parallel vocabulary.
   - [ ] Ensure every operation declares canonical error categories, authorization requirement, correlation behavior, audit classification, lifecycle/state metadata where applicable, and parity dimensions.
+  - [ ] Add a canonical Problem Details matrix by operation class for invalid transition, lock conflict, expired lease, retry not eligible, authorization revoked, not found or safe denial, stale read or unavailable freshness, idempotency conflict, and validation failure.
   - [ ] Use safe-denial examples that are externally indistinguishable for unauthorized, absent, cross-tenant, missing workspace, missing lock, missing task, missing repository binding, and stale-read cases unless an already-authorized diagnostic endpoint explicitly permits more detail.
   - [ ] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
 - [ ] Add focused offline validation. (AC: 7, 9, 11, 12)
@@ -71,9 +79,12 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation allow-list: `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, and any explicitly named workspace/lock inspection or retry/status operation added by this story.
   - [ ] Verify all new operations include required `x-hexalith-*` metadata and that mutating/query operations satisfy their idempotency or read-consistency requirements.
   - [ ] Verify no request payload, query parameter, or client-controlled header defines tenant authority.
+  - [ ] Verify path or query identifiers only scope resources and never establish authority; tenant-looking response or audit metadata must be derived/display metadata, not caller-controlled authority.
   - [ ] Verify examples are synthetic, metadata-only, and contain no file contents, diffs, provider tokens, credential material, production URLs, real organization identifiers, real tenant IDs, or local machine paths.
   - [ ] Verify safe-denial examples for unauthorized, absent, cross-tenant, missing workspace, missing lock, missing task, provider uncertainty, and stale-read cases use externally indistinguishable shapes where existence must not be inferred.
   - [ ] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
+  - [ ] Verify no forbidden project/runtime references are introduced in the Contract Spine: Server, Client, CLI, MCP, UI, Workers, process managers, domain aggregate behavior, `Hexalith.EventStore`, or `Hexalith.Tenants`.
+  - [ ] Verify the six operation groups reuse shared Story 1.6/1.7 components where available and that operation parity covers tenant/folder/workspace/task scope, idempotency or freshness, Problem Details, audit metadata, examples, authorization outcomes, and C6 evidence references.
   - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
   - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
 - [ ] Record downstream authoring notes. (AC: 8, 10, 12)
@@ -143,6 +154,15 @@ Use the operation names below as a starting point unless Story 1.5 or Story 1.6 
 
 Do not add file mutation, context query, commit, audit timeline, or operations-console projection operations in this story.
 
+### Party-Mode Hardening Notes
+
+- Review each operation independently. The implementation must leave a visible mapping from each operation to its scope, idempotency or freshness contract, authorization outcomes, Problem Details, audit metadata, examples, parity dimensions, and reused Story 1.6/1.7 component references.
+- Keep the contract/runtime boundary sharp. OpenAPI text may describe externally observable state, evidence, lease, retry, freshness, and error shapes, but must not prescribe worker/process-manager orchestration, aggregate logic, EventStore event sequencing, Tenants internals, storage mechanics, or runtime lock enforcement.
+- Tenant authority is never caller-controlled. Path, query, or body identifiers may identify a resource to validate, but they must not establish or override tenant authority from authentication context and EventStore envelopes.
+- C6 transition evidence is a contract-visible diagnostic shape. It must include current state, attempted transition where applicable, result, reason code, timestamp, correlation/audit metadata, and freshness, without exposing internal event schemas or durable keys.
+- Lock lease metadata must be enough for clients to reason about state: lock identity, lease status, acquired/effective timestamp, expiry timestamp, holder/audit reference where appropriate, and read freshness for inspection responses.
+- The exact retry policy matrix, lease duration defaults, renewal and clock-skew policy, expanded audit taxonomy, and runtime authorization-revocation mechanics remain deferred to approved source documents unless already resolved by prerequisite stories.
+
 ### Error and Audit Requirements
 
 - Required canonical categories for this story include authentication failure, tenant authorization denied, folder ACL denied, cross-tenant access denied, provider readiness failed, repository binding unavailable, branch/ref policy invalid, workspace preparation failed, workspace locked, lock conflict, lock expired, lock not owned, stale workspace, authorization revocation detected, read-model unavailable, duplicate operation, idempotency conflict, unsupported provider capability, provider unavailable, provider rate limited, unknown provider outcome, reconciliation required, state transition invalid, validation error, not found, redacted, and internal error.
@@ -179,6 +199,8 @@ Do not add file mutation, context query, commit, audit timeline, or operations-c
 - Validate OpenAPI parse, `$ref` resolution, unique operation IDs, exact `x-hexalith-*` metadata presence, idempotency/read-consistency completeness, safe tenant-authority boundaries, synthetic examples, C6 state metadata, safe-denial parity, and negative scope.
 - Include contract-level assertions for lock conflict, expired/stale lock, authorization revocation, provider uncertainty, reconciliation required, and state transition invalid outcomes.
 - Include allow-list assertions for the operation IDs and `/api/v1` path prefixes owned by this story so validation fails if file/context, commit/status, audit timeline, operations-console, runtime, generated-client, CLI, MCP, worker, UI, or CI artifacts appear.
+- Include contract-level assertions that mutating operations reuse idempotency vocabulary, query operations reuse freshness/read-consistency vocabulary, tenant authority is absent from request payloads and client-controlled parameters, Problem Details components are reused, and synthetic examples cover revoked authorization, invalid transition, expired lease, retry eligible, and retry blocked outcomes.
+- Include forbidden-reference checks so the Contract Spine does not add Server, Client, CLI, MCP, UI, Workers, process-manager, aggregate behavior, `Hexalith.EventStore`, or `Hexalith.Tenants` dependencies or descriptions.
 - If the full solution is buildable, run `dotnet build Hexalith.Folders.slnx` from the repository root after focused validation. Record exact blockers if build cannot run due to prior scaffold state.
 
 ### References
@@ -222,6 +244,18 @@ Do not add file mutation, context query, commit, audit timeline, or operations-c
 | Date | Change | Author |
 |---|---|---|
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+| 2026-05-11 | Applied party-mode review hardening for operation mapping, contract/runtime boundary, tenant authority, C6 evidence, Problem Details, idempotency/freshness, lock metadata, and validation expectations. | Codex |
+
+## Party-Mode Review
+
+- Date: 2026-05-11T22:10:50Z
+- Selected story key: `1-8-author-workspace-and-lock-contract-groups`
+- Command/skill invocation used: `/bmad-party-mode 1-8-author-workspace-and-lock-contract-groups; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor)
+- Findings summary: all reviewers found the story directionally viable but too ambiguous for immediate development without explicit operation-by-operation obligations, stronger contract-only boundaries, tenant-authority negative checks, reusable idempotency/freshness vocabulary, C6 transition evidence shape, lock lease metadata, canonical Problem Details coverage, and focused OpenAPI validation expectations.
+- Changes applied: added acceptance criteria for operation-level reviewability, contract/runtime separation, and diagnostic metadata boundaries; added subtasks for operation mapping, C6 evidence examples, Problem Details matrix, reusable idempotency/freshness vocabulary, tenant-authority validation, forbidden-reference checks, and parity coverage; added dev notes capturing party-mode hardening constraints.
+- Findings deferred: exact retry eligibility policy, lease duration defaults, renewal policy, clock-skew policy, expanded audit taxonomy, and runtime authorization-revocation mechanics remain deferred to approved source documents or `TODO(reference-pending)` markers.
+- Final recommendation: ready-for-dev
 
 ## Dev Agent Record
 
