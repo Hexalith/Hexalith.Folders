@@ -10,3 +10,6 @@
 [submodule "Hexalith.FrontComposer"]
 	path = Hexalith.FrontComposer
 	url = https://github.com/Hexalith/Hexalith.FrontComposer.git
+[submodule "Hexalith.Memories"]
+	path = Hexalith.Memories
+	url = https://github.com/Hexalith/Hexalith.Memories.git
