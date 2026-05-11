@@ -1,6 +1,6 @@
 # Story 1.4: Author Phase 0.5 Pre-Spine Workshop deliverables
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-10
 
@@ -24,54 +24,54 @@ so that the canonical contract starts with real retention, input-limit, state, a
 
 ## Tasks / Subtasks
 
-- [ ] Inspect prior Phase 0 outputs before authoring deliverables. (AC: 5, 6)
-  - [ ] Confirm Story 1.1 scaffold expectations and Story 1.2 root policy are available if verification depends on root docs or solution structure.
-  - [ ] Confirm Story 1.3 has seeded `docs/exit-criteria/_template.md`, `docs/adrs/0000-template.md`, `tests/fixtures/previous-spine.yaml`, and fixture ownership notes, or record the exact missing prerequisite instead of broadening this story into fixture seeding.
-  - [ ] Do not initialize or update nested submodules; use root-level submodules only as read-only references unless the user explicitly asks for nested submodules.
-- [ ] Author `docs/exit-criteria/c3-retention.md`. (AC: 1, 5)
-  - [ ] Start from `docs/exit-criteria/_template.md` if present; preserve the template's evidence and ownership fields.
-  - [ ] Include retention durations for audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, and cleanup records.
-  - [ ] For each data class, document retention duration, deletion/tombstone/anonymization behavior, cleanup trigger, operational evidence, and the downstream place where Phase 1 or later stories consume the value.
-  - [ ] Include value provenance for every duration: source architecture section, Story 1.3 fixture/template, stakeholder workshop note, or explicit `needs human decision`.
-  - [ ] State the tenant-isolation implication for each retained data class and avoid copying tenant payload values into examples.
-  - [ ] Record decision owner `Tech Lead`, decision authority `Legal + PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
-  - [ ] Classify every duration as `approved`, `proposed workshop value`, or `needs human decision`; do not mix those states in one row without explaining which downstream consumer is blocked.
-  - [ ] Include a commit-idempotency TTL row or note showing how D-7 `commit = retention-period(C3)` inherits from the approved retention decision, or mark it as the explicit Phase 1 blocker.
-  - [ ] Do not invent legal commitments without recording the source of the decision; if a stakeholder value is unavailable, record the blocking decision explicitly instead of writing a fake concrete value.
-- [ ] Author `docs/exit-criteria/c4-input-limits.md`. (AC: 2, 5)
-  - [ ] Start from `docs/exit-criteria/_template.md` if present.
-  - [ ] Define max files, max bytes, max result count, max query duration, timeout behavior, truncation behavior, and included/excluded audit visibility for context-query families.
-  - [ ] Map each limit to the Phase 1 Contract Spine fields that must receive the value, including `maxItems`, `maxLength`, `maxBytes`, `maxResultCount`, or equivalent OpenAPI extension metadata, without adding or editing OpenAPI files.
-  - [ ] Include value provenance for every limit and state whether it is a binding MVP default, a proposed workshop value, or a `needs human decision` placeholder.
-  - [ ] Define units and boundary semantics for every numeric limit: whether the bound is inclusive, whether it applies before or after authorization/path filtering, and whether timeout/truncation returns partial results or a canonical error.
-  - [ ] State whether each limit is global for MVP or tenant-tunable later; do not introduce tenant-specific configuration files or per-tenant override behavior in this story.
-  - [ ] Record decision owner `Architect`, decision authority `PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
-  - [ ] Keep values bounded for MVP and note that later capacity calibration can revise them with evidence; do not replace C1/C5 release calibration work.
-- [ ] Document S-2 OIDC validation parameters. (AC: 3)
-  - [ ] Add the focused artifact `docs/exit-criteria/s2-oidc-validation.md`.
-  - [ ] Include `ClockSkew = TimeSpan.FromSeconds(30)`, `RequireExpirationTime = true`, `RequireSignedTokens = true`, `ValidateIssuer = true`, `ValidateAudience = true`, `ValidateLifetime = true`, and `ValidateIssuerSigningKey = true`.
-  - [ ] Include JWKS retrieval behavior: `AutomaticRefreshInterval = TimeSpan.FromMinutes(10)` and `RefreshInterval = TimeSpan.FromMinutes(1)` for forced refresh after signature-validation failure.
-  - [ ] Document that issuer and audience are pinned per environment through syntactically valid non-secret configuration placeholders; do not commit real production issuer URLs, client secrets, provider credentials, or tenant-specific values.
-  - [ ] Use clearly non-production examples such as `.invalid` issuer hosts and placeholder audience names; verification must reject realistic production domains, raw JWTs, client secrets, private keys, certificates, or tenant identifiers.
-  - [ ] Document claim provenance: `sub` is principal, `eventstore:tenant` is authoritative tenant after EventStore claim transformation, `eventstore:permission` gates command/query access, and tenant IDs in payloads are inputs to validate, not authority.
-  - [ ] Keep the artifact documentation-only; do not add authentication middleware, package configuration, runtime integration, or environment-specific configuration files.
-- [ ] Document C6 transition-matrix implementation mapping. (AC: 4)
-  - [ ] Add the focused artifact `docs/exit-criteria/c6-transition-matrix-mapping.md`.
-  - [ ] Reference `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 - Enumerated)` as the source of truth.
-  - [ ] Name the future target implementation path `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`, state that later code must translate the architecture matrix 1:1, and do not create or modify that source file in this story.
-  - [ ] Document that every unlisted `(state, event)` pair must reject with `state_transition_invalid`, keep state unchanged, and remain inspectable through idempotency record behavior.
-  - [ ] Document that operator-disposition labels must come from the architecture state catalog and later UI mapping must be generated from or tested against that catalog.
-  - [ ] Document the future aggregate-test requirement: every state and every event in the architecture vocabulary needs positive transition or explicit rejection coverage, without adding aggregate tests in this story.
-  - [ ] Include the architecture source date or review date and the exact state/event vocabulary copied from the C6 source so future changes have an obvious drift point to update before implementation.
-- [ ] Add lightweight verification. (AC: 1, 2, 3, 4, 6)
-  - [ ] Prefer a documentation test or script that checks the required files exist and contain no unresolved `TBD` placeholders for the Phase-1-blocking fields.
-  - [ ] Check that no deliverable includes obvious secret values, provider tokens, production credentials, tenant data, raw file contents, or production-only URLs.
-  - [ ] Check that verification evidence confirms no OpenAPI spine files, generated SDK outputs, REST/CLI/MCP/server code, authentication middleware, provider adapters, domain aggregates, aggregate tests, CI workflow gates, infrastructure files, or `FolderStateTransitions.cs` were added by this story.
-  - [ ] Check each required artifact contains `status`, `decision owner`, `approval authority`, `source inputs`, `last reviewed`, `open questions`, `Decision`, `Rationale`, `Verification impact`, and `Deferred implementation` sections.
-  - [ ] Check C3/C4 artifacts distinguish `approved`, `proposed workshop value`, and `needs human decision`; if any `needs human decision` remains for a Phase-1-blocking value, record the exact blocked consumer and do not claim Phase 1 is unblocked.
-  - [ ] Check S-2 examples use non-production placeholders and C6 references do not drift from the architecture state/event vocabulary.
-  - [ ] If an existing test project is available, integrate the check there; otherwise add the lightest local script or documented manual verification consistent with the current scaffold.
-  - [ ] Run the relevant verification command and, when the scaffold supports it, `dotnet build Hexalith.Folders.slnx`.
+- [x] Inspect prior Phase 0 outputs before authoring deliverables. (AC: 5, 6)
+  - [x] Confirm Story 1.1 scaffold expectations and Story 1.2 root policy are available if verification depends on root docs or solution structure.
+  - [x] Confirm Story 1.3 has seeded `docs/exit-criteria/_template.md`, `docs/adrs/0000-template.md`, `tests/fixtures/previous-spine.yaml`, and fixture ownership notes, or record the exact missing prerequisite instead of broadening this story into fixture seeding.
+  - [x] Do not initialize or update nested submodules; use root-level submodules only as read-only references unless the user explicitly asks for nested submodules.
+- [x] Author `docs/exit-criteria/c3-retention.md`. (AC: 1, 5)
+  - [x] Start from `docs/exit-criteria/_template.md` if present; preserve the template's evidence and ownership fields.
+  - [x] Include retention durations for audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, and cleanup records.
+  - [x] For each data class, document retention duration, deletion/tombstone/anonymization behavior, cleanup trigger, operational evidence, and the downstream place where Phase 1 or later stories consume the value.
+  - [x] Include value provenance for every duration: source architecture section, Story 1.3 fixture/template, stakeholder workshop note, or explicit `needs human decision`.
+  - [x] State the tenant-isolation implication for each retained data class and avoid copying tenant payload values into examples.
+  - [x] Record decision owner `Tech Lead`, decision authority `Legal + PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
+  - [x] Classify every duration as `approved`, `proposed workshop value`, or `needs human decision`; do not mix those states in one row without explaining which downstream consumer is blocked.
+  - [x] Include a commit-idempotency TTL row or note showing how D-7 `commit = retention-period(C3)` inherits from the approved retention decision, or mark it as the explicit Phase 1 blocker.
+  - [x] Do not invent legal commitments without recording the source of the decision; if a stakeholder value is unavailable, record the blocking decision explicitly instead of writing a fake concrete value.
+- [x] Author `docs/exit-criteria/c4-input-limits.md`. (AC: 2, 5)
+  - [x] Start from `docs/exit-criteria/_template.md` if present.
+  - [x] Define max files, max bytes, max result count, max query duration, timeout behavior, truncation behavior, and included/excluded audit visibility for context-query families.
+  - [x] Map each limit to the Phase 1 Contract Spine fields that must receive the value, including `maxItems`, `maxLength`, `maxBytes`, `maxResultCount`, or equivalent OpenAPI extension metadata, without adding or editing OpenAPI files.
+  - [x] Include value provenance for every limit and state whether it is a binding MVP default, a proposed workshop value, or a `needs human decision` placeholder.
+  - [x] Define units and boundary semantics for every numeric limit: whether the bound is inclusive, whether it applies before or after authorization/path filtering, and whether timeout/truncation returns partial results or a canonical error.
+  - [x] State whether each limit is global for MVP or tenant-tunable later; do not introduce tenant-specific configuration files or per-tenant override behavior in this story.
+  - [x] Record decision owner `Architect`, decision authority `PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
+  - [x] Keep values bounded for MVP and note that later capacity calibration can revise them with evidence; do not replace C1/C5 release calibration work.
+- [x] Document S-2 OIDC validation parameters. (AC: 3)
+  - [x] Add the focused artifact `docs/exit-criteria/s2-oidc-validation.md`.
+  - [x] Include `ClockSkew = TimeSpan.FromSeconds(30)`, `RequireExpirationTime = true`, `RequireSignedTokens = true`, `ValidateIssuer = true`, `ValidateAudience = true`, `ValidateLifetime = true`, and `ValidateIssuerSigningKey = true`.
+  - [x] Include JWKS retrieval behavior: `AutomaticRefreshInterval = TimeSpan.FromMinutes(10)` and `RefreshInterval = TimeSpan.FromMinutes(1)` for forced refresh after signature-validation failure.
+  - [x] Document that issuer and audience are pinned per environment through syntactically valid non-secret configuration placeholders; do not commit real production issuer URLs, client secrets, provider credentials, or tenant-specific values.
+  - [x] Use clearly non-production examples such as `.invalid` issuer hosts and placeholder audience names; verification must reject realistic production domains, raw JWTs, client secrets, private keys, certificates, or tenant identifiers.
+  - [x] Document claim provenance: `sub` is principal, `eventstore:tenant` is authoritative tenant after EventStore claim transformation, `eventstore:permission` gates command/query access, and tenant IDs in payloads are inputs to validate, not authority.
+  - [x] Keep the artifact documentation-only; do not add authentication middleware, package configuration, runtime integration, or environment-specific configuration files.
+- [x] Document C6 transition-matrix implementation mapping. (AC: 4)
+  - [x] Add the focused artifact `docs/exit-criteria/c6-transition-matrix-mapping.md`.
+  - [x] Reference `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 - Enumerated)` as the source of truth.
+  - [x] Name the future target implementation path `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`, state that later code must translate the architecture matrix 1:1, and do not create or modify that source file in this story.
+  - [x] Document that every unlisted `(state, event)` pair must reject with `state_transition_invalid`, keep state unchanged, and remain inspectable through idempotency record behavior.
+  - [x] Document that operator-disposition labels must come from the architecture state catalog and later UI mapping must be generated from or tested against that catalog.
+  - [x] Document the future aggregate-test requirement: every state and every event in the architecture vocabulary needs positive transition or explicit rejection coverage, without adding aggregate tests in this story.
+  - [x] Include the architecture source date or review date and the exact state/event vocabulary copied from the C6 source so future changes have an obvious drift point to update before implementation.
+- [x] Add lightweight verification. (AC: 1, 2, 3, 4, 6)
+  - [x] Prefer a documentation test or script that checks the required files exist and contain no unresolved `TBD` placeholders for the Phase-1-blocking fields.
+  - [x] Check that no deliverable includes obvious secret values, provider tokens, production credentials, tenant data, raw file contents, or production-only URLs.
+  - [x] Check that verification evidence confirms no OpenAPI spine files, generated SDK outputs, REST/CLI/MCP/server code, authentication middleware, provider adapters, domain aggregates, aggregate tests, CI workflow gates, infrastructure files, or `FolderStateTransitions.cs` were added by this story.
+  - [x] Check each required artifact contains `status`, `decision owner`, `approval authority`, `source inputs`, `last reviewed`, `open questions`, `Decision`, `Rationale`, `Verification impact`, and `Deferred implementation` sections.
+  - [x] Check C3/C4 artifacts distinguish `approved`, `proposed workshop value`, and `needs human decision`; if any `needs human decision` remains for a Phase-1-blocking value, record the exact blocked consumer and do not claim Phase 1 is unblocked.
+  - [x] Check S-2 examples use non-production placeholders and C6 references do not drift from the architecture state/event vocabulary.
+  - [x] If an existing test project is available, integrate the check there; otherwise add the lightest local script or documented manual verification consistent with the current scaffold.
+  - [x] Run the relevant verification command and, when the scaffold supports it, `dotnet build Hexalith.Folders.slnx`.
 
 ## Dev Notes
 
@@ -190,6 +190,7 @@ Use these exact paths for the four decision artifacts. If an existing architectu
 | 2026-05-10 | Party-mode review applied documentation-only scope, provenance, approval-state, and verification guardrails. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-11 | Advanced elicitation pass applied authority-state, placeholder-safety, boundary-semantics, and drift-detection hardening. | Codex |
+| 2026-05-11 | Implemented Phase 0.5 decision artifacts and lightweight verification; marked C3/C4 authority approval as the remaining Phase 1 blocker. | Codex |
 
 ## Party-Mode Review
 
@@ -251,10 +252,34 @@ Use these exact paths for the four decision artifacts. If an existing architectu
 
 ### Agent Model Used
 
-TBD by dev-story agent
+Codex GPT-5
 
 ### Debug Log References
 
+- 2026-05-11: `dotnet test .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests -v:minimal` failed red phase because the four required decision artifacts did not exist.
+- 2026-05-11: `dotnet test .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests -v:minimal` passed after authoring the four artifacts and verification test.
+- 2026-05-11: Scope check confirmed no Contract Spine OpenAPI file, `FolderStateTransitions.cs`, CI workflow, appsettings, infrastructure file, or aggregate implementation was added by this story.
+- 2026-05-11: `dotnet test .\Hexalith.Folders.slnx --no-build --no-restore -v:minimal` passed: 29 tests across 11 test assemblies.
+- 2026-05-11: `dotnet build .\Hexalith.Folders.slnx --no-restore -v:minimal` passed with 0 warnings and 0 errors after a standalone rerun.
+- 2026-05-11: `git diff --check` passed with no whitespace errors.
+
 ### Completion Notes List
 
+- Confirmed Story 1.1 scaffold, Story 1.2 root/submodule policy, and Story 1.3 fixture/template prerequisites were present. No nested submodules were initialized or updated.
+- Authored `c3-retention.md` with concrete proposed retention durations, metadata-only cleanup behavior, tenant-isolation implications, provenance, approval state, review date, downstream consumers, and D-7 commit-idempotency TTL inheritance.
+- Authored `c4-input-limits.md` with bounded MVP input limits, units, inclusive boundary semantics, auth/filter ordering, timeout/truncation behavior, audit visibility, OpenAPI mapping notes, provenance, approval state, review date, and downstream consumers.
+- Authored `s2-oidc-validation.md` with the frozen JwtBearer validation settings, JWKS refresh intervals, JWT-only behavior, synthetic `.invalid` issuer placeholders, and claim-provenance rules.
+- Authored `c6-transition-matrix-mapping.md` with the architecture source, future implementation target path, 11-state catalog, event vocabulary, default `state_transition_invalid` rejection rule, operator-disposition mapping, and future aggregate-test coverage expectations.
+- Added focused documentation verification in `ExitCriteriaDecisionArtifactTests` covering required artifact shape, placeholder/secret safety, C3/C4 row metadata, S-2 parameters, C6 vocabulary, and scope leakage.
+- C3 and C4 remain proposed workshop values, not approved policy. Story 1.6 Contract Spine authoring is blocked until Legal + PM approve C3 and PM approves C4 or provide replacement values.
+- No Contract Spine OpenAPI, generated SDK output, REST/CLI/MCP/server behavior, authentication middleware, provider adapter, domain aggregate, aggregate test, CI workflow gate, infrastructure file, or `FolderStateTransitions.cs` was added.
+
 ### File List
+
+- `_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `docs/exit-criteria/c3-retention.md`
+- `docs/exit-criteria/c4-input-limits.md`
+- `docs/exit-criteria/s2-oidc-validation.md`
+- `docs/exit-criteria/c6-transition-matrix-mapping.md`
+- `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`
