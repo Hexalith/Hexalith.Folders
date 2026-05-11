@@ -1,4 +1,73 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "cases": []
+  "schema_version": "0.1.0-fixture-seed",
+  "intent": "Minimal synthetic Unicode and casing corpus for future idempotency canonicalization tests.",
+  "ownership": {
+    "owner_workstream": "Idempotency, encoding, and C13 parity stories",
+    "future_test_use": "Future ComputeIdempotencyHash and adapter parity tests consume these cases after final equivalence rules are defined.",
+    "known_omissions": [
+      "No final canonical hash algorithm",
+      "No final equivalence assertions",
+      "No transport-specific header encoding matrix"
+    ],
+    "mutation_rules": [
+      "Keep samples metadata-only and synthetic.",
+      "Pair invisible or normalization-sensitive values with code-point labels."
+    ],
+    "non_policy_placeholder": true,
+    "synthetic_data_only": true
+  },
+  "cases": [
+    {
+      "id": "nfc-composed-e-acute",
+      "category": "NFC",
+      "input": "Caf\u00e9",
+      "code_points": "U+0043 U+0061 U+0066 U+00E9",
+      "expected_intent": "Normalization-sensitive placeholder; final equivalence is deferred."
+    },
+    {
+      "id": "nfd-decomposed-e-acute",
+      "category": "NFD",
+      "input": "Cafe\u0301",
+      "code_points": "U+0043 U+0061 U+0066 U+0065 U+0301",
+      "expected_intent": "Normalization-sensitive placeholder; final equivalence is deferred."
+    },
+    {
+      "id": "nfkc-fullwidth-a",
+      "category": "NFKC",
+      "input": "\uff21-folder",
+      "code_points": "U+FF21 U+002D U+0066 U+006F U+006C U+0064 U+0065 U+0072",
+      "expected_intent": "Compatibility-normalization placeholder; final equivalence is deferred."
+    },
+    {
+      "id": "nfkd-roman-numeral-four",
+      "category": "NFKD",
+      "input": "\u2163-folder",
+      "code_points": "U+2163 U+002D U+0066 U+006F U+006C U+0064 U+0065 U+0072",
+      "expected_intent": "Compatibility-decomposition placeholder; final equivalence is deferred."
+    },
+    {
+      "id": "zero-width-joiner",
+      "category": "zero-width-joiner",
+      "input": "folder\u200dname",
+      "code_points": "U+0066 U+006F U+006C U+0064 U+0065 U+0072 U+200D U+006E U+0061 U+006D U+0065",
+      "expected_intent": "Invisible-character placeholder; final equivalence is deferred."
+    },
+    {
+      "id": "case-folding-folder-name",
+      "category": "casing",
+      "input": "SyntheticFolderName",
+      "comparison_input": "syntheticfoldername",
+      "code_points": "ASCII casing sample",
+      "expected_intent": "Case-handling placeholder; final equivalence is deferred."
+    },
+    {
+      "id": "ulid-casing",
+      "category": "ULID casing",
+      "input": "01arz3ndektsv4rrffq69g5fav",
+      "comparison_input": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+      "code_points": "Crockford Base32 casing sample",
+      "expected_intent": "ULID case-handling placeholder; final equivalence is deferred."
+    }
+  ]
 }

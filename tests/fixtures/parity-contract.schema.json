@@ -1,5 +1,146 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hexalith-folders:fixtures:parity-contract-row-seed",
+  "title": "Hexalith Folders Parity Contract Row Seed",
+  "description": "Minimal fixture/oracle input shape only. This is not the public product contract and does not define final parity semantics.",
   "type": "object",
-  "additionalProperties": true
+  "additionalProperties": false,
+  "ownership": {
+    "owner_workstream": "Phase 1 Contract Spine and C13 parity-oracle stories",
+    "future_test_use": "Future parity oracle validation for REST, SDK, CLI, and MCP behavioral equivalence rows.",
+    "known_omissions": [
+      "No complete operation inventory",
+      "No final canonical error catalog",
+      "No generated oracle implementation"
+    ],
+    "mutation_rules": [
+      "Extend row shape only when the corresponding parity story owns the behavior.",
+      "Do not encode public API schema semantics in this fixture schema."
+    ],
+    "non_policy_placeholder": true,
+    "synthetic_data_only": true
+  },
+  "required": [
+    "operation_id",
+    "transport_parity",
+    "behavioral_parity",
+    "ownership"
+  ],
+  "properties": {
+    "operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transport_parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "auth_outcome",
+        "error_code_set",
+        "idempotency_key_rule",
+        "audit_metadata_keys",
+        "correlation_field_path",
+        "terminal_states"
+      ],
+      "properties": {
+        "auth_outcome": {
+          "type": "string"
+        },
+        "error_code_set": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "idempotency_key_rule": {
+          "type": "string"
+        },
+        "audit_metadata_keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "correlation_field_path": {
+          "type": "string"
+        },
+        "terminal_states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "behavioral_parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pre_sdk_error_class",
+        "idempotency_key_sourcing",
+        "correlation_id_sourcing",
+        "cli_exit_code",
+        "mcp_failure_kind"
+      ],
+      "properties": {
+        "pre_sdk_error_class": {
+          "type": "string"
+        },
+        "idempotency_key_sourcing": {
+          "type": "string"
+        },
+        "correlation_id_sourcing": {
+          "type": "string"
+        },
+        "cli_exit_code": {
+          "type": "integer"
+        },
+        "mcp_failure_kind": {
+          "type": "string"
+        }
+      }
+    },
+    "ownership": {
+      "$ref": "#/$defs/ownership"
+    }
+  },
+  "$defs": {
+    "ownership": {
+      "type": "object",
+      "required": [
+        "owner_workstream",
+        "future_test_use",
+        "known_omissions",
+        "mutation_rules",
+        "non_policy_placeholder",
+        "synthetic_data_only"
+      ],
+      "properties": {
+        "owner_workstream": {
+          "type": "string"
+        },
+        "future_test_use": {
+          "type": "string"
+        },
+        "known_omissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mutation_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "non_policy_placeholder": {
+          "const": true
+        },
+        "synthetic_data_only": {
+          "const": true
+        }
+      }
+    }
+  }
 }

@@ -1,2 +1,16 @@
-version: 0.0.0-scaffold
-contracts: []
+version: 0.1.0-fixture-seed
+source_marker: synthetic-placeholder-not-openapi
+intent: Minimal previous-spine seed for future symmetric drift detection.
+ownership:
+  owner_workstream: Phase 1 Contract Spine and drift-detection stories
+  future_test_use: Replaced by a captured v1 Contract Spine snapshot before drift checks become blocking.
+  known_omissions:
+    - No OpenAPI root key
+    - No operation details
+    - No schema components
+  mutation_rules:
+    - Keep this file synthetic until the Contract Spine story owns replacement.
+    - Do not add partial public API semantics here.
+  non_policy_placeholder: true
+  synthetic_data_only: true
+operations: []

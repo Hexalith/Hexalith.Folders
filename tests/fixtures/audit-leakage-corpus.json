@@ -1,4 +1,76 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "cases": []
+  "schema_version": "0.1.0-fixture-seed",
+  "intent": "Minimal synthetic sentinel corpus for future metadata redaction and leakage checks.",
+  "ownership": {
+    "owner_workstream": "Redaction, audit, and safety-invariant CI stories",
+    "future_test_use": "Future tests iterate sentinel_samples to prove logs, events, diagnostics, audit records, metrics, and projections do not leak sensitive metadata.",
+    "known_omissions": [
+      "No exhaustive sensitive metadata taxonomy",
+      "No final redaction policy",
+      "No provider-specific diagnostic inventory"
+    ],
+    "mutation_rules": [
+      "Only synthetic metadata-only samples may be added.",
+      "Secret-shaped samples must keep synthetic_sentinel true and classification synthetic-sentinel."
+    ],
+    "non_policy_placeholder": true,
+    "synthetic_data_only": true
+  },
+  "sentinel_samples": [
+    {
+      "id": "secret-shaped-access-key",
+      "category": "secret-shaped-string",
+      "value": "AKIASYNTHETIC0000000",
+      "classification": "synthetic-sentinel",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "notes": "Looks like an access key shape but is explicitly fake and must never be treated as credential material."
+    },
+    {
+      "id": "credential-shaped-provider-token",
+      "category": "credential-shaped-value",
+      "value": "ghp_SYNTHETIC_SENTINEL_TOKEN_000000000000",
+      "classification": "synthetic-sentinel",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "notes": "Fake provider-token shape for allow-listed redaction tests only."
+    },
+    {
+      "id": "file-path-metadata",
+      "category": "file-path-metadata",
+      "value": "synthetic/workspace/path-metadata-only.txt",
+      "classification": "metadata-placeholder",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "notes": "Metadata-only path label with no real local, tenant, repository, or customer data."
+    },
+    {
+      "id": "branch-name-metadata",
+      "category": "branch-name",
+      "value": "synthetic/task-branch",
+      "classification": "metadata-placeholder",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "notes": "Synthetic branch label for future audit metadata tests."
+    },
+    {
+      "id": "commit-message-metadata",
+      "category": "commit-message-metadata",
+      "value": "Synthetic metadata-only commit title",
+      "classification": "metadata-placeholder",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "notes": "Commit metadata sample; no diffs or file contents are present."
+    },
+    {
+      "id": "provider-diagnostic-payload-metadata",
+      "category": "provider-diagnostic-payload-metadata",
+      "value": "synthetic-provider-rate-limit-marker",
+      "classification": "metadata-placeholder",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "notes": "Placeholder diagnostic marker with no provider URL, token, tenant, organization, or repository identifier."
+    }
+  ]
 }
