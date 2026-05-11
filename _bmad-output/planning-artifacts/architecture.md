@@ -15,12 +15,14 @@ inputDocuments:
   - "_bmad-output/planning-artifacts/research/technical-forgejo-and-github-api-research-2026-05-05.md"
   - "_bmad-output/planning-artifacts/research/technical-hexalith-eventstore-domain-aggregates-research-2026-05-05.md"
   - "_bmad-output/planning-artifacts/research/technical-hexalith-tenants-integration-for-folder-management-application-research-2026-05-05.md"
+  - "_bmad-output/planning-artifacts/research/technical-hexalith-memories-semantic-indexing-rag-research-2026-05-11.md"
+  - "_bmad-output/planning-artifacts/research/technical-frontcomposer-integration-for-hexalith-folders-ui-research-2026-05-11.md"
 documentCounts:
   prd: 1
   prdValidation: 1
   productBriefs: 1
   uxDesign: 0
-  research: 3
+  research: 5
   projectDocs: 0
   projectContext: 0
 workflowType: 'architecture'
@@ -29,7 +31,9 @@ user_name: 'Jerome'
 date: '2026-05-07'
 status: 'complete'
 lastStep: 8
-completedAt: '2026-05-09'
+completedAt: '2026-05-11'
+resumedAt: '2026-05-11'
+completionRefreshedAt: '2026-05-11'
 ---
 
 # Architecture Decision Document
@@ -113,6 +117,41 @@ These concerns recur across multiple components and must be designed once, not p
 20. **Tenants-availability degraded mode** — local tenant-access projection allows read paths to continue under bounded staleness when Hexalith.Tenants is unavailable; mutations require fresh authorization (synchronous Tenants query or rejection). Degraded-mode SLOs documented; not a silent fallback.
 21. **Operational state durability classification** — every operational state has an explicit decision: rebuilt from events on restart (stateless cache), acceptably lost on sidecar restart (in-memory ephemeral), or requires durable storage with recovery contract (locks, idempotency records, in-flight reconciliation tasks). Implementation choices must respect the classification.
 22. **Architecture exit criteria** — quantitative and structural targets C0–C13 (below) MUST be set, validated, and recorded in the architecture document with measurement methods before MVP release.
+
+### Additional Technical Research: Memories and FrontComposer
+
+Two later technical research reports have been added as architecture inputs:
+
+- `_bmad-output/planning-artifacts/research/technical-hexalith-memories-semantic-indexing-rag-research-2026-05-11.md`
+- `_bmad-output/planning-artifacts/research/technical-frontcomposer-integration-for-hexalith-folders-ui-research-2026-05-11.md`
+
+**Hexalith.Memories integration implications:**
+
+- Treat `Hexalith.Memories` as a separate Dapr-enabled service and derived semantic index, not as an authoritative Folders datastore.
+- Keep Folders events, projections, logs, traces, metrics, audit records, and error responses metadata-only. File content may be read by workers after authorization and sent to Memories for indexing; it must not be embedded in Folders events.
+- Add a worker-side semantic-indexing port before referencing Memories directly. `Hexalith.Folders.Workers` is the only initial project that may depend on `Hexalith.Memories.Client.Rest` / `Hexalith.Memories.Contracts`; Contracts, core domain, CLI, MCP, UI, and Server must not take a direct Memories dependency.
+- Use durable Folders events as indexing triggers and a Folders-owned bridge projection to track `file version -> Memories workflow/memory unit/status`. This projection answers whether a file version is indexed, stale, skipped, failed, tombstoned, or reconciliation-required.
+- Authorize before indexing and before retrieval: tenant access, folder ACL, path policy, sensitivity classification, size/type limits, then Memories call. Search results must be security-trimmed and redacted by Folders policy before leaving the Folders API/SDK/MCP boundary.
+- Use stable source URIs and idempotency keys for memory units, based on tenant/folder/file-version/content-hash metadata. Avoid raw path metadata unless C9 explicitly allows exposure.
+- Start with asynchronous indexing after file-write/commit events; a Memories outage must not roll back a durable Folders file operation. It should surface as retryable indexing status and operational evidence.
+- Large-file behavior remains coupled to C4. The Memories research identifies the current inline ingestion guardrail as a constraint; Folders should first expose explicit skipped/too-large status, then add chunked or reference-based ingestion only after limits are agreed.
+
+**Hexalith.FrontComposer integration implications:**
+
+- `Hexalith.Folders.UI` should become a Blazor Web App host rendering `FrontComposerShell` as the primary layout, using Interactive Server first.
+- The MVP operations console remains read-only and projection-backed. Do not generate or route mutation command forms through FrontComposer during MVP.
+- Add Folders-specific FrontComposer projection models for metadata-only views such as folder summaries, workspace status, provider readiness, tenant folder access, semantic-indexing status, and operation/audit timelines.
+- Replace the fail-closed `IUserContextAccessor` with a Folders/Tenants auth bridge before enabling tenant-scoped FrontComposer queries.
+- Defer `AddHexalithEventStore` until Folders Server implements the compatible command/query/projection-change endpoints, or provide a Folders-specific read-only `IQueryService` adapter backed by `Hexalith.Folders.Client`.
+- Keep FrontComposer SourceTools generated output deterministic and unedited. If UI-only projection annotations would pollute the Contract Spine, place FrontComposer projection DTOs in a UI/domain companion assembly instead of `Hexalith.Folders.Contracts`.
+- Aspire topology should keep `folders-ui` and `folders` as separate services with explicit references; UI must not require provider credentials, tenant seed data, Keycloak, Dapr sidecars, or nested submodule initialization for scaffold/build tests.
+
+**Architecture impact summary:**
+
+These reports do not overturn the core architecture. They add two optional integration tracks that must preserve the existing invariants:
+
+- Memories extends context-query and RAG capability through worker-owned asynchronous indexing and an authorized Folders query facade.
+- FrontComposer implements the read-only operations console shell and generated projection UI while Folders retains domain semantics, authorization, data access, and no-leakage policy.
 
 ### Architecture Exit Criteria — Targets to Resolve
 

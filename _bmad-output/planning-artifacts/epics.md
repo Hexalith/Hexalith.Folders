@@ -1014,15 +1014,17 @@ So that deletes are auditable, idempotent, and cannot bypass workspace or tenant
 ### Story 4.8: Query file context with policy boundaries
 
 As a developer or AI agent,
-I want file tree, metadata, search, glob, and bounded range-read queries,
-So that task context is useful without unbounded scans or secret exposure.
+I want file tree, metadata, search, glob, bounded range-read, and extension-safe semantic context-query behavior,
+So that task context is useful without unbounded scans, stale derived-index authority, or secret exposure.
 
 **Acceptance Criteria:**
 
 **Given** the actor has context-query permission
 **When** a context query runs
-**Then** tenant, folder ACL, path policy, binary/large-file policy, and range/result limits are enforced before execution
-**And** denied queries produce metadata-only audit evidence.
+**Then** tenant access, folder ACL, path policy, sensitivity classification, binary/large-file policy, and range/result limits are enforced before execution
+**And** denied queries produce metadata-only audit evidence
+**And** any semantic/RAG retrieval backend, including Hexalith.Memories, is invoked only after Folders authorization and policy checks pass
+**And** derived semantic indexes are never treated as authoritative for tenant access, folder ACL, file truth, workspace state, or audit truth.
 
 ### Story 4.9: Inspect workspace and projection currency
 
@@ -1253,18 +1255,20 @@ So that incidents can be reconstructed without file contents or secrets.
 **Then** records are paginated, filtered, tenant-scoped, and metadata-only
 **And** sensitive metadata classification is applied consistently.
 
-### Story 6.2: Scaffold Blazor Server console with Fluent UI
+### Story 6.2: Scaffold FrontComposer-hosted read-only operations console
 
 As an operator,
-I want a read-only Blazor Server console with authentication and tenant/folder navigation,
-So that I can diagnose workspace state through a governed UI.
+I want a read-only Blazor Web App console hosted by `Hexalith.Folders.UI` and rendered through `FrontComposerShell`,
+So that I can diagnose workspace state through a governed, tenant-aware UI.
 
 **Acceptance Criteria:**
 
 **Given** projection query endpoints exist
 **When** the console shell is implemented
-**Then** it uses Fluent UI, OIDC auth, SDK projection queries, and no direct aggregate write paths
-**And** navigation supports tenant and folder diagnostic workflows.
+**Then** `Hexalith.Folders.UI` is a Blazor Web App host using Interactive Server rendering, `FrontComposerShell` as the primary layout, Fluent UI through the FrontComposer/Shell pattern, OIDC auth, SDK or read-only query-service projection access, and no direct aggregate write paths
+**And** a real Folders/Tenants `IUserContextAccessor` replaces the fail-closed FrontComposer default before tenant-scoped queries are enabled
+**And** navigation supports tenant and folder diagnostic workflows
+**And** no FrontComposer mutation command forms, file browsing, file editing, raw diff display, repair actions, credential reveal, or unrestricted filesystem browsing are exposed in MVP.
 
 ### Story 6.3: Render operator-disposition labels as primary visual
 
@@ -1300,11 +1304,12 @@ So that implementation of diagnostic pages follows reviewed information hierarch
 
 **Acceptance Criteria:**
 
-**Given** PRD console requirements and architecture decisions F-1 through F-7 exist
+**Given** PRD console requirements, architecture decisions F-1 through F-7, and the FrontComposer technical research exist
 **When** console wireflow notes are authored
 **Then** folder, workspace, provider, audit, incident-mode, redaction, loading, empty, and error states are described under `docs/ux/ops-console-wireflows.md`
+**And** the notes identify FrontComposer shell layout, navigation, projection-view composition, tenant/user context expectations, read-only command-suppression behavior, and generated/custom projection boundaries
 **And** the notes identify keyboard-navigation, focus, non-color-only status, zoom readability, and redaction-vs-missing expectations for Epic 6 stories
-**And** Stories 6.6, 6.7, 6.8, 6.9, and 6.10 cannot begin implementation until `docs/ux/ops-console-wireflows.md` exists and has been reviewed against PRD console requirements and architecture decisions F-1 through F-7.
+**And** Stories 6.6, 6.7, 6.8, 6.9, and 6.10 cannot begin implementation until `docs/ux/ops-console-wireflows.md` exists and has been reviewed against PRD console requirements, architecture decisions F-1 through F-7, and the FrontComposer technical research.
 
 ### Story 6.6: Build folder and workspace diagnostic pages
 
