@@ -47,11 +47,13 @@ so that file changes and read-only context access preserve the same policy bound
 - [ ] Author context-query contract operations. (AC: 1, 4, 5, 6, 7, 9)
   - [ ] Add non-mutating operations for file tree/listing, file metadata lookup, search, glob, and bounded range reads using stable operation IDs such as `ListFolderFiles`, `SearchFolderFiles`, and `ReadFileRange` unless prior stories froze different names.
   - [ ] Model context queries as policy-filtered metadata/content operations, not generic repository browsing or direct filesystem access.
-  - [ ] Declare authorization order explicitly: tenant access, folder ACL, path policy, then query execution. Results must already be security-trimmed before ranking, summarization, snippets, truncation, or response shaping.
+  - [ ] Declare authorization order explicitly: tenant access, folder ACL, path policy, sensitivity classification, C4 query/input bounds, then query execution. Results must already be security-trimmed before ranking, summarization, truncation, or response shaping.
   - [ ] Represent authorization order as contract metadata or normative operation description, not as caller-controlled request fields. Query request bodies and parameters must not include tenant authority, ACL override, sensitivity override, policy bypass, or search-first/filter-later semantics.
+  - [ ] Require authorization and path-policy checks before resource-existence, file-type, match-count, range-validity, or projection-status details are disclosed. Unauthorized, excluded, missing, binary-disallowed, and sensitivity-denied cases must use indistinguishable safe-denial or metadata-only Problem Details unless the actor is authorized to know the specific condition.
   - [ ] Use `snapshot-per-task` read consistency for `ListFolderFiles`, `SearchFolderFiles`, and `ReadFileRange` per Story 1.5 unless a prior approved source changes it.
   - [ ] Declare freshness metadata, projection lag behavior, truncation flag, truncation reason, configured limit, actual count/bytes, elapsed milliseconds, and safe retry guidance where applicable.
-  - [ ] Define bounded range reads as byte ranges with exact inclusive/exclusive offset semantics, maximum single range size, invalid/reversed range behavior, redacted/partial response metadata, and whether `206`, `416`, or canonical Problem Details applies for each boundary case.
+  - [ ] Define bounded range reads as byte ranges with exact inclusive/exclusive offset semantics, maximum single range size, zero-length range behavior, end-of-file behavior, unsupported multi-range behavior, invalid/reversed range behavior, redacted/partial response metadata, and whether `206`, `416`, or canonical Problem Details applies for each boundary case.
+  - [ ] Keep tree, metadata, search, and glob responses metadata-only: no content snippets, matched-line text, previews, diffs, generated context payloads, or raw search text. `ReadFileRange` is the only context-query operation allowed to return authorized file bytes.
   - [ ] Apply C4 proposed bounds as reference-pending or approved according to current artifact state: max requested paths 100, max tree entries 2000, max search/glob results 500, max single range bytes 262144, aggregate response bytes 1048576, and server-side query timeout 2000 ms.
   - [ ] Ensure denied, excluded, binary-disallowed, too-large, timeout, truncated, and missing-resource cases produce safe Problem Details or metadata-only response shapes without revealing unauthorized file, folder, task, path, or search-hit existence.
 - [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 5, 6, 7, 12)
@@ -59,6 +61,7 @@ so that file changes and read-only context access preserve the same policy bound
   - [ ] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, and forward-slash workspace-root-relative path metadata with no leading slash.
   - [ ] Ensure every mutating operation has `Idempotency-Key`, correlation metadata, task identity, audit metadata, and parity dimensions; ensure every non-mutating context query omits `Idempotency-Key`.
   - [ ] Ensure all examples are synthetic opaque placeholders and do not include real tenant IDs, repository URLs, branch names with sensitive values, local paths, provider identifiers, organization names, email addresses, file content snippets, diffs, generated context payloads, secrets, or unauthorized resource hints.
+  - [ ] If pagination or continuation tokens are exposed, model them as service-issued opaque non-secret cursors only; they must not encode provider tokens, local paths, tenant authority, ACL decisions, raw query text, or unredacted path lists.
   - [ ] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
 - [ ] Add focused offline validation. (AC: 6, 7, 10, 12)
   - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
@@ -67,9 +70,10 @@ so that file changes and read-only context access preserve the same policy bound
   - [ ] Verify all new operations include required `x-hexalith-*` metadata and satisfy idempotency/read-consistency requirements by operation type.
   - [ ] Verify no request payload, query parameter, route segment, or client-controlled header defines authoritative tenant context.
   - [ ] Verify context-query operations do not define or accept `Idempotency-Key`; mutation operations require it and expose missing, malformed, and conflict cases through canonical metadata-only Problem Details.
+  - [ ] Verify context-query contracts require authorization and policy gating before existence, match-count, file-type, projection-state, and range-specific diagnostics can be disclosed.
   - [ ] Verify C4 limit metadata appears in schemas or reference-pending comments with approval state preserved.
   - [ ] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
-  - [ ] Verify examples and audit metadata exclude file contents, diffs, raw search text, generated context payloads, provider payloads, local paths, production URLs, and unauthorized resource-existence hints.
+  - [ ] Verify examples and audit metadata exclude file contents, content snippets, matched-line text, diffs, raw search text, generated context payloads, provider payloads, local paths, production URLs, and unauthorized resource-existence hints.
   - [ ] Verify bounded range examples cover minimum range, maximum allowed range, invalid reversed range, over-bound range, redacted or partial response metadata, and authorized content-only response bodies.
   - [ ] Verify safe-denial and canonical error coverage for validation failure, missing idempotency key, idempotency conflict, tenant access denied, folder ACL denied, path policy denied, sensitivity or C4 denial, safe not-found/denied response, range unsatisfiable, projection stale, and unsupported semantic/RAG extension.
   - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
@@ -136,6 +140,14 @@ docs/contract/file-context-contract-groups.md
 - Safe-denial responses must use stable machine-readable codes and generic localizable messages. They must not reveal folder, workspace, lock, task, path, excluded-path, search-hit, provider-state, local-path, or unauthorized resource existence.
 - Future semantic/RAG vocabulary is reserved extension vocabulary for downstream stories. It must not imply embedding generation, vector-search runtime, Memories integration, prompt assembly, RAG workers, provider adapters, or generated context payloads in this story.
 - Parity dimensions for every file/context operation are authorization order, correlation, canonical errors, read consistency or idempotency, freshness/projection lag where applicable, redaction/safe denial, audit metadata, localization-safe Problem Details, and synthetic examples.
+
+### Advanced Elicitation Hardening Notes
+
+- Context-query contracts must make authorization-before-observation explicit. Tenant access, folder ACL, path policy, sensitivity classification, and C4 bounds are evaluated before the contract can reveal file existence, path exclusion, binary handling, range validity, projection lag, match counts, or result availability.
+- Tree, metadata, search, and glob operations remain metadata-only even when authorized. They may return safe path metadata, counts, bounds, truncation, and redaction evidence, but not snippets, previews, matched-line text, generated context payloads, or raw search text.
+- Bounded range reads are the only context-query operation allowed to return authorized file bytes. The contract must declare zero-length, maximum-size, end-of-file, reversed-range, over-bound, sensitivity-denied, redacted, and unsupported multi-range behavior without relying on runtime interpretation.
+- Pagination and continuation state must be service-issued, opaque, non-secret, and non-authoritative. It must never carry provider tokens, tenant authority, ACL decisions, raw query text, or unredacted path lists.
+- Validation should fail closed when a contract shape lets clients steer tenant authority, policy bypass, sensitivity classification, projection freshness, result ranking before filtering, or semantic/RAG retrieval before Folders policy enforcement.
 
 ### Operation Inventory Seed
 
@@ -235,6 +247,7 @@ Do not add commit, workspace status, audit timeline, operations-console, runtime
 |---|---|---|
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-11 | Applied party-mode review hardening for operation mapping, D-9 transport semantics, safe denial, context-query authorization order, bounded range reads, semantic/RAG boundaries, and validation oracles. | Codex |
+| 2026-05-12 | Applied advanced-elicitation hardening for authorization-before-observation, metadata-only context queries, range-read boundary semantics, opaque pagination cursors, and fail-closed validation. | Codex |
 
 ## Party-Mode Review
 
@@ -245,6 +258,18 @@ Do not add commit, workspace status, audit timeline, operations-console, runtime
 - Findings summary: all reviewers found the story directionally viable but requiring sharper contract-level guardrails around exact OpenAPI operation placement, mutation versus D-9 transport naming, `PutFileInline`/`PutFileStream` semantics, exact 256 KiB boundary, `413` retry-as-stream response header, prepared-workspace and held-lock precondition surfaces, safe-denial behavior, context-query authorization order, tenant-authority negative checks, read-consistency/freshness vocabulary, bounded range-read semantics, semantic/RAG extension boundaries, metadata-only examples, and focused offline validation oracles.
 - Changes applied: added party-mode hardening notes; added subtasks for concrete D-9 operation mapping, 262144-byte inline boundary, retry-as-stream header contract, contract-only validation oracle, no `Idempotency-Key` on context queries, safe-denial/error coverage, byte-range boundary examples, and authorization-order metadata without caller-controlled policy bypass fields.
 - Findings deferred: exact `403`/`404` safe-denial matrix, whether bounded range reads may return actual content or only metadata/range descriptors for specific sensitivity classes, whether redaction metadata is mandatory on every context response or only suppressed-field responses, how projection lag is represented, how search/glob constraints are exposed without making tenant or policy authority client-controlled, and where parity dimensions are captured before final parity-oracle rows.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date: 2026-05-12T02:04:02Z
+- Selected story key: `1-9-author-file-mutation-and-context-query-contract-groups`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-9-author-file-mutation-and-context-query-contract-groups`
+- Batch 1 method names: Security Audit Personas; Red Team vs Blue Team; Failure Mode Analysis; Socratic Questioning; Critique and Refine
+- Reshuffled Batch 2 method names: Pre-mortem Analysis; Self-Consistency Validation; Architecture Decision Records; Comparative Analysis Matrix; Occam's Razor Application
+- Findings summary: the story was already viable, but elicitation found ambiguity around authorization-before-observation, metadata-only context-query responses, bounded range-read edge cases, opaque cursor safety, and validation that fails closed when clients can steer authority, sensitivity, projection freshness, or retrieval ordering.
+- Changes applied: tightened context-query authorization order to include sensitivity and C4 bounds; added authorization-before-existence disclosure guardrails; clarified zero-length, EOF, multi-range, and over-bound range behavior expectations; prohibited snippets/previews/matched-line text outside authorized range reads; added opaque continuation-token constraints; added validation assertions for pre-disclosure gating and content-leak examples; added advanced elicitation hardening notes.
+- Findings deferred: exact `403` versus `404` safe-denial matrix, sensitivity classes allowed to return file bytes through `ReadFileRange`, whether redaction metadata is mandatory on every context-query response, final projection-lag vocabulary, and final placement of parity dimensions before parity-oracle rows.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
