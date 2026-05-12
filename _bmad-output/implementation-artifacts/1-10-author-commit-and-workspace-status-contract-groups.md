@@ -24,6 +24,7 @@ so that clean committed states, failed states, and unknown provider outcomes are
 10. Given this is a contract-group authoring story, when implementation is complete, then no runtime REST handlers, EventStore commands, domain aggregate behavior, provider adapters, Git/file-system side effects, workers, generated SDK output, NSwag generation wiring, CLI commands, MCP tools, UI pages, final parity-oracle rows, CI workflow gates, or nested-submodule initialization are added by this story.
 11. Given adjacent stories own other capability groups, when this story is complete, then operation paths and schemas remain limited to commit, commit evidence, workspace status, task status, provider outcome, retry eligibility, and reconciliation status concerns and do not implement tenant/folder/provider/repository binding, workspace preparation, lock management, file mutation, context query, audit timeline, operations-console projection queries, cleanup behavior, or runtime reconciliation.
 12. Given the Contract Spine is a mechanical source for SDK and parity work, when validation runs, then OpenAPI 3.1 parsing succeeds offline, all `$ref` targets resolve, operation IDs are unique and limited to this story's explicit allow-list, every operation has required `x-hexalith-*` metadata, mutating/read operations satisfy idempotency or read-consistency requirements, no client-controlled tenant authority exists, examples are synthetic and metadata-only, and negative-scope checks prove downstream runtime/adapter/generated artifacts were not added.
+13. Given party-mode review hardening, when implementation starts, then the development agent treats the operation inventory, editable file set, reference-pending fallback rules, and validation fixture matrix in Dev Notes as binding story constraints unless a previously approved Contract Spine artifact has frozen a different shape and the story records that mapping explicitly.
 
 ## Tasks / Subtasks
 
@@ -32,32 +33,44 @@ so that clean committed states, failed states, and unknown provider outcomes are
   - [ ] Inspect Stories 1.7, 1.8, and 1.9 deliverables before referencing tenant/folder/provider/repository, workspace/lock, and file/context components. If absent, reference stable planned component names and record the dependency as reference-pending instead of duplicating their scope.
   - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml`; treat missing files as prerequisite drift, not permission to invent policy.
   - [ ] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, and related S-2 evidence if present; preserve approval state and use reference-pending markers for unapproved values.
+  - [ ] Apply reference-pending markers only to named fields or decisions with a cited source path or owner; do not use `TODO(reference-pending)` as a general substitute for required commit/status contract design.
   - [ ] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
   - [ ] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
-- [ ] Author the commit command contract. (AC: 1, 2, 3, 5, 7, 8, 9)
+- [ ] Pin the concrete operation inventory and editable file set before schema authoring. (AC: 1, 10, 11, 12, 13)
+  - [ ] Start from the Dev Notes operation inventory seed and confirm each path, method, operation ID, and owning schema section against existing Story 1.6 through 1.9 artifacts.
+  - [ ] If an existing Contract Spine artifact already froze different paths or names, preserve the frozen `operationId` where possible and record the mapping in `docs/contract/commit-status-contract-groups.md` or the OpenAPI description.
+  - [ ] Keep edits limited to `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `src/Hexalith.Folders.Contracts/openapi/extensions/` if extension metadata is missing, `docs/contract/commit-status-contract-groups.md` if notes are needed, and focused `tests/Hexalith.Folders.Contracts.Tests/` or `tests/tools/` validation assets.
+  - [ ] Do not edit server, domain, worker, provider, generated client, NSwag, CLI, MCP, UI, or CI workflow files for this story.
+- [ ] Author the commit command contract. (AC: 1, 2, 3, 5, 7, 8, 9, 13)
   - [ ] Add or update the commit tag/path under `/api/v1/...` using lowercase hyphen-delimited path segments, plural collection nouns where appropriate, and camelCase path parameters such as `{folderId}` and `{workspaceId}`.
   - [ ] Define stable operation ID `CommitWorkspace` unless Story 1.5, Story 1.6, or an already-authored Contract Spine has frozen a different name; record any mapping in contract notes.
   - [ ] Require task ID, operation ID, workspace ID, folder ID, branch/ref target reference, changed-path metadata digest, author metadata reference, and commit-message classification metadata; tenant authority remains authentication/EventStore-envelope-derived only.
   - [ ] Declare commit idempotency equivalence from Story 1.5 using lexicographic field order: `author_metadata_reference, branch_ref_target, changed_path_metadata_digest, commit_message_classification, operation_id, task_id, tenant_id, workspace_id`.
+  - [ ] Treat that equivalence order as normative ordinal/ASCII lexical ordering for extension values unless Story 1.5 or the extension vocabulary has already frozen a different comparator; record any comparator drift explicitly.
   - [ ] Use `x-hexalith-idempotency-ttl-tier: commit`; preserve C3 approval state and do not substitute the 24-hour mutation tier for commit.
   - [ ] Represent accepted asynchronous commit work as an accepted-command/status shape when provider latency exceeds the command-ack budget; do not imply synchronous Git/provider completion.
+  - [ ] Model `retryAfter` and retry eligibility as advisory contract metadata only; provider outcome `unknown` or otherwise indeterminate outcomes must never advertise blind commit retry eligibility.
   - [ ] Require prepared workspace, staged changes, held or releasable task-scoped lock semantics per C6, and metadata-only changed-path evidence. Do not encode file contents, diffs, provider payloads, or raw working-copy paths.
   - [ ] Keep actual provider calls, Git commit behavior, EventStore commands, domain state transitions, lock release effects, process managers, and reconciliation workers deferred to Epic 4 implementation stories.
-- [ ] Author workspace, task, provider-outcome, and reconciliation status queries. (AC: 1, 4, 5, 6, 7, 8)
+- [ ] Author workspace, task, provider-outcome, and reconciliation status queries. (AC: 1, 4, 5, 6, 7, 8, 13)
   - [ ] Add non-mutating status operations for workspace status, task status, commit evidence, provider outcome, retry eligibility, retry-after, and reconciliation status when not already covered by shared status components.
   - [ ] Define stable operation IDs such as `GetWorkspaceStatus`, `GetTaskStatus`, `GetCommitEvidence`, `GetProviderOutcome`, and `GetReconciliationStatus` unless prior stories have frozen different names.
   - [ ] Declare approved read-consistency classes. Use `read-your-writes` for `GetWorkspaceStatus` per Story 1.5 unless a newer approved source changes it; use `eventually-consistent` only where status is explicitly projection-backed.
-  - [ ] Separate accepted command state from projected state. Include projection watermark, freshness age, last successful operation, last failure category, retry eligibility, retry-after, current state, terminal state, correlation ID, and task/operation ID metadata where authorized.
-  - [ ] Represent `unknown_provider_outcome` and `reconciliation_required` as visible states, not generic internal errors. Retrying commit must not be recommended while outcome ambiguity can duplicate upstream commits.
+  - [ ] Separate accepted command state from projected/read-model state by schema field name, description, and example so consumers cannot treat command acknowledgment as durable provider completion.
+  - [ ] Include projection watermark, freshness age, last successful operation, last failure category, retry eligibility, retry-after, current state, terminal state, correlation ID, and task/operation ID metadata where authorized.
+  - [ ] Represent `known_failure`, `unknown_provider_outcome`, `reconciliation_required`, `reconciliation_completed_clean`, `reconciliation_completed_dirty`, `failed`, and `committed` as closed contract states or explicit reference-pending values; do not invent runtime transition policy beyond approved C6/source artifacts.
+  - [ ] Retrying commit must not be recommended while outcome ambiguity can duplicate upstream commits.
   - [ ] Ensure unauthorized, missing, wrong-tenant, stale-read, unknown-task, unknown-workspace, and hidden-commit cases use safe Problem Details or safe metadata-only response shapes without resource-existence hints.
 - [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 4, 6, 7, 8, 12)
   - [ ] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, lifecycle/state schemas, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
   - [ ] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, and tenant-sensitive metadata classification for paths, branch names, repository names, commit messages, and provider correlation IDs.
   - [ ] Ensure the mutating commit operation has `Idempotency-Key`, correlation metadata, task identity, audit metadata, and parity dimensions; ensure all non-mutating status queries omit `Idempotency-Key`.
+  - [ ] Ensure no request body field, query parameter, route segment, or client-controlled header is described as authoritative tenant identity; tenant authority remains auth/EventStore-envelope-derived only.
   - [ ] Use RFC 9457 Problem Details plus Hexalith fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
+  - [ ] Prefer machine-readable status and error codes over adopter-facing English prose fields; descriptions may explain behavior, but client semantics must bind to codes/enums.
   - [ ] Ensure examples are synthetic opaque placeholders only and do not include real tenant IDs, repository URLs, branch names with sensitive values, local paths, provider identifiers, organization names, email addresses, file contents, diffs, raw commit messages, generated context payloads, secrets, or unauthorized resource hints.
   - [ ] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
-- [ ] Add focused offline validation. (AC: 7, 10, 12)
+- [ ] Add focused offline validation. (AC: 7, 10, 12, 13)
   - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
   - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation allow-list: `CommitWorkspace`, `GetWorkspaceStatus`, and any explicitly named task-status, commit-evidence, provider-outcome, retry-eligibility, or reconciliation-status operation added by this story.
   - [ ] Verify all new operations include required `x-hexalith-*` metadata and satisfy idempotency/read-consistency requirements by operation type.
@@ -66,6 +79,7 @@ so that clean committed states, failed states, and unknown provider outcomes are
   - [ ] Verify examples and audit metadata exclude file contents, diffs, raw commit messages, raw changed-path lists where not authorized, raw provider payloads, generated context payloads, provider tokens, credential material, local paths, production URLs, and unauthorized resource-existence hints.
   - [ ] Verify provider-outcome and reconciliation schemas distinguish known failure, unknown provider outcome, reconciliation required, reconciliation completed clean, reconciliation completed dirty, terminal failed, and terminal committed states.
   - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
+  - [ ] Cover the minimum validation matrix: valid OpenAPI 3.1 document, local `$ref` chain, duplicate `operationId`, missing required `x-hexalith-*` metadata, mutating operation without idempotency metadata, read operation without read-consistency metadata, provider outcome unknown, reconciliation required, client-controlled tenant authority, forbidden raw sensitive metadata, and negative-scope file/category additions.
   - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
 - [ ] Record downstream authoring notes. (AC: 5, 8, 10, 11)
   - [ ] Add a short note near the OpenAPI file or in `docs/contract/` explaining which commit/status components Stories 1.11, 1.12, 1.13, Epic 4, Epic 5, and Story 6.6 must reuse.
@@ -132,6 +146,22 @@ Use the operation names below as a starting point unless Story 1.5, Story 1.6, o
 | `GetReconciliationStatus` | Query/status | reconciliation state, last reconciler observation, retry eligibility, final-state evidence, escalation flag |
 
 Do not add provider readiness, workspace preparation, lock, file mutation, context query, audit timeline, operations-console, worker, generated SDK, CLI, or MCP operations in this story.
+
+### Party-Mode Hardening Notes
+
+- Operation allow-list seed, unless an already-authored Contract Spine artifact has frozen a different path or operation name:
+  - `POST /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits` -> `CommitWorkspace`.
+  - `GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/status` -> `GetWorkspaceStatus`.
+  - `GET /api/v1/tasks/{taskId}/status` -> `GetTaskStatus`.
+  - `GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence` -> `GetCommitEvidence`.
+  - `GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome` -> `GetProviderOutcome`.
+  - `GET /api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status` -> `GetReconciliationStatus`.
+- Editable file set for implementation is limited to the OpenAPI spine, its extension metadata folder when needed, optional `docs/contract/commit-status-contract-groups.md` notes, and focused contract validation assets under `tests/Hexalith.Folders.Contracts.Tests/` or `tests/tools/`.
+- Cross-story identities and schemas must reuse approved Story 1.5 through 1.9 shapes for tenant authority, folder ID, workspace ID, task ID, provider/binding references, branch/ref references, operation ID, correlation ID, changed-path digest, and reconciliation ID.
+- Accepted-command state, projected/read-model state, provider outcome, commit evidence, retry eligibility, and reconciliation status must be distinct schema concepts. Do not collapse them into one lifecycle field.
+- `unknown_provider_outcome` and other indeterminate provider outcomes must not expose blind commit retry guidance. `retryAfter` is advisory metadata for safe retryable states only, not scheduler behavior.
+- Machine-readable enums and codes are the compatibility contract. Human-readable descriptions must not become the only source of client behavior.
+- Negative-scope validation should assert forbidden artifact categories and paths, not incidental current filenames, so the check remains stable as the scaffold grows.
 
 ### Error and Audit Requirements
 
@@ -217,7 +247,32 @@ Do not add provider readiness, workspace preparation, lock, file mutation, conte
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-12 | Applied party-mode review hardening for operation inventory, editable file ownership, retry semantics, tenant authority, metadata-only boundaries, status taxonomy, and validation matrix. | Codex |
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+
+## Party-Mode Review
+
+- Date/time: 2026-05-12T00:06:43Z
+- Selected story key: `1-10-author-commit-and-workspace-status-contract-groups`
+- Command/skill invocation used: `/bmad-party-mode 1-10-author-commit-and-workspace-status-contract-groups; review;`
+- Participating BMAD agents: Winston (System Architect), John (Product Manager), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor)
+- Findings summary:
+  - The story was directionally correct and contract-only, but reviewers found it too ambiguous for immediate development until operation inventory, editable file boundaries, status taxonomy, and validation expectations were pinned.
+  - Accepted-command versus projected/read-model status needed sharper schema separation so implementation does not imply runtime EventStore/provider behavior.
+  - Cross-story identity reuse needed explicit binding to Story 1.5 through 1.9 shapes for tenant authority, workspace/task/provider/correlation/operation/reconciliation identities, and changed-path metadata.
+  - Provider outcome and retry semantics needed a closed model where unknown or indeterminate provider outcomes never recommend blind commit retry and `retryAfter` remains advisory metadata.
+  - Tenant authority and metadata-only boundaries needed operation-level checks to prevent caller-controlled tenant identity, raw commit messages, diffs, file contents, provider payloads, secrets, local paths, and unauthorized resource-existence hints.
+  - Test strategy needed an explicit fixture matrix for OpenAPI parse/ref resolution, operation ID uniqueness, required `x-hexalith-*` metadata, idempotency/read-consistency separation, tenant-authority rejection, sensitive metadata rejection, provider outcome states, reconciliation states, and negative-scope artifacts.
+- Changes applied:
+  - Added AC 13 to bind implementation to the party-mode operation inventory, editable file set, reference-pending fallback rules, and validation fixture matrix.
+  - Added prerequisite and operation-inventory subtasks that limit editable files and require explicit mapping if prior Contract Spine artifacts froze different paths or names.
+  - Added commit/status subtasks for normative idempotency equivalence ordering, advisory retry metadata, no blind retry on unknown provider outcome, separate accepted/projected states, closed provider/reconciliation states, and no client-controlled tenant authority.
+  - Added validation subtasks covering the minimum offline fixture matrix and negative-scope artifact categories.
+  - Added Dev Notes with operation allow-list seed, editable file set, cross-story reuse rules, status-taxonomy boundaries, and retry semantics.
+- Findings deferred:
+  - Exact HTTP response status choices, enum terminal/non-terminal semantics, C3 commit retention approval, C6 transition policy, runtime reconciliation behavior, lock-release side effects, idempotency persistence behavior, generated SDK helpers, parity-oracle rows, CI gates, and operations-console projections remain deferred to approved source artifacts or later stories.
+  - If existing Story 1.6 through 1.9 Contract Spine artifacts have already frozen paths, operation names, extension fields, or comparator rules, implementation must preserve those approved shapes and record mappings instead of replacing them.
+- Final recommendation: ready-for-dev
 
 ## Dev Agent Record
 
