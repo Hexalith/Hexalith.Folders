@@ -1,6 +1,6 @@
 # Story 1.7: Author tenant, folder, provider, and repository-binding contract groups
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-11
 
@@ -27,54 +27,54 @@ so that access and provider readiness capabilities are canonical before implemen
 
 ## Tasks / Subtasks
 
-- [ ] Confirm prerequisites and preserve scope boundaries. (AC: 1, 9, 10, 12)
-  - [ ] Inspect Story 1.6 deliverables: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/`. If absent, create only the operation-group additions this story owns with clear `TODO/reference-pending` markers where shared foundation values are missing.
-  - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml` if present; treat missing files as prerequisite drift to record, not permission to invent policy.
-  - [ ] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, and S-2/C6 evidence if present; unresolved values must stay reference-pending.
-  - [ ] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
-  - [ ] Do not add runtime code, generated SDK output, CLI/MCP tools, provider adapters, workers, UI, final parity rows, or CI gates.
-  - [ ] Limit allowed story outputs to OpenAPI contract changes, existing Contract project DTO/identity artifacts only when needed for contract compilation, synthetic examples, optional contract notes, and focused offline validation assets.
-- [ ] Author tenant and folder lifecycle contract operations. (AC: 1, 2, 3, 5, 6)
-  - [ ] Add or update tags and paths for folder lifecycle and access operations under `/api/v1/folders...` using lowercase hyphen-delimited path segments and camelCase path parameters such as `{folderId}`.
-  - [ ] Define stable `operationId` values for create folder, get folder lifecycle/status, archive folder, list/update folder ACL entries, and get effective permissions.
-  - [ ] Model folder identity as opaque IDs and projected metadata; do not make folder names, hierarchy, or paths aggregate identity.
-  - [ ] Ensure all authorization-denied responses are safe and metadata-only, without revealing whether a tenant, folder, ACL entry, provider binding, repository binding, or branch/ref policy exists to unauthorized callers.
-  - [ ] Ensure safe-denial examples share one externally indistinguishable response envelope for unauthorized, absent, cross-tenant, and stale-read resources unless an already-authorized diagnostic endpoint explicitly permits more detail.
-  - [ ] Ensure mutating operations declare idempotency metadata and reads declare read-consistency/freshness metadata without accepting `Idempotency-Key`.
-- [ ] Author provider binding and provider readiness contract operations. (AC: 1, 2, 4, 5, 6, 8)
-  - [ ] Add provider binding reference and readiness operations under provider-readiness or organization/provider capability paths that align with the existing Contract Spine tag model.
-  - [ ] Represent credential references as non-secret opaque references and readiness evidence as sanitized metadata; never include credential material, raw provider tokens, or secret-store contents.
-  - [ ] Separate operator-visible readiness diagnostics from consumer-visible safe denials; consumer responses must not reveal credential validity, provider installation identity, provider account ownership, or repository existence.
-  - [ ] Model provider capabilities for repository creation, existing repository binding, branch/ref handling, file operations, commit/status behavior, provider errors, and failure behavior without hardcoding exactly two providers into schema shape.
-  - [ ] Distinguish provider readiness failed, credential reference missing/invalid, provider permission insufficient, provider unavailable, provider rate limited, unsupported provider capability, and read-model unavailable canonical categories.
-  - [ ] Preserve GitHub/Forgejo portability: capability differences are explicit metadata and later contract tests decide support, not assumptions in this story.
-- [ ] Author repository creation, repository binding, and branch/ref policy operations. (AC: 1, 2, 4, 5, 6, 8)
-  - [ ] Add contract operations for creating a repository-backed folder and binding an existing repository where supported.
-  - [ ] Include branch/ref policy request and response schemas with synthetic examples only; avoid real URLs, branch names with sensitive data, credential-shaped values, and provider-specific permission secrets.
-  - [ ] Define duplicate binding, repository conflict, cross-tenant access denied, provider readiness failed, unsupported provider capability, unknown provider outcome, and reconciliation required error outcomes.
-  - [ ] Include audit metadata keys for provider, provider binding reference, repository binding identity, folder ID, branch/ref policy, correlation ID, operation ID, task ID where relevant, result, timestamp, and sanitized error category.
-  - [ ] Keep workspace preparation, locks, file mutation, commit, status, audit timeline, and ops-console projection operations deferred to Stories 1.8 through 1.11.
-- [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 5, 6, 11, 12)
-  - [ ] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
-  - [ ] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, forward-slash metadata paths, and metadata-only examples.
-  - [ ] Ensure every mutating operation has `Idempotency-Key` and every non-mutating operation omits it.
-  - [ ] Ensure every operation declares canonical error categories, authorization requirement, correlation behavior, audit classification, and parity dimensions.
-  - [ ] Use `TODO/reference-pending` only for unresolved approved-source values, with exact source paths or decision owners when known.
-- [ ] Add focused offline validation. (AC: 5, 6, 7, 9, 11)
-  - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
-  - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation groups by checking an explicit allow-list derived from the Operation Inventory Seed.
-  - [ ] Verify all new operations include required `x-hexalith-*` metadata and that mutating/query operations satisfy their idempotency or read-consistency requirements.
-  - [ ] Verify no request payload, query parameter, or client-controlled header defines tenant authority.
-  - [ ] Verify examples are synthetic and metadata-only.
-  - [ ] Verify safe-denial examples for unauthorized tenant, missing folder, missing provider binding, missing repository binding, and missing branch/ref policy use externally indistinguishable shapes where existence must not be inferred.
-  - [ ] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
-  - [ ] Verify provider diagnostic examples are partitioned by audience so consumer-facing contract examples stay redacted while authorized operator-readiness examples remain sanitized and metadata-only.
-  - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
-- [ ] Record downstream authoring notes. (AC: 10, 12)
-  - [ ] Add a short note near the OpenAPI file or in `docs/contract/` explaining which shared components and extension metadata Stories 1.8 through 1.11 must reuse.
-  - [ ] Record deferred owners for workspace/lock, file/context, commit/status, audit/ops-console, NSwag generation, parity oracle, and CI gates.
-  - [ ] Record any unresolved C3/C4/S-2/C6 or Story 1.5 metadata dependencies as explicit deferred decisions.
+- [x] Confirm prerequisites and preserve scope boundaries. (AC: 1, 9, 10, 12)
+  - [x] Inspect Story 1.6 deliverables: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/`. If absent, create only the operation-group additions this story owns with clear `TODO/reference-pending` markers where shared foundation values are missing.
+  - [x] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml` if present; treat missing files as prerequisite drift to record, not permission to invent policy.
+  - [x] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, and S-2/C6 evidence if present; unresolved values must stay reference-pending.
+  - [x] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
+  - [x] Do not add runtime code, generated SDK output, CLI/MCP tools, provider adapters, workers, UI, final parity rows, or CI gates.
+  - [x] Limit allowed story outputs to OpenAPI contract changes, existing Contract project DTO/identity artifacts only when needed for contract compilation, synthetic examples, optional contract notes, and focused offline validation assets.
+- [x] Author tenant and folder lifecycle contract operations. (AC: 1, 2, 3, 5, 6)
+  - [x] Add or update tags and paths for folder lifecycle and access operations under `/api/v1/folders...` using lowercase hyphen-delimited path segments and camelCase path parameters such as `{folderId}`.
+  - [x] Define stable `operationId` values for create folder, get folder lifecycle/status, archive folder, list/update folder ACL entries, and get effective permissions.
+  - [x] Model folder identity as opaque IDs and projected metadata; do not make folder names, hierarchy, or paths aggregate identity.
+  - [x] Ensure all authorization-denied responses are safe and metadata-only, without revealing whether a tenant, folder, ACL entry, provider binding, repository binding, or branch/ref policy exists to unauthorized callers.
+  - [x] Ensure safe-denial examples share one externally indistinguishable response envelope for unauthorized, absent, cross-tenant, and stale-read resources unless an already-authorized diagnostic endpoint explicitly permits more detail.
+  - [x] Ensure mutating operations declare idempotency metadata and reads declare read-consistency/freshness metadata without accepting `Idempotency-Key`.
+- [x] Author provider binding and provider readiness contract operations. (AC: 1, 2, 4, 5, 6, 8)
+  - [x] Add provider binding reference and readiness operations under provider-readiness or organization/provider capability paths that align with the existing Contract Spine tag model.
+  - [x] Represent credential references as non-secret opaque references and readiness evidence as sanitized metadata; never include credential material, raw provider tokens, or secret-store contents.
+  - [x] Separate operator-visible readiness diagnostics from consumer-visible safe denials; consumer responses must not reveal credential validity, provider installation identity, provider account ownership, or repository existence.
+  - [x] Model provider capabilities for repository creation, existing repository binding, branch/ref handling, file operations, commit/status behavior, provider errors, and failure behavior without hardcoding exactly two providers into schema shape.
+  - [x] Distinguish provider readiness failed, credential reference missing/invalid, provider permission insufficient, provider unavailable, provider rate limited, unsupported provider capability, and read-model unavailable canonical categories.
+  - [x] Preserve GitHub/Forgejo portability: capability differences are explicit metadata and later contract tests decide support, not assumptions in this story.
+- [x] Author repository creation, repository binding, and branch/ref policy operations. (AC: 1, 2, 4, 5, 6, 8)
+  - [x] Add contract operations for creating a repository-backed folder and binding an existing repository where supported.
+  - [x] Include branch/ref policy request and response schemas with synthetic examples only; avoid real URLs, branch names with sensitive data, credential-shaped values, and provider-specific permission secrets.
+  - [x] Define duplicate binding, repository conflict, cross-tenant access denied, provider readiness failed, unsupported provider capability, unknown provider outcome, and reconciliation required error outcomes.
+  - [x] Include audit metadata keys for provider, provider binding reference, repository binding identity, folder ID, branch/ref policy, correlation ID, operation ID, task ID where relevant, result, timestamp, and sanitized error category.
+  - [x] Keep workspace preparation, locks, file mutation, commit, status, audit timeline, and ops-console projection operations deferred to Stories 1.8 through 1.11.
+- [x] Apply shared OpenAPI conventions consistently. (AC: 2, 5, 6, 11, 12)
+  - [x] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
+  - [x] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, forward-slash metadata paths, and metadata-only examples.
+  - [x] Ensure every mutating operation has `Idempotency-Key` and every non-mutating operation omits it.
+  - [x] Ensure every operation declares canonical error categories, authorization requirement, correlation behavior, audit classification, and parity dimensions.
+  - [x] Use `TODO/reference-pending` only for unresolved approved-source values, with exact source paths or decision owners when known.
+- [x] Add focused offline validation. (AC: 5, 6, 7, 9, 11)
+  - [x] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
+  - [x] Verify new operation IDs are unique, stable, and limited to this story's operation groups by checking an explicit allow-list derived from the Operation Inventory Seed.
+  - [x] Verify all new operations include required `x-hexalith-*` metadata and that mutating/query operations satisfy their idempotency or read-consistency requirements.
+  - [x] Verify no request payload, query parameter, or client-controlled header defines tenant authority.
+  - [x] Verify examples are synthetic and metadata-only.
+  - [x] Verify safe-denial examples for unauthorized tenant, missing folder, missing provider binding, missing repository binding, and missing branch/ref policy use externally indistinguishable shapes where existence must not be inferred.
+  - [x] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
+  - [x] Verify provider diagnostic examples are partitioned by audience so consumer-facing contract examples stay redacted while authorized operator-readiness examples remain sanitized and metadata-only.
+  - [x] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
+- [x] Record downstream authoring notes. (AC: 10, 12)
+  - [x] Add a short note near the OpenAPI file or in `docs/contract/` explaining which shared components and extension metadata Stories 1.8 through 1.11 must reuse.
+  - [x] Record deferred owners for workspace/lock, file/context, commit/status, audit/ops-console, NSwag generation, parity oracle, and CI gates.
+  - [x] Record any unresolved C3/C4/S-2/C6 or Story 1.5 metadata dependencies as explicit deferred decisions.
 
 ## Dev Notes
 
@@ -213,6 +213,7 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 | 2026-05-11 | Advanced elicitation applied operation allow-list, safe-denial fixture, and provider-diagnostic redaction hardening. | Codex |
 | 2026-05-11 | Party-mode review applied contract-only boundary, safe-denial, tenant-authority, placeholder, secret-field, and validation guardrails. | Codex |
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+| 2026-05-12 | Implemented tenant, folder, provider, repository binding, and branch/ref Contract Spine groups with offline validation. | Codex |
 
 ## Party-Mode Review
 
@@ -273,10 +274,39 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-12: Loaded BMad workflow customization, project config, sprint status, project context, Story 1.7, Story 1.6 OpenAPI foundation, extension vocabulary, prerequisite docs, and existing contract tests.
+- 2026-05-12: Confirmed story is a fresh implementation with no Senior Developer Review continuation section.
+
+### Implementation Plan
+
+- Add focused failing contract validation for the Story 1.7 operation allow-list, OpenAPI metadata, tenant-authority boundaries, synthetic examples, safe denials, and negative scope.
+- Author only the tenant/folder/provider/repository/branch-ref OpenAPI contract groups and shared schemas needed by those operations.
+- Add concise downstream contract notes for Stories 1.8 through 1.11 and record deferred decisions.
+- Run the focused contract tests and `dotnet build Hexalith.Folders.slnx`; mark tasks complete only after validations pass.
+
 ### Completion Notes List
 
+- Authored 15 Story 1.7 OpenAPI operations for folder lifecycle/access, provider binding/readiness/support evidence, repository-backed folder creation, repository binding, and branch/ref policy.
+- Added provider-neutral capability/readiness schemas, non-secret opaque credential reference modeling, canonical provider/repository error categories, operation metadata, synthetic examples, and externally indistinguishable safe-denial examples.
+- Added focused offline contract validation for operation allow-list, `$ref` resolution, required `x-hexalith-*` metadata, idempotency/read-consistency separation, tenant-authority boundaries, secret-shaped fields, provider diagnostic audience partitioning, and negative scope.
+- Added downstream contract notes for Stories 1.8 through 1.11 and deferred C3/C4/S-2/C6/Story 1.5/1.6 decisions.
+- Updated scaffold regression tests for Story 1.7 operation paths and aligned README submodule setup with the current root-level submodule inventory.
+- Validation passed: `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore`; `dotnet build Hexalith.Folders.slnx --no-restore`; `dotnet test Hexalith.Folders.slnx --no-restore`.
+
 ### File List
+
+- README.md
+- _bmad-output/implementation-artifacts/1-7-author-tenant-folder-provider-and-repository-binding-contract-groups.md
+- _bmad-output/implementation-artifacts/sprint-status.yaml
+- docs/contract/tenant-folder-provider-repository-contract-groups.md
+- src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml
+- src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs
+- tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+- tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
+- tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs

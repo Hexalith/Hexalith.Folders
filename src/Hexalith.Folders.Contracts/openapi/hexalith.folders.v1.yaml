@@ -32,7 +32,1190 @@ tags:
     description: Bounded metadata-only file and context query contracts.
 security:
   - oidcBearer: []
-paths: {}
+paths:
+  /api/v1/folders:
+    post:
+      tags:
+        - folders
+      operationId: CreateFolder
+      summary: Create a tenant-scoped folder identity.
+      description: >
+        Creates opaque folder identity and projected metadata. Tenant authority
+        comes from authenticated principal claims and EventStore envelopes, never
+        from this request.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFolderRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/CreateFolderRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - folder_metadata.display_name
+        - parent_folder_id
+        - request_schema_version
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-folder-create-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference emitted after acceptance.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized accepted or rejected outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - correlation
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/lifecycle-status:
+    get:
+      tags:
+        - folders
+      operationId: GetFolderLifecycleStatus
+      summary: Inspect folder lifecycle and repository binding status.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Metadata-only folder lifecycle status.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FolderLifecycleStatus"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FolderLifecycleStatus"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: returns-projection-watermark-when-available
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-folder-read-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - cross_tenant_access_denied
+        - not_found
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: lifecycle_state
+          sensitivity: tenant_sensitive
+          description: Sanitized lifecycle state.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized result category.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/archive:
+    post:
+      tags:
+        - folders
+      operationId: ArchiveFolder
+      summary: Archive a folder without exposing cross-tenant existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArchiveFolderRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - archive_reason_code
+        - folder_id
+        - request_schema_version
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-folder-admin-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized archive outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/acl:
+    get:
+      tags:
+        - folders
+      operationId: ListFolderAclEntries
+      summary: List metadata-only folder ACL entries.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+        - $ref: "#/components/parameters/PageCursor"
+        - $ref: "#/components/parameters/PageLimit"
+        - $ref: "#/components/parameters/MetadataFilter"
+      responses:
+        "200":
+          description: Metadata-only ACL entries.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FolderAclEntryList"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-pagination-and-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-folder-acl-read-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - validation_error
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - pagination
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/acl/{aclEntryId}:
+    put:
+      tags:
+        - folders
+      operationId: UpdateFolderAclEntry
+      summary: Add, update, or revoke a metadata-only folder ACL entry.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/AclEntryId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFolderAclEntryRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - acl_entry_id
+        - folder_id
+        - permission_level
+        - subject_ref
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-folder-acl-admin-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: acl_entry_id
+          sensitivity: tenant_sensitive
+          description: Opaque ACL entry reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized ACL update outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/effective-permissions:
+    get:
+      tags:
+        - folders
+      operationId: GetEffectivePermissions
+      summary: Inspect caller effective permissions without exposing tenant authority fields.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Metadata-only effective permission result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EffectivePermissions"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: read_your_writes
+        freshnessBehavior: reports-authorization-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-folder-permission-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: authorization_outcome
+          sensitivity: tenant_sensitive
+          description: Sanitized authorization outcome class.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - authorization_outcome
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/provider-bindings/{providerBindingRef}:
+    put:
+      tags:
+        - provider-readiness
+      operationId: ConfigureProviderBinding
+      summary: Configure a provider binding reference without credential material.
+      parameters:
+        - $ref: "#/components/parameters/ProviderBindingRef"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfigureProviderBindingRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - capability_profile_ref
+        - non_secret_credential_reference
+        - provider_binding_ref
+        - provider_family_ref
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-provider-binding-admin
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - credential_reference_invalid
+        - provider_unavailable
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: provider_binding_ref
+          sensitivity: tenant_sensitive
+          description: Opaque provider binding reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized provider binding outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - credential_reference_redaction
+          - provider_capability
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+    get:
+      tags:
+        - provider-readiness
+      operationId: GetProviderBinding
+      summary: Inspect a redacted provider binding reference.
+      parameters:
+        - $ref: "#/components/parameters/ProviderBindingRef"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Redacted provider binding metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderBinding"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: redacted-binding-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-provider-binding-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - cross_tenant_access_denied
+        - not_found
+        - read_model_unavailable
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: provider_binding_ref
+          sensitivity: tenant_sensitive
+          description: Opaque provider binding reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - safe_denial
+          - redaction
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/provider-readiness/validations:
+    post:
+      tags:
+        - provider-readiness
+      operationId: ValidateProviderReadiness
+      summary: Validate provider readiness through sanitized evidence.
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateProviderReadinessRequest"
+      responses:
+        "200":
+          description: Provider readiness validation result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderReadiness"
+              examples:
+                consumer:
+                  $ref: "#/components/examples/ProviderReadinessConsumer"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "429":
+          $ref: "#/components/responses/ProviderRateLimited"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: readiness-evidence-generated-for-request
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: provider-readiness-diagnostic-correlation
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-provider-readiness-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - provider_readiness_failed
+        - credential_reference_invalid
+        - provider_permission_insufficient
+        - provider_unavailable
+        - provider_rate_limited
+        - unsupported_provider_capability
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: provider_binding_ref
+          sensitivity: tenant_sensitive
+          description: Opaque provider binding reference.
+        - name: readiness_status
+          sensitivity: tenant_sensitive
+          description: Sanitized readiness outcome.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized provider readiness result.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - provider_capability
+          - provider_error_mapping
+          - diagnostic_redaction
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/provider-readiness/support-evidence:
+    get:
+      tags:
+        - provider-readiness
+      operationId: GetProviderSupportEvidence
+      summary: Inspect provider-neutral support and capability evidence.
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+        - $ref: "#/components/parameters/PageCursor"
+        - $ref: "#/components/parameters/PageLimit"
+      responses:
+        "200":
+          description: Provider-neutral capability evidence.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderSupportEvidenceList"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-capability-catalog-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-and-provider-support-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - provider_unavailable
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: capability_profile_ref
+          sensitivity: tenant_sensitive
+          description: Opaque capability profile reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized support evidence result.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - provider_capability
+          - pagination
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/repository-backed:
+    post:
+      tags:
+        - folders
+        - provider-readiness
+      operationId: CreateRepositoryBackedFolder
+      summary: Create a folder and repository binding where provider capabilities permit it.
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRepositoryBackedFolderRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/RepositoryConflict"
+        "422":
+          $ref: "#/components/responses/UnsupportedProviderCapability"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - branch_ref_policy.policy_ref
+        - folder_metadata.display_name
+        - provider_binding_ref
+        - repository_profile_ref
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-create-and-provider-binding-use
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - provider_readiness_failed
+        - repository_conflict
+        - unsupported_provider_capability
+        - unknown_provider_outcome
+        - reconciliation_required
+        - idempotency_conflict
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference emitted after acceptance.
+        - name: provider_binding_ref
+          sensitivity: tenant_sensitive
+          description: Opaque provider binding reference.
+        - name: repository_binding_id
+          sensitivity: tenant_sensitive
+          description: Opaque repository binding identity.
+        - name: branch_ref_policy_ref
+          sensitivity: tenant_sensitive
+          description: Opaque branch/ref policy reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized creation outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - provider_capability
+          - unknown_provider_outcome
+          - reconciliation_required
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/repository-bindings:
+    post:
+      tags:
+        - folders
+        - provider-readiness
+      operationId: BindRepository
+      summary: Bind an existing repository reference to a folder where supported.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BindRepositoryRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/DuplicateBinding"
+        "422":
+          $ref: "#/components/responses/UnsupportedProviderCapability"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - branch_ref_policy.policy_ref
+        - external_repository_ref
+        - folder_id
+        - provider_binding_ref
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-admin-and-provider-binding-use
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - cross_tenant_access_denied
+        - provider_readiness_failed
+        - duplicate_binding
+        - repository_conflict
+        - unsupported_provider_capability
+        - unknown_provider_outcome
+        - reconciliation_required
+        - idempotency_conflict
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: provider_binding_ref
+          sensitivity: tenant_sensitive
+          description: Opaque provider binding reference.
+        - name: repository_binding_id
+          sensitivity: tenant_sensitive
+          description: Opaque repository binding identity.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized binding outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - duplicate_binding
+          - provider_capability
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}:
+    get:
+      tags:
+        - folders
+        - provider-readiness
+      operationId: GetRepositoryBinding
+      summary: Inspect repository binding metadata without exposing protected repository existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/RepositoryBindingId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Redacted repository binding metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RepositoryBinding"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: redacted-binding-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-read-and-repository-binding-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - cross_tenant_access_denied
+        - not_found
+        - redacted
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: repository_binding_id
+          sensitivity: tenant_sensitive
+          description: Opaque repository binding identity.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - safe_denial
+          - redaction
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/branch-ref-policy:
+    put:
+      tags:
+        - folders
+      operationId: ConfigureBranchRefPolicy
+      summary: Configure tenant-scoped branch and ref policy metadata.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BranchRefPolicyRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/BranchRefPolicyRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - branch_ref_policy.policy_ref
+        - folder_id
+        - repository_binding_id
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-admin-and-repository-binding-use
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: branch_ref_policy_ref
+          sensitivity: tenant_sensitive
+          description: Opaque branch/ref policy reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized policy update outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - branch_ref_policy
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+    get:
+      tags:
+        - folders
+      operationId: GetBranchRefPolicy
+      summary: Inspect branch and ref policy metadata.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Redacted branch/ref policy metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BranchRefPolicy"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: redacted-policy-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-read-and-branch-ref-policy-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - cross_tenant_access_denied
+        - not_found
+        - redacted
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: branch_ref_policy_ref
+          sensitivity: tenant_sensitive
+          description: Opaque branch/ref policy reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - safe_denial
+          - redaction
+        adapterStages:
+          - pre-sdk
+          - post-sdk
 x-hexalith-idempotency-key:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-key
   foundationUse: Mutating operations added later must declare the key requirement; queries must not accept it.
@@ -45,6 +1228,15 @@ x-hexalith-idempotency-ttl-tier:
 x-hexalith-correlation:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-correlation
   foundationUse: Correlation and task identity flow through REST, SDK, CLI, MCP, EventStore envelopes, audit, logs, and traces.
+x-hexalith-authorization:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-authorization
+  foundationUse: Operations declare tenant authority provenance, required authorization layer, and safe-denial behavior.
+x-hexalith-canonical-error-categories:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-canonical-error-categories
+  foundationUse: Operations declare bounded canonical error categories for REST, SDK, CLI, and MCP parity.
+x-hexalith-read-consistency:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-read-consistency
+  foundationUse: Non-mutating operations declare read consistency, freshness, and projection behavior without accepting idempotency keys.
 x-hexalith-lifecycle-states:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-lifecycle-states
   foundationUse: C6 vocabulary is descriptive here; state transition implementation is deferred.
@@ -132,6 +1324,34 @@ components:
         type: string
         minLength: 1
         maxLength: 256
+    FolderId:
+      name: folderId
+      in: path
+      required: true
+      description: Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    AclEntryId:
+      name: aclEntryId
+      in: path
+      required: true
+      description: Opaque ACL entry identifier.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    ProviderBindingRef:
+      name: providerBindingRef
+      in: path
+      required: true
+      description: Opaque provider binding reference. It does not prove provider account ownership or tenant authority.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    RepositoryBindingId:
+      name: repositoryBindingId
+      in: path
+      required: true
+      description: Opaque repository binding identifier. It does not reveal external repository existence to unauthorized callers.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
   headers:
     IdempotencyKey:
       description: Echoes the accepted idempotency key reference when response contracts require it.
@@ -215,6 +1435,190 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/ReconciliationRequired"
+    ReadModelUnavailable:
+      description: Read model is temporarily unavailable without leaking protected resource existence.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/ReadModelUnavailable"
+    ProviderUnavailable:
+      description: Provider dependency is unavailable or readiness cannot be safely established.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+    ProviderRateLimited:
+      description: Provider readiness or repository operation is rate limited.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+    RepositoryConflict:
+      description: Repository creation or binding conflict represented without external resource hints.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+    DuplicateBinding:
+      description: Duplicate repository binding outcome for an authorized caller.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+    UnsupportedProviderCapability:
+      description: Requested provider capability is not supported by the bound provider profile.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+  examples:
+    SafeDenialUnauthorizedTenant:
+      summary: Externally indistinguishable safe denial.
+      value:
+        type: about:blank
+        title: Access unavailable
+        status: 404
+        category: tenant_access_denied
+        code: resource_unavailable
+        message: The requested resource is unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
+    SafeDenialMissingFolder:
+      summary: Same envelope for an absent or unauthorized folder.
+      value:
+        type: about:blank
+        title: Access unavailable
+        status: 404
+        category: tenant_access_denied
+        code: resource_unavailable
+        message: The requested resource is unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
+    SafeDenialMissingProviderBinding:
+      summary: Same envelope for an absent or unauthorized provider binding.
+      value:
+        type: about:blank
+        title: Access unavailable
+        status: 404
+        category: tenant_access_denied
+        code: resource_unavailable
+        message: The requested resource is unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
+    SafeDenialMissingRepositoryBinding:
+      summary: Same envelope for an absent or unauthorized repository binding.
+      value:
+        type: about:blank
+        title: Access unavailable
+        status: 404
+        category: tenant_access_denied
+        code: resource_unavailable
+        message: The requested resource is unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
+    SafeDenialMissingBranchRefPolicy:
+      summary: Same envelope for an absent or unauthorized branch/ref policy.
+      value:
+        type: about:blank
+        title: Access unavailable
+        status: 404
+        category: tenant_access_denied
+        code: resource_unavailable
+        message: The requested resource is unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
+    ReadModelUnavailable:
+      value:
+        type: about:blank
+        title: Read model unavailable
+        status: 503
+        category: read_model_unavailable
+        code: projection_unavailable
+        message: Projection data is temporarily unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: metadata_only
+    CreateFolderRequest:
+      value:
+        requestSchemaVersion: v1
+        parentFolderId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        folderMetadata:
+          displayName: synthetic-folder-alpha
+          metadataClass: tenant_sensitive
+    FolderLifecycleStatus:
+      value:
+        folderId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        lifecycleState: ready
+        archived: false
+        repositoryBindingId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C4
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:34:56Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C5
+          stale: false
+    BranchRefPolicyRequest:
+      value:
+        requestSchemaVersion: v1
+        repositoryBindingId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C4
+        policyRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C6
+        defaultRef: branch_ref_primary
+        allowedRefPatterns:
+          - branch_ref_feature_placeholder
+        protectedRefPatterns:
+          - branch_ref_release_placeholder
+    ProviderReadinessConsumer:
+      value:
+        providerBindingRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C7
+        status: ready
+        audience: consumer
+        capabilityProfileRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C8
+        evidence:
+          repositoryCreation: supported
+          existingRepositoryBinding: supported
+          branchRefPolicy: supported
+          fileOperations: supported
+          commitStatus: supported
+          failureBehavior: documented
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
+    ProviderReadinessOperatorDiagnostic:
+      value:
+        providerBindingRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C7
+        status: degraded
+        audience: authorized_operator
+        capabilityProfileRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C8
+        evidence:
+          repositoryCreation: temporarily_unavailable
+          existingRepositoryBinding: supported
+          branchRefPolicy: supported
+          fileOperations: supported
+          commitStatus: supported
+          failureBehavior: retry_after_backoff
+        sanitizedErrorCategory: provider_rate_limited
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
   schemas:
     OpaqueIdentifier:
       type: string
@@ -444,24 +1848,468 @@ components:
         - mutation
         - commit
       description: Mutation tier is 24h. Commit tier inherits the C3 retention period and remains approval-bound.
+    FolderMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - displayName
+        - metadataClass
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 160
+          description: Projected display metadata only; it is not aggregate identity.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        metadataClass:
+          $ref: "#/components/schemas/SensitiveMetadataTier"
+    CreateFolderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - folderMetadata
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        parentFolderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        folderMetadata:
+          $ref: "#/components/schemas/FolderMetadata"
+    ArchiveFolderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - archiveReasonCode
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        archiveReasonCode:
+          type: string
+          enum:
+            - caller_requested
+            - policy_retention
+            - operator_review
+    FolderLifecycleStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - folderId
+        - lifecycleState
+        - archived
+        - freshness
+      properties:
+        folderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        lifecycleState:
+          $ref: "#/components/schemas/LifecycleState"
+        archived:
+          type: boolean
+        repositoryBindingId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    FolderAclEntry:
+      type: object
+      additionalProperties: false
+      required:
+        - aclEntryId
+        - subjectRef
+        - permissionLevel
+        - effect
+      properties:
+        aclEntryId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        subjectRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        permissionLevel:
+          type: string
+          enum:
+            - read
+            - write
+            - administer
+        effect:
+          type: string
+          enum:
+            - grant
+            - revoke
+    FolderAclEntryList:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - page
+        - freshness
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FolderAclEntry"
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    UpdateFolderAclEntryRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - subjectRef
+        - permissionLevel
+        - effect
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        subjectRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        permissionLevel:
+          type: string
+          enum:
+            - read
+            - write
+            - administer
+        effect:
+          type: string
+          enum:
+            - grant
+            - revoke
+    EffectivePermissions:
+      type: object
+      additionalProperties: false
+      required:
+        - folderId
+        - permissions
+        - authorizationOutcome
+        - freshness
+      properties:
+        folderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        permissions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - read
+              - write
+              - administer
+        authorizationOutcome:
+          type: string
+          enum:
+            - allowed
+            - denied_safe
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ConfigureProviderBindingRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - providerFamilyRef
+        - capabilityProfileRef
+        - nonSecretCredentialReference
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        providerFamilyRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        capabilityProfileRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        nonSecretCredentialReference:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+    ProviderBinding:
+      type: object
+      additionalProperties: false
+      required:
+        - providerBindingRef
+        - providerFamilyRef
+        - capabilityProfileRef
+        - redaction
+        - freshness
+      properties:
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        providerFamilyRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        capabilityProfileRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        redaction:
+          type: string
+          enum:
+            - credential_reference_redacted
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ValidateProviderReadinessRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - providerBindingRef
+        - requestedCapability
+      properties:
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        requestedCapability:
+          $ref: "#/components/schemas/ProviderCapabilityName"
+    ProviderCapabilityName:
+      type: string
+      enum:
+        - repository_creation
+        - existing_repository_binding
+        - branch_ref_policy
+        - file_operations
+        - commit_status
+        - provider_errors
+        - failure_behavior
+    ProviderCapabilityState:
+      type: string
+      enum:
+        - supported
+        - unsupported
+        - temporarily_unavailable
+        - documented
+        - retry_after_backoff
+    ProviderCapabilityEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - repositoryCreation
+        - existingRepositoryBinding
+        - branchRefPolicy
+        - fileOperations
+        - commitStatus
+        - failureBehavior
+      properties:
+        repositoryCreation:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+        existingRepositoryBinding:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+        branchRefPolicy:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+        fileOperations:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+        commitStatus:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+        failureBehavior:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+    ProviderReadiness:
+      type: object
+      additionalProperties: false
+      required:
+        - providerBindingRef
+        - status
+        - audience
+        - capabilityProfileRef
+        - evidence
+        - freshness
+      properties:
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        status:
+          type: string
+          enum:
+            - ready
+            - degraded
+            - failed
+        audience:
+          type: string
+          enum:
+            - consumer
+            - authorized_operator
+        capabilityProfileRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        evidence:
+          $ref: "#/components/schemas/ProviderCapabilityEvidence"
+        sanitizedErrorCategory:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ProviderSupportEvidenceList:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - page
+        - freshness
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderSupportEvidence"
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ProviderSupportEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - capabilityProfileRef
+        - capability
+        - supportState
+      properties:
+        capabilityProfileRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        capability:
+          $ref: "#/components/schemas/ProviderCapabilityName"
+        supportState:
+          $ref: "#/components/schemas/ProviderCapabilityState"
+    BranchRefPolicyRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - repositoryBindingId
+        - policyRef
+        - defaultRef
+        - allowedRefPatterns
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        repositoryBindingId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        policyRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        defaultRef:
+          type: string
+          pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        allowedRefPatterns:
+          type: array
+          minItems: 1
+          maxItems: 16
+          items:
+            type: string
+            pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+        protectedRefPatterns:
+          type: array
+          maxItems: 16
+          items:
+            type: string
+            pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+    BranchRefPolicy:
+      allOf:
+        - $ref: "#/components/schemas/BranchRefPolicyRequest"
+        - type: object
+          additionalProperties: false
+          required:
+            - freshness
+          properties:
+            freshness:
+              $ref: "#/components/schemas/FreshnessMetadata"
+    CreateRepositoryBackedFolderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - providerBindingRef
+        - repositoryProfileRef
+        - folderMetadata
+        - branchRefPolicy
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        repositoryProfileRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        folderMetadata:
+          $ref: "#/components/schemas/FolderMetadata"
+        branchRefPolicy:
+          $ref: "#/components/schemas/BranchRefPolicyRequest"
+    BindRepositoryRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - providerBindingRef
+        - externalRepositoryRef
+        - branchRefPolicy
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        externalRepositoryRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        branchRefPolicy:
+          $ref: "#/components/schemas/BranchRefPolicyRequest"
+    RepositoryBinding:
+      type: object
+      additionalProperties: false
+      required:
+        - repositoryBindingId
+        - folderId
+        - providerBindingRef
+        - bindingState
+        - sensitiveMetadataTier
+        - freshness
+      properties:
+        repositoryBindingId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        folderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        bindingState:
+          type: string
+          enum:
+            - requested
+            - bound
+            - failed
+            - unknown_provider_outcome
+            - reconciliation_required
+        sensitiveMetadataTier:
+          $ref: "#/components/schemas/SensitiveMetadataTier"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
     CanonicalErrorCategory:
       type: string
       enum:
         - success
+        - authentication_failure
         - client_configuration_error
         - credential_missing
+        - credential_reference_invalid
         - tenant_access_denied
+        - cross_tenant_access_denied
         - folder_acl_denied
+        - audit_access_denied
         - validation_error
         - idempotency_conflict
+        - provider_readiness_failed
+        - provider_permission_insufficient
+        - provider_unavailable
+        - provider_rate_limited
+        - repository_conflict
+        - duplicate_binding
+        - unsupported_provider_capability
         - provider_failure_known
         - provider_outcome_unknown
+        - unknown_provider_outcome
         - reconciliation_required
         - not_found
         - state_transition_invalid
         - input_limit_exceeded
         - response_limit_exceeded
         - query_timeout
+        - read_model_unavailable
         - redacted
         - internal_error
     CliExitCode:
@@ -486,21 +2334,34 @@ components:
       type: string
       enum:
         - none
+        - authentication_failure
         - usage_error
         - client_configuration_error
         - credential_missing
+        - credential_reference_invalid
         - tenant_access_denied
+        - cross_tenant_access_denied
         - folder_acl_denied
+        - audit_access_denied
         - validation_error
         - idempotency_conflict
+        - provider_readiness_failed
+        - provider_permission_insufficient
+        - provider_unavailable
+        - provider_rate_limited
+        - repository_conflict
+        - duplicate_binding
+        - unsupported_provider_capability
         - provider_failure_known
         - provider_outcome_unknown
+        - unknown_provider_outcome
         - reconciliation_required
         - not_found
         - state_transition_invalid
         - input_limit_exceeded
         - response_limit_exceeded
         - query_timeout
+        - read_model_unavailable
         - redacted
         - internal_error
     AuditMetadataKey:
@@ -508,17 +2369,24 @@ components:
       enum:
         - tenant_id
         - folder_id
+        - acl_entry_id
         - provider_id
+        - provider_binding_ref
+        - capability_profile_ref
+        - repository_binding_id
+        - branch_ref_policy_ref
         - task_id
         - operation_id
         - correlation_id
         - readiness_status
         - lifecycle_state
+        - authorization_outcome
         - workspace_state
         - lock_status
         - path_policy_class
         - query_family
         - result_count
+        - result
         - truncation
         - projection_watermark
         - retention_class

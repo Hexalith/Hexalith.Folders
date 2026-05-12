@@ -147,6 +147,103 @@ x-hexalith-correlation:
     taskHeader: X-Hexalith-Task-Id
     causation: envelope-causation-reference
     adapterBehavior: caller-provided-or-generated-correlation
+x-hexalith-authorization:
+  summary: Tenant authority provenance and authorization behavior.
+  allowedLocations:
+    - OpenAPI Operation Object
+    - Extension vocabulary definition
+  requirement: Required for operations to declare tenant authority provenance, authorization layer, and safe-denial behavior.
+  referencePendingPolicy: Runtime authorization handlers and concrete policy names are implemented by later stories; contract groups declare provenance and outcome class only.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: object
+    required:
+      - requirement
+      - tenantAuthority
+      - safeDenial
+    properties:
+      requirement:
+        type: string
+      tenantAuthority:
+        type: string
+      safeDenial:
+        type: string
+    description: Tenant authority must come from authentication context and EventStore envelopes; safe denials remain externally indistinguishable where existence is protected.
+  example:
+    requirement: tenant-context-and-folder-read-permission
+    tenantAuthority: authentication-context-and-eventstore-envelope
+    safeDenial: externally-indistinguishable
+x-hexalith-canonical-error-categories:
+  summary: Operation-level canonical error category declaration.
+  allowedLocations:
+    - OpenAPI Operation Object
+    - Extension vocabulary definition
+  requirement: Required for operations to declare bounded canonical error categories consumed by parity work.
+  referencePendingPolicy: Final parity oracle rows remain reference-pending until Story 1.13; operations still declare their bounded category vocabulary.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: array
+    minItems: 1
+    uniqueItems: true
+    items:
+      $ref: "../hexalith.folders.v1.yaml#/components/schemas/CanonicalErrorCategory"
+    description: Bounded categories for one operation. Categories must not leak unauthorized resource existence.
+  example:
+    - tenant_access_denied
+    - validation_error
+    - internal_error
+x-hexalith-read-consistency:
+  summary: Non-mutating read consistency and freshness behavior.
+  allowedLocations:
+    - OpenAPI Operation Object for query or status operations
+    - Extension vocabulary definition
+  requirement: Required for non-mutating operations; those operations must not accept Idempotency-Key.
+  referencePendingPolicy: C4 numeric freshness bounds remain reference-pending until approved; operations may declare class and behavior.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: object
+    required:
+      - class
+      - freshnessBehavior
+    properties:
+      class:
+        $ref: "../hexalith.folders.v1.yaml#/components/schemas/ReadConsistencyClass"
+      freshnessBehavior:
+        type: string
+    description: Declares the operation read consistency class and metadata-only freshness evidence behavior.
+  example:
+    class: eventually_consistent
+    freshnessBehavior: returns-projection-watermark-when-available
 x-hexalith-lifecycle-states:
   summary: Workspace and task lifecycle vocabulary.
   allowedLocations:

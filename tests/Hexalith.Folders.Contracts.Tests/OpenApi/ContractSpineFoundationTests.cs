@@ -14,12 +14,15 @@ public sealed class ContractSpineFoundationTests
     private static readonly string[] RequiredExtensions =
     [
         "x-hexalith-audit-metadata-keys",
+        "x-hexalith-authorization",
+        "x-hexalith-canonical-error-categories",
         "x-hexalith-correlation",
         "x-hexalith-idempotency-equivalence",
         "x-hexalith-idempotency-key",
         "x-hexalith-idempotency-ttl-tier",
         "x-hexalith-lifecycle-states",
         "x-hexalith-parity-dimensions",
+        "x-hexalith-read-consistency",
         "x-hexalith-sensitive-metadata-tier",
     ];
 
@@ -31,7 +34,7 @@ public sealed class ContractSpineFoundationTests
         GetScalar(root, "openapi").ShouldBe("3.1.0");
         GetScalar(RequiredMapping(root, "info"), "title").ShouldBe("Hexalith.Folders API");
         GetScalar(RequiredMapping(root, "info"), "version").ShouldBe("v1");
-        RequiredMapping(root, "paths").Children.ShouldBeEmpty();
+        RequiredMapping(root, "paths").Children.ShouldNotBeEmpty();
 
         string[] tags = RequiredSequence(root, "tags")
             .OfType<YamlMappingNode>()

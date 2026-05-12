@@ -258,7 +258,7 @@ public sealed class ScaffoldContractTests
             File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root.");
 
             string content = File.ReadAllText(path);
-            content.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.EventStore Hexalith.FrontComposer Hexalith.Tenants", Case.Insensitive);
+            content.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants", Case.Insensitive);
             content.ShouldContain("git submodule update --init --recursive", Case.Insensitive);
             content.ShouldContain("Nested submodules must only be initialized when a user explicitly requests nested submodule work.", Case.Insensitive);
         }

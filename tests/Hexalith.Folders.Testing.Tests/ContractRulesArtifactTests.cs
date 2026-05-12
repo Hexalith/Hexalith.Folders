@@ -161,7 +161,7 @@ public sealed class ContractRulesArtifactTests
         {
             string spine = File.ReadAllText(spinePath);
             spine.ShouldContain("openapi: 3.1.0", Case.Sensitive, "Story 1.5 must not reshape the Contract Spine away from its OpenAPI 3.1 foundation; if the spine is present it must remain Story 1.6's foundation.");
-            spine.ShouldContain("paths: {}", Case.Sensitive, "Story 1.5 must not introduce operation paths into the Contract Spine.");
+            AssertNoDownstreamOperationGroups(spine);
         }
 
         File.Exists(Path.Combine(root, "tests", "fixtures", "parity-contract.yaml"))
@@ -282,5 +282,24 @@ public sealed class ContractRulesArtifactTests
         }
 
         return directory?.FullName ?? throw new InvalidOperationException("Repository root was not found.");
+    }
+
+    private static void AssertNoDownstreamOperationGroups(string spine)
+    {
+        string[] forbiddenPaths =
+        [
+            "/api/v1/workspaces",
+            "/api/v1/locks",
+            "/api/v1/files",
+            "/api/v1/context",
+            "/api/v1/commits",
+            "/api/v1/audit",
+            "/api/v1/ops-console"
+        ];
+
+        foreach (string forbiddenPath in forbiddenPaths)
+        {
+            spine.ShouldNotContain(forbiddenPath, Case.Sensitive, $"{forbiddenPath} belongs to a downstream Contract Spine story.");
+        }
     }
 }
