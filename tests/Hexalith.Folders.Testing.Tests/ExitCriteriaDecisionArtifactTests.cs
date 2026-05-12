@@ -81,8 +81,14 @@ public sealed class ExitCriteriaDecisionArtifactTests
             RawJwt().IsMatch(content).ShouldBeFalse($"{relativePath} must not contain raw JWT examples.");
         }
 
-        File.Exists(Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))
-            .ShouldBeFalse("Story 1.4 must not create or edit the Contract Spine.");
+        string spinePath = Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+        if (File.Exists(spinePath))
+        {
+            string spine = File.ReadAllText(spinePath);
+            spine.ShouldContain("openapi: 3.1.0", Case.Sensitive, "Story 1.4 must not reshape the Contract Spine away from its OpenAPI 3.1 foundation; if the spine is present it must remain Story 1.6's foundation.");
+            spine.ShouldContain("paths: {}", Case.Sensitive, "Story 1.4 must not introduce operation paths into the Contract Spine.");
+        }
+
         File.Exists(Path.Combine(root, "src", "Hexalith.Folders", "Aggregates", "Folder", "FolderStateTransitions.cs"))
             .ShouldBeFalse("Story 1.4 documents the C6 mapping but must not implement FolderStateTransitions.cs.");
     }

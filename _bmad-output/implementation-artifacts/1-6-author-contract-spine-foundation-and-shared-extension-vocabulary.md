@@ -1,6 +1,6 @@
 # Story 1.6: Author Contract Spine foundation and shared extension vocabulary
 
-Status: ready-for-dev
+Status: done
 
 Created: 2026-05-10
 
@@ -26,62 +26,106 @@ so that every capability group uses the same contract language.
 
 ## Tasks / Subtasks
 
-- [ ] Confirm prerequisites and preserve scope boundaries. (AC: 1, 5, 6, 7)
-  - [ ] Inspect whether `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, S-2 deployment configuration notes, and the C6 state matrix evidence exist before authoring bounded values.
-  - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml` if they exist; treat missing files as prerequisite drift to record, not permission to widen scope.
-  - [ ] Record missing prior-story values as `TODO/reference-pending` only in comments, extension documentation, or downstream notes; do not encode them as normative OpenAPI enum values or extension values.
-  - [ ] Do not initialize or update nested submodules. Root-level submodules may be used only as read-only references unless the user explicitly asks otherwise.
-  - [ ] Do not implement operation groups owned by Stories 1.7-1.11. This story creates the foundation, reusable components, and extension vocabulary only.
-- [ ] Create the Contract Spine OpenAPI foundation. (AC: 1, 3, 8)
-  - [ ] Create `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`.
-  - [ ] Set `openapi: 3.1.0`; use canonical `info` metadata for Hexalith.Folders v1; define URL-versioned `/api/v1` server guidance without environment-specific production URLs.
-  - [ ] Define tags for the PRD capability groups: provider-readiness, folders, workspaces, files, commits, query-status, audit, ops-console, and context-queries.
-  - [ ] Define the security scheme as HTTP bearer JWT or OpenID Connect according to available S-2 evidence; do not hard-code unresolved issuer or audience values, add authentication middleware, add auth handlers, add policy classes, add validators, or add runtime authentication packages.
-  - [ ] Use camelCase JSON names, ISO-8601 UTC date-time formats, lowercase hyphen-delimited REST path conventions, and path parameters such as `{folderId}` where later operations will need them.
-  - [ ] Prefer `paths: {}` if the selected validator accepts an empty OpenAPI 3.1 Paths Object; use a clearly marked foundation-only placeholder only when required by local tooling. Do not add real operation paths whose schemas belong to later stories.
-- [ ] Define shared OpenAPI components. (AC: 1, 3, 8)
-  - [ ] Limit shared components to reusable OpenAPI primitives: security schemes, standard headers, Problem Details, error response envelopes, parameter/header definitions, pagination/freshness metadata, and extension vocabulary scaffolding; defer concrete operation/resource schemas to later stories.
-  - [ ] Add reusable parameters and headers for `Idempotency-Key`, `X-Correlation-Id`, `X-Hexalith-Task-Id`, `X-Hexalith-Freshness`, and `X-Hexalith-Retry-As`.
-  - [ ] Add shared pagination/filtering conventions for bounded query families without inventing C4 values; reference C4 decisions when present.
-  - [ ] Add shared response components for accepted command, projected status, paged results, freshness metadata, safe authorization denial, validation failure, idempotency conflict, and reconciliation-required outcomes.
-  - [ ] Add an RFC 9457-compatible Problem Details schema that preserves standard Problem Details members such as `type`, `title`, `status`, `detail`, and `instance` where applicable, and adds required Hexalith canonical fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
-  - [ ] Add shared enums or schema anchors for lifecycle states, read-consistency classes, operator-disposition labels, sensitive metadata tiers, idempotency TTL tiers, canonical error categories, CLI exit codes, and MCP failure kinds.
-  - [ ] Ensure examples use synthetic metadata only: no file contents, diffs, provider tokens, credential material, secrets, production issuer URLs, tenant data, or unauthorized resource hints.
-- [ ] Author extension vocabulary schemas. (AC: 2, 3, 4, 8)
-  - [ ] Create one schema or documentation file per required extension under `src/Hexalith.Folders.Contracts/openapi/extensions/`, or a single indexed extension vocabulary file if that better fits the toolchain.
-  - [ ] Pick one canonical machine-readable vocabulary representation for the eight extensions; if supporting Markdown notes are added, keep them non-authoritative and point back to the canonical schema or index.
-  - [ ] For every extension, document allowed OpenAPI locations, value type or JSON Schema shape, required/optional status, one sanitized example, and whether missing prior-story values must remain reference-pending.
-  - [ ] Define `x-hexalith-idempotency-key` for mutating command requirements, adapter sourcing behavior, malformed/missing-key handling, and non-use on queries.
-  - [ ] Define `x-hexalith-idempotency-equivalence` as an ordered array of semantic field paths; require lexicographic order and tenant-scoped equivalence.
-  - [ ] Define `x-hexalith-idempotency-ttl-tier` with only `mutation` and `commit`; do not introduce per-command TTL knobs.
-  - [ ] Define `x-hexalith-correlation` for `X-Correlation-Id`, causation linkage, and `X-Hexalith-Task-Id` where task-scoped behavior applies.
-  - [ ] Define `x-hexalith-lifecycle-states` for workspace/task states, terminal states, retryability, and operator-disposition labels from C6.
-  - [ ] Define `x-hexalith-parity-dimensions` with transport parity and behavioral parity columns required by C13, including adapter-specific pre-SDK and post-SDK behavior.
-  - [ ] Keep `x-hexalith-parity-dimensions` to reusable vocabulary and metadata shape only; do not add endpoint parity assertions, provider matrices, status rows, or `tests/fixtures/parity-contract.yaml`.
-  - [ ] Define `x-hexalith-audit-metadata-keys` as metadata-only key declarations, including allowed/denied operation evidence, correlation/task IDs, provider references, and sensitive metadata classification.
-  - [ ] Define `x-hexalith-sensitive-metadata-tier` using the C9 default policy: paths, repository names, branch names, and commit messages are `tenant-sensitive` unless a stricter tenant policy applies.
-- [ ] Encode Story 1.5 idempotency and adapter parity decisions into reusable vocabulary. (AC: 4)
-  - [ ] Ensure mutating-operation completeness can later fail when `idempotency_key_rule` or equivalence fields are missing.
-  - [ ] Ensure query-operation completeness can later fail when `read_consistency_class` is missing.
-  - [ ] Preserve SDK behavior: caller-provided idempotency key or DI provider, no SDK auto-generation; correlation may be caller-provided or generated by SDK provider; task ID is caller-provided for task-scoped operations.
-  - [ ] Preserve CLI behavior: `--idempotency-key` or `--allow-auto-key`, `--correlation-id`, required `--task-id` for task-scoped commands, credential precedence, and canonical exit codes 0, 64-75, and 1.
-  - [ ] Preserve MCP behavior: required `idempotencyKey` for mutating tools, optional `correlationId`, required `taskId` for task-scoped tools, and canonical failure kinds.
-  - [ ] Keep generated `ComputeIdempotencyHash()` helpers, NSwag template customization, parity-oracle rows, CLI command syntax, MCP tool envelopes, and runtime idempotency persistence deferred to later stories.
-- [ ] Add focused foundation verification. (AC: 2, 3, 8)
-  - [ ] Add a lightweight validation script or test in the existing scaffold location if available; if the scaffold is absent, document the exact missing prerequisite and provide the smallest parseable artifact check possible.
-  - [ ] Verify `hexalith.folders.v1.yaml` parses as OpenAPI/YAML, declares `openapi: 3.1.0`, and has zero unresolved `$ref` targets.
-  - [ ] Enumerate every `x-hexalith-*` key in the OpenAPI tree and fail unless the discovered set exactly matches the required eight extension names.
-  - [ ] Verify required shared headers, Problem Details fields, idempotency TTL tiers, read-consistency classes, CLI exit codes, and MCP failure kinds are present.
-  - [ ] Verify shared component `$ref` targets resolve.
-  - [ ] Verify no request schema, query parameter, or client-controlled header defines tenant authority; tenant context may appear only as auth/envelope-derived documentation or non-authoritative correlation metadata.
-  - [ ] Verify examples and local fixtures are synthetic opaque placeholders and contain no real paths, provider identifiers, tenant IDs, credential-shaped values, provider tokens, file contents, diffs, production URLs, or unauthorized resource hints.
-  - [ ] Verify extension definitions are not duplicated with conflicting value shapes across the OpenAPI file, extension vocabulary files, and foundation notes.
-  - [ ] Verify negative-scope guardrails: no SDK generated output, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, EventStore/provider calls inside Contracts, runtime auth implementation, CI workflow gates, final `parity-contract.yaml`, operation-group endpoints, or nested-submodule initialization were added by this story.
-- [ ] Record implementation notes for downstream stories. (AC: 5, 6)
-  - [ ] Add a short foundation note near the OpenAPI file or in `docs/contract/` that tells Stories 1.7-1.11 how to consume shared components and extension vocabulary.
-  - [ ] Include downstream authoring rules for unique stable `operationId` values, tenant-authority exclusion from client-controlled inputs, reusable `$ref` usage, idempotency annotation requirements for mutating operations, and read-consistency annotation requirements for query operations.
-  - [ ] List any missing Phase 0.5 prerequisites with exact file paths and affected OpenAPI fields.
-  - [ ] List downstream owners: Story 1.7 tenant/folder/provider/repository, Story 1.8 workspace/lock, Story 1.9 file/context, Story 1.10 commit/status, Story 1.11 audit/ops-console, Story 1.12 NSwag SDK generation, Story 1.13 parity oracle, Story 1.14+ CI gates.
+- [x] Confirm prerequisites and preserve scope boundaries. (AC: 1, 5, 6, 7)
+  - [x] Inspect whether `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, S-2 deployment configuration notes, and the C6 state matrix evidence exist before authoring bounded values.
+  - [x] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml` if they exist; treat missing files as prerequisite drift to record, not permission to widen scope.
+  - [x] Record missing prior-story values as `TODO/reference-pending` only in comments, extension documentation, or downstream notes; do not encode them as normative OpenAPI enum values or extension values.
+  - [x] Do not initialize or update nested submodules. Root-level submodules may be used only as read-only references unless the user explicitly asks otherwise.
+  - [x] Do not implement operation groups owned by Stories 1.7-1.11. This story creates the foundation, reusable components, and extension vocabulary only.
+- [x] Create the Contract Spine OpenAPI foundation. (AC: 1, 3, 8)
+  - [x] Create `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`.
+  - [x] Set `openapi: 3.1.0`; use canonical `info` metadata for Hexalith.Folders v1; define URL-versioned `/api/v1` server guidance without environment-specific production URLs.
+  - [x] Define tags for the PRD capability groups: provider-readiness, folders, workspaces, files, commits, query-status, audit, ops-console, and context-queries.
+  - [x] Define the security scheme as HTTP bearer JWT or OpenID Connect according to available S-2 evidence; do not hard-code unresolved issuer or audience values, add authentication middleware, add auth handlers, add policy classes, add validators, or add runtime authentication packages.
+  - [x] Use camelCase JSON names, ISO-8601 UTC date-time formats, lowercase hyphen-delimited REST path conventions, and path parameters such as `{folderId}` where later operations will need them.
+  - [x] Prefer `paths: {}` if the selected validator accepts an empty OpenAPI 3.1 Paths Object; use a clearly marked foundation-only placeholder only when required by local tooling. Do not add real operation paths whose schemas belong to later stories.
+- [x] Define shared OpenAPI components. (AC: 1, 3, 8)
+  - [x] Limit shared components to reusable OpenAPI primitives: security schemes, standard headers, Problem Details, error response envelopes, parameter/header definitions, pagination/freshness metadata, and extension vocabulary scaffolding; defer concrete operation/resource schemas to later stories.
+  - [x] Add reusable parameters and headers for `Idempotency-Key`, `X-Correlation-Id`, `X-Hexalith-Task-Id`, `X-Hexalith-Freshness`, and `X-Hexalith-Retry-As`.
+  - [x] Add shared pagination/filtering conventions for bounded query families without inventing C4 values; reference C4 decisions when present.
+  - [x] Add shared response components for accepted command, projected status, paged results, freshness metadata, safe authorization denial, validation failure, idempotency conflict, and reconciliation-required outcomes.
+  - [x] Add an RFC 9457-compatible Problem Details schema that preserves standard Problem Details members such as `type`, `title`, `status`, `detail`, and `instance` where applicable, and adds required Hexalith canonical fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
+  - [x] Add shared enums or schema anchors for lifecycle states, read-consistency classes, operator-disposition labels, sensitive metadata tiers, idempotency TTL tiers, canonical error categories, CLI exit codes, and MCP failure kinds.
+  - [x] Ensure examples use synthetic metadata only: no file contents, diffs, provider tokens, credential material, secrets, production issuer URLs, tenant data, or unauthorized resource hints.
+- [x] Author extension vocabulary schemas. (AC: 2, 3, 4, 8)
+  - [x] Create one schema or documentation file per required extension under `src/Hexalith.Folders.Contracts/openapi/extensions/`, or a single indexed extension vocabulary file if that better fits the toolchain.
+  - [x] Pick one canonical machine-readable vocabulary representation for the eight extensions; if supporting Markdown notes are added, keep them non-authoritative and point back to the canonical schema or index.
+  - [x] For every extension, document allowed OpenAPI locations, value type or JSON Schema shape, required/optional status, one sanitized example, and whether missing prior-story values must remain reference-pending.
+  - [x] Define `x-hexalith-idempotency-key` for mutating command requirements, adapter sourcing behavior, malformed/missing-key handling, and non-use on queries.
+  - [x] Define `x-hexalith-idempotency-equivalence` as an ordered array of semantic field paths; require lexicographic order and tenant-scoped equivalence.
+  - [x] Define `x-hexalith-idempotency-ttl-tier` with only `mutation` and `commit`; do not introduce per-command TTL knobs.
+  - [x] Define `x-hexalith-correlation` for `X-Correlation-Id`, causation linkage, and `X-Hexalith-Task-Id` where task-scoped behavior applies.
+  - [x] Define `x-hexalith-lifecycle-states` for workspace/task states, terminal states, retryability, and operator-disposition labels from C6.
+  - [x] Define `x-hexalith-parity-dimensions` with transport parity and behavioral parity columns required by C13, including adapter-specific pre-SDK and post-SDK behavior.
+  - [x] Keep `x-hexalith-parity-dimensions` to reusable vocabulary and metadata shape only; do not add endpoint parity assertions, provider matrices, status rows, or `tests/fixtures/parity-contract.yaml`.
+  - [x] Define `x-hexalith-audit-metadata-keys` as metadata-only key declarations, including allowed/denied operation evidence, correlation/task IDs, provider references, and sensitive metadata classification.
+  - [x] Define `x-hexalith-sensitive-metadata-tier` using the C9 default policy: paths, repository names, branch names, and commit messages are `tenant-sensitive` unless a stricter tenant policy applies.
+- [x] Encode Story 1.5 idempotency and adapter parity decisions into reusable vocabulary. (AC: 4)
+  - [x] Ensure mutating-operation completeness can later fail when `idempotency_key_rule` or equivalence fields are missing.
+  - [x] Ensure query-operation completeness can later fail when `read_consistency_class` is missing.
+  - [x] Preserve SDK behavior: caller-provided idempotency key or DI provider, no SDK auto-generation; correlation may be caller-provided or generated by SDK provider; task ID is caller-provided for task-scoped operations.
+  - [x] Preserve CLI behavior: `--idempotency-key` or `--allow-auto-key`, `--correlation-id`, required `--task-id` for task-scoped commands, credential precedence, and canonical exit codes 0, 64-75, and 1.
+  - [x] Preserve MCP behavior: required `idempotencyKey` for mutating tools, optional `correlationId`, required `taskId` for task-scoped tools, and canonical failure kinds.
+  - [x] Keep generated `ComputeIdempotencyHash()` helpers, NSwag template customization, parity-oracle rows, CLI command syntax, MCP tool envelopes, and runtime idempotency persistence deferred to later stories.
+- [x] Add focused foundation verification. (AC: 2, 3, 8)
+  - [x] Add a lightweight validation script or test in the existing scaffold location if available; if the scaffold is absent, document the exact missing prerequisite and provide the smallest parseable artifact check possible.
+  - [x] Verify `hexalith.folders.v1.yaml` parses as OpenAPI/YAML, declares `openapi: 3.1.0`, and has zero unresolved `$ref` targets.
+  - [x] Enumerate every `x-hexalith-*` key in the OpenAPI tree and fail unless the discovered set exactly matches the required eight extension names.
+  - [x] Verify required shared headers, Problem Details fields, idempotency TTL tiers, read-consistency classes, CLI exit codes, and MCP failure kinds are present.
+  - [x] Verify shared component `$ref` targets resolve.
+  - [x] Verify no request schema, query parameter, or client-controlled header defines tenant authority; tenant context may appear only as auth/envelope-derived documentation or non-authoritative correlation metadata.
+  - [x] Verify examples and local fixtures are synthetic opaque placeholders and contain no real paths, provider identifiers, tenant IDs, credential-shaped values, provider tokens, file contents, diffs, production URLs, or unauthorized resource hints.
+  - [x] Verify extension definitions are not duplicated with conflicting value shapes across the OpenAPI file, extension vocabulary files, and foundation notes.
+  - [x] Verify negative-scope guardrails: no SDK generated output, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, EventStore/provider calls inside Contracts, runtime auth implementation, CI workflow gates, final `parity-contract.yaml`, operation-group endpoints, or nested-submodule initialization were added by this story.
+- [x] Record implementation notes for downstream stories. (AC: 5, 6)
+  - [x] Add a short foundation note near the OpenAPI file or in `docs/contract/` that tells Stories 1.7-1.11 how to consume shared components and extension vocabulary.
+  - [x] Include downstream authoring rules for unique stable `operationId` values, tenant-authority exclusion from client-controlled inputs, reusable `$ref` usage, idempotency annotation requirements for mutating operations, and read-consistency annotation requirements for query operations.
+  - [x] List any missing Phase 0.5 prerequisites with exact file paths and affected OpenAPI fields.
+  - [x] List downstream owners: Story 1.7 tenant/folder/provider/repository, Story 1.8 workspace/lock, Story 1.9 file/context, Story 1.10 commit/status, Story 1.11 audit/ops-console, Story 1.12 NSwag SDK generation, Story 1.13 parity oracle, Story 1.14+ CI gates.
+
+### Review Findings
+
+Code review 2026-05-12 — Blind Hunter + Edge Case Hunter + Acceptance Auditor.
+
+Decision-needed (resolved 2026-05-12 — all six converted to patches):
+
+- [x] [Review][Decision→Patch] ProblemDetails: loosen to `additionalProperties: true` (canonical fields stay required; RFC 9457 extensions allowed) — `hexalith.folders.v1.yaml:233-291`.
+- [x] [Review][Decision→Patch] Enum casing: standardize on snake_case across all enums — `hexalith.folders.v1.yaml:403-497`. Rename: `ReadConsistencyClass`, `OperatorDispositionLabel`, `SensitiveMetadataTier`, `ProblemDetails.clientAction`, `PaginationMetadata.truncatedReason` values.
+- [x] [Review][Decision→Patch] PagedResult.items: introduce `PagedItem` base with `additionalProperties: false`; downstream operations extend via `allOf` — `hexalith.folders.v1.yaml:347-364`.
+- [x] [Review][Decision→Patch] OpaqueIdentifier: tighten pattern to `^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$`, min 16 chars (rejects `.`/`:`, JWTs, cache-prefix collisions) — `hexalith.folders.v1.yaml:219-226`.
+- [x] [Review][Decision→Patch] AuditMetadataKey: spine enum is canonical; vocabulary's `name` field `$ref`s `AuditMetadataKey` — `extensions/hexalith-extension-vocabulary.yaml:200-208`.
+- [x] [Review][Decision→Patch] Add `foundationSchema` field to each vocabulary entry to formally describe the `{vocabularyRef, foundationUse}` shape; `valueSchema` is operation-mode-only — `extensions/hexalith-extension-vocabulary.yaml`.
+
+Patches (applied 2026-05-12, build green, all 41 solution tests pass):
+
+- [x] [Review][Patch] Replace `rg` external-binary shell-out with managed file enumeration + regex [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs`].
+- [x] [Review][Patch] Replace `openIdConnectUrl` Keycloak-shaped path with generic `https://oidc.invalid/.well-known/openid-configuration` [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:69`].
+- [x] [Review][Patch] Fix `ProblemDetails.details.additionalProperties.oneOf` ambiguity — dropped `integer` (subset of `number`) [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`].
+- [x] [Review][Patch] Add `ContractSpineFoundation_VocabularyRefsResolveAcrossFiles` test that walks external `vocabularyRef` cross-file pointers [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs`].
+- [x] [Review][Patch] Add missing `McpFailureKind` values (`client_configuration_error`, `folder_acl_denied`, `input_limit_exceeded`, `response_limit_exceeded`, `query_timeout`, `redacted`) + add a 1:1 mapping test that fails when any non-`success` CanonicalErrorCategory lacks an `McpFailureKind` sibling [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`].
+- [x] [Review][Patch] Re-add positive ownership guardrails in `ContractRulesArtifactTests.cs` and `ExitCriteriaDecisionArtifactTests.cs` — both tests now assert the spine, if present, declares `openapi: 3.1.0` and `paths: {}` so stories 1.4 and 1.5 cannot reshape it.
+- [x] [Review][Patch] Tighten synthetic-hygiene substring scans — moved banned terms to case-insensitive checks, broadened path prefixes to include `D:\`, `E:\`, `/Users/`, `/root/`, `/var/`; dropped the brittle `"Bearer "` literal in favor of token-shape regex (see next item).
+- [x] [Review][Patch] Add `.Distinct()` before `.Order()` in `EnumerateExtensionKeys` assertion so downstream operations re-using extensions do not produce false-positive failures.
+- [x] [Review][Patch] Replace `tenantId:` substring check with `AssertNoTenantAuthorityField` — walks parameter/property `name` keys recursively and asserts none equals `tenantId`, `tenant_id`, or `managedTenantId` (case-insensitive).
+- [x] [Review][Patch] Replace tautological `Directory.Exists(...Hexalith.Folders.Client/Generated)` with `AssertNoSdkGeneratedOutput` — scans for NSwag config files in Contracts and forbids generated client roots; also a managed `AssertNoOperationHandlersUnderContracts` regex-scans Contracts for `MapPost`/`MapGet`/`Http*`.
+- [x] [Review][Patch] Add `ContractSpineFoundation_FoundationDeclarationsDoNotRedefineValueSchema` (AC11) — asserts each spine `x-hexalith-*` entry declares only `vocabularyRef` + `foundationUse` and that each vocabulary entry has a `foundationSchema` describing this shape.
+- [x] [Review][Patch] Enhance synthetic-hygiene scan with regex for token-shaped strings — `eyJ…\.…\.…` (JWT), `sk_(live|test)_…`, `ghp_…`, `gho_…`, `xox[abprs]-…` (Slack), `AKIA[A-Z0-9]{16}` (AWS).
+- [x] [Review][Patch][Decision] ProblemDetails: `additionalProperties` loosened from `false` to `true` — canonical fields stay required, RFC 9457 extensions now allowed.
+- [x] [Review][Patch][Decision] Enum casing standardized on snake_case: `ReadConsistencyClass`, `OperatorDispositionLabel`, `SensitiveMetadataTier`, `ProblemDetails.clientAction`, `PaginationMetadata.truncatedReason` renamed accordingly; vocabulary example, test assertions, and docs synced.
+- [x] [Review][Patch][Decision] PagedResult.items now `$ref`s a new `PagedItem` base schema with `additionalProperties: false` — downstream operations must allOf-extend to add concrete metadata properties.
+- [x] [Review][Patch][Decision] OpaqueIdentifier pattern tightened to `^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$` with `minLength: 16` — rejects `.` and `:` (no JWTs, no cache-prefix collisions); existing synthetic example still matches.
+- [x] [Review][Patch][Decision] AuditMetadataKey: spine enum is canonical; vocabulary's `name` field now `$ref`s `AuditMetadataKey` (and `sensitivity` `$ref`s `SensitiveMetadataTier`).
+- [x] [Review][Patch][Decision] `foundationSchema` field added to each vocabulary entry to formally describe the spine's `{vocabularyRef, foundationUse}` shape; `valueSchema` documents operation-mode usage only.
+
+Deferred (pre-existing or downstream-owned):
+
+- [x] [Review][Defer] Error subtypes (SafeAuthorizationDenial/ValidationFailure/IdempotencyConflict/ReconciliationRequired) `allOf` ProblemDetails with no discriminating fields [`hexalith.folders.v1.yaml:292-307`] — deferred: downstream story 1.11 audit/ops-console and 1.7-1.10 operation groups specialize these with per-subtype required fields.
+- [x] [Review][Defer] `OperatorDispositionLabel` and `SensitiveMetadataTier` schemas defined but never `$ref`d in this story [`hexalith.folders.v1.yaml:423-444`] — deferred: downstream operation groups consume them; foundation-only vocabulary at this stage.
+- [x] [Review][Defer] `paths: {}` empty Paths Object may emit warnings under Spectral/openapi-typescript/NSwag — deferred: tooling compatibility is owned by story 1.12 (NSwag SDK generation) and 1.14 (drift gate); validate then.
+- [x] [Review][Defer] CLI exit code mapping table is not declared [`hexalith.folders.v1.yaml:465-482`] — only the 14-value enum exists. Distinct categories like `response_limit_exceeded` and `query_timeout` have no exit-code assignment. Deferred: mapping table is downstream story 1.13 (parity oracle) work.
+- [x] [Review][Defer] No test asserts mutating-completeness can fail when `idempotency_key_rule` or equivalence fields are missing (AC4 forward-looking statement) — deferred: completeness gate is downstream story 1.13/1.14 work.
+- [x] [Review][Defer] `oidc.local.invalid` is RFC 2606 reserved but may hang on corporate DNS sinkholes [`hexalith.folders.v1.yaml:69`] — deferred: environmental edge case outside project scope; affects only consumers who pre-fetch metadata at codegen time.
+- [x] [Review][Defer] `Idempotency-Key` parameter declared `required: true` globally [`hexalith.folders.v1.yaml:71-77`] — downstream authors must remember not to `$ref` it on queries. Foundation note `docs/contract/contract-spine-foundation.md:13` already calls this out; deferred to per-operation author discipline + gate.
 
 ## Dev Notes
 
@@ -219,6 +263,7 @@ Extension documentation must include allowed placement and shape:
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-12 | Implemented Contract Spine OpenAPI foundation, canonical extension vocabulary, foundation notes, and offline validation tests. | Codex |
 | 2026-05-11 | Advanced elicitation clarified canonical extension definitions, empty-path preference, RFC 9457 fields, validation checks, and downstream authoring rules. | Codex |
 | 2026-05-10 | Party-mode review applied extension placement, tenant-authority, validation, and negative-scope guardrails. | Codex |
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
@@ -227,13 +272,42 @@ Extension documentation must include allowed placement and shape:
 
 ### Agent Model Used
 
-TBD by dev-story agent
+Codex (GPT-5)
+
+### Implementation Plan
+
+- Read prerequisite artifacts first and keep C3/C4 values approval-bound rather than encoding them as binding schema defaults.
+- Add the OpenAPI 3.1 foundation with empty `paths: {}`, shared reusable components, OIDC security vocabulary, and exactly the eight allowed `x-hexalith-*` extension keys.
+- Use one canonical machine-readable extension vocabulary file and keep human notes non-authoritative.
+- Add focused offline validation with `YamlDotNet`, then update now-stale historical guardrail tests so full regression remains green after Story 1.6 legitimately creates the Contract Spine.
 
 ### Debug Log References
 
+- `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj` (red: missing OpenAPI/vocabulary files; green after implementation)
+- `dotnet restore Hexalith.Folders.slnx`
+- `dotnet build Hexalith.Folders.slnx --no-restore`
+- `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj`
+- `dotnet test Hexalith.Folders.slnx`
+
 ### Completion Notes List
 
+- Created `hexalith.folders.v1.yaml` as an OpenAPI 3.1 foundation with canonical API metadata, `/api/v1` server guidance, capability-group tags, OIDC security vocabulary, empty paths, and shared parameters, headers, responses, and schemas.
+- Added a single canonical machine-readable vocabulary file for all eight required `x-hexalith-*` extensions with locations, shapes, required/optional semantics, reference-pending policy, and sanitized examples.
+- Added downstream authoring notes for Stories 1.7-1.14+, including operationId stability, tenant-authority exclusion, reusable `$ref` usage, mutating idempotency annotations, query read-consistency annotations, and approval-bound C3/C4 prerequisite status.
+- Added offline contract validation tests for YAML parsing, OpenAPI version, `$ref` resolution, exact extension allowlist, required shared semantics, synthetic-example hygiene, and negative-scope guardrails.
+- Updated Story 1.4/1.5 guardrail tests to stop asserting the Contract Spine must never exist after this story while preserving their remaining negative-scope checks.
+
 ### File List
+
+- `_bmad-output/implementation-artifacts/1-6-author-contract-spine-foundation-and-shared-extension-vocabulary.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `docs/contract/contract-spine-foundation.md`
+- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
+- `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`
+- `tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`
 
 ## Party-Mode Review
 

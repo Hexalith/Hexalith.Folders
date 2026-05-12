@@ -156,8 +156,14 @@ public sealed class ContractRulesArtifactTests
             content.ShouldContain(guardrail, Case.Insensitive);
         }
 
-        File.Exists(Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))
-            .ShouldBeFalse("Story 1.5 must not create the OpenAPI Contract Spine.");
+        string spinePath = Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+        if (File.Exists(spinePath))
+        {
+            string spine = File.ReadAllText(spinePath);
+            spine.ShouldContain("openapi: 3.1.0", Case.Sensitive, "Story 1.5 must not reshape the Contract Spine away from its OpenAPI 3.1 foundation; if the spine is present it must remain Story 1.6's foundation.");
+            spine.ShouldContain("paths: {}", Case.Sensitive, "Story 1.5 must not introduce operation paths into the Contract Spine.");
+        }
+
         File.Exists(Path.Combine(root, "tests", "fixtures", "parity-contract.yaml"))
             .ShouldBeFalse("Story 1.5 must not generate parity result rows.");
     }

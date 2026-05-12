@@ -8,7 +8,7 @@
 Initialize only root-level submodules:
 
 ```text
-git submodule update --init Hexalith.AI.Tools Hexalith.EventStore Hexalith.FrontComposer Hexalith.Tenants
+git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
 ```
 
 Do not use:

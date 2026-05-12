@@ -1,0 +1,320 @@
+x-hexalith-idempotency-key:
+  summary: Mutating-operation idempotency key rule.
+  allowedLocations:
+    - OpenAPI Operation Object for future mutating commands
+    - Extension vocabulary definition
+  requirement: Required for mutating operations; forbidden for non-mutating query operations.
+  referencePendingPolicy: Missing C3/C4/S-2/C6 values must be documented as reference-pending rather than invented.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+    description: Foundation-mode declaration shape used at the top of the Contract Spine. Operation-mode usage uses valueSchema.
+  valueSchema:
+    type: object
+    required:
+      - required
+      - adapterSourcing
+      - missingBehavior
+      - malformedBehavior
+      - queryBehavior
+    properties:
+      required:
+        type: boolean
+      adapterSourcing:
+        type: array
+        items:
+          type: string
+      missingBehavior:
+        type: string
+      malformedBehavior:
+        type: string
+      queryBehavior:
+        type: string
+    description: Declares required mutating key behavior, adapter sourcing, malformed or missing-key handling, and non-use on queries.
+  example:
+    required: true
+    adapterSourcing:
+      - rest-header
+      - sdk-caller-or-provider
+      - cli-flag-or-allow-auto-key
+      - mcp-input
+    missingBehavior: validation_error
+    malformedBehavior: validation_error
+    queryBehavior: rejected-if-present
+x-hexalith-idempotency-equivalence:
+  summary: Tenant-scoped idempotency equivalence fields.
+  allowedLocations:
+    - OpenAPI Operation Object for future mutating commands
+    - Extension vocabulary definition
+  requirement: Required for future mutating operations and omitted for non-mutating operations.
+  referencePendingPolicy: Field paths may reference later operation schemas only after those schemas exist.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: array
+    items:
+      type: string
+      pattern: "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+    uniqueItems: true
+    description: Lexicographically ordered semantic field paths; tenant-scoped equivalence is mandatory.
+  example:
+    - credential_scope_class
+    - folder_id
+    - request_schema_version
+    - task_id
+    - workspace_id
+x-hexalith-idempotency-ttl-tier:
+  summary: Idempotency record retention tier.
+  allowedLocations:
+    - OpenAPI Operation Object for future mutating commands
+    - Extension vocabulary definition
+  requirement: Required for future mutating operations.
+  referencePendingPolicy: Commit tier inherits C3 retention and remains reference-pending until Legal and PM approval.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: string
+    enum:
+      - mutation
+      - commit
+    description: Only mutation and commit are valid; mutation is 24h, commit is C3 retention backed.
+  example: mutation
+x-hexalith-correlation:
+  summary: Correlation, causation, and task identity propagation.
+  allowedLocations:
+    - OpenAPI Operation Object
+    - Reusable header or parameter components
+    - Response metadata schemas
+    - Extension vocabulary definition
+  requirement: Required as shared vocabulary; operation-specific task requirements are declared later.
+  referencePendingPolicy: Missing task-scoped operation inventories remain reference-pending until Stories 1.7-1.11 author them.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: object
+    required:
+      - correlationHeader
+      - taskHeader
+      - causation
+      - adapterBehavior
+    properties:
+      correlationHeader:
+        type: string
+      taskHeader:
+        type: string
+      causation:
+        type: string
+      adapterBehavior:
+        type: string
+    description: Defines X-Correlation-Id, causation linkage, and X-Hexalith-Task-Id propagation.
+  example:
+    correlationHeader: X-Correlation-Id
+    taskHeader: X-Hexalith-Task-Id
+    causation: envelope-causation-reference
+    adapterBehavior: caller-provided-or-generated-correlation
+x-hexalith-lifecycle-states:
+  summary: Workspace and task lifecycle vocabulary.
+  allowedLocations:
+    - Reusable schema or component definitions
+    - Future operation metadata
+    - Extension vocabulary definition
+  requirement: Required as shared vocabulary; transition implementation is deferred to aggregate stories.
+  referencePendingPolicy: C6 event-to-state transitions are documented elsewhere and must not be redefined here.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: object
+    required:
+      - states
+      - terminalStates
+      - retryability
+      - operatorDispositionLabels
+    properties:
+      states:
+        type: array
+        items:
+          type: string
+      terminalStates:
+        type: array
+        items:
+          type: string
+      retryability:
+        type: object
+        additionalProperties:
+          type: boolean
+      operatorDispositionLabels:
+        type: array
+        items:
+          type: string
+    description: Describes states, terminal states, retryability, and operator-disposition labels without implementing transitions.
+  example:
+    states:
+      - requested
+      - ready
+      - reconciliation_required
+    terminalStates:
+      - failed
+      - inaccessible
+    retryability:
+      requested: true
+      failed: false
+    operatorDispositionLabels:
+      - auto_recovering
+      - awaiting_human
+x-hexalith-parity-dimensions:
+  summary: Reusable adapter parity dimensions.
+  allowedLocations:
+    - OpenAPI Operation Object for future operations
+    - Extension vocabulary definition
+  requirement: Required as vocabulary only; endpoint assertions and parity rows are downstream work.
+  referencePendingPolicy: C13 parity oracle rows remain reference-pending until Story 1.13.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: object
+    required:
+      - transportParity
+      - behavioralParity
+      - adapterStages
+    properties:
+      transportParity:
+        type: array
+        items:
+          type: string
+      behavioralParity:
+        type: array
+        items:
+          type: string
+      adapterStages:
+        type: array
+        items:
+          type: string
+    description: Reusable vocabulary only for REST, SDK, CLI, and MCP parity dimensions; it does not create provider matrices or parity rows.
+  example:
+    transportParity:
+      - rest
+      - sdk
+    behavioralParity:
+      - cli_exit_code
+      - mcp_failure_kind
+    adapterStages:
+      - pre-sdk
+      - post-sdk
+x-hexalith-audit-metadata-keys:
+  summary: Metadata-only audit evidence key declarations.
+  allowedLocations:
+    - OpenAPI Operation Object
+    - Reusable audit metadata schemas
+    - Extension vocabulary definition
+  requirement: Required when future operations emit audit evidence.
+  referencePendingPolicy: Operation-specific audit keys remain reference-pending until their contract group story owns them.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: array
+    items:
+      type: object
+      required:
+        - name
+        - sensitivity
+        - description
+      properties:
+        name:
+          $ref: "../hexalith.folders.v1.yaml#/components/schemas/AuditMetadataKey"
+        sensitivity:
+          $ref: "../hexalith.folders.v1.yaml#/components/schemas/SensitiveMetadataTier"
+        description:
+          type: string
+    description: Metadata-only key declarations for allowed or denied operation evidence, correlation and task IDs, provider references, and sensitivity notes. Names must come from the spine AuditMetadataKey enum.
+  example:
+    - name: correlation_id
+      sensitivity: tenant_sensitive
+      description: Opaque correlation reference for tracing one request.
+    - name: task_id
+      sensitivity: tenant_sensitive
+      description: Opaque task reference for task-scoped workflows.
+x-hexalith-sensitive-metadata-tier:
+  summary: Sensitive metadata classification.
+  allowedLocations:
+    - OpenAPI Schema Object
+    - OpenAPI Property Schema Object
+    - Future operation metadata
+    - Extension vocabulary definition
+  requirement: Required on future metadata fields that may carry tenant-sensitive or stricter values.
+  referencePendingPolicy: Stricter tenant policies remain reference-pending until tenant policy contracts exist.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    $ref: "../hexalith.folders.v1.yaml#/components/schemas/SensitiveMetadataTier"
+  example: tenant_sensitive

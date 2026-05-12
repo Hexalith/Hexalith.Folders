@@ -1,0 +1,525 @@
+openapi: 3.1.0
+info:
+  title: Hexalith.Folders API
+  version: v1
+  summary: Contract Spine foundation for tenant-scoped repository-backed folder workflows.
+  description: >
+    Canonical OpenAPI 3.1 foundation for Hexalith.Folders. This document defines
+    shared contract language only; operation groups are added by later stories.
+    Tenant authority comes from authenticated principal claims and EventStore envelopes,
+    never from request payloads, query parameters, or client-controlled headers.
+servers:
+  - url: /api/v1
+    description: URL-versioned REST surface. Deployment hosts and real issuer or audience values are supplied by environment configuration.
+tags:
+  - name: provider-readiness
+    description: Provider readiness evidence and capability diagnostics.
+  - name: folders
+    description: Tenant-scoped folder lifecycle and repository binding contracts.
+  - name: workspaces
+    description: Workspace preparation, state, and lock contracts.
+  - name: files
+    description: File mutation transport contracts.
+  - name: commits
+    description: Commit and reconciliation contracts.
+  - name: query-status
+    description: Accepted command and projection status contracts.
+  - name: audit
+    description: Metadata-only audit review contracts.
+  - name: ops-console
+    description: Read-only operations console projection contracts.
+  - name: context-queries
+    description: Bounded metadata-only file and context query contracts.
+security:
+  - oidcBearer: []
+paths: {}
+x-hexalith-idempotency-key:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-key
+  foundationUse: Mutating operations added later must declare the key requirement; queries must not accept it.
+x-hexalith-idempotency-equivalence:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-equivalence
+  foundationUse: Semantic field paths must be lexicographically ordered and tenant scoped.
+x-hexalith-idempotency-ttl-tier:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-ttl-tier
+  foundationUse: Only mutation and commit tiers are valid; C3 commit duration remains approval-bound.
+x-hexalith-correlation:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-correlation
+  foundationUse: Correlation and task identity flow through REST, SDK, CLI, MCP, EventStore envelopes, audit, logs, and traces.
+x-hexalith-lifecycle-states:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-lifecycle-states
+  foundationUse: C6 vocabulary is descriptive here; state transition implementation is deferred.
+x-hexalith-parity-dimensions:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-parity-dimensions
+  foundationUse: Reusable parity vocabulary only; no endpoint assertions, provider matrices, or parity rows are defined here.
+x-hexalith-audit-metadata-keys:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-audit-metadata-keys
+  foundationUse: Audit declarations are metadata-only and tenant scoped.
+x-hexalith-sensitive-metadata-tier:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-sensitive-metadata-tier
+  foundationUse: Paths, repository names, branch names, and commit messages default to tenant_sensitive metadata.
+components:
+  securitySchemes:
+    oidcBearer:
+      type: openIdConnect
+      description: >
+        JWT token validated through pluggable OIDC configuration. Issuer
+        and audience values are pinned by deployment configuration and are not
+        contract literals. Claims are transformed by EventStore before tenant
+        authority is evaluated.
+      openIdConnectUrl: https://oidc.invalid/.well-known/openid-configuration
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Required on future mutating commands and invalid on non-mutating queries.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      description: Optional caller-provided correlation identifier; adapters may generate one when absent.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    TaskId:
+      name: X-Hexalith-Task-Id
+      in: header
+      required: false
+      description: Caller-provided task identity for task-scoped operations.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    Freshness:
+      name: X-Hexalith-Freshness
+      in: header
+      required: false
+      description: Requested read-consistency or projection freshness hint for query families.
+      schema:
+        $ref: "#/components/schemas/ReadConsistencyClass"
+    RetryAs:
+      name: X-Hexalith-Retry-As
+      in: header
+      required: false
+      description: Metadata-only retry intent for supported adapters; never overrides authorization.
+      schema:
+        type: string
+        enum:
+          - caller
+          - operator
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque pagination cursor for bounded query families.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 256
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Requested result bound. C4 numeric defaults remain approval-bound until PM approval.
+      schema:
+        type: integer
+        minimum: 1
+    MetadataFilter:
+      name: filter
+      in: query
+      required: false
+      description: Future bounded metadata filter expression. Raw file contents and path lists are not valid filter payloads.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 256
+  headers:
+    IdempotencyKey:
+      description: Echoes the accepted idempotency key reference when response contracts require it.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    CorrelationId:
+      description: Echoes the correlation identifier associated with the response.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    TaskId:
+      description: Echoes the task identifier associated with task-scoped work.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    Freshness:
+      description: Reports projection freshness semantics for a response.
+      schema:
+        $ref: "#/components/schemas/ReadConsistencyClass"
+    RetryAs:
+      description: Reports accepted retry intent metadata where a later operation declares support.
+      schema:
+        type: string
+  responses:
+    AcceptedCommand:
+      description: Command accepted for asynchronous processing.
+      headers:
+        X-Correlation-Id:
+          $ref: "#/components/headers/CorrelationId"
+        X-Hexalith-Task-Id:
+          $ref: "#/components/headers/TaskId"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AcceptedCommand"
+    ProjectedStatus:
+      description: Projection-backed status response with freshness evidence.
+      headers:
+        X-Correlation-Id:
+          $ref: "#/components/headers/CorrelationId"
+        X-Hexalith-Freshness:
+          $ref: "#/components/headers/Freshness"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProjectedStatus"
+    PagedResult:
+      description: Bounded metadata-only paged result.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PagedResult"
+    FreshnessMetadata:
+      description: Projection freshness metadata for query and status responses.
+      headers:
+        X-Hexalith-Freshness:
+          $ref: "#/components/headers/Freshness"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FreshnessMetadata"
+    SafeAuthorizationDenial:
+      description: Safe denial that does not reveal unauthorized resource existence.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/SafeAuthorizationDenial"
+    ValidationFailure:
+      description: Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ValidationFailure"
+    IdempotencyConflict:
+      description: Same idempotency key with non-equivalent tenant-scoped payload semantics.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/IdempotencyConflict"
+    ReconciliationRequired:
+      description: Provider outcome requires explicit reconciliation before the task can be treated as complete.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ReconciliationRequired"
+  schemas:
+    OpaqueIdentifier:
+      type: string
+      minLength: 16
+      maxLength: 128
+      pattern: "^[A-Za-z0-9][A-Za-z0-9_-]{15,127}$"
+      description: Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.
+      examples:
+        - opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+    UtcDateTime:
+      type: string
+      format: date-time
+      description: ISO-8601 UTC timestamp.
+      examples:
+        - "2026-05-12T12:34:56Z"
+    ProblemDetails:
+      type: object
+      additionalProperties: true
+      required:
+        - type
+        - title
+        - status
+        - category
+        - code
+        - message
+        - correlationId
+        - retryable
+        - clientAction
+        - details
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        category:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        code:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9_:-]{0,127}$"
+        message:
+          type: string
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        retryable:
+          type: boolean
+        clientAction:
+          type: string
+          enum:
+            - retry
+            - revise_request
+            - check_credentials
+            - wait_for_reconciliation
+            - contact_operator
+            - no_action
+        details:
+          type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: number
+              - type: boolean
+          description: Metadata-only details. File contents, diffs, tokens, secrets, and unauthorized existence hints are forbidden.
+    SafeAuthorizationDenial:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+      description: Denial shape for tenant, folder, ACL, path-policy, and audit authorization failures.
+    ValidationFailure:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+      description: Input validation failure without echoing sensitive payload values.
+    IdempotencyConflict:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+      description: Idempotency conflict for same key and non-equivalent semantic request.
+    ReconciliationRequired:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+      description: Unknown or conflicted provider outcome that needs reconciliation.
+    AcceptedCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - acceptedAt
+        - correlationId
+        - taskId
+        - status
+      properties:
+        acceptedAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        status:
+          type: string
+          enum:
+            - accepted
+        idempotentReplay:
+          type: boolean
+          default: false
+    ProjectedStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - correlationId
+        - taskId
+        - state
+        - freshness
+      properties:
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        state:
+          $ref: "#/components/schemas/LifecycleState"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    PagedResult:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - page
+        - freshness
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PagedItem"
+          description: Bounded metadata-only item base. Downstream operation groups must allOf-extend PagedItem with concrete property schemas.
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    PagedItem:
+      type: object
+      additionalProperties: false
+      description: Empty metadata-only base. Downstream operation groups extend via allOf, declaring their concrete metadata properties.
+    PaginationMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - limit
+        - isTruncated
+      properties:
+        cursor:
+          type: string
+          description: Opaque cursor for later bounded query families.
+        limit:
+          type: integer
+          minimum: 1
+          description: C4-backed bound; final normative value remains approval-bound until PM approval.
+        isTruncated:
+          type: boolean
+        truncatedReason:
+          type: string
+          enum:
+            - result_count_limit
+            - response_budget_limit
+            - query_timeout
+    FreshnessMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - readConsistency
+        - observedAt
+      properties:
+        readConsistency:
+          $ref: "#/components/schemas/ReadConsistencyClass"
+        observedAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        projectionWatermark:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        stale:
+          type: boolean
+          default: false
+    LifecycleState:
+      type: string
+      enum:
+        - requested
+        - preparing
+        - ready
+        - locked
+        - changes_staged
+        - dirty
+        - committed
+        - failed
+        - inaccessible
+        - unknown_provider_outcome
+        - reconciliation_required
+    ReadConsistencyClass:
+      type: string
+      enum:
+        - snapshot_per_task
+        - read_your_writes
+        - eventually_consistent
+    OperatorDispositionLabel:
+      type: string
+      enum:
+        - auto_recovering
+        - available
+        - degraded_but_serving
+        - awaiting_human
+        - terminal_until_intervention
+    SensitiveMetadataTier:
+      type: string
+      enum:
+        - public_metadata
+        - tenant_sensitive
+        - credential_sensitive
+        - secret
+      description: Paths, repository names, branch names, and commit messages default to tenant_sensitive unless stricter tenant policy applies.
+    IdempotencyTtlTier:
+      type: string
+      enum:
+        - mutation
+        - commit
+      description: Mutation tier is 24h. Commit tier inherits the C3 retention period and remains approval-bound.
+    CanonicalErrorCategory:
+      type: string
+      enum:
+        - success
+        - client_configuration_error
+        - credential_missing
+        - tenant_access_denied
+        - folder_acl_denied
+        - validation_error
+        - idempotency_conflict
+        - provider_failure_known
+        - provider_outcome_unknown
+        - reconciliation_required
+        - not_found
+        - state_transition_invalid
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - redacted
+        - internal_error
+    CliExitCode:
+      type: string
+      enum:
+        - "0"
+        - "1"
+        - "64"
+        - "65"
+        - "66"
+        - "67"
+        - "68"
+        - "69"
+        - "70"
+        - "71"
+        - "72"
+        - "73"
+        - "74"
+        - "75"
+      description: CLI exit codes are string enums here to avoid accidental numeric range expansion.
+    McpFailureKind:
+      type: string
+      enum:
+        - none
+        - usage_error
+        - client_configuration_error
+        - credential_missing
+        - tenant_access_denied
+        - folder_acl_denied
+        - validation_error
+        - idempotency_conflict
+        - provider_failure_known
+        - provider_outcome_unknown
+        - reconciliation_required
+        - not_found
+        - state_transition_invalid
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - redacted
+        - internal_error
+    AuditMetadataKey:
+      type: string
+      enum:
+        - tenant_id
+        - folder_id
+        - provider_id
+        - task_id
+        - operation_id
+        - correlation_id
+        - readiness_status
+        - lifecycle_state
+        - workspace_state
+        - lock_status
+        - path_policy_class
+        - query_family
+        - result_count
+        - truncation
+        - projection_watermark
+        - retention_class
+        - sensitive_metadata_tier
