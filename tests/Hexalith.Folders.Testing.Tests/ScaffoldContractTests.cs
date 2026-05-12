@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Shouldly;
 using Xunit;
@@ -34,6 +36,16 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj"
     ];
 
+    private static readonly string[] RequiredCanonicalSubmodules =
+    [
+        "Hexalith.AI.Tools",
+        "Hexalith.Commons",
+        "Hexalith.EventStore",
+        "Hexalith.FrontComposer",
+        "Hexalith.Memories",
+        "Hexalith.Tenants",
+    ];
+
     [Fact]
     public void SolutionContainsOnlyCanonicalBuildableProjects()
     {
@@ -54,51 +66,44 @@ public sealed class ScaffoldContractTests
     public void ProjectReferencesFollowAllowedDependencyDirection()
     {
         string root = RepositoryRoot();
-        Dictionary<string, string[]> references = ExpectedSolutionProjects
-            .ToDictionary(
-                project => Path.GetFileNameWithoutExtension(project),
-                project => ReadProjectReferenceNames(Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar))),
-                StringComparer.Ordinal);
+        Dictionary<string, string[]> references = BuildProjectReferenceMap(root);
 
-        references["Hexalith.Folders.Contracts"].ShouldBeEmpty();
-        references["Hexalith.Folders"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
-        references["Hexalith.Folders.Server"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults"], ignoreOrder: true);
-        references["Hexalith.Folders.Client"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
-        references["Hexalith.Folders.Cli"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
-        references["Hexalith.Folders.Mcp"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
-        references["Hexalith.Folders.UI"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
-        references["Hexalith.Folders.Workers"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Contracts"], ignoreOrder: true);
-        references["Hexalith.Folders.AppHost"].ShouldBe(["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI"], ignoreOrder: true);
-        references["Hexalith.Folders.Aspire"].ShouldBeEmpty();
-        references["Hexalith.Folders.ServiceDefaults"].ShouldBeEmpty();
-        references["Hexalith.Folders.Testing"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
-        references["Hexalith.Folders.Sample"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
-        references["Hexalith.Folders.Sample.Tests"].ShouldBe(["Hexalith.Folders.Sample"], ignoreOrder: true);
-        references["Hexalith.Folders.Contracts.Tests"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
-        references["Hexalith.Folders.Tests"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.Server.Tests"].ShouldBe(["Hexalith.Folders.Server", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.Client.Tests"].ShouldBe(["Hexalith.Folders.Client", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.Cli.Tests"].ShouldBe(["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.Mcp.Tests"].ShouldBe(["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.UI.Tests"].ShouldBe(["Hexalith.Folders.UI", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.Workers.Tests"].ShouldBe(["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.Testing.Tests"].ShouldBe(["Hexalith.Folders.Testing"], ignoreOrder: true);
-        references["Hexalith.Folders.IntegrationTests"].ShouldBe(["Hexalith.Folders.Server", "Hexalith.Folders.Testing"], ignoreOrder: true);
+        AssertReferences(references, "Hexalith.Folders.Contracts", []);
+        AssertReferences(references, "Hexalith.Folders", ["Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults"]);
+        AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
+        AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
+        AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client"]);
+        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.Folders", "Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI"]);
+        AssertReferences(references, "Hexalith.Folders.Aspire", []);
+        AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
+        AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Sample", ["Hexalith.Folders.Client"]);
+        AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
+        AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
     }
 
     [Fact]
     public void ForbiddenReferencesAreNotIntroduced()
     {
         string root = RepositoryRoot();
-        Dictionary<string, HashSet<string>> references = ExpectedSolutionProjects
+        Dictionary<string, HashSet<string>> references = BuildProjectReferenceMap(root)
             .ToDictionary(
-                project => Path.GetFileNameWithoutExtension(project),
-                project => new HashSet<string>(
-                    ReadProjectReferenceNames(Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar))),
-                    StringComparer.Ordinal),
+                kv => kv.Key,
+                kv => new HashSet<string>(kv.Value, StringComparer.Ordinal),
                 StringComparer.Ordinal);
 
-        // Contracts must remain behavior-free: no infrastructure or sibling-host references.
         string[] forbiddenFromContracts =
         [
             "Hexalith.Folders",
@@ -113,12 +118,12 @@ public sealed class ScaffoldContractTests
             "Hexalith.Folders.ServiceDefaults",
             "Hexalith.Folders.Testing",
         ];
+        HashSet<string> contractsRefs = RequireReferences(references, "Hexalith.Folders.Contracts");
         foreach (string forbidden in forbiddenFromContracts)
         {
-            references["Hexalith.Folders.Contracts"].ShouldNotContain(forbidden);
+            contractsRefs.ShouldNotContain(forbidden);
         }
 
-        // Client is an SDK boundary: must not reach into Server, UI, CLI, MCP, or Workers.
         string[] forbiddenFromClient =
         [
             "Hexalith.Folders.Server",
@@ -128,18 +133,19 @@ public sealed class ScaffoldContractTests
             "Hexalith.Folders.Workers",
             "Hexalith.Folders.AppHost",
         ];
+        HashSet<string> clientRefs = RequireReferences(references, "Hexalith.Folders.Client");
         foreach (string forbidden in forbiddenFromClient)
         {
-            references["Hexalith.Folders.Client"].ShouldNotContain(forbidden);
+            clientRefs.ShouldNotContain(forbidden);
         }
 
-        // Adapters (CLI, MCP, UI) must wrap Client only; they must not pull in core domain or each other.
         foreach (string adapter in new[] { "Hexalith.Folders.Cli", "Hexalith.Folders.Mcp", "Hexalith.Folders.UI" })
         {
-            references[adapter].ShouldNotContain("Hexalith.Folders");
-            references[adapter].ShouldNotContain("Hexalith.Folders.Server");
-            references[adapter].ShouldNotContain("Hexalith.Folders.Workers");
-            references[adapter].ShouldNotContain("Hexalith.Folders.AppHost");
+            HashSet<string> adapterRefs = RequireReferences(references, adapter);
+            adapterRefs.ShouldNotContain("Hexalith.Folders");
+            adapterRefs.ShouldNotContain("Hexalith.Folders.Server");
+            adapterRefs.ShouldNotContain("Hexalith.Folders.Workers");
+            adapterRefs.ShouldNotContain("Hexalith.Folders.AppHost");
         }
     }
 
@@ -155,12 +161,12 @@ public sealed class ScaffoldContractTests
             .Select(path => Normalize(Path.GetRelativePath(root, path)))
             .ToArray();
 
-        buildProps.Descendants("TargetFramework").Single().Value.ShouldBe("net10.0");
-        buildProps.Descendants("Nullable").Single().Value.ShouldBe("enable");
-        buildProps.Descendants("ImplicitUsings").Single().Value.ShouldBe("enable");
-        buildProps.Descendants("TreatWarningsAsErrors").Single().Value.ShouldBe("true");
-        buildProps.Descendants("LangVersion").Single().Value.ShouldBe("latest");
-        packagesProps.Descendants("ManagePackageVersionsCentrally").Single().Value.ShouldBe("true");
+        DescendantsByLocalName(buildProps, "TargetFramework").Single().Value.ShouldBe("net10.0");
+        DescendantsByLocalName(buildProps, "Nullable").Single().Value.ShouldBe("enable");
+        DescendantsByLocalName(buildProps, "ImplicitUsings").Single().Value.ShouldBe("enable");
+        DescendantsByLocalName(buildProps, "TreatWarningsAsErrors").Single().Value.ShouldBe("true");
+        DescendantsByLocalName(buildProps, "LangVersion").Single().Value.ShouldBe("latest");
+        DescendantsByLocalName(packagesProps, "ManagePackageVersionsCentrally").Single().Value.ShouldBe("true");
         projectsWithInlineVersions.ShouldBeEmpty();
     }
 
@@ -168,6 +174,9 @@ public sealed class ScaffoldContractTests
     public void ProjectsDoNotOverrideRootBuildConfigurationLocally()
     {
         string root = RepositoryRoot();
+        // Settings the root file owns and projects must not override. IsPackable/IsPublishable are
+        // deliberately excluded: they are opt-in per project (libraries flip IsPackable=true; hosts
+        // flip IsPublishable=true).
         string[] driftingElements =
         [
             "TargetFramework",
@@ -176,27 +185,16 @@ public sealed class ScaffoldContractTests
             "ImplicitUsings",
             "LangVersion",
             "TreatWarningsAsErrors",
+            "Deterministic",
+            "ContinuousIntegrationBuild",
         ];
 
         string[] violations = ExpectedSolutionProjects
             .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
-            .SelectMany(path => FindLocalRootSettingOverrides(path, driftingElements))
+            .SelectMany(path => FindLocalRootSettingOverrides(root, path, driftingElements))
             .ToArray();
 
         violations.ShouldBeEmpty();
-    }
-
-    private static IEnumerable<string> FindLocalRootSettingOverrides(string projectPath, IEnumerable<string> driftingElements)
-    {
-        XDocument project = XDocument.Load(projectPath);
-        string relative = Normalize(Path.GetRelativePath(RepositoryRoot(), projectPath));
-        foreach (string element in driftingElements)
-        {
-            if (project.Descendants(element).Any())
-            {
-                yield return $"{relative} defines <{element}> locally; root Directory.Build.props owns this setting.";
-            }
-        }
     }
 
     [Fact]
@@ -214,31 +212,48 @@ public sealed class ScaffoldContractTests
             "nuget.config"
         ];
 
-        string[] missingFiles = requiredFiles
-            .Where(file => !File.Exists(Path.Combine(root, file)))
+        string[] missingOrEmpty = requiredFiles
+            .Select(file => (FileName: file, Path: Path.Combine(root, file)))
+            .Where(entry => !File.Exists(entry.Path) || new FileInfo(entry.Path).Length == 0)
+            .Select(entry => entry.FileName)
             .ToArray();
 
-        missingFiles.ShouldBeEmpty();
+        missingOrEmpty.ShouldBeEmpty();
     }
 
     [Fact]
     public void NuGetConfigurationUsesPublicSourceWithoutCredentials()
     {
         string root = RepositoryRoot();
-        XDocument nugetConfig = XDocument.Load(Path.Combine(root, "nuget.config"));
-        string content = File.ReadAllText(Path.Combine(root, "nuget.config"));
+        string nugetConfigPath = Path.Combine(root, "nuget.config");
+        string content = File.ReadAllText(nugetConfigPath);
+        XDocument nugetConfig = XDocument.Parse(content);
 
-        nugetConfig.Descendants("packageSources")
-            .Descendants("add")
+        string[] sourceUrls = DescendantsByLocalName(nugetConfig, "packageSources")
+            .SelectMany(packageSources => DescendantsByLocalName(packageSources, "add"))
             .Select(source => ((string?)source.Attribute("value")) ?? string.Empty)
-            .ShouldBe(["https://api.nuget.org/v3/index.json"]);
+            .ToArray();
 
-        content.ShouldNotContain("packageSourceCredentials", Case.Insensitive);
-        content.ShouldNotContain("cleartextpassword", Case.Insensitive);
-        content.ShouldNotContain("password", Case.Insensitive);
-        content.ShouldNotContain("token", Case.Insensitive);
-        content.ShouldNotContain("%userprofile%", Case.Insensitive);
-        content.ShouldNotContain("$HOME", Case.Insensitive);
+        sourceUrls.ShouldBe(["https://api.nuget.org/v3/index.json"]);
+
+        // Forbid any element that carries credentials or per-feed authentication.
+        DescendantsByLocalName(nugetConfig, "packageSourceCredentials").ShouldBeEmpty();
+        DescendantsByLocalName(nugetConfig, "apikeys").ShouldBeEmpty();
+        DescendantsByLocalName(nugetConfig, "clientCertificates").ShouldBeEmpty();
+
+        // Forbid inline user:password@ credentials in any source URL.
+        Regex inlineUrlCredentials = new(@"://[^/@\s]+:[^@\s]+@", RegexOptions.Compiled);
+        foreach (string url in sourceUrls)
+        {
+            inlineUrlCredentials.IsMatch(url).ShouldBeFalse($"NuGet source URL embeds credentials: {url}");
+        }
+
+        // Forbid machine-specific path interpolation that would tie the config to one developer's machine.
+        string[] machinePathMarkers = ["%APPDATA%", "%LOCALAPPDATA%", "%USERPROFILE%", "$HOME"];
+        foreach (string marker in machinePathMarkers)
+        {
+            content.ShouldNotContain(marker, Case.Insensitive);
+        }
     }
 
     [Fact]
@@ -249,18 +264,24 @@ public sealed class ScaffoldContractTests
         [
             "AGENTS.md",
             "CLAUDE.md",
-            "README.md"
+            "README.md",
+            "tests/README.md",
         ];
 
         foreach (string document in policyDocuments)
         {
-            string path = Path.Combine(root, document);
-            File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root.");
+            string path = Path.Combine(root, document.Replace('/', Path.DirectorySeparatorChar));
+            File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root or under tests/.");
 
             string content = File.ReadAllText(path);
-            content.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants", Case.Insensitive);
-            content.ShouldContain("git submodule update --init --recursive", Case.Insensitive);
-            content.ShouldContain("Nested submodules must only be initialized when a user explicitly requests nested submodule work.", Case.Insensitive);
+            AssertCanonicalInitCommandPresent(content, document);
+
+            // Discoverability of the prohibition itself (any of the canonical wordings).
+            bool documentsProhibition =
+                content.Contains("git submodule update --init --recursive", StringComparison.OrdinalIgnoreCase)
+                || content.Contains("do not run recursive submodule initialization", StringComparison.OrdinalIgnoreCase)
+                || content.Contains("not use recursive", StringComparison.OrdinalIgnoreCase);
+            documentsProhibition.ShouldBeTrue($"{document} must document that recursive submodule init is forbidden by default.");
         }
 
         string[] violations = PolicyDocumentPaths(root)
@@ -269,6 +290,31 @@ public sealed class ScaffoldContractTests
             .ToArray();
 
         violations.ShouldBeEmpty();
+    }
+
+    private static Dictionary<string, string[]> BuildProjectReferenceMap(string root) =>
+        ExpectedSolutionProjects.ToDictionary(
+            project => Path.GetFileNameWithoutExtension(project),
+            project => ReadProjectReferenceNames(Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar))),
+            StringComparer.Ordinal);
+
+    private static void AssertReferences(Dictionary<string, string[]> references, string project, string[] expected)
+    {
+        if (!references.TryGetValue(project, out string[]? actual))
+        {
+            actual.ShouldNotBeNull($"Project '{project}' is missing from the expected scaffold project list; update ExpectedSolutionProjects.");
+            return;
+        }
+        actual.ShouldBe(expected, ignoreOrder: true, customMessage: $"{project} references drifted from policy.");
+    }
+
+    private static HashSet<string> RequireReferences(Dictionary<string, HashSet<string>> references, string project)
+    {
+        if (!references.TryGetValue(project, out HashSet<string>? refs))
+        {
+            throw new ShouldAssertException($"Project '{project}' is missing from the expected scaffold project list; update ExpectedSolutionProjects.");
+        }
+        return refs;
     }
 
     private static string RepositoryRoot()
@@ -285,8 +331,7 @@ public sealed class ScaffoldContractTests
     private static string[] ReadSolutionProjectPaths(string root)
     {
         XDocument solution = XDocument.Load(Path.Combine(root, "Hexalith.Folders.slnx"));
-        return solution
-            .Descendants("Project")
+        return DescendantsByLocalName(solution, "Project")
             .Select(project => Normalize((string?)project.Attribute("Path") ?? string.Empty))
             .Order(StringComparer.Ordinal)
             .ToArray();
@@ -295,8 +340,7 @@ public sealed class ScaffoldContractTests
     private static string[] ReadProjectReferenceNames(string projectPath)
     {
         XDocument project = XDocument.Load(projectPath);
-        return project
-            .Descendants("ProjectReference")
+        return DescendantsByLocalName(project, "ProjectReference")
             .Select(reference => Path.GetFileNameWithoutExtension((string?)reference.Attribute("Include") ?? string.Empty))
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Order(StringComparer.Ordinal)
@@ -306,8 +350,24 @@ public sealed class ScaffoldContractTests
     private static bool ProjectHasPackageReferenceVersion(string projectPath)
     {
         XDocument project = XDocument.Load(projectPath);
-        return project.Descendants("PackageReference").Any(reference => reference.Attribute("Version") is not null);
+        return DescendantsByLocalName(project, "PackageReference").Any(reference => reference.Attribute("Version") is not null);
     }
+
+    private static IEnumerable<string> FindLocalRootSettingOverrides(string root, string projectPath, IEnumerable<string> driftingElements)
+    {
+        XDocument project = XDocument.Load(projectPath);
+        string relative = Normalize(Path.GetRelativePath(root, projectPath));
+        foreach (string element in driftingElements)
+        {
+            if (DescendantsByLocalName(project, element).Any())
+            {
+                yield return $"{relative} defines <{element}> locally; root Directory.Build.props owns this setting.";
+            }
+        }
+    }
+
+    private static IEnumerable<XElement> DescendantsByLocalName(XContainer container, string localName) =>
+        container.Descendants().Where(e => e.Name.LocalName.Equals(localName, StringComparison.OrdinalIgnoreCase));
 
     private static bool IsScaffoldBuildableArea(string root, string path)
     {
@@ -317,79 +377,206 @@ public sealed class ScaffoldContractTests
             || relative.StartsWith("samples/", StringComparison.Ordinal);
     }
 
+    private static void AssertCanonicalInitCommandPresent(string content, string sourceDescription)
+    {
+        bool found = content.Split('\n').Any(line =>
+        {
+            if (!line.Contains("git submodule update --init", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            return RequiredCanonicalSubmodules.All(module => line.Contains(module, StringComparison.OrdinalIgnoreCase));
+        });
+
+        found.ShouldBeTrue($"{sourceDescription} must document the canonical root submodule init command listing all of: {string.Join(", ", RequiredCanonicalSubmodules)}.");
+    }
+
     private static IEnumerable<string> PolicyDocumentPaths(string root)
     {
-        string[] rootDocuments = Directory
-            .EnumerateFiles(root, "*.md", SearchOption.TopDirectoryOnly)
-            .Where(path => IsPolicyDocument(path))
+        string[] rootMarkdown = SafeEnumerate(root, "*.md", SearchOption.TopDirectoryOnly);
+        string[] rootSetupScripts = new[] { "*.ps1", "*.sh", "*.cmd", "*.bat" }
+            .SelectMany(pattern => SafeEnumerate(root, pattern, SearchOption.TopDirectoryOnly))
             .ToArray();
 
-        string docsRoot = Path.Combine(root, "docs");
-        string[] docsDocuments = Directory.Exists(docsRoot)
-            ? Directory.EnumerateFiles(docsRoot, "*.md", SearchOption.AllDirectories)
-                .Where(path => IsPolicyDocument(path))
+        string testsRoot = Path.Combine(root, "tests");
+        string[] testsMarkdown = Directory.Exists(testsRoot)
+            ? SafeEnumerate(testsRoot, "*.md", SearchOption.TopDirectoryOnly)
+            : [];
+        string[] testsScripts = Directory.Exists(testsRoot)
+            ? new[] { "*.ps1", "*.sh", "*.cmd", "*.bat" }
+                .SelectMany(pattern => SafeEnumerate(testsRoot, pattern, SearchOption.TopDirectoryOnly))
                 .ToArray()
             : [];
 
-        return rootDocuments.Concat(docsDocuments);
+        string docsRoot = Path.Combine(root, "docs");
+        string[] docsDocuments = Directory.Exists(docsRoot)
+            ? SafeEnumerate(docsRoot, "*.md", SearchOption.AllDirectories)
+            : [];
+
+        return rootMarkdown
+            .Concat(rootSetupScripts)
+            .Concat(testsMarkdown)
+            .Concat(testsScripts)
+            .Concat(docsDocuments)
+            .Where(path => IsPolicyDocument(root, path));
+    }
+
+    private static string[] SafeEnumerate(string directory, string pattern, SearchOption option)
+    {
+        try
+        {
+            return Directory.EnumerateFiles(directory, pattern, option).ToArray();
+        }
+        catch (DirectoryNotFoundException)
+        {
+            return [];
+        }
+    }
+
+    private static bool IsPolicyDocument(string root, string path)
+    {
+        string relative = Normalize(Path.GetRelativePath(root, path));
+        if (relative.StartsWith("_bmad", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+        foreach (string submodule in new[]
+        {
+            "Hexalith.AI.Tools/",
+            "Hexalith.Commons/",
+            "Hexalith.EventStore/",
+            "Hexalith.FrontComposer/",
+            "Hexalith.Memories/",
+            "Hexalith.Tenants/",
+        })
+        {
+            if (relative.StartsWith(submodule, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static IEnumerable<(int LineNumber, string Text)> RecursiveDefaultSetupViolations(string path)
     {
-        string[] lines = File.ReadAllLines(path);
-        for (int index = 0; index < lines.Length; index++)
+        LogicalLine[] logicalLines = JoinContinuationLines(File.ReadAllLines(path));
+
+        for (int index = 0; index < logicalLines.Length; index++)
         {
-            if (!ContainsRecursiveSubmoduleSetup(lines[index]))
+            LogicalLine line = logicalLines[index];
+            if (!ContainsRecursiveSubmoduleSetup(line.Text))
             {
                 continue;
             }
 
-            string context = string.Join(
-                ' ',
-                lines.Skip(Math.Max(0, index - 4)).Take(Math.Min(7, lines.Length - Math.Max(0, index - 4))));
-
-            if (!IsWarningOrNestedOptInContext(context))
+            string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
+            if (!IsWarningOrNestedOptInContext(precedingProse))
             {
-                yield return (index + 1, lines[index].Trim());
+                yield return (line.OriginalLineNumber, line.Text.Trim());
             }
         }
     }
 
-    private static bool IsPolicyDocument(string path)
+    private readonly record struct LogicalLine(int OriginalLineNumber, string Text);
+
+    private static LogicalLine[] JoinContinuationLines(string[] rawLines)
     {
-        string relative = Normalize(path);
-        return !relative.Contains("/_bmad", StringComparison.Ordinal)
-            && !relative.Contains("/Hexalith.AI.Tools/", StringComparison.Ordinal)
-            && !relative.Contains("/Hexalith.EventStore/", StringComparison.Ordinal)
-            && !relative.Contains("/Hexalith.FrontComposer/", StringComparison.Ordinal)
-            && !relative.Contains("/Hexalith.Tenants/");
+        List<LogicalLine> result = [];
+        StringBuilder buffer = new();
+        int firstOriginalLine = -1;
+
+        for (int i = 0; i < rawLines.Length; i++)
+        {
+            string raw = rawLines[i];
+            string trimmedEnd = raw.TrimEnd();
+            if (firstOriginalLine < 0)
+            {
+                firstOriginalLine = i + 1;
+            }
+
+            if (trimmedEnd.EndsWith('\\'))
+            {
+                buffer.Append(trimmedEnd[..^1]).Append(' ');
+                continue;
+            }
+
+            buffer.Append(raw);
+            result.Add(new LogicalLine(firstOriginalLine, buffer.ToString()));
+            buffer.Clear();
+            firstOriginalLine = -1;
+        }
+
+        if (buffer.Length > 0)
+        {
+            result.Add(new LogicalLine(firstOriginalLine < 0 ? rawLines.Length : firstOriginalLine, buffer.ToString()));
+        }
+
+        return result.ToArray();
     }
 
-    private static bool ContainsRecursiveSubmoduleSetup(string line)
+    private static string CollectPrecedingProseContext(LogicalLine[] lines, int violationIndex, int maxLines)
     {
-        string normalized = line.ToLowerInvariant();
-        return normalized.Contains("git submodule", StringComparison.Ordinal)
-                && normalized.Contains("--recursive", StringComparison.Ordinal)
-            || normalized.Contains("git clone", StringComparison.Ordinal)
-                && normalized.Contains("--recurse-submodules", StringComparison.Ordinal)
-            || normalized.Contains("--recurse-submodules", StringComparison.Ordinal)
-            || normalized.Contains("git submodule foreach", StringComparison.Ordinal)
-                && normalized.Contains("--recursive", StringComparison.Ordinal);
+        List<string> collected = [];
+        for (int i = violationIndex - 1; i >= 0 && collected.Count < maxLines; i--)
+        {
+            string trimmed = lines[i].Text.TrimStart();
+            if (trimmed.StartsWith("# ", StringComparison.Ordinal)
+                || trimmed.StartsWith("## ", StringComparison.Ordinal)
+                || trimmed.StartsWith("### ", StringComparison.Ordinal)
+                || trimmed.StartsWith("---", StringComparison.Ordinal))
+            {
+                break;
+            }
+            if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("```", StringComparison.Ordinal))
+            {
+                continue;
+            }
+            collected.Add(lines[i].Text);
+        }
+        return string.Join(" ", collected);
     }
 
-    private static bool IsWarningOrNestedOptInContext(string context)
-    {
-        string normalized = context.ToLowerInvariant();
-        return normalized.Contains("do not", StringComparison.Ordinal)
-            || normalized.Contains("never", StringComparison.Ordinal)
-            || normalized.Contains("avoid", StringComparison.Ordinal)
-            || normalized.Contains("forbid", StringComparison.Ordinal)
-            || normalized.Contains("forbidden", StringComparison.Ordinal)
-            || normalized.Contains("unless", StringComparison.Ordinal)
-            || normalized.Contains("nested submodule", StringComparison.Ordinal)
-            || normalized.Contains("explicitly requests", StringComparison.Ordinal)
-            || normalized.Contains("opt-in", StringComparison.Ordinal);
-    }
+    private static readonly Regex[] RecursiveSetupPatterns =
+    [
+        // `git ... submodule ... --recursive` with arbitrary tokens (including global flags) in between.
+        new(@"\bgit\b[\s\S]*?\bsubmodule\b[\s\S]*?--recursive\b", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+        // Bare `--recurse-submodules` flag in any position (covers `git clone --recurse-submodules`).
+        new(@"--recurse-submodules\b", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+        // `submodule.recurse` git config key (equivalent recursive default mechanism).
+        new(@"\bsubmodule\.recurse\b", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+        // `submodule ... --recursive` without explicit `git` prefix (wrapper scripts, shell vars).
+        new(@"\bsubmodule\b[\s\S]*?--recursive\b", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+    ];
+
+    private static bool ContainsRecursiveSubmoduleSetup(string line) =>
+        RecursiveSetupPatterns.Any(pattern => pattern.IsMatch(line));
+
+    private static readonly string[] WarningContextKeywords =
+    [
+        "do not",
+        "don't",
+        "never",
+        "avoid",
+        "forbid",       // covers "forbidden", "forbids"
+        "prohibit",     // covers "prohibited"
+        "should not",
+        "shouldn't",
+        "must not",
+        "mustn't",
+        "deprecated",
+        "discouraged",
+        "unless",
+        "not use",
+        "nested submodule",
+        "explicitly requests",
+        "explicitly request",
+        "opt-in",
+        "user-requested",
+    ];
+
+    private static bool IsWarningOrNestedOptInContext(string context) =>
+        WarningContextKeywords.Any(keyword => context.Contains(keyword, StringComparison.OrdinalIgnoreCase));
 
     private static string Normalize(string path) => path.Replace('\\', '/');
 }

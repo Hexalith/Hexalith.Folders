@@ -2,6 +2,17 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-2-establish-root-configuration-and-submodule-policy (2026-05-12)
+
+- `.editorconfig` `async_methods_should_end_with_async` rule may flag controller actions and Blazor lifecycle overrides at feature-implementation time — deferred to the first feature story that trips it. (`.editorconfig:41-49`)
+- Private-field naming rule covers `private` accessibility only; `protected`/`internal` field naming silently allowed — deferred until those modifiers actually appear. (`.editorconfig:31-39`)
+- `CA1062`, `CA2007` severities set to `warning` combined with root `TreatWarningsAsErrors=true` could mass-fail builds when real code lands. Builds pass today per Story 1.2 Dev Notes; revisit if a feature story trips it. (`.editorconfig:59-61`)
+- Submodule policy text is triplicated across `AGENTS.md`, `CLAUDE.md`, `README.md`. Drift risk but intentional per spec for discoverability. Revisit when an automated single-source-of-truth pattern (e.g., generated includes) becomes available.
+- `nuget.config` uses `<clear/>` then only nuget.org — destructive to corporate-mirror users but matches AC2 "no private feed assumptions". Revisit if a private feed becomes legitimate later.
+- `Deterministic=true` paired with `ContinuousIntegrationBuild` gated to `'$(CI)' == 'true'` means local PDBs still carry absolute paths. Matches the gated intent; revisit if local-build determinism becomes a requirement.
+- Story 1.2 spec File List (lines 240-247) omits `.gitmodules` from the touched files, even though `.gitmodules` was modified. Record-keeping inconsistency; sweep on next dev-record housekeeping pass.
+- `ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection` now locks down the entire 24-project dependency graph — properly Story 1.1's territory and brittle. Acceptable per Story 1.2's "solution/dependency smoke test" allowance; revisit ownership in a Story 1.1 review iteration.
+
 ## Deferred from: code review of 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary (2026-05-12)
 
 - Error subtypes (`SafeAuthorizationDenial`, `ValidationFailure`, `IdempotencyConflict`, `ReconciliationRequired`) `allOf` `ProblemDetails` with no own discriminating properties (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:292-307`). Downstream stories 1.7-1.11 must specialize each with operation-relevant required fields.

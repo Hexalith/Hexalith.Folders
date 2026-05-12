@@ -1,0 +1,491 @@
+diff --git a/.editorconfig b/.editorconfig
+new file mode 100644
+index 0000000..4910894
+--- /dev/null
++++ b/.editorconfig
+@@ -0,0 +1,56 @@
++# Top-most EditorConfig file
++root = true
++
++# All files
++[*]
++indent_style = space
++indent_size = 4
++end_of_line = crlf
++charset = utf-8
++trim_trailing_whitespace = true
++insert_final_newline = true
++
++# C# files
++[*.cs]
++dotnet_naming_rule.interface_should_begin_with_i.severity = warning
++dotnet_naming_rule.interface_should_begin_with_i.symbols = interface
++dotnet_naming_rule.interface_should_begin_with_i.style = begins_with_i
++
++dotnet_naming_symbols.interface.applicable_kinds = interface
++dotnet_naming_symbols.interface.applicable_accessibilities = *
++
++dotnet_naming_style.begins_with_i.required_prefix = I
++dotnet_naming_style.begins_with_i.capitalization = pascal_case
++
++dotnet_naming_rule.private_field_should_begin_with_underscore.severity = warning
++dotnet_naming_rule.private_field_should_begin_with_underscore.symbols = private_field
++dotnet_naming_rule.private_field_should_begin_with_underscore.style = underscore_camel_case
++
++dotnet_naming_symbols.private_field.applicable_kinds = field
++dotnet_naming_symbols.private_field.applicable_accessibilities = private
++
++dotnet_naming_style.underscore_camel_case.required_prefix = _
++dotnet_naming_style.underscore_camel_case.capitalization = camel_case
++
++dotnet_naming_rule.async_methods_should_end_with_async.severity = warning
++dotnet_naming_rule.async_methods_should_end_with_async.symbols = async_methods
++dotnet_naming_rule.async_methods_should_end_with_async.style = ends_with_async
++
++dotnet_naming_symbols.async_methods.applicable_kinds = method
++dotnet_naming_symbols.async_methods.required_modifiers = async
++
++dotnet_naming_style.ends_with_async.required_suffix = Async
++dotnet_naming_style.ends_with_async.capitalization = pascal_case
++
++csharp_style_namespace_declarations = file_scoped:warning
++csharp_using_directive_placement = outside_namespace:warning
++dotnet_sort_system_directives_first = true
++
++csharp_new_line_before_open_brace = all:warning
++csharp_indent_case_contents = true
++csharp_indent_switch_labels = true
++
++dotnet_diagnostic.CA1062.severity = warning
++dotnet_diagnostic.CA1822.severity = warning
++dotnet_diagnostic.CA2007.severity = warning
++dotnet_diagnostic.CA1014.severity = none
+diff --git a/.gitmodules b/.gitmodules
+index 04c9370..e9fe929 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -10,3 +10,9 @@
+ [submodule "Hexalith.FrontComposer"]
+ 	path = Hexalith.FrontComposer
+ 	url = https://github.com/Hexalith/Hexalith.FrontComposer.git
++[submodule "Hexalith.Memories"]
++	path = Hexalith.Memories
++	url = https://github.com/Hexalith/Hexalith.Memories.git
++[submodule "Hexalith.Commons"]
++	path = Hexalith.Commons
++	url = https://github.com/Hexalith/Hexalith.Commons.git
+diff --git a/AGENTS.md b/AGENTS.md
+index 07cec71..22c947a 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -4,3 +4,19 @@
+ - Initialize only submodules at the root of the repository.
+ - For repositories with submodules, initialize/update only root-level submodules by default.
+ - Avoid `git submodule update --init --recursive` and similar recursive submodule commands unless nested submodule initialization is explicitly requested.
++
++Initialize only root-level submodules:
++
++```text
++git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
++```
++
++Do not use:
++
++```text
++git submodule update --init --recursive
++```
++
++Nested submodules must only be initialized when a user explicitly requests nested submodule work.
++
++Recursive initialization can pull nested dependencies unexpectedly, so keep default setup limited to the root-level module inventory.
+diff --git a/CLAUDE.md b/CLAUDE.md
+index 07cec71..22c947a 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -4,3 +4,19 @@
+ - Initialize only submodules at the root of the repository.
+ - For repositories with submodules, initialize/update only root-level submodules by default.
+ - Avoid `git submodule update --init --recursive` and similar recursive submodule commands unless nested submodule initialization is explicitly requested.
++
++Initialize only root-level submodules:
++
++```text
++git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
++```
++
++Do not use:
++
++```text
++git submodule update --init --recursive
++```
++
++Nested submodules must only be initialized when a user explicitly requests nested submodule work.
++
++Recursive initialization can pull nested dependencies unexpectedly, so keep default setup limited to the root-level module inventory.
+diff --git a/Directory.Build.props b/Directory.Build.props
+index f44e8f3..c1f7aa8 100644
+--- a/Directory.Build.props
++++ b/Directory.Build.props
+@@ -13,8 +13,13 @@
+     <ImplicitUsings>enable</ImplicitUsings>
+     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+     <LangVersion>latest</LangVersion>
++    <Deterministic>true</Deterministic>
++    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+ 
+-    <IsPackable>true</IsPackable>
++    <!-- Pack policy is opt-in. Production library projects (Contracts, core, Client, Testing,
++         ServiceDefaults) flip <IsPackable>true</IsPackable> in their own csproj. Host/adapter/sample
++         projects inherit the default and do not produce NuGet packages. -->
++    <IsPackable>false</IsPackable>
+     <IsPublishable>false</IsPublishable>
+ 
+     <Authors>Hexalith Contributors</Authors>
+diff --git a/Hexalith.Folders.slnx b/Hexalith.Folders.slnx
+index ca7c993..2863ec1 100644
+--- a/Hexalith.Folders.slnx
++++ b/Hexalith.Folders.slnx
+@@ -4,12 +4,15 @@
+     <Project Path="samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj" />
+   </Folder>
+   <Folder Name="/Solution Items/">
++    <File Path=".editorconfig" />
++    <File Path=".gitmodules" />
+     <File Path="AGENTS.md" />
+     <File Path="CLAUDE.md" />
+     <File Path="Directory.Build.props" />
+     <File Path="Directory.Packages.props" />
+     <File Path="global.json" />
+     <File Path="LICENSE" />
++    <File Path="nuget.config" />
+     <File Path="README.md" />
+   </Folder>
+   <Folder Name="/src/">
+diff --git a/README.md b/README.md
+index 807ece4..7cea55b 100644
+--- a/README.md
++++ b/README.md
+@@ -1,2 +1,28 @@
+ # Hexalith.Folders
++
+ Hexalith Folder Management
++
++## Setup
++
++Restore and build from the repository root:
++
++```text
++dotnet restore Hexalith.Folders.slnx
++dotnet build Hexalith.Folders.slnx --no-restore
++```
++
++Initialize only root-level submodules:
++
++```text
++git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
++```
++
++Do not use:
++
++```text
++git submodule update --init --recursive
++```
++
++Nested submodules must only be initialized when a user explicitly requests nested submodule work.
++
++Recursive initialization can pull nested dependencies unexpectedly, so default setup is intentionally limited to the root-level submodule inventory.
+diff --git a/nuget.config b/nuget.config
+new file mode 100644
+index 0000000..4e800bf
+--- /dev/null
++++ b/nuget.config
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<configuration>
++  <packageSources>
++    <clear />
++    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
++  </packageSources>
++  <packageSourceMapping>
++    <packageSource key="nuget.org">
++      <package pattern="*" />
++    </packageSource>
++  </packageSourceMapping>
++</configuration>
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+index 997f810..5e3f670 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
++++ b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+@@ -69,6 +69,78 @@ public sealed class ScaffoldContractTests
+         references["Hexalith.Folders.UI"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
+         references["Hexalith.Folders.Workers"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Contracts"], ignoreOrder: true);
+         references["Hexalith.Folders.AppHost"].ShouldBe(["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI"], ignoreOrder: true);
++        references["Hexalith.Folders.Aspire"].ShouldBeEmpty();
++        references["Hexalith.Folders.ServiceDefaults"].ShouldBeEmpty();
++        references["Hexalith.Folders.Testing"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
++        references["Hexalith.Folders.Sample"].ShouldBe(["Hexalith.Folders.Client"], ignoreOrder: true);
++        references["Hexalith.Folders.Sample.Tests"].ShouldBe(["Hexalith.Folders.Sample"], ignoreOrder: true);
++        references["Hexalith.Folders.Contracts.Tests"].ShouldBe(["Hexalith.Folders.Contracts"], ignoreOrder: true);
++        references["Hexalith.Folders.Tests"].ShouldBe(["Hexalith.Folders", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.Server.Tests"].ShouldBe(["Hexalith.Folders.Server", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.Client.Tests"].ShouldBe(["Hexalith.Folders.Client", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.Cli.Tests"].ShouldBe(["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.Mcp.Tests"].ShouldBe(["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.UI.Tests"].ShouldBe(["Hexalith.Folders.UI", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.Workers.Tests"].ShouldBe(["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.Testing.Tests"].ShouldBe(["Hexalith.Folders.Testing"], ignoreOrder: true);
++        references["Hexalith.Folders.IntegrationTests"].ShouldBe(["Hexalith.Folders.Server", "Hexalith.Folders.Testing"], ignoreOrder: true);
++    }
++
++    [Fact]
++    public void ForbiddenReferencesAreNotIntroduced()
++    {
++        string root = RepositoryRoot();
++        Dictionary<string, HashSet<string>> references = ExpectedSolutionProjects
++            .ToDictionary(
++                project => Path.GetFileNameWithoutExtension(project),
++                project => new HashSet<string>(
++                    ReadProjectReferenceNames(Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar))),
++                    StringComparer.Ordinal),
++                StringComparer.Ordinal);
++
++        // Contracts must remain behavior-free: no infrastructure or sibling-host references.
++        string[] forbiddenFromContracts =
++        [
++            "Hexalith.Folders",
++            "Hexalith.Folders.Server",
++            "Hexalith.Folders.Client",
++            "Hexalith.Folders.Cli",
++            "Hexalith.Folders.Mcp",
++            "Hexalith.Folders.UI",
++            "Hexalith.Folders.Workers",
++            "Hexalith.Folders.Aspire",
++            "Hexalith.Folders.AppHost",
++            "Hexalith.Folders.ServiceDefaults",
++            "Hexalith.Folders.Testing",
++        ];
++        foreach (string forbidden in forbiddenFromContracts)
++        {
++            references["Hexalith.Folders.Contracts"].ShouldNotContain(forbidden);
++        }
++
++        // Client is an SDK boundary: must not reach into Server, UI, CLI, MCP, or Workers.
++        string[] forbiddenFromClient =
++        [
++            "Hexalith.Folders.Server",
++            "Hexalith.Folders.UI",
++            "Hexalith.Folders.Cli",
++            "Hexalith.Folders.Mcp",
++            "Hexalith.Folders.Workers",
++            "Hexalith.Folders.AppHost",
++        ];
++        foreach (string forbidden in forbiddenFromClient)
++        {
++            references["Hexalith.Folders.Client"].ShouldNotContain(forbidden);
++        }
++
++        // Adapters (CLI, MCP, UI) must wrap Client only; they must not pull in core domain or each other.
++        foreach (string adapter in new[] { "Hexalith.Folders.Cli", "Hexalith.Folders.Mcp", "Hexalith.Folders.UI" })
++        {
++            references[adapter].ShouldNotContain("Hexalith.Folders");
++            references[adapter].ShouldNotContain("Hexalith.Folders.Server");
++            references[adapter].ShouldNotContain("Hexalith.Folders.Workers");
++            references[adapter].ShouldNotContain("Hexalith.Folders.AppHost");
++        }
+     }
+ 
+     [Fact]
+@@ -92,6 +164,113 @@ public sealed class ScaffoldContractTests
+         projectsWithInlineVersions.ShouldBeEmpty();
+     }
+ 
++    [Fact]
++    public void ProjectsDoNotOverrideRootBuildConfigurationLocally()
++    {
++        string root = RepositoryRoot();
++        string[] driftingElements =
++        [
++            "TargetFramework",
++            "TargetFrameworks",
++            "Nullable",
++            "ImplicitUsings",
++            "LangVersion",
++            "TreatWarningsAsErrors",
++        ];
++
++        string[] violations = ExpectedSolutionProjects
++            .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
++            .SelectMany(path => FindLocalRootSettingOverrides(path, driftingElements))
++            .ToArray();
++
++        violations.ShouldBeEmpty();
++    }
++
++    private static IEnumerable<string> FindLocalRootSettingOverrides(string projectPath, IEnumerable<string> driftingElements)
++    {
++        XDocument project = XDocument.Load(projectPath);
++        string relative = Normalize(Path.GetRelativePath(RepositoryRoot(), projectPath));
++        foreach (string element in driftingElements)
++        {
++            if (project.Descendants(element).Any())
++            {
++                yield return $"{relative} defines <{element}> locally; root Directory.Build.props owns this setting.";
++            }
++        }
++    }
++
++    [Fact]
++    public void RequiredRootConfigurationFilesExist()
++    {
++        string root = RepositoryRoot();
++        string[] requiredFiles =
++        [
++            ".editorconfig",
++            ".gitmodules",
++            "Directory.Build.props",
++            "Directory.Packages.props",
++            "Hexalith.Folders.slnx",
++            "global.json",
++            "nuget.config"
++        ];
++
++        string[] missingFiles = requiredFiles
++            .Where(file => !File.Exists(Path.Combine(root, file)))
++            .ToArray();
++
++        missingFiles.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void NuGetConfigurationUsesPublicSourceWithoutCredentials()
++    {
++        string root = RepositoryRoot();
++        XDocument nugetConfig = XDocument.Load(Path.Combine(root, "nuget.config"));
++        string content = File.ReadAllText(Path.Combine(root, "nuget.config"));
++
++        nugetConfig.Descendants("packageSources")
++            .Descendants("add")
++            .Select(source => ((string?)source.Attribute("value")) ?? string.Empty)
++            .ShouldBe(["https://api.nuget.org/v3/index.json"]);
++
++        content.ShouldNotContain("packageSourceCredentials", Case.Insensitive);
++        content.ShouldNotContain("cleartextpassword", Case.Insensitive);
++        content.ShouldNotContain("password", Case.Insensitive);
++        content.ShouldNotContain("token", Case.Insensitive);
++        content.ShouldNotContain("%userprofile%", Case.Insensitive);
++        content.ShouldNotContain("$HOME", Case.Insensitive);
++    }
++
++    [Fact]
++    public void SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup()
++    {
++        string root = RepositoryRoot();
++        string[] policyDocuments =
++        [
++            "AGENTS.md",
++            "CLAUDE.md",
++            "README.md"
++        ];
++
++        foreach (string document in policyDocuments)
++        {
++            string path = Path.Combine(root, document);
++            File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root.");
++
++            string content = File.ReadAllText(path);
++            content.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants", Case.Insensitive);
++            content.ShouldContain("git submodule update --init --recursive", Case.Insensitive);
++            content.ShouldContain("Nested submodules must only be initialized when a user explicitly requests nested submodule work.", Case.Insensitive);
++        }
++
++        string[] violations = PolicyDocumentPaths(root)
++            .SelectMany(path => RecursiveDefaultSetupViolations(path)
++                .Select(line => $"{Normalize(Path.GetRelativePath(root, path))}:{line.LineNumber}: {line.Text}"))
++            .ToArray();
++
++        violations.ShouldBeEmpty();
++    }
++
+     private static string RepositoryRoot()
+     {
+         DirectoryInfo? directory = new(AppContext.BaseDirectory);
+@@ -138,5 +317,79 @@ public sealed class ScaffoldContractTests
+             || relative.StartsWith("samples/", StringComparison.Ordinal);
+     }
+ 
++    private static IEnumerable<string> PolicyDocumentPaths(string root)
++    {
++        string[] rootDocuments = Directory
++            .EnumerateFiles(root, "*.md", SearchOption.TopDirectoryOnly)
++            .Where(path => IsPolicyDocument(path))
++            .ToArray();
++
++        string docsRoot = Path.Combine(root, "docs");
++        string[] docsDocuments = Directory.Exists(docsRoot)
++            ? Directory.EnumerateFiles(docsRoot, "*.md", SearchOption.AllDirectories)
++                .Where(path => IsPolicyDocument(path))
++                .ToArray()
++            : [];
++
++        return rootDocuments.Concat(docsDocuments);
++    }
++
++    private static IEnumerable<(int LineNumber, string Text)> RecursiveDefaultSetupViolations(string path)
++    {
++        string[] lines = File.ReadAllLines(path);
++        for (int index = 0; index < lines.Length; index++)
++        {
++            if (!ContainsRecursiveSubmoduleSetup(lines[index]))
++            {
++                continue;
++            }
++
++            string context = string.Join(
++                ' ',
++                lines.Skip(Math.Max(0, index - 4)).Take(Math.Min(7, lines.Length - Math.Max(0, index - 4))));
++
++            if (!IsWarningOrNestedOptInContext(context))
++            {
++                yield return (index + 1, lines[index].Trim());
++            }
++        }
++    }
++
++    private static bool IsPolicyDocument(string path)
++    {
++        string relative = Normalize(path);
++        return !relative.Contains("/_bmad", StringComparison.Ordinal)
++            && !relative.Contains("/Hexalith.AI.Tools/", StringComparison.Ordinal)
++            && !relative.Contains("/Hexalith.EventStore/", StringComparison.Ordinal)
++            && !relative.Contains("/Hexalith.FrontComposer/", StringComparison.Ordinal)
++            && !relative.Contains("/Hexalith.Tenants/");
++    }
++
++    private static bool ContainsRecursiveSubmoduleSetup(string line)
++    {
++        string normalized = line.ToLowerInvariant();
++        return normalized.Contains("git submodule", StringComparison.Ordinal)
++                && normalized.Contains("--recursive", StringComparison.Ordinal)
++            || normalized.Contains("git clone", StringComparison.Ordinal)
++                && normalized.Contains("--recurse-submodules", StringComparison.Ordinal)
++            || normalized.Contains("--recurse-submodules", StringComparison.Ordinal)
++            || normalized.Contains("git submodule foreach", StringComparison.Ordinal)
++                && normalized.Contains("--recursive", StringComparison.Ordinal);
++    }
++
++    private static bool IsWarningOrNestedOptInContext(string context)
++    {
++        string normalized = context.ToLowerInvariant();
++        return normalized.Contains("do not", StringComparison.Ordinal)
++            || normalized.Contains("never", StringComparison.Ordinal)
++            || normalized.Contains("avoid", StringComparison.Ordinal)
++            || normalized.Contains("forbid", StringComparison.Ordinal)
++            || normalized.Contains("forbidden", StringComparison.Ordinal)
++            || normalized.Contains("unless", StringComparison.Ordinal)
++            || normalized.Contains("nested submodule", StringComparison.Ordinal)
++            || normalized.Contains("explicitly requests", StringComparison.Ordinal)
++            || normalized.Contains("opt-in", StringComparison.Ordinal);
++    }
++
+     private static string Normalize(string path) => path.Replace('\\', '/');
+ }

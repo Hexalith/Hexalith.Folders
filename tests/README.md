@@ -8,7 +8,7 @@ Hexalith.Folders uses a .NET-first test framework: xUnit v3 for execution, Shoul
 2. Initialize only root-level submodules when needed:
 
    ```powershell
-   git submodule update --init Hexalith.AI.Tools Hexalith.EventStore Hexalith.FrontComposer Hexalith.Tenants
+   git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
    ```
 
 3. Restore from the repository root:
