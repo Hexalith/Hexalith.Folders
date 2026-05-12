@@ -1,12 +1,22 @@
 ---
 stepsCompleted: ['step-01-preflight', 'step-02-select-framework', 'step-03-scaffold-framework', 'step-04-docs-and-scripts', 'step-05-validate-and-summary']
 lastStep: 'step-05-validate-and-summary'
-lastSaved: '2026-05-11'
+lastSaved: '2026-05-12'
 ---
 
 # Test Framework Setup Progress
 
 ## Step 01 - Preflight
+
+### 2026-05-12 Preflight Refresh
+
+- Configured `test_stack_type`: `auto`.
+- Detected stack remains `backend` with a Blazor UI edge.
+- Primary manifest remains `Hexalith.Folders.slnx`.
+- Root package/browser indicators remain absent: no root `package.json`, `playwright.config.*`, `cypress.config.*`, or `cypress.json`.
+- Existing Hexalith.Folders test projects are present and align with the intended .NET-first framework: xUnit v3, Shouldly, NSubstitute, Testcontainers, Microsoft.AspNetCore.Mvc.Testing, Aspire testing, YamlDotNet, and coverlet.
+- Existing FrontComposer Playwright assets are submodule/sibling assets and do not apply to the Hexalith.Folders root.
+- Preflight status: pass. Continue with framework selection using the existing xUnit-first setup as the baseline; avoid duplicating a browser framework unless UI smoke/accessibility coverage is explicitly introduced later.
 
 ### Stack Detection
 
@@ -38,6 +48,29 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 
 ## Step 02 - Framework Selection
 
+### 2026-05-12 Selection Refresh
+
+### Selected Frameworks
+
+- Primary blocking framework remains xUnit v3.
+- Assertion style remains Shouldly.
+- Test doubles remain NSubstitute for focused unit seams.
+- Integration/runtime harness remains Microsoft.AspNetCore.Mvc.Testing, Aspire testing, and Testcontainers.
+- Optional UI adjunct remains Playwright for read-only operations-console smoke/accessibility checks once stable UI routes and selectors exist.
+
+### Rationale
+
+- Detected stack is backend-first .NET; workflow rules map C#/.NET backend projects to xUnit by default.
+- Current xUnit v3 documentation supports async tests, `Fact`/`Theory`, class fixtures, collection fixtures, and async fixture lifecycle patterns that match the repo's need for isolated unit tests plus shared integration resources.
+- Microsoft Learn's ASP.NET Core integration testing guidance uses `WebApplicationFactory<TEntryPoint>` with xUnit fixtures and customizable test services, matching the existing package inventory and future server-boundary tests.
+- Playwright's current configuration guidance supports retries, traces, screenshots, videos, and reporters for UI diagnostics, but those capabilities should be reserved for the read-only operations console after lower-level contracts stabilize.
+- Cypress remains not selected: no root JavaScript app, no Cypress convention, and no risk reduction for the highest-priority tenant/isolation/idempotency/parity concerns.
+
+### Risk Calculation
+
+- P0/P1 coverage belongs in unit, integration, contract, and adapter tests: tenant isolation, metadata-only redaction, idempotency, workspace state transitions, cross-surface parity, and provider capability behavior.
+- Browser automation is P2 until the operations console has stable route/selector contracts. Keep it thin to avoid flakiness and toolchain drift.
+
 ### Selected Frameworks
 
 - Primary blocking framework: xUnit v3.
@@ -62,6 +95,34 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 - Flakiness risk increases if Dapr/Aspire/provider behavior is tested primarily through UI. Keep browser tests thin and let lower levels carry the load.
 
 ## Step 03 - Scaffold Framework
+
+### 2026-05-12 Scaffold Refresh
+
+### Execution Mode
+
+- Requested mode: `auto`.
+- Resolved mode: `sequential`.
+- Reason: no explicit user request for subagents or agent-team execution in this run.
+
+### Scaffold Status
+
+- Existing .NET-first scaffold is present and remains the correct framework shape.
+- Verified shared helpers under `src/Hexalith.Folders.Testing/`:
+  - `Factories/FoldersTestDataFactory.cs`
+  - `Http/TestRequestHeaders.cs`
+  - `Polling/Eventually.cs`
+- Verified sample/coverage directories under `tests/Hexalith.Folders.Testing.Tests/`:
+  - `Unit/`
+  - `Api/`
+  - `Integration/`
+- Verified root `.env.example` contains `TEST_ENV`, `BASE_URL`, and `API_URL`.
+- Verified `global.json` pins the .NET SDK, so no additional backend version file is needed.
+- Verified `tests/run-tests.ps1` exposes `All`, `Coverage`, `Integration`, and `Testing` modes.
+
+### Scaffold Decision
+
+- No new files created during this refresh. The current scaffold already satisfies the backend .NET framework setup requirements.
+- No Playwright/Cypress scaffold added. Browser automation remains deferred until the operations console has stable UI contracts.
 
 ### Execution Mode
 
@@ -95,6 +156,20 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 
 ## Step 04 - Documentation And Scripts
 
+### 2026-05-12 Documentation Refresh
+
+### Documentation Checked
+
+- `tests/README.md` remains the primary framework guide with setup, running tests, architecture, best practices, CI notes, and knowledge references.
+- Added a focused debugging section with single-project and single-test `dotnet test` examples.
+- Kept the root-level-only submodule setup command and the explicit warning against recursive submodule initialization.
+
+### Scripts Checked
+
+- `tests/run-tests.ps1` remains the idiomatic local script for the .NET test framework.
+- Modes available: `All`, `Coverage`, `Integration`, and `Testing`.
+- No `package.json` scripts were added because Hexalith.Folders has no root Node frontend test harness.
+
 ### Documentation Added
 
 - Created `tests/README.md` with setup instructions, test commands, architecture overview, best practices, CI notes, and knowledge references.
@@ -110,6 +185,35 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-tests.ps1 -Mode Testing` passed: 14 tests.
 
 ## Step 05 - Validate And Summary
+
+### 2026-05-12 Validation Refresh
+
+### Checklist Validation
+
+- Preflight success: passed.
+- Directory structure: passed for backend .NET layout; browser-specific `tests/e2e` and `tests/support` remain not applicable until Playwright is intentionally introduced.
+- Config correctness: passed; `.csproj` test projects and central package management define xUnit v3, Shouldly, NSubstitute, Testcontainers, Microsoft.AspNetCore.Mvc.Testing, Aspire testing, YamlDotNet, runner, and coverlet packages.
+- Fixtures/factories/helpers: passed via `src/Hexalith.Folders.Testing/Factories`, `Http`, and `Polling`.
+- Docs and scripts: passed via `tests/README.md` and `tests/run-tests.ps1`.
+- Security check: passed for refreshed docs and framework artifacts; no credentials or recursive submodule setup instructions were introduced.
+
+### Verification Commands
+
+- `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj` passed: 25 tests.
+- `dotnet build Hexalith.Folders.slnx` passed: 0 warnings, 0 errors.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-tests.ps1 -Mode Testing` passed: 25 tests.
+- `dotnet test Hexalith.Folders.slnx` passed across all current solution test projects.
+
+### Completion Summary
+
+- Framework selected: xUnit v3 as the primary blocking framework.
+- Supporting tools: Shouldly, NSubstitute, Testcontainers, Microsoft.AspNetCore.Mvc.Testing, Aspire testing, YamlDotNet, and coverlet.
+- UI adjunct: Playwright deferred for future read-only operations-console smoke/accessibility coverage.
+- Artifacts refreshed:
+  - `tests/README.md`
+  - `_bmad-output/test-artifacts/framework-setup-progress.md`
+- Knowledge fragments applied: test levels, test quality, fixture architecture, data factories, Playwright config guardrails, API request, polling, logging, and contract-testing guidance.
+- Official docs cross-checks applied: xUnit v3 fixture/async guidance, Microsoft Learn ASP.NET Core integration testing with `WebApplicationFactory`, and Playwright test artifact/retry configuration guidance.
 
 ### Checklist Validation
 

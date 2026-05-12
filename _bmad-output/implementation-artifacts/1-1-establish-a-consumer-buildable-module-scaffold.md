@@ -423,3 +423,22 @@ Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. Al
 - Story 1.1 status flip in sprint-status — subsumed by the Decision-Needed scope item.
 - `TreatWarningsAsErrors=true` may trip Aspire generator — speculative; build is verified at HEAD.
 - `<ContinuousIntegrationBuild>` conditional missing from `eb52d15` — added in later commit, present at HEAD.
+
+### Review Findings — 2026-05-12 (code-review of story 1.1 scaffold window)
+
+Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. All three layers completed.
+
+#### Decision-Needed
+
+- [x] [Review][Decision] **Scaffold review scope includes later contract/idempotency/parity policy tests** — **Resolved 2026-05-12:** keep these later policy tests inside the accepted multi-commit story 1.1 review window. Story 1.1 says fixtures are minimal valid placeholders and defers Contract Spine, parity oracle, idempotency helpers, CLI/MCP behavior, and generated-client semantics to later stories. `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs:9` enumerates MVP and Phase 1 operation IDs; `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs:121` requires idempotency/read-consistency rules; `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs:165` pins parity schema behavior including CLI/MCP failure categories.
+- [x] [Review][Decision] **Exit-criteria tests require concrete later-story decision artifacts** — **Resolved 2026-05-12:** keep these later decision artifacts inside the accepted multi-commit story 1.1 review window. Story 1.1 only requires `docs/exit-criteria/_template.md` and defers lifecycle/idempotency/Contract Spine decisions; project context says Phase 1 Contract Spine work is blocked until C3/C4 are resolved. `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:9` requires `c3-retention.md`, `c4-input-limits.md`, `s2-oidc-validation.md`, and `c6-transition-matrix-mapping.md`; `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:119` pins OIDC validation settings; `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:147` pins lifecycle state/event vocabulary.
+
+#### Patch
+
+- [ ] [Review][Patch] **`TestAuthorizationContext.TenantClaimJson` does not JSON-escape tenant IDs** [`src/Hexalith.Folders.Testing/Factories/TestAuthorizationContext.cs:8`]
+- [ ] [Review][Patch] **`TestFolderContext` stream-name helpers accept delimiter characters in IDs** [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs:11`]
+- [ ] [Review][Patch] **`TestRequestHeaders.FromFolderContext` forwards CR/LF or control characters into header values** [`src/Hexalith.Folders.Testing/Http/TestRequestHeaders.cs:19`]
+- [ ] [Review][Patch] **`Eventually.UntilAsync` can hang beyond timeout when a probe ignores cancellation** [`src/Hexalith.Folders.Testing/Polling/Eventually.cs:28`]
+- [ ] [Review][Patch] **`ScaffoldContractTests` recursively enumerates the whole repository before filtering scaffold areas** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:42`]
+- [ ] [Review][Patch] **Recursive submodule policy test treats broad nearby wording as an exemption** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:380`]
+- [ ] [Review][Patch] **Fixture leakage checks miss `client_secret`-style OAuth secret markers** [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:115`]

@@ -47,6 +47,22 @@ Run through the helper script:
 .\tests\run-tests.ps1 -Mode Integration
 ```
 
+## Debugging Tests
+
+Run a single project while iterating:
+
+```powershell
+dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj
+```
+
+Run one named test with detailed output:
+
+```powershell
+dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~EventuallyTests --logger "console;verbosity=detailed"
+```
+
+For integration failures, prefer inspecting the failing request, headers, correlation ID, idempotency key, and generated test artifacts before widening to the whole solution. Browser headed/debug mode is intentionally not part of the default lane; add Playwright only when read-only operations-console routes have stable selectors.
+
 ## Architecture
 
 - `tests/Hexalith.Folders.*.Tests` mirrors the production project boundaries.
