@@ -30,6 +30,8 @@ C3 is Phase-1-blocking because the Contract Spine must expose D-7 idempotency TT
 
 No row invents a final legal policy. The proposed values are concrete enough for review, and every row names the authority gap that must close before Phase 1 uses the values as binding defaults.
 
+The table covers ten data classes: the six explicitly enumerated by the Phase 0.5 workshop scope (audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, cleanup records) and four additional classes the workshop classified as separate retention concerns (folder metadata and soft-delete markers, auth claims copied into metadata, diagnostics and rejected-command records, and commit idempotency records). The six task-mandated classes are regression-guarded by verification; the four workshop additions may be reorganized during stakeholder review without breaking the regression guard.
+
 ## Verification impact
 
 Verification must prove this artifact exists, contains no generic placeholders, contains only metadata-only examples, and maps each duration to a consuming future story or artifact. Later retention implementation must add tests for tenant-prefixed keys, deletion/tombstone behavior, audit replay, and commit idempotency TTL inheritance.

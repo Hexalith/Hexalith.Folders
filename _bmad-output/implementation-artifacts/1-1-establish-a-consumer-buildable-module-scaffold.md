@@ -1,6 +1,6 @@
 # Story 1.1: Establish a consumer-buildable module scaffold
 
-Status: done
+Status: in-progress
 
 Created: 2026-05-10
 
@@ -442,3 +442,33 @@ Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. Al
 - [ ] [Review][Patch] **`ScaffoldContractTests` recursively enumerates the whole repository before filtering scaffold areas** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:42`]
 - [ ] [Review][Patch] **Recursive submodule policy test treats broad nearby wording as an exemption** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:380`]
 - [ ] [Review][Patch] **Fixture leakage checks miss `client_secret`-style OAuth secret markers** [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:115`]
+
+### Review Findings — 2026-05-12 round 2 (exit-criteria tests and docs hardening)
+
+Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. All three layers completed.
+Diff reviewed: uncommitted changes to `docs/exit-criteria/c3-retention.md`, `c4-input-limits.md`, `c6-transition-matrix-mapping.md`, and `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`.
+Dismissed: 2 findings (C4 secondary-table false failure risk — single table in doc, tests pass; vacuous mutual-exclusion observation — correct behavior for current data).
+
+#### Decision-Needed
+
+- [x] [Review][Decision] **`\bTODO\b` in `PlaceholderRegexes` is zero-tolerance with no prose escape hatch** — **Resolved 2026-05-12:** keep zero-tolerance; "TODO" is prohibited from exit-criteria prose; authors must use "Deferred" or "Pending" instead. — `PlaceholderRegexes` includes `new(@"\bTODO\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)`. Any exit-criteria doc containing the word "TODO" in prose (e.g., a "Deferred TODO items" list or a deferred section header) would fail the artifact cleanliness test with a misleading diagnostic. Decide: (a) keep zero-tolerance and prohibit "TODO" from all exit-criteria prose — authors must use "Deferred" or "Pending"; (b) remove `TODO` from the placeholder denylist for exit-criteria docs and rely on code/fixture-file checks only; (c) rename the array to `CodeArtifactPlaceholderRegexes` and apply it only to code/fixture files, not to documentation. [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`]
+
+#### Patch
+
+- [x] [Review][Patch] **`ExtractDecisionTableRows` resets `sawSeparatorOnCurrentTable` on any non-pipe line, silently dropping all body rows after a blank line mid-table** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `ExtractDecisionTableRows`] — **Applied 2026-05-12:** blank lines no longer reset the flag; only non-blank non-pipe lines do
+- [x] [Review][Patch] **`ExtractDecisionTableRows` separator regex `^\|[\s\-:|]+\|\s*$` is too broad — a bare-hyphen data row (e.g., `| - | - |`) is silently consumed as a separator** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `ExtractDecisionTableRows`] — **Applied 2026-05-12:** regex now requires 3+ consecutive hyphens per cell (`^\|(?:\s*:?-{3,}:?\s*\|)+\s*$`)
+- [x] [Review][Patch] **`IsEmDashOrHyphen` accepts plain ASCII hyphen (`-`) as a blank-cell marker, weakening the em-dash sentinel** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `IsEmDashOrHyphen`] — **Applied 2026-05-12:** removed ASCII hyphen `-` from equivalence set; only `—` and `–` accepted
+- [x] [Review][Patch] **`ParseFrontMatterValue` searches the entire file — any `key: value` prose line in the body can falsely satisfy the front-matter check** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `ParseFrontMatterValue`] — **Applied 2026-05-12:** search now constrained to the block before the first `## ` heading
+- [x] [Review][Patch] **Duplicate sentence in `c6-transition-matrix-mapping.md`** — **Dismissed 2026-05-12:** confirmed false positive; targeted git diff shows no duplicate sentence in file
+- [x] [Review][Patch] **`C3CoversTheSixMandatedDataClasses` uses document-level substring match — new prose paragraph added in this diff names all six classes, so a future table-row removal would still pass** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `C3CoversTheSixMandatedDataClasses`] — **Applied 2026-05-12:** test now uses `ExtractDecisionTableRows` to check table rows only
+- [x] [Review][Patch] **`PlaceholderRegexes[1]` pattern `\bT\.B\.D\.?` is missing the closing `\b` word-boundary anchor** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`] — **Applied 2026-05-12:** added `\b` at end: `\bT\.B\.D\.?\b`
+- [x] [Review][Patch] **`ProductionUrl()` regex incorrectly flags `.invalid` URLs with fragment identifiers (e.g., `https://auth.invalid#section`) as production URLs** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `ProductionUrl`] — **Applied 2026-05-12:** added `#?[` to allowed-after set
+- [x] [Review][Patch] **`S2OidcArtifactPinsFrozenJwtBearerSettings` and `S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders` call `File.ReadAllText` without a prior `File.Exists` check** [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`] — **Applied 2026-05-12:** added `File.Exists` + `ShouldBeTrue` guard before each `ReadAllText`
+
+#### Deferred
+
+- [x] [Review][Defer] `C6MappingArtifactMirrorsArchitectureVocabularyBidirectionally` checks backtick-wrapped event names in architecture.md — all events do appear backtick-wrapped somewhere in the file so tests pass; the canonical transition table uses bare cell names but the check still provides vocabulary coverage [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`] — deferred, design nuance; tests pass
+- [x] [Review][Defer] `C3AndC4RowsDeclareProvenanceApprovalConsumerAndReviewDate` now dynamically derives expected date from front-matter `last reviewed` — changes failure semantics from "row must have a concrete date" to "row must match front-matter"; intentional improvement but undocumented scope change [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`] — deferred, intentional design improvement
+- [x] [Review][Defer] `"diff --git"` in `SecretSubstringDenylist` alongside actual credential patterns produces confusing "must not contain credential material" diagnostic — intent is valid (docs should not embed patch content) but classification is misleading [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`] — deferred, cosmetic; intent is correct
+- [x] [Review][Defer] `RepositoryRoot` `const int MaxAncestors = 12` is a magic number — could fail on deeply nested CI build paths with an `InvalidOperationException` rather than a clean test failure; error message is improved vs. the old unbounded loop [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `RepositoryRoot`] — deferred, pre-existing design; 12 is sufficient for known paths
+- [x] [Review][Defer] S2 OIDC test split — `.invalid` placeholder check and authoritative claim checks moved to a new test `S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders`; half the original single-test OIDC contract is now invisible unless both tests are read together — deferred, structural coupling concern; both tests pass and cover the full contract

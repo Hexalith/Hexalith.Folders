@@ -1,0 +1,629 @@
+diff --git a/_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md b/_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md
+index 0883c6f..55edaad 100644
+--- a/_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md
++++ b/_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md
+@@ -1,6 +1,6 @@
+ # Story 1.4: Author Phase 0.5 Pre-Spine Workshop deliverables
+ 
+-Status: ready-for-dev
++Status: review
+ 
+ Created: 2026-05-10
+ 
+@@ -24,54 +24,54 @@ so that the canonical contract starts with real retention, input-limit, state, a
+ 
+ ## Tasks / Subtasks
+ 
+-- [ ] Inspect prior Phase 0 outputs before authoring deliverables. (AC: 5, 6)
+-  - [ ] Confirm Story 1.1 scaffold expectations and Story 1.2 root policy are available if verification depends on root docs or solution structure.
+-  - [ ] Confirm Story 1.3 has seeded `docs/exit-criteria/_template.md`, `docs/adrs/0000-template.md`, `tests/fixtures/previous-spine.yaml`, and fixture ownership notes, or record the exact missing prerequisite instead of broadening this story into fixture seeding.
+-  - [ ] Do not initialize or update nested submodules; use root-level submodules only as read-only references unless the user explicitly asks for nested submodules.
+-- [ ] Author `docs/exit-criteria/c3-retention.md`. (AC: 1, 5)
+-  - [ ] Start from `docs/exit-criteria/_template.md` if present; preserve the template's evidence and ownership fields.
+-  - [ ] Include retention durations for audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, and cleanup records.
+-  - [ ] For each data class, document retention duration, deletion/tombstone/anonymization behavior, cleanup trigger, operational evidence, and the downstream place where Phase 1 or later stories consume the value.
+-  - [ ] Include value provenance for every duration: source architecture section, Story 1.3 fixture/template, stakeholder workshop note, or explicit `needs human decision`.
+-  - [ ] State the tenant-isolation implication for each retained data class and avoid copying tenant payload values into examples.
+-  - [ ] Record decision owner `Tech Lead`, decision authority `Legal + PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
+-  - [ ] Classify every duration as `approved`, `proposed workshop value`, or `needs human decision`; do not mix those states in one row without explaining which downstream consumer is blocked.
+-  - [ ] Include a commit-idempotency TTL row or note showing how D-7 `commit = retention-period(C3)` inherits from the approved retention decision, or mark it as the explicit Phase 1 blocker.
+-  - [ ] Do not invent legal commitments without recording the source of the decision; if a stakeholder value is unavailable, record the blocking decision explicitly instead of writing a fake concrete value.
+-- [ ] Author `docs/exit-criteria/c4-input-limits.md`. (AC: 2, 5)
+-  - [ ] Start from `docs/exit-criteria/_template.md` if present.
+-  - [ ] Define max files, max bytes, max result count, max query duration, timeout behavior, truncation behavior, and included/excluded audit visibility for context-query families.
+-  - [ ] Map each limit to the Phase 1 Contract Spine fields that must receive the value, including `maxItems`, `maxLength`, `maxBytes`, `maxResultCount`, or equivalent OpenAPI extension metadata, without adding or editing OpenAPI files.
+-  - [ ] Include value provenance for every limit and state whether it is a binding MVP default, a proposed workshop value, or a `needs human decision` placeholder.
+-  - [ ] Define units and boundary semantics for every numeric limit: whether the bound is inclusive, whether it applies before or after authorization/path filtering, and whether timeout/truncation returns partial results or a canonical error.
+-  - [ ] State whether each limit is global for MVP or tenant-tunable later; do not introduce tenant-specific configuration files or per-tenant override behavior in this story.
+-  - [ ] Record decision owner `Architect`, decision authority `PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
+-  - [ ] Keep values bounded for MVP and note that later capacity calibration can revise them with evidence; do not replace C1/C5 release calibration work.
+-- [ ] Document S-2 OIDC validation parameters. (AC: 3)
+-  - [ ] Add the focused artifact `docs/exit-criteria/s2-oidc-validation.md`.
+-  - [ ] Include `ClockSkew = TimeSpan.FromSeconds(30)`, `RequireExpirationTime = true`, `RequireSignedTokens = true`, `ValidateIssuer = true`, `ValidateAudience = true`, `ValidateLifetime = true`, and `ValidateIssuerSigningKey = true`.
+-  - [ ] Include JWKS retrieval behavior: `AutomaticRefreshInterval = TimeSpan.FromMinutes(10)` and `RefreshInterval = TimeSpan.FromMinutes(1)` for forced refresh after signature-validation failure.
+-  - [ ] Document that issuer and audience are pinned per environment through syntactically valid non-secret configuration placeholders; do not commit real production issuer URLs, client secrets, provider credentials, or tenant-specific values.
+-  - [ ] Use clearly non-production examples such as `.invalid` issuer hosts and placeholder audience names; verification must reject realistic production domains, raw JWTs, client secrets, private keys, certificates, or tenant identifiers.
+-  - [ ] Document claim provenance: `sub` is principal, `eventstore:tenant` is authoritative tenant after EventStore claim transformation, `eventstore:permission` gates command/query access, and tenant IDs in payloads are inputs to validate, not authority.
+-  - [ ] Keep the artifact documentation-only; do not add authentication middleware, package configuration, runtime integration, or environment-specific configuration files.
+-- [ ] Document C6 transition-matrix implementation mapping. (AC: 4)
+-  - [ ] Add the focused artifact `docs/exit-criteria/c6-transition-matrix-mapping.md`.
+-  - [ ] Reference `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 - Enumerated)` as the source of truth.
+-  - [ ] Name the future target implementation path `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`, state that later code must translate the architecture matrix 1:1, and do not create or modify that source file in this story.
+-  - [ ] Document that every unlisted `(state, event)` pair must reject with `state_transition_invalid`, keep state unchanged, and remain inspectable through idempotency record behavior.
+-  - [ ] Document that operator-disposition labels must come from the architecture state catalog and later UI mapping must be generated from or tested against that catalog.
+-  - [ ] Document the future aggregate-test requirement: every state and every event in the architecture vocabulary needs positive transition or explicit rejection coverage, without adding aggregate tests in this story.
+-  - [ ] Include the architecture source date or review date and the exact state/event vocabulary copied from the C6 source so future changes have an obvious drift point to update before implementation.
+-- [ ] Add lightweight verification. (AC: 1, 2, 3, 4, 6)
+-  - [ ] Prefer a documentation test or script that checks the required files exist and contain no unresolved `TBD` placeholders for the Phase-1-blocking fields.
+-  - [ ] Check that no deliverable includes obvious secret values, provider tokens, production credentials, tenant data, raw file contents, or production-only URLs.
+-  - [ ] Check that verification evidence confirms no OpenAPI spine files, generated SDK outputs, REST/CLI/MCP/server code, authentication middleware, provider adapters, domain aggregates, aggregate tests, CI workflow gates, infrastructure files, or `FolderStateTransitions.cs` were added by this story.
+-  - [ ] Check each required artifact contains `status`, `decision owner`, `approval authority`, `source inputs`, `last reviewed`, `open questions`, `Decision`, `Rationale`, `Verification impact`, and `Deferred implementation` sections.
+-  - [ ] Check C3/C4 artifacts distinguish `approved`, `proposed workshop value`, and `needs human decision`; if any `needs human decision` remains for a Phase-1-blocking value, record the exact blocked consumer and do not claim Phase 1 is unblocked.
+-  - [ ] Check S-2 examples use non-production placeholders and C6 references do not drift from the architecture state/event vocabulary.
+-  - [ ] If an existing test project is available, integrate the check there; otherwise add the lightest local script or documented manual verification consistent with the current scaffold.
+-  - [ ] Run the relevant verification command and, when the scaffold supports it, `dotnet build Hexalith.Folders.slnx`.
++- [x] Inspect prior Phase 0 outputs before authoring deliverables. (AC: 5, 6)
++  - [x] Confirm Story 1.1 scaffold expectations and Story 1.2 root policy are available if verification depends on root docs or solution structure.
++  - [x] Confirm Story 1.3 has seeded `docs/exit-criteria/_template.md`, `docs/adrs/0000-template.md`, `tests/fixtures/previous-spine.yaml`, and fixture ownership notes, or record the exact missing prerequisite instead of broadening this story into fixture seeding.
++  - [x] Do not initialize or update nested submodules; use root-level submodules only as read-only references unless the user explicitly asks for nested submodules.
++- [x] Author `docs/exit-criteria/c3-retention.md`. (AC: 1, 5)
++  - [x] Start from `docs/exit-criteria/_template.md` if present; preserve the template's evidence and ownership fields.
++  - [x] Include retention durations for audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, and cleanup records.
++  - [x] For each data class, document retention duration, deletion/tombstone/anonymization behavior, cleanup trigger, operational evidence, and the downstream place where Phase 1 or later stories consume the value.
++  - [x] Include value provenance for every duration: source architecture section, Story 1.3 fixture/template, stakeholder workshop note, or explicit `needs human decision`.
++  - [x] State the tenant-isolation implication for each retained data class and avoid copying tenant payload values into examples.
++  - [x] Record decision owner `Tech Lead`, decision authority `Legal + PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
++  - [x] Classify every duration as `approved`, `proposed workshop value`, or `needs human decision`; do not mix those states in one row without explaining which downstream consumer is blocked.
++  - [x] Include a commit-idempotency TTL row or note showing how D-7 `commit = retention-period(C3)` inherits from the approved retention decision, or mark it as the explicit Phase 1 blocker.
++  - [x] Do not invent legal commitments without recording the source of the decision; if a stakeholder value is unavailable, record the blocking decision explicitly instead of writing a fake concrete value.
++- [x] Author `docs/exit-criteria/c4-input-limits.md`. (AC: 2, 5)
++  - [x] Start from `docs/exit-criteria/_template.md` if present.
++  - [x] Define max files, max bytes, max result count, max query duration, timeout behavior, truncation behavior, and included/excluded audit visibility for context-query families.
++  - [x] Map each limit to the Phase 1 Contract Spine fields that must receive the value, including `maxItems`, `maxLength`, `maxBytes`, `maxResultCount`, or equivalent OpenAPI extension metadata, without adding or editing OpenAPI files.
++  - [x] Include value provenance for every limit and state whether it is a binding MVP default, a proposed workshop value, or a `needs human decision` placeholder.
++  - [x] Define units and boundary semantics for every numeric limit: whether the bound is inclusive, whether it applies before or after authorization/path filtering, and whether timeout/truncation returns partial results or a canonical error.
++  - [x] State whether each limit is global for MVP or tenant-tunable later; do not introduce tenant-specific configuration files or per-tenant override behavior in this story.
++  - [x] Record decision owner `Architect`, decision authority `PM`, Phase 1 entry deadline, and measurement method from the architecture operations plan.
++  - [x] Keep values bounded for MVP and note that later capacity calibration can revise them with evidence; do not replace C1/C5 release calibration work.
++- [x] Document S-2 OIDC validation parameters. (AC: 3)
++  - [x] Add the focused artifact `docs/exit-criteria/s2-oidc-validation.md`.
++  - [x] Include `ClockSkew = TimeSpan.FromSeconds(30)`, `RequireExpirationTime = true`, `RequireSignedTokens = true`, `ValidateIssuer = true`, `ValidateAudience = true`, `ValidateLifetime = true`, and `ValidateIssuerSigningKey = true`.
++  - [x] Include JWKS retrieval behavior: `AutomaticRefreshInterval = TimeSpan.FromMinutes(10)` and `RefreshInterval = TimeSpan.FromMinutes(1)` for forced refresh after signature-validation failure.
++  - [x] Document that issuer and audience are pinned per environment through syntactically valid non-secret configuration placeholders; do not commit real production issuer URLs, client secrets, provider credentials, or tenant-specific values.
++  - [x] Use clearly non-production examples such as `.invalid` issuer hosts and placeholder audience names; verification must reject realistic production domains, raw JWTs, client secrets, private keys, certificates, or tenant identifiers.
++  - [x] Document claim provenance: `sub` is principal, `eventstore:tenant` is authoritative tenant after EventStore claim transformation, `eventstore:permission` gates command/query access, and tenant IDs in payloads are inputs to validate, not authority.
++  - [x] Keep the artifact documentation-only; do not add authentication middleware, package configuration, runtime integration, or environment-specific configuration files.
++- [x] Document C6 transition-matrix implementation mapping. (AC: 4)
++  - [x] Add the focused artifact `docs/exit-criteria/c6-transition-matrix-mapping.md`.
++  - [x] Reference `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 - Enumerated)` as the source of truth.
++  - [x] Name the future target implementation path `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`, state that later code must translate the architecture matrix 1:1, and do not create or modify that source file in this story.
++  - [x] Document that every unlisted `(state, event)` pair must reject with `state_transition_invalid`, keep state unchanged, and remain inspectable through idempotency record behavior.
++  - [x] Document that operator-disposition labels must come from the architecture state catalog and later UI mapping must be generated from or tested against that catalog.
++  - [x] Document the future aggregate-test requirement: every state and every event in the architecture vocabulary needs positive transition or explicit rejection coverage, without adding aggregate tests in this story.
++  - [x] Include the architecture source date or review date and the exact state/event vocabulary copied from the C6 source so future changes have an obvious drift point to update before implementation.
++- [x] Add lightweight verification. (AC: 1, 2, 3, 4, 6)
++  - [x] Prefer a documentation test or script that checks the required files exist and contain no unresolved `TBD` placeholders for the Phase-1-blocking fields.
++  - [x] Check that no deliverable includes obvious secret values, provider tokens, production credentials, tenant data, raw file contents, or production-only URLs.
++  - [x] Check that verification evidence confirms no OpenAPI spine files, generated SDK outputs, REST/CLI/MCP/server code, authentication middleware, provider adapters, domain aggregates, aggregate tests, CI workflow gates, infrastructure files, or `FolderStateTransitions.cs` were added by this story.
++  - [x] Check each required artifact contains `status`, `decision owner`, `approval authority`, `source inputs`, `last reviewed`, `open questions`, `Decision`, `Rationale`, `Verification impact`, and `Deferred implementation` sections.
++  - [x] Check C3/C4 artifacts distinguish `approved`, `proposed workshop value`, and `needs human decision`; if any `needs human decision` remains for a Phase-1-blocking value, record the exact blocked consumer and do not claim Phase 1 is unblocked.
++  - [x] Check S-2 examples use non-production placeholders and C6 references do not drift from the architecture state/event vocabulary.
++  - [x] If an existing test project is available, integrate the check there; otherwise add the lightest local script or documented manual verification consistent with the current scaffold.
++  - [x] Run the relevant verification command and, when the scaffold supports it, `dotnet build Hexalith.Folders.slnx`.
+ 
+ ## Dev Notes
+ 
+@@ -190,6 +190,7 @@ Use these exact paths for the four decision artifacts. If an existing architectu
+ | 2026-05-10 | Party-mode review applied documentation-only scope, provenance, approval-state, and verification guardrails. | Codex |
+ | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+ | 2026-05-11 | Advanced elicitation pass applied authority-state, placeholder-safety, boundary-semantics, and drift-detection hardening. | Codex |
++| 2026-05-11 | Implemented Phase 0.5 decision artifacts and lightweight verification; marked C3/C4 authority approval as the remaining Phase 1 blocker. | Codex |
+ 
+ ## Party-Mode Review
+ 
+@@ -251,10 +252,34 @@ Use these exact paths for the four decision artifacts. If an existing architectu
+ 
+ ### Agent Model Used
+ 
+-TBD by dev-story agent
++Codex GPT-5
+ 
+ ### Debug Log References
+ 
++- 2026-05-11: `dotnet test .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests -v:minimal` failed red phase because the four required decision artifacts did not exist.
++- 2026-05-11: `dotnet test .\tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests -v:minimal` passed after authoring the four artifacts and verification test.
++- 2026-05-11: Scope check confirmed no Contract Spine OpenAPI file, `FolderStateTransitions.cs`, CI workflow, appsettings, infrastructure file, or aggregate implementation was added by this story.
++- 2026-05-11: `dotnet test .\Hexalith.Folders.slnx --no-build --no-restore -v:minimal` passed: 29 tests across 11 test assemblies.
++- 2026-05-11: `dotnet build .\Hexalith.Folders.slnx --no-restore -v:minimal` passed with 0 warnings and 0 errors after a standalone rerun.
++- 2026-05-11: `git diff --check` passed with no whitespace errors.
++
+ ### Completion Notes List
+ 
++- Confirmed Story 1.1 scaffold, Story 1.2 root/submodule policy, and Story 1.3 fixture/template prerequisites were present. No nested submodules were initialized or updated.
++- Authored `c3-retention.md` with concrete proposed retention durations, metadata-only cleanup behavior, tenant-isolation implications, provenance, approval state, review date, downstream consumers, and D-7 commit-idempotency TTL inheritance.
++- Authored `c4-input-limits.md` with bounded MVP input limits, units, inclusive boundary semantics, auth/filter ordering, timeout/truncation behavior, audit visibility, OpenAPI mapping notes, provenance, approval state, review date, and downstream consumers.
++- Authored `s2-oidc-validation.md` with the frozen JwtBearer validation settings, JWKS refresh intervals, JWT-only behavior, synthetic `.invalid` issuer placeholders, and claim-provenance rules.
++- Authored `c6-transition-matrix-mapping.md` with the architecture source, future implementation target path, 11-state catalog, event vocabulary, default `state_transition_invalid` rejection rule, operator-disposition mapping, and future aggregate-test coverage expectations.
++- Added focused documentation verification in `ExitCriteriaDecisionArtifactTests` covering required artifact shape, placeholder/secret safety, C3/C4 row metadata, S-2 parameters, C6 vocabulary, and scope leakage.
++- C3 and C4 remain proposed workshop values, not approved policy. Story 1.6 Contract Spine authoring is blocked until Legal + PM approve C3 and PM approves C4 or provide replacement values.
++- No Contract Spine OpenAPI, generated SDK output, REST/CLI/MCP/server behavior, authentication middleware, provider adapter, domain aggregate, aggregate test, CI workflow gate, infrastructure file, or `FolderStateTransitions.cs` was added.
++
+ ### File List
++
++- `_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md`
++- `_bmad-output/implementation-artifacts/sprint-status.yaml`
++- `docs/exit-criteria/c3-retention.md`
++- `docs/exit-criteria/c4-input-limits.md`
++- `docs/exit-criteria/s2-oidc-validation.md`
++- `docs/exit-criteria/c6-transition-matrix-mapping.md`
++- `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index 871d659..c1cf6c0 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -47,7 +47,7 @@ development_status:
+   1-1-establish-a-consumer-buildable-module-scaffold: review
+   1-2-establish-root-configuration-and-submodule-policy: review
+   1-3-seed-minimally-valid-normative-fixtures: review
+-  1-4-author-phase-0-5-pre-spine-workshop-deliverables: ready-for-dev
++  1-4-author-phase-0-5-pre-spine-workshop-deliverables: review
+   1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: ready-for-dev
+   1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: ready-for-dev
+   1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: ready-for-dev
+diff --git a/docs/exit-criteria/c3-retention.md b/docs/exit-criteria/c3-retention.md
+new file mode 100644
+index 0000000..f9fc45d
+--- /dev/null
++++ b/docs/exit-criteria/c3-retention.md
+@@ -0,0 +1,39 @@
++# C3 Retention
++
++status: proposed workshop values - needs human decision before Phase 1 Contract Spine authoring
++decision owner: Tech Lead
++approval authority: Legal + PM
++source inputs: Architecture Exit Criteria, Exit Criteria Operations Plan, D-7 idempotency TTL, D-10 audit storage, PRD Data Retention and Cleanup, Story 1.3 fixture ownership notes
++last reviewed: 2026-05-11
++open questions: Legal + PM must approve or revise the proposed durations before Story 1.6 consumes C3 values.
++
++## Decision
++
++The proposed MVP retention policy is metadata-only and tenant-scoped. The values below are concrete workshop inputs, not final legal commitments. Each row includes the downstream consumer that would be blocked if Legal + PM do not approve the value before Phase 1 entry.
++
++| Data class | Retention duration | Deletion, tombstone, or anonymization behavior | Cleanup trigger | Operational evidence | Provenance | Approval state | Tenant-isolation implication | Future consumer | Review date |
++|---|---:|---|---|---|---|---|---|---|---|
++| Audit metadata | 7 years | Keep metadata-only audit records; anonymize user display aliases on tenant-deletion workflows while preserving correlation, category, timestamps, and outcome | Scheduled retention job plus tenant-deletion workflow | Audit projection retention report and sampled replay evidence | Architecture C3, D-10, PRD Data Retention and Cleanup | proposed workshop value; needs human decision for Legal + PM approval | Audit keys remain scoped by managed tenant ID; no payload, token, file content, or unauthorized resource existence is retained | Story 7.11 retention enforcement and Story 6.1 audit query endpoints | 2026-05-11 |
++| Workspace status | 400 days | Keep terminal status metadata for completed, failed, denied, retried, duplicate, and interrupted operations; tombstone task-local display labels after tenant deletion | Status compaction job after retention window | Workspace status projection age histogram and compaction summary | Architecture C3 and C6, PRD cleanup visibility | proposed workshop value; needs human decision for Legal + PM approval | Status records remain partitioned by tenant and folder; status lookup never crosses tenant scope | Story 4.9 workspace status and Story 6.6 diagnostic pages | 2026-05-11 |
++| Provider correlation IDs | 400 days | Retain provider request IDs, operation IDs, and upstream status classes only; do not retain tokens, repository contents, or provider payload bodies | Provider-diagnostics compaction tied to workspace status retention | Provider-correlation purge summary with redaction sentinel check | Architecture C3, provider readiness decisions, PRD failure visibility | proposed workshop value; needs human decision for Legal + PM approval | Correlation IDs are tenant-sensitive metadata and cannot be searched outside tenant authorization | Story 3.5 provider readiness diagnostics and Story 4.13 failure evidence | 2026-05-11 |
++| Read-model views | 400 days or until rebuilt from event streams, whichever is sooner | Rebuildable projections may be dropped and rebuilt; retained values must remain metadata-only | Projection rebuild, tenant-deletion workflow, or scheduled projection compaction | Projection watermark, rebuild manifest, and freshness metric | Architecture C3, C2 dependency, D-10 audit storage | proposed workshop value; needs human decision for Legal + PM approval | Projection keys include tenant scope; stale projection data must fail closed on tenant-access revocation | Story 2.7 lifecycle inspection and Story 6 operations console pages | 2026-05-11 |
++| Temporary working files | 7 days after terminal workspace state | Delete disposable working-copy files; retain only metadata evidence needed for status and audit | Workspace cleanup worker after commit, failure, cancellation, or lock expiry | Cleanup record with task ID, outcome category, and timestamp | Architecture C3, D-8 working-copy storage, PRD cleanup visibility | proposed workshop value; needs human decision for Legal + PM approval | Working paths are scoped under tenant, folder, and task IDs; cleanup evidence never includes file contents | Story 4.10 workspace cleanup status and Story 4.6 file mutation transport | 2026-05-11 |
++| Cleanup records | 400 days | Keep metadata-only cleanup attempts, failures, retryability, reason code, and correlation ID; anonymize human display aliases on tenant deletion | Retention compaction after cleanup record age crosses policy | Cleanup retry dashboard and audit sample | Architecture C3, PRD cleanup failure observability | proposed workshop value; needs human decision for Legal + PM approval | Cleanup evidence remains tenant-prefixed and does not reveal unauthorized repository existence | Story 4.10 cleanup status and Story 7.14 operations documentation | 2026-05-11 |
++| Folder metadata and soft-delete markers | Lifetime of tenant plus 400 days after tenant-deletion request enters approved retention workflow | Tombstone folder identity and hierarchy metadata; retain only audit-safe identifiers required for legal hold or audit replay | Folder archive, tenant deletion, or legal-hold workflow | Archive and deletion manifest with tenant-scoped counts | Architecture C3, PRD folder archive journey | proposed workshop value; needs human decision for Legal + PM approval | Folder IDs stay opaque; hierarchy paths are tenant-sensitive and not emitted in cross-tenant diagnostics | Story 2.8 archive folders and Story 7.11 tenant-deletion behavior | 2026-05-11 |
++| Auth claims copied into metadata | 400 days | Retain normalized `sub`, transformed tenant claim, and permission category only; anonymize display aliases where present | Audit/status compaction and tenant-deletion workflow | Claim-metadata retention sample with no raw token material | Architecture S-3, C3, PRD security and tenant isolation | proposed workshop value; needs human decision for Legal + PM approval | Payload tenant values are never authoritative; retained claims must trace to EventStore-transformed tenant context | Story 2.6 layered authorization and Story 7.2 OIDC configuration | 2026-05-11 |
++| Diagnostics and rejected-command records | 400 days | Retain canonical error category, correlation ID, retryability, client action, and bounded metadata; do not retain command payloads | Error-record compaction after retention window | Rejection corpus sample and redaction sentinel check | Architecture error catalog, C3, PRD failure visibility | proposed workshop value; needs human decision for Legal + PM approval | Denials must not reveal unauthorized resource existence or cross-tenant search results | Story 4.13 canonical errors and Story 5 cross-surface parity | 2026-05-11 |
++| Commit idempotency records | Same as audit metadata: 7 years | Persist commit operation IDs for the audit retention period; compact mutation-only idempotency records separately | Idempotency retention job keyed by `x-hexalith-idempotency-ttl-tier` | Idempotency TTL report comparing mutation and commit tiers | Architecture D-7 and C3 operations plan | proposed workshop value; needs human decision for Legal + PM approval | Commit replay stays tenant-scoped and returns the same logical result without exposing provider payloads | Story 1.6 Contract Spine extension vocabulary and Story 4.12 commit reconciliation | 2026-05-11 |
++
++## Rationale
++
++C3 is Phase-1-blocking because the Contract Spine must expose D-7 idempotency TTL semantics before client and parity work starts. The proposed durations keep audit and reconciliation evidence long enough to support operational review while keeping temporary working files short-lived because they are disposable caches, not authoritative state.
++
++No row invents a final legal policy. The proposed values are concrete enough for review, and every row names the authority gap that must close before Phase 1 uses the values as binding defaults.
++
++## Verification impact
++
++Verification must prove this artifact exists, contains no generic placeholders, contains only metadata-only examples, and maps each duration to a consuming future story or artifact. Later retention implementation must add tests for tenant-prefixed keys, deletion/tombstone behavior, audit replay, and commit idempotency TTL inheritance.
++
++## Deferred implementation
++
++This document does not add cleanup workers, projection compaction, tenant-deletion flows, audit endpoints, Dapr state configuration, OpenAPI fields, or idempotency code. Story 1.6 must not treat C3 as unblocked until Legal + PM approve or revise the proposed values.
+diff --git a/docs/exit-criteria/c4-input-limits.md b/docs/exit-criteria/c4-input-limits.md
+new file mode 100644
+index 0000000..b96ee3f
+--- /dev/null
++++ b/docs/exit-criteria/c4-input-limits.md
+@@ -0,0 +1,38 @@
++# C4 Input Limits
++
++status: proposed workshop values - needs human decision before Phase 1 Contract Spine authoring
++decision owner: Architect
++approval authority: PM
++source inputs: Architecture Exit Criteria, Exit Criteria Operations Plan, PRD Performance and Query Bounds, Story 1.3 fixture ownership notes
++last reviewed: 2026-05-11
++open questions: PM must approve or revise the proposed MVP bounds before Story 1.6 writes OpenAPI schema limits.
++
++## Decision
++
++The proposed MVP input limits are global defaults. Later capacity calibration may revise them with evidence, but this artifact gives the Contract Spine author concrete bounded values and boundary semantics for Phase 1.
++
++| Limit | Value | Units and boundary semantics | Query families | Timeout or truncation behavior | OpenAPI field-mapping notes | Audit visibility | Provenance | Approval state | Future consumer | Review date |
++|---|---:|---|---|---|---|---|---|---|---|---|
++| Maximum requested paths | 100 | Inclusive count; applies to client input before authorization and path-policy checks | metadata lookup, bounded range, context query by path list | Exceeding the bound returns canonical `input_limit_exceeded`; no partial execution | Apply `maxItems: 100` to path arrays and `x-hexalith-limit-scope: request-path-count` | Audit includes requested count, rejected count, and canonical category; path values are excluded | Architecture C4 and PRD Performance and Query Bounds | proposed workshop value; needs human decision for PM approval | Story 1.6 Contract Spine schemas and Story 4.8 context-query authorization | 2026-05-11 |
++| Maximum tree entries returned | 2000 | Inclusive count after tenant authorization and path filtering | file tree and glob listing | Return partial metadata with `isTruncated = true` and no file contents | Apply `maxResultCount: 2000` extension metadata to tree response contracts | Audit includes result count and truncation flag; item names are tenant-sensitive and excluded from cross-tenant diagnostics | Architecture C4 and C8 query-family planning | proposed workshop value; needs human decision for PM approval | Story 1.9 context-query contract groups and Story 6.6 diagnostic pages | 2026-05-11 |
++| Maximum search or glob results | 500 | Inclusive count after authorization and path-policy filtering | search, glob, context query matching | Return partial metadata with `isTruncated = true`; clients must refine query for more | Apply `maxResultCount: 500` and `x-hexalith-truncation: partial-results` | Audit includes query family, result count, truncation flag, and limit tier; search text is excluded | Architecture C4 and PRD query bounds | proposed workshop value; needs human decision for PM approval | Story 1.9 context-query contract groups and Story 5 parity oracle | 2026-05-11 |
++| Maximum single bounded range bytes | 262144 | Inclusive byte count per file range after authorization and path-policy checks | bounded range read and small context snippets | Exceeding the bound returns canonical `input_limit_exceeded`; client may request a smaller range | Apply `maxBytes: 262144`, `maxLength: 262144`, or equivalent extension metadata to range contracts | Audit includes requested byte count and rejected/accepted outcome only | Architecture C4 and D-9 256KB inline boundary | proposed workshop value; needs human decision for PM approval | Story 1.9 file context contracts and Story 4.8 range queries | 2026-05-11 |
++| Maximum aggregate response bytes | 1048576 | Inclusive serialized response budget after authorization and filtering | tree, search, glob, metadata, bounded range, context query response payloads | If response budget is exceeded, return partial metadata when the family supports truncation; otherwise return `response_limit_exceeded` | Apply `maxBytes: 1048576` or `x-hexalith-response-budget-bytes: 1048576` | Audit includes response byte count and truncation/error category; response body is never logged | Architecture C4 and PRD performance target | proposed workshop value; needs human decision for PM approval | Story 1.6 OpenAPI extensions and Story 4.8 context query execution | 2026-05-11 |
++| Maximum query duration | 2 | Inclusive seconds of server-side execution budget after request validation and authorization start | all context-query families | Timeout returns canonical `query_timeout`; partial results only when the family already declares truncation support | Apply `x-hexalith-query-timeout-ms: 2000` and document canonical error mapping | Audit includes elapsed milliseconds, timeout flag, and correlation ID | Architecture C4 and NFR 2s context-query target | proposed workshop value; needs human decision for PM approval | Story 1.9 query contracts and Story 4.13 canonical errors | 2026-05-11 |
++| Timeout behavior | 2 | Seconds; timeout measured server-side and not extended by retries | all context-query families | No automatic retry inside the handler; client receives stable canonical failure or documented partial response | Apply error response mapping to Problem Details category `query_timeout` | Audit includes timeout category and retryable=false unless later contract states otherwise | Architecture C4 and error catalog | proposed workshop value; needs human decision for PM approval | Story 4.8 context queries and Story 5 CLI/MCP parity | 2026-05-11 |
++| Truncation behavior | 1 | One truncation flag per response; applies only after authorization/path filtering | file tree, search, glob, context-query response payloads | Partial metadata may be returned with `isTruncated = true`; file contents are never silently truncated | Apply `isTruncated`, `truncatedReason`, and limit extension metadata in future schemas | Audit includes limit name, configured limit, actual count/bytes, and truncation flag | Architecture C4 and operations-console diagnostic requirements | proposed workshop value; needs human decision for PM approval | Story 1.9 context-query schemas and Story 6.6 operator diagnostics | 2026-05-11 |
++| Included and excluded audit visibility | 0 | Numeric bound is not applicable; this row fixes audit field semantics | all context-query families | Included: query family, configured limit, actual count/bytes, elapsed time, truncation, canonical category, correlation ID. Excluded: raw query text, file content, path lists, unauthorized resource existence | Apply `x-hexalith-audit-metadata-keys` without adding payload fields | Audit is metadata-only and tenant-scoped | Architecture C4, S-6, and PRD Security and Tenant Isolation | proposed workshop value; needs human decision for PM approval | Story 1.6 audit metadata extension vocabulary and Story 7.6 redaction gates | 2026-05-11 |
++
++## Rationale
++
++The MVP should fail predictably before a query can become an unbounded tenant or repository scan. Bounds apply before or after authorization according to the table so implementers cannot search first and filter later. The values are conservative enough for early consumers while keeping C1 and C5 capacity calibration separate.
++
++The proposed rows are global MVP defaults. Tenant-tunable limits are deferred until release calibration has evidence and a configuration model.
++
++## Verification impact
++
++Verification must prove every numeric value has units, boundary semantics, provenance, approval state, a future consuming artifact, and a review date. Story 1.6 must carry these values into OpenAPI keywords or Hexalith extension metadata without creating per-tenant override files.
++
++## Deferred implementation
++
++This document does not create or edit OpenAPI, SDK generation, query handlers, middleware, rate limiters, tenant configuration, operations-console UI, or CI gates. PM approval remains the blocker before Contract Spine authoring treats these values as binding defaults.
+diff --git a/docs/exit-criteria/c6-transition-matrix-mapping.md b/docs/exit-criteria/c6-transition-matrix-mapping.md
+new file mode 100644
+index 0000000..5932aa5
+--- /dev/null
++++ b/docs/exit-criteria/c6-transition-matrix-mapping.md
+@@ -0,0 +1,58 @@
++# C6 Transition Matrix Mapping
++
++status: approved architecture mapping plan; implementation deferred to Phase 2 aggregate story
++decision owner: Architect
++approval authority: Architecture team
++source inputs: Architecture Workspace State Transition Matrix (C6 - Enumerated), Exit Criteria Operations Plan, error catalog, operations-console disposition model
++last reviewed: 2026-05-11
++open questions: Phase 2 implementation may discover edge cases, but any vocabulary change must update architecture and aggregate tests in the same change.
++
++## Decision
++
++The source of truth is `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 - Enumerated)`. Future implementation must translate that matrix 1:1 into `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`. This story documents the mapping only and does not create the target source file or aggregate tests.
++
++Every unlisted `(state, event)` pair rejects with canonical category `state_transition_invalid`, leaves state unchanged, maps CLI exit code 74, maps MCP failure kind `state_transition_invalid`, and remains inspectable through idempotency record behavior.
++
++### State Catalog
++
++| State | Operator disposition | Provenance | Approval state | Consuming future artifact | Review date |
++|---|---|---|---|---|---|
++| `requested` | `auto-recovering` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `preparing` | `auto-recovering` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `ready` | available, or `degraded-but-serving` when projection lag exceeds C2 | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `locked` | `degraded-but-serving` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `changes_staged` | `degraded-but-serving` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `dirty` | `awaiting-human` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `committed` | `auto-recovering` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `failed` | `terminal-until-intervention` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `inaccessible` | `terminal-until-intervention` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `unknown_provider_outcome` | `awaiting-human` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++| `reconciliation_required` | `awaiting-human` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
++
++### Event Vocabulary
++
++The architecture event vocabulary copied for drift checking is:
++
++`RepositoryBindingRequested`, `RepositoryBound`, `RepositoryBindingFailed`, `ProviderOutcomeUnknown`, `WorkspacePrepared`, `WorkspacePreparationFailed`, `WorkspaceLocked`, `AuthRevocationDetected`, `TenantRevoked`, `RepositoryDeletedAtProvider`, `ReconciliationRequested`, `FileMutated`, `WorkspaceLockReleased`, `LockLeaseExpired`, `CommitSucceeded`, `CommitFailed`, `OperatorDiscardRequested`, `OperatorRetrySucceeded`, `ProviderReadinessValidated`, `ReconciliationCompletedClean`, `ReconciliationCompletedDirty`, `ReconciliationEscalated`, `OperatorMarkedFailed`.
++
++| Mapping area | Rule | Provenance | Approval state | Consuming future artifact | Review date |
++|---|---|---|---|---|---|
++| Positive transitions | Implement every Architecture C6 listed `(from, event) -> to` row as a total switch expression or equivalent total mapping | Architecture C6 valid transitions | approved | Story 4.1 `FolderStateTransitions.cs` and aggregate tests | 2026-05-11 |
++| Default rejection | Reject every unlisted pair with `state_transition_invalid`; state remains unchanged | Architecture C6 default rejection rule | approved | Story 4.1 aggregate tests and Story 5 CLI/MCP parity | 2026-05-11 |
++| Operator disposition | Source labels from the C6 state catalog; UI mapping must be generated from or tested against this catalog | Architecture C6 and F-4 operations-console model | approved | Story 6.3 `OperatorDispositionBadge` mapping | 2026-05-11 |
++| Idempotency inspection | Persist rejection/result visibility through idempotency behavior so duplicate requests return the same logical result | Architecture C6 and A-9 idempotency record behavior | approved | Story 4.11 idempotency propagation and Story 4.12 commit reconciliation | 2026-05-11 |
++| Aggregate coverage | Every state and every event requires either positive transition coverage or explicit rejection coverage | Architecture C6 implementation enforcement | approved | Story 4.1 aggregate test suite and future CI gate | 2026-05-11 |
++
++## Rationale
++
++C6 is already enumerated in architecture. Repeating the vocabulary here gives Phase 2 implementers a small drift checkpoint before they write aggregate code, while keeping the architecture document as the source of truth.
++
++The default rejection rule is as important as positive transitions because invalid workspace operations must fail closed without changing state or hiding the result from idempotency inspection.
++
++## Verification impact
++
++Verification must prove this document includes the full 11-state catalog, the event vocabulary, the future implementation path, the canonical rejection category, operator-disposition mapping, and aggregate-test expectations. Later implementation must add matrix coverage that fails when a state or event is added without a documented transition or explicit rejection.
++
++## Deferred implementation
++
++This document does not create or modify `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`, aggregate classes, aggregate tests, UI disposition code, CLI/MCP adapters, OpenAPI files, worker behavior, or CI workflow gates.
+diff --git a/docs/exit-criteria/s2-oidc-validation.md b/docs/exit-criteria/s2-oidc-validation.md
+new file mode 100644
+index 0000000..9bb5874
+--- /dev/null
++++ b/docs/exit-criteria/s2-oidc-validation.md
+@@ -0,0 +1,56 @@
++# S2 OIDC Validation
++
++status: approved architecture parameter set; environment issuer and audience pins need human decision in deployment configuration
++decision owner: Architect
++approval authority: Architecture team + Security for environment pins
++source inputs: Architecture Authentication and Security S-2, S-3 claim mapping, PRD Security and Tenant Isolation
++last reviewed: 2026-05-11
++open questions: Security must provide real issuer and audience values through deployment configuration outside this documentation-only story.
++
++## Decision
++
++Production authentication uses a pluggable OIDC provider through `Microsoft.AspNetCore.Authentication.JwtBearer` semantics. The validation behavior is frozen by architecture:
++
++| Setting | Value | Provenance | Approval state | Consuming future artifact | Review date |
++|---|---|---|---|---|---|
++| `ClockSkew` | `ClockSkew = TimeSpan.FromSeconds(30)` | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| `RequireExpirationTime` | `RequireExpirationTime = true` | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| `RequireSignedTokens` | `RequireSignedTokens = true` | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| `ValidateIssuer` | `ValidateIssuer = true`; issuer pinned per environment by non-secret configuration | Architecture S-2 | approved for rule; needs human decision for environment value | Story 7.2 deployment configuration | 2026-05-11 |
++| `ValidateAudience` | `ValidateAudience = true`; audience pinned per environment by non-secret configuration | Architecture S-2 | approved for rule; needs human decision for environment value | Story 7.2 deployment configuration | 2026-05-11 |
++| `ValidateLifetime` | `ValidateLifetime = true` | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| `ValidateIssuerSigningKey` | `ValidateIssuerSigningKey = true` | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| JWKS automatic refresh | `AutomaticRefreshInterval = TimeSpan.FromMinutes(10)` | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| JWKS forced refresh minimum | `RefreshInterval = TimeSpan.FromMinutes(1)` after signature-validation failure | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++| Token introspection | JWT-only; no introspection round trip | Architecture S-2 | approved | Story 7.2 production OIDC configuration | 2026-05-11 |
++
++Syntactically valid non-production placeholders:
++
++| Environment placeholder | Issuer placeholder | Audience placeholder | JWKS discovery placeholder | Provenance | Approval state | Consuming future artifact | Review date |
++|---|---|---|---|---|---|---|---|
++| local-dev | `https://oidc.local.invalid/realms/hexalith-folders` | `api://hexalith-folders-local.invalid` | `https://oidc.local.invalid/realms/hexalith-folders/.well-known/openid-configuration` | Architecture S-2 and local Keycloak pattern | approved example only; needs human decision for real non-local values | Story 7.2 deployment configuration | 2026-05-11 |
++| staging-template | `https://oidc.staging.invalid/realms/hexalith-folders` | `api://hexalith-folders-staging.invalid` | `https://oidc.staging.invalid/realms/hexalith-folders/.well-known/openid-configuration` | Architecture S-2 | needs human decision for real environment value | Story 7.2 deployment configuration | 2026-05-11 |
++| production-template | `https://oidc.production.invalid/realms/hexalith-folders` | `api://hexalith-folders-production.invalid` | `https://oidc.production.invalid/realms/hexalith-folders/.well-known/openid-configuration` | Architecture S-2 | needs human decision for real environment value | Story 7.2 deployment configuration | 2026-05-11 |
++
++Claim provenance is non-pluggable:
++
++| Claim or source | Rule | Provenance | Approval state | Consuming future artifact | Review date |
++|---|---|---|---|---|---|
++| `sub` | Principal identifier for authenticated actor | Architecture S-2 and S-3 | approved | Story 2.6 authorization enforcement and Story 7.2 OIDC configuration | 2026-05-11 |
++| `eventstore:tenant` | Authoritative tenant after EventStore claim transformation | Architecture S-2 and S-3 | approved | Story 2.6 authorization enforcement | 2026-05-11 |
++| `eventstore:permission` | Command/query access gate | Architecture S-2 and S-3 | approved | Story 2.6 authorization enforcement and Story 5 parity tests | 2026-05-11 |
++| Payload tenant IDs | Inputs to validate, never authority | Architecture S-3 and project context tenant invariant | approved | Story 2.6 authorization enforcement and Contract Spine validation notes | 2026-05-11 |
++
++## Rationale
++
++The parameter set avoids vendor lock-in while removing ambiguity from JWT validation. Issuer and audience pinning prevents token-confusion attacks, and bounded JWKS refresh behavior reduces stale-key exposure after key rotation.
++
++Examples use `.invalid` issuer hosts and placeholder audiences only. Real issuer, audience, client identifiers, signing keys, tokens, certificates, provider credentials, and tenant-specific values must enter through deployment configuration owned by later stories.
++
++## Verification impact
++
++Verification must reject production-looking issuer URLs, raw JWTs, private keys, certificate material, client credentials, tenant identifiers, and provider tokens. Later implementation tests must assert the frozen validation flags, JWKS refresh intervals, JWT-only behavior, and claim-provenance rules.
++
++## Deferred implementation
++
++This document does not add authentication middleware, package references, appsettings files, secret-store integration, runtime configuration, Keycloak setup, Entra ID setup, Auth0 setup, or deployment manifests.
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs b/tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
+new file mode 100644
+index 0000000..8f1298b
+--- /dev/null
++++ b/tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs
+@@ -0,0 +1,236 @@
++using System.Text.RegularExpressions;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Testing.Tests;
++
++public sealed class ExitCriteriaDecisionArtifactTests
++{
++    private static readonly string[] RequiredArtifacts =
++    [
++        "docs/exit-criteria/c3-retention.md",
++        "docs/exit-criteria/c4-input-limits.md",
++        "docs/exit-criteria/s2-oidc-validation.md",
++        "docs/exit-criteria/c6-transition-matrix-mapping.md"
++    ];
++
++    private static readonly string[] RequiredMetadata =
++    [
++        "status:",
++        "decision owner:",
++        "approval authority:",
++        "source inputs:",
++        "last reviewed:",
++        "open questions:"
++    ];
++
++    private static readonly string[] RequiredSections =
++    [
++        "## Decision",
++        "## Rationale",
++        "## Verification impact",
++        "## Deferred implementation"
++    ];
++
++    private static readonly string[] ApprovalStates =
++    [
++        "approved",
++        "proposed workshop value",
++        "needs human decision"
++    ];
++
++    [Fact]
++    public void ExitCriteriaDecisionArtifactsExistWithRequiredDecisionShape()
++    {
++        string root = RepositoryRoot();
++
++        foreach (string relativePath in RequiredArtifacts)
++        {
++            string path = Path.Combine(root, NormalizeForFileSystem(relativePath));
++            File.Exists(path).ShouldBeTrue($"{relativePath} should exist.");
++
++            string content = File.ReadAllText(path);
++            foreach (string metadata in RequiredMetadata)
++            {
++                content.ShouldContain(metadata, Case.Insensitive, $"{relativePath} should expose {metadata}.");
++            }
++
++            foreach (string section in RequiredSections)
++            {
++                content.ShouldContain(section, Case.Sensitive, $"{relativePath} should contain {section}.");
++            }
++        }
++    }
++
++    [Fact]
++    public void ExitCriteriaDecisionArtifactsAvoidPlaceholdersSecretsAndScopeLeakage()
++    {
++        string root = RepositoryRoot();
++
++        foreach (string relativePath in RequiredArtifacts)
++        {
++            string content = File.ReadAllText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
++
++            content.ShouldNotContain("TBD", Case.Insensitive, $"{relativePath} should not use generic TBD placeholders.");
++            content.ShouldNotContain("retain as needed", Case.Insensitive, $"{relativePath} should not use generic retention language.");
++            content.ShouldNotContain("BEGIN PRIVATE KEY", Case.Insensitive, $"{relativePath} must not contain private key material.");
++            content.ShouldNotContain("client_secret", Case.Insensitive, $"{relativePath} must not contain client secrets.");
++            content.ShouldNotContain("password=", Case.Insensitive, $"{relativePath} must not contain credential material.");
++            content.ShouldNotContain("diff --git", Case.Insensitive, $"{relativePath} must not contain diffs or file contents.");
++            ProductionUrl().IsMatch(content).ShouldBeFalse($"{relativePath} should use non-production .invalid URL placeholders only.");
++            RawJwt().IsMatch(content).ShouldBeFalse($"{relativePath} must not contain raw JWT examples.");
++        }
++
++        File.Exists(Path.Combine(root, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))
++            .ShouldBeFalse("Story 1.4 must not create or edit the Contract Spine.");
++        File.Exists(Path.Combine(root, "src", "Hexalith.Folders", "Aggregates", "Folder", "FolderStateTransitions.cs"))
++            .ShouldBeFalse("Story 1.4 documents the C6 mapping but must not implement FolderStateTransitions.cs.");
++    }
++
++    [Fact]
++    public void C3AndC4RowsDeclareProvenanceApprovalConsumerAndReviewDate()
++    {
++        string root = RepositoryRoot();
++        string[] relativePaths =
++        [
++            "docs/exit-criteria/c3-retention.md",
++            "docs/exit-criteria/c4-input-limits.md"
++        ];
++
++        foreach (string relativePath in relativePaths)
++        {
++            string[] decisionRows = File.ReadAllLines(Path.Combine(root, NormalizeForFileSystem(relativePath)))
++                .Where(IsDecisionTableRow)
++                .ToArray();
++
++            decisionRows.ShouldNotBeEmpty($"{relativePath} should include decision rows.");
++            foreach (string row in decisionRows)
++            {
++                ApprovalStates.Any(state => row.Contains(state, StringComparison.OrdinalIgnoreCase))
++                    .ShouldBeTrue($"{relativePath} row should declare approval state: {row}");
++                row.ShouldContain("Architecture", Case.Insensitive, $"{relativePath} row should name provenance.");
++                row.ShouldContain("2026-05-11", Case.Sensitive, $"{relativePath} row should carry review date.");
++                row.ShouldContain("Story", Case.Insensitive, $"{relativePath} row should name a consuming future story/artifact.");
++            }
++        }
++    }
++
++    [Fact]
++    public void S2OidcArtifactPinsFrozenValidationParametersWithSyntheticPlaceholders()
++    {
++        string root = RepositoryRoot();
++        string content = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "s2-oidc-validation.md"));
++
++        string[] requiredSettings =
++        [
++            "ClockSkew = TimeSpan.FromSeconds(30)",
++            "RequireExpirationTime = true",
++            "RequireSignedTokens = true",
++            "ValidateIssuer = true",
++            "ValidateAudience = true",
++            "ValidateLifetime = true",
++            "ValidateIssuerSigningKey = true",
++            "AutomaticRefreshInterval = TimeSpan.FromMinutes(10)",
++            "RefreshInterval = TimeSpan.FromMinutes(1)",
++            "eventstore:tenant",
++            "eventstore:permission"
++        ];
++
++        foreach (string setting in requiredSettings)
++        {
++            content.ShouldContain(setting, Case.Sensitive);
++        }
++
++        content.ShouldContain(".invalid", Case.Insensitive);
++    }
++
++    [Fact]
++    public void C6MappingArtifactCarriesArchitectureVocabularyAndDefaultRejectionRule()
++    {
++        string root = RepositoryRoot();
++        string content = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "c6-transition-matrix-mapping.md"));
++
++        string[] states =
++        [
++            "requested",
++            "preparing",
++            "ready",
++            "locked",
++            "changes_staged",
++            "dirty",
++            "committed",
++            "failed",
++            "inaccessible",
++            "unknown_provider_outcome",
++            "reconciliation_required"
++        ];
++
++        string[] events =
++        [
++            "RepositoryBindingRequested",
++            "RepositoryBound",
++            "RepositoryBindingFailed",
++            "ProviderOutcomeUnknown",
++            "WorkspacePrepared",
++            "WorkspacePreparationFailed",
++            "WorkspaceLocked",
++            "AuthRevocationDetected",
++            "TenantRevoked",
++            "RepositoryDeletedAtProvider",
++            "ReconciliationRequested",
++            "FileMutated",
++            "WorkspaceLockReleased",
++            "LockLeaseExpired",
++            "CommitSucceeded",
++            "CommitFailed",
++            "OperatorDiscardRequested",
++            "OperatorRetrySucceeded",
++            "ProviderReadinessValidated",
++            "ReconciliationCompletedClean",
++            "ReconciliationCompletedDirty",
++            "ReconciliationEscalated",
++            "OperatorMarkedFailed"
++        ];
++
++        foreach (string state in states)
++        {
++            content.ShouldContain($"`{state}`", Case.Sensitive);
++        }
++
++        foreach (string eventName in events)
++        {
++            content.ShouldContain($"`{eventName}`", Case.Sensitive);
++        }
++
++        content.ShouldContain("state_transition_invalid", Case.Sensitive);
++        content.ShouldContain("src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs", Case.Sensitive);
++    }
++
++    private static bool IsDecisionTableRow(string line) =>
++        line.StartsWith('|')
++        && !line.Contains("---", StringComparison.Ordinal)
++        && !line.Contains("Data class", StringComparison.OrdinalIgnoreCase)
++        && !line.Contains("Limit", StringComparison.OrdinalIgnoreCase)
++        && ApprovalStates.Any(state => line.Contains(state, StringComparison.OrdinalIgnoreCase));
++
++    private static Regex ProductionUrl() => new(
++        @"https?://(?![a-z0-9.-]+\.invalid(?:[/:)\s]|$))[^\s)]+",
++        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
++
++    private static Regex RawJwt() => new(
++        @"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
++        RegexOptions.CultureInvariant);
++
++    private static string RepositoryRoot()
++    {
++        DirectoryInfo? directory = new(AppContext.BaseDirectory);
++        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
++        {
++            directory = directory.Parent;
++        }
++
++        return directory?.FullName ?? throw new InvalidOperationException("Repository root was not found.");
++    }
++
++    private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);
++}

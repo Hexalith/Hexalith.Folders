@@ -1,6 +1,6 @@
 # Story 1.4: Author Phase 0.5 Pre-Spine Workshop deliverables
 
-Status: review
+Status: done
 
 Created: 2026-05-10
 
@@ -72,6 +72,56 @@ so that the canonical contract starts with real retention, input-limit, state, a
   - [x] Check S-2 examples use non-production placeholders and C6 references do not drift from the architecture state/event vocabulary.
   - [x] If an existing test project is available, integrate the check there; otherwise add the lightest local script or documented manual verification consistent with the current scaffold.
   - [x] Run the relevant verification command and, when the scaffold supports it, `dotnet build Hexalith.Folders.slnx`.
+
+### Review Findings
+
+Code review 2026-05-12 — Blind Hunter + Edge Case Hunter + Acceptance Auditor against commit `6098b45^..6098b45`. Acceptance Auditor: all 9 ACs satisfied, no scope-boundary violations. Findings below are verification-strength and content-quality concerns.
+
+Decision-needed (all four resolved 2026-05-12):
+
+- [x] [Review][Decision→Dismiss] C3 approval-state column wording — accepted as-is: the uniform `proposed workshop value; needs human decision` string is acceptable shorthand because every row points to the same Legal+PM blocker and the per-row `Future consumer` column already names the blocked story. [`docs/exit-criteria/c3-retention.md`]
+- [x] [Review][Decision→Patch] C3 expanded from 6 task-named categories to 10 — keep all 10 rows; workshop decided the extras (folder metadata, auth claims, diagnostics, commit idempotency) are separate data classes. Promoted to patch P15: add a one-line note in `## Rationale` explaining the expansion, and Patch P8 (assert the 6 mandated categories) still applies as a regression guard. [`docs/exit-criteria/c3-retention.md`]
+- [x] [Review][Decision→Patch] C4 "Value" column sentinel magic numbers — restructure into two columns. Promoted to patch P16: split the `Value` column into `Numeric value` (with `—` for non-numeric rows) and `Semantic flag` (free text for sentinel rows; `—` for numeric rows). Eliminates the duplicate `2` ambiguity between `Max query duration` and `Timeout behavior`. [`docs/exit-criteria/c4-input-limits.md`]
+- [x] [Review][Decision→Dismiss] On-disk `ExitCriteriaDecisionArtifactTests.cs` divergence from commit `6098b45` — confirmed intentional: extra `AssertNoDownstreamOperationGroups` block was added by commits `f1037a5` (story 1.6 impl) and `50c8495` (story 1.6 review) as a positive ownership guardrail. Already documented in story 1-6 Review Findings. No story 1.4 action. [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`]
+
+Patches (test-strength + content fixes):
+
+- [x] [Review][Patch] `IsDecisionTableRow` filter is circular and over-broad — `Contains("Limit", OrdinalIgnoreCase)` excludes 6 of 9 C4 rows that legitimately contain the substring (e.g., `input_limit_exceeded`, `response_limit_exceeded`); filter also requires an approval-state keyword to enter the assertion, making the approval-state assertion tautological. Detect table rows by structure (leading `|`, ≥ N cell separators, not the header/separator) and assert approval state on every data row [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:215-220`]
+- [x] [Review][Patch] C6 architecture anchor uses ASCII hyphen but `architecture.md` heading uses an em-dash `Workspace State Transition Matrix (C6 — Enumerated)` — anchor will not resolve [`docs/exit-criteria/c6-transition-matrix-mapping.md:12`]
+- [x] [Review][Patch] Architecture-vocabulary drift check is uni-directional — test asserts the hardcoded array IS in the artifact but never loads `architecture.md` to verify the artifact mirrors the source. Add a bidirectional check: load `architecture.md` C6 section, extract state/event tokens, assert artifact set == architecture set [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:159-209`]
+- [x] [Review][Patch] Placeholder denylist misses common variants — current denylist catches `TBD` and `retain as needed`. Add `T.B.D.`, `TBA`, `XXX`, `<placeholder>`, `FIXME`, `TODO`, `to be determined`, `<unknown>` [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:71-79`]
+- [x] [Review][Patch] Secret-material denylist misses common formats — add `BEGIN RSA PRIVATE KEY`, `BEGIN EC PRIVATE KEY`, `BEGIN OPENSSH PRIVATE KEY`, `BEGIN CERTIFICATE`, `aws_access_key_id`, `AKIA[A-Z0-9]{16}` (regex), `xoxb-`, `xoxp-`, `xoxa-`, `xoxr-` (Slack), `ghp_`, `gho_` (GitHub PAT), `sk_(live|test)_` (Stripe), `sk-` (OpenAI). Reuse the same `RawJwt`-style approach as story 1-6's hygiene scan [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:71-79`]
+- [x] [Review][Patch] Anchor `status:` / `decision owner:` / `approval authority:` metadata-key checks to beginning-of-line — current `ShouldContain("status:", IgnoreCase)` can be satisfied by prose like "workspace status: terminal", so removing the front-matter line would still pass. Use a regex `^\s*<key>\s*:` per check [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:17-32`]
+- [x] [Review][Patch] Replace hard-coded `2026-05-11` review-date evidence with dynamic check — current test bakes in `2026-05-11` per row. When artifacts are legitimately re-reviewed and dates updated, the test will fail. Read the frontmatter `last reviewed:` value and assert each row's "Review date" column equals it [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:118`]
+- [x] [Review][Patch] Assert the 6 mandated C3 categories are present by name — story task explicitly enumerated audit metadata / workspace status / provider correlation IDs / read-model views / temporary working files / cleanup records as the minimum set. Add an assertion that the C3 "Data class" column contains all 6 strings; current test would pass even if "Provider correlation IDs" row were deleted [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:50-65`]
+- [x] [Review][Patch] Bound `RepositoryRoot()` walk depth and include CWD in the exception — current `RepositoryRoot()` walks ancestors with no max depth; on a broken layout it throws `Repository root was not found.` without the actual `AppContext.BaseDirectory`. Cap at 12 ancestors and include the starting directory in the message [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:249-258`]
+- [x] [Review][Patch] Strengthen `ShouldContain("Story", ...)` per-row check — substring matches false-positives like "history", "store". Use a regex `Story \d+(\.\d+)?` to require a story key shape [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`]
+- [x] [Review][Patch] Add an AC9 "every numeric has units" assertion for C4 — content already includes units in the "Units and boundary semantics" column, but the test doesn't enforce it. Assert each C4 row's units column is non-empty and matches one of `seconds`, `bytes`, `items`, `paths`, or `n/a` [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`]
+- [x] [Review][Patch] S-2 `requiredSettings` array conflates JwtBearer parameter names (`ValidateIssuer`, etc.) with claim names (`eventstore:tenant`, `eventstore:permission`) — split into two arrays so each assertion category is documented and traceable [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:141-142`]
+- [x] [Review][Patch] Run `dotnet build Hexalith.Folders.slnx --no-restore -v:minimal` and record fresh evidence — Debug Log references `dotnet test ... --no-build --no-restore` for the 29-test run; no `dotnet build` evidence corroborates that the new `ExitCriteriaDecisionArtifactTests.cs` actually compiles into the test assembly. Add a fresh build-evidence line to the Debug Log [story file `### Debug Log References`]
+- [x] [Review][Patch] `RawJwt` regex matches its own counter-example, making it impossible to document a forbidden JWT shape in the artifact — replace any future counter-example JWT with `eyJ<redacted>` placeholder (no current usage; add as a comment on the regex for future authors) [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:226-228`]
+- [x] [Review][Patch][Decision] Add a one-line note in `## Rationale` of `docs/exit-criteria/c3-retention.md` explaining that the table covers 10 data classes — the 6 enumerated in the story task plus 4 the Phase 0.5 workshop classified as separate (folder metadata, auth claims copied into metadata, diagnostics, commit idempotency). Ties to patch P8 (regression guard). [`docs/exit-criteria/c3-retention.md`]
+- [x] [Review][Patch][Decision] Restructure C4 `Value` column into two columns: `Numeric value` (numbers + units; `—` for non-numeric rows) and `Semantic flag` (free-text behavior description; `—` for numeric rows). Eliminates duplicate-`2` ambiguity between `Max query duration` and `Timeout behavior` and removes `0`/`1` sentinel magic numbers. Update header, separator row, all 9 data rows, and the `IsDecisionTableRow` filter / column-count assertion in the verification test accordingly. [`docs/exit-criteria/c4-input-limits.md`, `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`]
+
+Deferred (pre-existing, downstream-owned, or low-risk):
+
+- [x] [Review][Defer] `ProductionUrl` regex would reject legitimate documentation citations such as `https://learn.microsoft.com/...` if any are added later — no current usage; deferred until a citation outside `.invalid` becomes necessary. [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:222-224`]
+- [x] [Review][Defer] Opaque/provider-token detection (PASETO, Macaroon, GitHub PATs as non-JWTs, etc.) — `RawJwt` only catches `eyJ`-prefixed JWTs; tracked as part of the broader hygiene-scan vocabulary owned by story 1-6 follow-ups. [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:226-228`]
+- [x] [Review][Defer] `File.ReadAllText` makes no encoding assertion — BOM / UTF-16 edge cases would silently misread the artifact. Low risk: project standardizes on UTF-8; deferred until an editor introduces non-UTF-8 content. [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`]
+- [x] [Review][Defer] Windows case-insensitive filesystem path normalization could hide an accidental rename to non-canonical casing (e.g., `docs/Exit-Criteria/C3-Retention.md`) — convention is enforced by code review and PR diff. Deferred. [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs:9-15`]
+- [x] [Review][Defer] C6 maps every state to a single Story 4.1 consumer — if 4.1 splits, all rows need re-pointing. Already captured in the artifact's `open questions` section. Deferred to story 4.1 entry. [`docs/exit-criteria/c6-transition-matrix-mapping.md`]
+
+Dismissed (handled elsewhere, by-design, or no functional impact):
+
+- C6 state-token assertion uses backticks — bold/code-block markup variants would false-positive fail, but the catalog is spec'd in backticks; the strictness is intentional.
+- `sprint-status.yaml` edit not validated by the doc-only verification test — sprint-status is governance metadata; deliberately out of doc-verification scope.
+- Front-matter is human-readable prose, not parseable YAML — by design; the test reads it line-by-line, not via a YAML parser.
+- Test file relies on implicit `System.IO` / `System.Linq` usings — project enables implicit usings; convention.
+- "Codex GPT-5" in Agent Model Used — narrative metadata, no functional impact.
+- `last reviewed` = creation+1 day with no second reviewer — the story is in `review` status precisely to obtain that second pair of eyes; this code review IS the second pass.
+- Keycloak-shaped `.invalid` issuer placeholders (`oidc.local.invalid/realms/hexalith-folders`) — `.invalid` TLD is non-routable per RFC 2606 and satisfies AC9 "clearly non-production".
+- Per-row redundant `last reviewed` date column — provides redundancy with frontmatter but does not break verification.
+- `.invalid` regex edge with `mailto:` / `ftp://` / other schemes — no current usage; if a non-http URL is added later, the existing regex would not catch it but the contents are still placeholder-safe by review.
 
 ## Dev Notes
 
@@ -191,6 +241,7 @@ Use these exact paths for the four decision artifacts. If an existing architectu
 | 2026-05-10 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-11 | Advanced elicitation pass applied authority-state, placeholder-safety, boundary-semantics, and drift-detection hardening. | Codex |
 | 2026-05-11 | Implemented Phase 0.5 decision artifacts and lightweight verification; marked C3/C4 authority approval as the remaining Phase 1 blocker. | Codex |
+| 2026-05-12 | Code review (Blind Hunter + Edge Case Hunter + Acceptance Auditor) applied 16 patches: C4 column restructured into `Numeric value` + `Semantic flag`, C3 Rationale documents 10-class scope, C6 anchor switched to em-dash, verification test rewritten with row-shape detection, bidirectional architecture drift check, expanded placeholder/secret denylists, anchored metadata regexes, dynamic frontmatter date, mandated-categories regression guard, bounded `RepositoryRoot()` walk. 0 build warnings, 56 tests pass. | Claude |
 
 ## Party-Mode Review
 
@@ -262,6 +313,8 @@ Codex GPT-5
 - 2026-05-11: `dotnet test .\Hexalith.Folders.slnx --no-build --no-restore -v:minimal` passed: 29 tests across 11 test assemblies.
 - 2026-05-11: `dotnet build .\Hexalith.Folders.slnx --no-restore -v:minimal` passed with 0 warnings and 0 errors after a standalone rerun.
 - 2026-05-11: `git diff --check` passed with no whitespace errors.
+- 2026-05-12: Code review applied 16 patches (P1-P16). `dotnet build Hexalith.Folders.slnx --no-restore -v:minimal` passed: 0 warnings, 0 errors, 24 projects compiled in ~4.34s.
+- 2026-05-12: `dotnet test Hexalith.Folders.slnx --no-build --no-restore -v:minimal` passed: 11 test assemblies, 56 tests, 0 failures, 0 skipped. `Hexalith.Folders.Testing.Tests` rewrite contributes 28 tests (was 4); 7 test methods cover artifact shape, placeholder/secret hygiene, C3/C4 row metadata, C3 mandated-categories regression guard, C4 numeric/semantic-flag column structure, S-2 JwtBearer + claim provenance, and C6 bidirectional architecture drift.
 
 ### Completion Notes List
 

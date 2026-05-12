@@ -3,13 +3,13 @@
 status: approved architecture mapping plan; implementation deferred to Phase 2 aggregate story
 decision owner: Architect
 approval authority: Architecture team
-source inputs: Architecture Workspace State Transition Matrix (C6 - Enumerated), Exit Criteria Operations Plan, error catalog, operations-console disposition model
+source inputs: Architecture Workspace State Transition Matrix (C6 — Enumerated), Exit Criteria Operations Plan, error catalog, operations-console disposition model
 last reviewed: 2026-05-11
 open questions: Phase 2 implementation may discover edge cases, but any vocabulary change must update architecture and aggregate tests in the same change.
 
 ## Decision
 
-The source of truth is `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 - Enumerated)`. Future implementation must translate that matrix 1:1 into `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`. This story documents the mapping only and does not create the target source file or aggregate tests.
+The source of truth is `_bmad-output/planning-artifacts/architecture.md#Workspace State Transition Matrix (C6 — Enumerated)`. Future implementation must translate that matrix 1:1 into `src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs`. This story documents the mapping only and does not create the target source file or aggregate tests.
 
 Every unlisted `(state, event)` pair rejects with canonical category `state_transition_invalid`, leaves state unchanged, maps CLI exit code 74, maps MCP failure kind `state_transition_invalid`, and remains inspectable through idempotency record behavior.
 
