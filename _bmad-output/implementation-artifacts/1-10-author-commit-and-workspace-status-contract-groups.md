@@ -60,6 +60,8 @@ so that clean committed states, failed states, and unknown provider outcomes are
   - [ ] Include projection watermark, freshness age, last successful operation, last failure category, retry eligibility, retry-after, current state, terminal state, correlation ID, and task/operation ID metadata where authorized.
   - [ ] Represent `known_failure`, `unknown_provider_outcome`, `reconciliation_required`, `reconciliation_completed_clean`, `reconciliation_completed_dirty`, `failed`, and `committed` as closed contract states or explicit reference-pending values; do not invent runtime transition policy beyond approved C6/source artifacts.
   - [ ] Retrying commit must not be recommended while outcome ambiguity can duplicate upstream commits.
+  - [ ] Resolve authorization and scope eligibility before exposing status distinctions; unauthorized, missing, hidden, wrong-tenant, stale, and projection-unavailable cases must share safe metadata-only shapes unless an approved source explicitly allows a narrower disclosure.
+  - [ ] Bound polling guidance with machine-readable retry eligibility, optional sanitized `retryAfter`, freshness watermark, and projection-lag metadata; do not imply scheduler behavior, continuous polling requirements, or provider-side retry orchestration.
   - [ ] Ensure unauthorized, missing, wrong-tenant, stale-read, unknown-task, unknown-workspace, and hidden-commit cases use safe Problem Details or safe metadata-only response shapes without resource-existence hints.
 - [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 4, 6, 7, 8, 12)
   - [ ] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, lifecycle/state schemas, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
@@ -78,6 +80,8 @@ so that clean committed states, failed states, and unknown provider outcomes are
   - [ ] Verify commit TTL tier is `commit` and that C3 approval state is preserved when C3 values are not final.
   - [ ] Verify examples and audit metadata exclude file contents, diffs, raw commit messages, raw changed-path lists where not authorized, raw provider payloads, generated context payloads, provider tokens, credential material, local paths, production URLs, and unauthorized resource-existence hints.
   - [ ] Verify provider-outcome and reconciliation schemas distinguish known failure, unknown provider outcome, reconciliation required, reconciliation completed clean, reconciliation completed dirty, terminal failed, and terminal committed states.
+  - [ ] Verify hidden-resource equivalence for status, commit evidence, provider outcome, and reconciliation reads: unauthorized, wrong-tenant, unknown, redacted, and projection-unavailable cases must not reveal whether the underlying folder, workspace, task, commit, provider outcome, or reconciliation record exists.
+  - [ ] Verify stale projection evidence is explicit and metadata-only by checking freshness watermark, projection age, state source, and unavailable/redacted reason codes without exposing raw provider payloads, local paths, branch names, commit messages, file contents, diffs, or generated context payloads.
   - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
   - [ ] Cover the minimum validation matrix: valid OpenAPI 3.1 document, local `$ref` chain, duplicate `operationId`, missing required `x-hexalith-*` metadata, mutating operation without idempotency metadata, read operation without read-consistency metadata, provider outcome unknown, reconciliation required, client-controlled tenant authority, forbidden raw sensitive metadata, and negative-scope file/category additions.
   - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
@@ -131,6 +135,8 @@ docs/contract/commit-status-contract-groups.md
 - `CommitWorkspace` uses the `commit` idempotency TTL tier. Commit idempotency records persist for C3 retention because unknown provider outcomes and audit reconstruction can outlive the 24-hour mutation tier.
 - Unknown provider outcome is a first-class state. A contract that recommends blind retry after ambiguous commit violates the duplicate-commit safety invariant.
 - Status queries must label accepted command state and projected/read-model state separately so callers do not confuse command acknowledgment with durable provider or projection completion.
+- Authorization-before-observation applies to all status and evidence reads. Contracts must not let callers distinguish hidden resources from missing resources through status codes, retry metadata, freshness fields, provider outcome labels, or reconciliation identifiers.
+- Polling metadata is advisory and bounded. `retryAfter`, retry eligibility, projection age, and freshness watermarks describe safe client behavior only after authorization and must not become an implicit worker schedule, provider retry trigger, or guarantee of eventual provider completion.
 
 ### Operation Inventory Seed
 
@@ -168,6 +174,7 @@ Do not add provider readiness, workspace preparation, lock, file mutation, conte
 - Required canonical categories for this story include authentication failure, tenant authorization denied, folder ACL denied, cross-tenant access denied, workspace not ready, workspace locked, lock expired, lock not owned, authorization revocation detected, stale workspace, dirty workspace, commit failed, provider failure known, provider outcome unknown, reconciliation required, read-model unavailable, duplicate operation, idempotency conflict, state transition invalid, validation error, not found, redacted, and internal error.
 - Use RFC 9457 Problem Details plus Hexalith fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
 - Safe-denial Problem Details must expose stable safe codes only; they must not reveal folder existence, workspace existence, lock existence, task existence, commit existence, provider state, branch existence, changed-path presence, local paths, or unauthorized resource existence.
+- Safe-denial equivalence covers commit evidence, workspace status, task status, provider outcome, and reconciliation status. Wrong-tenant, unauthorized, hidden, unknown, redacted, and projection-unavailable responses must be indistinguishable except for approved safe codes and correlation metadata.
 - Audit metadata is metadata-only. It may include tenant-scoped actor evidence, folder ID, workspace ID, task ID, operation ID, commit status, commit reference classification, changed-path metadata digest, provider correlation reference, branch/ref policy reference, result, timestamp, duration, retryability, and sanitized error category.
 - Do not include raw file contents, diffs, raw commit messages, raw changed-path lists outside authorized metadata, generated context payloads, provider tokens, credential material, raw provider payloads, production URLs, local filesystem paths, or unauthorized resource existence.
 
@@ -200,6 +207,7 @@ Do not add provider readiness, workspace preparation, lock, file mutation, conte
 - Validation must run offline without Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, production secrets, network calls, or initialized nested submodules.
 - Validate OpenAPI parse, `$ref` resolution, unique operation IDs, exact `x-hexalith-*` metadata presence, commit idempotency TTL tier, C3 reference-pending handling, read-consistency completeness, safe tenant-authority boundaries, C6 state metadata, synthetic examples, safe-denial parity, redaction, and negative scope.
 - Include contract-level assertions for commit failed, provider outcome unknown, reconciliation required, retry-after, retry eligibility, read-model unavailable, state transition invalid, and idempotency conflict outcomes.
+- Include authorization-before-observation assertions showing status/evidence queries do not disclose existence or provider state before tenant access, folder ACL, workspace/task scope, and redaction decisions have been applied.
 - Include allow-list assertions for commit/status operation IDs and `/api/v1` path prefixes owned by this story so validation fails if provider readiness, workspace/lock, file/context, audit timeline, operations-console, runtime, generated-client, CLI, MCP, worker, UI, or CI artifacts appear.
 - If the full solution is buildable, run `dotnet build Hexalith.Folders.slnx` from the repository root after focused validation. Record exact blockers if build cannot run due to prior scaffold state.
 
@@ -247,6 +255,7 @@ Do not add provider readiness, workspace preparation, lock, file mutation, conte
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-12 | Applied advanced elicitation hardening for authorization-before-observation, bounded status polling, hidden-resource equivalence, and stale projection evidence. | Codex |
 | 2026-05-12 | Applied party-mode review hardening for operation inventory, editable file ownership, retry semantics, tenant authority, metadata-only boundaries, status taxonomy, and validation matrix. | Codex |
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
@@ -272,6 +281,27 @@ Do not add provider readiness, workspace preparation, lock, file mutation, conte
 - Findings deferred:
   - Exact HTTP response status choices, enum terminal/non-terminal semantics, C3 commit retention approval, C6 transition policy, runtime reconciliation behavior, lock-release side effects, idempotency persistence behavior, generated SDK helpers, parity-oracle rows, CI gates, and operations-console projections remain deferred to approved source artifacts or later stories.
   - If existing Story 1.6 through 1.9 Contract Spine artifacts have already frozen paths, operation names, extension fields, or comparator rules, implementation must preserve those approved shapes and record mappings instead of replacing them.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-12T03:04:16Z
+- Selected story key: `1-10-author-commit-and-workspace-status-contract-groups`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-10-author-commit-and-workspace-status-contract-groups`
+- Batch 1 method names: Security Audit Personas; Failure Mode Analysis; Socratic Questioning; Self-Consistency Validation; Pre-mortem Analysis
+- Reshuffled Batch 2 method names: Chaos Monkey Scenarios; Graph of Thoughts; Occam's Razor Application; User Persona Focus Group; Lessons Learned Extraction
+- Findings summary:
+  - Status and evidence reads needed an explicit authorization-before-observation invariant so hidden, missing, wrong-tenant, and projection-unavailable cases do not leak resource existence or provider state through status labels, freshness metadata, retry hints, or reconciliation identifiers.
+  - Polling metadata needed clearer bounds: `retryAfter`, retry eligibility, projection age, and freshness watermarks are advisory client metadata only, not scheduler behavior, provider retry orchestration, or a guarantee of eventual provider completion.
+  - The validation matrix needed direct checks for hidden-resource equivalence and stale projection evidence because those are easy to miss when implementing otherwise metadata-only status contracts.
+- Changes applied:
+  - Added status-query subtasks for authorization and scope checks before status distinctions are exposed.
+  - Added bounded polling guidance for retry eligibility, sanitized `retryAfter`, freshness watermark, and projection-lag metadata.
+  - Added validation subtasks for hidden-resource equivalence across status, commit evidence, provider outcome, and reconciliation reads.
+  - Added validation subtasks for stale projection metadata and authorization-before-observation assertions.
+  - Added Dev Notes clarifying hidden-versus-missing equivalence and advisory polling semantics.
+- Findings deferred:
+  - Exact safe-denial HTTP status codes, final enum values, projection freshness thresholds, retry-after bounds, C3 retention approval, C6 transition policy, and runtime reconciler behavior remain deferred to approved source artifacts or later implementation stories.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
