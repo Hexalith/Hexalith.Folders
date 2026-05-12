@@ -24,6 +24,7 @@ so that .NET callers use the same operation shapes and retry identity semantics 
 10. Given Story 1.13 owns final C13 parity rows and Story 1.14 owns CI gate wiring, when this story validates generation, then it may add focused local client-generation and helper tests but does not generate final `tests/fixtures/parity-contract.yaml` rows or modify CI workflows.
 11. Given Story 1.6 through Story 1.11 may have active Contract Spine changes, when implementation starts, then the developer inspects the current OpenAPI file, extension vocabulary, and operation-group artifacts before editing generation assets; unresolved or missing operation metadata is recorded as prerequisite drift rather than silently guessed.
 12. Given generated SDK output will be consumed by CLI and MCP later, when generated exception and response types are authored, then they preserve canonical Problem Details fields (`category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, `details`) in a typed exception or response shape that adapters can map without parsing English messages.
+13. Given idempotency hashes are a cross-surface contract, when helper generation is implemented, then the canonical helper input format is documented and fixture-tested at the byte level, including field separators, escaping, scalar formatting, null and omitted sentinels, empty values, collection/object handling where present, culture-invariant formatting, UTF-8 bytes, lowercase hex digest casing, and the final `sha256:<hex>` representation.
 
 ## Tasks / Subtasks
 
@@ -43,8 +44,9 @@ so that .NET callers use the same operation shapes and retry identity semantics 
   - [ ] Keep generated output deterministic: stable namespace, stable class names, stable collection types, stable nullable behavior, no timestamps, no machine-local paths, and no environment-dependent base URL.
 - [ ] Generate idempotency helper code from Contract Spine extensions. (AC: 2, 3, 4, 6, 7, 12)
   - [ ] For every mutating operation with `x-hexalith-idempotency-equivalence`, generate a helper on the relevant request DTO or companion partial type named `ComputeIdempotencyHash()`.
+  - [ ] Classify helper eligibility from the OpenAPI operation method and declared `x-hexalith-idempotency-equivalence`; non-mutating operations must never receive helpers, and mutating operations without valid equivalence metadata fail generation instead of hashing whole payloads.
   - [ ] Base helper input only on the declared field list. Field paths must be consumed in declared lexicographic order; fail generation when the list is missing, duplicated, not lexicographic, or points to a missing schema property.
-  - [ ] Use a deterministic canonical representation before hashing. The representation must distinguish null from omitted values unless the schema declares an explicit default-equivalence rule.
+  - [ ] Use a deterministic canonical representation before hashing. The representation must distinguish null from omitted values unless the schema declares an explicit default-equivalence rule, and the implementation must either preserve property presence or reject helper generation for DTO shapes where presence cannot be observed.
   - [ ] Normalize only fields whose parser-policy classification allows normalization. Do not globally normalize opaque identifiers, branch names, provider references, commit metadata classifications, or path metadata.
   - [ ] For path metadata fields, apply exactly one safe percent-decode step only where Story 1.5 classified that field as eligible; reject double-decode ambiguity.
   - [ ] Use SHA-256 or another explicitly documented stable hash algorithm with UTF-8 canonical bytes and an algorithm label in the helper output or test fixture expectations.
@@ -55,16 +57,21 @@ so that .NET callers use the same operation shapes and retry identity semantics 
   - [ ] Verify generation can run from a clean checkout using only repository files and central package versions.
   - [ ] Verify generated clients compile and expose expected operation-derived method or interface names for the currently authored Contract Spine operations.
   - [ ] Verify mutating DTO helpers exist only where the Contract Spine declares idempotency equivalence; query operations must not get helper methods or idempotency-key defaults.
+  - [ ] Verify malformed extension metadata fails closed with clear diagnostics, including unknown shapes, duplicate fields, missing schema properties, non-lexicographic field lists, unsupported normalization declarations, and ambiguous metadata-versus-content field references.
   - [ ] Verify canonical helper results are stable across repeated invocations and independent of object property declaration order.
-  - [ ] Verify fixture-driven parser-policy cases from `idempotency-encoding-corpus.json`: Unicode variants, zero-width joiner cases, ULID casing, duplicate JSON key rejection expectation, null versus omitted, percent encoding, whitespace, and malformed key examples where applicable.
+  - [ ] Verify fixture-driven parser-policy cases from `idempotency-encoding-corpus.json`: Unicode variants, zero-width joiner cases, ULID casing, duplicate JSON key rejection expectation, null versus omitted, percent encoding, malformed percent sequences, encoded slash, double-decode attempts, whitespace, and malformed key examples where applicable.
+  - [ ] Verify file mutation helpers hash declared metadata such as file name, content type, or content-hash references when declared, while proving raw bytes, stream identity, multipart boundaries, temporary names, and local paths do not affect helper input or outputs.
   - [ ] Verify generated exception or response handling preserves RFC 9457 Problem Details plus Hexalith fields without requiring adapters to parse messages.
   - [ ] Verify negative scope: no server runtime, domain aggregate, provider adapter, CLI, MCP, UI, worker, parity oracle result row, CI workflow, or nested-submodule changes are introduced.
 - [ ] Record generation decisions for downstream stories. (AC: 4, 8, 10, 12)
   - [ ] Add a concise note such as `docs/contract/sdk-generation-and-idempotency-helpers.md` if generation details, hash format, or deferred decisions need a stable human-readable home.
-  - [ ] Record exact generated file locations, rerun command, deterministic-output expectations, and how Story 1.13 should consume operation IDs and helper metadata.
+  - [ ] Record exact generated file locations, rerun command, deterministic-output expectations, line-ending and banner/timestamp policy, and how Story 1.13 should consume operation IDs and helper metadata.
+  - [ ] Record that generated NSwag files are not manually edited; customization belongs in companion or partial files outside `Generated/`.
+  - [ ] Record that downstream Story 1.13 and Story 1.14 consumers must use generated operation IDs and helper entry points instead of reimplementing hash construction or generation policy.
   - [ ] Record deferred owners for final parity-oracle rows, CI golden-file gate wiring, runtime idempotency persistence, SDK convenience `UploadFileAsync(stream)`, CLI and MCP wrappers, and release documentation.
 - [ ] Run verification. (AC: 1, 2, 6, 8, 9)
   - [ ] Run the focused client generation tests.
+  - [ ] Run generation twice from the same Contract Spine input and verify normalized generated bytes have no diff, with tool banners and timestamps disabled, suppressed, or normalized.
   - [ ] Run `dotnet build Hexalith.Folders.slnx` if the current scaffold and active Contract Spine changes allow it. If blocked by unrelated in-progress Story 1.7 work or prerequisite drift, record the exact blocker without expanding this story scope.
 
 ## Dev Notes
@@ -115,6 +122,8 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 - A mutating operation without equivalence metadata is a generation failure, not a prompt to hash the whole payload.
 - A non-mutating operation with idempotency metadata is a generation failure.
 - Helper output should be stable and documented, for example `sha256:<hex>` over a canonical UTF-8 representation.
+- The canonical representation must be byte specified before implementation: field names and values in declared order, unambiguous separators, escaped delimiters, culture-invariant scalar formatting, explicit null and omitted sentinels, deterministic collection/object traversal when present, UTF-8 encoding, and lowercase hexadecimal digest output.
+- If generated DTOs cannot distinguish omitted from explicit null for a declared equivalence field, the generator must add presence tracking through companion code or fail generation with prerequisite drift rather than silently treating them as equivalent.
 - Tenant-scoped equivalence includes authoritative tenant identity where declared, but tenant authority still comes from auth context and EventStore envelopes at runtime.
 - Parser-policy handling comes from Story 1.5:
   - null and omitted are non-equivalent unless schema default-equivalence is declared;
@@ -141,6 +150,7 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 - Relevant NSwag settings include generated C# namespace, class name, `InjectHttpClient`, `DisposeHttpClient`, `GenerateClientInterfaces`, `GenerateExceptionClasses`, `GenerateContractsOutput`, and disabling sync methods.
 - NSwag-generated C# clients are partial and expose request/response hooks such as `PrepareRequest` and `ProcessResponse`; use partials or companion code rather than editing generated files.
 - The SDK should use generated code for transport shape and separate generated or hand-written companion code for Hexalith-specific idempotency helpers when NSwag templates alone are not enough.
+- Generated files under `src/Hexalith.Folders.Client/Generated/` are owned by generation. Manual behavior and SDK ergonomics belong in partial or companion files outside `Generated/`.
 
 ### Testing Guidance
 
@@ -183,6 +193,7 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 | Date | Change | Author |
 |---|---|---|
 | 2026-05-12 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+| 2026-05-12 | Applied party-mode review hardening for canonical idempotency hash bytes, helper eligibility, deterministic generation evidence, and generated-code ownership. | Codex |
 
 ## Dev Agent Record
 
@@ -195,3 +206,24 @@ TBD by dev-story agent
 ### Completion Notes List
 
 ### File List
+
+## Party-Mode Review
+
+- Date: 2026-05-12T23:33:57+02:00
+- Selected story key: 1-12-wire-nswag-sdk-generation-with-idempotency-helpers
+- Command/skill invocation used: `/bmad-party-mode 1-12-wire-nswag-sdk-generation-with-idempotency-helpers; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor), Paige (Technical Writer)
+- Findings summary:
+  - Canonical idempotency hash input needed byte-level rules, golden vectors, and explicit null-versus-omitted handling.
+  - Helper eligibility needed a fail-closed OpenAPI operation and extension rule so queries never receive helpers and malformed mutating metadata does not hash whole payloads.
+  - Deterministic NSwag output needed pinned inputs, repeatable generation evidence, stable generated ownership, and no manual edits under `Generated/`.
+  - Parser-policy and file mutation tests needed adversarial cases for percent decoding, metadata-only hashing, and malformed extension metadata.
+  - Problem Details and downstream parity handoff needed explicit preservation and consumption notes.
+- Changes applied:
+  - Added AC 13 for byte-level canonical hash documentation and fixture coverage.
+  - Tightened helper generation tasks for eligibility, presence tracking, malformed extension validation, parser-policy cases, metadata-only file mutation hashing, and downstream handoff.
+  - Added verification expectations for two-pass deterministic generation and generated-code ownership.
+  - Added Dev Notes clarifying canonical representation, null/omitted presence, and generated-file ownership.
+- Findings deferred:
+  - Public release documentation, CI gate wiring, final parity rows, runtime idempotency persistence, CLI/MCP wrappers, and SDK convenience upload APIs remain owned by later stories already named in this story.
+- Final recommendation: ready-for-dev
