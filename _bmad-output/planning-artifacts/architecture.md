@@ -17,11 +17,12 @@ inputDocuments:
   - "_bmad-output/planning-artifacts/research/technical-hexalith-tenants-integration-for-folder-management-application-research-2026-05-05.md"
   - "_bmad-output/planning-artifacts/research/technical-hexalith-memories-semantic-indexing-rag-research-2026-05-11.md"
   - "_bmad-output/planning-artifacts/research/technical-frontcomposer-integration-for-hexalith-folders-ui-research-2026-05-11.md"
+  - "_bmad-output/planning-artifacts/ux-design-specification.md"
 documentCounts:
   prd: 1
   prdValidation: 1
   productBriefs: 1
-  uxDesign: 0
+  uxDesign: 1
   research: 5
   projectDocs: 0
   projectContext: 0
@@ -34,6 +35,7 @@ lastStep: 8
 completedAt: '2026-05-11'
 resumedAt: '2026-05-11'
 completionRefreshedAt: '2026-05-11'
+uxDesignIncludedAt: '2026-05-11'
 ---
 
 # Architecture Decision Document
@@ -152,6 +154,22 @@ These reports do not overturn the core architecture. They add two optional integ
 
 - Memories extends context-query and RAG capability through worker-owned asynchronous indexing and an authorized Folders query facade.
 - FrontComposer implements the read-only operations console shell and generated projection UI while Folders retains domain semantics, authorization, data access, and no-leakage policy.
+
+### UX Design Integration Implications
+
+The UX design specification at `_bmad-output/planning-artifacts/ux-design-specification.md` is now an explicit architecture input. It reinforces the existing read-only operations-console architecture and sharpens the UI implementation contract rather than changing the service boundaries.
+
+**Architecture-relevant UX constraints:**
+
+- The MVP UI is a web/desktop-first operations console built through Hexalith.FrontComposer Shell and Microsoft Fluent UI Blazor. It is optimized for operators, chatbot/agent developers, and tenant administrators diagnosing workspace trust, readiness, failures, and audit evidence.
+- The primary experience is: find a workspace, prove its tenant boundary, then understand its trust state from evidence. Workspace detail pages must surface tenant, folder, repository binding, workspace, task, provider, authorization posture, lifecycle state, freshness, and correlation/task identifiers before detailed evidence.
+- The console remains read-only and metadata-only. It must not expose mutation controls, repair actions, file editing, file contents, raw diffs, credential values, unrestricted file browsing, or unauthorized resource existence.
+- Custom UI components are permitted only for domain evidence patterns that Fluent UI does not model directly: Workspace Trust Summary, Tenant Scope Banner, Metadata-Only Folder Tree, Diagnostic Timeline, Trust Matrix, and Redaction/Inaccessibility State.
+- Redacted, inaccessible, unknown, missing, unavailable, failed, delayed, dirty, locked, ready, and committed states must be visually and semantically distinct. Color is supplemental only; every state needs text, icon or shape cue, accessible label, and safe explanatory detail where needed.
+- Search and filtering are primary workflows. Queries should support tenant, folder, workspace ID, repository binding, task ID, correlation ID, provider, lifecycle state, failure category, and time window without weakening tenant authorization.
+- Responsive behavior is desktop-first but must not break on tablet or mobile fallback. Accessibility targets remain WCAG 2.2 AA, including keyboard navigation, visible focus, semantic headings, accessible status labels, zoom resilience, and screen-reader-meaningful redaction/denial states.
+
+**Implementation impact:** Epic 6 and any FrontComposer UI stories should treat the UX specification as normative alongside this architecture. UI code should derive state labels, icons, tooltips, and accessibility labels from the same canonical state vocabulary used by the API, SDK, CLI, and MCP surfaces.
 
 ### Architecture Exit Criteria — Targets to Resolve
 

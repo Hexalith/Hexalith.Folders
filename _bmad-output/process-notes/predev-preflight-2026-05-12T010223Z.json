@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-12T05:01:35Z",
+  "timestamp": "2026-05-12T01:02:23Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -12,7 +12,7 @@
       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
       "result": "pass",
       "details": "PARSE OK",
-      "file_size_bytes": 7962,
+      "file_size_bytes": 7910,
       "line_count": 157,
       "top_level_keys": [
         "development_status",
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/implementation-artifacts/sprint-status.yaml\n M _bmad-output/planning-artifacts/architecture.md\n M _bmad-output/planning-artifacts/epics.md\n?? _bmad-output/planning-artifacts/implementation-readiness-report-2026-05-11.md\n?? _bmad-output/planning-artifacts/implementation-readiness-report-2026-05-12.md\n?? _bmad-output/planning-artifacts/sprint-change-proposal-2026-05-12-readiness-artifact-patch.md\n?? _bmad-output/planning-artifacts/ux-design-directions.html\n?? _bmad-output/planning-artifacts/ux-design-specification.md\n",
+      "stdout": " M _bmad-output/planning-artifacts/architecture.md\n M _bmad-output/planning-artifacts/epics.md\n?? _bmad-output/planning-artifacts/implementation-readiness-report-2026-05-11.md\n?? _bmad-output/planning-artifacts/ux-design-directions.html\n?? _bmad-output/planning-artifacts/ux-design-specification.md\n",
       "stderr": "",
-      "dirty_path_count": 8,
+      "dirty_path_count": 5,
       "result": "fail",
-      "details": "8 dirty path(s)"
+      "details": "5 dirty path(s)"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."

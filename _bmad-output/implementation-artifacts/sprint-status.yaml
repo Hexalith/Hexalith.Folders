@@ -1,5 +1,5 @@
-# generated: 2026-05-10
-# last_updated: 2026-05-11
+# generated: 2026-05-12T07:11:18+02:00
+# last_updated: 2026-05-12T07:11:18+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -34,8 +34,8 @@
 # - Developer typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-05-10
-last_updated: 2026-05-11
+generated: 2026-05-12T07:11:18+02:00
+last_updated: 2026-05-12T07:11:18+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -120,10 +120,10 @@ development_status:
   5-7-validate-mixed-surface-handoff-scenario: backlog
   epic-5-retrospective: optional
 
-  # Epic 6: Read-Only Operations Console And Audit Review
+  # Epic 6: Read-Only Workspace Trust Console And Audit Review
   epic-6: backlog
   6-1-audit-and-operation-timeline-query-endpoints: backlog
-  6-2-scaffold-blazor-server-console-with-fluent-ui: backlog
+  6-2-scaffold-frontcomposer-hosted-read-only-operations-console: backlog
   6-3-render-operator-disposition-labels-as-primary-visual: backlog
   6-4-implement-sensitive-metadata-redaction-affordance: backlog
   6-5-author-console-diagnostic-wireflow-notes: backlog
@@ -135,7 +135,7 @@ development_status:
   6-11-verify-no-mutation-enforcement-and-accessibility: backlog
   epic-6-retrospective: optional
 
-  # Release Readiness Workstream 7: MVP Operational Acceptance And Evidence
+  # Epic 7: MVP Release Readiness And Operational Evidence
   epic-7: backlog
   7-1-deploy-production-dapr-deny-by-default-access-control: backlog
   7-2-configure-production-oidc-and-secret-store-integration: backlog

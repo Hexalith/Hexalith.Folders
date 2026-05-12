@@ -1,12 +1,14 @@
 ---
 stepsCompleted:
   - step-01-validate-prerequisites
+  - step-01-ux-requirements-refresh
   - step-02-design-epics
   - step-03-create-stories
   - step-04-final-validation
 inputDocuments:
   - "_bmad-output/planning-artifacts/prd.md"
   - "_bmad-output/planning-artifacts/architecture.md"
+  - "_bmad-output/planning-artifacts/ux-design-specification.md"
   - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10.md"
   - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-story-split.md"
   - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-correction.md"
@@ -15,6 +17,12 @@ user_name: 'Jerome'
 date: '2026-05-10'
 status: 'complete'
 completedAt: '2026-05-10'
+requirementsRefreshedAt: '2026-05-11'
+epicStructureReviewedAt: '2026-05-11'
+partyModeReviewedAt: '2026-05-11'
+storiesReviewedAt: '2026-05-11'
+finalValidationRefreshedAt: '2026-05-11'
+implementationReadinessPatchedAt: '2026-05-12'
 epicCount: 7
 storyCount: 86
 ---
@@ -121,7 +129,7 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 #### Security and Tenant Isolation
 
 - NFR1: Tenant isolation must be enforced on every command, query, event, read-model view, lock, repository binding, context query, cleanup view, provider callback, and audit record.
-- NFR2: Cross-tenant access leaks are zero-tolerance defects; no object from tenant A may be retrievable, inferable, lockable, committed, queried, audited, or visible from tenant B.
+- NFR2: Cross-tenant access leaks are zero-tolerance defects. No object from tenant A may be retrievable, inferable, lockable, committed, queried, audited, or visible from tenant B.
 - NFR3: Tenant isolation tests must cover API responses, errors, events, logs, metrics labels, projections, cache keys, lock keys, temporary paths, provider credentials, repository bindings, background jobs, provider callbacks, audit records, and context-query results.
 - NFR4: File contents, diffs, prompts, provider tokens, credential material, secrets, remote URLs with embedded credentials, generated context payloads, and unauthorized resource existence must not appear in events, logs, traces, metrics, projections, diagnostics, audit records, provider payload snapshots, exception messages, command arguments, or console responses.
 - NFR5: Secrets and sensitive payloads must be redacted at source, with automated sanitizer tests and forbidden-field scanning in CI.
@@ -149,68 +157,71 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 - NFR21: Command submission must acknowledge accepted lifecycle commands within 1 second p95 before asynchronous provider or workspace work continues.
 - NFR22: Status and audit summary queries must return within 500 ms p95 for bounded MVP inputs.
 - NFR23: Context queries must return within 2 seconds p95 for bounded MVP inputs.
-- NFR24: Provider and workspace operations may complete asynchronously when external Git provider latency or workspace size exceeds interactive response budgets; callers must receive operation identity and status visibility rather than blocking indefinitely.
-- NFR25: Context queries must define and enforce maximum files, maximum bytes, maximum result count, maximum query duration, timeout behavior, truncation behavior, and included/excluded result audit visibility.
-- NFR26: File tree, search, glob, metadata, and bounded range queries must protect the service from unbounded workspace scans.
-- NFR27: Large file and binary handling limits must be explicit before MVP release; unsupported files must fail with stable policy errors rather than causing unbounded processing.
-- NFR28: Provider calls must use explicit timeout budgets, retry limits, and backoff caps.
-- NFR29: Provider calls must report timeout, rate-limit, unavailable, partial-success, and unknown-outcome states rather than leaving callers waiting indefinitely.
-- NFR30: Provider rate-limit responses must preserve retry hints where available and expose retry-after or classified retryability.
+- NFR24: Performance targets apply to bounded MVP inputs and control-plane responses. Targets must be validated against implementation benchmarks and recalibrated before release if provider or runtime constraints make the initial target misleading.
+- NFR25: Provider and workspace operations may complete asynchronously when external Git provider latency or workspace size exceeds interactive response budgets; callers must receive operation identity and status visibility rather than blocking indefinitely.
+- NFR26: Context queries must define and enforce maximum files, maximum bytes, maximum result count, maximum query duration, timeout behavior, truncation behavior, and included/excluded result audit visibility.
+- NFR27: File tree, search, glob, metadata, and bounded range queries must protect the service from unbounded workspace scans.
+- NFR28: Large file and binary handling limits must be explicit before MVP release; unsupported files must fail with stable policy errors rather than causing unbounded processing.
+- NFR29: Provider calls must use explicit timeout budgets, retry limits, and backoff caps.
+- NFR30: Provider calls must report timeout, rate-limit, unavailable, partial-success, and unknown-outcome states rather than leaving callers waiting indefinitely.
+- NFR31: Provider rate-limit responses must preserve retry hints where available and expose retry-after or classified retryability.
 
 #### Scalability and Capacity
 
-- NFR31: The system must support multiple tenants, folders, repositories, workspaces, and concurrent agent tasks without shared mutable state causing cross-tenant or cross-task interference.
-- NFR32: Folder and workspace operations must be scoped by tenant and folder boundaries rather than relying on a single global operation bottleneck.
-- NFR33: Audit, timeline, and file-context projections must remain queryable as folder history grows.
-- NFR34: Large batches of file operations must remain traceable without making routine status, audit, or context queries unusable.
-- NFR35: MVP capacity targets must avoid assuming a single tenant, single repository, or single active workspace, while avoiding unsupported claims about massive scale before concrete load targets are defined.
+- NFR32: The system must support multiple tenants, folders, repositories, workspaces, and concurrent agent tasks without shared mutable state causing cross-tenant or cross-task interference.
+- NFR33: Folder and workspace operations must be scoped by tenant and folder boundaries rather than relying on a single global operation bottleneck.
+- NFR34: Audit, timeline, and file-context projections must remain queryable as folder history grows.
+- NFR35: Large batches of file operations must remain traceable without making routine status, audit, or context queries unusable.
+- NFR36: MVP capacity targets must avoid assuming a single tenant, single repository, or single active workspace, while avoiding unsupported claims about massive scale before concrete load targets are defined.
 
 #### Integration and Contract Compatibility
 
-- NFR36: REST, CLI, MCP, and SDK surfaces must preserve equivalent operation identity, lifecycle semantics, authorization behavior, error categories, status transitions, and audit outcomes; transport shape and UX may differ.
-- NFR37: Public contracts must be versioned; breaking changes to lifecycle commands, queries, error categories, workspace states, provider capabilities, or audit fields require an explicit new versioned contract.
-- NFR38: The product must support at least the active contract version and define a deprecation policy before removing any public lifecycle contract.
-- NFR39: Shared or generated contract tests must validate the same golden lifecycle scenarios across REST, CLI, MCP, and SDK.
-- NFR40: Generated SDKs, MCP tool definitions, CLI command schemas, and OpenAPI contracts must be derived from or validated against the same canonical lifecycle contract.
-- NFR41: GitHub and Forgejo support must be validated through provider contract tests before either provider is marked ready.
-- NFR42: Provider contract tests must cover only MVP-dependent lifecycle behavior: readiness, repository binding, branch/ref handling, file operations, commit, status, provider errors, and failure behavior.
-- NFR43: Supported GitHub and Forgejo API versions or behavior assumptions must be pinned or recorded so provider compatibility drift is visible.
-- NFR44: Provider capability differences must be reported explicitly instead of inferred by clients from failed operations.
-- NFR45: Provider failures (timeout, rate limit, auth failure, repository missing/conflict, branch/ref conflict, unavailable, invalid path, commit rejected, unknown outcome) must map to stable product error categories.
+- NFR37: REST, CLI, MCP, and SDK surfaces must preserve equivalent operation identity, lifecycle semantics, authorization behavior, error categories, status transitions, and audit outcomes; transport shape and UX may differ.
+- NFR38: Public contracts must be versioned. Breaking changes to lifecycle commands, queries, error categories, workspace states, provider capabilities, or audit fields require an explicit new versioned contract.
+- NFR39: The product must support at least the active contract version and define a deprecation policy before removing any public lifecycle contract.
+- NFR40: Shared or generated contract tests must validate the same golden lifecycle scenarios across REST, CLI, MCP, and SDK.
+- NFR41: Generated SDKs, MCP tool definitions, CLI command schemas, and OpenAPI contracts must be derived from or validated against the same canonical lifecycle contract.
+- NFR42: GitHub and Forgejo support must be validated through provider contract tests before either provider is marked ready.
+- NFR43: Provider contract tests must cover only MVP-dependent lifecycle behavior: readiness, repository binding, branch/ref handling, file operations, commit, status, provider errors, and failure behavior.
+- NFR44: Supported GitHub and Forgejo API versions or behavior assumptions must be pinned or recorded so provider compatibility drift is visible.
+- NFR45: Provider capability differences must be reported explicitly instead of inferred by clients from failed operations.
+- NFR46: Provider failures such as timeout, rate limit, authentication failure, authorization failure, repository missing, repository conflict, branch/ref conflict, unavailable provider, invalid path, commit rejected, and unknown outcome must map to stable product error categories.
 
 #### Observability, Auditability, and Replay
 
-- NFR46: Every successful, denied, failed, retried, duplicate, lock, file, commit, provider-readiness, and status-transition operation must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
-- NFR47: Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
-- NFR48: Allowed audit metadata must be explicitly classified; sensitive metadata (file paths, branch names, commit messages, repository names, provider error payloads) must be classified and protected through access control, hashing, truncation, or redaction.
-- NFR49: Operations-console views must be read-model–based, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata.
-- NFR50: Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
-- NFR51: Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
-- NFR52: The system must expose operational signals for provider readiness failures, stale projections, lock conflicts, dirty workspaces, failed commits, inaccessible workspaces, retryability, and cleanup status.
-- NFR53: Backup or recovery expectations must preserve durable events or authoritative records needed to rebuild status, audit, and timeline projections.
+- NFR47: Every successful, denied, failed, retried, duplicate, lock, file, commit, provider-readiness, and status-transition operation must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
+- NFR48: Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
+- NFR49: Allowed audit metadata must be explicitly classified. File paths, commit messages, repository names, branch names, and provider error payloads must be treated as potentially sensitive metadata.
+- NFR50: Sensitive audit metadata such as file paths, branch names, commit messages, repository names, and provider diagnostic payloads must be classified and protected through access control, hashing, truncation, or redaction where appropriate.
+- NFR51: Operations-console views must be read-model–based, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata.
+- NFR52: Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
+- NFR53: Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
+- NFR54: The system must expose operational signals for provider readiness failures, stale projections, lock conflicts, dirty workspaces, failed commits, inaccessible workspaces, retryability, and cleanup status.
+- NFR55: Backup or recovery expectations must preserve durable events or authoritative records needed to rebuild status, audit, and timeline projections.
 
 #### Data Retention and Cleanup
 
-- NFR54: Retention periods must be defined for audit metadata, workspace status, provider correlation IDs, projections, temporary working files, and cleanup records.
-- NFR55: Tenant deletion must define which records are deleted, tombstoned, retained for audit, or anonymized.
-- NFR56: Workspace cleanup visibility must state whether cleanup is automatic, best-effort, retryable, user-triggered, or status-only for MVP.
-- NFR57: Cleanup failures must be observable through status, reason code, retryability, timestamp, and correlation ID.
-- NFR58: No cleanup process may remove audit evidence required to reconstruct completed, failed, denied, retried, duplicate, or interrupted operations.
+- NFR56: Retention periods must be defined for audit metadata, workspace status, provider correlation IDs, projections, temporary working files, and cleanup records.
+- NFR57: Retention durations are policy decisions and must be defined before production release; the PRD requires explicit retention semantics but does not set final retention periods.
+- NFR58: Tenant deletion must define which records are deleted, tombstoned, retained for audit, or anonymized.
+- NFR59: Workspace cleanup visibility must state whether cleanup is automatic, best-effort, retryable, user-triggered, or status-only for MVP.
+- NFR60: Cleanup failures must be observable through status, reason code, retryability, timestamp, and correlation ID.
+- NFR61: No cleanup process may remove audit evidence required to reconstruct completed, failed, denied, retried, duplicate, or interrupted operations.
 
 #### Operations Console Accessibility
 
-- NFR59: Read-only operations console flows must target WCAG 2.2 AA.
-- NFR60: The console must support keyboard navigation for primary diagnostic workflows.
-- NFR61: Status, failure, readiness, and lock indicators must not rely on color alone.
-- NFR62: Console screens must provide visible focus states, semantic headings, readable table structure, and sufficient contrast.
-- NFR63: Console text, controls, and tables must remain readable at common browser zoom levels used by operators.
+- NFR62: Read-only operations console flows must target WCAG 2.2 AA.
+- NFR63: The console must support keyboard navigation for primary diagnostic workflows.
+- NFR64: Status, failure, readiness, and lock indicators must not rely on color alone.
+- NFR65: Console screens must provide visible focus states, semantic headings, readable table structure, and sufficient contrast.
+- NFR66: Console text, controls, and tables must remain readable at common browser zoom levels used by operators.
 
 #### Verification Expectations
 
-- NFR64: Each NFR category must have at least one automated verification path or documented manual validation path before MVP release.
-- NFR65: Security, tenant isolation, idempotency, provider contract, read-model determinism, and cross-surface contract compatibility NFRs must have automated tests.
-- NFR66: Performance, accessibility, retention, backup/recovery, and operations-console usability NFRs must have release validation evidence before MVP acceptance.
-- NFR67: Security verification must include dependency/package scanning, generated artifact review, and least-privilege provider credential validation.
+- NFR67: Each NFR category must have at least one automated verification path or documented manual validation path before MVP release.
+- NFR68: Security, tenant isolation, idempotency, provider contract, read-model determinism, and cross-surface contract compatibility NFRs must have automated tests.
+- NFR69: Performance, accessibility, retention, backup/recovery, and operations-console usability NFRs must have release validation evidence before MVP acceptance.
+- NFR70: Security verification must include dependency/package scanning, generated artifact review, and least-privilege provider credential validation.
 
 ### Additional Requirements
 
@@ -363,7 +374,38 @@ These come from the Architecture document and represent technical/infrastructure
 
 ### UX Design Requirements
 
-No standalone UX Design Specification document was produced for this MVP. UX/UI requirements for the read-only operations console are captured under **Additional Requirements → Read-Only Operations Console (Frontend)** (AR-UI-01 through AR-UI-07), driven by Architecture decisions F-1 through F-7. Story authoring should treat those AR items with the same rigor as UX-DRs from a UX spec.
+- UX-DR1: Build the MVP UI as a web/desktop-first operations console through Hexalith.FrontComposer Shell and Microsoft Fluent UI Blazor; do not introduce a separate component library or custom design system.
+- UX-DR2: Make workspace discovery the primary entry point with global search and state-first filters for tenant, folder, workspace ID, repository binding, task ID, correlation ID, provider, lifecycle state, failure category, and time window.
+- UX-DR3: Use a resource-detail console structure where search results lead to a workspace detail page anchored by tenant scope, resource identity, authorization posture, and current trust state.
+- UX-DR4: Keep tenant, folder, repository binding, workspace, provider, task, and authorization context visible before detailed evidence in workspace, folder, provider, access, and audit views.
+- UX-DR5: Implement a Workspace Trust Summary component on every workspace detail page showing tenant, folder, workspace ID, repository binding, provider, task ID, correlation ID, current state, authorization posture, lock state, dirty state, commit reference, latest reason category, and freshness timestamp.
+- UX-DR6: Implement a Tenant Scope Banner component showing safe tenant identifier, effective access state, principal or delegated actor summary, policy scope, and last authorization check.
+- UX-DR7: Implement a Metadata-Only Folder Tree or table that shows permitted path metadata, type, policy-safe size metadata or size class, last known operation, changed-path status, accessibility state, and redaction marker without exposing file contents or raw diffs.
+- UX-DR8: Implement a Diagnostic Timeline component for diagnosis and audit views showing timestamp, event category, actor/task/correlation metadata, result, state transition, reason category, retry or escalation posture, and safe detail text.
+- UX-DR9: Implement a Trust Matrix component comparing tenant boundary, provider readiness, workspace lifecycle, lock state, folder metadata visibility, and audit traceability with state label, icon, reason summary, last updated time, and link to supporting evidence.
+- UX-DR10: Implement a Redaction And Inaccessibility State component that distinguishes redacted, inaccessible, denied, unknown, missing, unavailable, stale, and failed data.
+- UX-DR11: Preserve the MVP read-only boundary in every UI flow: no mutation controls, repair actions, file editing, raw diff display, credential reveal, unrestricted file browsing, or unauthorized resource confirmation.
+- UX-DR12: Present folder metadata only as orientation and evidence; never make the console feel like a file manager or content browser.
+- UX-DR13: Use canonical state vocabulary consistently across search results, trust summaries, tables, timelines, detail panels, empty states, denied states, and redaction states.
+- UX-DR14: Every status indicator must include readable text, icon or shape cue, semantic color, accessible label, and optional tooltip or detail link when meaning is not obvious; color must never be the only signal.
+- UX-DR15: Visually and semantically distinguish ready, locked, dirty, committed, failed, inaccessible, delayed, unknown, redacted, stale, missing, unavailable, denied, and archived states.
+- UX-DR16: Use restrained Fluent UI-based visual foundations: neutral surfaces, high-contrast text, semantic status colors, compact typography, and an 8px spacing base suitable for dense operational work.
+- UX-DR17: Use cards only for distinct repeated items, summary blocks, and focused panels; avoid nested cards and decorative section cards.
+- UX-DR18: Structure workspace detail pages with predictable sections for overview, folder metadata, diagnosis, audit trail, provider readiness, lock/task history, and access evidence.
+- UX-DR19: Make current diagnosis and historical audit evidence connected from the workspace page rather than forcing users into disconnected pages for related evidence.
+- UX-DR20: Provide safe empty states that distinguish no matches, insufficient filter scope, unavailable read model, and denied access without leaking unauthorized resource existence.
+- UX-DR21: Provide denied states with safe reason category, allowed correlation ID evidence, and escalation posture without confirming unauthorized resource existence beyond policy.
+- UX-DR22: Provide redacted states that are visibly different from missing, unknown, unavailable, failed, and denied data; redaction must not be silently hidden or represented as truncation.
+- UX-DR23: Limit forms to search, filtering, sorting, and view preferences; forms must not submit domain mutations.
+- UX-DR24: Use dialogs only for read-only detail expansion, safe identifier copy confirmation, filter configuration, and explanatory evidence; dialogs must trap focus, restore focus on close, and have accessible titles.
+- UX-DR25: Preserve layout stability during loading states and label what is loading: search results, workspace summary, folder metadata, provider readiness, audit timeline, or access evidence.
+- UX-DR26: Show stale or delayed data with freshness timestamps and read-model status; do not present stale evidence as current without labeling it.
+- UX-DR27: Display safe identifiers such as task ID, operation ID, correlation ID, commit reference, and credential reference identifier in monospace with safe copy affordances only.
+- UX-DR28: Support desktop-first layouts with persistent navigation, global search, trust summaries, multi-column evidence panels, metadata tables, and side-by-side diagnosis or audit sections.
+- UX-DR29: Provide tablet and mobile fallback layouts that stack evidence panels, collapse persistent navigation, preserve search and filters, prioritize tenant/workspace/state/risk signal, and do not break core lookup or high-level trust review.
+- UX-DR30: Target WCAG 2.2 AA with keyboard access for search, filters, result selection, tabs, tables, tree expansion, detail panels, and dialogs; visible focus; semantic headings and landmarks; accessible names; sufficient contrast; zoom resilience; and screen-reader meaningful redaction/denial/status labels.
+- UX-DR31: Test the UI at desktop, tablet, and mobile fallback widths, at 125%, 150%, and 200% browser zoom, and with dense identifiers and long paths in tables, timelines, metadata trees, and trust summaries.
+- UX-DR32: Validate accessibility with automated checks, keyboard-only walkthroughs for the three critical journeys, screen reader review, forced-colors/high-contrast checks where supported, color-blindness review, and focus management checks.
 
 ### FR Coverage Map
 
@@ -430,6 +472,7 @@ No standalone UX Design Specification document was produced for this MVP. UX/UI 
 ### Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
 API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before feature work begins.
 **FRs covered:** FR1, FR2, FR3, FR43, FR47, FR50, FR51
+**Guardrails:** Epic 1 owns the canonical workspace state model, response envelope, error taxonomy, audit vocabulary, golden contract fixtures, negative/error contract cases, and schema compatibility gates that constrain Epics 2-6.
 
 ### Epic 2: Tenant-Scoped Folder Access And Lifecycle
 Tenant administrators and authorized actors can create folders, manage access, inspect effective permissions, archive folders, and receive safe authorization evidence with cross-tenant isolation enforced before any resource access.
@@ -438,26 +481,34 @@ Tenant administrators and authorized actors can create folders, manage access, i
 ### Epic 3: Provider Readiness And Repository Binding
 Platform engineers and authorized actors can configure Git providers, validate readiness, create repository-backed folders, bind existing repositories, define branch/ref policy, and inspect provider capability evidence without exposing secrets.
 **FRs covered:** FR7, FR15, FR16, FR17, FR18, FR19, FR20, FR21, FR22, FR23, FR57
+**UX/evidence guardrails:** Provider readiness and repository binding stories must preserve explainable readiness states, degraded states, safe blockers, retryability, and secret-safe evidence that Epic 6 can render without inventing UI-only semantics.
 
 ### Epic 4: Repository-Backed Workspace Task Lifecycle
 Developers and AI agents can prepare workspaces, acquire locks, mutate files safely, query bounded context, commit changes, and receive deterministic failure, status, idempotency, and redaction behavior through the canonical repository-backed task lifecycle.
 **FRs covered:** FR24, FR25, FR26, FR27, FR28, FR29, FR30, FR31, FR32, FR33, FR34, FR35, FR37, FR38, FR39, FR40, FR41, FR42, FR43, FR44, FR45, FR46, FR55
+**Risk guardrails:** Lifecycle stories must expose coherent user-facing status language and evidence for prepare, lock, file mutation, context query, commit, audit, lock contention, stale locks, interrupted commits, provider outage, and tenant isolation under parallel activity.
 
 ### Epic 5: Cross-Surface Workflow Parity
 API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalent operation identity, errors, idempotency, audit behavior, authorization outcomes, terminal states, and mixed-surface handoff.
 **FRs covered:** FR47, FR48, FR49, FR50, FR51
+**Verification guardrails:** Parity must be proven through shared conformance tests and the generated parity oracle, not surface-by-surface manual equivalence. REST, SDK, CLI, MCP, and console-facing evidence must use the same concepts, names, error categories, and audit model.
 
-### Epic 6: Read-Only Operations Console And Audit Review
-Operators and audit reviewers can inspect readiness, locks, dirty state, failures, commits, timelines, provider evidence, and metadata-only audit records through a read-only console without mutation or file-content exposure.
+### Epic 6: Read-Only Workspace Trust Console And Audit Review
+Operators, tenant administrators, and audit reviewers can find a workspace, prove its tenant boundary, inspect readiness, locks, dirty state, failures, commits, provider evidence, metadata-only folder visibility, timelines, and audit records through a FrontComposer/Fluent UI read-only console without mutation or file-content exposure.
 **FRs covered:** FR31, FR36, FR45, FR46, FR52, FR53, FR54, FR55, FR56, FR57
+**UX requirements covered:** UX-DR1-UX-DR32, with UX-DR31 and UX-DR32 also release-evidenced through Workstream 7.
+**Console guardrails:** The primary job is inspect, verify, and escalate. Users can search, filter, navigate, inspect, and copy safe identifiers, but the console must consume shared query/status/audit/readiness APIs only and must not expose mutation endpoints, privileged backdoors, hidden administrative bypasses, or UI-only lifecycle semantics.
 
-### Release Readiness Workstream 7: MVP Operational Acceptance And Evidence
-Release reviewers, operators, and maintainers can accept the MVP for production only when safety, contract, deployment, observability, retention, documentation, package-traceability, and NFR evidence are complete.
+### Release Readiness Workstream 7: MVP Release Readiness And Operational Evidence
+Release stakeholders can verify that the MVP satisfies security, tenant isolation, parity, provider compatibility, Dapr policy, retention, observability, capacity, accessibility, documentation, package-traceability, and NFR traceability evidence before production acceptance.
 **FRs covered:** Cross-cutting validation for all FRs; no new product FR scope.
+**Evidence guardrails:** Readiness evidence is collected continuously from Epics 1-6 and must cover REST, SDK, CLI, MCP, console, tenant isolation, audit completeness, performance baselines, accessibility, operational runbooks, and NFR traceability before MVP acceptance.
 
 ## Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
 
 API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before feature work begins.
+
+This epic owns the canonical workspace state model, cross-surface response envelope, error taxonomy, audit vocabulary, golden contract fixtures, negative/error contract cases, and schema compatibility gates that constrain every later implementation epic.
 
 ### Story 1.1: Establish a consumer-buildable module scaffold
 
@@ -537,6 +588,7 @@ So that every capability group uses the same contract language.
 **Given** the Phase 0.5 decisions are complete
 **When** the OpenAPI 3.1 Contract Spine foundation is authored
 **Then** shared conventions for auth, idempotency, correlation, pagination, freshness, errors, lifecycle states, audit metadata, and sensitive metadata are present
+**And** the canonical workspace state model, cross-surface response envelope, error taxonomy, and audit vocabulary are defined as shared contract primitives rather than per-surface conventions
 **And** all `x-hexalith-*` extensions required by architecture C0 are declared.
 
 ### Story 1.7: Author tenant, folder, provider, and repository-binding contract groups
@@ -633,7 +685,8 @@ So that cross-surface tests consume one source of truth for transport and behavi
 **Given** the Contract Spine declares parity metadata
 **When** the parity-oracle generator runs
 **Then** `tests/fixtures/parity-contract.yaml` is generated and schema-validated
-**And** rows include both transport-parity and behavioral-parity columns.
+**And** rows include both transport-parity and behavioral-parity columns
+**And** golden lifecycle fixtures plus negative/error contract cases are generated or referenced so downstream conformance tests can prove compatibility without hand-authored surface assumptions.
 
 ### Story 1.14: Wire Contract Spine drift and generated-client CI gates
 
@@ -820,9 +873,10 @@ So that GitHub, Forgejo, and future providers can expose differences without cha
 
 **Acceptance Criteria:**
 
-**Given** provider adapters are implemented behind a port
-**When** capabilities are queried
-**Then** supported operations, branch/ref behavior, file limits, credential mode, and failure categories are exposed as metadata
+**Given** the provider port and a fake/test provider adapter exist
+**When** capabilities are queried through the port
+**Then** supported operations, branch/ref behavior, file limits, credential mode, version/capability metadata, retryability hints, and failure categories are exposed as metadata
+**And** capability-query behavior is validated without depending on future GitHub or Forgejo adapter implementation
 **And** the model is not hardcoded to exactly two providers.
 
 ### Story 3.3: Implement GitHub provider adapter
@@ -847,6 +901,11 @@ So that Forgejo support is verified against pinned API behavior.
 **Acceptance Criteria:**
 
 **Given** supported Forgejo versions are listed
+**When** readiness, repository creation or binding, branch/ref, file, commit, status, and provider failure operations are exercised through the canonical provider port
+**Then** the Forgejo adapter returns canonical provider results and failure categories equivalent to GitHub where the product semantics match
+**And** branch/ref handling, file-operation limits, commit behavior, status mapping, and unknown provider outcomes are covered by contract tests
+**And** ambiguous or partially applied Forgejo responses return `unknown_provider_outcome` or `reconciliation_required` rather than silent retry
+**And** supported Forgejo version snapshots are pinned
 **When** contract tests and nightly drift checks run
 **Then** schema drift is classified as warning or failure according to policy
 **And** readiness cannot report ready for an unsupported or failing provider version.
@@ -1086,10 +1145,10 @@ So that final state, retry eligibility, and client action are explainable.
 
 **Acceptance Criteria:**
 
-**Given** a lifecycle command or status surface returns a failure available by this point
+**Given** provider readiness, repository binding, workspace preparation, lock acquisition or release, file mutation, context query, commit, cleanup-status, read-model freshness, or authorization evaluation returns a failure
 **When** the response is produced
-**Then** it includes final state per C6, retry eligibility, retry-after hint when known, correlation ID, and categorized reason
-**And** metadata needed by later audit/projection stories is included without changing the canonical error shape.
+**Then** it includes final state per C6, retry eligibility, retry-after hint when known, correlation ID, operation ID where available, task ID where applicable, sanitized reason category, client action, and metadata-only supporting details
+**And** audit/projection consumers receive the required evidence fields without changing the canonical error shape.
 
 ### Story 4.14: Emit metadata-only audit and observability
 
@@ -1128,6 +1187,7 @@ So that secret safety, path safety, encoding stability, and tenant isolation are
 **Given** lifecycle operations and fixtures exist
 **When** security boundary tests run
 **Then** sentinel, path, encoding, and cross-tenant negative cases fail on any leak or unsafe acceptance
+**And** parallel tenant/task scenarios prove lock contention, stale-lock behavior, interrupted lifecycle attempts, and cross-tenant identifiers cannot leak or mutate another tenant's workspace
 **And** denied operations produce safe error shapes and metadata-only audit evidence.
 
 ### Story 4.17: Seed lifecycle capacity test harness
@@ -1146,6 +1206,8 @@ So that lifecycle scenarios capture capacity dimensions early and provide reusab
 ## Epic 5: Cross-Surface Workflow Parity
 
 API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalent operation identity, errors, idempotency, audit behavior, authorization outcomes, terminal states, and mixed-surface handoff.
+
+Parity is verified through generated oracle rows and shared conformance tests reused across surfaces, not by manual comparison of independently implemented behavior.
 
 ### Story 5.1: Ship SDK convenience helpers, samples, and quickstart
 
@@ -1197,6 +1259,7 @@ So that adapter behavior cannot drift from the canonical contract.
 **Given** `parity-contract.yaml` exists
 **When** CLI and MCP tests run
 **Then** behavioral-parity columns drive assertions for pre-SDK errors, key sourcing, correlation sourcing, exit codes, and failure kinds
+**And** shared conformance scenarios are reused across CLI and MCP where behavior should match
 **And** missing rows or unsupported categories fail tests.
 
 ### Story 5.5: Validate golden lifecycle parity across REST and SDK
@@ -1210,6 +1273,7 @@ So that transport parity is proven before CLI and MCP adapter behavior is layere
 **Given** REST endpoints and SDK client are available
 **When** the golden lifecycle scenario runs through both surfaces
 **Then** operation identity, authorization, errors, idempotency, audit metadata, correlation, and terminal states match oracle expectations
+**And** shared conformance fixtures cover the canonical flow of provider readiness, repository binding, prepare, lock, file change, commit, context query, status, and audit inspection
 **And** any transport drift fails loudly.
 
 ### Story 5.6: Validate behavioral parity across CLI and MCP
@@ -1223,7 +1287,7 @@ So that adapter-specific UX does not change product semantics.
 **Given** CLI and MCP surfaces wrap the SDK
 **When** behavioral parity tests run
 **Then** credential sourcing, usage errors, idempotency-key sourcing, correlation defaults, CLI exit codes, and MCP failure kinds match the Adapter Parity Contract
-**And** adapters preserve canonical error categories.
+**And** adapters preserve canonical names, state language, evidence fields, and error categories.
 
 ### Story 5.7: Validate mixed-surface handoff scenario
 
@@ -1238,9 +1302,12 @@ So that real integrations can hand off work without losing state or auditability
 **Then** task ID, correlation ID, operation IDs, audit records, and terminal state remain coherent
 **And** any surface-specific drift in idempotency replay or error category fails the scenario.
 
-## Epic 6: Read-Only Operations Console And Audit Review
+## Epic 6: Read-Only Workspace Trust Console And Audit Review
 
-Operators and audit reviewers can inspect readiness, locks, dirty state, failures, commits, timelines, provider evidence, and metadata-only audit records through a read-only console without mutation or file-content exposure.
+Operators, tenant administrators, and audit reviewers can find a workspace, prove its tenant boundary, inspect readiness, locks, dirty state, failures, commits, provider evidence, metadata-only folder visibility, timelines, and audit records through a FrontComposer/Fluent UI read-only console without mutation or file-content exposure.
+
+This epic implements UX-DR1 through UX-DR30 directly; UX-DR31 and UX-DR32 are verified through Story 6.11 and release-evidenced through Workstream 7.
+Epic 6 owns the console experience, while Epics 3-5 own the readiness, lifecycle, parity, status, and evidence semantics that make the console truthful. Console stories must consume those shared semantics rather than defining UI-only state names or hidden control paths.
 
 ### Story 6.1: Audit and operation-timeline query endpoints
 
@@ -1304,12 +1371,15 @@ So that implementation of diagnostic pages follows reviewed information hierarch
 
 **Acceptance Criteria:**
 
-**Given** PRD console requirements, architecture decisions F-1 through F-7, and the FrontComposer technical research exist
+**Given** PRD console requirements, architecture decisions F-1 through F-7, the FrontComposer technical research, and `_bmad-output/planning-artifacts/ux-design-specification.md` exist
 **When** console wireflow notes are authored
 **Then** folder, workspace, provider, audit, incident-mode, redaction, loading, empty, and error states are described under `docs/ux/ops-console-wireflows.md`
 **And** the notes identify FrontComposer shell layout, navigation, projection-view composition, tenant/user context expectations, read-only command-suppression behavior, and generated/custom projection boundaries
-**And** the notes identify keyboard-navigation, focus, non-color-only status, zoom readability, and redaction-vs-missing expectations for Epic 6 stories
-**And** Stories 6.6, 6.7, 6.8, 6.9, and 6.10 cannot begin implementation until `docs/ux/ops-console-wireflows.md` exists and has been reviewed against PRD console requirements, architecture decisions F-1 through F-7, and the FrontComposer technical research.
+**And** the notes identify UX-DR1 through UX-DR30 implementation expectations, including keyboard-navigation, focus, non-color-only status, zoom readability, responsive fallback, and redaction-vs-missing behavior for Epic 6 stories
+**And** the notes map UX-DR1 through UX-DR32 to owning and supporting stories, marking console-only requirements separately from cross-surface readiness, lifecycle, parity, status, and evidence semantics
+**And** the notes define the shared visible status taxonomy for readiness, locked, prepared, dirty, committed, audited, failed, stale, unavailable, inaccessible, redacted, and unknown states
+**And** primary diagnostic flows answer what happened, who or what caused it, when it happened, from which surface it came, and whether the evidence can be trusted
+**And** Stories 6.6, 6.7, 6.8, 6.9, and 6.10 cannot begin implementation until `docs/ux/ops-console-wireflows.md` exists and has been reviewed against PRD console requirements, architecture decisions F-1 through F-7, the UX design specification, and the FrontComposer technical research.
 
 ### Story 6.6: Build folder and workspace diagnostic pages
 
@@ -1387,13 +1457,15 @@ So that the MVP console satisfies its safety and accessibility promises.
 **Given** the console is feature complete
 **When** verification runs
 **Then** automated and manual checks confirm no mutation paths, credential reveal, file-content browsing, file editing, raw diff display, hidden repair action, or unrestricted filesystem browsing
-**And** keyboard navigation, focus states, semantic headings, readable tables, contrast, zoom readability, and non-color-only indicators meet WCAG 2.2 AA expectations.
+**And** responsive checks cover desktop, tablet, and mobile fallback widths with dense identifiers and long paths in tables, timelines, metadata trees, and trust summaries
+**And** browser zoom checks at 125%, 150%, and 200% confirm text, controls, tables, and key workflows remain readable and usable
+**And** accessibility validation covers automated checks, keyboard-only walkthroughs for the three critical journeys, screen reader review for summary/folder/redaction/audit flows, forced-colors or high-contrast checks where supported, color-blindness review, focus management, semantic headings, readable tables, contrast, and non-color-only indicators against WCAG 2.2 AA expectations.
 
-## Release Readiness Workstream 7: MVP Operational Acceptance And Evidence
+## Release Readiness Workstream 7: MVP Release Readiness And Operational Evidence
 
-Release reviewers, operators, and maintainers can accept the MVP for production only when safety, contract, deployment, observability, retention, documentation, package-traceability, and NFR evidence are complete.
+Release stakeholders can verify that the MVP satisfies security, tenant isolation, parity, provider compatibility, Dapr policy, retention, observability, capacity, accessibility, documentation, package-traceability, and NFR traceability evidence before production acceptance.
 
-This workstream is not a product FR-bearing epic. It is a release-readiness gate that consumes evidence from Epics 1-6 and blocks MVP acceptance when required evidence is missing. Sprint planning must treat these items as release governance and hardening work, not as a peer product capability increment.
+This workstream is not a product FR-bearing epic. It is a release-readiness gate that continuously consumes evidence from Epics 1-6 and blocks MVP acceptance when required evidence is missing. Sprint planning must treat these items as release governance and hardening work, not as a peer product capability increment.
 
 ### Story 7.1: Deploy production Dapr deny-by-default access control
 
@@ -1458,6 +1530,7 @@ So that public surface drift is caught before merge.
 **Given** Contract Spine, generated client, and parity oracle artifacts exist
 **When** `.github/workflows/ci.yml` runs
 **Then** server-vs-spine validation, generated-client consistency, parity-oracle schema validation, and cross-surface parity checks execute
+**And** shared conformance tests cover REST, SDK, CLI, MCP, and mixed-surface golden workflows
 **And** failures block merge with actionable artifact names.
 
 ### Story 7.6: Consolidate security and redaction CI gates
@@ -1601,6 +1674,7 @@ So that MVP acceptance can prove non-functional coverage rather than rely on nar
 **Given** release gates, architecture exit criteria, and story evidence exist
 **When** `docs/exit-criteria/nfr-traceability.md` is published
 **Then** every PRD NFR bullet maps to story IDs, architecture exit criteria, automated gates, manual validation evidence, or release artifacts
+**And** evidence includes tenant-isolation/security gates, audit completeness, workspace status/context-query performance baselines, CLI/MCP smoke tests, console accessibility/responsive validation, and operational runbook proof
 **And** missing NFR evidence fails the release-readiness review.
 
 ### Story 7.17: Publish ADR set and maintenance runbooks
