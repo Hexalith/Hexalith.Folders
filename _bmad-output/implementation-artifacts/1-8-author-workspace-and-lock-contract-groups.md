@@ -27,6 +27,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
 13. Given each workspace/lock operation must be reviewable independently, when `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `GetWorkspaceLock`, `GetWorkspaceRetryEligibility`, and `GetWorkspaceTransitionEvidence` are authored, then each operation declares its owned scope, idempotency or read-consistency vocabulary, authorization outcomes, canonical Problem Details, audit metadata, synthetic examples, parity dimensions, and reused Story 1.6/1.7 components or explicit `TODO(reference-pending)` markers.
 14. Given this is a contract-only story, when OpenAPI descriptions, schemas, examples, notes, and validation assets are authored, then they describe externally observable contract states, evidence shapes, retry eligibility, freshness metadata, lease metadata, and Problem Details only; they do not prescribe worker or process-manager behavior, aggregate logic, event sequencing, storage mechanics, EventStore implementation details, Tenants implementation details, or runtime lock enforcement.
 15. Given adopters need stable diagnostics without policy leakage, when C6 transition evidence, retry eligibility, authorization revocation, and lock lease metadata are exposed, then contract shapes include current state, attempted transition where applicable, result, reason code, evidence timestamp, correlation/audit metadata, read freshness, lock identity, lease status, acquired/effective timestamp, expiry timestamp, and holder/audit reference where appropriate, while deferring exact retry policy, lease duration defaults, renewal policy, clock-skew policy, audit taxonomy expansion, and runtime revocation mechanics to approved source documents.
+16. Given lock ownership proof can be confused with authentication secrets, when lock owner, holder, or token-shaped fields are authored, then each field is explicitly documented as a non-secret opaque lock proof within tenant/folder/workspace/task scope, never as a bearer credential, provider credential, session secret, refresh token, or authorization override; examples and diagnostics redact or omit the value unless the caller is already authorized for that lock scope.
 
 ## Tasks / Subtasks
 
@@ -36,6 +37,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml` if present; treat missing files as prerequisite drift, not permission to invent policy.
   - [ ] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, and `docs/exit-criteria/s2-oidc-validation.md` if present; unresolved values must stay reference-pending.
   - [ ] Create an operation-by-operation mapping for `PrepareWorkspace`, `LockWorkspace`, `ReleaseWorkspaceLock`, `GetWorkspaceLock`, `GetWorkspaceRetryEligibility`, and `GetWorkspaceTransitionEvidence` covering scope, idempotency or freshness, authorization outcomes, Problem Details, audit metadata, examples, parity dimensions, and component reuse.
+  - [ ] Record unresolved values per operation as deferred decisions with source path or decision owner; do not hide them in generic TODO text or resolve them by inventing local policy.
   - [ ] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
   - [ ] Do not add runtime behavior, generated SDK output, NSwag configuration, CLI/MCP tools, provider adapters, workers, UI, final parity rows, or CI gates.
   - [ ] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
@@ -54,6 +56,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Declare single-active-writer semantics per tenant/folder/workspace scope and deterministic conflict outcomes for competing tasks.
   - [ ] Include lease duration, lease expiry, stale/expired/abandoned/interrupted lock metadata, retry eligibility, and renewal or revalidation hints only as contract metadata; do not implement a lock manager.
   - [ ] Declare idempotency equivalence for lock acquisition and release using tenant/folder/workspace scope, task ID, lock intent, lock token or owner where applicable, and behavior-affecting lease policy fields. Keep fields lexicographically ordered.
+  - [ ] Mark lock ownership proof fields as non-secret opaque lock references in schema descriptions, examples, and validation allow-lists; do not let `token` wording introduce auth, provider, session, refresh, or credential semantics.
   - [ ] Model authorization revocation during a held lock as a visible contract outcome using the C6 vocabulary and safe Problem Details; do not silently preserve or discard a lock without inspectable state.
   - [ ] Include `workspace_locked`, `lock_conflict`, `lock_expired`, `lock_not_owned`, `state_transition_invalid`, `tenant_access_denied`, `idempotency_conflict`, `read_model_unavailable`, and `reconciliation_required` categories where the canonical error vocabulary supports them; mark any missing category as reference-pending.
 - [ ] Author lock inspection, state-transition, and retry-eligibility query operations. (AC: 1, 5, 6, 12)
@@ -63,6 +66,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Represent C6 states and operator-disposition labels in reusable schemas or references, including `requested`, `preparing`, `ready`, `locked`, `changes_staged`, `dirty`, `committed`, `failed`, `inaccessible`, `unknown_provider_outcome`, and `reconciliation_required`.
   - [ ] Represent retry eligibility as metadata-only: retryable flag, retry-after hint where applicable, canonical reason code, correlation ID, task ID, and current state. Do not expose provider payloads, local paths, raw branch names, file contents, or unauthorized resource existence.
   - [ ] Define `GetWorkspaceTransitionEvidence` as contract evidence only: current state, attempted transition, result, reason code, evidence timestamp, correlation/audit metadata, and freshness indicator. Do not expose internal event schemas, storage keys, worker behavior, or payload-carried tenant authority.
+  - [ ] Ensure unauthorized, absent, cross-tenant, expired, and stale-lock inspection paths cannot be distinguished unless an approved diagnostic contract already establishes caller authority and audience.
   - [ ] Add synthetic examples for valid transition evidence, invalid transition Problem Details, revoked authorization, expired lease, retry eligible, and retry blocked.
   - [ ] Keep commit evidence, dirty-file status, file-context status, audit timeline, and operations-console projection query groups deferred to Stories 1.9 through 1.11.
 - [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 4, 5, 7, 11)
@@ -73,6 +77,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Ensure every operation declares canonical error categories, authorization requirement, correlation behavior, audit classification, lifecycle/state metadata where applicable, and parity dimensions.
   - [ ] Add a canonical Problem Details matrix by operation class for invalid transition, lock conflict, expired lease, retry not eligible, authorization revoked, not found or safe denial, stale read or unavailable freshness, idempotency conflict, and validation failure.
   - [ ] Use safe-denial examples that are externally indistinguishable for unauthorized, absent, cross-tenant, missing workspace, missing lock, missing task, missing repository binding, and stale-read cases unless an already-authorized diagnostic endpoint explicitly permits more detail.
+  - [ ] Do not add tenant ID as an authoritative path, query, body, or client-controlled header value; if prerequisite components require a tenant path segment, record the conflict as reference-pending instead of normalizing around it locally.
   - [ ] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
 - [ ] Add focused offline validation. (AC: 7, 9, 11, 12)
   - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
@@ -83,6 +88,7 @@ so that task lifecycle entry and concurrency behavior are canonical before imple
   - [ ] Verify examples are synthetic, metadata-only, and contain no file contents, diffs, provider tokens, credential material, production URLs, real organization identifiers, real tenant IDs, or local machine paths.
   - [ ] Verify safe-denial examples for unauthorized, absent, cross-tenant, missing workspace, missing lock, missing task, provider uncertainty, and stale-read cases use externally indistinguishable shapes where existence must not be inferred.
   - [ ] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
+  - [ ] Verify every allowed lock ownership proof exception has a non-secret schema description, synthetic opaque example, no provider/auth/session wording, and no appearance in unauthorized Problem Details or audit diagnostics where existence must remain hidden.
   - [ ] Verify no forbidden project/runtime references are introduced in the Contract Spine: Server, Client, CLI, MCP, UI, Workers, process managers, domain aggregate behavior, `Hexalith.EventStore`, or `Hexalith.Tenants`.
   - [ ] Verify the six operation groups reuse shared Story 1.6/1.7 components where available and that operation parity covers tenant/folder/workspace/task scope, idempotency or freshness, Problem Details, audit metadata, examples, authorization outcomes, and C6 evidence references.
   - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
@@ -135,6 +141,7 @@ docs/contract/workspace-lock-contract-groups.md
 - Tenant authority comes from auth context and EventStore envelopes. Payloads may include resource IDs to validate, but never authoritative tenant context.
 - Workspace identity should be opaque and scoped by tenant, folder, repository binding, branch/ref policy, and task. Local working-copy paths are disposable cache metadata, never contract identity.
 - Lock identity and ownership should be opaque. A lock token or owner reference may prove ownership within a tenant-scoped workspace context, but it must not reveal internal storage keys, local paths, provider details, or unauthorized resource existence.
+- Treat any lock token or holder reference as a scoped contract proof, not as an authentication secret or provider credential. Schema descriptions and examples must make this distinction explicit so the forbidden-secret validator can allow only these narrow fields.
 - Provider calls and filesystem work are asynchronous side effects owned by workers and process managers. Contract operations should expose accepted task/status metadata and failure categories, not implement the side effects.
 - State-transition evidence must respect C6: every listed transition is canonical, and every unlisted state/event pair rejects with `state_transition_invalid` and leaves state unchanged.
 - Operator-disposition labels are part of the contract metadata for status consumers. The labels are not decorative UI text; they drive diagnostic and parity expectations.
@@ -245,6 +252,7 @@ Do not add file mutation, context query, commit, audit timeline, or operations-c
 |---|---|---|
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-11 | Applied party-mode review hardening for operation mapping, contract/runtime boundary, tenant authority, C6 evidence, Problem Details, idempotency/freshness, lock metadata, and validation expectations. | Codex |
+| 2026-05-12 | Applied advanced-elicitation hardening for lock ownership proof, safe-denial indistinguishability, deferred-decision precision, and validation exceptions. | Codex |
 
 ## Party-Mode Review
 
@@ -255,6 +263,18 @@ Do not add file mutation, context query, commit, audit timeline, or operations-c
 - Findings summary: all reviewers found the story directionally viable but too ambiguous for immediate development without explicit operation-by-operation obligations, stronger contract-only boundaries, tenant-authority negative checks, reusable idempotency/freshness vocabulary, C6 transition evidence shape, lock lease metadata, canonical Problem Details coverage, and focused OpenAPI validation expectations.
 - Changes applied: added acceptance criteria for operation-level reviewability, contract/runtime separation, and diagnostic metadata boundaries; added subtasks for operation mapping, C6 evidence examples, Problem Details matrix, reusable idempotency/freshness vocabulary, tenant-authority validation, forbidden-reference checks, and parity coverage; added dev notes capturing party-mode hardening constraints.
 - Findings deferred: exact retry eligibility policy, lease duration defaults, renewal policy, clock-skew policy, expanded audit taxonomy, and runtime authorization-revocation mechanics remain deferred to approved source documents or `TODO(reference-pending)` markers.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date: 2026-05-12T01:03:52Z
+- Selected story key: `1-8-author-workspace-and-lock-contract-groups`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-8-author-workspace-and-lock-contract-groups`
+- Batch 1 method names: Red Team vs Blue Team; Security Audit Personas; Failure Mode Analysis; Self-Consistency Validation; Critique and Refine.
+- Reshuffled Batch 2 method names: Pre-mortem Analysis; First Principles Analysis; Socratic Questioning; Comparative Analysis Matrix; Occam's Razor Application.
+- Findings summary: elicitation found the story was broadly ready but still had ambiguity around token-shaped lock ownership fields, safe-denial distinguishability during lock inspection, vague deferred TODO handling, and validator exceptions that could accidentally permit credential-shaped names.
+- Changes applied: added an acceptance criterion for non-secret opaque lock ownership proof; added subtasks for per-operation deferred-decision tracking, lock ownership proof descriptions, safe-denial indistinguishability, tenant-authority conflict handling, and narrow validator exceptions; added dev guidance clarifying lock proof versus authentication secrets.
+- Findings deferred: exact retry eligibility policy, lease duration defaults, renewal policy, clock-skew policy, expanded audit taxonomy, runtime authorization-revocation mechanics, and any prerequisite tenant path conflict remain deferred to approved source documents or explicit `TODO(reference-pending)` markers.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
