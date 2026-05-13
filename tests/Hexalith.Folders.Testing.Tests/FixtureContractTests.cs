@@ -25,8 +25,22 @@ public sealed class FixtureContractTests
     ];
 
     private static readonly Regex SecretShapedValue = new(
-        @"(AKIA[0-9A-Z]{16})|(ASIA[0-9A-Z]{16})|(gh[pousr]_[A-Za-z0-9_]{30,})|(-----BEGIN [A-Z ]*PRIVATE KEY-----)|(AccountKey=)",
+        @"(AKIA[0-9A-Z]{16})|(ASIA[0-9A-Z]{16})|(gh[pousr]_[A-Za-z0-9_]{30,})|(-----BEGIN [A-Z ]*PRIVATE KEY-----)|(AccountKey=)|(\bclient_secret\b[""']?\s*[:=])|(\bclientSecret\b[""']?\s*[:=])",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly string[] CredentialMaterialMarkers =
+    [
+        "BEGIN PRIVATE KEY",
+        "DefaultEndpointsProtocol=",
+        "password=",
+        "client_secret=",
+        "client_secret:",
+        "clientSecret=",
+        "clientSecret\":",
+        "https://api.github.com",
+        "https://github.com/Hexalith",
+        "diff --git"
+    ];
 
     [Fact]
     public void NormativeFixturesAreParseableAndCarryOwnershipMetadata()
@@ -95,6 +109,13 @@ public sealed class FixtureContractTests
     }
 
     [Fact]
+    public void SecretShapedValueRegexCoversOAuthClientSecretMarkers()
+    {
+        SecretShapedValue.IsMatch("client_secret=SYNTHETIC-VALUE").ShouldBeTrue();
+        SecretShapedValue.IsMatch("\"clientSecret\":\"SYNTHETIC-VALUE\"").ShouldBeTrue();
+    }
+
+    [Fact]
     public void SeededFixturesAvoidRealDataAndProductionMaterial()
     {
         string root = RepositoryRoot();
@@ -112,12 +133,10 @@ public sealed class FixtureContractTests
         {
             string content = File.ReadAllText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
 
-            content.ShouldNotContain("BEGIN PRIVATE KEY", Case.Insensitive, $"{relativePath} must not contain private key material.");
-            content.ShouldNotContain("DefaultEndpointsProtocol=", Case.Insensitive, $"{relativePath} must not contain storage connection strings.");
-            content.ShouldNotContain("password=", Case.Insensitive, $"{relativePath} must not contain credential material.");
-            content.ShouldNotContain("https://api.github.com", Case.Insensitive, $"{relativePath} must not contain production provider URLs.");
-            content.ShouldNotContain("https://github.com/Hexalith", Case.Insensitive, $"{relativePath} must not contain production repository URLs.");
-            content.ShouldNotContain("diff --git", Case.Insensitive, $"{relativePath} must not contain diffs or file contents.");
+            foreach (string marker in CredentialMaterialMarkers)
+            {
+                content.ShouldNotContain(marker, Case.Insensitive, $"{relativePath} must not contain credential material, production endpoints, diffs, or file contents.");
+            }
         }
     }
 

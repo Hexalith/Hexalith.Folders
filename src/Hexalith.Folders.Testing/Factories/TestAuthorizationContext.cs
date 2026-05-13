@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Hexalith.Folders.Testing.Factories;
 
 public sealed record TestAuthorizationContext(
@@ -5,5 +7,5 @@ public sealed record TestAuthorizationContext(
     string ManagedTenantId,
     IReadOnlyList<string> Permissions)
 {
-    public string TenantClaimJson => $"[\"{ManagedTenantId}\"]";
+    public string TenantClaimJson => JsonSerializer.Serialize(new[] { ManagedTenantId });
 }

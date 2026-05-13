@@ -22,4 +22,13 @@ public sealed class TestRequestHeadersTests
         headers[TestRequestHeaders.CorrelationId].ShouldBe("correlation-001");
         headers[TestRequestHeaders.IdempotencyKey].ShouldBe("idempotency-001");
     }
+
+    [Fact]
+    public void HeadersRejectControlCharacters()
+    {
+        TestFolderContext context = FoldersTestDataFactory.FolderContext(
+            new TestFolderContextOverrides(CorrelationId: "correlation-001\r\nX-Injected: value"));
+
+        Should.Throw<ArgumentException>(() => TestRequestHeaders.FromFolderContext(context));
+    }
 }

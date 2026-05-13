@@ -1,6 +1,6 @@
 # Story 1.1: Establish a consumer-buildable module scaffold
 
-Status: in-progress
+Status: done
 
 Created: 2026-05-10
 
@@ -231,6 +231,7 @@ The source, test, and sample inventories above are exact for this story. Additio
 | 2026-05-10 | Party-mode review applied scaffold inventory, dependency graph, clean-build, and submodule guard clarifications. | Codex |
 | 2026-05-10 | Advanced elicitation pass applied exact-inventory, metadata-driven smoke-test, compile-only placeholder, and deferral guardrails. | Codex |
 | 2026-05-10 | Implemented scaffold, smoke tests, fixtures, docs placeholders, and verified restore/build/test. | Codex |
+| 2026-05-12 | Addressed seven story 1.1 review patch findings and revalidated build/test. | Codex |
 
 ## Party-Mode Review
 
@@ -298,6 +299,9 @@ Codex GPT-5
 - `dotnet build .\Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors after making `Hexalith.Folders.Server` a minimal executable Web SDK host for AppHost compatibility.
 - `dotnet test .\Hexalith.Folders.slnx --no-build` passed: 13 tests across 11 test assemblies.
 - Final `dotnet restore .\Hexalith.Folders.slnx` passed and final `dotnet build .\Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors.
+- `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore` initially failed after adding review-regression tests, then passed with 35 tests after implementing the review patches.
+- `dotnet build Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors after the 2026-05-12 review patch work.
+- `dotnet test Hexalith.Folders.slnx --no-restore` passed with 56 tests across the solution after the 2026-05-12 review patch work.
 
 ### Completion Notes List
 
@@ -318,12 +322,15 @@ Implementation specifics:
 - The load-test and parity-oracle-generator areas are non-runnable placeholder directories because runnable capacity/load infrastructure and the parity oracle generator are deferred to later stories.
 - No nested submodule initialization or recursive submodule command was used or required. Restore/build/test completed without provider credentials, tenant data, production secrets, running Aspire, Dapr, Keycloak, Redis, GitHub, or Forgejo.
 - No SDK or central package deviations were required.
+- Resolved the 2026-05-12 review patch set by JSON-escaping tenant claim helper output, rejecting stream-name delimiter/control characters in test context IDs, rejecting control characters in generated test headers, bounding `Eventually.UntilAsync` even when probes ignore cancellation, limiting scaffold project discovery to `samples`, `src`, and `tests`, tightening recursive-submodule policy detection to immediate warning/explicit-opt-in context, and extending fixture leakage checks to `client_secret`/`clientSecret` OAuth markers.
 
 ### File List
 
 - `Directory.Build.props`
 - `Directory.Packages.props`
 - `Hexalith.Folders.slnx`
+- `_bmad-output/implementation-artifacts/1-1-establish-a-consumer-buildable-module-scaffold.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
 - `global.json`
 - `docs/adrs/0000-template.md`
 - `docs/exit-criteria/_template.md`
@@ -351,7 +358,11 @@ Implementation specifics:
 - `src/Hexalith.Folders.ServiceDefaults/Extensions.cs`
 - `src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj`
 - `src/Hexalith.Folders.Testing/FoldersTestingModule.cs`
+- `src/Hexalith.Folders.Testing/Factories/TestAuthorizationContext.cs`
+- `src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`
 - `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj`
+- `src/Hexalith.Folders.Testing/Http/TestRequestHeaders.cs`
+- `src/Hexalith.Folders.Testing/Polling/Eventually.cs`
 - `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`
 - `src/Hexalith.Folders.UI/Program.cs`
 - `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
@@ -368,8 +379,12 @@ Implementation specifics:
 - `tests/Hexalith.Folders.Mcp.Tests/McpSmokeTests.cs`
 - `tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj`
 - `tests/Hexalith.Folders.Server.Tests/ServerSmokeTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Api/TestRequestHeadersTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`
 - `tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`
+- `tests/Hexalith.Folders.Testing.Tests/Integration/EventuallyTests.cs`
 - `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Unit/FoldersTestDataFactoryTests.cs`
 - `tests/Hexalith.Folders.Tests/FoldersModuleSmokeTests.cs`
 - `tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj`
 - `tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj`
@@ -435,13 +450,13 @@ Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. Al
 
 #### Patch
 
-- [ ] [Review][Patch] **`TestAuthorizationContext.TenantClaimJson` does not JSON-escape tenant IDs** [`src/Hexalith.Folders.Testing/Factories/TestAuthorizationContext.cs:8`]
-- [ ] [Review][Patch] **`TestFolderContext` stream-name helpers accept delimiter characters in IDs** [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs:11`]
-- [ ] [Review][Patch] **`TestRequestHeaders.FromFolderContext` forwards CR/LF or control characters into header values** [`src/Hexalith.Folders.Testing/Http/TestRequestHeaders.cs:19`]
-- [ ] [Review][Patch] **`Eventually.UntilAsync` can hang beyond timeout when a probe ignores cancellation** [`src/Hexalith.Folders.Testing/Polling/Eventually.cs:28`]
-- [ ] [Review][Patch] **`ScaffoldContractTests` recursively enumerates the whole repository before filtering scaffold areas** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:42`]
-- [ ] [Review][Patch] **Recursive submodule policy test treats broad nearby wording as an exemption** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:380`]
-- [ ] [Review][Patch] **Fixture leakage checks miss `client_secret`-style OAuth secret markers** [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:115`]
+- [x] [Review][Patch] **`TestAuthorizationContext.TenantClaimJson` does not JSON-escape tenant IDs** [`src/Hexalith.Folders.Testing/Factories/TestAuthorizationContext.cs:8`] — **Applied 2026-05-12:** tenant claim JSON now uses `JsonSerializer.Serialize`, with a regression test for quote/backslash escaping.
+- [x] [Review][Patch] **`TestFolderContext` stream-name helpers accept delimiter characters in IDs** [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs:11`] — **Applied 2026-05-12:** stream-name segments now reject `:` and control characters at construction, with delimiter regression coverage.
+- [x] [Review][Patch] **`TestRequestHeaders.FromFolderContext` forwards CR/LF or control characters into header values** [`src/Hexalith.Folders.Testing/Http/TestRequestHeaders.cs:19`] — **Applied 2026-05-12:** generated test headers now reject blank/control-character values before returning the dictionary.
+- [x] [Review][Patch] **`Eventually.UntilAsync` can hang beyond timeout when a probe ignores cancellation** [`src/Hexalith.Folders.Testing/Polling/Eventually.cs:28`] — **Applied 2026-05-12:** probe awaits are wrapped with `WaitAsync` and convert timeout cancellation to `TimeoutException`.
+- [x] [Review][Patch] **`ScaffoldContractTests` recursively enumerates the whole repository before filtering scaffold areas** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:42`] — **Applied 2026-05-12:** scaffold project discovery now enumerates only `samples`, `src`, and `tests`.
+- [x] [Review][Patch] **Recursive submodule policy test treats broad nearby wording as an exemption** [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:380`] — **Applied 2026-05-12:** recursive setup exemptions now require the command line or immediate preceding prose to carry warning/explicit nested opt-in language.
+- [x] [Review][Patch] **Fixture leakage checks miss `client_secret`-style OAuth secret markers** [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:115`] — **Applied 2026-05-12:** fixture secret-shape and denylist checks now include `client_secret` and `clientSecret` markers.
 
 ### Review Findings — 2026-05-12 round 2 (exit-criteria tests and docs hardening)
 
@@ -472,3 +487,27 @@ Dismissed: 2 findings (C4 secondary-table false failure risk — single table in
 - [x] [Review][Defer] `"diff --git"` in `SecretSubstringDenylist` alongside actual credential patterns produces confusing "must not contain credential material" diagnostic — intent is valid (docs should not embed patch content) but classification is misleading [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`] — deferred, cosmetic; intent is correct
 - [x] [Review][Defer] `RepositoryRoot` `const int MaxAncestors = 12` is a magic number — could fail on deeply nested CI build paths with an `InvalidOperationException` rather than a clean test failure; error message is improved vs. the old unbounded loop [`tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`, `RepositoryRoot`] — deferred, pre-existing design; 12 is sufficient for known paths
 - [x] [Review][Defer] S2 OIDC test split — `.invalid` placeholder check and authoritative claim checks moved to a new test `S2OidcArtifactDocumentsAuthoritativeClaimProvenanceAndSyntheticPlaceholders`; half the original single-test OIDC contract is now invisible unless both tests are read together — deferred, structural coupling concern; both tests pass and cover the full contract
+
+### Review Findings — 2026-05-13 (2026-05-12 patch set hardening)
+
+Layers run: Blind Hunter (adversarial), Edge Case Hunter, Acceptance Auditor. All three layers completed.
+Diff reviewed: uncommitted changes to `src/Hexalith.Folders.Testing` and `tests/Hexalith.Folders.Testing.Tests` (seven-finding 2026-05-12 patch set: JSON escaping, delimiter validation, header injection guard, `WaitAsync` timeout, scaffold discovery scope, submodule policy exemption, OAuth fixture markers).
+Dismissed: 8 findings (orphaned timer intentional for `WaitAsync` test, `parameterName` convention acceptable in test utility, `clientSecret` regex is correct, CI timing 20× headroom, `explicitNestedOptIn` boolean misread, `TenantClaimJson` backward-compatible, TAB rejection intentional, `HeadersRejectControlCharacters` exception-source concern unfounded).
+
+#### Decision-Needed
+
+- [x] [Review][Decision] **`init` setters on validated `TestFolderContext` properties allow `with`-expression bypass of `ValidateStreamSegment`** — **Resolved 2026-05-13:** changed all six properties to `{ get; private set; }` to enforce the stream-segment invariant at all mutation points and prevent `with`-expression bypass. Factory methods remain the intended creation path. [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`] — `public string ManagedTenantId { get; init; }` (likewise `OrganizationId`, `FolderId`) lets any caller write `context with { ManagedTenantId = "tenant:evil" }` bypassing construction-time validation entirely, silently producing an invalid `FolderStreamName`. Decide: (a) keep `init` and accept the `with`-expression bypass — testing library, no external consumers, bypass requires deliberate effort; (b) change the three validated fields to `{ get; private set; }` — enforces the invariant at all mutation points but removes idiomatic `with`-expression support for test-data variation. [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`]
+
+#### Patch
+
+- [x] [Review][Patch] **`CredentialMaterialMarkers` bare `"client_secret"` / `"clientSecret"` substrings will false-positive on future OAuth sentinel samples in `audit-leakage-corpus.json`** — **Applied 2026-05-13:** replaced bare `"client_secret"` / `"clientSecret"` with assignment-context forms (`"client_secret="`, `"client_secret:"`, `"clientSecret="`, `"clientSecret\":"`) consistent with the regex approach, preventing false-positives on fixture property names. [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`] — `SeededFixturesAvoidRealDataAndProductionMaterial` calls `content.ShouldNotContain("clientSecret", Case.Insensitive, …)` which would fail any fixture that adds a sentinel sample with `clientSecret` as a JSON key or value — exactly what the corpus's `mutation_rules` encourages for future OAuth redaction coverage. The `SecretShapedValue` regex already uses the contextual pattern `\bclientSecret\b[""']?\s*[:=]` (requires an assignment operator); the bare-string list should use a narrower form consistent with that approach (e.g., replace `"client_secret"` → `"client_secret="` and `"clientSecret"` → `"clientSecret="` / `"clientSecret:"`) to avoid semantic tension between the two checks. [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`]
+
+#### Deferred
+
+- [x] [Review][Defer] Simultaneous-cancellation TOCTOU in `Eventually.UntilAsync` — when both `timeoutSource.Token` and the caller's `cancellationToken` fire in the same scheduling quantum, the `when (timeoutSource.IsCancellationRequested && !cancellationToken.IsCancellationRequested)` filter evaluates to `false`; raw `OperationCanceledException` propagates instead of `TimeoutException`. Low probability for a testing utility with short deadlines. [`src/Hexalith.Folders.Testing/Polling/Eventually.cs`] — deferred, low-probability race; acceptable for testing utility
+- [x] [Review][Defer] `TaskId`, `CorrelationId`, and `IdempotencyKey` are not validated at construction — asymmetric by design: stream-segment fields are validated early (used in stream-name properties); header fields are validated at header-build time by `ValidateHeaderValue`. [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`] — deferred, intentional asymmetric validation
+- [x] [Review][Defer] `"diff --git"` in `CredentialMaterialMarkers` overly broad — would false-positive on any fixture that legitimately contains a diff snippet (e.g., a golden-file patch test). Pre-existing marker moved from the old individual `ShouldNotContain` calls; not introduced by this patch. [`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`] — deferred, pre-existing marker; no current fixture affected
+- [x] [Review][Defer] `TestFolderContext` refactored from positional record to custom-constructor record — loses compiler-synthesised positional deconstruction; `System.Text.Json` without a custom converter cannot deserialise it. Testing helper; JSON deserialisation and positional pattern-matching over this type are unlikely. [`src/Hexalith.Folders.Testing/Factories/TestFolderContext.cs`] — deferred, testing helper; usage patterns do not require deserialisation
+- [x] [Review][Defer] `RecursiveSubmoduleViolationDetectionDoesNotTreatBroadNearbyWordingAsExemption` test passes because the `proseLinesSeen == 1` early-break fires after collecting only line 3 ("Run this default setup command:") — line 2 ("Nested submodules exist…") is never visited or evaluated. Test outcome (violation is reported) is correct, but the test does not mechanically exercise the "broad nearby wording is rejected" path it claims to cover. [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`] — deferred, test outcome correct; coverage gap is cosmetic
+- [x] [Review][Defer] Probe's own `OperationCanceledException` (from an unrelated internal token) can be misattributed as a timeout when `timeoutSource.IsCancellationRequested` happens to be `true` at the same moment — very low probability in practice. [`src/Hexalith.Folders.Testing/Polling/Eventually.cs`] — deferred, low probability in testing utility context
+- [x] [Review][Defer] `CollectPrecedingProseContext` early-break limits the exemption window to the immediately preceding prose line — a valid warning comment separated from the recursive command by a single non-warning prose line will not be seen. Intentional design: the 2026-05-12 review finding required "immediate preceding prose" to carry the warning. [`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`] — deferred, intentional design per prior review

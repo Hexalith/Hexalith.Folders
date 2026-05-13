@@ -51,15 +51,41 @@ public sealed class ScaffoldContractTests
     {
         string root = RepositoryRoot();
         string[] solutionProjects = ReadSolutionProjectPaths(root);
-        string[] buildableProjects = Directory
-            .EnumerateFiles(root, "Hexalith.Folders*.csproj", SearchOption.AllDirectories)
-            .Where(path => IsScaffoldBuildableArea(root, path))
+        string[] buildableProjects = EnumerateScaffoldBuildableProjectPaths(root)
             .Select(path => Normalize(Path.GetRelativePath(root, path)))
             .Order(StringComparer.Ordinal)
             .ToArray();
 
         solutionProjects.ShouldBe(ExpectedSolutionProjects.Order(StringComparer.Ordinal).ToArray());
         buildableProjects.ShouldBe(ExpectedSolutionProjects.Order(StringComparer.Ordinal).ToArray());
+    }
+
+    [Fact]
+    public void ScaffoldProjectDiscoveryStaysInsideScaffoldRoots()
+    {
+        string tempRoot = Path.Combine(Path.GetTempPath(), $"folders-scaffold-{Guid.NewGuid():N}");
+        try
+        {
+            string scaffoldProject = Path.Combine(tempRoot, "src", "Hexalith.Folders", "Hexalith.Folders.csproj");
+            string siblingProject = Path.Combine(tempRoot, "Hexalith.Tenants", "src", "Hexalith.Folders.NotOurs", "Hexalith.Folders.NotOurs.csproj");
+            Directory.CreateDirectory(Path.GetDirectoryName(scaffoldProject)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(siblingProject)!);
+            File.WriteAllText(scaffoldProject, "<Project />");
+            File.WriteAllText(siblingProject, "<Project />");
+
+            string[] discovered = EnumerateScaffoldBuildableProjectPaths(tempRoot)
+                .Select(path => Normalize(Path.GetRelativePath(tempRoot, path)))
+                .ToArray();
+
+            discovered.ShouldBe(["src/Hexalith.Folders/Hexalith.Folders.csproj"]);
+        }
+        finally
+        {
+            if (Directory.Exists(tempRoot))
+            {
+                Directory.Delete(tempRoot, recursive: true);
+            }
+        }
     }
 
     [Fact]
@@ -292,6 +318,33 @@ public sealed class ScaffoldContractTests
         violations.ShouldBeEmpty();
     }
 
+    [Fact]
+    public void RecursiveSubmoduleViolationDetectionDoesNotTreatBroadNearbyWordingAsExemption()
+    {
+        string tempPath = Path.Combine(Path.GetTempPath(), $"submodule-policy-{Guid.NewGuid():N}.md");
+        try
+        {
+            File.WriteAllLines(tempPath,
+            [
+                "# Setup",
+                "Nested submodules exist in some sibling modules.",
+                "Run this default setup command:",
+                "git submodule update --init --recursive",
+            ]);
+
+            RecursiveDefaultSetupViolations(tempPath)
+                .Select(violation => violation.LineNumber)
+                .ShouldContain(4);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
     private static Dictionary<string, string[]> BuildProjectReferenceMap(string root) =>
         ExpectedSolutionProjects.ToDictionary(
             project => Path.GetFileNameWithoutExtension(project),
@@ -366,16 +419,18 @@ public sealed class ScaffoldContractTests
         }
     }
 
+    private static IEnumerable<string> EnumerateScaffoldBuildableProjectPaths(string root)
+    {
+        string[] scaffoldRoots = ["samples", "src", "tests"];
+        return scaffoldRoots
+            .Select(area => Path.Combine(root, area))
+            .Where(Directory.Exists)
+            .SelectMany(area => SafeEnumerate(area, "Hexalith.Folders*.csproj", SearchOption.AllDirectories))
+            .Order(StringComparer.Ordinal);
+    }
+
     private static IEnumerable<XElement> DescendantsByLocalName(XContainer container, string localName) =>
         container.Descendants().Where(e => e.Name.LocalName.Equals(localName, StringComparison.OrdinalIgnoreCase));
-
-    private static bool IsScaffoldBuildableArea(string root, string path)
-    {
-        string relative = Normalize(Path.GetRelativePath(root, path));
-        return relative.StartsWith("src/", StringComparison.Ordinal)
-            || relative.StartsWith("tests/", StringComparison.Ordinal)
-            || relative.StartsWith("samples/", StringComparison.Ordinal);
-    }
 
     private static void AssertCanonicalInitCommandPresent(string content, string sourceDescription)
     {
@@ -471,7 +526,7 @@ public sealed class ScaffoldContractTests
             }
 
             string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
-            if (!IsWarningOrNestedOptInContext(precedingProse))
+            if (!IsWarningOrNestedOptInContext(line.Text, precedingProse))
             {
                 yield return (line.OriginalLineNumber, line.Text.Trim());
             }
@@ -518,6 +573,7 @@ public sealed class ScaffoldContractTests
     private static string CollectPrecedingProseContext(LogicalLine[] lines, int violationIndex, int maxLines)
     {
         List<string> collected = [];
+        int proseLinesSeen = 0;
         for (int i = violationIndex - 1; i >= 0 && collected.Count < maxLines; i--)
         {
             string trimmed = lines[i].Text.TrimStart();
@@ -533,6 +589,11 @@ public sealed class ScaffoldContractTests
                 continue;
             }
             collected.Add(lines[i].Text);
+            proseLinesSeen++;
+            if (proseLinesSeen == 1 && !ContainsRecursivePolicyWarning(trimmed))
+            {
+                break;
+            }
         }
         return string.Join(" ", collected);
     }
@@ -566,17 +627,25 @@ public sealed class ScaffoldContractTests
         "mustn't",
         "deprecated",
         "discouraged",
-        "unless",
         "not use",
-        "nested submodule",
-        "explicitly requests",
-        "explicitly request",
-        "opt-in",
-        "user-requested",
     ];
 
-    private static bool IsWarningOrNestedOptInContext(string context) =>
-        WarningContextKeywords.Any(keyword => context.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+    private static bool IsWarningOrNestedOptInContext(string commandLine, string precedingContext) =>
+        ContainsRecursivePolicyWarning(commandLine) || ContainsRecursivePolicyWarning(precedingContext);
+
+    private static bool ContainsRecursivePolicyWarning(string context)
+    {
+        if (string.IsNullOrWhiteSpace(context))
+        {
+            return false;
+        }
+
+        bool directWarning = WarningContextKeywords.Any(keyword => context.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        bool explicitNestedOptIn = context.Contains("nested submodule", StringComparison.OrdinalIgnoreCase)
+            && context.Contains("explicit", StringComparison.OrdinalIgnoreCase);
+
+        return directWarning || explicitNestedOptIn || context.Contains("user-requested", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static string Normalize(string path) => path.Replace('\\', '/');
 }

@@ -22,16 +22,26 @@ public static class Eventually
             throw new ArgumentOutOfRangeException(nameof(interval), interval, "Interval must be greater than zero.");
         }
 
-        using CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeoutSource.CancelAfter(timeout);
+        using CancellationTokenSource timeoutSource = new(timeout);
+        using CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutSource.Token);
 
-        T lastValue = await probe(timeoutSource.Token).ConfigureAwait(false);
-        while (!isReady(lastValue))
+        try
         {
-            await Task.Delay(interval, timeoutSource.Token).ConfigureAwait(false);
-            lastValue = await probe(timeoutSource.Token).ConfigureAwait(false);
-        }
+            T lastValue = await InvokeProbeAsync(probe, linkedSource.Token).ConfigureAwait(false);
+            while (!isReady(lastValue))
+            {
+                await Task.Delay(interval, linkedSource.Token).ConfigureAwait(false);
+                lastValue = await InvokeProbeAsync(probe, linkedSource.Token).ConfigureAwait(false);
+            }
 
-        return lastValue;
+            return lastValue;
+        }
+        catch (OperationCanceledException ex) when (timeoutSource.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException("The condition was not ready before the timeout elapsed.", ex);
+        }
     }
+
+    private static async Task<T> InvokeProbeAsync<T>(Func<CancellationToken, Task<T>> probe, CancellationToken cancellationToken) =>
+        await probe(cancellationToken).WaitAsync(cancellationToken).ConfigureAwait(false);
 }
