@@ -25,6 +25,9 @@ so that .NET callers use the same operation shapes and retry identity semantics 
 11. Given Story 1.6 through Story 1.11 may have active Contract Spine changes, when implementation starts, then the developer inspects the current OpenAPI file, extension vocabulary, and operation-group artifacts before editing generation assets; unresolved or missing operation metadata is recorded as prerequisite drift rather than silently guessed.
 12. Given generated SDK output will be consumed by CLI and MCP later, when generated exception and response types are authored, then they preserve canonical Problem Details fields (`category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, `details`) in a typed exception or response shape that adapters can map without parsing English messages.
 13. Given idempotency hashes are a cross-surface contract, when helper generation is implemented, then the canonical helper input format is documented and fixture-tested at the byte level, including field separators, escaping, scalar formatting, null and omitted sentinels, empty values, collection/object handling where present, culture-invariant formatting, UTF-8 bytes, lowercase hex digest casing, and the final `sha256:<hex>` representation.
+14. Given generated SDK artifacts can become stale after Contract Spine edits, when the generation target or focused tests run, then they detect stale generated clients/helpers by comparing the current Contract Spine input and tool configuration to the generated output without relying on timestamps, machine-local paths, or mutable environment data.
+15. Given declared idempotency field paths may traverse local OpenAPI `$ref`, `allOf`, nullable, array, or object schema shapes, when helper metadata is resolved, then the generator either resolves the path deterministically with clear provenance or fails generation with a contract-drift diagnostic rather than guessing, flattening, or hashing an unintended field.
+16. Given helper diagnostics and generated provenance are developer-facing artifacts, when generation succeeds or fails, then diagnostics, comments, and tests may include operation IDs, schema paths, extension names, and source hashes, but never raw payload values, file bytes, provider tokens, credential material, local absolute paths, production URLs, or unauthorized resource hints.
 
 ## Tasks / Subtasks
 
@@ -34,7 +37,7 @@ so that .NET callers use the same operation shapes and retry identity semantics 
   - [ ] Inspect current Story 1.6 through Story 1.11 artifacts before assuming operation IDs, request schemas, or `x-hexalith-*` metadata names.
   - [ ] Treat missing or malformed Contract Spine metadata as prerequisite drift. Do not invent equivalence fields, header rules, error categories, or operation names inside the generator.
   - [ ] Do not initialize or update nested submodules.
-- [ ] Add deterministic NSwag generation wiring in the client project. (AC: 1, 4, 5, 8, 9)
+- [ ] Add deterministic NSwag generation wiring in the client project. (AC: 1, 4, 5, 8, 9, 14, 16)
   - [ ] Add NSwag package/tool references through central package management in `Directory.Packages.props`; do not add inline package versions in project files.
   - [ ] Add `Hexalith.Folders.Client` generation configuration, such as `nswag.json` plus an MSBuild target in `Hexalith.Folders.Client.csproj`, using the Contract Spine file as input.
   - [ ] Generate C# clients and DTOs under `src/Hexalith.Folders.Client/Generated/`; make the folder clearly generated and keep manual extension code outside it.
@@ -42,30 +45,35 @@ so that .NET callers use the same operation shapes and retry identity semantics 
   - [ ] Preserve async-only APIs and `CancellationToken` support; do not generate sync methods.
   - [ ] Preserve operation IDs and route names from the spine; do not regroup operations in a way that makes adapter parity rows ambiguous.
   - [ ] Keep generated output deterministic: stable namespace, stable class names, stable collection types, stable nullable behavior, no timestamps, no machine-local paths, and no environment-dependent base URL.
-- [ ] Generate idempotency helper code from Contract Spine extensions. (AC: 2, 3, 4, 6, 7, 12)
+  - [ ] Add stale-output detection that compares the generated clients/helpers against the current Contract Spine input and generation configuration without timestamp or machine-local-path dependence.
+- [ ] Generate idempotency helper code from Contract Spine extensions. (AC: 2, 3, 4, 6, 7, 12, 13, 15, 16)
   - [ ] For every mutating operation with `x-hexalith-idempotency-equivalence`, generate a helper on the relevant request DTO or companion partial type named `ComputeIdempotencyHash()`.
   - [ ] Classify helper eligibility from the OpenAPI operation method and declared `x-hexalith-idempotency-equivalence`; non-mutating operations must never receive helpers, and mutating operations without valid equivalence metadata fail generation instead of hashing whole payloads.
   - [ ] Base helper input only on the declared field list. Field paths must be consumed in declared lexicographic order; fail generation when the list is missing, duplicated, not lexicographic, or points to a missing schema property.
+  - [ ] Resolve declared field paths through local `$ref`, `allOf`, nullable, array, and object schema shapes with deterministic diagnostics; unsupported `oneOf` or ambiguous union shapes fail closed until the Contract Spine records a discriminator or explicit mapping.
   - [ ] Use a deterministic canonical representation before hashing. The representation must distinguish null from omitted values unless the schema declares an explicit default-equivalence rule, and the implementation must either preserve property presence or reject helper generation for DTO shapes where presence cannot be observed.
   - [ ] Normalize only fields whose parser-policy classification allows normalization. Do not globally normalize opaque identifiers, branch names, provider references, commit metadata classifications, or path metadata.
   - [ ] For path metadata fields, apply exactly one safe percent-decode step only where Story 1.5 classified that field as eligible; reject double-decode ambiguity.
   - [ ] Use SHA-256 or another explicitly documented stable hash algorithm with UTF-8 canonical bytes and an algorithm label in the helper output or test fixture expectations.
+  - [ ] Emit provenance for each helper that is safe to inspect, such as operation ID, extension pointer, schema pointer, normalized generation configuration hash, and Contract Spine content hash; do not emit raw request values or machine-local paths.
   - [ ] Never include raw file content, raw diffs, provider tokens, credential material, raw provider payloads, generated context payloads, production URLs, local filesystem paths, or unauthorized resource hints in canonical helper input.
   - [ ] Do not implement runtime idempotency persistence, retry storage, EventStore command handling, or provider side effects.
-- [ ] Add focused local tests for generation and helper behavior. (AC: 1, 2, 3, 6, 7, 8, 9, 10, 12)
+- [ ] Add focused local tests for generation and helper behavior. (AC: 1, 2, 3, 6, 7, 8, 9, 10, 12, 14, 15, 16)
   - [ ] Add or update tests under `tests/Hexalith.Folders.Client.Tests/` that run without Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, network calls, production secrets, or initialized nested submodules.
   - [ ] Verify generation can run from a clean checkout using only repository files and central package versions.
   - [ ] Verify generated clients compile and expose expected operation-derived method or interface names for the currently authored Contract Spine operations.
   - [ ] Verify mutating DTO helpers exist only where the Contract Spine declares idempotency equivalence; query operations must not get helper methods or idempotency-key defaults.
   - [ ] Verify malformed extension metadata fails closed with clear diagnostics, including unknown shapes, duplicate fields, missing schema properties, non-lexicographic field lists, unsupported normalization declarations, and ambiguous metadata-versus-content field references.
+  - [ ] Verify local `$ref`, `allOf`, nullable, array, and object field-path resolution succeeds only for deterministic shapes, and ambiguous `oneOf`/union shapes fail with a contract-drift diagnostic.
   - [ ] Verify canonical helper results are stable across repeated invocations and independent of object property declaration order.
   - [ ] Verify fixture-driven parser-policy cases from `idempotency-encoding-corpus.json`: Unicode variants, zero-width joiner cases, ULID casing, duplicate JSON key rejection expectation, null versus omitted, percent encoding, malformed percent sequences, encoded slash, double-decode attempts, whitespace, and malformed key examples where applicable.
   - [ ] Verify file mutation helpers hash declared metadata such as file name, content type, or content-hash references when declared, while proving raw bytes, stream identity, multipart boundaries, temporary names, and local paths do not affect helper input or outputs.
   - [ ] Verify generated exception or response handling preserves RFC 9457 Problem Details plus Hexalith fields without requiring adapters to parse messages.
+  - [ ] Verify stale generated clients/helpers are detected after a controlled Contract Spine or generation-config change, and verify diagnostics expose only safe provenance, not payload values, absolute paths, URLs, tokens, or unauthorized hints.
   - [ ] Verify negative scope: no server runtime, domain aggregate, provider adapter, CLI, MCP, UI, worker, parity oracle result row, CI workflow, or nested-submodule changes are introduced.
-- [ ] Record generation decisions for downstream stories. (AC: 4, 8, 10, 12)
+- [ ] Record generation decisions for downstream stories. (AC: 4, 8, 10, 12, 13, 14, 16)
   - [ ] Add a concise note such as `docs/contract/sdk-generation-and-idempotency-helpers.md` if generation details, hash format, or deferred decisions need a stable human-readable home.
-  - [ ] Record exact generated file locations, rerun command, deterministic-output expectations, line-ending and banner/timestamp policy, and how Story 1.13 should consume operation IDs and helper metadata.
+  - [ ] Record exact generated file locations, rerun command, deterministic-output expectations, line-ending and banner/timestamp policy, stale-output detection behavior, safe provenance fields, and how Story 1.13 should consume operation IDs and helper metadata.
   - [ ] Record that generated NSwag files are not manually edited; customization belongs in companion or partial files outside `Generated/`.
   - [ ] Record that downstream Story 1.13 and Story 1.14 consumers must use generated operation IDs and helper entry points instead of reimplementing hash construction or generation policy.
   - [ ] Record deferred owners for final parity-oracle rows, CI golden-file gate wiring, runtime idempotency persistence, SDK convenience `UploadFileAsync(stream)`, CLI and MCP wrappers, and release documentation.
@@ -114,6 +122,7 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 - Keep `UseBaseUrl` and base-address behavior deterministic and environment-independent. Runtime host selection belongs to `HttpClient` configuration, not generated code.
 - Generated clients and DTOs must be partial or have companion partials so hand-written adapters can add behavior without editing generated files.
 - Exception/response projection must preserve canonical Problem Details fields for CLI and MCP adapters.
+- Stale generated output is a contract-safety failure. The build-time or test-time check should derive its comparison from repository inputs such as the Contract Spine content, extension vocabulary, NSwag configuration, helper generator configuration, and pinned package/tool versions, not timestamps or absolute paths.
 
 ### Idempotency Helper Requirements
 
@@ -124,6 +133,8 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 - Helper output should be stable and documented, for example `sha256:<hex>` over a canonical UTF-8 representation.
 - The canonical representation must be byte specified before implementation: field names and values in declared order, unambiguous separators, escaped delimiters, culture-invariant scalar formatting, explicit null and omitted sentinels, deterministic collection/object traversal when present, UTF-8 encoding, and lowercase hexadecimal digest output.
 - If generated DTOs cannot distinguish omitted from explicit null for a declared equivalence field, the generator must add presence tracking through companion code or fail generation with prerequisite drift rather than silently treating them as equivalent.
+- Declared field-path resolution must be local, deterministic, and provenance-backed. Local `$ref` and `allOf` composition may be resolved when unambiguous; ambiguous `oneOf`/union shapes, unsupported additional-property maps, or unresolved external references are prerequisite drift unless the Contract Spine declares an explicit discriminator or field mapping.
+- Helper provenance should identify the operation ID, OpenAPI extension pointer, schema pointer, source content hash, and generation configuration hash. It must not expose raw request field values, file bytes, local absolute paths, production URLs, tenant data, tokens, or credential material.
 - Tenant-scoped equivalence includes authoritative tenant identity where declared, but tenant authority still comes from auth context and EventStore envelopes at runtime.
 - Parser-policy handling comes from Story 1.5:
   - null and omitted are non-equivalent unless schema default-equivalence is declared;
@@ -156,7 +167,7 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 
 - Tests must run offline with normal `dotnet test` behavior and without Aspire, Dapr, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, production secrets, network calls, or initialized nested submodules.
 - Use the existing `Hexalith.Folders.Client.Tests` project unless a focused generator test project is clearly needed.
-- Good tests for this story are deterministic-output checks, generated-code compile checks, helper existence checks, helper non-existence for queries, fixture-driven hash cases, and negative-scope checks.
+- Good tests for this story are deterministic-output checks, stale-output checks, generated-code compile checks, helper existence checks, helper non-existence for queries, field-path resolution diagnostics, fixture-driven hash cases, leak-safe diagnostics, and negative-scope checks.
 - Avoid broad runtime integration tests. Runtime idempotency persistence and lifecycle behavior belong to Epic 4; CLI and MCP behavioral parity belong to Epic 5.
 
 ### References
@@ -194,6 +205,7 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 |---|---|---|
 | 2026-05-12 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-12 | Applied party-mode review hardening for canonical idempotency hash bytes, helper eligibility, deterministic generation evidence, and generated-code ownership. | Codex |
+| 2026-05-13 | Applied advanced-elicitation hardening for stale-output detection, field-path resolution, safe helper provenance, and leak-safe diagnostics. | Codex |
 
 ## Dev Agent Record
 
@@ -227,3 +239,24 @@ TBD by dev-story agent
 - Findings deferred:
   - Public release documentation, CI gate wiring, final parity rows, runtime idempotency persistence, CLI/MCP wrappers, and SDK convenience upload APIs remain owned by later stories already named in this story.
 - Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-13T07:09:00+02:00
+- Selected story key: `1-12-wire-nswag-sdk-generation-with-idempotency-helpers`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-12-wire-nswag-sdk-generation-with-idempotency-helpers`
+- Batch 1 method names: Red Team vs Blue Team; Security Audit Personas; Failure Mode Analysis; Self-Consistency Validation; Critique and Refine
+- Reshuffled Batch 2 method names: Pre-mortem Analysis; First Principles Analysis; Comparative Analysis Matrix; Socratic Questioning; Occam's Razor Application
+- Findings summary:
+  - Generated clients and helper files needed an explicit stale-output detection requirement so downstream SDK consumers do not unknowingly consume old Contract Spine shapes.
+  - Helper field-path resolution needed clearer fail-closed behavior for local `$ref`, `allOf`, nullable, array, object, and ambiguous union schema cases.
+  - Helper provenance was useful for reviewability, but diagnostics needed a strict safe-data boundary so failures do not leak payload values, local paths, URLs, tenant evidence, or credentials.
+  - Existing generated-code ownership and deterministic-output constraints were sound, but tests needed to exercise stale-output checks, field-path diagnostics, and leak-safe diagnostic behavior.
+- Changes applied:
+  - Added AC 14 through AC 16 covering stale generated artifact detection, deterministic field-path resolution, and safe provenance/diagnostics.
+  - Expanded generation, helper, test, and downstream documentation tasks to cover stale-output checks, local schema traversal, helper provenance, and leak-safe diagnostics.
+  - Added Dev Notes for stale-output input hashing, deterministic field-path handling, provenance content, and test focus.
+- Findings deferred:
+  - Exact generator implementation shape remains open to the dev-story agent: NSwag template customization, companion helper generator, or partial-code generation are all acceptable if they satisfy the story constraints.
+  - Final public release documentation, CI gate wiring, parity rows, runtime idempotency persistence, CLI/MCP wrappers, and upload convenience APIs remain owned by later stories.
+- Final recommendation: `ready-for-dev`
