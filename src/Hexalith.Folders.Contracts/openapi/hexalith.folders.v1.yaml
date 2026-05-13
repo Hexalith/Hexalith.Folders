@@ -1229,6 +1229,752 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation:
+    post:
+      tags:
+        - workspaces
+      operationId: PrepareWorkspace
+      summary: Accept workspace preparation for a repository-backed folder task.
+      description: >
+        Accepts metadata-only workspace preparation intent. Tenant authority
+        comes from authenticated principal claims and EventStore envelopes, never
+        from the request body, route identifiers, query parameters, or
+        client-controlled headers.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required for workspace preparation because task_id participates in idempotency equivalence.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrepareWorkspaceRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/PrepareWorkspaceRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Workspace cannot be prepared because the idempotency key conflicts with a non-equivalent payload, the workspace is currently locked, provider outcome is unknown and requires reconciliation, or another caller-visible conflict has occurred. Authorization-first contract — these distinguishable responses are only reachable after authentication and authorization succeed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                idempotencyConflict:
+                  $ref: "#/components/examples/IdempotencyConflictGeneric"
+                lockConflict:
+                  $ref: "#/components/examples/WorkspaceLockConflictProblem"
+                reconciliationRequired:
+                  $ref: "#/components/examples/ReconciliationRequiredProblem"
+        "422":
+          description: Validation outcome carrying a canonical workspace preparation failure category. Authorization-first contract — these distinguishable responses are only reachable after authentication and authorization succeed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                providerReadinessFailed:
+                  $ref: "#/components/examples/ProviderReadinessFailedProblem"
+                workspacePreparationFailed:
+                  $ref: "#/components/examples/WorkspacePreparationFailedProblem"
+                workspaceTransitionInvalid:
+                  $ref: "#/components/examples/WorkspaceTransitionInvalidProblem"
+        "503":
+          description: Provider readiness cannot be safely established, or provider outcome is unknown. Authorization-first contract — these distinguishable responses are only reachable after authentication and authorization succeed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                providerUnavailable:
+                  $ref: "#/components/examples/ProviderUnavailableProblem"
+                unknownProviderOutcome:
+                  $ref: "#/components/examples/UnknownProviderOutcomeProblem"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - branch_ref_policy_ref
+        - folder_id
+        - repository_binding_id
+        - task_id
+        - workspace_id
+        - workspace_policy_ref
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-write-and-repository-binding-access
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - repository_binding_unavailable
+        - branch_ref_policy_invalid
+        - provider_readiness_failed
+        - provider_unavailable
+        - workspace_preparation_failed
+        - workspace_locked
+        - lock_conflict
+        - unknown_provider_outcome
+        - reconciliation_required
+        - state_transition_invalid
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: repository_binding_id
+          sensitivity: tenant_sensitive
+          description: Opaque repository binding reference.
+        - name: branch_ref_policy_ref
+          sensitivity: tenant_sensitive
+          description: Opaque branch/ref policy reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Sanitized C6 workspace state.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Sanitized retry eligibility category.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized accepted or rejected outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - task_id
+          - safe_denial
+          - retry_eligibility
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/lock:
+    post:
+      tags:
+        - workspaces
+      operationId: LockWorkspace
+      summary: Accept task-scoped workspace lock acquisition.
+      description: >
+        Declares single-active-writer lock acquisition semantics for the
+        tenant/folder/workspace/task scope. Lease, expiry, and conflict metadata
+        are contract evidence only and do not implement a lock manager.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required for lock acquisition because task_id participates in idempotency equivalence and single-active-writer scope.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LockWorkspaceRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/LockWorkspaceRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Caller-visible conflict — same idempotency key with a non-equivalent payload, or another writer already holds the workspace lock. Authorization-first contract — these distinguishable responses are only reachable after authentication and authorization succeed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                idempotencyConflict:
+                  $ref: "#/components/examples/IdempotencyConflictGeneric"
+                lockConflict:
+                  $ref: "#/components/examples/WorkspaceLockConflictProblem"
+        "410":
+          $ref: "#/components/responses/WorkspaceLockExpired"
+        "422":
+          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - folder_id
+        - lock_intent
+        - requested_lease_seconds
+        - task_id
+        - workspace_id
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-write-and-workspace-lock-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - workspace_locked
+        - lock_conflict
+        - lock_expired
+        - authorization_revocation_detected
+        - read_model_unavailable
+        - state_transition_invalid
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: lock_id
+          sensitivity: tenant_sensitive
+          description: Opaque lock reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Sanitized C6 workspace state.
+        - name: lock_status
+          sensitivity: tenant_sensitive
+          description: Sanitized lock status.
+        - name: lease_status
+          sensitivity: tenant_sensitive
+          description: Sanitized lease status.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized accepted, conflict, or denied outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - single_active_writer
+          - lease_metadata
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+    get:
+      tags:
+        - workspaces
+      operationId: GetWorkspaceLock
+      summary: Inspect metadata-only workspace lock state.
+      description: >
+        Returns metadata-only lock state for an authorized caller. Unauthorized
+        callers receive the safe-denial envelope (401/403/404) that does not
+        distinguish between absent workspace, cross-tenant access, missing lock,
+        and authorization denial. The 410 expired-lease response and lease
+        history are only reachable after authorization succeeds.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Metadata-only lock state with freshness and (when a lock has ever been acquired) lease evidence.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceLockStatus"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/WorkspaceLockStatus"
+                unlocked:
+                  $ref: "#/components/examples/WorkspaceLockStatusUnlocked"
+                expired:
+                  $ref: "#/components/examples/WorkspaceLockStatusExpired"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "410":
+          $ref: "#/components/responses/WorkspaceLockExpired"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: read_your_writes
+        freshnessBehavior: reports-lock-projection-watermark-and-stale-lease-state
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-read-and-workspace-lock-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - not_found
+        - lock_expired
+        - stale_workspace
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: lock_id
+          sensitivity: tenant_sensitive
+          description: Opaque lock reference when visible to the authorized caller.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Sanitized C6 workspace state.
+        - name: lock_status
+          sensitivity: tenant_sensitive
+          description: Sanitized lock status.
+        - name: lease_status
+          sensitivity: tenant_sensitive
+          description: Sanitized lease status.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - lease_metadata
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release:
+    post:
+      tags:
+        - workspaces
+      operationId: ReleaseWorkspaceLock
+      summary: Accept task-scoped workspace lock release.
+      description: >
+        Releases a workspace lock only when the supplied non-secret opaque lock
+        proof matches the authorized tenant/folder/workspace/task scope.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required for lock release because task_id participates in idempotency equivalence.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReleaseWorkspaceLockRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/ReleaseWorkspaceLockRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedCommand"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Caller-visible conflict — same idempotency key with a non-equivalent payload, or provider outcome is unknown and requires reconciliation before release can be finalized. Authorization-first contract — these distinguishable responses are only reachable after authentication and authorization succeed.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                idempotencyConflict:
+                  $ref: "#/components/examples/IdempotencyConflictGeneric"
+                reconciliationRequired:
+                  $ref: "#/components/examples/ReconciliationRequiredProblem"
+        "410":
+          $ref: "#/components/responses/WorkspaceLockExpired"
+        "422":
+          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - folder_id
+        - lock_id
+        - lock_ownership_proof
+        - task_id
+        - workspace_id
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-write-and-workspace-lock-owner
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - lock_not_owned
+        - lock_expired
+        - authorization_revocation_detected
+        - reconciliation_required
+        - state_transition_invalid
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: lock_id
+          sensitivity: tenant_sensitive
+          description: Opaque lock reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Sanitized C6 workspace state.
+        - name: lock_status
+          sensitivity: tenant_sensitive
+          description: Sanitized lock status.
+        - name: lease_status
+          sensitivity: tenant_sensitive
+          description: Sanitized lease status at the moment of release.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized release outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - lock_ownership_proof
+          - authorization_revocation
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility:
+    get:
+      tags:
+        - workspaces
+      operationId: GetWorkspaceRetryEligibility
+      summary: Inspect retry eligibility for workspace preparation or lock outcomes.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Metadata-only retry eligibility.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceRetryEligibility"
+              examples:
+                eligible:
+                  $ref: "#/components/examples/WorkspaceRetryEligible"
+                blocked:
+                  $ref: "#/components/examples/WorkspaceRetryBlocked"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-retry-projection-watermark-and-provider-uncertainty
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-read-and-workspace-status-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - provider_unavailable
+        - unknown_provider_outcome
+        - reconciliation_required
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Sanitized C6 workspace state.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Sanitized retry eligibility.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized query outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - retry_eligibility
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence:
+    get:
+      tags:
+        - workspaces
+      operationId: GetWorkspaceTransitionEvidence
+      summary: Inspect metadata-only C6 transition evidence.
+      description: >
+        Returns metadata-only evidence about the most recent C6 transition attempt
+        for the workspace. Transition outcomes — including state_transition_invalid,
+        authorization_revoked, provider_outcome_unknown, and reconciliation_required —
+        are encoded in the `result` and `reasonCode` fields of the 200 body so
+        callers can always read the evidence. 4xx and 5xx responses are reserved
+        for safe-denial, validation, and read-model availability errors only.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: C6 transition evidence without internal event schemas. The `result` field encodes accepted, state_transition_invalid, authorization_revoked, provider_outcome_unknown, and reconciliation_required outcomes.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceTransitionEvidence"
+              examples:
+                valid:
+                  $ref: "#/components/examples/WorkspaceTransitionEvidenceValid"
+                invalid:
+                  $ref: "#/components/examples/WorkspaceTransitionEvidenceInvalid"
+                authorizationRevoked:
+                  $ref: "#/components/examples/WorkspaceTransitionEvidenceAuthorizationRevoked"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: reports-transition-evidence-timestamp-and-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant-context-folder-read-and-transition-evidence-read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Sanitized C6 workspace state.
+        - name: evidence_timestamp
+          sensitivity: tenant_sensitive
+          description: Evidence observation timestamp.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable operation identifier.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized transition result.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - c6_transition_evidence
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
 x-hexalith-idempotency-key:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-key
   foundationUse: Mutating operations added later must declare the key requirement; queries must not accept it.
@@ -1363,6 +2109,13 @@ components:
       in: path
       required: true
       description: Opaque repository binding identifier. It does not reveal external repository existence to unauthorized callers.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    WorkspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      description: Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.
       schema:
         $ref: "#/components/schemas/OpaqueIdentifier"
   headers:
@@ -1514,6 +2267,42 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/ProblemDetails"
+    LockConflict:
+      description: Deterministic single-active-writer lock conflict without revealing hidden lock holder details. Authorization-first contract — this response is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/WorkspaceLockConflictProblem"
+    WorkspaceLockExpired:
+      description: Lock lease is expired or stale and must be handled through the visible contract outcome. Authorization-first contract — this response is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead, so lease history is never exposed to a caller who is not already authorized for the lock scope.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/WorkspaceLockExpiredProblem"
+    WorkspaceTransitionInvalid:
+      description: C6 state transition is invalid and leaves the state unchanged. Authorization-first contract — this response is only reachable after authentication and authorization succeed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/WorkspaceTransitionInvalidProblem"
+    WorkspaceAuthorizationRevoked:
+      description: Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first contract — this response is only reachable after authentication and authorization succeed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/WorkspaceAuthorizationRevokedProblem"
   examples:
     SafeDenial401Unauthorized:
       summary: Canonical 401 safe denial — caller is not authenticated. Envelope shape is identical across all caller cases.
@@ -1654,6 +2443,343 @@ components:
         freshness:
           readConsistency: snapshot_per_task
           observedAt: "2026-05-12T12:34:56Z"
+    PrepareWorkspaceRequest:
+      value:
+        requestSchemaVersion: v1
+        repositoryBindingId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C4
+        branchRefPolicyRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C6
+        workspacePolicyRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D1
+    LockWorkspaceRequest:
+      value:
+        requestSchemaVersion: v1
+        lockIntent: exclusive_write
+        requestedLeaseSeconds: 900
+    ReleaseWorkspaceLockRequest:
+      value:
+        requestSchemaVersion: v1
+        lockId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D2
+        lockOwnershipProof: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D3
+        releaseReasonCode: caller_completed
+    WorkspaceLockStatus:
+      summary: Authorized caller — active lock held by a task in scope.
+      value:
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        lockState: locked
+        lease:
+          lockId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D2
+          leaseStatus: active
+          acquiredAt: "2026-05-12T12:34:56Z"
+          effectiveAt: "2026-05-12T12:34:56Z"
+          expiresAt: "2026-05-12T12:49:56Z"
+          holderRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D5
+        retryEligibility:
+          retryable: false
+          reasonCode: lock_active
+          correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+          taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+          currentState: locked
+          freshness:
+            readConsistency: read_your_writes
+            observedAt: "2026-05-12T12:35:00Z"
+            projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+            stale: false
+        freshness:
+          readConsistency: read_your_writes
+          observedAt: "2026-05-12T12:35:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+          stale: false
+    WorkspaceLockStatusUnlocked:
+      summary: Authorized caller — workspace has no active lock; lease metadata is omitted entirely.
+      value:
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        lockState: unlocked
+        retryEligibility:
+          retryable: true
+          reasonCode: retry_not_required
+          correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+          currentState: ready
+          freshness:
+            readConsistency: read_your_writes
+            observedAt: "2026-05-12T12:35:00Z"
+            projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+            stale: false
+        freshness:
+          readConsistency: read_your_writes
+          observedAt: "2026-05-12T12:35:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+          stale: false
+    WorkspaceLockStatusExpired:
+      summary: Authorized caller — lock lease has expired; lease history visible because authorization succeeded.
+      value:
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        lockState: expired
+        lease:
+          lockId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D2
+          leaseStatus: expired
+          acquiredAt: "2026-05-12T12:34:56Z"
+          effectiveAt: "2026-05-12T12:34:56Z"
+          expiresAt: "2026-05-12T12:49:56Z"
+        retryEligibility:
+          retryable: true
+          reasonCode: lock_conflict_retry
+          correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+          taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+          currentState: ready
+          freshness:
+            readConsistency: read_your_writes
+            observedAt: "2026-05-12T13:00:00Z"
+            projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+            stale: false
+        freshness:
+          readConsistency: read_your_writes
+          observedAt: "2026-05-12T13:00:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+          stale: false
+    WorkspaceRetryEligible:
+      summary: Retry is eligible; projection watermark and stale flag let callers reason about eventual-consistency lag.
+      value:
+        retryable: true
+        retryAfterSeconds: 30
+        reasonCode: provider_unavailable_retry
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+        currentState: failed
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:36:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+          stale: false
+    WorkspaceRetryBlocked:
+      summary: Retry is blocked pending reconciliation; projection watermark and stale flag are still surfaced so callers can detect lag-driven decisions.
+      value:
+        retryable: false
+        reasonCode: reconciliation_required
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+        currentState: reconciliation_required
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:36:30Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D7
+          stale: true
+    WorkspaceTransitionEvidenceValid:
+      summary: Authorized caller — accepted transition evidence.
+      value:
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        currentState: locked
+        attemptedTransition:
+          fromState: ready
+          eventName: WorkspaceLocked
+          toState: locked
+        result: accepted
+        reasonCode: transition_allowed
+        evidenceAt: "2026-05-12T12:34:58Z"
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+        lockEvidence:
+          lockId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D2
+          leaseStatus: active
+          acquiredAt: "2026-05-12T12:34:56Z"
+          effectiveAt: "2026-05-12T12:34:56Z"
+          expiresAt: "2026-05-12T12:49:56Z"
+          holderRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D5
+        auditMetadata:
+          visibility: metadata_only
+          operationId: LockWorkspace
+          evidenceTimestamp: "2026-05-12T12:34:58Z"
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:35:00Z"
+    WorkspaceTransitionEvidenceInvalid:
+      summary: Authorized caller — most recent attempt rejected as state_transition_invalid; outcome is encoded in the body so callers can still read evidence.
+      value:
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        currentState: locked
+        attemptedTransition:
+          fromState: locked
+          eventName: WorkspaceLocked
+          toState: locked
+        result: state_transition_invalid
+        reasonCode: state_transition_invalid
+        evidenceAt: "2026-05-12T12:38:00Z"
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+        auditMetadata:
+          visibility: metadata_only
+          operationId: LockWorkspace
+          evidenceTimestamp: "2026-05-12T12:38:00Z"
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:38:01Z"
+    WorkspaceTransitionEvidenceAuthorizationRevoked:
+      summary: Authorized caller — most recent attempt encountered authorization revocation mid-flight; outcome encoded in the body.
+      value:
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        currentState: inaccessible
+        attemptedTransition:
+          fromState: locked
+          eventName: AuthRevocationDetected
+          toState: inaccessible
+        result: authorization_revoked
+        reasonCode: authorization_revoked
+        evidenceAt: "2026-05-12T12:40:00Z"
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D6
+        auditMetadata:
+          visibility: metadata_only
+          operationId: LockWorkspace
+          evidenceTimestamp: "2026-05-12T12:40:00Z"
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:40:01Z"
+    WorkspaceTransitionInvalidProblem:
+      summary: Authorized caller — mutating command rejected because the attempted C6 transition is invalid. Unauthorized callers see the safe-denial envelope instead.
+      value:
+        type: about:blank
+        title: State transition invalid
+        status: 422
+        category: state_transition_invalid
+        code: state_transition_invalid
+        message: The requested state transition is invalid for the current workspace state.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          currentState: locked
+          attemptedTransition:
+            fromState: locked
+            eventName: WorkspaceLocked
+            toState: locked
+    WorkspaceAuthorizationRevokedProblem:
+      summary: Authorized caller — authorization changed mid-flight. Unauthorized callers see the safe-denial envelope instead.
+      value:
+        type: about:blank
+        title: Authorization revoked
+        status: 409
+        category: authorization_revocation_detected
+        code: authorization_revocation_detected
+        message: Authorization changed while workspace state was active.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: contact_operator
+        details:
+          visibility: metadata_only
+          currentState: inaccessible
+    WorkspaceLockExpiredProblem:
+      summary: Authorized caller — lock lease is no longer active. Reachable only after authorization succeeds; unauthorized callers see the safe-denial envelope instead.
+      value:
+        type: about:blank
+        title: Lock expired
+        status: 410
+        category: lock_expired
+        code: lock_expired
+        message: The workspace lock lease is no longer active.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: metadata_only
+          leaseStatus: expired
+    WorkspaceLockConflictProblem:
+      summary: Authorized caller — another active writer holds the workspace lock. Hidden lock holder identity remains redacted; reachable only after authorization succeeds.
+      value:
+        type: about:blank
+        title: Workspace lock conflict
+        status: 409
+        category: lock_conflict
+        code: workspace_locked
+        message: The workspace already has an active writer for this scope.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: metadata_only
+          lockStatus: active
+    IdempotencyConflictGeneric:
+      summary: Authorized caller — same idempotency key replayed with a non-equivalent payload.
+      value:
+        type: about:blank
+        title: Idempotency conflict
+        status: 409
+        category: idempotency_conflict
+        code: idempotency_conflict
+        message: The supplied idempotency key was previously seen with a non-equivalent payload.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    ReconciliationRequiredProblem:
+      summary: Authorized caller — provider outcome is unknown; explicit reconciliation must complete before the task can be treated as finalized.
+      value:
+        type: about:blank
+        title: Reconciliation required
+        status: 409
+        category: reconciliation_required
+        code: reconciliation_required
+        message: Provider outcome is unknown and reconciliation must complete before the task can be treated as finalized.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: wait_for_reconciliation
+        details:
+          visibility: metadata_only
+    ProviderReadinessFailedProblem:
+      summary: Authorized caller — provider readiness preconditions are not satisfied for workspace preparation.
+      value:
+        type: about:blank
+        title: Provider readiness failed
+        status: 422
+        category: provider_readiness_failed
+        code: provider_readiness_failed
+        message: Provider readiness preconditions are not satisfied for workspace preparation.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: contact_operator
+        details:
+          visibility: metadata_only
+    WorkspacePreparationFailedProblem:
+      summary: Authorized caller — workspace preparation could not be accepted for a sanitized canonical reason.
+      value:
+        type: about:blank
+        title: Workspace preparation failed
+        status: 422
+        category: workspace_preparation_failed
+        code: workspace_preparation_failed
+        message: Workspace preparation could not be accepted for the supplied scope.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    UnknownProviderOutcomeProblem:
+      summary: Authorized caller — provider outcome is unknown; reconciliation is required before retrying.
+      value:
+        type: about:blank
+        title: Unknown provider outcome
+        status: 503
+        category: unknown_provider_outcome
+        code: unknown_provider_outcome
+        message: Provider outcome is unknown for the requested workspace operation.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: wait_for_reconciliation
+        details:
+          visibility: metadata_only
+    ProviderUnavailableProblem:
+      summary: Authorized caller — provider dependency is temporarily unavailable.
+      value:
+        type: about:blank
+        title: Provider unavailable
+        status: 503
+        category: provider_unavailable
+        code: provider_unavailable
+        message: Provider dependency is temporarily unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: metadata_only
   schemas:
     OpaqueIdentifier:
       type: string
@@ -2395,6 +3521,269 @@ components:
           $ref: "#/components/schemas/SensitiveMetadataTier"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+    PrepareWorkspaceRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - repositoryBindingId
+        - branchRefPolicyRef
+        - workspacePolicyRef
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        repositoryBindingId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        branchRefPolicyRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        workspacePolicyRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+    LockWorkspaceRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - lockIntent
+        - requestedLeaseSeconds
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        lockIntent:
+          type: string
+          enum:
+            - exclusive_write
+        requestedLeaseSeconds:
+          type: integer
+          minimum: 1
+          maximum: 86400
+          description: Requested lease metadata only. Default duration, renewal, and clock-skew policy remain deferred to approved source documents.
+    ReleaseWorkspaceLockRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - lockId
+        - lockOwnershipProof
+        - releaseReasonCode
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        lockId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        lockOwnershipProof:
+          allOf:
+            - $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Non-secret opaque lock proof scoped to an authorized tenant, folder, workspace, task, and lock. This value proves lock ownership only inside that scope and is not authentication, provider access, session material, refresh material, or an authorization override.
+        releaseReasonCode:
+          type: string
+          enum:
+            - caller_completed
+            - caller_abandoned
+            - operator_requested
+            - authorization_revoked
+            - task_cancelled
+            - lock_revoked
+    WorkspaceLockStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - workspaceId
+        - lockState
+        - retryEligibility
+        - freshness
+      properties:
+        workspaceId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        lockState:
+          $ref: "#/components/schemas/LockState"
+        lease:
+          allOf:
+            - $ref: "#/components/schemas/LockLeaseMetadata"
+          description: Lease metadata is present only when a lock has ever been acquired for this workspace. Unlocked responses omit `lease`.
+        retryEligibility:
+          $ref: "#/components/schemas/WorkspaceRetryEligibility"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    LockState:
+      type: string
+      enum:
+        - unlocked
+        - locked
+        - expired
+        - stale
+        - revoked
+      description: Workspace lock state catalog. Narrower than `LifecycleState` because lock state is a property of the lock, not of the full workspace lifecycle.
+    LockLeaseMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - lockId
+        - leaseStatus
+        - acquiredAt
+        - effectiveAt
+        - expiresAt
+      properties:
+        lockId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        leaseStatus:
+          $ref: "#/components/schemas/LockLeaseStatus"
+        acquiredAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        effectiveAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        expiresAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        holderRef:
+          allOf:
+            - $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Metadata-only holder reference visible only to callers authorized for the lock scope.
+    LockLeaseStatus:
+      type: string
+      enum:
+        - active
+        - stale
+        - expired
+        - released
+        - revoked
+    WorkspaceRetryEligibility:
+      type: object
+      additionalProperties: false
+      required:
+        - retryable
+        - reasonCode
+        - correlationId
+        - currentState
+        - freshness
+      properties:
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          description: Optional metadata hint; exact retry policy is deferred to approved source documents.
+        reasonCode:
+          type: string
+          enum:
+            - retry_not_required
+            - provider_unavailable_retry
+            - lock_conflict_retry
+            - lock_active
+            - reconciliation_required
+            - authorization_revoked
+            - invalid_transition
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          allOf:
+            - $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Opaque task reference when the eligibility evidence is task-scoped. Omitted for workspace-scoped lock inspection where no task is in scope.
+        currentState:
+          $ref: "#/components/schemas/LifecycleState"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    WorkspaceTransitionAttempt:
+      type: object
+      additionalProperties: false
+      required:
+        - fromState
+        - eventName
+        - toState
+      properties:
+        fromState:
+          $ref: "#/components/schemas/LifecycleState"
+        eventName:
+          type: string
+          enum:
+            - RepositoryBindingRequested
+            - RepositoryBound
+            - RepositoryBindingFailed
+            - ProviderOutcomeUnknown
+            - WorkspacePrepared
+            - WorkspacePreparationFailed
+            - WorkspaceLocked
+            - AuthRevocationDetected
+            - TenantRevoked
+            - RepositoryDeletedAtProvider
+            - ReconciliationRequested
+            - FileMutated
+            - WorkspaceLockReleased
+            - LockLeaseExpired
+            - CommitSucceeded
+            - CommitFailed
+            - OperatorDiscardRequested
+            - OperatorRetrySucceeded
+            - ProviderReadinessValidated
+            - ReconciliationCompletedClean
+            - ReconciliationCompletedDirty
+            - ReconciliationEscalated
+            - OperatorMarkedFailed
+        toState:
+          $ref: "#/components/schemas/LifecycleState"
+    WorkspaceTransitionResult:
+      type: string
+      enum:
+        - accepted
+        - rejected
+        - state_transition_invalid
+        - authorization_revoked
+        - provider_outcome_unknown
+        - reconciliation_required
+    WorkspaceTransitionEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - workspaceId
+        - currentState
+        - attemptedTransition
+        - result
+        - reasonCode
+        - evidenceAt
+        - correlationId
+        - auditMetadata
+        - freshness
+      properties:
+        workspaceId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        currentState:
+          $ref: "#/components/schemas/LifecycleState"
+        attemptedTransition:
+          $ref: "#/components/schemas/WorkspaceTransitionAttempt"
+        result:
+          $ref: "#/components/schemas/WorkspaceTransitionResult"
+        reasonCode:
+          type: string
+          enum:
+            - transition_allowed
+            - state_transition_invalid
+            - authorization_revoked
+            - provider_outcome_unknown
+            - reconciliation_required
+        evidenceAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          allOf:
+            - $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Opaque task reference when the transition was task-scoped. Omitted for non-task transitions.
+        lockEvidence:
+          allOf:
+            - $ref: "#/components/schemas/LockLeaseMetadata"
+          description: Lock identity, lease status, acquired/effective/expiry timestamps, and authorized-caller holder reference when the attempted transition affects the workspace lock (for example WorkspaceLocked, WorkspaceLockReleased, LockLeaseExpired). Omitted for transitions that do not affect a lock.
+        auditMetadata:
+          type: object
+          additionalProperties:
+            oneOf:
+              - type: string
+                format: date-time
+              - type: string
+              - type: boolean
+          description: Metadata-only audit reference; file contents, diffs, provider payloads, local paths, and unauthorized resource hints are forbidden. Timestamp-valued entries use RFC 3339 date-time strings.
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
     CanonicalErrorCategory:
       type: string
       enum:
@@ -2413,6 +3802,15 @@ components:
         - provider_permission_insufficient
         - provider_unavailable
         - provider_rate_limited
+        - repository_binding_unavailable
+        - branch_ref_policy_invalid
+        - workspace_preparation_failed
+        - workspace_locked
+        - lock_conflict
+        - lock_expired
+        - lock_not_owned
+        - stale_workspace
+        - authorization_revocation_detected
         - repository_conflict
         - duplicate_binding
         - unsupported_provider_capability
@@ -2464,6 +3862,15 @@ components:
         - provider_permission_insufficient
         - provider_unavailable
         - provider_rate_limited
+        - repository_binding_unavailable
+        - branch_ref_policy_invalid
+        - workspace_preparation_failed
+        - workspace_locked
+        - lock_conflict
+        - lock_expired
+        - lock_not_owned
+        - stale_workspace
+        - authorization_revocation_detected
         - repository_conflict
         - duplicate_binding
         - unsupported_provider_capability
@@ -2492,6 +3899,8 @@ components:
         - capability_profile_ref
         - repository_binding_id
         - branch_ref_policy_ref
+        - workspace_id
+        - lock_id
         - task_id
         - operation_id
         - correlation_id
@@ -2500,6 +3909,10 @@ components:
         - authorization_outcome
         - workspace_state
         - lock_status
+        - lease_status
+        - lock_ownership_proof
+        - retryability
+        - evidence_timestamp
         - path_policy_class
         - query_family
         - result_count

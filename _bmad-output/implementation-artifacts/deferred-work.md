@@ -2,6 +2,18 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)
+
+- `allOf:[$ref]+description` on `LockLeaseMetadata.holderRef` and `ReleaseWorkspaceLockRequest.lockOwnershipProof` works under OpenAPI 3.1 but is the 3.0 workaround style — inconsistent with sibling refs that use the direct sibling description. Style nit; revisit during the Story 1.6 vocabulary consolidation. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: LockLeaseMetadata, ReleaseWorkspaceLockRequest`)
+- `ResolveRefs` in the contract validator only verifies that JSON-pointer targets exist; it does not check that a `$ref` under `schema:` actually points to a schema component (or that a `$ref` under `parameters:` points to a parameter). Easy to enhance once a wider validator pass is undertaken. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:300-352`)
+- `EnumerateNamedFields` does not descend into inline example map keys when checking for forbidden token-shaped names — only walks `properties:` keys and `name:` scalars. A property name accidentally introduced inline in an example would slip past. Revisit when example-introspection coverage is broadened. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:250-288`)
+- `EnumerateNamedFields` yields the same property names twice via the recursion path. Harmless but quadratic-ish on deep trees; revisit if test runtime grows. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:252-288`)
+- `GetOptionalScalar` uses `ShouldBeOfType<YamlScalarNode>()` and throws an opaque Shouldly error on a malformed mapping/sequence value. Defer until the validator is rewritten with structured diagnostics. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:386-391`)
+- Synthetic IDs use `opaque_01HZY...` ULID-shaped values; these are correctly synthetic but visually indistinguishable from production ULIDs in logs/issue trackers. Convention `opaque_example_workspace_001` would be clearer. Cosmetic — revisit during fixture/vocabulary sweep.
+- `WorkspaceTransitionEvidence.auditMetadata.additionalProperties: oneOf string|boolean` permits unbounded keys; a non-conformant server could flood audit metadata. Schema-robustness enhancement; not Story 1.8 scope. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: WorkspaceTransitionEvidence`)
+- Read-consistency token form drift: story prose uses hyphenated `snapshot-per-task` / `read-your-writes` / `eventually-consistent`, OpenAPI `ReadConsistencyClass` enum uses underscore form. Enum is canonical; revisit prose during vocabulary documentation.
+- Contract test uses `FindRepositoryRoot()` keyed on `Hexalith.Folders.slnx` filename. Brittle if solution renamed or test run outside the working copy. Revisit when contract tests adopt embedded-resource pattern. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:402-418`)
+
 ## Deferred from: code review of 1-7-author-tenant-folder-provider-and-repository-binding-contract-groups (2026-05-13)
 
 - `_bmad-output/process-notes/predev-preflight-2026-05-12T190331Z.json` ships with `result: fail` (11 dirty paths) inside the same diff being reviewed. Process artifact captured during dev; not a contract bug. Deferred as a process anomaly worth noting on the next dev-record housekeeping pass.

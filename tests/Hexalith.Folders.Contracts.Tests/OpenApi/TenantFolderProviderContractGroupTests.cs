@@ -28,6 +28,12 @@ public sealed class TenantFolderProviderContractGroupTests
         "GetRepositoryBinding",
         "ConfigureBranchRefPolicy",
         "GetBranchRefPolicy",
+        "PrepareWorkspace",
+        "LockWorkspace",
+        "ReleaseWorkspaceLock",
+        "GetWorkspaceLock",
+        "GetWorkspaceRetryEligibility",
+        "GetWorkspaceTransitionEvidence",
     ];
 
     // POST/PUT/PATCH/DELETE operations are mutating by default. Anything in this allow-list
@@ -50,7 +56,6 @@ public sealed class TenantFolderProviderContractGroupTests
 
         string[] forbiddenPathFragments =
         [
-            "/workspaces",
             "/locks",
             "/files",
             "/context",
