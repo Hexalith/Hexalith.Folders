@@ -99,7 +99,7 @@ _This file contains critical rules and patterns that AI agents must follow when 
 ### Development Workflow Rules
 
 - Never initialize or update nested submodules recursively unless the user explicitly asks for nested submodules.
-- Initialize or update only root-level submodules by default: `Hexalith.AI.Tools`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, and `Hexalith.Tenants`.
+- Initialize or update only root-level submodules by default: `Hexalith.AI.Tools`, `Hexalith.Commons`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories`, and `Hexalith.Tenants`.
 - Do not use `git submodule update --init --recursive` in setup guidance, scripts, or agent instructions unless it is explicitly framed as user-requested nested-submodule work.
 - Build verification for scaffold/root changes is `dotnet restore Hexalith.Folders.slnx` followed by `dotnet build Hexalith.Folders.slnx` from the repository root.
 - Root setup and scaffold work must not require provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodule initialization.

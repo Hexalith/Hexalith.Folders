@@ -9,6 +9,7 @@ public sealed class TenantFolderProviderContractGroupTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string ExtensionVocabularyPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "extensions", "hexalith-extension-vocabulary.yaml");
 
     private static readonly string[] OperationAllowList =
     [
@@ -29,15 +30,12 @@ public sealed class TenantFolderProviderContractGroupTests
         "GetBranchRefPolicy",
     ];
 
-    private static readonly string[] MutatingOperationIds =
+    // POST/PUT/PATCH/DELETE operations are mutating by default. Anything in this allow-list
+    // is a documented exception (e.g. POST-as-query for ValidateProviderReadiness — see
+    // docs/contract/tenant-folder-provider-repository-contract-groups.md#POST-as-query-Exception).
+    private static readonly string[] NonMutatingMethodPostAllowList =
     [
-        "CreateFolder",
-        "ArchiveFolder",
-        "UpdateFolderAclEntry",
-        "ConfigureProviderBinding",
-        "CreateRepositoryBackedFolder",
-        "BindRepository",
-        "ConfigureBranchRefPolicy",
+        "ValidateProviderReadiness",
     ];
 
     [Fact]
@@ -70,13 +68,14 @@ public sealed class TenantFolderProviderContractGroupTests
         }
 
         ResolveRefs(root);
+        ResolveExtensionVocabularyRefs();
     }
 
     [Fact]
     public void ContractGroupOperations_DeclareRequiredMetadataAndIdempotencyRules()
     {
         Operation[] operations = EnumerateOperations(LoadYamlMapping(OpenApiPath)).ToArray();
-        HashSet<string> mutating = MutatingOperationIds.ToHashSet(StringComparer.Ordinal);
+        HashSet<string> nonMutatingPostAllowList = NonMutatingMethodPostAllowList.ToHashSet(StringComparer.Ordinal);
 
         foreach (Operation operation in operations)
         {
@@ -86,10 +85,13 @@ public sealed class TenantFolderProviderContractGroupTests
             operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-authorization")).ShouldBeTrue(operation.OperationId);
             operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-canonical-error-categories")).ShouldBeTrue(operation.OperationId);
 
-            bool hasIdempotencyHeader = EnumerateParameters(operation.Node)
+            bool hasIdempotencyHeader = EnumerateParameters(operation.PathItem, operation.Node)
                 .Any(parameter => GetScalar(parameter, "name") == "Idempotency-Key" || GetScalar(parameter, "$ref")?.EndsWith("/IdempotencyKey", StringComparison.Ordinal) == true);
 
-            if (mutating.Contains(operation.OperationId))
+            bool isMutatingByMethod = operation.Method is "post" or "put" or "patch" or "delete";
+            bool isMutating = isMutatingByMethod && !nonMutatingPostAllowList.Contains(operation.OperationId);
+
+            if (isMutating)
             {
                 hasIdempotencyHeader.ShouldBeTrue(operation.OperationId);
                 operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-idempotency-key")).ShouldBeTrue(operation.OperationId);
@@ -130,11 +132,19 @@ public sealed class TenantFolderProviderContractGroupTests
             "password",
             "privateKey",
             "accessToken",
+            "credential",
+            "apiKey",
         ];
+
+        HashSet<string> credentialReferenceWhitelist = new(StringComparer.Ordinal)
+        {
+            "nonSecretCredentialReference",
+            "non_secret_credential_reference",
+        };
 
         foreach (string named in EnumerateNamedFields(root))
         {
-            if (named.Equals("nonSecretCredentialReference", StringComparison.Ordinal))
+            if (credentialReferenceWhitelist.Contains(named))
             {
                 continue;
             }
@@ -163,31 +173,56 @@ public sealed class TenantFolderProviderContractGroupTests
     }
 
     [Fact]
-    public void ContractGroupOperations_SafeDenialExamplesAreIndistinguishableAndDiagnosticsArePartitioned()
+    public void ContractGroupOperations_SafeDenialExamplesMatchTheirHttpStatusAndAreAudiencePartitioned()
     {
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
-        string[] safeDenialNames =
+        // Each canonical safe-denial example must declare a `status:` that matches the HTTP status
+        // its response is wired to. The 401/403/404 envelopes use distinct categories, but within
+        // each status the response shape is identical across every operation (no per-resource fields
+        // that would leak protected resource existence).
+        (string ExampleName, int ExpectedStatus)[] safeDenialStatusCases =
         [
-            "SafeDenialUnauthorizedTenant",
-            "SafeDenialMissingFolder",
-            "SafeDenialMissingProviderBinding",
-            "SafeDenialMissingRepositoryBinding",
-            "SafeDenialMissingBranchRefPolicy",
+            ("SafeDenial401Unauthorized", 401),
+            ("SafeDenial403Forbidden", 403),
+            ("SafeDenial404NotFound", 404),
         ];
 
-        string first = SerializeYaml(RequiredMapping(RequiredMapping(examples, safeDenialNames[0]), "value"));
-        foreach (string exampleName in safeDenialNames.Skip(1))
+        foreach ((string exampleName, int expectedStatus) in safeDenialStatusCases)
         {
-            SerializeYaml(RequiredMapping(RequiredMapping(examples, exampleName), "value")).ShouldBe(first, exampleName);
+            YamlMappingNode value = RequiredMapping(RequiredMapping(examples, exampleName), "value");
+            GetScalar(value, "status").ShouldBe(expectedStatus.ToString(), $"{exampleName} status must match its HTTP response code.");
+
+            // Resource-identity leak check: the safe-denial body must not include fields that
+            // would let an unauthorized caller infer which protected resource was queried.
+            string[] leakyFieldNames = ["folderId", "providerBindingRef", "repositoryBindingId", "branchRefPolicyRef", "aclEntryId"];
+            foreach (string leaky in leakyFieldNames)
+            {
+                value.Children.ContainsKey(new YamlScalarNode(leaky)).ShouldBeFalse($"{exampleName} must not include resource-identifying field '{leaky}' which would leak existence.");
+            }
         }
+
+        // Provider readiness audience partitioning. The schema is a oneOf discriminated by `audience`:
+        // consumer-audience callers receive only safe status + retry hint; operator-audience callers
+        // receive full sanitized evidence. Both audience examples must be free of credential state,
+        // raw provider payloads, and provider installation identity.
+        YamlMappingNode consumerExample = RequiredMapping(RequiredMapping(examples, "ProviderReadinessConsumer"), "value");
+        GetScalar(consumerExample, "audience").ShouldBe("consumer");
+        consumerExample.Children.ContainsKey(new YamlScalarNode("evidence")).ShouldBeFalse("Consumer-audience example must not expose per-capability evidence.");
+        consumerExample.Children.ContainsKey(new YamlScalarNode("providerBindingRef")).ShouldBeFalse("Consumer-audience example must not expose providerBindingRef.");
+        consumerExample.Children.ContainsKey(new YamlScalarNode("capabilityProfileRef")).ShouldBeFalse("Consumer-audience example must not expose capabilityProfileRef.");
+        string consumerSerialized = SerializeYaml(consumerExample);
+        consumerSerialized.ShouldNotContain("token", Case.Insensitive);
+        consumerSerialized.ShouldNotContain("secret", Case.Insensitive);
+        consumerSerialized.ShouldNotContain("installation", Case.Insensitive);
 
         YamlMappingNode operatorExample = RequiredMapping(RequiredMapping(examples, "ProviderReadinessOperatorDiagnostic"), "value");
         GetScalar(operatorExample, "audience").ShouldBe("authorized_operator");
-        SerializeYaml(operatorExample).ShouldNotContain("token", Case.Insensitive);
-        SerializeYaml(operatorExample).ShouldNotContain("secret", Case.Insensitive);
-        SerializeYaml(operatorExample).ShouldNotContain("installation", Case.Insensitive);
+        string operatorSerialized = SerializeYaml(operatorExample);
+        operatorSerialized.ShouldNotContain("token", Case.Insensitive);
+        operatorSerialized.ShouldNotContain("secret", Case.Insensitive);
+        operatorSerialized.ShouldNotContain("installation", Case.Insensitive);
     }
 
     [Fact]
@@ -210,11 +245,14 @@ public sealed class TenantFolderProviderContractGroupTests
         string githubRoot = Path.Combine(RepositoryRoot, ".github");
         if (Directory.Exists(githubRoot))
         {
-            Directory.EnumerateFiles(githubRoot, "*.yml", SearchOption.AllDirectories).ShouldBeEmpty("Story 1.7 must not add CI gates.");
+            string[] workflowFiles = Directory.EnumerateFiles(githubRoot, "*.yml", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles(githubRoot, "*.yaml", SearchOption.AllDirectories))
+                .ToArray();
+            workflowFiles.ShouldBeEmpty("Story 1.7 must not add CI gates.");
         }
     }
 
-    private sealed record Operation(string Path, string Method, string OperationId, YamlMappingNode Node);
+    private sealed record Operation(string Path, string Method, string OperationId, YamlMappingNode Node, YamlMappingNode PathItem);
 
     private static IEnumerable<Operation> EnumerateOperations(YamlMappingNode root)
     {
@@ -229,22 +267,29 @@ public sealed class TenantFolderProviderContractGroupTests
                 if (method is "get" or "put" or "post" or "patch" or "delete")
                 {
                     YamlMappingNode operation = methodEntry.Value.ShouldBeOfType<YamlMappingNode>();
-                    yield return new Operation(path, method, GetScalar(operation, "operationId") ?? string.Empty, operation);
+                    yield return new Operation(path, method, GetScalar(operation, "operationId") ?? string.Empty, operation, pathItem);
                 }
             }
         }
     }
 
-    private static IEnumerable<YamlMappingNode> EnumerateParameters(YamlMappingNode operation)
+    private static IEnumerable<YamlMappingNode> EnumerateParameters(YamlMappingNode pathItem, YamlMappingNode operation)
     {
-        if (!operation.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
+        // Path-level parameters apply to every method under the path-item.
+        if (pathItem.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? pathParametersNode))
         {
-            yield break;
+            foreach (YamlNode parameter in pathParametersNode.ShouldBeOfType<YamlSequenceNode>())
+            {
+                yield return parameter.ShouldBeOfType<YamlMappingNode>();
+            }
         }
 
-        foreach (YamlNode parameter in parametersNode.ShouldBeOfType<YamlSequenceNode>())
+        if (operation.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
         {
-            yield return parameter.ShouldBeOfType<YamlMappingNode>();
+            foreach (YamlNode parameter in parametersNode.ShouldBeOfType<YamlSequenceNode>())
+            {
+                yield return parameter.ShouldBeOfType<YamlMappingNode>();
+            }
         }
     }
 
@@ -292,8 +337,37 @@ public sealed class TenantFolderProviderContractGroupTests
     {
         foreach (string reference in EnumerateRefs(root))
         {
+            // Intra-file references must be JSON-Pointer fragments rooted at the document.
             reference.StartsWith("#/", StringComparison.Ordinal).ShouldBeTrue(reference);
             ResolvePointer(root, reference[2..].Split('/')).ShouldNotBeNull(reference);
+        }
+    }
+
+    private static void ResolveExtensionVocabularyRefs()
+    {
+        // The extension vocabulary file holds vocabulary-level $refs back to the spine schemas.
+        // We load it separately and confirm every external pointer of the form
+        // "../hexalith.folders.v1.yaml#/components/schemas/<X>" actually resolves in the spine,
+        // while intra-file pointers resolve within the extension file itself.
+        if (!File.Exists(ExtensionVocabularyPath))
+        {
+            return;
+        }
+
+        YamlMappingNode spine = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode extensions = LoadYamlMapping(ExtensionVocabularyPath);
+
+        foreach (string reference in EnumerateRefs(extensions))
+        {
+            if (reference.StartsWith("#/", StringComparison.Ordinal))
+            {
+                ResolvePointer(extensions, reference[2..].Split('/')).ShouldNotBeNull(reference);
+                continue;
+            }
+
+            const string spinePrefix = "../hexalith.folders.v1.yaml#/";
+            reference.StartsWith(spinePrefix, StringComparison.Ordinal).ShouldBeTrue($"Unsupported $ref shape in extension vocabulary: '{reference}'.");
+            ResolvePointer(spine, reference[spinePrefix.Length..].Split('/')).ShouldNotBeNull(reference);
         }
     }
 

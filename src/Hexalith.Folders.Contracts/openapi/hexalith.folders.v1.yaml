@@ -62,9 +62,9 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
       x-hexalith-idempotency-key:
@@ -147,11 +147,11 @@ paths:
                 synthetic:
                   $ref: "#/components/examples/FolderLifecycleStatus"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -220,11 +220,11 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
       x-hexalith-idempotency-key:
@@ -302,11 +302,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/FolderAclEntryList"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -372,11 +372,11 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
       x-hexalith-idempotency-key:
@@ -391,6 +391,7 @@ paths:
         queryBehavior: rejected-if-present
       x-hexalith-idempotency-equivalence:
         - acl_entry_id
+        - effect
         - folder_id
         - permission_level
         - subject_ref
@@ -452,11 +453,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/EffectivePermissions"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -523,11 +524,13 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
       x-hexalith-idempotency-key:
         required: true
         adapterSourcing:
@@ -601,11 +604,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProviderBinding"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -673,12 +676,14 @@ paths:
               examples:
                 consumer:
                   $ref: "#/components/examples/ProviderReadinessConsumer"
+                authorizedOperator:
+                  $ref: "#/components/examples/ProviderReadinessOperatorDiagnostic"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "429":
           $ref: "#/components/responses/ProviderRateLimited"
         "503":
@@ -749,9 +754,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProviderSupportEvidenceList"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -815,9 +820,11 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/RepositoryConflict"
         "422":
@@ -914,11 +921,11 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/DuplicateBinding"
         "422":
@@ -970,6 +977,9 @@ paths:
         - name: provider_binding_ref
           sensitivity: tenant_sensitive
           description: Opaque provider binding reference.
+        - name: external_repository_ref
+          sensitivity: tenant_sensitive
+          description: Opaque external repository reference attempted by the caller.
         - name: repository_binding_id
           sensitivity: tenant_sensitive
           description: Opaque repository binding identity.
@@ -1010,11 +1020,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/RepositoryBinding"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -1087,11 +1097,11 @@ paths:
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
       x-hexalith-idempotency-key:
@@ -1105,7 +1115,10 @@ paths:
         malformedBehavior: validation_error
         queryBehavior: rejected-if-present
       x-hexalith-idempotency-equivalence:
+        - branch_ref_policy.allowed_ref_patterns
+        - branch_ref_policy.default_ref
         - branch_ref_policy.policy_ref
+        - branch_ref_policy.protected_ref_patterns
         - folder_id
         - repository_binding_id
       x-hexalith-idempotency-ttl-tier: mutation
@@ -1165,11 +1178,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/BranchRefPolicy"
         "401":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial"
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -1411,12 +1424,33 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/FreshnessMetadata"
-    SafeAuthorizationDenial:
-      description: Safe denial that does not reveal unauthorized resource existence.
+    SafeAuthorizationDenial401:
+      description: Authentication failure (no valid token). Externally indistinguishable across all caller cases.
       content:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/SafeAuthorizationDenial"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/SafeDenial401Unauthorized"
+    SafeAuthorizationDenial403:
+      description: Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/SafeAuthorizationDenial"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/SafeDenial403Forbidden"
+    SafeAuthorizationDenial404:
+      description: Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases — does not reveal protected resource existence.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/SafeAuthorizationDenial"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/SafeDenial404NotFound"
     ValidationFailure:
       description: Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.
       content:
@@ -1457,17 +1491,23 @@ components:
           schema:
             $ref: "#/components/schemas/ProblemDetails"
     RepositoryConflict:
-      description: Repository creation or binding conflict represented without external resource hints.
+      description: Repository creation or binding conflict represented without external resource hints. Returns canonical category `repository_conflict` (distinct from `idempotency_conflict`).
       content:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/RepositoryConflictExample"
     DuplicateBinding:
-      description: Duplicate repository binding outcome for an authorized caller.
+      description: Duplicate repository binding outcome for an authorized caller. Returns canonical category `duplicate_binding` (distinct from `idempotency_conflict`).
       content:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/DuplicateBindingExample"
     UnsupportedProviderCapability:
       description: Requested provider capability is not supported by the bound provider profile.
       content:
@@ -1475,12 +1515,26 @@ components:
           schema:
             $ref: "#/components/schemas/ProblemDetails"
   examples:
-    SafeDenialUnauthorizedTenant:
-      summary: Externally indistinguishable safe denial.
+    SafeDenial401Unauthorized:
+      summary: Canonical 401 safe denial — caller is not authenticated. Envelope shape is identical across all caller cases.
+      value:
+        type: about:blank
+        title: Authentication required
+        status: 401
+        category: authentication_failure
+        code: authentication_required
+        message: Authentication is required to access this resource.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: check_credentials
+        details:
+          visibility: redacted
+    SafeDenial403Forbidden:
+      summary: Canonical 403 safe denial — authenticated caller lacks permission. Envelope shape is identical across all tenant/folder/binding/policy cases.
       value:
         type: about:blank
         title: Access unavailable
-        status: 404
+        status: 403
         category: tenant_access_denied
         code: resource_unavailable
         message: The requested resource is unavailable.
@@ -1489,50 +1543,8 @@ components:
         clientAction: no_action
         details:
           visibility: redacted
-    SafeDenialMissingFolder:
-      summary: Same envelope for an absent or unauthorized folder.
-      value:
-        type: about:blank
-        title: Access unavailable
-        status: 404
-        category: tenant_access_denied
-        code: resource_unavailable
-        message: The requested resource is unavailable.
-        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
-        retryable: false
-        clientAction: no_action
-        details:
-          visibility: redacted
-    SafeDenialMissingProviderBinding:
-      summary: Same envelope for an absent or unauthorized provider binding.
-      value:
-        type: about:blank
-        title: Access unavailable
-        status: 404
-        category: tenant_access_denied
-        code: resource_unavailable
-        message: The requested resource is unavailable.
-        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
-        retryable: false
-        clientAction: no_action
-        details:
-          visibility: redacted
-    SafeDenialMissingRepositoryBinding:
-      summary: Same envelope for an absent or unauthorized repository binding.
-      value:
-        type: about:blank
-        title: Access unavailable
-        status: 404
-        category: tenant_access_denied
-        code: resource_unavailable
-        message: The requested resource is unavailable.
-        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
-        retryable: false
-        clientAction: no_action
-        details:
-          visibility: redacted
-    SafeDenialMissingBranchRefPolicy:
-      summary: Same envelope for an absent or unauthorized branch/ref policy.
+    SafeDenial404NotFound:
+      summary: Canonical 404 safe denial — resource absent, cross-tenant, missing binding, missing branch/ref policy, or otherwise not visible. Envelope shape is identical across all of these cases (does not reveal protected resource existence).
       value:
         type: about:blank
         title: Access unavailable
@@ -1556,6 +1568,34 @@ components:
         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
         retryable: true
         clientAction: retry
+        details:
+          visibility: metadata_only
+    RepositoryConflictExample:
+      summary: Repository creation conflict — distinct from idempotency_conflict.
+      value:
+        type: about:blank
+        title: Repository conflict
+        status: 409
+        category: repository_conflict
+        code: repository_conflict
+        message: The requested repository operation conflicts with current state.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    DuplicateBindingExample:
+      summary: Duplicate binding outcome — distinct from idempotency_conflict.
+      value:
+        type: about:blank
+        title: Duplicate binding
+        status: 409
+        category: duplicate_binding
+        code: duplicate_binding
+        message: A repository binding already exists for this folder.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: revise_request
         details:
           visibility: metadata_only
     CreateFolderRequest:
@@ -1587,26 +1627,20 @@ components:
         protectedRefPatterns:
           - branch_ref_release_placeholder
     ProviderReadinessConsumer:
+      summary: Consumer-audience readiness — flattened safe status only.
       value:
-        providerBindingRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C7
-        status: ready
         audience: consumer
-        capabilityProfileRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C8
-        evidence:
-          repositoryCreation: supported
-          existingRepositoryBinding: supported
-          branchRefPolicy: supported
-          fileOperations: supported
-          commitStatus: supported
-          failureBehavior: documented
+        status: ready
+        retryHint: no_retry_required
         freshness:
           readConsistency: snapshot_per_task
           observedAt: "2026-05-12T12:34:56Z"
     ProviderReadinessOperatorDiagnostic:
+      summary: Operator-audience readiness — full sanitized evidence (no credential state, no installation identity).
       value:
+        audience: authorized_operator
         providerBindingRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C7
         status: degraded
-        audience: authorized_operator
         capabilityProfileRef: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C8
         evidence:
           repositoryCreation: temporarily_unavailable
@@ -1614,6 +1648,7 @@ components:
           branchRefPolicy: supported
           fileOperations: supported
           commitStatus: supported
+          providerErrors: supported
           failureBehavior: retry_after_backoff
         sanitizedErrorCategory: provider_rate_limited
         freshness:
@@ -1930,11 +1965,7 @@ components:
         subjectRef:
           $ref: "#/components/schemas/OpaqueIdentifier"
         permissionLevel:
-          type: string
-          enum:
-            - read
-            - write
-            - administer
+          $ref: "#/components/schemas/FolderPermissionLevel"
         effect:
           type: string
           enum:
@@ -1972,11 +2003,7 @@ components:
         subjectRef:
           $ref: "#/components/schemas/OpaqueIdentifier"
         permissionLevel:
-          type: string
-          enum:
-            - read
-            - write
-            - administer
+          $ref: "#/components/schemas/FolderPermissionLevel"
         effect:
           type: string
           enum:
@@ -1997,11 +2024,7 @@ components:
           type: array
           uniqueItems: true
           items:
-            type: string
-            enum:
-              - read
-              - write
-              - administer
+            $ref: "#/components/schemas/FolderPermissionLevel"
         authorizationOutcome:
           type: string
           enum:
@@ -2077,8 +2100,19 @@ components:
         - supported
         - unsupported
         - temporarily_unavailable
+      description: Capability availability state. Recovery/retry policy is expressed separately by ProviderFailureBehavior.
+    ProviderFailureBehavior:
+      type: string
+      enum:
         - documented
         - retry_after_backoff
+      description: How a provider failure should be handled by callers; orthogonal to ProviderCapabilityState.
+    FolderPermissionLevel:
+      type: string
+      enum:
+        - read
+        - write
+        - administer
     ProviderCapabilityEvidence:
       type: object
       additionalProperties: false
@@ -2088,6 +2122,7 @@ components:
         - branchRefPolicy
         - fileOperations
         - commitStatus
+        - providerErrors
         - failureBehavior
       properties:
         repositoryCreation:
@@ -2100,32 +2135,59 @@ components:
           $ref: "#/components/schemas/ProviderCapabilityState"
         commitStatus:
           $ref: "#/components/schemas/ProviderCapabilityState"
-        failureBehavior:
+        providerErrors:
           $ref: "#/components/schemas/ProviderCapabilityState"
-    ProviderReadiness:
+        failureBehavior:
+          $ref: "#/components/schemas/ProviderFailureBehavior"
+    ProviderReadinessStatus:
+      type: string
+      enum:
+        - ready
+        - degraded
+        - failed
+    ProviderReadinessConsumer:
       type: object
       additionalProperties: false
+      description: Consumer-audience readiness response. Exposes safe status and retry guidance only; never per-capability evidence, credential state, installation identity, or unauthorized resource existence.
       required:
-        - providerBindingRef
-        - status
         - audience
-        - capabilityProfileRef
-        - evidence
+        - status
         - freshness
       properties:
-        providerBindingRef:
-          $ref: "#/components/schemas/OpaqueIdentifier"
-        status:
-          type: string
-          enum:
-            - ready
-            - degraded
-            - failed
         audience:
           type: string
           enum:
             - consumer
+        status:
+          $ref: "#/components/schemas/ProviderReadinessStatus"
+        retryHint:
+          type: string
+          enum:
+            - no_retry_required
+            - retry_after_backoff
+            - contact_operator
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ProviderReadinessOperator:
+      type: object
+      additionalProperties: false
+      description: Authorized-operator readiness response with sanitized capability evidence. Never includes credential state, raw provider payloads, provider installation identity, or unauthorized resource hints.
+      required:
+        - audience
+        - providerBindingRef
+        - status
+        - capabilityProfileRef
+        - evidence
+        - freshness
+      properties:
+        audience:
+          type: string
+          enum:
             - authorized_operator
+        providerBindingRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        status:
+          $ref: "#/components/schemas/ProviderReadinessStatus"
         capabilityProfileRef:
           $ref: "#/components/schemas/OpaqueIdentifier"
         evidence:
@@ -2134,6 +2196,15 @@ components:
           $ref: "#/components/schemas/CanonicalErrorCategory"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+    ProviderReadiness:
+      oneOf:
+        - $ref: "#/components/schemas/ProviderReadinessConsumer"
+        - $ref: "#/components/schemas/ProviderReadinessOperator"
+      discriminator:
+        propertyName: audience
+        mapping:
+          consumer: "#/components/schemas/ProviderReadinessConsumer"
+          authorized_operator: "#/components/schemas/ProviderReadinessOperator"
     ProviderSupportEvidenceList:
       type: object
       additionalProperties: false
@@ -2184,6 +2255,8 @@ components:
           $ref: "#/components/schemas/OpaqueIdentifier"
         defaultRef:
           type: string
+          minLength: 14
+          maxLength: 91
           pattern: "^branch_ref_[a-z0-9_]{3,80}$"
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         allowedRefPatterns:
@@ -2192,23 +2265,66 @@ components:
           maxItems: 16
           items:
             type: string
+            minLength: 14
+            maxLength: 91
             pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+            x-hexalith-sensitive-metadata-tier: tenant_sensitive
         protectedRefPatterns:
           type: array
           maxItems: 16
           items:
             type: string
+            minLength: 14
+            maxLength: 91
             pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+            x-hexalith-sensitive-metadata-tier: tenant_sensitive
     BranchRefPolicy:
-      allOf:
-        - $ref: "#/components/schemas/BranchRefPolicyRequest"
-        - type: object
-          additionalProperties: false
-          required:
-            - freshness
-          properties:
-            freshness:
-              $ref: "#/components/schemas/FreshnessMetadata"
+      type: object
+      additionalProperties: false
+      description: Branch/ref policy response. Properties intentionally duplicate BranchRefPolicyRequest rather than allOf-extending it, because BranchRefPolicyRequest sets additionalProperties=false and adding `freshness` via allOf would violate strict JSON Schema validation.
+      required:
+        - requestSchemaVersion
+        - repositoryBindingId
+        - policyRef
+        - defaultRef
+        - allowedRefPatterns
+        - freshness
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        repositoryBindingId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        policyRef:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        defaultRef:
+          type: string
+          minLength: 14
+          maxLength: 91
+          pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        allowedRefPatterns:
+          type: array
+          minItems: 1
+          maxItems: 16
+          items:
+            type: string
+            minLength: 14
+            maxLength: 91
+            pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+            x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        protectedRefPatterns:
+          type: array
+          maxItems: 16
+          items:
+            type: string
+            minLength: 14
+            maxLength: 91
+            pattern: "^branch_ref_[a-z0-9_]{3,80}$"
+            x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
     CreateRepositoryBackedFolderRequest:
       type: object
       additionalProperties: false
@@ -2301,7 +2417,6 @@ components:
         - duplicate_binding
         - unsupported_provider_capability
         - provider_failure_known
-        - provider_outcome_unknown
         - unknown_provider_outcome
         - reconciliation_required
         - not_found
@@ -2353,7 +2468,6 @@ components:
         - duplicate_binding
         - unsupported_provider_capability
         - provider_failure_known
-        - provider_outcome_unknown
         - unknown_provider_outcome
         - reconciliation_required
         - not_found
@@ -2370,6 +2484,9 @@ components:
         - tenant_id
         - folder_id
         - acl_entry_id
+        - subject_class
+        - permission_count
+        - external_repository_ref
         - provider_id
         - provider_binding_ref
         - capability_profile_ref

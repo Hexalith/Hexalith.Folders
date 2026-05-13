@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-13T12:00:00+02:00
+# last_updated: 2026-05-13T18:00:00+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-13T12:00:00+02:00
+last_updated: 2026-05-13T18:00:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -50,7 +50,7 @@ development_status:
   1-4-author-phase-0-5-pre-spine-workshop-deliverables: done
   1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: done
   1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: done
-  1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: review
+  1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: done
   1-8-author-workspace-and-lock-contract-groups: ready-for-dev
   1-9-author-file-mutation-and-context-query-contract-groups: ready-for-dev
   1-10-author-commit-and-workspace-status-contract-groups: ready-for-dev

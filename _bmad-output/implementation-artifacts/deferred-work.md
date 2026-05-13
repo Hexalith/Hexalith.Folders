@@ -2,6 +2,12 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-7-author-tenant-folder-provider-and-repository-binding-contract-groups (2026-05-13)
+
+- `_bmad-output/process-notes/predev-preflight-2026-05-12T190331Z.json` ships with `result: fail` (11 dirty paths) inside the same diff being reviewed. Process artifact captured during dev; not a contract bug. Deferred as a process anomaly worth noting on the next dev-record housekeeping pass.
+- `CanonicalErrorCategory` retains `provider_failure_known` without any operation referencing it. Pre-existing enum value from Story 1.5/1.6 foundation; downstream stories may consume it. Deferred — revisit when the next consumer is introduced or when the bounded vocabulary is finalised.
+- `PaginationMetadata` `pageCursor` is not bound to `filter` shape — a cursor issued for one `filter` value can be reused with a different filter, leaking partial result counts across permission-visibility classes (timing oracle on hidden ACL entries). Pagination component is shared from Story 1.6; belongs to a cross-cutting pagination hardening story, not Story 1.7. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:PaginationMetadata, MetadataFilter`)
+
 ## Deferred from: code review of 1-3-seed-minimally-valid-normative-fixtures (2026-05-13)
 
 - `previous-spine.yaml` not proven syntactically valid by a YAML library — `ParseTopLevelYamlScalarMap` checks top-level key presence only; a malformed YAML block (tab indent, duplicate key) would not be caught. Fix requires confirming a YAML library is centrally available; defer to whichever story first adds one. (`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:ParseTopLevelYamlScalarMap`)

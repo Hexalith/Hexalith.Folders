@@ -2,6 +2,27 @@
 
 status: finalized MVP rules with deferred implementation owners
 source inputs: PRD command/query contract, PRD error codes, architecture Adapter Parity Contract, C3 retention artifact, C4 input limits artifact, Story 1.3 fixture seeds, Story 1.4 Phase 0.5 deliverables
+last reviewed: 2026-05-13
+
+## Partition vs Payload Equivalence
+
+This document's per-operation `idempotency_equivalence_fields` column lists every input that participates in idempotency-key partitioning. Story 1.7 onwards splits these into two distinct layers when authoring OpenAPI:
+
+- **Envelope-derived partitioning keys** — `tenant_id`, `credential_scope_class`, and `retention_policy_class` are always partitioning keys but never appear in OpenAPI request bodies, query parameters, or client-controlled headers. Per Story 1.7 AC #2 (and project-context.md), tenant authority comes exclusively from authenticated principal claims and EventStore envelopes. These keys are applied implicitly by the idempotency layer when computing equivalence hashes; they MUST NOT be added to `x-hexalith-idempotency-equivalence` lists in the OpenAPI Contract Spine.
+- **Payload-derived equivalence fields** — Fields that appear in the request schema (body, path, or non-tenant headers) and contribute to semantic intent. These are the ones listed in `x-hexalith-idempotency-equivalence`, lexicographically ordered.
+
+OpenAPI Contract Spine field-name mapping (Story 1.5 row name → Story 1.7 OpenAPI field path):
+
+| Story 1.5 row name | Story 1.7 OpenAPI field path | Notes |
+|---|---|---|
+| `folder_name` | `folder_metadata.display_name` | 1.7 routes naming through the `FolderMetadata` schema. |
+| `archive_reason_class` | `archive_reason_code` | 1.7 narrows the enum at the contract level. |
+| `repository_identity` | `external_repository_ref` | 1.7 uses an opaque reference, not a structured identity object. |
+| `provider_binding_reference` | `provider_binding_ref` | Naming alignment only. |
+| `branch_ref_policy` (structural) | `branch_ref_policy.policy_ref` plus `branch_ref_policy.default_ref`, `branch_ref_policy.allowed_ref_patterns`, `branch_ref_policy.protected_ref_patterns` | Each policy attribute is its own equivalence path so replay with changed contents fails fast. |
+
+Story 1.12 (NSwag helpers) consumes both layers: generated `ComputeIdempotencyHash()` helpers apply the envelope partitioning keys before hashing the payload-derived equivalence fields.
+
 last reviewed: 2026-05-11
 
 This document is the implementation-facing contract-rules artifact for Story 1.5. It defines operation metadata, idempotency equivalence, non-mutating read consistency, and adapter behavioral parity before the OpenAPI Contract Spine is authored.

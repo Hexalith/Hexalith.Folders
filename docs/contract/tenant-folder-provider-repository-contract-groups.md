@@ -11,7 +11,12 @@ The canonical machine-readable source remains `src/Hexalith.Folders.Contracts/op
 - Query and status operations must keep `x-hexalith-read-consistency` and must not accept `Idempotency-Key`.
 - Tenant authority remains authentication context plus EventStore envelopes. Route identifiers, provider binding references, repository binding identifiers, and branch/ref policy references are addressable resource references only.
 - Consumer-facing denials must use the externally indistinguishable safe-denial envelope where protected resource existence cannot be revealed.
-- Provider readiness diagnostics must stay audience-partitioned: consumer examples remain redacted, while authorized-operator examples remain sanitized and metadata-only.
+- Provider readiness diagnostics must stay audience-partitioned: consumer examples remain redacted, while authorized-operator examples remain sanitized and metadata-only. The `ProviderReadiness` schema is a discriminated `oneOf` on `audience`: consumer-audience callers receive only `{audience, status, retryHint, freshness}` and the operator-audience response carries the full sanitized capability evidence. The discriminator is enforced at the schema level so a consumer-audience response cannot leak per-capability evidence or provider installation identity.
+- Safe-denial responses are split into three response components — `SafeAuthorizationDenial401` (authentication failure), `SafeAuthorizationDenial403` (permission denied), and `SafeAuthorizationDenial404` (resource absent, cross-tenant, missing binding, or missing branch/ref policy). Each component carries one canonical example whose Problem Details `status:` field matches the HTTP status; the 404 envelope is byte-identical across every "absent-or-unauthorized" case so unauthorized callers cannot infer protected resource existence by response shape.
+
+## POST-as-query Exception
+
+- `ValidateProviderReadiness` (`POST /api/v1/provider-readiness/validations`) is intentionally modeled as a non-mutating POST. Per the Operation Inventory Seed (Story 1.7), this operation is `Query/status`. POST is used so the caller can pass a structured request body (`providerBindingRef`, `requestedCapability`) rather than encoding it into query parameters. Because the operation is non-mutating it carries `x-hexalith-read-consistency` and does not accept `Idempotency-Key`. The `MutatingOperationIds` allow-list in the contract validation test explicitly whitelists `ValidateProviderReadiness` so future hardening of method-based mutating detection does not regress this exception.
 
 ## Deferred Owners
 

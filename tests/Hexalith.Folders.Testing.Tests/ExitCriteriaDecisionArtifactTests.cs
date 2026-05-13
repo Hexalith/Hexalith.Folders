@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Hexalith.Folders.Testing.Tests.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -192,7 +193,7 @@ public sealed class ExitCriteriaDecisionArtifactTests
         {
             string spine = File.ReadAllText(spinePath);
             spine.ShouldContain("openapi: 3.1.0", Case.Sensitive, "Story 1.4 must not reshape the Contract Spine away from its OpenAPI 3.1 foundation; if the spine is present it must remain Story 1.6's foundation.");
-            AssertNoDownstreamOperationGroups(spine);
+            SpineContractAssertions.AssertNoDownstreamOperationGroups(spine);
         }
 
         File.Exists(Path.Combine(root, "src", "Hexalith.Folders", "Aggregates", "Folder", "FolderStateTransitions.cs"))
@@ -429,24 +430,6 @@ public sealed class ExitCriteriaDecisionArtifactTests
         @"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
         RegexOptions.CultureInvariant);
 
-    private static void AssertNoDownstreamOperationGroups(string spine)
-    {
-        string[] forbiddenPaths =
-        [
-            "/api/v1/workspaces",
-            "/api/v1/locks",
-            "/api/v1/files",
-            "/api/v1/context",
-            "/api/v1/commits",
-            "/api/v1/audit",
-            "/api/v1/ops-console"
-        ];
-
-        foreach (string forbiddenPath in forbiddenPaths)
-        {
-            spine.ShouldNotContain(forbiddenPath, Case.Sensitive, $"{forbiddenPath} belongs to a downstream Contract Spine story.");
-        }
-    }
 
     private static string RepositoryRoot()
     {

@@ -1,6 +1,6 @@
 # Story 1.7: Author tenant, folder, provider, and repository-binding contract groups
 
-Status: review
+Status: done
 
 Created: 2026-05-11
 
@@ -206,6 +206,77 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 - Server endpoints belong later under `src/Hexalith.Folders.Server/Endpoints/` and must not be implemented here.
 - CLI and MCP wrappers belong later under `src/Hexalith.Folders.Cli/` and `src/Hexalith.Folders.Mcp/` and must not be implemented here.
 
+### Review Findings
+
+_Generated 2026-05-13 by `bmad-code-review` (Blind Hunter + Edge Case Hunter + Acceptance Auditor) against commit `50c8495`._
+
+#### Decision-needed (resolved 2026-05-13)
+
+All seven decisions were resolved using the "do best" technically-defensible option and converted to patches (see below). The original decision context is preserved here for traceability.
+
+- [x] [Review][Decision][Resolved→Patch] Idempotency equivalence drift from Story 1.5 → **Document partition-vs-payload distinction** in `docs/contract/idempotency-and-parity-rules.md`: `tenant_id`/`credential_scope_class`/`retention_policy_class` are implicit auth-envelope partitioning keys (per AC#2 they must never appear in payloads) and therefore not OpenAPI body-equivalence fields. Align field-naming notes (`folder_name`↔`folder_metadata.display_name`, `archive_reason_class`↔`archive_reason_code`, `repository_identity`↔`external_repository_ref`, `provider_binding_reference`↔`provider_binding_ref`).
+- [x] [Review][Decision][Resolved→Patch] Safe-denial 4xx example/status mismatch → **Split examples per HTTP status**: add `SafeDenial401Unauthorized`, `SafeDenial403Forbidden`, `SafeDenial404NotFound` with matching `status:`. Wire each to the corresponding response code on every operation that uses `SafeAuthorizationDenial`. Keep envelope fields byte-identical within each status code.
+- [x] [Review][Decision][Resolved→Patch] `ProviderReadiness` audience leak → **Discriminated `oneOf` on `audience`**: consumer projection = `{audience, status, retryHint}` only; operator projection = `{audience, status, evidence, retryHint, sanitizedDiagnostics}`. Adds `ProviderReadinessConsumer` and `ProviderReadinessOperator` component schemas; existing examples align.
+- [x] [Review][Decision][Resolved→Patch] Submodule pointer bumps → **Revert** `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories` to their pre-1.7 SHAs in the working tree; the contract-only story does not own runtime submodule motion.
+- [x] [Review][Decision][Resolved→Patch] README/scaffold submodule expansion → **Revert** `README.md` and `ScaffoldContractTests.cs` to the original four-submodule init list (`Hexalith.AI.Tools Hexalith.EventStore Hexalith.FrontComposer Hexalith.Tenants`).
+- [x] [Review][Decision][Resolved→Patch] `ValidateProviderReadiness` POST-as-query → **Keep POST + document the exception** in `docs/contract/tenant-folder-provider-repository-contract-groups.md` explaining that the operation is a Query/status (per inventory) but uses POST to accept a structured filter body; therefore `Idempotency-Key` is intentionally omitted and the operation is whitelisted in the `MutatingOperationIds` test.
+- [x] [Review][Decision][Resolved→Patch] `ProviderCapabilityState` enum axis conflation → **Split into two enums**: `ProviderCapabilityState = [supported, unsupported, temporarily_unavailable]` and `ProviderFailureBehavior = [documented, retry_after_backoff]`. Update `ProviderCapabilityEvidence` to reference each on the appropriate field.
+
+#### Patch
+
+- [x] [Review][Patch] `UpdateFolderAclEntry` equivalence missing `effect` field — grant↔revoke replay collides on same Idempotency-Key. `[hexalith.folders.v1.yaml:392-396]`
+- [x] [Review][Patch] `ConfigureBranchRefPolicy` equivalence omits `default_ref`, `allowed_ref_patterns`, `protected_ref_patterns` — protected-ref policy contents can be mutated under the same replay key. `[hexalith.folders.v1.yaml:1107-1110]`
+- [x] [Review][Patch] `BranchRefPolicy` `allOf` over `BranchRefPolicyRequest` (which sets `additionalProperties: false`) is strictly invalid JSON Schema for the `freshness` extension — strict validators reject every response. `[hexalith.folders.v1.yaml:2202-2211]`
+- [x] [Review][Patch] `SafeDenial*` examples are dangling under `components/examples` and not wired to `responses/SafeAuthorizationDenial` — production handlers can emit divergent shapes per status code while satisfying schema. `[hexalith.folders.v1.yaml:1414-1419 response, 1478-1556 examples]`
+- [x] [Review][Patch] `ContractGroupOperations_SafeDenialExamplesAreIndistinguishableAndDiagnosticsArePartitioned` compares serialized YAML byte-equality across five hand-identical examples — assertion is tautological and locks correlationId to a constant. Replace with structural assertion (key sets + value placeholders) or canonicalised comparison that excludes `correlationId`. `[tests/.../TenantFolderProviderContractGroupTests.cs:~2670-2685]`
+- [x] [Review][Patch] `CreateRepositoryBackedFolder`/`BindRepository` declare `idempotency_conflict` canonical category but reuse 409 for `RepositoryConflict`/`DuplicateBinding` — two distinct 409 semantics collide. Split 409 into separate response shapes with canonical category discriminator. `[hexalith.folders.v1.yaml:1278-1293, 1377-1393]`
+- [x] [Review][Patch] `CreateRepositoryBackedFolder` has no 404 response for missing/cross-tenant `providerBindingRef` — silently maps to 400/403. Add 404 → `SafeAuthorizationDenial`. `[hexalith.folders.v1.yaml:1278-1293]`
+- [x] [Review][Patch] `CanonicalErrorCategory` and `CliExitCode` both contain `unknown_provider_outcome` and `provider_outcome_unknown` — `provider_outcome_unknown` is unreferenced and forks the bounded vocabulary. Remove it (project-context.md and operations use `unknown_provider_outcome`). `[hexalith.folders.v1.yaml:2304-2305, 2356-2357]`
+- [x] [Review][Patch] `AssertNoDownstreamOperationGroups` in `ContractRulesArtifactTests` and `ExitCriteriaDecisionArtifactTests` only blocks 7 specific path prefixes — replace with an allow-list check (or shared helper) that fails on any path outside the Story 1.7 inventory. `[tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs:~165-167, ExitCriteriaDecisionArtifactTests.cs:~88-90]`
+- [x] [Review][Patch] Forbidden-field-name sweep in `TenantFolderProviderContractGroupTests` misses `credential` and `apiKey` — spec lists both. Add them to the term list (and extend the `nonSecretCredentialReference` whitelist accordingly). `[tests/.../TenantFolderProviderContractGroupTests.cs:~2628-2640]`
+- [x] [Review][Patch] `nonSecretCredentialReference` whitelist uses exact `StringComparison.Ordinal` match — snake_case audit-key variant `non_secret_credential_reference` would be wrongly flagged or wrongly pass. Whitelist both casing variants explicitly. `[same test method]`
+- [x] [Review][Patch] Installation-identity guard runs only on the operator example — must also run on the consumer example (project-context.md requires both audiences to be free of installation IDs). `[tests/.../TenantFolderProviderContractGroupTests.cs:~2683]`
+- [x] [Review][Patch] `RepositoryConflict` and `DuplicateBinding` responses have no examples — callers cannot distinguish the two without out-of-band knowledge. Add examples that include canonical category code in the Problem Details body. `[hexalith.folders.v1.yaml:1422-1448]`
+- [x] [Review][Patch] `BranchRefPolicyRequest.defaultRef` carries `x-hexalith-sensitive-metadata-tier: tenant_sensitive` but `allowedRefPatterns` and `protectedRefPatterns` do not — same data class, inconsistent classification. Tag all three uniformly. `[hexalith.folders.v1.yaml:2167-2196]`
+- [x] [Review][Patch] `EffectivePermissions.permissions`, `FolderAclEntry.permissionLevel`, and `UpdateFolderAclEntryRequest.permissionLevel` duplicate `enum: [read, write, administer]` three times — extract to a shared `FolderPermissionLevel` component and `$ref`. `[hexalith.folders.v1.yaml:~2015-2087]`
+- [x] [Review][Patch] `MutatingOperationIds` is a hand-maintained list — derive mutating set from HTTP method (POST/PUT/PATCH/DELETE) with an explicit allow-list for documented non-mutating POSTs. `[tests/.../TenantFolderProviderContractGroupTests.cs:~2525-2534]`
+- [x] [Review][Patch] `EnumerateParameters` test helper inspects only operation-level `parameters`, not path-level — refactor that hoists `Idempotency-Key` to path level silently breaks the test. Walk pathItem.parameters too. `[same test file:~2731-2742]`
+- [x] [Review][Patch] `ResolveRefs` test asserts `reference.StartsWith("#/")` for every `$ref` and never loads the extension-vocabulary file — extension-level refs in `extensions/hexalith-extension-vocabulary.yaml:451, 482` would fail the assertion if they ever appeared in the spine. Either allow `./extensions/...#/...` patterns or load and validate the extension file separately. `[same test file:~2786-2791]`
+- [x] [Review][Patch] Negative-scope test enumerates `*.yml` under `.github` but ignores `*.yaml` — bypassable by naming a workflow `.yaml`. Match both extensions. `[same test file:~2698-2707]`
+- [x] [Review][Patch] `_bmad-output/implementation-artifacts/sprint-status.yaml` `last_updated` regressed from `2026-05-12T21:00:00+02:00` to `2026-05-12T20:59:38+02:00` — bump to a later timestamp (or to current review time).
+- [x] [Review][Patch] `ConfigureProviderBinding` declares `provider_unavailable` in canonical-error-categories but has no 5xx response declared — either add 503 → `ServiceUnavailable` or drop the unreachable category. `[hexalith.folders.v1.yaml:~992-1029]`
+- [x] [Review][Patch] `ProviderReadinessOperatorDiagnostic` example is defined but no operation references it — wire it as an operator-audience example on `ValidateProviderReadiness` or delete it. `[hexalith.folders.v1.yaml:~1620-1660 examples]`
+- [x] [Review][Patch] `ProviderCapabilityEvidence` schema omits `providerErrors` field but `ProviderCapabilityName` enum includes `provider_errors` — schema and enum closure mismatch. Add the field. `[hexalith.folders.v1.yaml:~2148-2187]`
+- [x] [Review][Patch] `BindRepository` audit metadata omits `external_repository_ref` — investigations cannot pin which external repository was attempted from audit alone. `[hexalith.folders.v1.yaml:~1432-1448 audit-metadata-keys]`
+- [x] [Review][Patch] `AssertNoDownstreamOperationGroups` byte-identical in two test files — extract to a shared helper in `Hexalith.Folders.Testing` to avoid drift. `[ContractRulesArtifactTests.cs, ExitCriteriaDecisionArtifactTests.cs]`
+- [x] [Review][Patch] `x-hexalith-authorization.valueSchema` and `x-hexalith-read-consistency.valueSchema` lack `additionalProperties: false` while sibling vocabulary entries enforce it — strictness asymmetry permits silent key drift. `[src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml:411-485]`
+- [x] [Review][Patch] `AuditMetadataKey` enum missing `subject_class` and `permission_count` keys that Story 1.5's `GetEffectivePermissions` row declares — parity rows for that op cannot be expressed against the current enum. `[hexalith.folders.v1.yaml:2434-2459]`
+- [x] [Review][Patch] `BranchRefPolicyRequest.defaultRef` (and item schemas for `allowedRefPatterns`/`protectedRefPatterns`) lack explicit `maxLength` — pattern caps internal characters but no string-level ceiling. Add `maxLength: 91` (or chosen bound) to match C4 input-limit expectations. `[hexalith.folders.v1.yaml:2268-2284]`
+
+#### Patch (from resolved decisions)
+
+- [x] [Review][Patch] Document partition-vs-payload distinction in `docs/contract/idempotency-and-parity-rules.md` — add a section explaining that `tenant_id`/`credential_scope_class`/`retention_policy_class` columns are envelope partitioning hints (not payload equivalence) and add a field-naming map between 1.5 rows and 1.7 OpenAPI field paths.
+- [x] [Review][Patch] Add `SafeDenial401Unauthorized`, `SafeDenial403Forbidden`, `SafeDenial404NotFound` examples with matching `status:`; wire each to the corresponding response code on every `SafeAuthorizationDenial` reference. `[hexalith.folders.v1.yaml:1414-1556, all operation response blocks]`
+- [x] [Review][Patch] Refactor `ProviderReadiness` into discriminated `oneOf` on `audience` with `ProviderReadinessConsumer` (status + retryHint only) and `ProviderReadinessOperator` (status + evidence + retryHint + sanitizedDiagnostics) — update `ValidateProviderReadiness` response. `[hexalith.folders.v1.yaml:1894-1909, 2188-2219]`
+- [x] [Review][Defer] Revert submodule pointer bumps for `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories` — DEFERRED on inspection because subsequent commits (`42e1207`, `019850a`) updated the same submodules after `50c8495`; reverting now would discard valid downstream work. Recorded as a process anomaly rather than a revert.
+- [x] [Review][Patch][Corrected] README and `ScaffoldContractTests.cs` were NOT reverted — investigation showed `.gitmodules` already contains all 6 submodules (Hexalith.AI.Tools, Hexalith.Commons, Hexalith.EventStore, Hexalith.FrontComposer, Hexalith.Memories, Hexalith.Tenants). The Story 1.7 README change brought docs in line with reality. Instead, updated `_bmad-output/project-context.md` to list all 6 root submodules (it was the stale source). Auditor's flag was based on the stale snapshot, not the actual .gitmodules state.
+- [x] [Review][Patch] Add a "POST-as-query exception" note to `docs/contract/tenant-folder-provider-repository-contract-groups.md` documenting that `ValidateProviderReadiness` is POST + Query/status + no Idempotency-Key (and is whitelisted from the mutating-op test).
+- [x] [Review][Patch] Split `ProviderCapabilityState` enum: keep `[supported, unsupported, temporarily_unavailable]`; introduce `ProviderFailureBehavior = [documented, retry_after_backoff]`. Update `ProviderCapabilityEvidence` schema to use each on the appropriate field. `[hexalith.folders.v1.yaml:2148-2187]`
+
+#### Defer
+
+- [x] [Review][Defer] `_bmad-output/process-notes/predev-preflight-2026-05-12T190331Z.json` ships with `result: fail` (11 dirty paths) — process artifact captured in the diff; not a contract bug. Deferred, process anomaly.
+- [x] [Review][Defer] `CanonicalErrorCategory` retains `provider_failure_known` without any operation referencing it — pre-existing enum value from Story 1.5/1.6 foundation; downstream stories may consume it. Deferred, pre-existing.
+- [x] [Review][Defer] `PaginationMetadata` `pageCursor` not bound to filter shape — cursor issued for one `filter` value can be reused with a different filter, leaking partial result counts. Pagination component is shared from Story 1.6; belongs to a cross-cutting pagination hardening story. Deferred, cross-cutting.
+
+#### Dismissed (recorded count, not actionable)
+
+- `ConfigureProviderBinding` includes `non_secret_credential_reference` in equivalence (standard idempotency behavior, not a bug).
+- `AuditMetadataKey` mixes id/outcome categories (organizational nit).
+- `Operation.Method` test iteration over non-method children (defensive nit, works correctly today).
+- `OpaqueIdentifier` correlationId reuse across denial examples (subsumed by the F7 patch on test design).
+- `ConfigureProviderBinding` lacks 404 response (auditor recorded as compliant — config-PUT semantics).
+
 ## Change Log
 
 | Date | Change | Author |
@@ -214,6 +285,7 @@ Use the operation names below as a starting point unless Story 1.6 or Story 1.5 
 | 2026-05-11 | Party-mode review applied contract-only boundary, safe-denial, tenant-authority, placeholder, secret-field, and validation guardrails. | Codex |
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-12 | Implemented tenant, folder, provider, repository binding, and branch/ref Contract Spine groups with offline validation. | Codex |
+| 2026-05-13 | Applied code-review patches (35 findings: 32 patches applied, 3 deferred). Build green, 12/12 Contracts.Tests, 36/36 Testing.Tests, full solution test suite passes. | Claude |
 
 ## Party-Mode Review
 

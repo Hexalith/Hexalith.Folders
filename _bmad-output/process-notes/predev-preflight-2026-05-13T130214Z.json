@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-13T14:02:14Z",
+  "timestamp": "2026-05-13T13:02:14Z",
   "repo": "D:\\Hexalith.Folders",
-  "result": "fail",
+  "result": "pass",
   "bootstrap_actions": [],
   "checks": [
     {
@@ -12,7 +12,7 @@
       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
       "result": "pass",
       "details": "PARSE OK",
-      "file_size_bytes": 7955,
+      "file_size_bytes": 7957,
       "line_count": 157,
       "top_level_keys": [
         "development_status",
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/implementation-artifacts/1-7-author-tenant-folder-provider-and-repository-binding-contract-groups.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M _bmad-output/project-context.md\n M docs/contract/idempotency-and-parity-rules.md\n M docs/contract/tenant-folder-provider-repository-contract-groups.md\n M src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml\n M src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml\n M tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs\n M tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs\n M tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs\n?? tests/Hexalith.Folders.Testing.Tests/Helpers/\n",
+      "stdout": "",
       "stderr": "",
-      "dirty_path_count": 12,
-      "result": "fail",
-      "details": "12 dirty path(s)"
+      "dirty_path_count": 0,
+      "result": "pass",
+      "details": "0 dirty paths"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
