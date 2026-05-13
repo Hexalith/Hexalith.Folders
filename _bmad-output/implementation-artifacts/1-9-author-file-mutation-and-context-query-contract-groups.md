@@ -1,6 +1,6 @@
 # Story 1.9: Author file mutation and context query contract groups
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-11
 
@@ -27,61 +27,61 @@ so that file changes and read-only context access preserve the same policy bound
 
 ## Tasks / Subtasks
 
-- [ ] Confirm prerequisites and preserve scope boundaries. (AC: 1, 2, 3, 10, 11)
-  - [ ] Inspect Story 1.6 deliverables: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/`. If absent, record prerequisite drift and create only the narrow file/context additions this story owns with `TODO(reference-pending)` markers where shared foundation values are missing.
-  - [ ] Inspect Story 1.8 deliverables for workspace, lock, task, retry, state-transition, and authorization-revocation components before referencing them. If absent, reference stable planned component names and record the dependency as reference-pending instead of duplicating Story 1.8 scope.
-  - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml`; treat missing files as prerequisite drift, not permission to invent policy.
-  - [ ] Inspect `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, and related C3/S-2 evidence if present; use approved values where binding and record reference-pending approval state where still proposed.
-  - [ ] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
-  - [ ] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
-- [ ] Author file mutation contract operations. (AC: 1, 2, 3, 6, 7, 8, 9)
-  - [ ] Add or update tags and paths for file add, change, and remove operations under `/api/v1/...` using lowercase hyphen-delimited path segments and camelCase path parameters such as `{folderId}` and `{workspaceId}`.
-  - [ ] Define stable operation IDs for `AddFile`, `ChangeFile`, and `RemoveFile` unless Story 1.5 or Story 1.6 has already frozen different names; record any mapping in contract notes.
-  - [ ] Represent file operation identity with a caller-visible `operationId` or operation reference in addition to `Idempotency-Key`; task ID and operation ID are required for mutating file operations.
-  - [ ] Require a prepared workspace and a valid held lock for every mutation; represent lock failure, stale/expired lock, auth revocation, and `state_transition_invalid` as canonical metadata-only outcomes.
-  - [ ] Declare idempotency equivalence using the Story 1.5 field lists: `AddFile`/`ChangeFile` include `content_hash_reference, file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, tenant_id, workspace_id`; `RemoveFile` includes `file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, tenant_id, workspace_id`.
-  - [ ] Implement D-9 contract shapes only: inline small content, streaming larger content, content hash and byte length metadata, retry-as-stream response header, and synthetic examples. Do not add base64-only, raw diff, or external content reference behavior.
-  - [ ] Treat `AddFile` and `ChangeFile` as business operation kinds and resolve their concrete OpenAPI transport operation IDs explicitly before authoring paths: `PutFileInline` for inline content at or below 262144 bytes and `PutFileStream` for larger streamed content unless a prerequisite story has already frozen different operation IDs. Record any mapping in contract notes.
-  - [ ] Define `X-Hexalith-Retry-As` as a metadata-only `413 Payload Too Large` response header with enum value `stream`; examples must not reveal unauthorized file names, paths, content, diffs, provider payloads, or local paths.
-  - [ ] Keep provider calls, Git writes, filesystem writes, aggregate event emission, workers, process managers, and generated SDK helpers deferred to Epic 4, Story 1.12, and later implementation stories.
-- [ ] Author context-query contract operations. (AC: 1, 4, 5, 6, 7, 9)
-  - [ ] Add non-mutating operations for file tree/listing, file metadata lookup, search, glob, and bounded range reads using stable operation IDs such as `ListFolderFiles`, `SearchFolderFiles`, and `ReadFileRange` unless prior stories froze different names.
-  - [ ] Model context queries as policy-filtered metadata/content operations, not generic repository browsing or direct filesystem access.
-  - [ ] Declare authorization order explicitly: tenant access, folder ACL, path policy, sensitivity classification, C4 query/input bounds, then query execution. Results must already be security-trimmed before ranking, summarization, truncation, or response shaping.
-  - [ ] Represent authorization order as contract metadata or normative operation description, not as caller-controlled request fields. Query request bodies and parameters must not include tenant authority, ACL override, sensitivity override, policy bypass, or search-first/filter-later semantics.
-  - [ ] Require authorization and path-policy checks before resource-existence, file-type, match-count, range-validity, or projection-status details are disclosed. Unauthorized, excluded, missing, binary-disallowed, and sensitivity-denied cases must use indistinguishable safe-denial or metadata-only Problem Details unless the actor is authorized to know the specific condition.
-  - [ ] Use `snapshot-per-task` read consistency for `ListFolderFiles`, `SearchFolderFiles`, and `ReadFileRange` per Story 1.5 unless a prior approved source changes it.
-  - [ ] Declare freshness metadata, projection lag behavior, truncation flag, truncation reason, configured limit, actual count/bytes, elapsed milliseconds, and safe retry guidance where applicable.
-  - [ ] Define bounded range reads as byte ranges with exact inclusive/exclusive offset semantics, maximum single range size, zero-length range behavior, end-of-file behavior, unsupported multi-range behavior, invalid/reversed range behavior, redacted/partial response metadata, and whether `206`, `416`, or canonical Problem Details applies for each boundary case.
-  - [ ] Keep tree, metadata, search, and glob responses metadata-only: no content snippets, matched-line text, previews, diffs, generated context payloads, or raw search text. `ReadFileRange` is the only context-query operation allowed to return authorized file bytes.
-  - [ ] Apply C4 proposed bounds as reference-pending or approved according to current artifact state: max requested paths 100, max tree entries 2000, max search/glob results 500, max single range bytes 262144, aggregate response bytes 1048576, and server-side query timeout 2000 ms.
-  - [ ] Ensure denied, excluded, binary-disallowed, too-large, timeout, truncated, and missing-resource cases produce safe Problem Details or metadata-only response shapes without revealing unauthorized file, folder, task, path, or search-hit existence.
-- [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 5, 6, 7, 12)
-  - [ ] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, lifecycle/state schemas, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
-  - [ ] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, and forward-slash workspace-root-relative path metadata with no leading slash.
-  - [ ] Ensure every mutating operation has `Idempotency-Key`, correlation metadata, task identity, audit metadata, and parity dimensions; ensure every non-mutating context query omits `Idempotency-Key`.
-  - [ ] Ensure all examples are synthetic opaque placeholders and do not include real tenant IDs, repository URLs, branch names with sensitive values, local paths, provider identifiers, organization names, email addresses, file content snippets, diffs, generated context payloads, secrets, or unauthorized resource hints.
-  - [ ] If pagination or continuation tokens are exposed, model them as service-issued opaque non-secret cursors only; they must not encode provider tokens, local paths, tenant authority, ACL decisions, raw query text, or unredacted path lists.
-  - [ ] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
-- [ ] Add focused offline validation. (AC: 6, 7, 10, 12)
-  - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
-  - [ ] Keep the validation oracle contract-only: assert OpenAPI shape, headers, schemas, examples, Problem Details, `x-hexalith-*` metadata, authorization-order documentation, and extension vocabulary only; do not require runtime handlers, EventStore behavior, providers, workers, SDK generation, CLI/MCP, UI, CI gates, or filesystem/Git side effects.
-  - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation allow-list: `AddFile`, `ChangeFile`, `RemoveFile`, `ListFolderFiles`, `SearchFolderFiles`, `ReadFileRange`, plus any explicitly named file metadata/tree/glob operation added by this story.
-  - [ ] Verify all new operations include required `x-hexalith-*` metadata and satisfy idempotency/read-consistency requirements by operation type.
-  - [ ] Verify no request payload, query parameter, route segment, or client-controlled header defines authoritative tenant context.
-  - [ ] Verify context-query operations do not define or accept `Idempotency-Key`; mutation operations require it and expose missing, malformed, and conflict cases through canonical metadata-only Problem Details.
-  - [ ] Verify context-query contracts require authorization and policy gating before existence, match-count, file-type, projection-state, and range-specific diagnostics can be disclosed.
-  - [ ] Verify C4 limit metadata appears in schemas or reference-pending comments with approval state preserved.
-  - [ ] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
-  - [ ] Verify examples and audit metadata exclude file contents, content snippets, matched-line text, diffs, raw search text, generated context payloads, provider payloads, local paths, production URLs, and unauthorized resource-existence hints.
-  - [ ] Verify bounded range examples cover minimum range, maximum allowed range, invalid reversed range, over-bound range, redacted or partial response metadata, and authorized content-only response bodies.
-  - [ ] Verify safe-denial and canonical error coverage for validation failure, missing idempotency key, idempotency conflict, tenant access denied, folder ACL denied, path policy denied, sensitivity or C4 denial, safe not-found/denied response, range unsatisfiable, projection stale, and unsupported semantic/RAG extension.
-  - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
-- [ ] Record downstream authoring notes. (AC: 10, 11)
-  - [ ] Add a short note near the OpenAPI file or in `docs/contract/` explaining which file/context components Stories 1.10, 1.11, Epic 4, Epic 5, and Story 6.6 must reuse.
-  - [ ] Record deferred owners for runtime file mutation behavior, path policy enforcement, context-query execution, semantic indexing, commit/status, audit timeline, operations-console projections, generated SDK helpers, parity oracle rows, and CI gates.
-  - [ ] Record any unresolved C4 approval, Story 1.6 foundation, Story 1.8 workspace/lock, Story 1.5 operation naming, or C6 state metadata dependencies as explicit deferred decisions.
+- [x] Confirm prerequisites and preserve scope boundaries. (AC: 1, 2, 3, 10, 11)
+  - [x] Inspect Story 1.6 deliverables: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/`. If absent, record prerequisite drift and create only the narrow file/context additions this story owns with `TODO(reference-pending)` markers where shared foundation values are missing.
+  - [x] Inspect Story 1.8 deliverables for workspace, lock, task, retry, state-transition, and authorization-revocation components before referencing them. If absent, reference stable planned component names and record the dependency as reference-pending instead of duplicating Story 1.8 scope.
+  - [x] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml`; treat missing files as prerequisite drift, not permission to invent policy.
+  - [x] Inspect `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, and related C3/S-2 evidence if present; use approved values where binding and record reference-pending approval state where still proposed.
+  - [x] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
+  - [x] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
+- [x] Author file mutation contract operations. (AC: 1, 2, 3, 6, 7, 8, 9)
+  - [x] Add or update tags and paths for file add, change, and remove operations under `/api/v1/...` using lowercase hyphen-delimited path segments and camelCase path parameters such as `{folderId}` and `{workspaceId}`.
+  - [x] Define stable operation IDs for `AddFile`, `ChangeFile`, and `RemoveFile` unless Story 1.5 or Story 1.6 has already frozen different names; record any mapping in contract notes.
+  - [x] Represent file operation identity with a caller-visible `operationId` or operation reference in addition to `Idempotency-Key`; task ID and operation ID are required for mutating file operations.
+  - [x] Require a prepared workspace and a valid held lock for every mutation; represent lock failure, stale/expired lock, auth revocation, and `state_transition_invalid` as canonical metadata-only outcomes.
+  - [x] Declare idempotency equivalence using the Story 1.5 field lists: `AddFile`/`ChangeFile` include `content_hash_reference, file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, tenant_id, workspace_id`; `RemoveFile` includes `file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, tenant_id, workspace_id`.
+  - [x] Implement D-9 contract shapes only: inline small content, streaming larger content, content hash and byte length metadata, retry-as-stream response header, and synthetic examples. Do not add base64-only, raw diff, or external content reference behavior.
+  - [x] Treat `AddFile` and `ChangeFile` as business operation kinds and resolve their concrete OpenAPI transport operation IDs explicitly before authoring paths: `PutFileInline` for inline content at or below 262144 bytes and `PutFileStream` for larger streamed content unless a prerequisite story has already frozen different operation IDs. Record any mapping in contract notes.
+  - [x] Define `X-Hexalith-Retry-As` as a metadata-only `413 Payload Too Large` response header with enum value `stream`; examples must not reveal unauthorized file names, paths, content, diffs, provider payloads, or local paths.
+  - [x] Keep provider calls, Git writes, filesystem writes, aggregate event emission, workers, process managers, and generated SDK helpers deferred to Epic 4, Story 1.12, and later implementation stories.
+- [x] Author context-query contract operations. (AC: 1, 4, 5, 6, 7, 9)
+  - [x] Add non-mutating operations for file tree/listing, file metadata lookup, search, glob, and bounded range reads using stable operation IDs such as `ListFolderFiles`, `SearchFolderFiles`, and `ReadFileRange` unless prior stories froze different names.
+  - [x] Model context queries as policy-filtered metadata/content operations, not generic repository browsing or direct filesystem access.
+  - [x] Declare authorization order explicitly: tenant access, folder ACL, path policy, sensitivity classification, C4 query/input bounds, then query execution. Results must already be security-trimmed before ranking, summarization, truncation, or response shaping.
+  - [x] Represent authorization order as contract metadata or normative operation description, not as caller-controlled request fields. Query request bodies and parameters must not include tenant authority, ACL override, sensitivity override, policy bypass, or search-first/filter-later semantics.
+  - [x] Require authorization and path-policy checks before resource-existence, file-type, match-count, range-validity, or projection-status details are disclosed. Unauthorized, excluded, missing, binary-disallowed, and sensitivity-denied cases must use indistinguishable safe-denial or metadata-only Problem Details unless the actor is authorized to know the specific condition.
+  - [x] Use `snapshot-per-task` read consistency for `ListFolderFiles`, `SearchFolderFiles`, and `ReadFileRange` per Story 1.5 unless a prior approved source changes it.
+  - [x] Declare freshness metadata, projection lag behavior, truncation flag, truncation reason, configured limit, actual count/bytes, elapsed milliseconds, and safe retry guidance where applicable.
+  - [x] Define bounded range reads as byte ranges with exact inclusive/exclusive offset semantics, maximum single range size, zero-length range behavior, end-of-file behavior, unsupported multi-range behavior, invalid/reversed range behavior, redacted/partial response metadata, and whether `206`, `416`, or canonical Problem Details applies for each boundary case.
+  - [x] Keep tree, metadata, search, and glob responses metadata-only: no content snippets, matched-line text, previews, diffs, generated context payloads, or raw search text. `ReadFileRange` is the only context-query operation allowed to return authorized file bytes.
+  - [x] Apply C4 proposed bounds as reference-pending or approved according to current artifact state: max requested paths 100, max tree entries 2000, max search/glob results 500, max single range bytes 262144, aggregate response bytes 1048576, and server-side query timeout 2000 ms.
+  - [x] Ensure denied, excluded, binary-disallowed, too-large, timeout, truncated, and missing-resource cases produce safe Problem Details or metadata-only response shapes without revealing unauthorized file, folder, task, path, or search-hit existence.
+- [x] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 5, 6, 7, 12)
+  - [x] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, lifecycle/state schemas, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
+  - [x] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, and forward-slash workspace-root-relative path metadata with no leading slash.
+  - [x] Ensure every mutating operation has `Idempotency-Key`, correlation metadata, task identity, audit metadata, and parity dimensions; ensure every non-mutating context query omits `Idempotency-Key`.
+  - [x] Ensure all examples are synthetic opaque placeholders and do not include real tenant IDs, repository URLs, branch names with sensitive values, local paths, provider identifiers, organization names, email addresses, file content snippets, diffs, generated context payloads, secrets, or unauthorized resource hints.
+  - [x] If pagination or continuation tokens are exposed, model them as service-issued opaque non-secret cursors only; they must not encode provider tokens, local paths, tenant authority, ACL decisions, raw query text, or unredacted path lists.
+  - [x] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
+- [x] Add focused offline validation. (AC: 6, 7, 10, 12)
+  - [x] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
+  - [x] Keep the validation oracle contract-only: assert OpenAPI shape, headers, schemas, examples, Problem Details, `x-hexalith-*` metadata, authorization-order documentation, and extension vocabulary only; do not require runtime handlers, EventStore behavior, providers, workers, SDK generation, CLI/MCP, UI, CI gates, or filesystem/Git side effects.
+  - [x] Verify new operation IDs are unique, stable, and limited to this story's operation allow-list: `AddFile`, `ChangeFile`, `RemoveFile`, `ListFolderFiles`, `SearchFolderFiles`, `ReadFileRange`, plus any explicitly named file metadata/tree/glob operation added by this story.
+  - [x] Verify all new operations include required `x-hexalith-*` metadata and satisfy idempotency/read-consistency requirements by operation type.
+  - [x] Verify no request payload, query parameter, route segment, or client-controlled header defines authoritative tenant context.
+  - [x] Verify context-query operations do not define or accept `Idempotency-Key`; mutation operations require it and expose missing, malformed, and conflict cases through canonical metadata-only Problem Details.
+  - [x] Verify context-query contracts require authorization and policy gating before existence, match-count, file-type, projection-state, and range-specific diagnostics can be disclosed.
+  - [x] Verify C4 limit metadata appears in schemas or reference-pending comments with approval state preserved.
+  - [x] Verify schema and example field names reject secret-shaped or credential-shaped terms such as `token`, `secret`, `credential`, `password`, `privateKey`, `accessToken`, and raw provider authorization material unless the field is an explicit non-secret opaque reference.
+  - [x] Verify examples and audit metadata exclude file contents, content snippets, matched-line text, diffs, raw search text, generated context payloads, provider payloads, local paths, production URLs, and unauthorized resource-existence hints.
+  - [x] Verify bounded range examples cover minimum range, maximum allowed range, invalid reversed range, over-bound range, redacted or partial response metadata, and authorized content-only response bodies.
+  - [x] Verify safe-denial and canonical error coverage for validation failure, missing idempotency key, idempotency conflict, tenant access denied, folder ACL denied, path policy denied, sensitivity or C4 denial, safe not-found/denied response, range unsatisfiable, projection stale, and unsupported semantic/RAG extension.
+  - [x] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools, domain aggregate behavior, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, or nested-submodule initialization.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
+- [x] Record downstream authoring notes. (AC: 10, 11)
+  - [x] Add a short note near the OpenAPI file or in `docs/contract/` explaining which file/context components Stories 1.10, 1.11, Epic 4, Epic 5, and Story 6.6 must reuse.
+  - [x] Record deferred owners for runtime file mutation behavior, path policy enforcement, context-query execution, semantic indexing, commit/status, audit timeline, operations-console projections, generated SDK helpers, parity oracle rows, and CI gates.
+  - [x] Record any unresolved C4 approval, Story 1.6 foundation, Story 1.8 workspace/lock, Story 1.5 operation naming, or C6 state metadata dependencies as explicit deferred decisions.
 
 ## Dev Notes
 
@@ -248,6 +248,7 @@ Do not add commit, workspace status, audit timeline, operations-console, runtime
 | 2026-05-11 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-11 | Applied party-mode review hardening for operation mapping, D-9 transport semantics, safe denial, context-query authorization order, bounded range reads, semantic/RAG boundaries, and validation oracles. | Codex |
 | 2026-05-12 | Applied advanced-elicitation hardening for authorization-before-observation, metadata-only context queries, range-read boundary semantics, opaque pagination cursors, and fail-closed validation. | Codex |
+| 2026-05-13 | Implemented file mutation and context-query Contract Spine groups with focused offline validation; story ready for review. | Codex |
 
 ## Party-Mode Review
 
@@ -276,10 +277,26 @@ Do not add commit, workspace status, audit timeline, operations-console, runtime
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-13: `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --filter FileContextContractGroupTests --no-restore` failed red phase before OpenAPI/file-context artifacts existed, then passed after implementation.
+- 2026-05-13: `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` passed.
+- 2026-05-13: `dotnet build Hexalith.Folders.slnx` passed with 0 warnings and 0 errors.
+- 2026-05-13: `dotnet test Hexalith.Folders.slnx --no-build` passed.
+
 ### Completion Notes List
 
+- Added Story 1.9 file mutation operations `AddFile`, `ChangeFile`, and `RemoveFile` to the Contract Spine with task/workspace/path scope, held-lock requirements, idempotency metadata, retry-as-stream handling, canonical errors, audit metadata, and parity dimensions.
+- Added context-query operations `ListFolderFiles`, `GetFolderFileMetadata`, `SearchFolderFiles`, `GlobFolderFiles`, and `ReadFileRange` with `snapshot_per_task` consistency, authorization-before-observation descriptions, safe-denial behavior, C4 proposed bounds, and metadata-only results except authorized range-read bytes.
+- Added schemas and synthetic examples for path metadata, D-9 inline/stream transport, context-query limits, metadata results, range-read boundaries, redaction, response budget, timeout, and input-limit Problem Details.
+- Added contract-only downstream authoring notes in `docs/contract/file-context-contract-groups.md` and focused OpenAPI validation tests in `FileContextContractGroupTests`.
+- Preserved negative scope: no runtime handlers, generated SDK output, NSwag wiring, CLI/MCP tools, workers, UI pages, final parity rows, CI gates, Git/provider/filesystem behavior, or nested-submodule initialization.
+
 ### File List
+
+- docs/contract/file-context-contract-groups.md
+- src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs

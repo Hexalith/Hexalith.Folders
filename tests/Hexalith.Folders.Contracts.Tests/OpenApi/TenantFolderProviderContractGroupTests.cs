@@ -34,6 +34,14 @@ public sealed class TenantFolderProviderContractGroupTests
         "GetWorkspaceLock",
         "GetWorkspaceRetryEligibility",
         "GetWorkspaceTransitionEvidence",
+        "AddFile",
+        "ChangeFile",
+        "RemoveFile",
+        "ListFolderFiles",
+        "GetFolderFileMetadata",
+        "SearchFolderFiles",
+        "GlobFolderFiles",
+        "ReadFileRange",
     ];
 
     // POST/PUT/PATCH/DELETE operations are mutating by default. Anything in this allow-list
@@ -42,6 +50,10 @@ public sealed class TenantFolderProviderContractGroupTests
     private static readonly string[] NonMutatingMethodPostAllowList =
     [
         "ValidateProviderReadiness",
+        "GetFolderFileMetadata",
+        "SearchFolderFiles",
+        "GlobFolderFiles",
+        "ReadFileRange",
     ];
 
     [Fact]
@@ -57,8 +69,6 @@ public sealed class TenantFolderProviderContractGroupTests
         string[] forbiddenPathFragments =
         [
             "/locks",
-            "/files",
-            "/context",
             "/commits",
             "/audit",
             "/ops-console",

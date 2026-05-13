@@ -1975,6 +1975,1071 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add:
+    post:
+      tags:
+        - files
+      operationId: AddFile
+      summary: Add a file through the prepared workspace file mutation contract.
+      description: >
+        Contract-only file add operation. The request declares file operation identity,
+        workspace-root-relative path metadata, content hash metadata, and D-9
+        transport shape. `PutFileInline` is allowed for content at or below 262144
+        bytes; `PutFileStream` is the required shape for larger content. The caller
+        must already have a prepared workspace and a valid held workspace lock.
+        Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior
+        is deferred to downstream stories.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileMutationRequest"
+            examples:
+              inline:
+                $ref: "#/components/examples/AddFileInlineRequest"
+      responses:
+        "202":
+          description: File mutation accepted as metadata-only task work.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Task-Id:
+              $ref: "#/components/headers/TaskId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileMutationAccepted"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+        "410":
+          $ref: "#/components/responses/WorkspaceLockExpired"
+        "413":
+          description: Inline payload exceeds the D-9 boundary; retry as stream without echoing content.
+          headers:
+            X-Hexalith-Retry-As:
+              $ref: "#/components/headers/RetryAs"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                overBound:
+                  $ref: "#/components/examples/FileInlineTooLargeProblem"
+        "422":
+          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+        "423":
+          $ref: "#/components/responses/LockConflict"
+        "428":
+          $ref: "#/components/responses/WorkspaceAuthorizationRevoked"
+        "503":
+          $ref: "#/components/responses/ReconciliationRequired"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - content_hash_reference
+        - file_operation_kind
+        - operation_id
+        - path_metadata
+        - path_policy_class
+        - task_id
+        - workspace_id
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: prepared-workspace-held-lock-and-file-mutation-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - workspace_locked
+        - lock_expired
+        - lock_not_owned
+        - authorization_revocation_detected
+        - stale_workspace
+        - path_validation_failed
+        - input_limit_exceeded
+        - file_operation_failed
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - state_transition_invalid
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable file operation identifier.
+        - name: path_policy_class
+          sensitivity: tenant_sensitive
+          description: Sanitized path policy class.
+        - name: content_hash_reference
+          sensitivity: tenant_sensitive
+          description: Non-secret content hash reference.
+        - name: byte_count
+          sensitivity: tenant_sensitive
+          description: Declared byte count only.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized mutation outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - held_lock
+          - d9_content_transport
+          - safe_denial
+          - canonical_errors
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change:
+    put:
+      tags:
+        - files
+      operationId: ChangeFile
+      summary: Change a file through the prepared workspace file mutation contract.
+      description: >
+        Contract-only file change operation using the same D-9 `PutFileInline`
+        and `PutFileStream` shapes as AddFile. Inline content is capped at 262144
+        bytes and larger content uses `PutFileStream`. The caller must already have a
+        prepared workspace and a valid held workspace lock. File diffs, provider
+        payloads, generated context payloads, and runtime write behavior are not
+        represented by this contract group.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileMutationRequest"
+            examples:
+              stream:
+                $ref: "#/components/examples/ChangeFileStreamRequest"
+      responses:
+        "202":
+          description: File mutation accepted as metadata-only task work.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Task-Id:
+              $ref: "#/components/headers/TaskId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileMutationAccepted"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+        "410":
+          $ref: "#/components/responses/WorkspaceLockExpired"
+        "413":
+          description: Inline payload exceeds the D-9 boundary; retry as stream without echoing content.
+          headers:
+            X-Hexalith-Retry-As:
+              $ref: "#/components/headers/RetryAs"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                overBound:
+                  $ref: "#/components/examples/FileInlineTooLargeProblem"
+        "422":
+          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+        "423":
+          $ref: "#/components/responses/LockConflict"
+        "428":
+          $ref: "#/components/responses/WorkspaceAuthorizationRevoked"
+        "503":
+          $ref: "#/components/responses/ReconciliationRequired"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - content_hash_reference
+        - file_operation_kind
+        - operation_id
+        - path_metadata
+        - path_policy_class
+        - task_id
+        - workspace_id
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: prepared-workspace-held-lock-and-file-mutation-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - workspace_locked
+        - lock_expired
+        - lock_not_owned
+        - authorization_revocation_detected
+        - stale_workspace
+        - path_validation_failed
+        - input_limit_exceeded
+        - file_operation_failed
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - state_transition_invalid
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable file operation identifier.
+        - name: path_policy_class
+          sensitivity: tenant_sensitive
+          description: Sanitized path policy class.
+        - name: content_hash_reference
+          sensitivity: tenant_sensitive
+          description: Non-secret content hash reference.
+        - name: byte_count
+          sensitivity: tenant_sensitive
+          description: Declared byte count only.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized mutation outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - held_lock
+          - d9_content_transport
+          - safe_denial
+          - canonical_errors
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove:
+    delete:
+      tags:
+        - files
+      operationId: RemoveFile
+      summary: Remove a file through metadata-only mutation evidence.
+      description: >
+        Contract-only file removal operation. Removal is metadata-only: request,
+        response, audit, diagnostics, and Problem Details never include removed file
+        contents, diffs, previous content samples, provider payloads, or local paths.
+        The caller must already have a prepared workspace and a valid held workspace lock.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileMutationRequest"
+            examples:
+              remove:
+                $ref: "#/components/examples/RemoveFileRequest"
+      responses:
+        "202":
+          description: File removal accepted as metadata-only task work.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Task-Id:
+              $ref: "#/components/headers/TaskId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileMutationAccepted"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          $ref: "#/components/responses/IdempotencyConflict"
+        "410":
+          $ref: "#/components/responses/WorkspaceLockExpired"
+        "422":
+          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+        "423":
+          $ref: "#/components/responses/LockConflict"
+        "428":
+          $ref: "#/components/responses/WorkspaceAuthorizationRevoked"
+        "503":
+          $ref: "#/components/responses/ReconciliationRequired"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - file_operation_kind
+        - operation_id
+        - path_metadata
+        - path_policy_class
+        - task_id
+        - workspace_id
+      x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: prepared-workspace-held-lock-and-file-mutation-permission
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - workspace_locked
+        - lock_expired
+        - lock_not_owned
+        - authorization_revocation_detected
+        - stale_workspace
+        - path_validation_failed
+        - file_operation_failed
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - state_transition_invalid
+        - validation_error
+        - idempotency_conflict
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Stable file operation identifier.
+        - name: path_policy_class
+          sensitivity: tenant_sensitive
+          description: Sanitized path policy class.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: result
+          sensitivity: public_metadata
+          description: Sanitized removal outcome.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key
+          - held_lock
+          - metadata_only_removal
+          - safe_denial
+          - canonical_errors
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree:
+    get:
+      tags:
+        - context-queries
+      operationId: ListFolderFiles
+      summary: List authorized workspace file metadata.
+      description: >
+        Lists metadata-only file tree entries from an authorized workspace snapshot.
+        Context query authorization order is tenant access, folder ACL, path policy,
+        sensitivity classification, C4 bounds, then query execution. Results are
+        security-trimmed before ordering, truncation, response shaping, or audit
+        metadata is produced; search-first/filter-later and retrieval-first/filter-later
+        semantics are forbidden. Safe-denial Problem Details do not disclose hidden
+        resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+        - $ref: "#/components/parameters/PageCursor"
+        - $ref: "#/components/parameters/PageLimit"
+      responses:
+        "200":
+          description: Metadata-only, policy-filtered file tree result.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileTreeResult"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FileTreeResult"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "408":
+          $ref: "#/components/responses/ContextQueryTimeout"
+        "413":
+          $ref: "#/components/responses/ContextResponseLimitExceeded"
+        "422":
+          $ref: "#/components/responses/ContextInputLimitExceeded"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - path_validation_failed
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - read_model_unavailable
+        - redacted
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: query_family
+          sensitivity: public_metadata
+          description: Query family name.
+        - name: result_count
+          sensitivity: tenant_sensitive
+          description: Count only; path lists are excluded from audit.
+        - name: truncation
+          sensitivity: public_metadata
+          description: Truncation flag and reason.
+        - name: configured_limit
+          sensitivity: public_metadata
+          description: C4 configured bound.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Server-side elapsed time.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - c4_bounds
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata:
+    post:
+      tags:
+        - context-queries
+      operationId: GetFolderFileMetadata
+      summary: Look up bounded authorized file metadata.
+      description: >
+        Retrieves metadata only for requested workspace-root-relative paths after
+        tenant access, folder ACL, path policy, sensitivity classification, C4 bounds,
+        then query execution. Unauthorized, excluded, binary-disallowed, missing, and
+        sensitivity-denied cases use safe-denial or metadata-only Problem Details before
+        any resource-existence detail is disclosed. Safe-denial Problem Details do
+        not disclose hidden resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileMetadataRequest"
+      responses:
+        "200":
+          description: Metadata-only path lookup result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileMetadataResult"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FileMetadataResult"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "408":
+          $ref: "#/components/responses/ContextQueryTimeout"
+        "413":
+          $ref: "#/components/responses/ContextResponseLimitExceeded"
+        "422":
+          $ref: "#/components/responses/ContextInputLimitExceeded"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - path_validation_failed
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - read_model_unavailable
+        - redacted
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: query_family
+          sensitivity: public_metadata
+          description: Query family name.
+        - name: result_count
+          sensitivity: tenant_sensitive
+          description: Count only; path lists are excluded from audit.
+        - name: configured_limit
+          sensitivity: public_metadata
+          description: C4 configured bound.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Server-side elapsed time.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - c4_bounds
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search:
+    post:
+      tags:
+        - context-queries
+      operationId: SearchFolderFiles
+      summary: Search authorized file metadata without snippets.
+      description: >
+        Searches only after tenant access, folder ACL, path policy, sensitivity
+        classification, C4 bounds, then query execution. The result is metadata-only:
+        no snippets, matched-line text, previews, diffs, raw search text in audit,
+        generated context payloads, or provider payloads are returned. Safe-denial
+        Problem Details do not disclose hidden resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileSearchRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/SearchFolderFilesRequest"
+      responses:
+        "200":
+          description: Metadata-only, policy-filtered search result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileTreeResult"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FileTreeResult"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "408":
+          $ref: "#/components/responses/ContextQueryTimeout"
+        "413":
+          $ref: "#/components/responses/ContextResponseLimitExceeded"
+        "422":
+          $ref: "#/components/responses/ContextInputLimitExceeded"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - path_validation_failed
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - read_model_unavailable
+        - redacted
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: query_family
+          sensitivity: public_metadata
+          description: Search query family only; raw search text is excluded.
+        - name: result_count
+          sensitivity: tenant_sensitive
+          description: Count only; path lists and match text are excluded from audit.
+        - name: truncation
+          sensitivity: public_metadata
+          description: Truncation flag and reason.
+        - name: configured_limit
+          sensitivity: public_metadata
+          description: C4 configured bound.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Server-side elapsed time.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - c4_bounds
+          - metadata_only_results
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob:
+    post:
+      tags:
+        - context-queries
+      operationId: GlobFolderFiles
+      summary: Glob authorized file metadata without content previews.
+      description: >
+        Evaluates glob metadata only after tenant access, folder ACL, path policy,
+        sensitivity classification, C4 bounds, then query execution. Result limits
+        are applied after security trimming; hidden paths, excluded paths, and
+        unauthorized hit counts are never disclosed. Safe-denial Problem Details do
+        not disclose hidden resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileGlobRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/GlobFolderFilesRequest"
+      responses:
+        "200":
+          description: Metadata-only, policy-filtered glob result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileTreeResult"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FileTreeResult"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "408":
+          $ref: "#/components/responses/ContextQueryTimeout"
+        "413":
+          $ref: "#/components/responses/ContextResponseLimitExceeded"
+        "422":
+          $ref: "#/components/responses/ContextInputLimitExceeded"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - path_validation_failed
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - read_model_unavailable
+        - redacted
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: query_family
+          sensitivity: public_metadata
+          description: Glob query family only.
+        - name: result_count
+          sensitivity: tenant_sensitive
+          description: Count only; path lists are excluded from audit.
+        - name: truncation
+          sensitivity: public_metadata
+          description: Truncation flag and reason.
+        - name: configured_limit
+          sensitivity: public_metadata
+          description: C4 configured bound.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Server-side elapsed time.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - c4_bounds
+          - metadata_only_results
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read:
+    post:
+      tags:
+        - context-queries
+      operationId: ReadFileRange
+      summary: Read an authorized bounded byte range.
+      description: >
+        Reads bytes only after tenant access, folder ACL, path policy, sensitivity
+        classification, C4 bounds, then query execution. This is the only context
+        query in this group allowed to return authorized file bytes. Range semantics
+        are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero
+        length returns metadata with no content bytes, end-of-file returns the
+        available authorized bytes, reversed ranges fail validation, over-bound
+        ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
+        Safe-denial Problem Details do not disclose hidden resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FileRangeReadRequest"
+            examples:
+              minimum:
+                $ref: "#/components/examples/ReadFileRangeMinimumRequest"
+              maximum:
+                $ref: "#/components/examples/ReadFileRangeMaximumRequest"
+      responses:
+        "200":
+          description: Authorized bounded byte range with metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileRangeReadResult"
+        "206":
+          description: Partial authorized byte range when end-of-file is reached before the requested exclusive end offset.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileRangeReadResult"
+        "400":
+          description: Invalid range shape such as reversed range or unsupported multi-range.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                invalidReversed:
+                  $ref: "#/components/examples/ReadFileRangeInvalidReversedProblem"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "408":
+          $ref: "#/components/responses/ContextQueryTimeout"
+        "413":
+          $ref: "#/components/responses/ContextResponseLimitExceeded"
+        "416":
+          description: Requested range exceeds C4 single-range bounds or cannot be satisfied after authorization.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                overBound:
+                  $ref: "#/components/examples/ReadFileRangeOverBoundProblem"
+                redacted:
+                  $ref: "#/components/examples/ReadFileRangeRedactedProblem"
+        "422":
+          $ref: "#/components/responses/ContextInputLimitExceeded"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: snapshot_per_task
+        freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - path_validation_failed
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - read_model_unavailable
+        - redacted
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: query_family
+          sensitivity: public_metadata
+          description: Range-read query family only.
+        - name: byte_count
+          sensitivity: tenant_sensitive
+          description: Requested and accepted byte counts only.
+        - name: configured_limit
+          sensitivity: public_metadata
+          description: C4 configured bound.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Server-side elapsed time.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - c4_bounds
+          - authorized_content_only
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
 x-hexalith-idempotency-key:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-key
   foundationUse: Mutating operations added later must declare the key requirement; queries must not accept it.
@@ -2139,6 +3204,8 @@ components:
       description: Reports accepted retry intent metadata where a later operation declares support.
       schema:
         type: string
+        enum:
+          - stream
   responses:
     AcceptedCommand:
       description: Command accepted for asynchronous processing.
@@ -2303,6 +3370,33 @@ components:
           examples:
             synthetic:
               $ref: "#/components/examples/WorkspaceAuthorizationRevokedProblem"
+    ContextInputLimitExceeded:
+      description: Context query input exceeds C4 proposed bounds before execution.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/ReadFileRangeOverBoundProblem"
+    ContextResponseLimitExceeded:
+      description: Context query response would exceed C4 proposed response budget.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/ContextResponseLimitExceededProblem"
+    ContextQueryTimeout:
+      description: Context query exceeded the proposed C4 server-side duration budget.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/ContextQueryTimeoutProblem"
   examples:
     SafeDenial401Unauthorized:
       summary: Canonical 401 safe denial — caller is not authenticated. Envelope shape is identical across all caller cases.
@@ -2780,6 +3874,241 @@ components:
         clientAction: retry
         details:
           visibility: metadata_only
+    AddFileInlineRequest:
+      summary: Synthetic inline add request at or below the D-9 boundary.
+      value:
+        requestSchemaVersion: v1
+        fileOperationKind: add
+        transportOperation: PutFileInline
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD001
+        pathMetadata:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: tenant_sensitive_document
+          unicodeNormalization: NFC
+        contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002
+        byteLength: 42
+        inlineContent:
+          mediaType: text/plain
+          contentText: synthetic authorized request body only
+    ChangeFileStreamRequest:
+      summary: Synthetic streamed change request for larger content.
+      value:
+        requestSchemaVersion: v1
+        fileOperationKind: change
+        transportOperation: PutFileStream
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CHG001
+        pathMetadata:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: tenant_sensitive_document
+          unicodeNormalization: NFC
+        contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002
+        byteLength: 262145
+        streamDescriptor:
+          mediaType: application/octet-stream
+          declaredLength: 262145
+          uploadMode: request_body_stream
+    RemoveFileRequest:
+      summary: Synthetic metadata-only file removal request.
+      value:
+        requestSchemaVersion: v1
+        fileOperationKind: remove
+        transportOperation: metadataOnlyRemoval
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REM001
+        pathMetadata:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: tenant_sensitive_document
+          unicodeNormalization: NFC
+    FileInlineTooLargeProblem:
+      summary: Synthetic inline content exceeds the D-9 boundary and should retry as stream.
+      value:
+        type: about:blank
+        title: Inline payload too large
+        status: 413
+        category: input_limit_exceeded
+        code: d9_inline_limit_exceeded
+        message: The inline payload exceeds the configured D-9 boundary.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD413
+        retryable: true
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          configuredLimit: 262144
+          retryAs: stream
+    FileTreeResult:
+      summary: Synthetic metadata-only file tree result.
+      value:
+        items:
+          - path:
+              normalizedPath: docs/synthetic-note.md
+              displayName: synthetic-note.md
+              pathPolicyClass: tenant_sensitive_document
+              unicodeNormalization: NFC
+            kind: file
+            byteLength: 42
+            sensitivity: tenant_sensitive
+            redaction: not_redacted
+        page:
+          limit: 2000
+          isTruncated: false
+        limits:
+          queryFamily: tree
+          configuredLimit: 2000
+          actualCount: 1
+          actualBytes: 256
+          elapsedMilliseconds: 12
+          isTruncated: false
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
+    FileMetadataResult:
+      summary: Synthetic metadata-only file metadata lookup result.
+      value:
+        items:
+          - path:
+              normalizedPath: docs/synthetic-note.md
+              displayName: synthetic-note.md
+              pathPolicyClass: tenant_sensitive_document
+              unicodeNormalization: NFC
+            kind: file
+            byteLength: 42
+            sensitivity: tenant_sensitive
+            redaction: not_redacted
+        limits:
+          queryFamily: metadata
+          configuredLimit: 100
+          actualCount: 1
+          actualBytes: 256
+          elapsedMilliseconds: 9
+          isTruncated: false
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
+    SearchFolderFilesRequest:
+      summary: Synthetic metadata-only search request.
+      value:
+        requestSchemaVersion: v1
+        queryFamily: search
+        queryText: synthetic-term
+        requestedPaths:
+          - normalizedPath: docs
+            displayName: docs
+            pathPolicyClass: tenant_sensitive_document
+            unicodeNormalization: NFC
+        limit: 500
+    GlobFolderFilesRequest:
+      summary: Synthetic metadata-only glob request.
+      value:
+        requestSchemaVersion: v1
+        queryFamily: glob
+        globPattern: docs/*.md
+        requestedPaths:
+          - normalizedPath: docs
+            displayName: docs
+            pathPolicyClass: tenant_sensitive_document
+            unicodeNormalization: NFC
+        limit: 500
+    ReadFileRangeMinimumRequest:
+      summary: Synthetic zero-length range request.
+      value:
+        requestSchemaVersion: v1
+        path:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: tenant_sensitive_document
+          unicodeNormalization: NFC
+        startOffset: 0
+        endOffset: 0
+    ReadFileRangeMaximumRequest:
+      summary: Synthetic maximum allowed range request.
+      value:
+        requestSchemaVersion: v1
+        path:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: tenant_sensitive_document
+          unicodeNormalization: NFC
+        startOffset: 0
+        endOffset: 262144
+    ReadFileRangeInvalidReversedProblem:
+      summary: Synthetic reversed range validation failure.
+      value:
+        type: about:blank
+        title: Invalid range
+        status: 400
+        category: validation_error
+        code: range_reversed
+        message: The requested byte range is not valid.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG001
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          rangeRule: start_inclusive_end_exclusive
+    ReadFileRangeOverBoundProblem:
+      summary: Synthetic range or inline payload exceeds the 262144-byte C4/D-9 bound.
+      value:
+        type: about:blank
+        title: Input limit exceeded
+        status: 422
+        category: input_limit_exceeded
+        code: c4_range_limit_exceeded
+        message: The requested input exceeds the configured bound.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          configuredLimit: 262144
+          unit: bytes
+    ReadFileRangeRedactedProblem:
+      summary: Synthetic range denied by sensitivity or path policy.
+      value:
+        type: about:blank
+        title: Range unavailable
+        status: 416
+        category: redacted
+        code: range_not_available
+        message: The requested range is not available.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG003
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
+    ContextResponseLimitExceededProblem:
+      summary: Synthetic response budget exceeded.
+      value:
+        type: about:blank
+        title: Response limit exceeded
+        status: 413
+        category: response_limit_exceeded
+        code: c4_response_budget_exceeded
+        message: The response would exceed the configured bound.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          configuredLimit: 1048576
+          unit: bytes
+    ContextQueryTimeoutProblem:
+      summary: Synthetic query timeout.
+      value:
+        type: about:blank
+        title: Query timeout
+        status: 408
+        category: query_timeout
+        code: c4_query_timeout
+        message: The query exceeded the configured duration.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          configuredLimit: 2000
+          unit: milliseconds
   schemas:
     OpaqueIdentifier:
       type: string
@@ -3784,6 +5113,386 @@ components:
           description: Metadata-only audit reference; file contents, diffs, provider payloads, local paths, and unauthorized resource hints are forbidden. Timestamp-valued entries use RFC 3339 date-time strings.
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+    PathMetadata:
+      type: object
+      additionalProperties: false
+      description: >
+        Workspace-root-relative path metadata. Paths use forward slashes, have no
+        leading slash, are NFC-normalized by contract, and are never local or
+        absolute filesystem paths. Traversal, symlink escape, reserved names, and
+        case-collision outcomes are path-policy decisions evaluated before file or
+        query execution.
+      required:
+        - normalizedPath
+        - displayName
+        - pathPolicyClass
+        - unicodeNormalization
+      properties:
+        normalizedPath:
+          type: string
+          minLength: 1
+          maxLength: 512
+          pattern: "^(?!/)(?!.*\\.\\.)(?!.*//)[A-Za-z0-9._/-]+$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 128
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        pathPolicyClass:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        unicodeNormalization:
+          type: string
+          enum:
+            - NFC
+    FileMutationRequest:
+      type: object
+      additionalProperties: false
+      description: >
+        Contract-only file mutation request. `PutFileInline` is bounded to 262144
+        bytes before transport encoding; `PutFileStream` carries stream metadata for
+        larger bodies. `RemoveFile` uses metadata-only removal and must not carry
+        file contents, previous content, diffs, or provider payloads.
+      required:
+        - requestSchemaVersion
+        - fileOperationKind
+        - transportOperation
+        - operationId
+        - pathMetadata
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        fileOperationKind:
+          type: string
+          enum:
+            - add
+            - change
+            - remove
+        transportOperation:
+          type: string
+          enum:
+            - PutFileInline
+            - PutFileStream
+            - metadataOnlyRemoval
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        pathMetadata:
+          $ref: "#/components/schemas/PathMetadata"
+        contentHashReference:
+          allOf:
+            - $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Non-secret opaque hash reference for add/change content. Required for add/change, omitted for metadata-only removal.
+        byteLength:
+          type: integer
+          minimum: 0
+          maximum: 262144
+          description: "Inline byte boundary. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+        inlineContent:
+          $ref: "#/components/schemas/PutFileInline"
+        streamDescriptor:
+          $ref: "#/components/schemas/PutFileStream"
+    PutFileInline:
+      type: object
+      additionalProperties: false
+      required:
+        - mediaType
+        - contentText
+      properties:
+        mediaType:
+          type: string
+          maxLength: 128
+        contentText:
+          type: string
+          maxLength: 262144
+          description: Authorized request body only; never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata.
+          maxBytes: 262144
+    PutFileStream:
+      type: object
+      additionalProperties: false
+      required:
+        - mediaType
+        - declaredLength
+        - uploadMode
+      properties:
+        mediaType:
+          type: string
+          maxLength: 128
+        declaredLength:
+          type: integer
+          minimum: 262145
+        uploadMode:
+          type: string
+          enum:
+            - request_body_stream
+    FileMutationAccepted:
+      allOf:
+        - $ref: "#/components/schemas/AcceptedCommand"
+      description: Accepted command metadata for file mutation operations. No file contents, diffs, provider payloads, local paths, or generated context payloads are included.
+    FileMetadataRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - paths
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        paths:
+          type: array
+          minItems: 1
+          maxItems: 100
+          description: "Requested path metadata list. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+          items:
+            $ref: "#/components/schemas/PathMetadata"
+    FileSearchRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - queryFamily
+        - queryText
+        - limit
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        queryFamily:
+          type: string
+          const: search
+        queryText:
+          type: string
+          minLength: 1
+          maxLength: 256
+          description: Search input is request payload only. Audit metadata records query family and counts, never raw search text.
+        requestedPaths:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/PathMetadata"
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 500
+          maxResultCount: 500
+          description: "TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+    FileGlobRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - queryFamily
+        - globPattern
+        - limit
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        queryFamily:
+          type: string
+          const: glob
+        globPattern:
+          type: string
+          minLength: 1
+          maxLength: 256
+          description: Glob pattern is request payload only and must not appear in audit examples or cross-tenant diagnostics.
+        requestedPaths:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/PathMetadata"
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 500
+          maxResultCount: 500
+          description: "TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+    FileRangeReadRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - path
+        - startOffset
+        - endOffset
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        path:
+          $ref: "#/components/schemas/PathMetadata"
+        startOffset:
+          type: integer
+          minimum: 0
+          description: Inclusive zero-based byte offset.
+        endOffset:
+          type: integer
+          minimum: 0
+          maximum: 262144
+          maxBytes: 262144
+          description: "Exclusive byte offset. End minus start must be between 0 and 262144 bytes. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+    FileRangeReadResult:
+      type: object
+      additionalProperties: false
+      required:
+        - path
+        - range
+        - contentBytes
+        - limits
+        - freshness
+      properties:
+        path:
+          $ref: "#/components/schemas/PathMetadata"
+        range:
+          type: object
+          additionalProperties: false
+          required:
+            - startOffset
+            - endOffset
+            - actualBytes
+            - partial
+          properties:
+            startOffset:
+              type: integer
+              minimum: 0
+            endOffset:
+              type: integer
+              minimum: 0
+            actualBytes:
+              type: integer
+              minimum: 0
+              maximum: 262144
+            partial:
+              type: boolean
+        contentBytes:
+          type: string
+          contentEncoding: base64
+          maxLength: 262144
+          maxBytes: 262144
+          description: Authorized response body for ReadFileRange only; never audit, log, diagnostic, projection, or generated context material.
+        limits:
+          $ref: "#/components/schemas/ContextQueryLimitMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    FileTreeResult:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - page
+        - limits
+        - freshness
+      properties:
+        items:
+          type: array
+          maxItems: 2000
+          maxResultCount: 2000
+          description: "Metadata-only entries after authorization and path filtering. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+          items:
+            $ref: "#/components/schemas/FileMetadataItem"
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        limits:
+          $ref: "#/components/schemas/ContextQueryLimitMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    FileMetadataResult:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - limits
+        - freshness
+      properties:
+        items:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/FileMetadataItem"
+        limits:
+          $ref: "#/components/schemas/ContextQueryLimitMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    FileMetadataItem:
+      type: object
+      additionalProperties: false
+      required:
+        - path
+        - kind
+        - sensitivity
+        - redaction
+      properties:
+        path:
+          $ref: "#/components/schemas/PathMetadata"
+        kind:
+          type: string
+          enum:
+            - file
+            - directory
+        byteLength:
+          type: integer
+          minimum: 0
+        sensitivity:
+          $ref: "#/components/schemas/SensitiveMetadataTier"
+        redaction:
+          type: string
+          enum:
+            - not_redacted
+            - redacted
+            - excluded
+            - binary_disallowed
+    ContextQueryLimitMetadata:
+      type: object
+      additionalProperties: false
+      description: >
+        C4 query metadata. Query duration uses x-hexalith-query-timeout-ms: 2000
+        and aggregate response budget uses x-hexalith-response-budget-bytes: 1048576.
+        Values remain proposed workshop values until PM approval.
+      required:
+        - queryFamily
+        - configuredLimit
+        - actualCount
+        - actualBytes
+        - elapsedMilliseconds
+        - isTruncated
+      properties:
+        queryFamily:
+          type: string
+          enum:
+            - tree
+            - metadata
+            - search
+            - glob
+            - range
+            - semantic_reference_pending
+        configuredLimit:
+          type: integer
+          minimum: 0
+        actualCount:
+          type: integer
+          minimum: 0
+        actualBytes:
+          type: integer
+          minimum: 0
+          maximum: 1048576
+        elapsedMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 2000
+        isTruncated:
+          type: boolean
+        truncatedReason:
+          type: string
+          enum:
+            - result_count_limit
+            - response_budget_limit
+            - query_timeout
+            - not_truncated
     CanonicalErrorCategory:
       type: string
       enum:
@@ -3804,6 +5513,7 @@ components:
         - provider_rate_limited
         - repository_binding_unavailable
         - branch_ref_policy_invalid
+        - workspace_not_ready
         - workspace_preparation_failed
         - workspace_locked
         - lock_conflict
@@ -3814,6 +5524,8 @@ components:
         - repository_conflict
         - duplicate_binding
         - unsupported_provider_capability
+        - path_validation_failed
+        - file_operation_failed
         - provider_failure_known
         - unknown_provider_outcome
         - reconciliation_required
@@ -3864,6 +5576,7 @@ components:
         - provider_rate_limited
         - repository_binding_unavailable
         - branch_ref_policy_invalid
+        - workspace_not_ready
         - workspace_preparation_failed
         - workspace_locked
         - lock_conflict
@@ -3874,6 +5587,8 @@ components:
         - repository_conflict
         - duplicate_binding
         - unsupported_provider_capability
+        - path_validation_failed
+        - file_operation_failed
         - provider_failure_known
         - unknown_provider_outcome
         - reconciliation_required
@@ -3914,8 +5629,14 @@ components:
         - retryability
         - evidence_timestamp
         - path_policy_class
+        - content_hash_reference
+        - byte_count
         - query_family
         - result_count
+        - configured_limit
+        - actual_count
+        - actual_bytes
+        - elapsed_milliseconds
         - result
         - truncation
         - projection_watermark
