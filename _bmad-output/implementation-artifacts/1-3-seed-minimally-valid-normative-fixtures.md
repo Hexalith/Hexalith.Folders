@@ -1,6 +1,6 @@
 # Story 1.3: Seed minimally valid normative fixtures
 
-Status: review
+Status: done
 
 Created: 2026-05-10
 
@@ -228,3 +228,17 @@ GPT-5
   - Final Contract Spine and parity oracle semantics remain owned by Story 1.6 and parity stories.
   - Exact smoke-test implementation mechanism remains open to the dev-story agent.
 - Final recommendation: ready-for-dev
+
+### Review Findings
+
+- [x] [Review][Patch] RepositoryRoot() unsafe directory walk — no upper bound on parent traversal; flat publish layouts throw; monorepo parent match silently returns wrong root [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:RepositoryRoot()]
+- [x] [Review][Patch] Classification check only inside regex-match branch — non-matching sentinel samples skip classification verification entirely [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:SecretShapedFixtureValuesRequireSyntheticSentinelTags]
+- [x] [Review][Patch] Hand-rolled YAML parser drops multi-line content — operations assertion is fragile; any future multi-line YAML block silently returns wrong values [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:ParseTopLevelYamlScalarMap]
+- [x] [Review][Patch] Missing structural guard before deep property access — KeyNotFoundException instead of meaningful assertion failure on deleted fixture sections [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs]
+- [x] [Review][Patch] Regex misses fine-grained GitHub PATs (github_pat_) and Enterprise tokens (ghe_) [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:SecretShapedValue]
+- [x] [Review][Patch] previous-spine.yaml ownership fields not machine-asserted — AC6 gap; hand-rolled parser skips indented lines by design [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:NormativeFixturesAreParseableAndCarryOwnershipMetadata]
+- [x] [Review][Patch] Missing file-read error handling — FileNotFoundException instead of meaningful assertion failure [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs]
+- [x] [Review][Patch] password= check too narrow — misses pwd=, secret=, api_key= variants [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:SeededFixturesAvoidRealDataAndProductionMaterial]
+- [x] [Review][Patch] Markdown ownership boolean values not verified — non_policy_placeholder: false satisfies the test [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:DeferredArtifactAreasCarryMachineCheckableOwnershipNotes]
+- [x] [Review][Defer] previous-spine.yaml not proven syntactically valid by YAML library — AC2 partial; fix requires YAML library availability check [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs] — deferred, pre-existing
+- [x] [Review][Defer] openapi guard prefix too narrow — catches only exact "openapi" key; low risk given source_marker and mutation_rules [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:NormativeFixturesAreParseableAndCarryOwnershipMetadata] — deferred, pre-existing
