@@ -2034,10 +2034,10 @@ paths:
         "410":
           $ref: "#/components/responses/WorkspaceLockExpired"
         "413":
-          description: Inline payload exceeds the D-9 boundary; retry as stream without echoing content.
+          description: "Inline payload exceeds the D-9 boundary; retry as stream without echoing content. The transport-substitution hint is surfaced via the response header `X-Hexalith-Retry-Transport: stream` only; the configured byte limit is never disclosed in the response body to preserve authorization-before-observation."
           headers:
-            X-Hexalith-Retry-As:
-              $ref: "#/components/headers/RetryAs"
+            X-Hexalith-Retry-Transport:
+              $ref: "#/components/headers/RetryTransport"
           content:
             application/problem+json:
               schema:
@@ -2199,10 +2199,10 @@ paths:
         "410":
           $ref: "#/components/responses/WorkspaceLockExpired"
         "413":
-          description: Inline payload exceeds the D-9 boundary; retry as stream without echoing content.
+          description: "Inline payload exceeds the D-9 boundary; retry as stream without echoing content. The transport-substitution hint is surfaced via the response header `X-Hexalith-Retry-Transport: stream` only; the configured byte limit is never disclosed in the response body to preserve authorization-before-observation."
           headers:
-            X-Hexalith-Retry-As:
-              $ref: "#/components/headers/RetryAs"
+            X-Hexalith-Retry-Transport:
+              $ref: "#/components/headers/RetryTransport"
           content:
             application/problem+json:
               schema:
@@ -2307,7 +2307,7 @@ paths:
           - pre-sdk
           - post-sdk
   /api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove:
-    delete:
+    post:
       tags:
         - files
       operationId: RemoveFile
@@ -2514,6 +2514,13 @@ paths:
         requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
         tenantAuthority: authentication-context-and-eventstore-envelope
         safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - path_policy
+          - sensitivity_classification
+          - c4_bounds
+          - query_execution
       x-hexalith-canonical-error-categories:
         - authentication_failure
         - tenant_access_denied
@@ -2626,6 +2633,13 @@ paths:
         requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
         tenantAuthority: authentication-context-and-eventstore-envelope
         safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - path_policy
+          - sensitivity_classification
+          - c4_bounds
+          - query_execution
       x-hexalith-canonical-error-categories:
         - authentication_failure
         - tenant_access_denied
@@ -2737,6 +2751,13 @@ paths:
         requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
         tenantAuthority: authentication-context-and-eventstore-envelope
         safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - path_policy
+          - sensitivity_classification
+          - c4_bounds
+          - query_execution
       x-hexalith-canonical-error-categories:
         - authentication_failure
         - tenant_access_denied
@@ -2852,6 +2873,13 @@ paths:
         requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
         tenantAuthority: authentication-context-and-eventstore-envelope
         safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - path_policy
+          - sensitivity_classification
+          - c4_bounds
+          - query_execution
       x-hexalith-canonical-error-categories:
         - authentication_failure
         - tenant_access_denied
@@ -2967,14 +2995,14 @@ paths:
         "413":
           $ref: "#/components/responses/ContextResponseLimitExceeded"
         "416":
-          description: Requested range exceeds C4 single-range bounds or cannot be satisfied after authorization.
+          description: "Requested range cannot be satisfied. Returned when the range is reversed at the byte level (caught after schema validation), exceeds the file's authorized end, or is redacted by sensitivity. Sensitivity-denied routing between 416 and 404 safe-denial is TODO(reference-pending) against the safe-denial-matrix follow-up story; the contract currently surfaces redacted ranges under 416 with deliberate visibility."
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetails"
               examples:
-                overBound:
-                  $ref: "#/components/examples/ReadFileRangeOverBoundProblem"
+                unsatisfiable:
+                  $ref: "#/components/examples/ReadFileRangeUnsatisfiableProblem"
                 redacted:
                   $ref: "#/components/examples/ReadFileRangeRedactedProblem"
         "422":
@@ -2993,6 +3021,13 @@ paths:
         requirement: tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution
         tenantAuthority: authentication-context-and-eventstore-envelope
         safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - path_policy
+          - sensitivity_classification
+          - c4_bounds
+          - query_execution
       x-hexalith-canonical-error-categories:
         - authentication_failure
         - tenant_access_denied
@@ -3088,7 +3123,7 @@ components:
       name: Idempotency-Key
       in: header
       required: true
-      description: Required on future mutating commands and invalid on non-mutating queries.
+      description: Required on mutating commands and invalid on non-mutating queries. Adapters MUST source the key from the caller and propagate it through SDK/CLI/MCP surfaces without re-encoding.
       schema:
         $ref: "#/components/schemas/OpaqueIdentifier"
     CorrelationId:
@@ -3202,6 +3237,12 @@ components:
         $ref: "#/components/schemas/ReadConsistencyClass"
     RetryAs:
       description: Reports accepted retry intent metadata where a later operation declares support.
+      schema:
+        type: string
+        enum:
+          - stream
+    RetryTransport:
+      description: "Transport-substitution hint emitted with `413 Payload Too Large` on inline file mutations. Distinct from the request-side `X-Hexalith-Retry-As` header (which signals retry allocation `[caller, operator]`); this header signals an alternative wire transport `[stream]`. Keeping the names disjoint avoids round-trip echo conflicts."
       schema:
         type: string
         enum:
@@ -3378,6 +3419,8 @@ components:
             $ref: "#/components/schemas/ProblemDetails"
           examples:
             synthetic:
+              $ref: "#/components/examples/ContextInputLimitExceededProblem"
+            rangeOverBound:
               $ref: "#/components/examples/ReadFileRangeOverBoundProblem"
     ContextResponseLimitExceeded:
       description: Context query response would exceed C4 proposed response budget.
@@ -3882,15 +3925,16 @@ components:
         transportOperation: PutFileInline
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD001
         pathMetadata:
-          normalizedPath: docs/synthetic-note.md
-          displayName: synthetic-note.md
+          normalizedPath: docs/synthetic-add-001.md
+          displayName: synthetic-add-001.md
           pathPolicyClass: tenant_sensitive_document
           unicodeNormalization: NFC
         contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002
-        byteLength: 42
+        byteLength: 33
         inlineContent:
           mediaType: text/plain
-          contentText: synthetic authorized request body only
+          contentBytes: c3ludGhldGljIGF1dGhvcml6ZWQgcmVxdWVzdCBib2R5
+          contentMediaType: text/plain
     ChangeFileStreamRequest:
       summary: Synthetic streamed change request for larger content.
       value:
@@ -3899,8 +3943,8 @@ components:
         transportOperation: PutFileStream
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CHG001
         pathMetadata:
-          normalizedPath: docs/synthetic-note.md
-          displayName: synthetic-note.md
+          normalizedPath: docs/synthetic-change-002.bin
+          displayName: synthetic-change-002.bin
           pathPolicyClass: tenant_sensitive_document
           unicodeNormalization: NFC
         contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002
@@ -3917,12 +3961,12 @@ components:
         transportOperation: metadataOnlyRemoval
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REM001
         pathMetadata:
-          normalizedPath: docs/synthetic-note.md
-          displayName: synthetic-note.md
+          normalizedPath: docs/synthetic-remove-003.md
+          displayName: synthetic-remove-003.md
           pathPolicyClass: tenant_sensitive_document
           unicodeNormalization: NFC
     FileInlineTooLargeProblem:
-      summary: Synthetic inline content exceeds the D-9 boundary and should retry as stream.
+      summary: "Synthetic inline content exceeds the D-9 boundary. The retry-as-stream hint is carried via the `X-Hexalith-Retry-Transport: stream` response header; the configured limit value is intentionally absent from the body to keep 413 disclosure safe for pre-authentication callers."
       value:
         type: about:blank
         title: Inline payload too large
@@ -3935,15 +3979,13 @@ components:
         clientAction: revise_request
         details:
           visibility: metadata_only
-          configuredLimit: 262144
-          retryAs: stream
     FileTreeResult:
-      summary: Synthetic metadata-only file tree result.
+      summary: Synthetic metadata-only file tree result (not truncated).
       value:
         items:
           - path:
-              normalizedPath: docs/synthetic-note.md
-              displayName: synthetic-note.md
+              normalizedPath: docs/synthetic-tree-001.md
+              displayName: synthetic-tree-001.md
               pathPolicyClass: tenant_sensitive_document
               unicodeNormalization: NFC
             kind: file
@@ -3953,6 +3995,7 @@ components:
         page:
           limit: 2000
           isTruncated: false
+          truncatedReason: not_truncated
         limits:
           queryFamily: tree
           configuredLimit: 2000
@@ -3960,6 +4003,36 @@ components:
           actualBytes: 256
           elapsedMilliseconds: 12
           isTruncated: false
+          truncatedReason: not_truncated
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
+    FileTreeResultTruncated:
+      summary: "Synthetic metadata-only file tree result demonstrating the truncated-true branch: the configured result-count limit was reached, the `cursor` carries opaque pagination state, and `truncatedReason` discloses the bound that fired."
+      value:
+        items:
+          - path:
+              normalizedPath: docs/synthetic-tree-002.md
+              displayName: synthetic-tree-002.md
+              pathPolicyClass: tenant_sensitive_document
+              unicodeNormalization: NFC
+            kind: file
+            byteLength: 4096
+            sensitivity: tenant_sensitive
+            redaction: not_redacted
+        page:
+          cursor: cursor_01HZY7Z6N7J4Q2X8Y9V0PAG001
+          limit: 2000
+          isTruncated: true
+          truncatedReason: result_count_limit
+        limits:
+          queryFamily: tree
+          configuredLimit: 2000
+          actualCount: 2000
+          actualBytes: 1048576
+          elapsedMilliseconds: 1850
+          isTruncated: true
+          truncatedReason: result_count_limit
         freshness:
           readConsistency: snapshot_per_task
           observedAt: "2026-05-12T12:34:56Z"
@@ -3983,6 +4056,7 @@ components:
           actualBytes: 256
           elapsedMilliseconds: 9
           isTruncated: false
+          truncatedReason: not_truncated
         freshness:
           readConsistency: snapshot_per_task
           observedAt: "2026-05-12T12:34:56Z"
@@ -4048,7 +4122,7 @@ components:
           visibility: metadata_only
           rangeRule: start_inclusive_end_exclusive
     ReadFileRangeOverBoundProblem:
-      summary: Synthetic range or inline payload exceeds the 262144-byte C4/D-9 bound.
+      summary: "Synthetic over-window range request (status 422). Referenced only from the 422 `ContextInputLimitExceeded` response; the 416 response uses `ReadFileRangeUnsatisfiableProblem` for unsatisfiable ranges to avoid status/category mismatch."
       value:
         type: about:blank
         title: Input limit exceeded
@@ -4063,6 +4137,35 @@ components:
           visibility: metadata_only
           configuredLimit: 262144
           unit: bytes
+    ReadFileRangeUnsatisfiableProblem:
+      summary: "Synthetic 416 range-unsatisfiable response. Status and category align; emitted when the requested byte range exceeds the authorized file end or is otherwise unsatisfiable. Sensitivity-denied routing under 416 vs 404 remains TODO(reference-pending) against the safe-denial-matrix follow-up."
+      value:
+        type: about:blank
+        title: Range unsatisfiable
+        status: 416
+        category: range_unsatisfiable
+        code: range_unsatisfiable
+        message: The requested byte range cannot be satisfied.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG004
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    ContextInputLimitExceededProblem:
+      summary: "Synthetic 422 context-query input limit exceeded. Used for non-range context queries whose request body exceeds C4 input bounds (path list size, queryText length, glob pattern length, etc.). Range-specific over-window cases use `ReadFileRangeOverBoundProblem`."
+      value:
+        type: about:blank
+        title: Input limit exceeded
+        status: 422
+        category: input_limit_exceeded
+        code: c4_input_limit_exceeded
+        message: The requested input exceeds the configured bound.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+          dimension: input_count
     ReadFileRangeRedactedProblem:
       summary: Synthetic range denied by sensitivity or path policy.
       value:
@@ -4118,6 +4221,14 @@ components:
       description: Synthetic opaque identifier (ULID-shaped). It is not a path, credential, token, or tenant authority. The pattern rejects dots and colons to keep keys disjoint from cache-key tenant-prefix notation and JWT-shaped values.
       examples:
         - opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+    ContentHashReference:
+      type: string
+      minLength: 40
+      maxLength: 104
+      pattern: "^hashref_[A-Za-z0-9]{32,96}$"
+      description: Non-secret opaque content hash reference. The `hashref_` prefix distinguishes content hash references from generic opaque identifiers (`opaque_*`) to prevent cross-domain key reuse, copy-paste collisions with operation IDs, and audit-pipeline misclassification. The reference is never a secret, token, credential, file content, or absolute path.
+      examples:
+        - hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002
     UtcDateTime:
       type: string
       format: date-time
@@ -4267,7 +4378,8 @@ components:
       properties:
         cursor:
           type: string
-          description: Opaque cursor for later bounded query families.
+          maxLength: 256
+          description: Opaque, non-secret pagination cursor for later bounded query families. The cursor is service-issued and MUST NOT carry tenant authority, ACL decisions, provider tokens, raw query text, or unredacted path lists. Length matches the `PageCursor` request parameter so callers can echo it back without re-encoding.
         limit:
           type: integer
           minimum: 1
@@ -5132,18 +5244,22 @@ components:
           type: string
           minLength: 1
           maxLength: 512
-          pattern: "^(?!/)(?!.*\\.\\.)(?!.*//)[A-Za-z0-9._/-]+$"
+          pattern: "^(?!/)(?!.*(?:^|/)\\.\\.(?:$|/))(?!.*//)(?!.*(?:^|/)(?:CON|NUL|PRN|AUX|COM[1-9]|LPT[1-9])(?:\\.[^/]*)?(?:$|/))[A-Za-z0-9._/-]+$"
+          description: "Workspace-root-relative path. The pattern rejects: leading slash, parent-directory segments `..` (segment-only, allowing legitimate filenames like `a..b`), empty segments `//`, and reserved Windows base names (CON, NUL, PRN, AUX, COM1-9, LPT1-9 with optional extension). Character class is transitional ASCII-only. TODO(reference-pending): Unicode allow-list policy and final NFC enforcement live in Story 1.5 parser-policy classification."
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         displayName:
           type: string
           minLength: 1
           maxLength: 128
+          pattern: "^[^\\x00-\\x1F\\x7F/\\\\]+$"
+          description: "Human-readable file name. Rejects control characters (0x00-0x1F, 0x7F), forward slashes, and backslashes to prevent log injection and path-separator confusion."
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         pathPolicyClass:
           type: string
           minLength: 1
           maxLength: 80
           pattern: "^[a-z][a-z0-9_]{0,79}$"
+          description: "Server-determined path policy classification. TODO(reference-pending): closed enum of approved class values pending path-policy-class definition story. Until that story lands, the pattern is the only contract-level constraint and the canonical class list is documented in docs/contract/file-context-contract-groups.md."
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         unicodeNormalization:
           type: string
@@ -5153,10 +5269,13 @@ components:
       type: object
       additionalProperties: false
       description: >
-        Contract-only file mutation request. `PutFileInline` is bounded to 262144
-        bytes before transport encoding; `PutFileStream` carries stream metadata for
-        larger bodies. `RemoveFile` uses metadata-only removal and must not carry
-        file contents, previous content, diffs, or provider payloads.
+        Contract-only file mutation request. Two `oneOf` discriminators enforce the
+        valid combinations: (a) `transportOperation` selects the transport shape
+        (`PutFileInline` for content at or below 262144 bytes, `PutFileStream` for
+        larger streamed content, `metadataOnlyRemoval` for delete); (b)
+        `fileOperationKind` enforces that `remove` carries no content, content hash
+        reference, or byte length. Add/change operations require a content hash
+        reference and the matching transport branch.
       required:
         - requestSchemaVersion
         - fileOperationKind
@@ -5184,33 +5303,96 @@ components:
         pathMetadata:
           $ref: "#/components/schemas/PathMetadata"
         contentHashReference:
-          allOf:
-            - $ref: "#/components/schemas/OpaqueIdentifier"
-          description: Non-secret opaque hash reference for add/change content. Required for add/change, omitted for metadata-only removal.
+          $ref: "#/components/schemas/ContentHashReference"
         byteLength:
           type: integer
           minimum: 0
-          maximum: 262144
-          description: "Inline byte boundary. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+          description: "Logical content length in bytes. Inline branch caps this at 262144; stream branch requires at least 262145. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
         inlineContent:
           $ref: "#/components/schemas/PutFileInline"
         streamDescriptor:
           $ref: "#/components/schemas/PutFileStream"
+      oneOf:
+        - title: InlineTransportBranch
+          description: Add or change file via PutFileInline; content fits within the 262144-byte D-9 boundary.
+          required:
+            - inlineContent
+            - byteLength
+            - contentHashReference
+          properties:
+            transportOperation:
+              const: PutFileInline
+            fileOperationKind:
+              enum:
+                - add
+                - change
+            byteLength:
+              maximum: 262144
+          not:
+            anyOf:
+              - required:
+                  - streamDescriptor
+        - title: StreamTransportBranch
+          description: Add or change file via PutFileStream; content exceeds the 262144-byte D-9 boundary.
+          required:
+            - streamDescriptor
+            - byteLength
+            - contentHashReference
+          properties:
+            transportOperation:
+              const: PutFileStream
+            fileOperationKind:
+              enum:
+                - add
+                - change
+            byteLength:
+              minimum: 262145
+          not:
+            anyOf:
+              - required:
+                  - inlineContent
+        - title: MetadataOnlyRemovalBranch
+          description: Remove a file with metadata-only semantics. No content, content hash, byte length, inline content, or stream descriptor allowed.
+          required:
+            - transportOperation
+            - fileOperationKind
+          properties:
+            transportOperation:
+              const: metadataOnlyRemoval
+            fileOperationKind:
+              const: remove
+          not:
+            anyOf:
+              - required:
+                  - inlineContent
+              - required:
+                  - streamDescriptor
+              - required:
+                  - contentHashReference
+              - required:
+                  - byteLength
     PutFileInline:
       type: object
       additionalProperties: false
       required:
         - mediaType
-        - contentText
+        - contentBytes
       properties:
         mediaType:
           type: string
           maxLength: 128
-        contentText:
+          pattern: "^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}$"
+          description: "RFC 6838 token grammar (type/subtype). Parameters such as `;charset=utf-8` are not accepted here — callers send them via the transport `Content-Type` header."
+        contentBytes:
           type: string
-          maxLength: 262144
-          description: Authorized request body only; never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata.
-          maxBytes: 262144
+          contentEncoding: base64
+          maxLength: 349528
+          description: "Authorized request body only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+        contentMediaType:
+          type: string
+          maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}$"
+          description: Optional original media type when the request body media type differs (e.g., transport wrapper vs. authored content).
     PutFileStream:
       type: object
       additionalProperties: false
@@ -5222,6 +5404,8 @@ components:
         mediaType:
           type: string
           maxLength: 128
+          pattern: "^[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}/[A-Za-z0-9][A-Za-z0-9!#$&^_.+-]{0,126}$"
+          description: "RFC 6838 token grammar (type/subtype). Parameters such as `;charset=utf-8` are not accepted here."
         declaredLength:
           type: integer
           minimum: 262145
@@ -5236,6 +5420,7 @@ components:
     FileMetadataRequest:
       type: object
       additionalProperties: false
+      description: "Path-list metadata lookup. Aggregate request body should not exceed 65536 bytes after JSON encoding; downstream gateways MAY reject larger bodies with 413 before invoking authorization. TODO(reference-pending): aggregate-body cap pending docs/exit-criteria/c4-input-limits.md PM approval."
       required:
         - requestSchemaVersion
         - paths
@@ -5272,6 +5457,7 @@ components:
           description: Search input is request payload only. Audit metadata records query family and counts, never raw search text.
         requestedPaths:
           type: array
+          minItems: 1
           maxItems: 100
           items:
             $ref: "#/components/schemas/PathMetadata"
@@ -5281,6 +5467,10 @@ components:
           maximum: 500
           maxResultCount: 500
           description: "TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+        cursor:
+          type: string
+          maxLength: 256
+          description: Opaque, non-secret pagination cursor returned by a prior call's `FileTreeResult.page.cursor`. Echo back to retrieve the next page. The server MUST treat the cursor as non-authoritative for tenant access, ACL, path policy, or sensitivity classification.
     FileGlobRequest:
       type: object
       additionalProperties: false
@@ -5303,6 +5493,7 @@ components:
           description: Glob pattern is request payload only and must not appear in audit examples or cross-tenant diagnostics.
         requestedPaths:
           type: array
+          minItems: 1
           maxItems: 100
           items:
             $ref: "#/components/schemas/PathMetadata"
@@ -5312,9 +5503,14 @@ components:
           maximum: 500
           maxResultCount: 500
           description: "TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+        cursor:
+          type: string
+          maxLength: 256
+          description: Opaque, non-secret pagination cursor returned by a prior call's `FileTreeResult.page.cursor`. Echo back to retrieve the next page. The server MUST treat the cursor as non-authoritative for tenant access, ACL, path policy, or sensitivity classification.
     FileRangeReadRequest:
       type: object
       additionalProperties: false
+      description: "Single-window byte-range read. Larger files require multiple bounded calls; the window cap is `endOffset - startOffset` not the absolute offset. Derived constraint: `endOffset >= startOffset` and `endOffset - startOffset <= 262144`. Reversed and over-window ranges return canonical Problem Details (400 validation_error for reversed, 422 input_limit_exceeded for over-window)."
       required:
         - requestSchemaVersion
         - path
@@ -5329,13 +5525,11 @@ components:
         startOffset:
           type: integer
           minimum: 0
-          description: Inclusive zero-based byte offset.
+          description: Inclusive zero-based byte offset. May reference any non-negative offset within the authorized file.
         endOffset:
           type: integer
           minimum: 0
-          maximum: 262144
-          maxBytes: 262144
-          description: "Exclusive byte offset. End minus start must be between 0 and 262144 bytes. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+          description: "Exclusive byte offset. Derived rule: `endOffset >= startOffset` and `endOffset - startOffset <= 262144` (single read window). Larger files require multiple bounded calls. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
     FileRangeReadResult:
       type: object
       additionalProperties: false
@@ -5351,6 +5545,7 @@ components:
         range:
           type: object
           additionalProperties: false
+          description: "Range descriptor returned with the read result. Derived rule: `partial == (actualBytes < endOffset - startOffset)`. When the server reached end-of-file before the exclusive `endOffset`, `partial` is `true` and `actualBytes` is the bytes returned; the response status is `206 Partial Content`. When `actualBytes == endOffset - startOffset`, `partial` is `false` and the status is `200 OK`."
           required:
             - startOffset
             - endOffset
@@ -5369,12 +5564,13 @@ components:
               maximum: 262144
             partial:
               type: boolean
+              description: "True when `actualBytes < endOffset - startOffset` (end-of-file reached before requested window end)."
         contentBytes:
           type: string
           contentEncoding: base64
-          maxLength: 262144
+          maxLength: 349528
           maxBytes: 262144
-          description: Authorized response body for ReadFileRange only; never audit, log, diagnostic, projection, or generated context material.
+          description: Authorized response body for ReadFileRange only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never audit, log, diagnostic, projection, or generated context material.
         limits:
           $ref: "#/components/schemas/ContextQueryLimitMetadata"
         freshness:
@@ -5421,8 +5617,15 @@ components:
     FileMetadataItem:
       type: object
       additionalProperties: false
+      description: |
+        File metadata entry returned by tree, metadata, search, and glob context queries.
+        Field visibility depends on `redaction`:
+          - `not_redacted`  -> `path`, `kind`, `byteLength` (if known), `sensitivity` all present.
+          - `redacted`      -> `path` and `byteLength` may be present; no content evidence ever exposed.
+          - `excluded`      -> `path` and `byteLength` MUST be omitted; only `kind`, `sensitivity`, `redaction` retained so the caller knows an item was withheld without learning which path.
+          - `binary_disallowed` -> `path` may be present; `byteLength` may be omitted; redaction state communicates why the item carries no content evidence.
+        Servers MUST omit `path` when `redaction` is `excluded`. The redaction-state-to-field-visibility matrix is contract-binding so safe-denial parity holds across REST, SDK, CLI, and MCP surfaces.
       required:
-        - path
         - kind
         - sensitivity
         - redaction
@@ -5437,6 +5640,8 @@ components:
         byteLength:
           type: integer
           minimum: 0
+          maximum: 17592186044416
+          description: "Per-file byte length cap (16 TiB) keeps schema bounded for downstream SDK code generation. Aggregate response budget is enforced separately via ContextQueryLimitMetadata.actualBytes."
         sensitivity:
           $ref: "#/components/schemas/SensitiveMetadataTier"
         redaction:
@@ -5452,7 +5657,8 @@ components:
       description: >
         C4 query metadata. Query duration uses x-hexalith-query-timeout-ms: 2000
         and aggregate response budget uses x-hexalith-response-budget-bytes: 1048576.
-        Values remain proposed workshop values until PM approval.
+        Values remain proposed workshop values until PM approval. When `isTruncated`
+        is `true`, `truncatedReason` MUST be present and non-`not_truncated`.
       required:
         - queryFamily
         - configuredLimit
@@ -5483,7 +5689,8 @@ components:
         elapsedMilliseconds:
           type: integer
           minimum: 0
-          maximum: 2000
+          description: "Soft target is 2000 ms via x-hexalith-query-timeout-ms; legitimate post-processing telemetry above the soft target is allowed up to a generous ceiling for diagnostic purposes."
+          maximum: 86400000
         isTruncated:
           type: boolean
         truncatedReason:
@@ -5493,6 +5700,18 @@ components:
             - response_budget_limit
             - query_timeout
             - not_truncated
+      dependentRequired:
+        isTruncated:
+          - truncatedReason
+      allOf:
+        - if:
+            properties:
+              isTruncated:
+                const: false
+          then:
+            properties:
+              truncatedReason:
+                const: not_truncated
     CanonicalErrorCategory:
       type: string
       enum:
@@ -5535,6 +5754,7 @@ components:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - range_unsatisfiable
         - redacted
         - internal_error
     CliExitCode:
@@ -5598,6 +5818,7 @@ components:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - range_unsatisfiable
         - redacted
         - internal_error
     AuditMetadataKey:

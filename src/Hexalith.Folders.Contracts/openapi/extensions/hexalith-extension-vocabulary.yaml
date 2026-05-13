@@ -179,11 +179,24 @@ x-hexalith-authorization:
         type: string
       safeDenial:
         type: string
-    description: Tenant authority must come from authentication context and EventStore envelopes; safe denials remain externally indistinguishable where existence is protected.
+      order:
+        type: array
+        minItems: 1
+        items:
+          type: string
+        description: "Optional structured ordered list of authorization stages. Stays alongside the prose `requirement` to enable machine consumption by parity oracles and adapter generators. Tokens are stable, lowercase, underscore-separated identifiers."
+    description: Tenant authority must come from authentication context and EventStore envelopes; safe denials remain externally indistinguishable where existence is protected. The optional `order` array supplies a machine-readable form of the authorization stage sequence used by context queries.
   example:
     requirement: tenant-context-and-folder-read-permission
     tenantAuthority: authentication-context-and-eventstore-envelope
     safeDenial: externally-indistinguishable
+    order:
+      - tenant_access
+      - folder_acl
+      - path_policy
+      - sensitivity_classification
+      - c4_bounds
+      - query_execution
 x-hexalith-canonical-error-categories:
   summary: Operation-level canonical error category declaration.
   allowedLocations:

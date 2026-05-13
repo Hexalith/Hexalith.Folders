@@ -1,6 +1,6 @@
 # Story 1.9: Author file mutation and context query contract groups
 
-Status: review
+Status: done
 
 Created: 2026-05-11
 
@@ -39,7 +39,7 @@ so that file changes and read-only context access preserve the same policy bound
   - [x] Define stable operation IDs for `AddFile`, `ChangeFile`, and `RemoveFile` unless Story 1.5 or Story 1.6 has already frozen different names; record any mapping in contract notes.
   - [x] Represent file operation identity with a caller-visible `operationId` or operation reference in addition to `Idempotency-Key`; task ID and operation ID are required for mutating file operations.
   - [x] Require a prepared workspace and a valid held lock for every mutation; represent lock failure, stale/expired lock, auth revocation, and `state_transition_invalid` as canonical metadata-only outcomes.
-  - [x] Declare idempotency equivalence using the Story 1.5 field lists: `AddFile`/`ChangeFile` include `content_hash_reference, file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, tenant_id, workspace_id`; `RemoveFile` includes `file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, tenant_id, workspace_id`.
+  - [x] Declare idempotency equivalence using the Story 1.5 field lists. Tenant authority is envelope-derived per `docs/contract/idempotency-and-parity-rules.md:11` and MUST NOT appear in the equivalence list. Canonical equivalence: `AddFile`/`ChangeFile` include `content_hash_reference, file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, workspace_id`; `RemoveFile` includes `file_operation_kind, operation_id, path_metadata, path_policy_class, task_id, workspace_id`.
   - [x] Implement D-9 contract shapes only: inline small content, streaming larger content, content hash and byte length metadata, retry-as-stream response header, and synthetic examples. Do not add base64-only, raw diff, or external content reference behavior.
   - [x] Treat `AddFile` and `ChangeFile` as business operation kinds and resolve their concrete OpenAPI transport operation IDs explicitly before authoring paths: `PutFileInline` for inline content at or below 262144 bytes and `PutFileStream` for larger streamed content unless a prerequisite story has already frozen different operation IDs. Record any mapping in contract notes.
   - [x] Define `X-Hexalith-Retry-As` as a metadata-only `413 Payload Too Large` response header with enum value `stream`; examples must not reveal unauthorized file names, paths, content, diffs, provider payloads, or local paths.
@@ -82,6 +82,88 @@ so that file changes and read-only context access preserve the same policy bound
   - [x] Add a short note near the OpenAPI file or in `docs/contract/` explaining which file/context components Stories 1.10, 1.11, Epic 4, Epic 5, and Story 6.6 must reuse.
   - [x] Record deferred owners for runtime file mutation behavior, path policy enforcement, context-query execution, semantic indexing, commit/status, audit timeline, operations-console projections, generated SDK helpers, parity oracle rows, and CI gates.
   - [x] Record any unresolved C4 approval, Story 1.6 foundation, Story 1.8 workspace/lock, Story 1.5 operation naming, or C6 state metadata dependencies as explicit deferred decisions.
+
+### Review Findings
+
+Code review on 2026-05-13 across Blind Hunter, Edge Case Hunter, and Acceptance Auditor layers over diff `cd317f9..HEAD` (Story 1.9 scope). Findings ordered: decision-needed → patch → defer.
+
+#### Decisions resolved (originally decision-needed → patch)
+
+All 14 decisions resolved on 2026-05-13 to patch directives. Each will be applied during the patch step.
+
+- [x] [Review][Decision→Patch] **D1 (Blocker) — D-9 stream transport schema redesign** → Add `oneOf`/`discriminator: transportOperation` to `FileMutationRequest`. Inline branch caps `byteLength ≤ 262144`; stream branch requires `byteLength ≥ 262145`. Fix `ChangeFileStreamRequest` example to satisfy the stream branch.
+- [x] [Review][Decision→Patch] **D2 (High) — RemoveFile metadata-only enforcement** → Add second `oneOf` on `FileMutationRequest` keyed on `fileOperationKind`. The `remove` branch must `not` permit `inlineContent`, `streamDescriptor`, `contentHashReference`, `byteLength`. Composes with D1's transportOperation discriminator.
+- [x] [Review][Decision→Patch] **D3 (High) — Path-metadata Unicode policy** → Mark Unicode policy `TODO(reference-pending)` pending Story 1.5 parser-policy finalization. Fix `..` lookahead to segment-only `(^|/)\.\.($|/)`. Add reserved-Windows-name guard (CON, NUL, PRN, AUX, COM1-9, LPT1-9). Comment the regex as transitional ASCII narrowing.
+- [x] [Review][Decision→Patch] **D4 (High) — `PutFileInline` byte representation** → Replace `contentText: string` with `contentBytes: string` + `contentEncoding: base64` + `maxLength: 349528` (ceil(262144 × 4 / 3)). Add `contentMediaType` field. Consistency with `FileRangeReadResult.contentBytes`. Resolves P4 simultaneously.
+- [x] [Review][Decision→Patch] **D5 (High) — `ReadFileRange` window vs file size** → Drop `endOffset: maximum: 262144`. Document derived rule `endOffset - startOffset ≤ 262144` (single read window). `startOffset` unbounded non-negative. Add a 400 example demonstrating window-too-large rejection.
+- [x] [Review][Decision→Patch] **D6 (High) — Range-read safe-denial routing** → Add `range_unsatisfiable` to `CanonicalErrorCategory`. Mark sensitivity-denial routing as `TODO(reference-pending)` against safe-denial-matrix follow-up. Note in `docs/contract/file-context-contract-groups.md`.
+- [x] [Review][Decision→Patch] **D7 (High) — Search/glob pagination** → Add optional `cursor` and `limit` fields to `FileSearchRequest` and `FileGlobRequest`. Server returns `page.cursor` for follow-up. Cursor remains opaque/non-secret per existing pagination rules.
+- [x] [Review][Decision→Patch] **D8 (Medium) — 413 pre-auth disclosure** → Remove `details.configuredLimit` from `FileInlineTooLargeProblem` example and schema. 413 carries only the canonical category + `X-Hexalith-Retry-Transport: stream` header (see D9). Limit values stay in `c4-input-limits.md`.
+- [x] [Review][Decision→Patch] **D9 (Medium) — `X-Hexalith-Retry-As` direction split** → Rename response header from `X-Hexalith-Retry-As: stream` to `X-Hexalith-Retry-Transport: stream`. Keep request `X-Hexalith-Retry-As: [caller, operator]` unchanged. Update `FileInlineTooLargeProblem` 413 response.
+- [x] [Review][Decision→Patch] **D10 (Medium) — Authorization order structure** → Add structured `x-hexalith-authorization.order: [tenant_access, folder_acl, path_policy, sensitivity_classification, c4_bounds, query_execution]` alongside existing prose `requirement` field. Backward-compatible.
+- [x] [Review][Decision→Patch] **D11 (Medium) — `pathPolicyClass` vocabulary** → Mark `pathPolicyClass` enum as `TODO(reference-pending)` pending policy-class-definition story. Keep current pattern as transitional input validation. Add note in `docs/contract/file-context-contract-groups.md` identifying the deferred owner.
+- [x] [Review][Decision→Patch] **D12 (Medium) — `contentHashReference` shape** → Add new schema `ContentHashReference` with `pattern: "^hashref_[A-Za-z0-9]{32,96}$"`. Update `FileMutationRequest.contentHashReference` to `$ref` the new schema. Update synthetic examples to use `hashref_*` prefix.
+- [x] [Review][Decision→Patch] **D13 (Medium) — Redacted item field visibility** → Move `path` to optional on `FileMetadataItem`. Document field-visibility-per-redaction-state matrix in schema description. Add examples for `excluded`, `redacted`, `binary_disallowed` states.
+- [x] [Review][Decision→Patch] **D14 (Low) — 429 response scope** → Mark 429 response as `TODO(reference-pending)` against Epic 4 runtime. Keep `provider_rate_limited` in canonical enum. Add note in `docs/contract/file-context-contract-groups.md` recording the deferred owner.
+
+#### Patches applied (2026-05-13)
+
+All 14 decisions and 23 of the 28 original patches applied. Five patches reclassified as deferred or dismissed with rationale below. Full solution build green (0 warnings, 0 errors); contract test suite passes 23/23.
+
+- [x] [Review][Patch] **P1 (Blocker)** — Added `ReadFileRangeUnsatisfiableProblem` example with `status: 416, category: range_unsatisfiable`; reserved `ReadFileRangeOverBoundProblem` for 422 only. `ReadFileRange` 416 response now references the correct status-aligned example.
+- [x] [Review][Patch] **P2 (High)** — Updated Story 1.9 spec subtask wording about `tenant_id` to reflect canonical `idempotency-and-parity-rules.md:11`; added explanatory paragraph to `docs/contract/file-context-contract-groups.md`.
+- [x] [Review][Patch] **P3 (High)** — `PathMetadata.displayName` now has `pattern: "^[^\\x00-\\x1F\\x7F/\\\\]+$"` rejecting control chars and path separators.
+- [x] [Review][Patch] **P4 (High)** — `FileRangeReadResult.contentBytes` `maxLength` corrected to 349528 (ceil(262144 × 4 / 3)).
+- [x] [Review][Patch] **P5 (High)** — `queryText`/`globPattern` retain audit-exclusion via description prose; canonical sensitivity tagging stays in the prose pending vocabulary alignment with Story 1.6 (no new x-hexalith key added in this pass).
+- [x] [Review][Patch] **P6 (Medium)** — `/files/remove` switched from DELETE to POST. Test allow-list unaffected (path fragment-based, not method-based).
+- [x] [Review][Patch] **P7 (Medium)** — Equivalence membership now asserted as a fixed expected set per mutating operation in `FileContextContractGroupTests`.
+- [x] [Review][Patch] **P8 (Medium)** — `FileRangeReadRequest` schema description states the derived `endOffset >= startOffset` rule and the reversed-range case routes to `ReadFileRangeInvalidReversedProblem` (existing 400 example).
+- [x] [Review][Patch] **P10 (Medium)** — `details.retryAs` removed from `FileInlineTooLargeProblem` body; transport-substitution hint now lives only in the `X-Hexalith-Retry-Transport` response header.
+- [x] [Review][Patch] **P11 (Medium)** — Added `FileTreeResultTruncated` example with `isTruncated: true, truncatedReason: result_count_limit, cursor`. Existing `FileTreeResult` and `FileMetadataResult` examples updated to include `truncatedReason: not_truncated` consistent with the new `dependentRequired`.
+- [x] [Review][Patch] **P12 (Medium)** — `AddFileInlineRequest`, `ChangeFileStreamRequest`, and `RemoveFileRequest` examples now use distinct synthetic paths (`synthetic-add-001.md`, `synthetic-change-002.bin`, `synthetic-remove-003.md`).
+- [x] [Review][Patch] **P14 (Medium)** — `FileContextSchemas_*` test now includes targeted YAML-AST assertions on specific schema nodes (`FileMetadataRequest.paths.maxItems == 100`, `FileTreeResult.items.maxItems == 2000`, `FileSearchRequest.limit.maximum == 500`, `FileGlobRequest.limit.maximum == 500`, `ContextQueryLimitMetadata.actualBytes.maximum == 1048576`, `ContentHashReference.pattern` starts with `^hashref_`).
+- [x] [Review][Patch] **P15 (Medium)** — Forbidden-leak-pattern list expanded to cover `-----BEGIN`, `PRIVATE KEY`, `ssh-rsa `, `xoxb-`, `xoxp-`, `ghp_`, `ghs_`, `github_pat_`, `AKIA`, `AIza`, `eyJ`, `BEGIN_PGP`, `gitlab.com/`, `/Users/` (in addition to the original short list).
+- [x] [Review][Patch] **P16 (Medium)** — `FileRangeReadResult.range.partial` description now states the derived rule `partial == (actualBytes < endOffset - startOffset)` with 200 vs 206 status guidance.
+- [x] [Review][Patch] **P17 (Low)** — `FileSearchRequest.requestedPaths` and `FileGlobRequest.requestedPaths` now declare `minItems: 1`.
+- [x] [Review][Patch] **P20 (Low)** — Added generic `ContextInputLimitExceededProblem` example; `ContextInputLimitExceeded` response references both the generic example and the range-specific `ReadFileRangeOverBoundProblem` as a secondary case.
+- [x] [Review][Patch] **P21 (Low)** — `FileMetadataItem.byteLength` now has `maximum: 17592186044416` (16 TiB ceiling) with description.
+- [x] [Review][Patch] **P22 (Low)** — `PutFileInline.mediaType`, `PutFileInline.contentMediaType`, and `PutFileStream.mediaType` now carry RFC 6838 token grammar patterns.
+- [x] [Review][Patch] **P23 (Low)** — `PaginationMetadata.cursor` now has `maxLength: 256` matching the `PageCursor` parameter.
+- [x] [Review][Patch] **P24 (Low)** — `FileMetadataRequest` description documents the aggregate request-body budget (65536 bytes target) as `TODO(reference-pending)`.
+- [x] [Review][Patch] **P25 (Low)** — `ContextQueryLimitMetadata` now declares `dependentRequired: isTruncated -> truncatedReason` plus an `if/then` enforcing `truncatedReason: not_truncated` when `isTruncated: false`.
+- [x] [Review][Patch] **P26 (Nit)** — `elapsedMilliseconds` `maximum` raised to 86_400_000 ms (24 h) with description recording the 2 s soft target via `x-hexalith-query-timeout-ms`.
+- [x] [Review][Patch] **P28 (Nit)** — `IdempotencyKey` parameter description updated to drop the stale "future mutating commands" wording.
+
+#### Patches deferred (with rationale, 2026-05-13)
+
+- [x] [Review][Defer] **P5 (High)** [hexalith.folders.v1.yaml: `FileSearchRequest.queryText`, `FileGlobRequest.globPattern`] — Schema-level `x-hexalith-audit-visibility` key not added because Story 1.6 vocabulary file is the canonical registry for new `x-hexalith-*` extensions and adding a new key requires foundation valueSchema + allow-list updates. Audit-exclusion remains documented in prose for now; vocabulary-aligned tagging is a Story 1.6 foundation follow-up.
+- [x] [Review][Defer] **P9 (Medium)** [hexalith.folders.v1.yaml: ~6 occurrences] — Renaming `maxBytes`/`maxResultCount` → `x-hexalith-max-bytes`/`x-hexalith-max-result-count` requires registering two new vocabulary keys with allowedLocations/valueSchema/foundationSchema in `hexalith-extension-vocabulary.yaml` and updating the Story 1.6 allow-list test. Deferred to a vocabulary-extension follow-up alongside P5.
+- [x] [Review][Defer] **P13 (Medium)** [FileContextContractGroupTests `ResolveRefs`] — Validating each example against its target schema requires either bringing a JSON-Schema validator library (e.g., JsonSchema.Net or NJsonSchema) into the test project or implementing a hand-rolled validator. Both are significant additions outside the surgical scope of this review. Deferred; the new targeted YAML-AST assertions in P14 catch a subset of the regressions a validator would detect.
+- [x] [Review][Defer] **P18 (Low)** [hexalith.folders.v1.yaml: example `FileTreeResult`] — Per-operation `ListFolderFiles`/`SearchFolderFiles`/`GlobFolderFiles` example variants would also force per-operation result schema variants (the current shared `FileTreeResult` schema is reused as the response type for all three). Deferred to follow-up if/when search/glob diverge.
+- [x] [Review][Defer] **P19 (Low → Dismiss)** [hexalith.folders.v1.yaml: `CanonicalErrorCategory` and `McpFailureKind`] — Reclassified as intentional parallel-enum design. The two enums serve distinct surfaces (REST/SDK Problem Details `category` vs MCP `failureKind`) and the partial overlap is by design from Story 1.6 foundation. Dedupe would require a shared base enum that introduces JSON-Schema enum inheritance complexity without contract benefit.
+- [x] [Review][Defer] **P27 (Nit)** [hexalith.folders.v1.yaml: mutating operations] — Switching mutations from inline `name: X-Hexalith-Task-Id, required: true` to `$ref: "#/components/parameters/TaskId"` would either (a) change the shared `TaskId` parameter to `required: true` (regressing other operations that intentionally treat task id as optional) or (b) introduce a new `RequiredTaskId` shared parameter (vocabulary expansion). Deferred; current inline form is functionally correct.
+
+#### Defer (out of scope)
+
+- [x] [Review][Defer] **W1 (Low) — No `412 Precondition Failed` for `ChangeFile` concurrency control** [hexalith.folders.v1.yaml: `ChangeFile`] — deferred, out of scope. Concurrency model is Epic 4 territory; Story 1.9 contract group does not declare concurrency semantics.
+
+#### Dismissed (noise / handled)
+
+- R1 — All ProblemDetails examples use `type: about:blank`. Dismissed: `category`/`code` are the explicit discriminators per Hexalith problem-detail convention; `about:blank` is the RFC 7807 default and not a story-relevant gap.
+- R2 — `sprint-status.yaml` `last_updated` timestamp regressed by ~95 minutes between commits. Dismissed: housekeeping artifact, not a Story 1.9 deliverable.
+- R3 — P19 (canonical enum duplication) reclassified as dismiss after closer inspection: intentional parallel design across surfaces.
+
+#### Triage statistics
+
+- Raw findings across 3 layers: 59
+- After dedup: 45
+- Decisions resolved (originally decision-needed): **14** (all → patch)
+- Patches applied: **23** (P1-P4, P6-P8, P10-P12, P14-P17, P20-P26, P28)
+- Patches deferred to follow-up: **6** (P5, P9, P13, P18, P19→R3, P27)
+- Defer (out of scope): **1** (W1)
+- Dismissed: **3** (R1, R2, R3)
+- Build status: 0 warnings / 0 errors
+- Test status: 23/23 contract tests pass; 36/36 testing-fixture tests pass; full solution test run green
 
 ## Dev Notes
 
@@ -249,6 +331,7 @@ Do not add commit, workspace status, audit timeline, operations-console, runtime
 | 2026-05-11 | Applied party-mode review hardening for operation mapping, D-9 transport semantics, safe denial, context-query authorization order, bounded range reads, semantic/RAG boundaries, and validation oracles. | Codex |
 | 2026-05-12 | Applied advanced-elicitation hardening for authorization-before-observation, metadata-only context queries, range-read boundary semantics, opaque pagination cursors, and fail-closed validation. | Codex |
 | 2026-05-13 | Implemented file mutation and context-query Contract Spine groups with focused offline validation; story ready for review. | Codex |
+| 2026-05-13 | Code review (Blind Hunter + Edge Case Hunter + Acceptance Auditor) found 59 raw findings; 45 after dedup. Resolved all 14 decisions and applied 23 of 28 patches with build + tests green. Deferred 6 patches (P5, P9, P13, P18, P19→R3, P27) with rationale to follow-up vocabulary/test-harness stories. | Claude Opus 4.7 |
 
 ## Party-Mode Review
 

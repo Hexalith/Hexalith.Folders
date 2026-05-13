@@ -85,11 +85,14 @@ public sealed class FileContextContractGroupTests
                 .ToArray();
 
             equivalence.ShouldBe(equivalence.Order(StringComparer.Ordinal).ToArray(), $"{operation.OperationId} equivalence fields must be lexicographically ordered.");
-            equivalence.ShouldContain("operation_id", operation.OperationId);
-            equivalence.ShouldContain("path_metadata", operation.OperationId);
-            equivalence.ShouldContain("path_policy_class", operation.OperationId);
-            equivalence.ShouldContain("task_id", operation.OperationId);
-            equivalence.ShouldContain("workspace_id", operation.OperationId);
+
+            string[] expectedEquivalence = operation.OperationId switch
+            {
+                "AddFile" or "ChangeFile" => new[] { "content_hash_reference", "file_operation_kind", "operation_id", "path_metadata", "path_policy_class", "task_id", "workspace_id" },
+                "RemoveFile" => new[] { "file_operation_kind", "operation_id", "path_metadata", "path_policy_class", "task_id", "workspace_id" },
+                _ => throw new InvalidOperationException($"Unexpected mutating operation '{operation.OperationId}' — extend the equivalence membership matrix when adding mutations."),
+            };
+            equivalence.ShouldBe(expectedEquivalence, $"{operation.OperationId} equivalence membership must match the Story 1.5 field list exactly.");
             equivalence.ShouldNotContain("tenant_id", "tenant authority is envelope-derived and must not be client-controlled OpenAPI equivalence.");
 
             string serializedOperation = SerializeYaml(operation.Node);
@@ -99,7 +102,7 @@ public sealed class FileContextContractGroupTests
                 serializedOperation.ShouldContain("PutFileInline", Case.Sensitive, operation.OperationId);
                 serializedOperation.ShouldContain("PutFileStream", Case.Sensitive, operation.OperationId);
                 serializedOperation.ShouldContain("262144", Case.Sensitive, operation.OperationId);
-                serializedOperation.ShouldContain("X-Hexalith-Retry-As", Case.Sensitive, operation.OperationId);
+                serializedOperation.ShouldContain("X-Hexalith-Retry-Transport", Case.Sensitive, operation.OperationId);
             }
 
             string[] categories = RequiredSequence(operation.Node, "x-hexalith-canonical-error-categories")
@@ -171,12 +174,38 @@ public sealed class FileContextContractGroupTests
         serialized.ShouldContain("x-hexalith-query-timeout-ms: 2000", Case.Sensitive);
         serialized.ShouldContain("TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed", Case.Sensitive);
 
+        // Targeted schema assertions (P14): bound specific schema nodes to specific C4 values
+        // so substring drift in unrelated schemas does not silently shield this story's bounds.
+        YamlMappingNode fileMetadataRequest = RequiredMapping(schemas, "FileMetadataRequest");
+        YamlMappingNode paths = RequiredMapping(RequiredMapping(fileMetadataRequest, "properties"), "paths");
+        GetScalar(paths, "maxItems").ShouldBe("100");
+
+        YamlMappingNode fileTreeResultSchema = RequiredMapping(schemas, "FileTreeResult");
+        YamlMappingNode treeItems = RequiredMapping(RequiredMapping(fileTreeResultSchema, "properties"), "items");
+        GetScalar(treeItems, "maxItems").ShouldBe("2000");
+
+        YamlMappingNode fileSearchRequest = RequiredMapping(schemas, "FileSearchRequest");
+        YamlMappingNode searchLimit = RequiredMapping(RequiredMapping(fileSearchRequest, "properties"), "limit");
+        GetScalar(searchLimit, "maximum").ShouldBe("500");
+
+        YamlMappingNode fileGlobRequest = RequiredMapping(schemas, "FileGlobRequest");
+        YamlMappingNode globLimit = RequiredMapping(RequiredMapping(fileGlobRequest, "properties"), "limit");
+        GetScalar(globLimit, "maximum").ShouldBe("500");
+
+        YamlMappingNode contextLimits = RequiredMapping(schemas, "ContextQueryLimitMetadata");
+        YamlMappingNode actualBytes = RequiredMapping(RequiredMapping(contextLimits, "properties"), "actualBytes");
+        GetScalar(actualBytes, "maximum").ShouldBe("1048576");
+
+        YamlMappingNode contentHashReference = RequiredMapping(schemas, "ContentHashReference");
+        GetScalar(contentHashReference, "pattern").ShouldStartWith("^hashref_");
+
         string[] requiredExamples =
         [
             "AddFileInlineRequest",
             "ChangeFileStreamRequest",
             "RemoveFileRequest",
             "FileTreeResult",
+            "FileTreeResultTruncated",
             "FileMetadataResult",
             "SearchFolderFilesRequest",
             "GlobFolderFilesRequest",
@@ -184,7 +213,9 @@ public sealed class FileContextContractGroupTests
             "ReadFileRangeMaximumRequest",
             "ReadFileRangeInvalidReversedProblem",
             "ReadFileRangeOverBoundProblem",
+            "ReadFileRangeUnsatisfiableProblem",
             "ReadFileRangeRedactedProblem",
+            "ContextInputLimitExceededProblem",
         ];
 
         foreach (string exampleName in requiredExamples)
@@ -193,7 +224,35 @@ public sealed class FileContextContractGroupTests
         }
 
         string combinedExamples = string.Join("\n", requiredExamples.Select(name => SerializeYaml(RequiredMapping(examples, name))));
-        foreach (string forbidden in new[] { "diff --git", "BEGIN ", "github.com/", "C:\\", "D:\\", "/home/", "matchedLine", "snippet", "rawSearchText", "generatedContext", "providerPayload" })
+        string[] forbiddenLeakPatterns =
+        [
+            "diff --git",
+            "BEGIN ",
+            "-----BEGIN",
+            "PRIVATE KEY",
+            "ssh-rsa ",
+            "xoxb-",
+            "xoxp-",
+            "ghp_",
+            "ghs_",
+            "github_pat_",
+            "AKIA",
+            "AIza",
+            "eyJ",
+            "BEGIN_PGP",
+            "github.com/",
+            "gitlab.com/",
+            "C:\\",
+            "D:\\",
+            "/home/",
+            "/Users/",
+            "matchedLine",
+            "snippet",
+            "rawSearchText",
+            "generatedContext",
+            "providerPayload",
+        ];
+        foreach (string forbidden in forbiddenLeakPatterns)
         {
             combinedExamples.ShouldNotContain(forbidden, Case.Insensitive);
         }
