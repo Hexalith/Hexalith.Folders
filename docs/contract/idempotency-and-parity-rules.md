@@ -133,12 +133,49 @@ Field names in `x_hexalith_idempotency_equivalence` are ordered lexicographicall
 | invalid input before SDK call | validation/config exception | usage error before SDK call | schema/usage failure | client_configuration_error | 64 | usage_error |
 | service-side validation rejection | canonical service exception | validation error output | tool failure result | validation_error | 69 | validation_error |
 | service-side known provider failure | canonical service exception | provider failure output | tool failure result | provider_failure_known | 70 | provider_failure_known |
+| workspace locked | canonical service exception scoped to tenant/workspace | workspace-locked output | tool failure result | workspace_locked | 67 | workspace_locked |
 | accepted task | typed accepted status | success output with task metadata | tool success result | success | 0 | none |
 | failed task | typed failed status or canonical exception per contract | mapped failure output | tool failure result | state_transition_invalid | 74 | state_transition_invalid |
 | unknown task | canonical not-found exception scoped to tenant | not-found output | tool failure result | not_found | 73 | not_found |
 | unknown provider outcome | canonical service exception with reconciliation evidence | unknown-outcome output | tool failure result | provider_outcome_unknown | 71 | provider_outcome_unknown |
 | reconciliation required | canonical service exception or status result | reconciliation-required output | tool failure result | reconciliation_required | 72 | reconciliation_required |
+| redacted field present | typed result with redaction sentinel preserved | redacted output preserves redaction distinct from missing | tool result preserves redaction sentinel | redacted | 75 | redacted |
 | post-SDK service failure | `HexalithFoldersException` preserving Problem Details | category-specific exit code | category-specific failure kind | internal_error | 1 | internal_error |
+
+## Schema Vocabulary Mapping
+
+The Operation Inventory and Non-Mutating Read Consistency tables use prose phrases for human readability. The parity row schema at `tests/fixtures/parity-contract.schema.json` uses snake_case enum values for machine validation. The following mapping is canonical; parity-row generators must translate prose to enum value.
+
+| prose_phrase | schema_enum | enum_field |
+|---|---|---|
+| `mutating command` | `mutating_command` | `operation_family` |
+| `query/status operation` | `query_status` | `operation_family` |
+| `context query` | `context_query` | `operation_family` |
+| `audit operation` | `audit` | `operation_family` |
+| `operations-console projection query` | `operations_console_projection` | `operation_family` |
+| `n/a` (mutating command read consistency) | `not_applicable` | `read_consistency_class` |
+| `snapshot-per-task` | `snapshot-per-task` | `read_consistency_class` |
+| `read-your-writes` | `read-your-writes` | `read_consistency_class` |
+| `eventually-consistent` | `eventually-consistent` | `read_consistency_class` |
+| `REST` | `rest` | `adapter_name` |
+| `SDK` | `sdk` | `adapter_name` |
+| `CLI` | `cli` | `adapter_name` |
+| `MCP` | `mcp` | `adapter_name` |
+| `UI` | `ui` | `adapter_name` |
+
+## Canonical Correlation Field Path Per Surface
+
+The schema's `correlation_field_path` regex permits any of `headers|problem|result|metadata` prefixes for forward-compat. Adapters and parity-row generators must pick the canonical prefix per surface from this table. Mixing surfaces is permitted only when the same operation is observed twice (e.g., REST receives `headers.X-Hexalith-Correlation-Id` and the SDK projects the same id into `metadata.correlation_id`).
+
+| surface | success_path | error_path | rationale |
+|---|---|---|---|
+| REST request | `headers.X-Hexalith-Correlation-Id` | `headers.X-Hexalith-Correlation-Id` | Wire-format correlation; client controls echo. |
+| REST response success | `headers.X-Hexalith-Correlation-Id` | n/a | Server echoes caller value or returns generated value. |
+| REST response error | n/a | `problem.correlation_id` | RFC 9457 Problem Details extension member. |
+| SDK | `result.metadata.correlation_id` | `metadata.correlation_id` (exception) | Typed result and exception both expose the id. |
+| CLI success | `metadata.correlation_id` (structured output) | n/a | CLI structured output exposes the id; defaults to invocation echo on stderr. |
+| CLI error | n/a | `problem.correlation_id` | CLI prints canonical Problem Details for failures. |
+| MCP | `metadata.correlation_id` | `metadata.correlation_id` | MCP tool envelopes always include metadata; success or failure path is the same. |
 
 ## Deferred Owner
 
@@ -162,5 +199,6 @@ Field names in `x_hexalith_idempotency_equivalence` are ordered lexicographicall
 | `docs/contract/idempotency-and-parity-rules.md` | every non-mutating operation declares read-consistency class, safe denial shape, audit keys, correlation behavior, projection expectation, and non-idempotent semantics | AC3, AC8, AC9 | `ContractRulesArtifactTests.ContractRulesArtifactCoversIdempotencyReadConsistencyAndNegativeScope` | implemented |
 | `docs/contract/idempotency-and-parity-rules.md` | SDK, CLI, and MCP sourcing and projection rules preserve architecture Adapter Parity Contract dimensions | AC4 | `ContractRulesArtifactTests.ContractRulesArtifactDeclaresStableTablesAndOperationRows` | implemented |
 | `tests/fixtures/parity-contract.schema.json` | transport and behavioral parity columns are required and adapter/failure-kind enums are bounded | AC5 | `ContractRulesArtifactTests.ParitySchemaDeclaresTransportAndBehavioralColumns` | implemented |
-| `tests/fixtures/idempotency-encoding-corpus.json` | synthetic corpus covers Unicode normalization, zero-width joiner, casing, ordering, whitespace, null versus omitted, percent encoding, malformed keys, and duplicate keys | AC6 | `ContractRulesArtifactTests.EncodingCorpusCoversRequiredSyntheticCategories` | implemented |
-| negative-scope guardrail | no OpenAPI spine, parity result rows, generated SDK output, REST/CLI/MCP behavior, CI workflow gate, or nested-submodule initialization is added by this story | AC7, AC8 | targeted tests plus git diff review | implemented |
+| `tests/fixtures/idempotency-encoding-corpus.json` | synthetic corpus covers Unicode normalization, zero-width joiner, casing, ordering, whitespace, null versus omitted, percent encoding, malformed keys, and duplicate keys; schema_version is pinned and every case carries comparison_input plus field_path | AC6 | `ContractRulesArtifactTests.EncodingCorpusCoversRequiredSyntheticCategories` | implemented |
+| `tests/fixtures/idempotency-encoding-corpus.schema.json` | case shape, category enum, and equivalence_classification enum are declared so future contributors cannot omit required fields | AC6 | `ContractRulesArtifactTests.EncodingCorpusSchemaDeclaresRequiredCaseShape` | implemented |
+| negative-scope guardrail | no OpenAPI spine reshape, parity result rows, generated SDK output, NSwag configuration, parity-oracle runner, REST/CLI/MCP behavior, CI workflow gate, or nested-submodule initialization is added by this story | AC7, AC8 | `ContractRulesArtifactTests.ContractRulesArtifactCoversIdempotencyReadConsistencyAndNegativeScope` plus `AssertNoStory15ContrabandScope` | implemented |

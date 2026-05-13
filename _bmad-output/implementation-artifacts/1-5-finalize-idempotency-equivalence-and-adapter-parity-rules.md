@@ -1,6 +1,6 @@
 # Story 1.5: Finalize idempotency equivalence and adapter parity rules
 
-Status: review
+Status: done
 
 Created: 2026-05-10
 
@@ -301,3 +301,34 @@ GPT-5 Codex
   - Parser-policy choices are documented expectations only; canonicalization implementation remains Story 1.12+ work.
   - Any operation metadata not settled by approved PRD, architecture, Story 1.3, or Story 1.4 sources must remain a deferred decision for the dev-story agent to surface.
 - Final recommendation: ready-for-dev
+
+### Review Findings
+
+Reviewed: 2026-05-13 via `bmad-code-review` (Blind Hunter + Edge Case Hunter + Acceptance Auditor).
+Commit reviewed: `e4c2828` (already on `main`).
+Follow-up patches applied: 2026-05-13.
+
+Decisions resolved:
+
+- [x] [Review][Decision] D1: Naming convention reconciliation — RESOLVED by adding `context_query` to `operation_family` enum, adding `ui` to `adapter_name` enum, and adding a "Schema Vocabulary Mapping" table that maps prose phrases (`mutating command`, `context query`, `n/a`, `UI`, etc.) to canonical enum values 1:1. Schema test now asserts the expanded enums.
+- [x] [Review][Decision] D2: Canonical error category vocabulary divergence — RESOLVED by extending `$defs.canonical_error_category` with all 10 missing categories: `credential_reference_missing`, `workspace_not_ready`, `dirty_workspace`, `commit_failed`, `file_operation_failed`, `path_validation_failed`, `provider_permission_insufficient`, `unsupported_provider_capability`, `repository_conflict`, `duplicate_binding`. Schema test asserts presence.
+- [x] [Review][Decision] D3: MCP failure-kind gap — RESOLVED by extending `$defs.mcp_failure_kind` with `folder_acl_denied`, `audit_access_denied`, `input_limit_exceeded`, `response_limit_exceeded`, `query_timeout`, `read_model_unavailable`. Schema test asserts presence.
+- [x] [Review][Decision] D4: Forever-true negative-scope test tripwires — DISMISSED. User chose to keep the `parity-contract.yaml` non-existence assertion; Story 1.13 owns its removal when the file is introduced. The spine path is already a conditional check that validates Story 1.6 ownership.
+- [x] [Review][Decision] D5: `correlation_field_path` prefix ambiguity — RESOLVED by adding a "Canonical Correlation Field Path Per Surface" table to the rules document. Schema regex stays as the 4-prefix union for forward-compat; per-surface canonical mapping is now documented and consumable.
+- [x] [Review][Decision] D6: Negative-scope file probe completeness — RESOLVED by adding `AssertNoStory15ContrabandScope` helper that probes generated SDK output dirs (`src/Hexalith.Folders.Client.Generated`, `src/Hexalith.Folders.Sdk.Generated`, `src/Hexalith.Folders.Contracts/Generated`), NSwag configs (root + Client/Sdk/Contracts), and a parity-oracle runner path.
+- [x] [Review][Decision] D7: Encoding corpus JSON schema — RESOLVED by adding `tests/fixtures/idempotency-encoding-corpus.schema.json` (case shape, category enum, equivalence_classification enum) plus a new `EncodingCorpusSchemaDeclaresRequiredCaseShape` test that locks the contract.
+
+Patches applied:
+- [x] [Review][Patch] P1: NFC fixture input corrupted — fixed `nfc-composed-e-acute.input` to 4 code points (NFC form `Caf` + U+00E9) and corrected the paired NFD entry `comparison_input`. NFC and NFD entries now correctly normalize to the same canonical form. [tests/fixtures/idempotency-encoding-corpus.json:24-46]
+- [x] [Review][Patch] P2: Missing CLI exit code outcome rows — added `workspace locked` (67 / `workspace_locked`) and `redacted field present` (75 / `redacted`) rows to the Adapter Outcome Parity table. [docs/contract/idempotency-and-parity-rules.md:Adapter Outcome Parity]
+- [x] [Review][Patch] P3: Trivially-passing test assertions — replaced substring searches with column-anchored checks: `cells[1].ShouldStartWith("required")` for idempotency_key_rule, `cells[3].ShouldContain("tenant_id")` for the equivalence list, `cells[6].ShouldContain("idempotency_conflict")` for conflicting_payload_outcome. [tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs]
+- [x] [Review][Patch] P4: Schema array constraints — added `minItems:1` to `terminal_states` and `maxItems:5` to `adapter_expectations` (5 to match the expanded `adapter_name` enum that includes `ui`). [tests/fixtures/parity-contract.schema.json]
+- [x] [Review][Patch] P5: Read-consistency regex unanchored — replaced with column-specific `cells[1].ShouldBeOneOf("snapshot-per-task", "read-your-writes", "eventually-consistent")`. [tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs]
+- [x] [Review][Patch] P6: `schema_version` not verified — added `schema_version.ShouldBe("0.2.0-story-1-5")` plus `field_path` and `comparison_input` presence checks. [tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs:EncodingCorpusCoversRequiredSyntheticCategories]
+- [x] [Review][Patch] P7: Row column count not validated — added `cells.Length.ShouldBe(...)` checks (12 cols mutating, 11 cols non-mutating) via the new `SplitRowCells` helper. [tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs]
+- [x] [Review][Patch] P8: Schema `$id` not versioned — bumped to `urn:hexalith-folders:fixtures:parity-contract-row-seed:v2`. [tests/fixtures/parity-contract.schema.json:3]
+- [x] [Review][Patch] P9: `FindMarkdownRow.Single()` opaque error — replaced `.Single(...)` with explicit count check throwing a descriptive `InvalidOperationException` that names the section, marker, and observed count. [tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs:FindMarkdownRow]
+- [x] [Review][Defer] F1: C4 limits inclusive/exclusive ambiguity — markdown cites byte limits without specifying inclusivity. C4 input-limits artifact (Story 1.4) is the authority. [docs/contract/idempotency-and-parity-rules.md:Non-Mutating Read Consistency] — deferred, pre-existing
+- [x] [Review][Defer] F2: Verification Coverage AC mapping unenforced — rows cite ACs by number but mapping is doc-only; renames or scope changes won't propagate. [docs/contract/idempotency-and-parity-rules.md:Verification Coverage] — deferred, pre-existing
+- [x] [Review][Defer] F3: `equivalence_classification` strings not enum-typed — long compound strings used as identifiers without schema enum; one typo silently breaks future helpers. Tied to D7. [tests/fixtures/idempotency-encoding-corpus.json] — deferred, pre-existing
+- [x] [Review][Defer] F4: `File.ReadAllText` BOM/encoding handling — tests read files without explicit encoding. Project standard is UTF-8 without BOM; low risk. [tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs] — deferred, pre-existing

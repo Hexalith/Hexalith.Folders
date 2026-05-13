@@ -74,3 +74,10 @@ This file accumulates items deferred from BMAD reviews and audits. Each section 
   - authorized RAG query facade that applies tenant access, folder ACL, path policy, sensitivity classification, and C4 limits before calling Memories.
 - If Memories packages or project references are introduced, update root dependency detection with `HexalithMemoriesRoot` and keep submodule initialization root-level only.
 - Operations-console stories may display semantic-indexing status only as metadata/projection state; they must not expose indexed content, snippets, raw Memories payloads, file browsing, or RAG response assembly in MVP.
+
+## Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)
+
+- F1: C4 limits inclusive/exclusive ambiguity — `docs/contract/idempotency-and-parity-rules.md` cites byte limits in the Non-Mutating Read Consistency section (e.g., 1048576, 262144) without specifying whether boundaries are inclusive. C4 input-limits artifact (Story 1.4) is the authority for precise boundary behavior; revisit if consumers diverge.
+- F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or modifying its scope leaves the AC mapping silently stale. Revisit if traceability tooling becomes available.
+- F3: `equivalence_classification` strings not enum-typed — long compound classification strings (~50-90 chars) in `tests/fixtures/idempotency-encoding-corpus.json` are used as identifiers without schema enum constraint; one typo silently breaks future hash-helper consumers. Tied to D7 (whether to add corpus schema); revisit when Story 1.12 helpers begin consuming the values.
+- F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf` offsets. Project standardizes on UTF-8 without BOM; revisit if an editor introduces non-UTF-8 content.

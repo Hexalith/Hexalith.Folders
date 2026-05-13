@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:hexalith-folders:fixtures:idempotency-encoding-corpus:v1",
+  "title": "Hexalith Folders Idempotency Encoding Corpus",
+  "description": "Validation shape for the synthetic Unicode, casing, ordering, parser-policy, and malformed-key corpus consumed by Story 1.12 helper generation and C13 parity oracle tests. This is not a public product contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "intent",
+    "ownership",
+    "cases"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.-]+)?$"
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ownership": {
+      "$ref": "#/$defs/ownership"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "input",
+        "comparison_input",
+        "field_path",
+        "code_points",
+        "equivalence_classification",
+        "expected_intent",
+        "synthetic_data_only",
+        "contains_payload_material"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "category": {
+          "$ref": "#/$defs/category"
+        },
+        "input": {
+          "type": ["string", "object", "array", "number", "boolean", "null"]
+        },
+        "comparison_input": {
+          "type": ["string", "object", "array", "number", "boolean", "null"]
+        },
+        "field_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_points": {
+          "type": "string",
+          "minLength": 1
+        },
+        "equivalence_classification": {
+          "$ref": "#/$defs/equivalence_classification"
+        },
+        "expected_intent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "synthetic_data_only": {
+          "const": true
+        },
+        "contains_payload_material": {
+          "const": false
+        }
+      }
+    },
+    "category": {
+      "enum": [
+        "NFC",
+        "NFD",
+        "NFKC",
+        "NFKD",
+        "zero-width-joiner",
+        "casing",
+        "ULID casing",
+        "ordering",
+        "whitespace",
+        "null-vs-omitted",
+        "percent-encoding",
+        "malformed-idempotency-key",
+        "duplicate-json-key"
+      ]
+    },
+    "equivalence_classification": {
+      "enum": [
+        "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field",
+        "equivalent-only-when-field-declares-compatibility-normalization",
+        "equivalent-only-for-fields-declared-ulid-typed",
+        "equivalent-after-lexicographic-field-ordering",
+        "equivalent-only-after-single-safe-decode-and-path-policy-validation",
+        "non-equivalent-by-default-for-casing-sensitive-string-field",
+        "non-equivalent-unless-generated-helper-declares-invisible-character-normalization",
+        "non-equivalent-unless-schema-declares-trimmed-field",
+        "non-equivalent-unless-schema-declares-default-equivalence",
+        "parser-rejected"
+      ]
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_workstream",
+        "future_test_use",
+        "known_omissions",
+        "mutation_rules",
+        "non_policy_placeholder",
+        "synthetic_data_only"
+      ],
+      "properties": {
+        "owner_workstream": {
+          "type": "string",
+          "minLength": 1
+        },
+        "future_test_use": {
+          "type": "string",
+          "minLength": 1
+        },
+        "known_omissions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "mutation_rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "non_policy_placeholder": {
+          "const": true
+        },
+        "synthetic_data_only": {
+          "const": true
+        }
+      }
+    }
+  }
+}

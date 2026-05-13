@@ -124,19 +124,35 @@ public sealed class ContractRulesArtifactTests
         string root = RepositoryRoot();
         string content = File.ReadAllText(Path.Combine(root, "docs", "contract", "idempotency-and-parity-rules.md"));
 
+        const int mutatingEquivalenceColumnCount = 12;
         foreach (string operation in MutatingCommands)
         {
             string row = FindMarkdownRow(content, "## Mutating Command Equivalence", operation);
-            row.ShouldContain("required", Case.Insensitive, $"{operation} should require idempotency metadata.");
-            row.ShouldContain("tenant_id", Case.Sensitive, $"{operation} equivalence should be tenant-scoped.");
-            row.ShouldContain("idempotency_conflict", Case.Sensitive, $"{operation} should define conflicting-payload outcome.");
+            string[] cells = SplitRowCells(row);
+            cells.Length.ShouldBe(mutatingEquivalenceColumnCount, $"{operation} row in Mutating Command Equivalence should have {mutatingEquivalenceColumnCount} columns; observed row: {row}");
+
+            string idempotencyKeyRule = cells[1];
+            idempotencyKeyRule.ShouldStartWith("required", Case.Sensitive, $"{operation} idempotency_key_rule column should start with 'required'.");
+
+            string equivalenceList = cells[3];
+            equivalenceList.ShouldContain("tenant_id", Case.Sensitive, $"{operation} equivalence list (column 4) should include tenant_id as the tenant-scoping anchor.");
+
+            string conflictingPayloadOutcome = cells[6];
+            conflictingPayloadOutcome.ShouldContain("idempotency_conflict", Case.Sensitive, $"{operation} conflicting_payload_outcome column should reference idempotency_conflict.");
         }
 
+        const int nonMutatingColumnCount = 11;
         foreach (string operation in NonMutatingOperations)
         {
             string row = FindMarkdownRow(content, "## Non-Mutating Read Consistency", operation);
-            row.ShouldContain("does-not-accept", Case.Sensitive, $"{operation} should document non-idempotent query semantics.");
-            row.ShouldMatch("(snapshot-per-task|read-your-writes|eventually-consistent)");
+            string[] cells = SplitRowCells(row);
+            cells.Length.ShouldBe(nonMutatingColumnCount, $"{operation} row in Non-Mutating Read Consistency should have {nonMutatingColumnCount} columns; observed row: {row}");
+
+            string readConsistencyCell = cells[1];
+            readConsistencyCell.ShouldBeOneOf("snapshot-per-task", "read-your-writes", "eventually-consistent");
+
+            string nonIdempotentCell = cells[7];
+            nonIdempotentCell.ShouldContain("does-not-accept", Case.Sensitive, $"{operation} non_idempotent_semantics column should explicitly state does-not-accept-idempotency-key.");
         }
 
         string[] negativeGuardrails =
@@ -165,7 +181,9 @@ public sealed class ContractRulesArtifactTests
         }
 
         File.Exists(Path.Combine(root, "tests", "fixtures", "parity-contract.yaml"))
-            .ShouldBeFalse("Story 1.5 must not generate parity result rows.");
+            .ShouldBeFalse("Story 1.5 must not generate parity result rows; Story 1.13 owns parity-contract.yaml.");
+
+        AssertNoStory15ContrabandScope(root);
     }
 
     [Fact]
@@ -204,7 +222,13 @@ public sealed class ContractRulesArtifactTests
             .EnumerateArray()
             .Select(item => item.GetString() ?? string.Empty)
             .ToArray();
-        allowedAdapters.ShouldBe(["rest", "sdk", "cli", "mcp"], ignoreOrder: true);
+        allowedAdapters.ShouldBe(["rest", "sdk", "cli", "mcp", "ui"], ignoreOrder: true);
+
+        string[] operationFamilies = rootElement.GetProperty("properties").GetProperty("operation_family").GetProperty("enum")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        operationFamilies.ShouldContain("context_query", "operation_family enum must include context_query to cover ListFolderFiles/SearchFolderFiles/ReadFileRange.");
 
         string[] failureKinds = rootElement.GetProperty("$defs").GetProperty("mcp_failure_kind").GetProperty("enum")
             .EnumerateArray()
@@ -213,9 +237,36 @@ public sealed class ContractRulesArtifactTests
         failureKinds.ShouldContain("usage_error");
         failureKinds.ShouldContain("credential_missing");
         failureKinds.ShouldContain("tenant_access_denied");
+        failureKinds.ShouldContain("folder_acl_denied");
+        failureKinds.ShouldContain("audit_access_denied");
+        failureKinds.ShouldContain("input_limit_exceeded");
+        failureKinds.ShouldContain("response_limit_exceeded");
+        failureKinds.ShouldContain("query_timeout");
+        failureKinds.ShouldContain("read_model_unavailable");
         failureKinds.ShouldContain("idempotency_conflict");
         failureKinds.ShouldContain("provider_outcome_unknown");
         failureKinds.ShouldContain("state_transition_invalid");
+
+        string[] errorCategories = rootElement.GetProperty("$defs").GetProperty("canonical_error_category").GetProperty("enum")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        foreach (string category in new[]
+        {
+            "credential_reference_missing",
+            "workspace_not_ready",
+            "dirty_workspace",
+            "commit_failed",
+            "file_operation_failed",
+            "path_validation_failed",
+            "provider_permission_insufficient",
+            "unsupported_provider_capability",
+            "repository_conflict",
+            "duplicate_binding"
+        })
+        {
+            errorCategories.ShouldContain(category, $"canonical_error_category enum must include {category} so operation inventory rows validate.");
+        }
     }
 
     [Fact]
@@ -223,6 +274,8 @@ public sealed class ContractRulesArtifactTests
     {
         string root = RepositoryRoot();
         using JsonDocument document = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests", "fixtures", "idempotency-encoding-corpus.json")));
+
+        document.RootElement.GetProperty("schema_version").GetString().ShouldBe("0.2.0-story-1-5", "schema_version must match the value Story 1.5 bumped to; later stories that change the corpus shape must bump again.");
 
         string[] categories = document.RootElement.GetProperty("cases").EnumerateArray()
             .Select(item => item.GetProperty("category").GetString() ?? string.Empty)
@@ -256,7 +309,47 @@ public sealed class ContractRulesArtifactTests
             sample.GetProperty("synthetic_data_only").GetBoolean().ShouldBeTrue();
             sample.GetProperty("contains_payload_material").GetBoolean().ShouldBeFalse();
             sample.GetProperty("equivalence_classification").GetString().ShouldNotBeNullOrWhiteSpace();
+            sample.GetProperty("field_path").GetString().ShouldNotBeNullOrWhiteSpace();
+            sample.GetProperty("comparison_input").ValueKind.ShouldNotBe(JsonValueKind.Undefined, "every corpus case must declare a comparison_input so paired equivalence behavior is unambiguous.");
         }
+    }
+
+    [Fact]
+    public void EncodingCorpusSchemaDeclaresRequiredCaseShape()
+    {
+        string root = RepositoryRoot();
+        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "tests", "fixtures", "idempotency-encoding-corpus.schema.json")));
+
+        JsonElement caseDefinition = schema.RootElement.GetProperty("$defs").GetProperty("case");
+        string[] required = caseDefinition.GetProperty("required").EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        required.ShouldContain("id");
+        required.ShouldContain("category");
+        required.ShouldContain("input");
+        required.ShouldContain("comparison_input");
+        required.ShouldContain("field_path");
+        required.ShouldContain("code_points");
+        required.ShouldContain("equivalence_classification");
+        required.ShouldContain("synthetic_data_only");
+        required.ShouldContain("contains_payload_material");
+
+        string[] allowedCategories = schema.RootElement.GetProperty("$defs").GetProperty("category").GetProperty("enum")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        allowedCategories.ShouldContain("NFC");
+        allowedCategories.ShouldContain("NFD");
+        allowedCategories.ShouldContain("NFKC");
+        allowedCategories.ShouldContain("NFKD");
+        allowedCategories.ShouldContain("duplicate-json-key");
+        allowedCategories.ShouldContain("malformed-idempotency-key");
+
+        string[] equivalenceClassifications = schema.RootElement.GetProperty("$defs").GetProperty("equivalence_classification").GetProperty("enum")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        equivalenceClassifications.ShouldContain("parser-rejected", "Encoding-corpus schema must enumerate parser-rejected as a valid equivalence classification.");
     }
 
     private static string FindMarkdownRow(string content, string sectionHeading, string operation)
@@ -267,10 +360,63 @@ public sealed class ContractRulesArtifactTests
         int nextSection = content.IndexOf("\n## ", sectionStart + sectionHeading.Length, StringComparison.Ordinal);
         string section = nextSection < 0 ? content[sectionStart..] : content[sectionStart..nextSection];
         string marker = $"| `{operation}` |";
-        return section
+        string[] matches = section
             .Split('\n')
             .Select(line => line.TrimEnd('\r'))
-            .Single(line => line.StartsWith(marker, StringComparison.Ordinal));
+            .Where(line => line.StartsWith(marker, StringComparison.Ordinal))
+            .ToArray();
+
+        if (matches.Length != 1)
+        {
+            throw new InvalidOperationException(
+                $"Expected exactly one row starting with '{marker}' in section '{sectionHeading.Trim()}', but found {matches.Length}. " +
+                "Either the operation is missing from the table, the row is duplicated, or the section heading is wrong.");
+        }
+
+        return matches[0];
+    }
+
+    private static string[] SplitRowCells(string row)
+    {
+        string trimmed = row.Trim();
+        if (!trimmed.StartsWith('|') || !trimmed.EndsWith('|'))
+        {
+            throw new InvalidOperationException($"Row does not look like a markdown table row: {row}");
+        }
+
+        string inner = trimmed[1..^1];
+        return inner.Split('|').Select(cell => cell.Trim()).ToArray();
+    }
+
+    private static void AssertNoStory15ContrabandScope(string root)
+    {
+        string[] generatedSdkDirs =
+        [
+            Path.Combine(root, "src", "Hexalith.Folders.Client.Generated"),
+            Path.Combine(root, "src", "Hexalith.Folders.Sdk.Generated"),
+            Path.Combine(root, "src", "Hexalith.Folders.Contracts", "Generated")
+        ];
+
+        foreach (string generatedDir in generatedSdkDirs)
+        {
+            Directory.Exists(generatedDir).ShouldBeFalse($"Story 1.5 must not produce generated SDK output at '{generatedDir}'; Story 1.12 owns NSwag generation.");
+        }
+
+        string[] nswagConfigs =
+        [
+            Path.Combine(root, "nswag.json"),
+            Path.Combine(root, "src", "Hexalith.Folders.Client", "nswag.json"),
+            Path.Combine(root, "src", "Hexalith.Folders.Sdk", "nswag.json"),
+            Path.Combine(root, "src", "Hexalith.Folders.Contracts", "nswag.json")
+        ];
+
+        foreach (string nswagConfig in nswagConfigs)
+        {
+            File.Exists(nswagConfig).ShouldBeFalse($"Story 1.5 must not introduce NSwag configuration at '{nswagConfig}'; Story 1.12 owns NSwag wiring.");
+        }
+
+        string parityOracleRunner = Path.Combine(root, "tests", "tools", "parity-oracle-generator", "Program.cs");
+        File.Exists(parityOracleRunner).ShouldBeFalse("Story 1.5 must not introduce a parity-oracle generator runner; Story 1.13 owns oracle generation.");
     }
 
     private static string RepositoryRoot()
