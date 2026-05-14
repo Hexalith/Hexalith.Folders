@@ -48,6 +48,17 @@ public sealed class TenantFolderProviderContractGroupTests
         "GetCommitEvidence",
         "GetProviderOutcome",
         "GetReconciliationStatus",
+        "ListAuditTrail",
+        "GetAuditRecord",
+        "ListOperationTimeline",
+        "GetOperationTimelineEntry",
+        "GetReadinessDiagnostics",
+        "GetLockDiagnostics",
+        "GetDirtyStateDiagnostics",
+        "GetFailedOperationDiagnostics",
+        "GetProviderStatusDiagnostics",
+        "GetSyncStatusDiagnostics",
+        "GetProjectionFreshness",
     ];
 
     // POST/PUT/PATCH/DELETE operations are mutating by default. Anything in this allow-list
@@ -81,6 +92,11 @@ public sealed class TenantFolderProviderContractGroupTests
 
         foreach (Operation operation in operations)
         {
+            if (operation.OperationId is "ListAuditTrail" or "GetAuditRecord" or "ListOperationTimeline" or "GetOperationTimelineEntry" or "GetReadinessDiagnostics" or "GetLockDiagnostics" or "GetDirtyStateDiagnostics" or "GetFailedOperationDiagnostics" or "GetProviderStatusDiagnostics" or "GetSyncStatusDiagnostics" or "GetProjectionFreshness")
+            {
+                continue;
+            }
+
             foreach (string forbidden in forbiddenPathFragments)
             {
                 operation.Path.ShouldNotContain(forbidden, Case.Sensitive, $"{operation.OperationId} belongs to a downstream story.");

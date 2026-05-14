@@ -1,6 +1,6 @@
 # Story 1.11: Author audit and ops-console query contract groups
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-12
 
@@ -37,77 +37,77 @@ so that diagnostic and audit views consume stable metadata-only contracts.
 
 ## Tasks / Subtasks
 
-- [ ] Confirm prerequisites and preserve scope boundaries. (AC: 1, 6, 11, 12)
-  - [ ] Inspect Story 1.6 deliverables: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/`. If absent, record prerequisite drift and create only the narrow audit/ops-console additions this story owns with `TODO(reference-pending)` markers where shared foundation values are missing.
-  - [ ] Inspect Stories 1.7, 1.8, 1.9, and 1.10 deliverables before referencing tenant/folder/provider/repository, workspace/lock, file/context, commit/status, provider-outcome, and reconciliation components. If absent, reference stable planned component names and record the dependency as reference-pending instead of duplicating their scope.
-  - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml`; treat missing files as prerequisite drift, not permission to invent policy.
-  - [ ] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, `docs/exit-criteria/s2-oidc-validation.md`, and any C5 freshness/performance evidence if present; preserve approval state and use reference-pending markers for unresolved values.
-  - [ ] Build a short evidence map for C3 retention, C4 limits, C5 freshness/performance, C6 lifecycle/disposition, and Story 1.6 extension vocabulary before adding values; unresolved values must stay as explicit `TODO(reference-pending)` markers.
-  - [ ] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
-  - [ ] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
-- [ ] Pin the concrete operation inventory and editable file set before schema authoring. (AC: 1, 5, 11, 12, 14)
-  - [ ] Start from the Dev Notes operation inventory seed and confirm each path, method, operation ID, owning tag, and schema section against existing Story 1.6 through 1.10 artifacts.
-  - [ ] If an existing Contract Spine artifact already froze different paths or names, preserve the frozen `operationId` where possible and record the mapping in `docs/contract/audit-ops-console-contract-groups.md` or the OpenAPI description.
-  - [ ] Use stable group names consistently: `AuditQueries`, `OperationTimelineQueries`, `OpsConsoleDiagnostics`, and `ProjectionFreshness` unless an existing approved Contract Spine artifact has frozen different names.
-  - [ ] Fail closed during validation when unknown audit/ops-console operations, malformed group names, missing required tags, or unrelated OpenAPI operations appear in this story's owned surface; do not infer ownership from partial name matches.
-  - [ ] Keep edits limited to `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `src/Hexalith.Folders.Contracts/openapi/extensions/` if extension metadata is missing, `docs/contract/audit-ops-console-contract-groups.md` if notes are needed, and focused contract validation assets under `tests/Hexalith.Folders.Contracts.Tests/` or `tests/tools/`.
-  - [ ] Record a per-operation audience and field-classification matrix for audit, timeline, diagnostic, and projection-freshness operations so consumer-safe fields and operator-only sanitized fields do not drift.
-  - [ ] Do not edit server, domain, worker, provider, generated client, NSwag, CLI, MCP, UI, release docs, or CI workflow files for this story.
-- [ ] Author audit trail and operation timeline query contracts. (AC: 1, 2, 3, 4, 6, 7, 8, 10)
-  - [ ] Add non-mutating audit and timeline operations under `/api/v1/...` using lowercase hyphen-delimited path segments, plural collection nouns where appropriate, and camelCase path parameters such as `{folderId}`, `{workspaceId}`, `{taskId}`, or `{operationId}`.
-  - [ ] Define stable operation IDs such as `ListAuditTrail`, `GetAuditRecord`, `ListOperationTimeline`, and `GetOperationTimelineEntry` unless Story 1.5, Story 1.6, or an already-authored Contract Spine has frozen different names.
-  - [ ] Declare approved read-consistency classes. Use `eventually-consistent` for projection-backed audit/timeline reads unless an approved source requires `snapshot-per-task` or `read-your-writes`.
-  - [ ] Include projection watermark, freshness age, event/evidence timestamp, actor/audit reference, task ID, operation ID, correlation ID, state transition, result status, sanitized error category, retryability, duration, redaction reason, and pagination cursor where authorized.
-  - [ ] Keep audit entries metadata-only. Use changed-path digest/reference metadata instead of raw path lists unless an approved sensitivity policy allows raw values for the authorized audience.
-  - [ ] Ensure timeline filters cannot become tenant authority, ACL override, path-policy bypass, or probe vectors for hidden resources.
-  - [ ] Represent missing, hidden, redacted, stale, unavailable, and wrong-tenant evidence through safe Problem Details or safe metadata-only response shapes without resource-existence hints.
-  - [ ] Keep audit records correlation-friendly and redact-by-design: expose stable IDs, timestamps, status/result codes, redaction state, and correlation metadata while excluding raw event bodies, prompt payloads, memory contents, embeddings, exception stacks, and payload excerpts.
-  - [ ] Keep retention and projection freshness as contract metadata only: expose approved retention/freshness evidence, watermarks, stale/unavailable reason codes, and truncation state without adding retention jobs, projection rebuild semantics, backup/recovery behavior, or audit storage policy.
-  - [ ] Keep audit storage, projection handlers, EventStore event emission, read-model rebuild behavior, retention jobs, backup/recovery behavior, and UI timeline rendering deferred to later stories.
-- [ ] Author operations-console diagnostic query contracts. (AC: 1, 2, 3, 5, 7, 8, 9, 10)
-  - [ ] Add read-only diagnostic operations for readiness, lock, dirty-state, failed-operation, provider-status, sync-status, and projection freshness where they are not already covered by Story 1.10 status components.
-  - [ ] Define stable operation IDs such as `GetReadinessDiagnostics`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`, and `GetProjectionFreshness` unless prior stories froze different names.
-  - [ ] Model diagnostic responses as projection/query contracts only. Do not define command forms, repair actions, credential reveal fields, file browsing, file editing, raw diff display, unrestricted filesystem browsing, or incident-mode event-stream behavior in this story.
-  - [ ] Reuse C6 states and operator-disposition labels for diagnostic status. If a console-specific label seems necessary, record it as a deferred decision rather than adding a UI-only state to the Contract Spine.
-  - [ ] Include trust/freshness metadata, last successful operation, last failure category, retry or escalation posture, redaction reason, projection lag, stale/unavailable reason, and safe supporting identifiers where authorized.
-  - [ ] Partition diagnostic audience explicitly: consumer-safe query responses must remain non-enumerating, while authorized operator diagnostics may expose only sanitized metadata and redacted/classified values.
-  - [ ] For each diagnostic operation, define which fields are safe for consumer-facing status, which require operator diagnostic authority, and which are forbidden in every audience; do not rely on UI rendering to hide unsafe fields.
-  - [ ] Ensure provider diagnostics never expose credential material, provider tokens, embedded credential URLs, provider installation secrets, raw provider payloads, raw repository URLs, or unauthorized repository existence.
-  - [ ] Ensure diagnostic response semantics use stable machine codes and shared operator-disposition values; optional display labels or localization keys must not define API behavior.
-  - [ ] Keep FrontComposer components, Fluent UI pages, console navigation, incident-mode pages, projection handlers, and read-model implementation deferred to Epic 6 and later runtime stories.
-- [ ] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 6, 8, 9, 10, 13)
-  - [ ] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, lifecycle/state schemas, sensitive-metadata schemas, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
-  - [ ] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, service-issued opaque non-secret cursors, and metadata-only examples.
-  - [ ] Ensure every operation is non-mutating and omits `Idempotency-Key`.
-  - [ ] Ensure every operation declares read consistency, freshness/projection-lag behavior, canonical error categories, authorization requirement, correlation behavior, audit classification, redaction behavior, and parity dimensions.
-  - [ ] Use RFC 9457 Problem Details plus Hexalith fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
-  - [ ] Prefer machine-readable status and error codes over adopter-facing English prose fields; descriptions may explain behavior, but client semantics must bind to codes/enums.
-  - [ ] Ensure examples are synthetic opaque placeholders only and do not include real tenant IDs, user IDs, correlation IDs, timestamps, repository URLs, branch names with sensitive values, local paths, provider identifiers, organization names, email addresses, file content snippets, diffs, raw commit messages, raw changed paths, generated context payloads, secrets, or unauthorized resource hints.
-  - [ ] Mark examples as non-production synthetic data and include named synthetic cases for visible, hidden, redacted, unknown, missing, multi-tenant, projection-unavailable, and operator-disposition scenarios.
-  - [ ] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
-- [ ] Add focused offline validation. (AC: 3, 6, 7, 8, 10, 11, 13, 14)
-  - [ ] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
-  - [ ] Resolve internal `$ref` targets through nested schemas, parameters, responses, and examples; fail validation on unresolved local references; treat remote/external references as deferred unless an existing validator already supports them.
-  - [ ] Verify new operation IDs are unique, stable, and limited to this story's operation allow-list: `ListAuditTrail`, `GetAuditRecord`, `ListOperationTimeline`, `GetOperationTimelineEntry`, `GetReadinessDiagnostics`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`, `GetProjectionFreshness`, plus any explicitly named audit or ops-console query operation added by this story.
-  - [ ] Verify all new operations include required `x-hexalith-*` metadata and satisfy read-consistency requirements.
-  - [ ] Verify no request payload, query parameter, route segment, cursor, filter, selector, or client-controlled header defines authoritative tenant context.
-  - [ ] Verify every operation omits `Idempotency-Key`.
-  - [ ] Verify examples and audit metadata exclude file contents, diffs, raw commit messages, raw changed-path lists where not authorized, raw provider payloads, generated context payloads, provider tokens, credential material, local paths, production URLs, and unauthorized resource-existence hints.
-  - [ ] Verify hidden-resource equivalence for audit records, timeline entries, readiness diagnostics, lock diagnostics, dirty-state diagnostics, failed-operation diagnostics, provider-status diagnostics, and sync-status diagnostics.
-  - [ ] Verify hidden-resource equivalence across status codes, item counts, ordering, cursor issuance, metadata presence, and examples.
-  - [ ] Verify redacted known values, unknown values, missing optional values, hidden values, and forbidden fields remain distinguishable for authorized audiences and collapse only through approved safe-denial shapes for unauthorized audiences.
-  - [ ] Verify diagnostic audience partitioning: consumer-safe responses are non-enumerating, and operator diagnostic examples remain sanitized, redacted where needed, and metadata-only.
-  - [ ] Verify cursor and filter fields are opaque, non-secret, non-authoritative, and do not carry provider tokens, tenant authority, ACL decisions, raw query text, raw path lists, or redaction-bypassing data; include negative cases for tampered cursors, cursor reuse after changed filters, tenant/principal mismatch, invalid sort keys, boundary duplicates, and empty-page continuation.
-  - [ ] Verify audience partitioning and field classification against the per-operation matrix; fail if operator-only sanitized fields appear in consumer-safe responses or if forbidden fields appear anywhere in schemas, examples, Problem Details, or diagnostics.
-  - [ ] Verify retention/freshness values are either sourced from approved evidence or explicitly marked reference-pending; fail if the contract invents numeric retention windows, SLOs, rebuild semantics, or recovery behavior.
-  - [ ] Verify C6 state/operator-disposition reuse and fail validation if the story introduces UI-only state labels that conflict with shared lifecycle vocabulary.
-  - [ ] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools/resources, domain aggregate behavior, EventStore commands, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, runtime projections, or nested-submodule initialization.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
-- [ ] Record downstream authoring notes. (AC: 5, 9, 11, 12)
-  - [ ] Add a short note near the OpenAPI file or in `docs/contract/` explaining which audit and diagnostic components Epic 4, Epic 5, and Epic 6 must reuse.
-  - [ ] Record deferred owners for runtime audit emission, audit projection handlers, operation timeline projections, operations-console UI pages, incident-mode event stream, FrontComposer components, projection performance evidence, retention enforcement, generated SDK helpers, parity oracle rows, and CI gates.
-  - [ ] Record deferred owners for unresolved diagnostic audience policy, field-classification vocabulary, retention/freshness sources, hidden-resource equivalence, cursor invalidation, and external `$ref` validation behavior.
-  - [ ] Record any unresolved C3 retention, C4 query limits, C5 freshness/performance targets, C6 state metadata, Story 1.6 foundation, Story 1.10 status components, or Story 1.5 operation naming dependencies as explicit deferred decisions.
+- [x] Confirm prerequisites and preserve scope boundaries. (AC: 1, 6, 11, 12)
+  - [x] Inspect Story 1.6 deliverables: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/`. If absent, record prerequisite drift and create only the narrow audit/ops-console additions this story owns with `TODO(reference-pending)` markers where shared foundation values are missing.
+  - [x] Inspect Stories 1.7, 1.8, 1.9, and 1.10 deliverables before referencing tenant/folder/provider/repository, workspace/lock, file/context, commit/status, provider-outcome, and reconciliation components. If absent, reference stable planned component names and record the dependency as reference-pending instead of duplicating their scope.
+  - [x] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/idempotency-encoding-corpus.json`, and `tests/fixtures/previous-spine.yaml`; treat missing files as prerequisite drift, not permission to invent policy.
+  - [x] Inspect `docs/exit-criteria/c3-retention.md`, `docs/exit-criteria/c4-input-limits.md`, `docs/exit-criteria/c6-transition-matrix-mapping.md`, `docs/exit-criteria/s2-oidc-validation.md`, and any C5 freshness/performance evidence if present; preserve approval state and use reference-pending markers for unresolved values.
+  - [x] Build a short evidence map for C3 retention, C4 limits, C5 freshness/performance, C6 lifecycle/disposition, and Story 1.6 extension vocabulary before adding values; unresolved values must stay as explicit `TODO(reference-pending)` markers.
+  - [x] Do not initialize or update nested submodules. Use sibling modules only as read-only references unless explicitly directed otherwise.
+  - [x] Limit allowed story outputs to OpenAPI contract changes, existing Contract project static artifact inclusion if needed, synthetic examples, optional contract notes, and focused offline validation assets.
+- [x] Pin the concrete operation inventory and editable file set before schema authoring. (AC: 1, 5, 11, 12, 14)
+  - [x] Start from the Dev Notes operation inventory seed and confirm each path, method, operation ID, owning tag, and schema section against existing Story 1.6 through 1.10 artifacts.
+  - [x] If an existing Contract Spine artifact already froze different paths or names, preserve the frozen `operationId` where possible and record the mapping in `docs/contract/audit-ops-console-contract-groups.md` or the OpenAPI description.
+  - [x] Use stable group names consistently: `AuditQueries`, `OperationTimelineQueries`, `OpsConsoleDiagnostics`, and `ProjectionFreshness` unless an existing approved Contract Spine artifact has frozen different names.
+  - [x] Fail closed during validation when unknown audit/ops-console operations, malformed group names, missing required tags, or unrelated OpenAPI operations appear in this story's owned surface; do not infer ownership from partial name matches.
+  - [x] Keep edits limited to `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `src/Hexalith.Folders.Contracts/openapi/extensions/` if extension metadata is missing, `docs/contract/audit-ops-console-contract-groups.md` if notes are needed, and focused contract validation assets under `tests/Hexalith.Folders.Contracts.Tests/` or `tests/tools/`.
+  - [x] Record a per-operation audience and field-classification matrix for audit, timeline, diagnostic, and projection-freshness operations so consumer-safe fields and operator-only sanitized fields do not drift.
+  - [x] Do not edit server, domain, worker, provider, generated client, NSwag, CLI, MCP, UI, release docs, or CI workflow files for this story.
+- [x] Author audit trail and operation timeline query contracts. (AC: 1, 2, 3, 4, 6, 7, 8, 10)
+  - [x] Add non-mutating audit and timeline operations under `/api/v1/...` using lowercase hyphen-delimited path segments, plural collection nouns where appropriate, and camelCase path parameters such as `{folderId}`, `{workspaceId}`, `{taskId}`, or `{operationId}`.
+  - [x] Define stable operation IDs such as `ListAuditTrail`, `GetAuditRecord`, `ListOperationTimeline`, and `GetOperationTimelineEntry` unless Story 1.5, Story 1.6, or an already-authored Contract Spine has frozen different names.
+  - [x] Declare approved read-consistency classes. Use `eventually-consistent` for projection-backed audit/timeline reads unless an approved source requires `snapshot-per-task` or `read-your-writes`.
+  - [x] Include projection watermark, freshness age, event/evidence timestamp, actor/audit reference, task ID, operation ID, correlation ID, state transition, result status, sanitized error category, retryability, duration, redaction reason, and pagination cursor where authorized.
+  - [x] Keep audit entries metadata-only. Use changed-path digest/reference metadata instead of raw path lists unless an approved sensitivity policy allows raw values for the authorized audience.
+  - [x] Ensure timeline filters cannot become tenant authority, ACL override, path-policy bypass, or probe vectors for hidden resources.
+  - [x] Represent missing, hidden, redacted, stale, unavailable, and wrong-tenant evidence through safe Problem Details or safe metadata-only response shapes without resource-existence hints.
+  - [x] Keep audit records correlation-friendly and redact-by-design: expose stable IDs, timestamps, status/result codes, redaction state, and correlation metadata while excluding raw event bodies, prompt payloads, memory contents, embeddings, exception stacks, and payload excerpts.
+  - [x] Keep retention and projection freshness as contract metadata only: expose approved retention/freshness evidence, watermarks, stale/unavailable reason codes, and truncation state without adding retention jobs, projection rebuild semantics, backup/recovery behavior, or audit storage policy.
+  - [x] Keep audit storage, projection handlers, EventStore event emission, read-model rebuild behavior, retention jobs, backup/recovery behavior, and UI timeline rendering deferred to later stories.
+- [x] Author operations-console diagnostic query contracts. (AC: 1, 2, 3, 5, 7, 8, 9, 10)
+  - [x] Add read-only diagnostic operations for readiness, lock, dirty-state, failed-operation, provider-status, sync-status, and projection freshness where they are not already covered by Story 1.10 status components.
+  - [x] Define stable operation IDs such as `GetReadinessDiagnostics`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`, and `GetProjectionFreshness` unless prior stories froze different names.
+  - [x] Model diagnostic responses as projection/query contracts only. Do not define command forms, repair actions, credential reveal fields, file browsing, file editing, raw diff display, unrestricted filesystem browsing, or incident-mode event-stream behavior in this story.
+  - [x] Reuse C6 states and operator-disposition labels for diagnostic status. If a console-specific label seems necessary, record it as a deferred decision rather than adding a UI-only state to the Contract Spine.
+  - [x] Include trust/freshness metadata, last successful operation, last failure category, retry or escalation posture, redaction reason, projection lag, stale/unavailable reason, and safe supporting identifiers where authorized.
+  - [x] Partition diagnostic audience explicitly: consumer-safe query responses must remain non-enumerating, while authorized operator diagnostics may expose only sanitized metadata and redacted/classified values.
+  - [x] For each diagnostic operation, define which fields are safe for consumer-facing status, which require operator diagnostic authority, and which are forbidden in every audience; do not rely on UI rendering to hide unsafe fields.
+  - [x] Ensure provider diagnostics never expose credential material, provider tokens, embedded credential URLs, provider installation secrets, raw provider payloads, raw repository URLs, or unauthorized repository existence.
+  - [x] Ensure diagnostic response semantics use stable machine codes and shared operator-disposition values; optional display labels or localization keys must not define API behavior.
+  - [x] Keep FrontComposer components, Fluent UI pages, console navigation, incident-mode pages, projection handlers, and read-model implementation deferred to Epic 6 and later runtime stories.
+- [x] Apply shared OpenAPI conventions consistently. (AC: 2, 3, 6, 8, 9, 10, 13)
+  - [x] Reuse shared headers, parameters, Problem Details, freshness metadata, pagination/filtering conventions, lifecycle/state schemas, sensitive-metadata schemas, and extension vocabulary from Story 1.6 instead of duplicating incompatible shapes.
+  - [x] Use camelCase JSON properties, ISO-8601 UTC timestamps, string enums, opaque ULID identifiers, service-issued opaque non-secret cursors, and metadata-only examples.
+  - [x] Ensure every operation is non-mutating and omits `Idempotency-Key`.
+  - [x] Ensure every operation declares read consistency, freshness/projection-lag behavior, canonical error categories, authorization requirement, correlation behavior, audit classification, redaction behavior, and parity dimensions.
+  - [x] Use RFC 9457 Problem Details plus Hexalith fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
+  - [x] Prefer machine-readable status and error codes over adopter-facing English prose fields; descriptions may explain behavior, but client semantics must bind to codes/enums.
+  - [x] Ensure examples are synthetic opaque placeholders only and do not include real tenant IDs, user IDs, correlation IDs, timestamps, repository URLs, branch names with sensitive values, local paths, provider identifiers, organization names, email addresses, file content snippets, diffs, raw commit messages, raw changed paths, generated context payloads, secrets, or unauthorized resource hints.
+  - [x] Mark examples as non-production synthetic data and include named synthetic cases for visible, hidden, redacted, unknown, missing, multi-tenant, projection-unavailable, and operator-disposition scenarios.
+  - [x] Use `TODO(reference-pending): <field-or-decision>` only for unresolved approved-source values, with exact source paths or decision owners when known.
+- [x] Add focused offline validation. (AC: 3, 6, 7, 8, 10, 11, 13, 14)
+  - [x] Add or update the smallest local validator or test that parses `hexalith.folders.v1.yaml` as OpenAPI 3.1 and resolves all local `$ref` targets without network access.
+  - [x] Resolve internal `$ref` targets through nested schemas, parameters, responses, and examples; fail validation on unresolved local references; treat remote/external references as deferred unless an existing validator already supports them.
+  - [x] Verify new operation IDs are unique, stable, and limited to this story's operation allow-list: `ListAuditTrail`, `GetAuditRecord`, `ListOperationTimeline`, `GetOperationTimelineEntry`, `GetReadinessDiagnostics`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`, `GetProjectionFreshness`, plus any explicitly named audit or ops-console query operation added by this story.
+  - [x] Verify all new operations include required `x-hexalith-*` metadata and satisfy read-consistency requirements.
+  - [x] Verify no request payload, query parameter, route segment, cursor, filter, selector, or client-controlled header defines authoritative tenant context.
+  - [x] Verify every operation omits `Idempotency-Key`.
+  - [x] Verify examples and audit metadata exclude file contents, diffs, raw commit messages, raw changed-path lists where not authorized, raw provider payloads, generated context payloads, provider tokens, credential material, local paths, production URLs, and unauthorized resource-existence hints.
+  - [x] Verify hidden-resource equivalence for audit records, timeline entries, readiness diagnostics, lock diagnostics, dirty-state diagnostics, failed-operation diagnostics, provider-status diagnostics, and sync-status diagnostics.
+  - [x] Verify hidden-resource equivalence across status codes, item counts, ordering, cursor issuance, metadata presence, and examples.
+  - [x] Verify redacted known values, unknown values, missing optional values, hidden values, and forbidden fields remain distinguishable for authorized audiences and collapse only through approved safe-denial shapes for unauthorized audiences.
+  - [x] Verify diagnostic audience partitioning: consumer-safe responses are non-enumerating, and operator diagnostic examples remain sanitized, redacted where needed, and metadata-only.
+  - [x] Verify cursor and filter fields are opaque, non-secret, non-authoritative, and do not carry provider tokens, tenant authority, ACL decisions, raw query text, raw path lists, or redaction-bypassing data; include negative cases for tampered cursors, cursor reuse after changed filters, tenant/principal mismatch, invalid sort keys, boundary duplicates, and empty-page continuation.
+  - [x] Verify audience partitioning and field classification against the per-operation matrix; fail if operator-only sanitized fields appear in consumer-safe responses or if forbidden fields appear anywhere in schemas, examples, Problem Details, or diagnostics.
+  - [x] Verify retention/freshness values are either sourced from approved evidence or explicitly marked reference-pending; fail if the contract invents numeric retention windows, SLOs, rebuild semantics, or recovery behavior.
+  - [x] Verify C6 state/operator-disposition reuse and fail validation if the story introduces UI-only state labels that conflict with shared lifecycle vocabulary.
+  - [x] Verify negative scope: no generated SDK files, NSwag generation wiring, REST handlers/controllers, CLI commands, MCP tools/resources, domain aggregate behavior, EventStore commands, provider adapters, workers, UI pages, final parity oracle rows, CI workflow gates, runtime projections, or nested-submodule initialization.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if the scaffold supports it after focused validation. If blocked by earlier scaffold state, record the exact prerequisite instead of expanding this story.
+- [x] Record downstream authoring notes. (AC: 5, 9, 11, 12)
+  - [x] Add a short note near the OpenAPI file or in `docs/contract/` explaining which audit and diagnostic components Epic 4, Epic 5, and Epic 6 must reuse.
+  - [x] Record deferred owners for runtime audit emission, audit projection handlers, operation timeline projections, operations-console UI pages, incident-mode event stream, FrontComposer components, projection performance evidence, retention enforcement, generated SDK helpers, parity oracle rows, and CI gates.
+  - [x] Record deferred owners for unresolved diagnostic audience policy, field-classification vocabulary, retention/freshness sources, hidden-resource equivalence, cursor invalidation, and external `$ref` validation behavior.
+  - [x] Record any unresolved C3 retention, C4 query limits, C5 freshness/performance targets, C6 state metadata, Story 1.6 foundation, Story 1.10 status components, or Story 1.5 operation naming dependencies as explicit deferred decisions.
 
 ## Dev Notes
 
@@ -291,6 +291,7 @@ Do not add provider readiness commands, workspace/lock commands, file/context qu
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-14 | Implemented audit and ops-console query contract groups, focused validation, and contract notes. | Codex |
 | 2026-05-12 | Applied advanced elicitation hardening for diagnostic audience partitioning, field classification, retention/freshness evidence, cursor/filter tamper validation, and offline validator negative cases. | Codex |
 | 2026-05-12 | Applied party-mode review hardening for tenant authority, metadata-only boundaries, stable naming, allowed files, `$ref` validation, hidden-resource equivalence, redaction/cursor matrices, synthetic examples, and deferred decisions. | Codex |
 | 2026-05-12 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
@@ -348,10 +349,28 @@ Do not add provider readiness commands, workspace/lock commands, file/context qu
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-14: Red phase confirmed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` failing on missing Story 1.11 operations, schemas, and notes.
+- 2026-05-14: Green/refactor validation passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore`.
+- 2026-05-14: Full regression validation passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+- 2026-05-14: Solution build validation passed with `dotnet build Hexalith.Folders.slnx --no-restore`.
+
 ### Completion Notes List
 
+- Added audit trail and operation timeline query operations with read-consistency, safe-denial, correlation, audit metadata, parity, and metadata-only constraints.
+- Added read-only ops-console diagnostic query operations for readiness, lock, dirty-state, failed-operation, provider-status, sync-status, and projection freshness.
+- Added diagnostic/audit schemas, synthetic examples, canonical projection stale/unavailable categories, audience and field-classification vocabulary, and C3/C5 reference-pending markers.
+- Added focused OpenAPI validation for Story 1.11 and updated existing guardrails now that ops-console is an owned Contract Spine surface.
+
 ### File List
+
+- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
+- `docs/contract/audit-ops-console-contract-groups.md`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs`
+- `_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`

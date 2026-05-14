@@ -3737,6 +3737,949 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
+  /api/v1/folders/{folderId}/audit-trail:
+    get:
+      tags:
+        - audit
+      operationId: ListAuditTrail
+      summary: List authorized audit trail metadata.
+      description: >
+        Returns metadata-only audit trail entries after authorization-before-observation.
+        Tenant authority comes from authenticated principal claims and EventStore envelopes,
+        never from filters, cursors, path identifiers, or client-controlled headers. The
+        diagnostic audience is fixed by authorization policy and cannot be upgraded by request input.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+        - $ref: "#/components/parameters/PageCursor"
+        - $ref: "#/components/parameters/PageLimit"
+        - $ref: "#/components/parameters/MetadataFilter"
+      responses:
+        "200":
+          description: Authorized audit trail page with metadata-only entries.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditTrailPage"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/AuditTrailPage"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection stale for the requested consistency class.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
+        "503":
+          description: Audit projection unavailable.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionUnavailableProblem"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-audit-projection-watermark-retention-class-and-page-truncation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, audit reviewer scope, diagnostic audience partition, then audit projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial for hidden, wrong-tenant, missing, redacted, stale, and unavailable evidence
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - audit_access_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - response_limit_exceeded
+        - query_timeout
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque operation reference.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: retention_class
+          sensitivity: public_metadata
+          description: C3 retention evidence class or TODO reference-pending marker.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - diagnostic_audience_partition
+          - metadata_only
+          - safe_denial
+          - cursor_tamper_detection
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/audit-trail/{auditRecordId}:
+    get:
+      tags:
+        - audit
+      operationId: GetAuditRecord
+      summary: Get one authorized audit record.
+      description: >
+        Returns one metadata-only audit record when the caller is authorized for the
+        diagnostic audience. Tenant authority is never established by auditRecordId,
+        folderId, filter values, or cursor material.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/AuditRecordId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized metadata-only audit record.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditRecord"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/AuditRecordRedacted"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-audit-record-projection-watermark-and-redaction-state
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, audit reviewer scope, diagnostic audience partition, then audit record lookup
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without audit record existence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - audit_access_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque operation reference.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: sensitive_metadata_tier
+          sensitivity: public_metadata
+          description: Field classification evidence.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - diagnostic_audience_partition
+          - redaction_state
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/operation-timeline:
+    get:
+      tags:
+        - audit
+      operationId: ListOperationTimeline
+      summary: List authorized operation timeline metadata.
+      description: >
+        Returns metadata-only operation timeline entries for incident reconstruction.
+        Tenant authority comes from authenticated principal claims and EventStore envelopes.
+        Filters and cursors select candidate evidence only after authorization and diagnostic audience partitioning.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+        - $ref: "#/components/parameters/PageCursor"
+        - $ref: "#/components/parameters/PageLimit"
+        - $ref: "#/components/parameters/MetadataFilter"
+      responses:
+        "200":
+          description: Authorized operation timeline page.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationTimelinePage"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/OperationTimelinePage"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-timeline-projection-watermark-retention-class-and-page-truncation
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, audit timeline scope, diagnostic audience partition, then timeline projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without task or operation existence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - audit_access_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - response_limit_exceeded
+        - query_timeout
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque operation reference.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - diagnostic_audience_partition
+          - metadata_only
+          - safe_denial
+          - cursor_tamper_detection
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/operation-timeline/{operationId}:
+    get:
+      tags:
+        - audit
+      operationId: GetOperationTimelineEntry
+      summary: Get one authorized operation timeline entry.
+      description: >
+        Returns metadata-only timeline evidence for a single operation after authorization.
+        Tenant authority is not established by the operationId path value, and hidden
+        or wrong-tenant evidence remains safe-denied.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/OperationId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized metadata-only timeline entry.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationTimelineEntry"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/OperationTimelineEntry"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-timeline-entry-projection-watermark-redaction-and-state-transition
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, audit timeline scope, diagnostic audience partition, then timeline entry lookup
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without operation existence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - audit_access_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque operation reference.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+        - name: lifecycle_state
+          sensitivity: public_metadata
+          description: Shared C6 state value.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - diagnostic_audience_partition
+          - state_transition_evidence
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/ops-console/readiness-diagnostics:
+    get:
+      tags:
+        - ops-console
+      operationId: GetReadinessDiagnostics
+      summary: Read operations-console readiness diagnostics.
+      description: >
+        Returns read-only metadata-only readiness diagnostics for the authorized diagnostic audience.
+        Tenant authority comes from authentication context and EventStore envelopes; query input cannot enumerate hidden resources.
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized readiness diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadinessDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ReadinessDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-readiness-projection-watermark-and-diagnostic-audience
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, operator diagnostic scope, diagnostic audience partition, then readiness projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial for unavailable, hidden, unknown, and redacted diagnostics
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - provider_unavailable
+        - provider_rate_limited
+        - provider_failure_known
+        - unknown_provider_outcome
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: readiness_status
+          sensitivity: public_metadata
+          description: Sanitized readiness class.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - read_consistency
+          - safe_denial
+          - metadata_only
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics:
+    get:
+      tags:
+        - ops-console
+      operationId: GetLockDiagnostics
+      summary: Read lock diagnostics.
+      description: >
+        Returns read-only metadata-only lock diagnostics after tenant, folder, workspace, and diagnostic audience authorization.
+        Tenant authority is envelope-derived; lock selectors and workspace identifiers do not reveal hidden locks.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized lock diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LockDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/LockDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-lock-diagnostic-projection-watermark-and-disposition
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, workspace scope, diagnostic audience partition, then lock projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without lock existence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - workspace_locked
+        - stale_workspace
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: lock_id
+          sensitivity: tenant_sensitive
+          description: Opaque lock reference.
+        - name: lock_status
+          sensitivity: public_metadata
+          description: Sanitized lock state.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - read_consistency
+          - safe_denial
+          - metadata_only
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics:
+    get:
+      tags:
+        - ops-console
+      operationId: GetDirtyStateDiagnostics
+      summary: Read dirty-state diagnostics.
+      description: >
+        Returns read-only metadata-only dirty-state diagnostics with changed-path digest or reference evidence only.
+        Tenant authority remains authentication-context-and-eventstore-envelope and diagnostic audience authorization controls field visibility.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized dirty-state diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirtyStateDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/DirtyStateDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-dirty-state-projection-watermark-changed-path-digest-and-disposition
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, workspace scope, diagnostic audience partition, then dirty-state projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without dirty workspace evidence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - dirty_workspace
+        - stale_workspace
+        - response_limit_exceeded
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: changed_path_metadata_digest
+          sensitivity: tenant_sensitive
+          description: Digest of changed-path metadata.
+        - name: sensitive_metadata_tier
+          sensitivity: public_metadata
+          description: Field classification evidence.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - changed_path_digest_only
+          - read_consistency
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics:
+    get:
+      tags:
+        - ops-console
+      operationId: GetFailedOperationDiagnostics
+      summary: Read failed-operation diagnostics.
+      description: >
+        Returns read-only metadata-only failed-operation diagnostics with sanitized error category,
+        retry posture, escalation posture, and metadata-only correlation evidence for the authorized diagnostic audience.
+        Tenant authority comes from authentication context and EventStore envelopes.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized failed-operation diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedOperationDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FailedOperationDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-failed-operation-projection-watermark-retryability-and-escalation-posture
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, workspace scope, diagnostic audience partition, then failed-operation projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without task, operation, or failure existence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - failed_operation
+        - query_timeout
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque operation reference.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - retryability
+          - escalation_posture
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/ops-console/provider-status-diagnostics:
+    get:
+      tags:
+        - ops-console
+      operationId: GetProviderStatusDiagnostics
+      summary: Read provider-status diagnostics.
+      description: >
+        Returns read-only metadata-only provider-status diagnostics with sanitized provider readiness and capability evidence.
+        Tenant authority is never derived from provider identifiers or repository selectors.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized provider-status diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderStatusDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProviderStatusDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-provider-status-projection-watermark-capability-reference-and-redaction
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, provider diagnostic scope, diagnostic audience partition, then provider projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without provider, repository, or binding existence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - provider_unavailable
+        - provider_rate_limited
+        - provider_failure_known
+        - unknown_provider_outcome
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: provider_binding_ref
+          sensitivity: tenant_sensitive
+          description: Opaque provider binding reference.
+        - name: readiness_status
+          sensitivity: public_metadata
+          description: Sanitized readiness class.
+        - name: provider_correlation_reference
+          sensitivity: tenant_sensitive
+          description: Opaque provider correlation reference.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - provider_metadata_redaction
+          - safe_denial
+          - read_consistency
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics:
+    get:
+      tags:
+        - ops-console
+      operationId: GetSyncStatusDiagnostics
+      summary: Read sync-status diagnostics.
+      description: >
+        Returns read-only metadata-only sync-status diagnostics that separate accepted command state, projected state,
+        provider evidence, projection availability, and diagnostic audience field visibility. Tenant authority
+        comes from authentication context and EventStore envelopes.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized sync-status diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncStatusDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/SyncStatusDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-sync-state-projection-watermark-provider-outcome-and-projection-availability
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, folder ACL, workspace scope, diagnostic audience partition, then sync projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial without workspace or provider evidence hints
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - provider_unavailable
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: workspace_state
+          sensitivity: public_metadata
+          description: Shared C6 state value.
+        - name: provider_correlation_reference
+          sensitivity: tenant_sensitive
+          description: Opaque provider correlation reference.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - projection_availability
+          - provider_outcome_distinction
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/ops-console/projection-freshness:
+    get:
+      tags:
+        - ops-console
+      operationId: GetProjectionFreshness
+      summary: Read projection freshness diagnostics.
+      description: >
+        Returns read-only metadata-only projection freshness diagnostics with watermarks, stale or unavailable reason codes,
+        elapsed time, and diagnostic audience classification. Tenant authority is envelope-derived and cannot be changed by selectors.
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized projection freshness diagnostics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectionFreshnessDiagnostics"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionFreshnessDiagnostics"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "503":
+          description: Projection unavailable.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionUnavailableProblem"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-projection-watermark-age-stale-unavailable-reason-and-reference-pending-c5-target
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation with tenant access, operator diagnostic scope, diagnostic audience partition, then projection freshness query
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial for stale, unavailable, hidden, unknown, and redacted projection evidence
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - query_timeout
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Bounded elapsed time for the query.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - diagnostic_audience_partition
+          - projection_availability
+          - cursor_tamper_detection
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
 x-hexalith-idempotency-key:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-key
   foundationUse: Mutating operations added later must declare the key requirement; queries must not accept it.
@@ -3885,6 +4828,13 @@ components:
       in: path
       required: true
       description: Opaque operation identifier scoped by authorized tenant, folder, workspace, task, and operation family. It is not tenant authority.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    AuditRecordId:
+      name: auditRecordId
+      in: path
+      required: true
+      description: Opaque audit record identifier. It selects candidate audit evidence only after tenant, folder, audit, and diagnostic audience authorization succeed.
       schema:
         $ref: "#/components/schemas/OpaqueIdentifier"
     ReconciliationId:
@@ -5179,6 +6129,288 @@ components:
           visibility: metadata_only
           configuredLimit: 2000
           unit: milliseconds
+    AuditTrailPage:
+      summary: Authorized audit trail page with metadata-only evidence.
+      value:
+        entries:
+          - auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD001
+            actorReference: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA001
+            taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+            operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR001
+            correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR001
+            resultStatus: success
+            sanitizedErrorCategory: success
+            retryable: false
+            durationMilliseconds: 142
+            evidenceTimestamp: "2026-05-14T08:30:00Z"
+            redaction:
+              visibility: metadata_only
+              reasonCode: not_redacted
+            changedPathEvidence:
+              evidenceKind: digest
+              digest: digest_01HZY7Z6N7J4Q2X8Y9V0CPD001
+              classification: operator_sanitized
+            freshness:
+              readConsistency: eventually_consistent
+              observedAt: "2026-05-14T08:30:03Z"
+              projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR001
+              stale: false
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR001
+          limit: 50
+          hasMore: false
+        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T08:30:03Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR001
+          stale: false
+    AuditRecordRedacted:
+      summary: Authorized audit record with sanitized redaction state.
+      value:
+        auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD002
+        actorReference: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA002
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK002
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR002
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR002
+        resultStatus: redacted
+        sanitizedErrorCategory: redacted
+        retryable: false
+        durationMilliseconds: 18
+        evidenceTimestamp: "2026-05-14T08:35:00Z"
+        redaction:
+          visibility: redacted
+          reasonCode: operator_scope_required
+        changedPathEvidence:
+          evidenceKind: reference
+          reference: changeref_01HZY7Z6N7J4Q2X8Y9V0CPR002
+          classification: operator_sanitized
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T08:35:04Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR002
+          stale: false
+    OperationTimelinePage:
+      summary: Authorized operation timeline page.
+      value:
+        entries:
+          - timelineEntryId: opaque_01HZY7Z6N7J4Q2X8Y9V0TLE001
+            operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR003
+            taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK003
+            correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR003
+            workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK003
+            stateTransition:
+              fromState: locked
+              toState: changes_staged
+              disposition: degraded_but_serving
+            sanitizedResult: success
+            retryable: false
+            durationMilliseconds: 88
+            evidenceTimestamp: "2026-05-14T08:40:00Z"
+            freshness:
+              readConsistency: eventually_consistent
+              observedAt: "2026-05-14T08:40:03Z"
+              projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR003
+              stale: false
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR003
+          limit: 50
+          hasMore: false
+        retentionClass: "TODO(reference-pending): C3 timeline retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T08:40:03Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR003
+          stale: false
+    OperationTimelineEntry:
+      summary: Authorized operation timeline entry.
+      value:
+        timelineEntryId: opaque_01HZY7Z6N7J4Q2X8Y9V0TLE004
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR004
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK004
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR004
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK004
+        stateTransition:
+          fromState: changes_staged
+          toState: unknown_provider_outcome
+          disposition: awaiting_human
+        sanitizedResult: unknown_provider_outcome
+        retryable: true
+        durationMilliseconds: 233
+        evidenceTimestamp: "2026-05-14T08:45:00Z"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T08:45:06Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR004
+          stale: false
+    ReadinessDiagnostics:
+      value:
+        audience: authorized_operator
+        status: degraded
+        disposition: degraded_but_serving
+        trust:
+          availability: available
+          freshnessAgeMilliseconds: 420
+          staleReasonCode: not_stale
+          unavailableReasonCode: none
+        fieldClassifications:
+          - field: readinessStatus
+            classification: consumer_safe
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T08:50:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR005
+          stale: false
+    LockDiagnostics:
+      value:
+        audience: authorized_operator
+        status: locked
+        disposition: degraded_but_serving
+        lockReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0LCK001
+          classification: operator_sanitized
+        trust:
+          availability: available
+          freshnessAgeMilliseconds: 300
+          staleReasonCode: not_stale
+          unavailableReasonCode: none
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T08:55:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR006
+          stale: false
+    DirtyStateDiagnostics:
+      value:
+        audience: authorized_operator
+        status: dirty
+        disposition: awaiting_human
+        changedPathEvidence:
+          evidenceKind: digest
+          digest: digest_01HZY7Z6N7J4Q2X8Y9V0CPD007
+          classification: operator_sanitized
+        trust:
+          availability: available
+          freshnessAgeMilliseconds: 610
+          staleReasonCode: not_stale
+          unavailableReasonCode: none
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:00:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR007
+          stale: false
+    FailedOperationDiagnostics:
+      value:
+        audience: authorized_operator
+        status: failed
+        disposition: terminal_until_intervention
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR008
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK008
+        sanitizedErrorCategory: provider_failure_known
+        retryEligibility:
+          eligible: false
+          reasonCode: operator_review_required
+          advisoryOnly: true
+        trust:
+          availability: available
+          freshnessAgeMilliseconds: 710
+          staleReasonCode: not_stale
+          unavailableReasonCode: none
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:05:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR008
+          stale: false
+    ProviderStatusDiagnostics:
+      value:
+        audience: authorized_operator
+        status: degraded
+        disposition: degraded_but_serving
+        providerBindingReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0PBR009
+          classification: operator_sanitized
+        providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PCR009
+        trust:
+          availability: available
+          freshnessAgeMilliseconds: 530
+          staleReasonCode: not_stale
+          unavailableReasonCode: none
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:10:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR009
+          stale: false
+    SyncStatusDiagnostics:
+      value:
+        audience: authorized_operator
+        status: reconciliation_required
+        disposition: awaiting_human
+        acceptedCommandState: accepted
+        projectedState: unknown_provider_outcome
+        providerOutcomeState: reconciliation_required
+        trust:
+          availability: stale
+          freshnessAgeMilliseconds: 1800
+          staleReasonCode: projection_lag
+          unavailableReasonCode: none
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:15:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR010
+          stale: true
+    ProjectionFreshnessDiagnostics:
+      value:
+        audience: authorized_operator
+        projectionName: folders_workspace_status
+        availability: stale
+        freshnessAgeMilliseconds: 1800
+        elapsedMilliseconds: 32
+        staleReasonCode: projection_lag
+        unavailableReasonCode: none
+        freshnessTarget: "TODO(reference-pending): C5 projection freshness target"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:20:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR011
+          stale: true
+    ProjectionStaleProblem:
+      value:
+        type: about:blank
+        title: Projection stale
+        status: 409
+        category: projection_stale
+        code: projection_stale
+        message: Projection data is stale for the requested read consistency.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR012
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: metadata_only
+    ProjectionUnavailableProblem:
+      value:
+        type: about:blank
+        title: Projection unavailable
+        status: 503
+        category: projection_unavailable
+        code: projection_unavailable
+        message: Projection data is temporarily unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR013
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: metadata_only
+    AuditAccessDeniedProblem:
+      value:
+        type: about:blank
+        title: Audit access unavailable
+        status: 403
+        category: audit_access_denied
+        code: resource_unavailable
+        message: The requested audit evidence is unavailable.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR014
+        retryable: false
+        clientAction: no_action
+        details:
+          visibility: redacted
   schemas:
     OpaqueIdentifier:
       type: string
@@ -7051,6 +8283,392 @@ components:
           minLength: 1
           maxLength: 80
           pattern: "^[a-z][a-z0-9_]{0,79}$"
+    AuditTrailPage:
+      type: object
+      additionalProperties: false
+      required:
+        - entries
+        - page
+        - retentionClass
+        - freshness
+      properties:
+        entries:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/AuditRecord"
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        retentionClass:
+          type: string
+          minLength: 1
+          maxLength: 160
+          description: C3 retention evidence class or explicit TODO(reference-pending) marker; this contract does not define retention jobs.
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    AuditRecord:
+      type: object
+      additionalProperties: false
+      required:
+        - auditRecordId
+        - actorReference
+        - operationId
+        - correlationId
+        - resultStatus
+        - sanitizedErrorCategory
+        - retryable
+        - durationMilliseconds
+        - evidenceTimestamp
+        - redaction
+        - freshness
+      properties:
+        auditRecordId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        actorReference:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^actorref_[A-Za-z0-9_-]{7,119}$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        resultStatus:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        sanitizedErrorCategory:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        retryable:
+          type: boolean
+        durationMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+        evidenceTimestamp:
+          $ref: "#/components/schemas/UtcDateTime"
+        redaction:
+          $ref: "#/components/schemas/RedactionMetadata"
+        changedPathEvidence:
+          $ref: "#/components/schemas/ChangedPathEvidence"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    OperationTimelinePage:
+      type: object
+      additionalProperties: false
+      required:
+        - entries
+        - page
+        - retentionClass
+        - freshness
+      properties:
+        entries:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/OperationTimelineEntry"
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        retentionClass:
+          type: string
+          minLength: 1
+          maxLength: 160
+          description: C3 retention evidence class or explicit TODO(reference-pending) marker.
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    OperationTimelineEntry:
+      type: object
+      additionalProperties: false
+      required:
+        - timelineEntryId
+        - operationId
+        - taskId
+        - correlationId
+        - stateTransition
+        - sanitizedResult
+        - retryable
+        - durationMilliseconds
+        - evidenceTimestamp
+        - freshness
+      properties:
+        timelineEntryId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        workspaceId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        stateTransition:
+          $ref: "#/components/schemas/DiagnosticStateTransition"
+        sanitizedResult:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        retryable:
+          type: boolean
+        durationMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+        evidenceTimestamp:
+          $ref: "#/components/schemas/UtcDateTime"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    DiagnosticStateTransition:
+      type: object
+      additionalProperties: false
+      required:
+        - fromState
+        - toState
+        - disposition
+      properties:
+        fromState:
+          $ref: "#/components/schemas/LifecycleState"
+        toState:
+          $ref: "#/components/schemas/LifecycleState"
+        disposition:
+          $ref: "#/components/schemas/OperatorDispositionLabel"
+    DiagnosticAudience:
+      type: string
+      enum:
+        - consumer
+        - authorized_operator
+    DiagnosticFieldClassification:
+      type: string
+      enum:
+        - consumer_safe
+        - operator_sanitized
+        - forbidden
+    ProjectionAvailability:
+      type: string
+      enum:
+        - available
+        - stale
+        - unavailable
+        - redacted
+        - unknown
+    DiagnosticFieldClassificationEntry:
+      type: object
+      additionalProperties: false
+      required:
+        - field
+        - classification
+      properties:
+        field:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][A-Za-z0-9]{0,79}$"
+        classification:
+          $ref: "#/components/schemas/DiagnosticFieldClassification"
+    DiagnosticSafeIdentifier:
+      type: object
+      additionalProperties: false
+      required:
+        - value
+        - classification
+      properties:
+        value:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        classification:
+          $ref: "#/components/schemas/DiagnosticFieldClassification"
+    ChangedPathEvidence:
+      type: object
+      additionalProperties: false
+      description: Changed path evidence uses digest/reference metadata only; it never carries a visible path list, content sample, or diff.
+      required:
+        - evidenceKind
+        - classification
+      properties:
+        evidenceKind:
+          type: string
+          enum:
+            - digest
+            - reference
+            - redacted
+            - unavailable
+        digest:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^digest_[A-Za-z0-9_-]{9,121}$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        reference:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^changeref_[A-Za-z0-9_-]{6,118}$"
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        classification:
+          $ref: "#/components/schemas/DiagnosticFieldClassification"
+    DiagnosticTrustEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - availability
+        - freshnessAgeMilliseconds
+        - staleReasonCode
+        - unavailableReasonCode
+      properties:
+        availability:
+          $ref: "#/components/schemas/ProjectionAvailability"
+        freshnessAgeMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+          description: "TODO(reference-pending): C5 projection freshness target."
+        staleReasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        unavailableReasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+    DiagnosticBase:
+      type: object
+      additionalProperties: false
+      required:
+        - audience
+        - status
+        - disposition
+        - trust
+        - freshness
+      properties:
+        audience:
+          $ref: "#/components/schemas/DiagnosticAudience"
+        status:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        disposition:
+          $ref: "#/components/schemas/OperatorDispositionLabel"
+        trust:
+          $ref: "#/components/schemas/DiagnosticTrustEvidence"
+        fieldClassifications:
+          type: array
+          maxItems: 32
+          items:
+            $ref: "#/components/schemas/DiagnosticFieldClassificationEntry"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ReadinessDiagnostics:
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticBase"
+    LockDiagnostics:
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            lockReference:
+              $ref: "#/components/schemas/DiagnosticSafeIdentifier"
+    DirtyStateDiagnostics:
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            changedPathEvidence:
+              $ref: "#/components/schemas/ChangedPathEvidence"
+    FailedOperationDiagnostics:
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            operationId:
+              $ref: "#/components/schemas/OpaqueIdentifier"
+            taskId:
+              $ref: "#/components/schemas/OpaqueIdentifier"
+            sanitizedErrorCategory:
+              $ref: "#/components/schemas/CanonicalErrorCategory"
+            retryEligibility:
+              $ref: "#/components/schemas/RetryEligibility"
+    ProviderStatusDiagnostics:
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            providerBindingReference:
+              $ref: "#/components/schemas/DiagnosticSafeIdentifier"
+            providerCorrelationReference:
+              type: string
+              minLength: 16
+              maxLength: 128
+              pattern: "^provref_[A-Za-z0-9_-]{8,120}$"
+              x-hexalith-sensitive-metadata-tier: tenant_sensitive
+    SyncStatusDiagnostics:
+      allOf:
+        - $ref: "#/components/schemas/DiagnosticBase"
+        - type: object
+          additionalProperties: false
+          properties:
+            acceptedCommandState:
+              type: string
+              enum:
+                - accepted
+                - failed
+                - completed
+                - unavailable
+            projectedState:
+              $ref: "#/components/schemas/LifecycleState"
+            providerOutcomeState:
+              $ref: "#/components/schemas/ProviderOutcomeState"
+    ProjectionFreshnessDiagnostics:
+      type: object
+      additionalProperties: false
+      required:
+        - audience
+        - projectionName
+        - availability
+        - freshnessAgeMilliseconds
+        - elapsedMilliseconds
+        - staleReasonCode
+        - unavailableReasonCode
+        - freshnessTarget
+        - freshness
+      properties:
+        audience:
+          $ref: "#/components/schemas/DiagnosticAudience"
+        projectionName:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        availability:
+          $ref: "#/components/schemas/ProjectionAvailability"
+        freshnessAgeMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+          description: "TODO(reference-pending): C5 projection freshness target."
+        elapsedMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+        staleReasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        unavailableReasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        freshnessTarget:
+          type: string
+          minLength: 1
+          maxLength: 160
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
     CanonicalErrorCategory:
       type: string
       enum:
@@ -7095,7 +8713,10 @@ components:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - range_unsatisfiable
+        - failed_operation
         - redacted
         - internal_error
     CliExitCode:
@@ -7161,7 +8782,10 @@ components:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - range_unsatisfiable
+        - failed_operation
         - redacted
         - internal_error
     AuditMetadataKey:

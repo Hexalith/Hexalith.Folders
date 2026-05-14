@@ -6,7 +6,7 @@ namespace Hexalith.Folders.Testing.Tests.Helpers;
 /// <summary>
 /// Shared assertions used by Stories 1.4 and 1.5 artifact tests to confirm that the Contract Spine
 /// has not absorbed operation groups owned by later stories (workspace/lock, file/context,
-/// commit/status, audit, operations-console). Strengthened beyond simple prefix matching so that
+/// commit/status, and audit families not yet explicitly owned). Strengthened beyond simple prefix matching so that
 /// e.g. <c>/api/v1/files-context</c> is also caught.
 /// </summary>
 internal static class SpineContractAssertions
@@ -19,8 +19,6 @@ internal static class SpineContractAssertions
         "context",
         "commits",
         "audit",
-        "ops-console",
-        "operations-console",
     ];
 
     public static void AssertNoDownstreamOperationGroups(string spine)
