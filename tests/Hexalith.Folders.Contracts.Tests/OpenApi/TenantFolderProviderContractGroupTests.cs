@@ -42,6 +42,12 @@ public sealed class TenantFolderProviderContractGroupTests
         "SearchFolderFiles",
         "GlobFolderFiles",
         "ReadFileRange",
+        "CommitWorkspace",
+        "GetWorkspaceStatus",
+        "GetTaskStatus",
+        "GetCommitEvidence",
+        "GetProviderOutcome",
+        "GetReconciliationStatus",
     ];
 
     // POST/PUT/PATCH/DELETE operations are mutating by default. Anything in this allow-list
@@ -69,7 +75,6 @@ public sealed class TenantFolderProviderContractGroupTests
         string[] forbiddenPathFragments =
         [
             "/locks",
-            "/commits",
             "/audit",
             "/ops-console",
         ];

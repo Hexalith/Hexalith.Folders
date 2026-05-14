@@ -53,7 +53,7 @@ development_status:
   1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: done
   1-8-author-workspace-and-lock-contract-groups: done
   1-9-author-file-mutation-and-context-query-contract-groups: done
-  1-10-author-commit-and-workspace-status-contract-groups: ready-for-dev
+  1-10-author-commit-and-workspace-status-contract-groups: review
   1-11-author-audit-and-ops-console-query-contract-groups: ready-for-dev
   1-12-wire-nswag-sdk-generation-with-idempotency-helpers: ready-for-dev
   1-13-generate-the-c13-parity-oracle: ready-for-dev

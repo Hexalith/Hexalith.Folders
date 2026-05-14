@@ -3075,6 +3075,667 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits:
+    post:
+      tags:
+        - commits
+      operationId: CommitWorkspace
+      summary: Accept a metadata-only workspace commit request.
+      description: >
+        Accepts a replay-sensitive commit command for a prepared workspace with
+        staged changes and a task-scoped lock. Provider and Git side effects are
+        deferred to Epic 4 workers; this contract only records accepted command
+        state, metadata-only changed-path evidence, retry eligibility, and
+        reconciliation boundaries. Tenant authority comes from authenticated
+        principal claims and EventStore envelopes, never from request payloads,
+        route identifiers, query parameters, or client-controlled headers.
+        TODO(reference-pending): docs/exit-criteria/c3-retention.md Legal and PM approval for commit tier.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - name: X-Hexalith-Task-Id
+          in: header
+          required: true
+          description: Caller-provided task identity. Required because task_id participates in commit idempotency equivalence.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommitWorkspaceRequest"
+            examples:
+              synthetic:
+                $ref: "#/components/examples/CommitWorkspaceRequest"
+      responses:
+        "202":
+          description: Commit command accepted. Accepted command state is not durable provider completion.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Task-Id:
+              $ref: "#/components/headers/TaskId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommitWorkspaceAccepted"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/CommitWorkspaceAccepted"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Commit conflict after authorization succeeds; includes idempotency conflict, dirty workspace, unknown provider outcome, and reconciliation-required cases without blind retry guidance.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                idempotencyConflict:
+                  $ref: "#/components/examples/IdempotencyConflictGeneric"
+                dirtyWorkspace:
+                  $ref: "#/components/examples/DirtyWorkspaceProblem"
+                unknownProviderOutcome:
+                  $ref: "#/components/examples/UnknownProviderOutcomeProblem"
+                reconciliationRequired:
+                  $ref: "#/components/examples/ReconciliationRequiredProblem"
+        "422":
+          description: Commit cannot proceed because workspace, lock, staged-change, branch/ref, or C6 state prerequisites are invalid after authorization succeeds.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                commitFailed:
+                  $ref: "#/components/examples/CommitFailedProblem"
+                workspaceTransitionInvalid:
+                  $ref: "#/components/examples/WorkspaceTransitionInvalidProblem"
+        "503":
+          description: Provider or read-model dependency cannot produce a safe commit outcome.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                providerUnavailable:
+                  $ref: "#/components/examples/ProviderUnavailableProblem"
+                providerKnownFailure:
+                  $ref: "#/components/examples/ProviderOutcomeKnownFailure"
+      x-hexalith-idempotency-key:
+        required: true
+        adapterSourcing:
+          - rest-header
+          - sdk-caller-or-provider
+          - cli-flag-or-allow-auto-key
+          - mcp-input
+        missingBehavior: validation_error
+        malformedBehavior: validation_error
+        queryBehavior: rejected-if-present
+      x-hexalith-idempotency-equivalence:
+        - author_metadata_reference
+        - branch_ref_target
+        - changed_path_metadata_digest
+        - commit_message_classification
+        - operation_id
+        - task_id
+        - workspace_id
+      x-hexalith-idempotency-ttl-tier: commit
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: eventstore-envelope-causation-reference
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant_access_then_folder_acl_then_workspace_scope_then_task_lock_scope
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: authorization-before-observation externally-indistinguishable safe-denial
+        order:
+          - tenant_access
+          - folder_acl
+          - workspace_scope
+          - task_scope
+          - lock_scope
+          - staged_change_metadata
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - cross_tenant_access_denied
+        - folder_acl_denied
+        - workspace_not_ready
+        - workspace_locked
+        - lock_expired
+        - lock_not_owned
+        - authorization_revocation_detected
+        - stale_workspace
+        - dirty_workspace
+        - commit_failed
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - read_model_unavailable
+        - validation_error
+        - idempotency_conflict
+        - state_transition_invalid
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque commit operation reference.
+        - name: branch_ref_policy_ref
+          sensitivity: tenant_sensitive
+          description: Opaque branch/ref policy reference; raw branch names are forbidden.
+        - name: changed_path_metadata_digest
+          sensitivity: tenant_sensitive
+          description: Digest of changed-path metadata, not a path list.
+        - name: author_metadata_reference
+          sensitivity: tenant_sensitive
+          description: Opaque author metadata reference, not an email address.
+        - name: commit_message_classification
+          sensitivity: tenant_sensitive
+          description: Commit-message class only; raw commit messages are forbidden.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Advisory retry eligibility only.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - idempotency_key_sourcing
+          - commit_ttl_tier
+          - task_identity
+          - metadata_only_results
+          - unknown_outcome_no_blind_retry
+          - authorization_before_observation
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/status:
+    get:
+      tags:
+        - query-status
+      operationId: GetWorkspaceStatus
+      summary: Read workspace status with accepted and projected state separated.
+      description: >
+        Returns authorized workspace status only after authorization-before-observation.
+        Accepted command state, projected read-model state, freshness, projection
+        lag, retry eligibility, and retryAfter are separate metadata fields.
+        Safe-denial responses do not disclose missing, wrong-tenant, hidden,
+        stale, or projection-unavailable resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized workspace status with metadata-only freshness evidence.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceStatus"
+              examples:
+                committed:
+                  $ref: "#/components/examples/WorkspaceStatusCommitted"
+                unknownProviderOutcome:
+                  $ref: "#/components/examples/WorkspaceStatusUnknownProviderOutcome"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: read_your_writes
+        freshnessBehavior: reports-accepted-command-state-projected-state-projection-watermark-and-projection-lag
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation tenant access, folder ACL, workspace scope, then status projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial for wrong-tenant hidden unknown stale and projection-unavailable cases
+        order:
+          - tenant_access
+          - folder_acl
+          - workspace_scope
+          - status_projection
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Optional task reference from the latest visible operation.
+        - name: workspace_state
+          sensitivity: tenant_sensitive
+          description: Authorized lifecycle state only.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Advisory retry eligibility after authorization succeeds.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - accepted_vs_projected_state
+          - freshness
+          - safe_denial
+          - authorization_before_observation
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/tasks/{taskId}/status:
+    get:
+      tags:
+        - query-status
+      operationId: GetTaskStatus
+      summary: Read authorized task status metadata.
+      description: >
+        Returns task lifecycle metadata after authorization-before-observation.
+        Unknown, hidden, wrong-tenant, redacted, and projection-unavailable tasks
+        use safe-denial or read-model-unavailable shapes without revealing task
+        existence.
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          description: Opaque task identifier. It is an addressable resource reference, not tenant authority.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized task status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskStatus"
+              examples:
+                failed:
+                  $ref: "#/components/examples/TaskStatusFailed"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-task-projection-watermark-and-terminal-state
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation tenant access and task scope before task status distinctions
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Last visible operation reference.
+        - name: lifecycle_state
+          sensitivity: tenant_sensitive
+          description: Authorized lifecycle state only.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Advisory retry eligibility.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - safe_denial
+          - authorization_before_observation
+          - task_status_projection
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence:
+    get:
+      tags:
+        - commits
+      operationId: GetCommitEvidence
+      summary: Read authorized commit evidence.
+      description: >
+        Returns metadata-only commit evidence after authorization-before-observation.
+        Commit references, changed-path digest, provider correlation reference,
+        audit keys, and redaction metadata are opaque and sanitized.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/OperationId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized commit evidence.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommitEvidence"
+              examples:
+                redacted:
+                  $ref: "#/components/examples/CommitEvidenceRedacted"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-commit-evidence-projection-watermark-redaction-and-provider-reference
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation tenant access, folder ACL, workspace scope, commit scope, then evidence projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque commit operation reference.
+        - name: changed_path_metadata_digest
+          sensitivity: tenant_sensitive
+          description: Digest of changed-path metadata, not a path list.
+        - name: provider_correlation_reference
+          sensitivity: tenant_sensitive
+          description: Opaque provider correlation reference.
+        - name: sensitive_metadata_tier
+          sensitivity: public_metadata
+          description: Redaction tier marker.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - metadata_only_results
+          - safe_denial
+          - authorization_before_observation
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome:
+    get:
+      tags:
+        - commits
+      operationId: GetProviderOutcome
+      summary: Read authorized provider outcome metadata.
+      description: >
+        Returns known, failed, unknown, or reconciliation-required provider
+        outcome status after authorization-before-observation. Unknown outcomes
+        do not advertise blind commit retry eligibility; retryAfter is advisory
+        metadata only when retry is safe.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/OperationId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized provider outcome metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderOutcome"
+              examples:
+                knownFailure:
+                  $ref: "#/components/examples/ProviderOutcomeKnownFailure"
+                unknown:
+                  $ref: "#/components/examples/ProviderOutcomeUnknown"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-provider-outcome-class-retry-eligibility-retry-after-and-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation tenant access, folder ACL, workspace scope, commit scope, then provider outcome projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - provider_failure_known
+        - unknown_provider_outcome
+        - reconciliation_required
+        - read_model_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque commit operation reference.
+        - name: provider_correlation_reference
+          sensitivity: tenant_sensitive
+          description: Opaque provider correlation reference.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Advisory retry eligibility only.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - unknown_outcome_no_blind_retry
+          - retry_after_advisory_only
+          - safe_denial
+          - authorization_before_observation
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status:
+    get:
+      tags:
+        - query-status
+      operationId: GetReconciliationStatus
+      summary: Read authorized reconciliation status metadata.
+      description: >
+        Returns reconciliation state after authorization-before-observation.
+        Completed clean and completed dirty outcomes are distinct, and retry
+        guidance is advisory metadata rather than scheduler behavior.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/ReconciliationId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized reconciliation status metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReconciliationStatus"
+              examples:
+                required:
+                  $ref: "#/components/examples/ReconciliationStatusRequired"
+                completedDirty:
+                  $ref: "#/components/examples/ReconciliationStatusCompletedDirty"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-reconciliation-state-final-evidence-and-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation tenant access, folder ACL, workspace scope, reconciliation scope, then reconciliation projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - reconciliation_required
+        - read_model_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: reconciliation_id
+          sensitivity: tenant_sensitive
+          description: Opaque reconciliation reference.
+        - name: operation_id
+          sensitivity: tenant_sensitive
+          description: Opaque commit operation reference.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Advisory retry eligibility.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - reconciliation_state_distinction
+          - safe_denial
+          - authorization_before_observation
+        adapterStages:
+          - pre-sdk
+          - post-sdk
 x-hexalith-idempotency-key:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-key
   foundationUse: Mutating operations added later must declare the key requirement; queries must not accept it.
@@ -3216,6 +3877,20 @@ components:
       in: path
       required: true
       description: Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    OperationId:
+      name: operationId
+      in: path
+      required: true
+      description: Opaque operation identifier scoped by authorized tenant, folder, workspace, task, and operation family. It is not tenant authority.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    ReconciliationId:
+      name: reconciliationId
+      in: path
+      required: true
+      description: Opaque reconciliation identifier. It does not reveal provider outcome or protected resource existence before authorization succeeds.
       schema:
         $ref: "#/components/schemas/OpaqueIdentifier"
   headers:
@@ -3915,6 +4590,229 @@ components:
         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
         retryable: true
         clientAction: retry
+        details:
+          visibility: metadata_only
+    CommitWorkspaceRequest:
+      summary: Synthetic metadata-only commit request.
+      value:
+        requestSchemaVersion: v1
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM001
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+        branchRefTarget: branchref_01HZY7Z6N7J4Q2X8Y9V0BRN001
+        changedPathMetadataDigest: digest_01HZY7Z6N7J4Q2X8Y9V0DIG001
+        authorMetadataReference: authorref_01HZY7Z6N7J4Q2X8Y9V0AUT001
+        commitMessageClassification: tenant_sensitive_summary
+        auditMetadataKeys:
+          - folder_id
+          - workspace_id
+          - task_id
+          - operation_id
+          - changed_path_metadata_digest
+          - commit_message_classification
+    CommitWorkspaceAccepted:
+      summary: Commit command accepted without implying provider completion.
+      value:
+        acceptedAt: "2026-05-12T12:34:56Z"
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM001
+        status: accepted
+        acceptedCommandState: accepted
+        providerOutcomeState: pending
+        retryEligibility:
+          eligible: false
+          reasonCode: provider_outcome_pending
+          advisoryOnly: true
+        idempotentReplay: false
+    WorkspaceStatusCommitted:
+      summary: Authorized workspace status with distinct accepted and projected states.
+      value:
+        folderId: opaque_01HZY7Z6N7J4Q2X8Y9V0FOL001
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WSP001
+        currentState: committed
+        acceptedCommandState:
+          taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+          operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM001
+          state: accepted
+          acceptedAt: "2026-05-12T12:34:56Z"
+        projectedState:
+          state: committed
+          stateSource: projection
+          observedAt: "2026-05-12T12:35:10Z"
+        providerOutcome:
+          state: known_success
+          providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV001
+        retryEligibility:
+          eligible: false
+          reasonCode: terminal_committed
+          advisoryOnly: true
+        freshness:
+          readConsistency: read_your_writes
+          observedAt: "2026-05-12T12:35:10Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM001
+          stale: false
+        projectionLag:
+          ageMilliseconds: 14000
+          stateSource: projection
+    WorkspaceStatusUnknownProviderOutcome:
+      summary: Authorized workspace status with unknown provider outcome and no blind commit retry.
+      value:
+        folderId: opaque_01HZY7Z6N7J4Q2X8Y9V0FOL001
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WSP001
+        currentState: unknown_provider_outcome
+        acceptedCommandState:
+          taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+          operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM002
+          state: accepted
+          acceptedAt: "2026-05-12T12:40:00Z"
+        projectedState:
+          state: unknown_provider_outcome
+          stateSource: projection
+          observedAt: "2026-05-12T12:40:30Z"
+        providerOutcome:
+          state: unknown_provider_outcome
+          providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV002
+        retryEligibility:
+          eligible: false
+          reasonCode: wait_for_reconciliation
+          advisoryOnly: true
+        freshness:
+          readConsistency: read_your_writes
+          observedAt: "2026-05-12T12:40:30Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM002
+          stale: false
+        projectionLag:
+          ageMilliseconds: 30000
+          stateSource: projection
+    TaskStatusFailed:
+      summary: Authorized task status with terminal failure metadata only.
+      value:
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+        currentState: failed
+        terminalState: failed
+        lastOperationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM003
+        lastFailureCategory: commit_failed
+        retryEligibility:
+          eligible: false
+          reasonCode: terminal_failure
+          advisoryOnly: true
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:41:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM003
+          stale: false
+    CommitEvidenceRedacted:
+      summary: Authorized commit evidence with redacted commit reference.
+      value:
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM001
+        commitResultStatus: committed
+        commitReferenceClassification: redacted
+        changedPathMetadataDigest: digest_01HZY7Z6N7J4Q2X8Y9V0DIG001
+        providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV001
+        redaction:
+          visibility: redacted
+          reasonCode: tenant_sensitive_metadata
+        auditMetadataKeys:
+          - operation_id
+          - changed_path_metadata_digest
+          - provider_correlation_reference
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:35:10Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM004
+          stale: false
+    ProviderOutcomeKnownFailure:
+      summary: Authorized provider outcome known to have failed.
+      value:
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM004
+        state: known_failure
+        sanitizedStatusClass: provider_failure_known
+        providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV004
+        retryEligibility:
+          eligible: false
+          reasonCode: provider_terminal_failure
+          advisoryOnly: true
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:42:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM005
+          stale: false
+    ProviderOutcomeUnknown:
+      summary: Authorized provider outcome is unknown and requires reconciliation before any commit retry.
+      value:
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM005
+        state: unknown_provider_outcome
+        sanitizedStatusClass: unknown_provider_outcome
+        providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV005
+        retryEligibility:
+          eligible: false
+          reasonCode: wait_for_reconciliation
+          advisoryOnly: true
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:43:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM006
+          stale: true
+    ReconciliationStatusRequired:
+      summary: Authorized reconciliation status awaiting operator or worker reconciliation.
+      value:
+        reconciliationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REC001
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM005
+        state: required
+        finalStateEvidence: pending
+        escalationRequired: false
+        retryEligibility:
+          eligible: false
+          reasonCode: wait_for_reconciliation
+          advisoryOnly: true
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:44:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM007
+          stale: false
+    ReconciliationStatusCompletedDirty:
+      summary: Authorized reconciliation completed with dirty workspace evidence.
+      value:
+        reconciliationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REC002
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM006
+        state: completed_dirty
+        finalStateEvidence: dirty
+        escalationRequired: true
+        retryEligibility:
+          eligible: false
+          reasonCode: workspace_dirty_after_reconciliation
+          advisoryOnly: true
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:45:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM008
+          stale: false
+    CommitFailedProblem:
+      summary: Authorized caller - commit failed after prerequisites were evaluated.
+      value:
+        type: about:blank
+        title: Commit failed
+        status: 422
+        category: commit_failed
+        code: commit_failed
+        message: The commit could not be completed for the authorized workspace scope.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: contact_operator
+        details:
+          visibility: metadata_only
+    DirtyWorkspaceProblem:
+      summary: Authorized caller - workspace is dirty and cannot be treated as cleanly committed.
+      value:
+        type: about:blank
+        title: Dirty workspace
+        status: 409
+        category: dirty_workspace
+        code: dirty_workspace
+        message: The workspace contains authorized dirty-state metadata that prevents clean commit completion.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: contact_operator
         details:
           visibility: metadata_only
     AddFileInlineRequest:
@@ -5712,6 +6610,376 @@ components:
             properties:
               truncatedReason:
                 const: not_truncated
+    CommitWorkspaceRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - operationId
+        - taskId
+        - branchRefTarget
+        - changedPathMetadataDigest
+        - authorMetadataReference
+        - commitMessageClassification
+        - auditMetadataKeys
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum:
+            - v1
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        branchRefTarget:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^branchref_[A-Za-z0-9_-]{6,118}$"
+          description: Opaque branch/ref target reference. Raw branch names are forbidden in requests, examples, audit metadata, and diagnostics.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        changedPathMetadataDigest:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^digest_[A-Za-z0-9_-]{6,119}$"
+          description: Digest of changed-path metadata. It is never a raw changed-path list, file content, diff, or local path.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        authorMetadataReference:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^authorref_[A-Za-z0-9_-]{6,116}$"
+          description: Opaque author reference. It must not contain names, email addresses, provider users, tokens, or credential material.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        commitMessageClassification:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+          description: Commit-message classification metadata only. Raw commit-message text is forbidden.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        auditMetadataKeys:
+          type: array
+          minItems: 1
+          maxItems: 24
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/AuditMetadataKey"
+    CommitWorkspaceAccepted:
+      allOf:
+        - $ref: "#/components/schemas/AcceptedCommand"
+        - type: object
+          additionalProperties: false
+          required:
+            - operationId
+            - acceptedCommandState
+            - providerOutcomeState
+            - retryEligibility
+          properties:
+            operationId:
+              $ref: "#/components/schemas/OpaqueIdentifier"
+            acceptedCommandState:
+              type: string
+              enum:
+                - accepted
+            providerOutcomeState:
+              $ref: "#/components/schemas/ProviderOutcomeState"
+            retryEligibility:
+              $ref: "#/components/schemas/RetryEligibility"
+    WorkspaceStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - folderId
+        - workspaceId
+        - currentState
+        - acceptedCommandState
+        - projectedState
+        - providerOutcome
+        - retryEligibility
+        - freshness
+        - projectionLag
+      properties:
+        folderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        workspaceId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        currentState:
+          $ref: "#/components/schemas/LifecycleState"
+        acceptedCommandState:
+          $ref: "#/components/schemas/AcceptedCommandState"
+        projectedState:
+          $ref: "#/components/schemas/ProjectedWorkspaceState"
+        providerOutcome:
+          $ref: "#/components/schemas/ProviderOutcome"
+        retryEligibility:
+          $ref: "#/components/schemas/RetryEligibility"
+        retryAfter:
+          $ref: "#/components/schemas/RetryAfterMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+        projectionLag:
+          $ref: "#/components/schemas/ProjectionLagMetadata"
+        lastFailureCategory:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+    AcceptedCommandState:
+      type: object
+      additionalProperties: false
+      required:
+        - taskId
+        - operationId
+        - state
+        - acceptedAt
+      properties:
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        state:
+          type: string
+          enum:
+            - accepted
+            - failed
+            - completed
+        acceptedAt:
+          $ref: "#/components/schemas/UtcDateTime"
+    ProjectedWorkspaceState:
+      type: object
+      additionalProperties: false
+      required:
+        - state
+        - stateSource
+        - observedAt
+      properties:
+        state:
+          $ref: "#/components/schemas/LifecycleState"
+        stateSource:
+          type: string
+          enum:
+            - accepted_command
+            - projection
+            - reconciliation
+            - redacted
+            - unavailable
+        observedAt:
+          $ref: "#/components/schemas/UtcDateTime"
+    TaskStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - taskId
+        - currentState
+        - terminalState
+        - lastOperationId
+        - retryEligibility
+        - freshness
+      properties:
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        currentState:
+          $ref: "#/components/schemas/LifecycleState"
+        terminalState:
+          $ref: "#/components/schemas/LifecycleState"
+        lastOperationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        lastFailureCategory:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        retryEligibility:
+          $ref: "#/components/schemas/RetryEligibility"
+        retryAfter:
+          $ref: "#/components/schemas/RetryAfterMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    CommitEvidence:
+      type: object
+      additionalProperties: false
+      required:
+        - operationId
+        - commitResultStatus
+        - commitReferenceClassification
+        - changedPathMetadataDigest
+        - providerCorrelationReference
+        - redaction
+        - auditMetadataKeys
+        - freshness
+      properties:
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        commitResultStatus:
+          $ref: "#/components/schemas/LifecycleState"
+        commitReferenceClassification:
+          type: string
+          enum:
+            - opaque_reference
+            - redacted
+            - unavailable
+        changedPathMetadataDigest:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^digest_[A-Za-z0-9_-]{6,119}$"
+        providerCorrelationReference:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^provref_[A-Za-z0-9_-]{6,118}$"
+        redaction:
+          $ref: "#/components/schemas/RedactionMetadata"
+        auditMetadataKeys:
+          type: array
+          minItems: 1
+          maxItems: 24
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/AuditMetadataKey"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ProviderOutcome:
+      type: object
+      additionalProperties: false
+      required:
+        - operationId
+        - state
+        - sanitizedStatusClass
+        - providerCorrelationReference
+        - retryEligibility
+        - freshness
+      properties:
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        state:
+          $ref: "#/components/schemas/ProviderOutcomeState"
+        sanitizedStatusClass:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        providerCorrelationReference:
+          type: string
+          minLength: 16
+          maxLength: 128
+          pattern: "^provref_[A-Za-z0-9_-]{6,118}$"
+        retryEligibility:
+          $ref: "#/components/schemas/RetryEligibility"
+        retryAfter:
+          $ref: "#/components/schemas/RetryAfterMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ProviderOutcomeState:
+      type: string
+      enum:
+        - pending
+        - known_success
+        - known_failure
+        - unknown_provider_outcome
+        - reconciliation_required
+    RetryEligibility:
+      type: object
+      additionalProperties: false
+      required:
+        - eligible
+        - reasonCode
+        - advisoryOnly
+      properties:
+        eligible:
+          type: boolean
+        reasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        advisoryOnly:
+          type: boolean
+          const: true
+    RetryAfterMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - retryAfterSeconds
+        - advisoryOnly
+      properties:
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+        advisoryOnly:
+          type: boolean
+          const: true
+    ReconciliationStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - reconciliationId
+        - operationId
+        - state
+        - finalStateEvidence
+        - escalationRequired
+        - retryEligibility
+        - freshness
+      properties:
+        reconciliationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        operationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        state:
+          $ref: "#/components/schemas/ReconciliationState"
+        finalStateEvidence:
+          type: string
+          enum:
+            - pending
+            - committed
+            - dirty
+            - failed
+            - redacted
+        escalationRequired:
+          type: boolean
+        retryEligibility:
+          $ref: "#/components/schemas/RetryEligibility"
+        retryAfter:
+          $ref: "#/components/schemas/RetryAfterMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ReconciliationState:
+      type: string
+      enum:
+        - not_required
+        - required
+        - in_progress
+        - completed_clean
+        - completed_dirty
+        - failed
+    ProjectionLagMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - ageMilliseconds
+        - stateSource
+      properties:
+        ageMilliseconds:
+          type: integer
+          minimum: 0
+        stateSource:
+          type: string
+          enum:
+            - accepted_command
+            - projection
+            - reconciliation
+            - unavailable
+    RedactionMetadata:
+      type: object
+      additionalProperties: false
+      required:
+        - visibility
+        - reasonCode
+      properties:
+        visibility:
+          type: string
+          enum:
+            - metadata_only
+            - redacted
+        reasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
     CanonicalErrorCategory:
       type: string
       enum:
@@ -5745,6 +7013,8 @@ components:
         - unsupported_provider_capability
         - path_validation_failed
         - file_operation_failed
+        - dirty_workspace
+        - commit_failed
         - provider_failure_known
         - unknown_provider_outcome
         - reconciliation_required
@@ -5809,6 +7079,8 @@ components:
         - unsupported_provider_capability
         - path_validation_failed
         - file_operation_failed
+        - dirty_workspace
+        - commit_failed
         - provider_failure_known
         - unknown_provider_outcome
         - reconciliation_required
@@ -5851,6 +7123,11 @@ components:
         - evidence_timestamp
         - path_policy_class
         - content_hash_reference
+        - changed_path_metadata_digest
+        - author_metadata_reference
+        - commit_message_classification
+        - provider_correlation_reference
+        - reconciliation_id
         - byte_count
         - query_family
         - result_count

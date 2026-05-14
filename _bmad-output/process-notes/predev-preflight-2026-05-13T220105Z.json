@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-14T08:01:49Z",
+  "timestamp": "2026-05-13T22:01:05Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/implementation-artifacts/1-10-author-commit-and-workspace-status-contract-groups.md\nM  _bmad-output/implementation-artifacts/1-13-generate-the-c13-parity-oracle.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\nM  _bmad-output/process-notes/predev-hardening-runs.log\n M src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml\n M tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs\n?? docs/contract/commit-status-contract-groups.md\n?? tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs\n",
+      "stdout": " M _bmad-output/implementation-artifacts/1-10-author-commit-and-workspace-status-contract-groups.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml\n M tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs\n?? docs/contract/commit-status-contract-groups.md\n?? tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs\n",
       "stderr": "",
-      "dirty_path_count": 8,
+      "dirty_path_count": 6,
       "result": "fail",
-      "details": "8 dirty path(s)"
+      "details": "6 dirty path(s)"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
