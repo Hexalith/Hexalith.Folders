@@ -18,15 +18,16 @@ so that cross-surface tests consume one source of truth for transport and behavi
 4. Given the Contract Spine contains non-mutating operations, when generation runs, then every query, status, audit, context-query, and operations-console projection row has `read_consistency_class` and `idempotency_key_rule: not_accepted_for_non_mutating_operation`.
 5. Given an operation declares `x-hexalith-parity-dimensions`, `x-hexalith-canonical-error-categories`, `x-hexalith-audit-metadata-keys`, `x-hexalith-correlation`, `x-hexalith-authorization`, idempotency, lifecycle, or read-consistency metadata, when a parity row is generated, then transport columns (`auth_outcome_class`, `error_code_set`, `idempotency_key_rule`, `audit_metadata_keys`, `correlation_field_path`, `terminal_states`) are derived from those declarations or reported as prerequisite drift.
 6. Given SDK, CLI, and MCP adapters need behavior beyond REST transport shape, when rows are generated, then behavioral columns (`pre_sdk_error_class`, `idempotency_key_sourcing`, `correlation_id_sourcing`, `task_id_sourcing`, `credential_sourcing`, `cli_exit_code`, `mcp_failure_kind`) are populated from `docs/contract/idempotency-and-parity-rules.md` and the architecture Adapter Parity Contract.
-7. Given operation removals can silently break test parity, when generation compares the current Contract Spine to `tests/fixtures/previous-spine.yaml`, then removed operations without an approved deprecation entry fail with a symmetric-drift diagnostic.
-8. Given generated rows are downstream test inputs, when the generator writes `tests/fixtures/parity-contract.yaml`, then row ordering is deterministic by operation ID, array values are sorted where the schema does not require source order, and rerunning generation twice produces byte-stable output.
+7. Given operation removals can silently break test parity, when generation compares the current Contract Spine to `tests/fixtures/previous-spine.yaml`, then operation identity is `HTTP method + normalized path + operationId`, and added, removed, renamed, request/response schema, status-code, idempotency, read-consistency, and operation-family changes produce deterministic symmetric-drift diagnostics unless an approved deprecation entry exists.
+8. Given generated rows are downstream test inputs, when the generator writes `tests/fixtures/parity-contract.yaml`, then row ordering is deterministic by operation ID, array values and diagnostics are sorted where the schema does not require source order, serialization uses stable UTF-8 and LF formatting, wall-clock timestamps are excluded or normalized, and rerunning generation twice produces byte-stable output.
 9. Given lifecycle and negative/error cases are needed for downstream conformance tests, when generation runs, then it emits or references golden lifecycle fixtures plus negative/error contract cases for safe denial, idempotency conflict, validation, provider outcome, read-model unavailable, redaction, and state-transition-invalid scenarios.
-10. Given parity evidence must remain metadata-only, when rows, diagnostics, examples, and tests are inspected, then they contain no file contents, diffs, provider tokens, credential material, raw provider payloads, generated context payloads, local filesystem paths, production URLs, tenant data, or unauthorized resource hints.
+10. Given parity evidence must remain metadata-only, when rows, diagnostics, examples, and tests are inspected, then diagnostics may name operation IDs, repository-relative source file paths, schema fields, status labels, and bounded category names, but they contain no file contents, diffs, provider tokens, credential material, raw provider payloads, generated context payloads, local filesystem paths, production URLs, tenant data, request/response headers, sampled API bodies, environment values, or unauthorized resource hints.
 11. Given `tests/fixtures/parity-contract.schema.json` is currently a seeded row schema, when implementation needs schema changes for final C13 row shape, then schema updates stay backward-auditable, keep adapter and failure-kind enums bounded, and are covered by focused schema tests.
 12. Given Story 1.14 owns CI wiring, when Story 1.13 completes, then it may add local generator commands and focused tests, but it does not modify GitHub Actions workflows or release gates.
 13. Given Story 1.12 owns NSwag client generation and idempotency helpers, when Story 1.13 consumes operation identities or helper metadata, then it reuses generated operation IDs and helper provenance instead of reimplementing SDK hash construction policy.
-14. Given some C3/C4/S-2/C6 values may still be reference-pending, when generation encounters an explicitly reference-pending value, then it either carries a bounded `reference_pending` marker allowed by the schema or fails with a clear prerequisite-drift diagnostic; it must not invent final policy values.
+14. Given some C3/C4/S-2/C6 values may still be reference-pending, when generation encounters an explicitly reference-pending value, then it carries a bounded `reference_pending` marker only when the source contract names the unresolved decision and the schema allows the marker; otherwise it fails with a clear prerequisite-drift diagnostic. The generator must not invent final policy values or allow unbounded pending markers.
 15. Given active contract work may be in progress, when implementation starts, then the developer inspects the current OpenAPI file, contract notes, existing tests, and active Story 1.7 through Story 1.12 artifacts before assuming the operation inventory or metadata names.
+16. Given a maintainer changes the Contract Spine, when the local parity oracle is regenerated, then the resulting artifact and diagnostics identify which REST, SDK, CLI, MCP, and UI adapter expectations are present, missing, stale, removed, or reference-pending from one local metadata-only artifact.
 
 ## Tasks / Subtasks
 
@@ -70,6 +71,7 @@ so that cross-surface tests consume one source of truth for transport and behavi
   - [ ] Verify deterministic output by running the generator twice and comparing normalized bytes.
   - [ ] Verify diagnostics and generated fixtures do not contain forbidden leak patterns such as raw content, diffs, provider tokens, credential material, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
   - [ ] Verify reference-pending values are either schema-bounded or fail as prerequisite drift; do not allow silent defaults.
+  - [ ] Maintain an AC-to-test matrix that maps each acceptance criterion to a fixture input, expected generated row or diagnostic, negative case, and test file.
 - [ ] Record downstream handoff and negative scope. (AC: 10, 12, 13, 15)
   - [ ] Document the generator command, input files, output file, deterministic-output policy, schema-validation command, and expected developer workflow.
   - [ ] Document that Story 1.14 owns CI workflow wiring, server-vs-spine validation, generated-client consistency gates, and release gates.
@@ -161,11 +163,23 @@ Do not freeze this list in code. Tests should derive the current operation set f
 - Resolve local JSON Pointer references such as `#/components/...`; reject unresolved or external references unless the story explicitly documents a safe bounded fallback.
 - Generate one row per operation ID. Duplicate operation IDs are a hard failure.
 - Keep row order deterministic by operation ID and keep deterministic serialization settings under source control.
+- Treat operation identity as `HTTP method + normalized path + operationId`; emit deterministic diagnostics for added, removed, renamed, request/response schema, status-code, idempotency, read-consistency, and operation-family drift.
 - Keep generated `operation_id` values aligned with OpenAPI `operationId`; do not invent adapter-specific names.
 - Keep adapter expectations bounded to `rest`, `sdk`, `cli`, `mcp`, and `ui` as allowed by the schema. UI should appear only for operations-console projection rows where explicitly documented.
 - Mutating commands are POST, PUT, PATCH, or DELETE operations that declare mutating idempotency metadata. Do not classify `ValidateProviderReadiness` as mutating only because it is POST; its existing contract marks it as a non-mutating provider readiness validation.
 - Query/status operations must not accept `Idempotency-Key`. They must declare read consistency.
 - Output and diagnostics must be repository-relative. Avoid machine-local absolute paths, timestamps, environment data, and network-derived data.
+- Behavioral parity is derived only from Contract Spine metadata, `docs/contract/idempotency-and-parity-rules.md`, `_bmad-output/planning-artifacts/architecture.md`, and Story 1.12 helper provenance artifacts. Do not inspect runtime handlers, providers, live endpoints, generated SDK implementation bodies, CLI commands, or MCP tools to infer behavior.
+- The README or handoff documentation must state the local command, input files, output path, schema-validation command, deterministic-output policy, exit behavior, and what Story 1.14 should wire into CI later.
+
+### Oracle Contract
+
+- The generated oracle should expose a stable top-level shape for metadata/provenance, operation rows, diagnostics, drift entries, and fixture references when the schema permits those sections.
+- Diagnostics must use bounded levels such as `error`, `warning`, and `reference_pending`; new levels require schema updates and focused schema tests.
+- Drift entries must be sorted by operation identity and drift category, and must include only metadata-safe source pointers.
+- `reference_pending` is allowed only for explicitly documented unresolved C3/C4/S-2/C6 values. It must identify the source decision and owning criterion without raw payloads, tenant data, credentials, or local machine paths.
+- Missing `previous-spine.yaml`, invalid Contract Spine YAML, unresolved local references, duplicate operation IDs, and operationId mismatches are fail-closed generator errors.
+- Positive and negative fixtures for this story are limited to generator, schema, drift, lifecycle/status, safe denial, idempotency conflict, validation, provider outcome, read-model unavailable, redaction, and state-transition-invalid metadata cases. Runtime adapter behavior remains out of scope.
 
 ### Transport Parity Rules
 
@@ -208,6 +222,8 @@ Do not freeze this list in code. Tests should derive the current operation set f
 - Prefer focused tests around generator input parsing, row derivation, schema validation, deterministic output, drift detection, and leak-safe diagnostics.
 - Reuse current OpenAPI contract-test helper patterns where practical: load `YamlStream`, enumerate operations, resolve local refs, and assert exact bounded values.
 - Add negative fixture cases for missing idempotency metadata, query operations accepting idempotency keys, missing read consistency, duplicate operation IDs, unsupported references, removed operations without deprecation, and forbidden diagnostic leaks.
+- Include one positive minimal contract fixture, one lifecycle/negative contract fixture set, one removed-operation baseline pair, and one deterministic byte-stability test.
+- Verify the generator touches only the intended output paths and leaves unrelated files unchanged.
 - Keep tests resilient to operation inventory growth by deriving current operations from OpenAPI. Only assert exact operation allow-lists where a contract group owns a fixed subset.
 
 ### References
@@ -242,7 +258,32 @@ Do not freeze this list in code. Tests should derive the current operation set f
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-14 | Applied party-mode review clarification pass for drift semantics, deterministic output, diagnostics, reference-pending bounds, maintainer workflow, and acceptance-test mapping. | Codex |
 | 2026-05-13 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+
+## Party-Mode Review
+
+- Date: 2026-05-14T01:10:20+02:00
+- Selected story: `1-13-generate-the-c13-parity-oracle`
+- Command/skill invocation used: `/bmad-party-mode 1-13-generate-the-c13-parity-oracle; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor), John (Product Manager)
+- Findings summary:
+  - Drift detection needed an explicit operation identity and deterministic drift category contract.
+  - Deterministic output needed stable encoding, newline, timestamp, ordering, and byte-comparison expectations.
+  - `reference_pending` needed bounded pass/fail rules instead of becoming a parking lot for unresolved policy.
+  - Diagnostics needed a precise metadata-only allowlist and leak-safety denylist.
+  - The maintainer workflow and Story 1.14 handoff needed clearer acceptance language.
+  - Acceptance tests needed an AC-to-test matrix and explicit fixture categories.
+- Changes applied:
+  - Tightened AC 7, AC 8, AC 10, and AC 14.
+  - Added AC 16 for the maintainer-facing parity workflow.
+  - Added generator requirements for operation identity, no behavioral execution, and handoff documentation.
+  - Added an Oracle Contract section for output shape, diagnostics, drift, `reference_pending`, and fail-closed cases.
+  - Added testing guidance for fixture categories, byte stability, unchanged unrelated files, and AC-to-test mapping.
+- Findings deferred:
+  - CI wiring, release gates, server-vs-spine validation, generated-client consistency gates, and workflow enforcement remain Story 1.14 scope.
+  - Runtime parity enforcement, provider-backed behavior, SDK/CLI/MCP generation changes, adapter wrappers, UI/console presentation, and localization implementation remain future-story scope.
+- Final recommendation: ready-for-dev after applied story clarification pass.
 
 ## Dev Agent Record
 
