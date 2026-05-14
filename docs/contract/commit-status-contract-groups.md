@@ -44,6 +44,10 @@ The canonical machine-readable source remains `src/Hexalith.Folders.Contracts/op
 - Story 1.5 names `provider_outcome_unknown` in prose, while the OpenAPI foundation froze the canonical category as `unknown_provider_outcome`; Story 1.10 preserves the frozen OpenAPI category.
 - Story 1.8 workspace/lock and Story 1.9 file/context shapes are reused by reference. This story does not duplicate workspace preparation, lock management, file mutation, path policy, or context-query operations.
 
+## Audit Metadata Boundaries
+
+`CommitWorkspace` audit metadata uses `branch_ref_policy_ref` (the policy reference) rather than `branch_ref_target` (the raw target reference). This is deliberate: the policy reference is the less-sensitive view of branch/ref intent, and audit pipelines should not propagate the raw target identifier alongside the operation. The story spec phrase "branch/ref target metadata" in AC2 maps to the policy reference for audit purposes; the target reference itself appears only in the commit request body and the idempotency-equivalence list, where it is required to compute commit-identity equivalence.
+
 ## Authorization And Metadata Boundaries
 
 All status and evidence reads follow authorization-before-observation. Tenant access, folder ACL, workspace/task scope, and redaction decisions happen before any status distinction is exposed.

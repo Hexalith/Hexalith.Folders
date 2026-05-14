@@ -1,6 +1,6 @@
 # Story 1.10: Author commit and workspace-status contract groups
 
-Status: review
+Status: done
 
 Created: 2026-05-11
 
@@ -15,7 +15,7 @@ so that clean committed states, failed states, and unknown provider outcomes are
 1. Given lifecycle command contract groups from Stories 1.7 through 1.9 exist or are explicitly reference-pending, when this story is complete, then `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` contains commit and status operation groups for committing workspace changes, commit evidence, workspace status, task status, provider outcome, retry eligibility, retry-after, and reconciliation status.
 2. Given commit is a replay-sensitive mutating command, when `CommitWorkspace` is authored, then it declares `Idempotency-Key`, `x-hexalith-idempotency-key`, lexicographically ordered `x-hexalith-idempotency-equivalence`, `x-hexalith-idempotency-ttl-tier: commit`, required task/correlation/operation identity, branch/ref target metadata, changed-path metadata digest, author metadata reference, commit-message classification metadata, audit metadata keys, canonical error categories, retry eligibility, and adapter parity dimensions.
 3. Given commit idempotency TTL inherits C3, when commit metadata is authored, then the contract uses the C3 commit idempotency retention class only when approved and otherwise records `TODO(reference-pending): C3 commit idempotency retention approval` without inventing a binding duration.
-4. Given workspace status and task status are non-mutating reads, when `GetWorkspaceStatus` and related status operations are authored, then they do not accept `Idempotency-Key`, declare `read-your-writes` or another approved read-consistency class, expose accepted-command state separately from projected state, include freshness/projection-lag metadata, and preserve safe authorization-denial shapes.
+4. Given workspace status and task status are non-mutating reads, when `GetWorkspaceStatus` and related status operations are authored, then they do not accept `Idempotency-Key`, declare `read-your-writes` or another approved read-consistency class, expose accepted-command state separately from projected state (on `WorkspaceStatus` only — the accepted-vs-projected duality is a workspace-state concept; `TaskStatus`, `CommitEvidence`, `ProviderOutcome`, and `ReconciliationStatus` declare lifecycle states directly without a separate accepted-command projection), include freshness/projection-lag metadata where projection state is exposed, and preserve safe authorization-denial shapes.
 5. Given provider commit results may be known, failed, ambiguous, or pending reconciliation, when schemas and Problem Details are authored, then successful commit, commit failed, known provider failure, provider outcome unknown, reconciliation required, reconciliation completed clean, reconciliation completed dirty, read-model unavailable, retryable transient failure, not retryable terminal failure, and state-transition invalid outcomes are represented without silent retry, discard, duplicate commit, or unauthorized resource-existence leakage.
 6. Given the C6 state vocabulary is approved, when commit/status schemas declare lifecycle states, then they use the C6 state catalog and operator-disposition labels from `docs/exit-criteria/c6-transition-matrix-mapping.md` or the OpenAPI foundation if it already consumed C6: `requested`, `preparing`, `ready`, `locked`, `changes_staged`, `dirty`, `committed`, `failed`, `inaccessible`, `unknown_provider_outcome`, and `reconciliation_required`.
 7. Given commit and status responses are metadata-only, when examples, schemas, audit metadata, logs, diagnostics, and Problem Details are scanned, then they contain no file contents, diffs, generated context payloads, provider tokens, credential material, raw provider payload bodies, production URLs, local machine paths, email addresses, raw repository URLs, raw branch names with sensitive values, raw commit messages, or unauthorized resource-existence hints.
@@ -45,7 +45,7 @@ so that clean committed states, failed states, and unknown provider outcomes are
   - [x] Add or update the commit tag/path under `/api/v1/...` using lowercase hyphen-delimited path segments, plural collection nouns where appropriate, and camelCase path parameters such as `{folderId}` and `{workspaceId}`.
   - [x] Define stable operation ID `CommitWorkspace` unless Story 1.5, Story 1.6, or an already-authored Contract Spine has frozen a different name; record any mapping in contract notes.
   - [x] Require task ID, operation ID, workspace ID, folder ID, branch/ref target reference, changed-path metadata digest, author metadata reference, and commit-message classification metadata; tenant authority remains authentication/EventStore-envelope-derived only.
-  - [x] Declare commit idempotency equivalence from Story 1.5 using lexicographic field order: `author_metadata_reference, branch_ref_target, changed_path_metadata_digest, commit_message_classification, operation_id, task_id, tenant_id, workspace_id`.
+  - [x] Declare commit idempotency equivalence from Story 1.5 using lexicographic field order: `author_metadata_reference, branch_ref_target, changed_path_metadata_digest, commit_message_classification, operation_id, task_id, workspace_id`. (Note: `tenant_id` is intentionally omitted per `docs/contract/idempotency-and-parity-rules.md` — tenant authority is envelope-derived and partitioning-scope, not a client-controlled OpenAPI equivalence field.)
   - [x] Treat that equivalence order as normative ordinal/ASCII lexical ordering for extension values unless Story 1.5 or the extension vocabulary has already frozen a different comparator; record any comparator drift explicitly.
   - [x] Use `x-hexalith-idempotency-ttl-tier: commit`; preserve C3 approval state and do not substitute the 24-hour mutation tier for commit.
   - [x] Represent accepted asynchronous commit work as an accepted-command/status shape when provider latency exceeds the command-ack budget; do not imply synchronous Git/provider completion.
@@ -89,6 +89,60 @@ so that clean committed states, failed states, and unknown provider outcomes are
   - [x] Add a short note near the OpenAPI file or in `docs/contract/` explaining which commit/status components Stories 1.11, 1.12, 1.13, Epic 4, Epic 5, and Story 6.6 must reuse.
   - [x] Record deferred owners for runtime commit behavior, C6 state transitions, lock release side effects, idempotency persistence, unknown-outcome reconciliation, provider workers, workspace cleanup, audit timeline, operations-console projections, generated SDK helpers, parity oracle rows, and CI gates.
   - [x] Record any unresolved C3 approval, Story 1.6 foundation, Story 1.8 workspace/lock, Story 1.9 file/context, Story 1.5 operation naming, or C6 state metadata dependencies as explicit deferred decisions.
+
+### Review Findings
+
+Code review date: 2026-05-14. Layers: Acceptance Auditor, Blind Hunter, Edge Case Hunter. Triage: 5 decisions, 16 patches, 4 deferred, 8 dismissed.
+
+#### Decisions resolved (2026-05-14)
+
+- D1: AC4 `acceptedCommandState`/`projectedState` separation — **WorkspaceStatus only**. The plural reading is narrowed; converted to patch P17 (update story AC4 narrative).
+- D2: Operator-disposition labels — **deferred to Story 6.3**. Moved to W5.
+- D3: `WorkspaceStatus.acceptedCommandState` required — **make optional**. Converted to patch P18.
+- D4: `commit_message_classification` closed enum — **keep free-form regex**. Dismissed; document audit redaction guidance as a follow-up note.
+- D5: Audit `branch_ref_target` — **keep `branch_ref_policy_ref` only**. Converted to patch P19 (update story AC2 narrative to confirm policy-ref-only audit shape).
+
+#### Patches
+
+- [x] [Review][Patch] `CommitWorkspaceAccepted` `allOf` is unsatisfiable: both `AcceptedCommand` (yaml:5210) and the inline branch (yaml:6672) declare `additionalProperties: false`, so every instance violates exactly one branch under JSON Schema 2020-12 `allOf` semantics. Fix by removing `additionalProperties: false` from the inline branch (or flattening to a single object). [yaml:6669-6689] [blind+edge]
+- [x] [Review][Patch] `WorkspaceStatusCommitted` and `WorkspaceStatusUnknownProviderOutcome` examples ship `providerOutcome` with only `state` and `providerCorrelationReference`, but `ProviderOutcome` requires 6 fields (`operationId`, `state`, `sanitizedStatusClass`, `providerCorrelationReference`, `retryEligibility`, `freshness`). Add the 4 missing required fields to both examples. [yaml:4642-4644, 4672-4674 vs 6838-6865] [blind+edge+auditor]
+- [x] [Review][Patch] RFC 9457 §3.1.1 violation: `CommitWorkspace` 409 response (yaml:3148) references `UnknownProviderOutcomeProblem` whose body sets `status: 503` (yaml:4572). Define a 409-specific `UnknownProviderOutcomeConflictProblem` example (with `status: 409`) or remove the 409 reference. [yaml:3147-3148, 4567-4580] [edge]
+- [x] [Review][Patch] `CommitWorkspace` 503 schema is `ProblemDetails` (yaml:3167) but example `providerKnownFailure` refs `ProviderOutcomeKnownFailure` (yaml:4724) which is a `ProviderOutcome` shape, not Problem Details. Define `ProviderKnownFailureProblem` example with Problem Details shape, or remove the reference. [yaml:3171-3172, 4724-4739] [blind+edge]
+- [x] [Review][Patch] `TaskStatus.terminalState` and `lastOperationId` are in `required` (yaml:6770-6776) but in-flight tasks have neither — schema cannot represent a running task. Move to optional, or add a nullable / explicit `pending` sentinel. [yaml:6767-6793] [blind+edge]
+- [x] [Review][Patch] `digest_`, `provref_`, `authorref_` patterns conflict with declared length bounds — `digest_` regex yields total length 13-126 (declared 16-128); `provref_` 14-126; `authorref_` 16-126. Align bounds: either tighten regex to `{9,121}` for `digest_`, `{8,120}` for `provref_`, `{6,118}` for `authorref_`, or relax `minLength`/`maxLength` to match. [yaml:6638, 6645, 6652, 6821, 6826, 6859] [blind]
+- [x] [Review][Patch] `ReconciliationStatusCompletedClean` example is missing even though `ReconciliationState` enum includes `completed_clean` (yaml:6890+) and AC5 enumerates "reconciliation completed clean" as a contract outcome. Add the example and wire into `GetReconciliationStatus` 200 examples. [yaml:3673-3676] [edge]
+- [x] [Review][Patch] Negative-scope test asserts forbidden hardcoded filenames (`CommitEndpoints.cs`, `Commands`, `Tools`, `CommitWorkflows`) — Dev Notes line 170 explicitly says "assert forbidden artifact categories and paths, not incidental current filenames, so the check remains stable as the scaffold grows." Refactor to category/path-pattern assertions. [tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:1869-1885] [edge]
+- [x] [Review][Patch] C6 state-catalog completeness only asserts 4 of 11 states (`committed`, `failed`, `unknown_provider_outcome`, `reconciliation_required`). AC6 binds the full 11-state catalog. Extend the test to assert presence of all 11 `LifecycleState` enum values (also: `requested`, `preparing`, `ready`, `locked`, `changes_staged`, `dirty`, `inaccessible`). [CommitStatusContractGroupTests.cs:1818-1821] [edge]
+- [x] [Review][Patch] `GetTaskStatus` declares `folder_acl_denied` in canonical-error-categories but its `x-hexalith-authorization.order` lacks `folder_acl`. Either the category leaks hidden-resource info (task-belongs-to-some-folder) or auth order is missing a layer. Reconcile by removing the category or adding `folder_acl` to the auth order. [yaml ~line 618] [edge]
+- [x] [Review][Patch] `ProjectionLagMetadata.ageMilliseconds` is `required` with `minimum: 0`, so the projection-unavailable case must invent an age (leaking unbounded time-since-last-event). Make `ageMilliseconds` optional, or `oneOf`-discriminate by `stateSource: unavailable`. [yaml:1585-1601 of diff] [edge]
+- [x] [Review][Patch] Forbidden-leak scanner filters example keys by substrings `Commit|Status|ProviderOutcome|Reconciliation`, so `ProviderUnavailableProblem` and other peer Problem Details escape inspection. Broaden the filter to cover all new examples and Problem Details. [CommitStatusContractGroupTests.cs:1830-1832] [auditor 7.1]
+- [x] [Review][Patch] No per-operation tenant-authority assertion across the 6 new commit/status operations — tests only assert `tenant_id` absent from equivalence list, not that no parameter/header/path/body field acts as authoritative tenant identity. Add a scan over the 6 operationIds. [CommitStatusContractGroupTests.cs:1752] [auditor 12.3]
+- [x] [Review][Patch] Story body still lists `tenant_id` in the equivalence sequence under AC2 / Tasks (line 48 of story file), but implementation correctly omits it per the binding tenant_id partitioning rule. Update the story narrative or add an explicit "AC2 mapping override" note so downstream reviewers don't read contradictory normative text. [story file:48] [blind]
+- [Review][Dismiss] Query operations declare `x-hexalith-correlation.taskHeader: X-Hexalith-Task-Id` — on review this is correlation-propagation metadata (the canonical name of the task-correlation header *when* one is propagated), not a parameter declaration. The pattern is universal across all 21 operations in the spec; removing only the 5 Story 1.10 query ops would create inconsistency. Reclassified as dismissed during patch application.
+- [x] [Review][Patch] `CommitEvidenceRedacted` example `auditMetadataKeys` omits `correlation_id` while `GetCommitEvidence.x-hexalith-audit-metadata-keys` declares it. Add `correlation_id` to the example's `auditMetadataKeys`. [yaml ~4756 vs operation declaration] [edge]
+- [x] [Review][Patch] (D1 resolution) Update story AC4 narrative to record that the plural "status operations" applies to `WorkspaceStatus` only — accepted-command vs projected separation is a workspace-state concept, not a universal status-operation concept. Other status operations (`TaskStatus`, `CommitEvidence`, `ProviderOutcome`, `ReconciliationStatus`) declare current/terminal state directly. [story file: AC4 + Dev Notes status taxonomy section]
+- [x] [Review][Patch] (D3 resolution) Move `WorkspaceStatus.acceptedCommandState` out of `required` to optional, so workspaces with no accepted commit command can still satisfy the schema. Update the `AcceptedCommandState` description to note absence semantics. [yaml:6690-6725]
+- [x] [Review][Patch] (D5 resolution) Update story AC2 narrative to confirm `branch_ref_policy_ref` is the canonical commit audit-metadata key (intentionally less sensitive than the raw target ref). Note in `docs/contract/commit-status-contract-groups.md` that audit keys differ from idempotency-equivalence keys by design. [story file: AC2 + commit-status-contract-groups.md]
+
+#### Deferred (pre-existing or out-of-scope)
+
+- [x] [Review][Defer] Negative-test cases for duplicate `operationId`, missing required `x-hexalith-*` metadata, mutating-without-idempotency, read-without-read-consistency — AC12 minimum-matrix gap, but better owned by Story 1.14 (Contract Spine CI gates). [CommitStatusContractGroupTests.cs:1694] — deferred, owned by 1.14
+- [x] [Review][Defer] No assertion that the document parses as OpenAPI 3.1 (only YAML stream load) — better owned by Story 1.6 foundation tests. [CommitStatusContractGroupTests.cs:1992] — deferred, pre-existing test-suite responsibility
+- [x] [Review][Defer] `CommitWorkspace` does not declare 429 even though `provider_rate_limited` is in canonical categories — cross-cutting consistency, not unique to this story. — deferred, cross-cutting
+- [x] [Review][Defer] `OpaqueIdentifier` does not reject `branchref_`/`digest_`/`provref_`/`authorref_` prefixes — global hardening, not in this story's scope. — deferred, global hardening
+- [x] [Review][Defer] (D2 resolution) Operator-disposition labels (`OperatorDispositionLabel` defined at yaml:5329) — defer wiring into status schemas to Story 6.3 where operations-console rendering needs concrete labels. — deferred to Story 6.3
+
+#### Dismissed (noise / false-positive)
+
+- `ReconciliationStatus.escalationRequired` boolean instead of enum — story Dev Notes use the word "flag"; boolean satisfies the contract.
+- `IdempotencyConflictGeneric` / `WorkspaceTransitionInvalidProblem` "not defined" — verified present at yaml:4511 and 4447.
+- `retryAfterSeconds: maximum: 3600` magic — defensible default cap.
+- Story narrative "28 tests passed" — unverifiable but harmless.
+- `ResolveRefs` test doesn't validate examples-vs-schema — root cause is covered by the schema-validation patches above.
+- `forbiddenLeakPatterns` case-insensitive — speculative future false-positive.
+- C3 TODO marker placement inside description text vs dedicated `x-hexalith-reference-pending` extension — convention drift, not a defect.
+- `RetryEligibility.advisoryOnly: const: true` not asserted in every example — overly cautious; `const` is statically enforced by validators.
+- (D4 resolution) Closed-enum for `commit_message_classification` — keep free-form regex per dev intent; tenant flexibility outweighs marginal sneak-channel risk. Audit redaction guidance carries the constraint.
 
 ## Dev Notes
 
@@ -255,6 +309,7 @@ Do not add provider readiness, workspace preparation, lock, file mutation, conte
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-14 | Code review patches applied (18 patches): fixed JSON-Schema allOf closure on `CommitWorkspaceAccepted`, completed `ProviderOutcome` shape in `WorkspaceStatus*` examples, split 409/503 Problem Details, relaxed `TaskStatus` required, aligned regex/length bounds for digest_/provref_/authorref_, added `ReconciliationStatusCompletedClean`, made `ProjectionLagMetadata.ageMilliseconds` and `WorkspaceStatus.acceptedCommandState` optional, removed `folder_acl_denied` from `GetTaskStatus`, broadened leak-scan, added per-operation tenant-authority assertion, all-11-state C6 catalog assertion, category-based negative-scope. Story status moved to done. | Claude Opus 4.7 |
 | 2026-05-13 | Implemented commit and workspace-status Contract Spine groups with focused offline validation. | Codex |
 | 2026-05-12 | Applied advanced elicitation hardening for authorization-before-observation, bounded status polling, hidden-resource equivalence, and stale projection evidence. | Codex |
 | 2026-05-12 | Applied party-mode review hardening for operation inventory, editable file ownership, retry semantics, tenant authority, metadata-only boundaries, status taxonomy, and validation matrix. | Codex |

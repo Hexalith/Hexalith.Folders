@@ -2,6 +2,14 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-10-author-commit-and-workspace-status-contract-groups (2026-05-14)
+
+- W1: Negative-test cases for duplicate `operationId`, missing required `x-hexalith-*` metadata, mutating-without-idempotency, and read-without-read-consistency are not exercised. AC12 minimum-matrix gap; better owned by Story 1.14 (Contract Spine CI gates). (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:1694`)
+- W2: No assertion that `hexalith.folders.v1.yaml` parses as a valid OpenAPI 3.1 document — the test currently only loads the file via `YamlStream`. Pre-existing across all contract-group tests; better owned by Story 1.6 foundation tests. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:LoadYamlMapping`)
+- W3: `CommitWorkspace` does not declare a 429 response even though `provider_rate_limited` is in the canonical-error-category set. Cross-cutting consistency across all mutating operations; not unique to this story. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: CommitWorkspace responses`)
+- W4: `OpaqueIdentifier` does not reject the new namespace prefixes `branchref_`, `digest_`, `provref_`, `authorref_`. Cross-namespace collision is theoretical; global hardening better handled with the wider opaque-identifier vocabulary review. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OpaqueIdentifier`)
+- W5: Wire `OperatorDispositionLabel` (defined at yaml:5329) into the relevant status schemas as part of Story 6.3 — operations console rendering. AC6 names disposition labels but Story 1.10 has no consumer of them yet; deferring keeps the contract surface free of unused fields until 6.3 defines the actual rendering requirements. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OperatorDispositionLabel`)
+
 ## Deferred from: code review of 1-9-author-file-mutation-and-context-query-contract-groups (2026-05-13)
 
 - W1: No `412 Precondition Failed` response for `ChangeFile` concurrency control — concurrency model and optimistic-concurrency headers (`If-Match`/`If-None-Match`) belong to Epic 4 runtime; Story 1.9 contract group declares only idempotency-conflict (409), not stale-content versioning. Revisit when Epic 4 implements ChangeFile semantics on prepared workspaces. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: ChangeFile`)

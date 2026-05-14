@@ -136,9 +136,18 @@ public sealed class CommitStatusContractGroupTests
                 .Select(value => value.Value ?? string.Empty)
                 .ToArray();
 
-            foreach (string expected in new[] { "tenant_access_denied", "folder_acl_denied", "read_model_unavailable", "not_found", "redacted" })
+            string[] expectedCategories = operation.OperationId == "GetTaskStatus"
+                ? new[] { "tenant_access_denied", "read_model_unavailable", "not_found", "redacted" }
+                : new[] { "tenant_access_denied", "folder_acl_denied", "read_model_unavailable", "not_found", "redacted" };
+
+            foreach (string expected in expectedCategories)
             {
                 categories.ShouldContain(expected, operation.OperationId);
+            }
+
+            if (operation.OperationId == "GetTaskStatus")
+            {
+                categories.ShouldNotContain("folder_acl_denied", "GetTaskStatus path is tenant+task scoped and has no folder ACL layer; declaring folder_acl_denied would leak the task-belongs-to-some-folder relation.");
             }
         }
 
@@ -158,20 +167,46 @@ public sealed class CommitStatusContractGroupTests
             RequiredMapping(schemas, schemaName);
         }
 
-        RequiredEnumValues(schemas, "LifecycleState").ShouldContain("committed");
-        RequiredEnumValues(schemas, "LifecycleState").ShouldContain("failed");
-        RequiredEnumValues(schemas, "LifecycleState").ShouldContain("unknown_provider_outcome");
-        RequiredEnumValues(schemas, "LifecycleState").ShouldContain("reconciliation_required");
+        string[] lifecycleStates = RequiredEnumValues(schemas, "LifecycleState");
+        foreach (string c6State in new[] { "requested", "preparing", "ready", "locked", "changes_staged", "dirty", "committed", "failed", "inaccessible", "unknown_provider_outcome", "reconciliation_required" })
+        {
+            lifecycleStates.ShouldContain(c6State, $"C6 transition matrix requires state '{c6State}'.");
+        }
         RequiredEnumValues(schemas, "ProviderOutcomeState").ShouldBe(["pending", "known_success", "known_failure", "unknown_provider_outcome", "reconciliation_required"]);
         RequiredEnumValues(schemas, "ReconciliationState").ShouldBe(["not_required", "required", "in_progress", "completed_clean", "completed_dirty", "failed"]);
 
-        foreach (string exampleName in new[] { "CommitWorkspaceRequest", "CommitWorkspaceAccepted", "WorkspaceStatusCommitted", "WorkspaceStatusUnknownProviderOutcome", "TaskStatusFailed", "CommitEvidenceRedacted", "ProviderOutcomeKnownFailure", "ProviderOutcomeUnknown", "ReconciliationStatusRequired", "ReconciliationStatusCompletedDirty" })
+        string[] story110Examples =
+        [
+            "CommitWorkspaceRequest",
+            "CommitWorkspaceAccepted",
+            "WorkspaceStatusCommitted",
+            "WorkspaceStatusUnknownProviderOutcome",
+            "TaskStatusFailed",
+            "CommitEvidenceRedacted",
+            "ProviderOutcomeKnownFailure",
+            "ProviderOutcomeUnknown",
+            "ReconciliationStatusRequired",
+            "ReconciliationStatusCompletedClean",
+            "ReconciliationStatusCompletedDirty",
+            "UnknownProviderOutcomeProblem",
+            "UnknownProviderOutcomeConflictProblem",
+            "ProviderUnavailableProblem",
+            "ProviderKnownFailureProblem",
+            "CommitFailedProblem",
+            "DirtyWorkspaceProblem",
+            "WorkspaceTransitionInvalidProblem",
+            "ReconciliationRequiredProblem",
+            "IdempotencyConflictGeneric",
+        ];
+
+        foreach (string exampleName in story110Examples)
         {
             examples.Children.ContainsKey(new YamlScalarNode(exampleName)).ShouldBeTrue(exampleName);
         }
 
+        HashSet<string> story110ExampleSet = new(story110Examples, StringComparer.Ordinal);
         string combinedExamples = string.Join("\n", examples.Children
-            .Where(entry => entry.Key is YamlScalarNode scalar && (scalar.Value?.Contains("Commit", StringComparison.Ordinal) == true || scalar.Value?.Contains("Status", StringComparison.Ordinal) == true || scalar.Value?.Contains("ProviderOutcome", StringComparison.Ordinal) == true || scalar.Value?.Contains("Reconciliation", StringComparison.Ordinal) == true))
+            .Where(entry => entry.Key is YamlScalarNode scalar && scalar.Value is not null && story110ExampleSet.Contains(scalar.Value))
             .Select(entry => SerializeYaml(entry.Value)));
 
         string[] forbiddenLeakPatterns =
@@ -199,6 +234,53 @@ public sealed class CommitStatusContractGroupTests
     }
 
     [Fact]
+    public void CommitStatusOperations_RejectClientControlledTenantAuthority()
+    {
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode components = RequiredMapping(root, "components");
+        YamlMappingNode schemas = RequiredMapping(components, "schemas");
+        Operation[] operations = EnumerateOperations(root).Where(o => CommitStatusOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
+
+        operations.Length.ShouldBe(CommitStatusOperationIds.Length);
+
+        foreach (Operation operation in operations)
+        {
+            operation.Path.ShouldNotContain("{tenantId}", Case.Insensitive, operation.OperationId);
+            operation.Path.ShouldNotContain("/tenants/", Case.Insensitive, operation.OperationId);
+
+            foreach (YamlMappingNode parameter in EnumerateParameters(operation.PathItem, operation.Node))
+            {
+                string? name = GetOptionalScalar(parameter, "name");
+                string? referenced = GetOptionalScalar(parameter, "$ref");
+
+                if (name is not null)
+                {
+                    name.ShouldNotBe("tenantId", $"{operation.OperationId}: client-controlled tenantId parameter is forbidden.");
+                    name.ShouldNotBe("X-Hexalith-Tenant-Id", $"{operation.OperationId}: client-controlled tenant header is forbidden.");
+                    name.Contains("tenant", StringComparison.OrdinalIgnoreCase).ShouldBeFalse($"{operation.OperationId}: parameter '{name}' looks tenant-controlled.");
+                }
+
+                if (referenced is not null)
+                {
+                    referenced.ShouldNotEndWith("/TenantId", $"{operation.OperationId}: $ref to TenantId parameter is forbidden.");
+                }
+            }
+
+            if (operation.OperationId == "CommitWorkspace")
+            {
+                YamlMappingNode requestSchema = RequiredMapping(schemas, "CommitWorkspaceRequest");
+                YamlMappingNode requestProperties = RequiredMapping(requestSchema, "properties");
+
+                foreach (KeyValuePair<YamlNode, YamlNode> property in requestProperties.Children)
+                {
+                    string propertyName = property.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+                    propertyName.Contains("tenant", StringComparison.OrdinalIgnoreCase).ShouldBeFalse($"CommitWorkspaceRequest: property '{propertyName}' looks tenant-controlled; tenant authority is envelope-derived.");
+                }
+            }
+        }
+    }
+
+    [Fact]
     public void CommitStatusContractNotes_RecordDeferredOwnersAndNegativeScope()
     {
         File.Exists(ContractNotesPath).ShouldBeTrue(ContractNotesPath);
@@ -209,23 +291,58 @@ public sealed class CommitStatusContractGroupTests
             notes.ShouldContain(required, Case.Insensitive);
         }
 
-        string[] forbiddenRoots =
+        // Per Dev Notes (story 1.10 line 170): "assert forbidden artifact categories and paths, not incidental current filenames, so the check remains stable as the scaffold grows."
+        // Each entry is (project, relativePathPattern, description). Patterns target capability-bearing source under conceptual subfolders, not project-root scaffold files.
+        (string Project, string Pattern, string Description)[] forbiddenCategories =
         [
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Endpoints", "CommitEndpoints.cs"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Cli", "Commands"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Mcp", "Tools"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Workers", "CommitWorkflows"),
+            ("Hexalith.Folders.Client", "Generated/**/*.cs", "generated SDK output"),
+            ("Hexalith.Folders.Client", "**/Nswag*.json", "NSwag generation configuration"),
+            ("Hexalith.Folders.Server", "Endpoints/**/*.cs", "REST handlers/endpoints"),
+            ("Hexalith.Folders.Server", "Commands/**/*.cs", "server-side commands"),
+            ("Hexalith.Folders", "Aggregates/**/*.cs", "domain aggregate behavior"),
+            ("Hexalith.Folders", "Providers/**/*.cs", "provider adapters"),
+            ("Hexalith.Folders.Cli", "Commands/**/*.cs", "CLI commands"),
+            ("Hexalith.Folders.Mcp", "Tools/**/*.cs", "MCP tools"),
+            ("Hexalith.Folders.Workers", "CommitWorkflows/**/*.cs", "commit-workflow workers"),
+            ("Hexalith.Folders.Workers", "Reconciliation/**/*.cs", "reconciliation workers"),
+            ("Hexalith.Folders.Workers", "Handlers/**/*.cs", "worker event handlers"),
+            ("Hexalith.Folders.UI", "Pages/**/*.razor", "UI pages"),
         ];
 
-        foreach (string forbiddenRoot in forbiddenRoots)
+        string srcRoot = Path.Combine(RepositoryRoot, "src");
+        foreach ((string project, string pattern, string description) in forbiddenCategories)
         {
-            File.Exists(forbiddenRoot).ShouldBeFalse(forbiddenRoot);
-            Directory.Exists(forbiddenRoot).ShouldBeFalse(forbiddenRoot);
+            string projectRoot = Path.Combine(srcRoot, project);
+            if (!Directory.Exists(projectRoot))
+            {
+                continue;
+            }
+
+            string[] matches = Directory.EnumerateFiles(projectRoot, "*", SearchOption.AllDirectories)
+                .Where(file =>
+                {
+                    string relative = Path.GetRelativePath(projectRoot, file).Replace('\\', '/');
+                    return !relative.StartsWith("obj/", StringComparison.Ordinal)
+                        && !relative.StartsWith("bin/", StringComparison.Ordinal)
+                        && MatchesGlob(relative, pattern);
+                })
+                .ToArray();
+
+            matches.ShouldBeEmpty($"Story 1.10 negative scope: {description} ({project}/{pattern}) must not be added.");
         }
 
         string combined = File.ReadAllText(OpenApiPath) + "\n" + notes;
         Regex.IsMatch(combined, @"git submodule update --init\s+--recursive", RegexOptions.IgnoreCase).ShouldBeFalse();
+    }
+
+    private static bool MatchesGlob(string relativePath, string pattern)
+    {
+        string regexPattern = "^" + Regex.Escape(pattern)
+            .Replace(@"\*\*/", "(?:.*/)?")
+            .Replace(@"\*\*", ".*")
+            .Replace(@"\*", "[^/]*")
+            .Replace(@"\?", "[^/]") + "$";
+        return Regex.IsMatch(relativePath, regexPattern);
     }
 
     private sealed record Operation(string Path, string Method, string OperationId, YamlMappingNode Node, YamlMappingNode PathItem);

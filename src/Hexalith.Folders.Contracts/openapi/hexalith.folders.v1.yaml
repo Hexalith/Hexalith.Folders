@@ -3145,7 +3145,7 @@ paths:
                 dirtyWorkspace:
                   $ref: "#/components/examples/DirtyWorkspaceProblem"
                 unknownProviderOutcome:
-                  $ref: "#/components/examples/UnknownProviderOutcomeProblem"
+                  $ref: "#/components/examples/UnknownProviderOutcomeConflictProblem"
                 reconciliationRequired:
                   $ref: "#/components/examples/ReconciliationRequiredProblem"
         "422":
@@ -3169,7 +3169,7 @@ paths:
                 providerUnavailable:
                   $ref: "#/components/examples/ProviderUnavailableProblem"
                 providerKnownFailure:
-                  $ref: "#/components/examples/ProviderOutcomeKnownFailure"
+                  $ref: "#/components/examples/ProviderKnownFailureProblem"
       x-hexalith-idempotency-key:
         required: true
         adapterSourcing:
@@ -3426,7 +3426,6 @@ paths:
       x-hexalith-canonical-error-categories:
         - authentication_failure
         - tenant_access_denied
-        - folder_acl_denied
         - read_model_unavailable
         - not_found
         - redacted
@@ -3671,6 +3670,8 @@ paths:
               examples:
                 required:
                   $ref: "#/components/examples/ReconciliationStatusRequired"
+                completedClean:
+                  $ref: "#/components/examples/ReconciliationStatusCompletedClean"
                 completedDirty:
                   $ref: "#/components/examples/ReconciliationStatusCompletedDirty"
         "401":
@@ -4578,6 +4579,20 @@ components:
         clientAction: wait_for_reconciliation
         details:
           visibility: metadata_only
+    UnknownProviderOutcomeConflictProblem:
+      summary: Authorized caller — workspace state conflicts with the requested commit because the prior commit's provider outcome is unknown.
+      value:
+        type: about:blank
+        title: Unknown provider outcome
+        status: 409
+        category: unknown_provider_outcome
+        code: unknown_provider_outcome
+        message: Workspace cannot accept a new commit while the prior commit's provider outcome is unknown. Reconciliation is required before retrying.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: wait_for_reconciliation
+        details:
+          visibility: metadata_only
     ProviderUnavailableProblem:
       summary: Authorized caller — provider dependency is temporarily unavailable.
       value:
@@ -4590,6 +4605,20 @@ components:
         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
         retryable: true
         clientAction: retry
+        details:
+          visibility: metadata_only
+    ProviderKnownFailureProblem:
+      summary: Authorized caller — provider reported a known terminal failure for the requested operation.
+      value:
+        type: about:blank
+        title: Provider failure known
+        status: 503
+        category: provider_failure_known
+        code: provider_failure_known
+        message: Provider reported a known terminal failure for the requested workspace operation.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: do_not_retry
         details:
           visibility: metadata_only
     CommitWorkspaceRequest:
@@ -4640,8 +4669,19 @@ components:
           stateSource: projection
           observedAt: "2026-05-12T12:35:10Z"
         providerOutcome:
+          operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM001
           state: known_success
+          sanitizedStatusClass: success
           providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV001
+          retryEligibility:
+            eligible: false
+            reasonCode: terminal_committed
+            advisoryOnly: true
+          freshness:
+            readConsistency: eventually_consistent
+            observedAt: "2026-05-12T12:35:10Z"
+            projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM001
+            stale: false
         retryEligibility:
           eligible: false
           reasonCode: terminal_committed
@@ -4670,8 +4710,19 @@ components:
           stateSource: projection
           observedAt: "2026-05-12T12:40:30Z"
         providerOutcome:
+          operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM002
           state: unknown_provider_outcome
+          sanitizedStatusClass: unknown_provider_outcome
           providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PRV002
+          retryEligibility:
+            eligible: false
+            reasonCode: wait_for_reconciliation
+            advisoryOnly: true
+          freshness:
+            readConsistency: eventually_consistent
+            observedAt: "2026-05-12T12:40:30Z"
+            projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM002
+            stale: false
         retryEligibility:
           eligible: false
           reasonCode: wait_for_reconciliation
@@ -4716,6 +4767,7 @@ components:
           - operation_id
           - changed_path_metadata_digest
           - provider_correlation_reference
+          - correlation_id
         freshness:
           readConsistency: eventually_consistent
           observedAt: "2026-05-12T12:35:10Z"
@@ -4786,6 +4838,23 @@ components:
           readConsistency: eventually_consistent
           observedAt: "2026-05-12T12:45:00Z"
           projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM008
+          stale: false
+    ReconciliationStatusCompletedClean:
+      summary: Authorized reconciliation completed with clean evidence and no escalation required.
+      value:
+        reconciliationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REC003
+        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COM007
+        state: completed_clean
+        finalStateEvidence: committed
+        escalationRequired: false
+        retryEligibility:
+          eligible: false
+          reasonCode: reconciliation_completed_clean
+          advisoryOnly: true
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-12T12:46:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM009
           stale: false
     CommitFailedProblem:
       summary: Authorized caller - commit failed after prerequisites were evaluated.
@@ -6642,14 +6711,14 @@ components:
           type: string
           minLength: 16
           maxLength: 128
-          pattern: "^digest_[A-Za-z0-9_-]{6,119}$"
+          pattern: "^digest_[A-Za-z0-9_-]{9,121}$"
           description: Digest of changed-path metadata. It is never a raw changed-path list, file content, diff, or local path.
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         authorMetadataReference:
           type: string
           minLength: 16
           maxLength: 128
-          pattern: "^authorref_[A-Za-z0-9_-]{6,116}$"
+          pattern: "^authorref_[A-Za-z0-9_-]{6,118}$"
           description: Opaque author reference. It must not contain names, email addresses, provider users, tokens, or credential material.
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         commitMessageClassification:
@@ -6670,7 +6739,6 @@ components:
       allOf:
         - $ref: "#/components/schemas/AcceptedCommand"
         - type: object
-          additionalProperties: false
           required:
             - operationId
             - acceptedCommandState
@@ -6694,7 +6762,6 @@ components:
         - folderId
         - workspaceId
         - currentState
-        - acceptedCommandState
         - projectedState
         - providerOutcome
         - retryEligibility
@@ -6708,7 +6775,9 @@ components:
         currentState:
           $ref: "#/components/schemas/LifecycleState"
         acceptedCommandState:
-          $ref: "#/components/schemas/AcceptedCommandState"
+          allOf:
+            - $ref: "#/components/schemas/AcceptedCommandState"
+          description: Last accepted command state. Omitted when the workspace has never received a commit command (e.g., immediately after preparation).
         projectedState:
           $ref: "#/components/schemas/ProjectedWorkspaceState"
         providerOutcome:
@@ -6770,8 +6839,6 @@ components:
       required:
         - taskId
         - currentState
-        - terminalState
-        - lastOperationId
         - retryEligibility
         - freshness
       properties:
@@ -6780,9 +6847,13 @@ components:
         currentState:
           $ref: "#/components/schemas/LifecycleState"
         terminalState:
-          $ref: "#/components/schemas/LifecycleState"
+          allOf:
+            - $ref: "#/components/schemas/LifecycleState"
+          description: Terminal lifecycle state when the task has completed. Omitted while the task is still in flight.
         lastOperationId:
-          $ref: "#/components/schemas/OpaqueIdentifier"
+          allOf:
+            - $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Most recent operation accepted on this task. Omitted when no operation has been accepted yet.
         lastFailureCategory:
           $ref: "#/components/schemas/CanonicalErrorCategory"
         retryEligibility:
@@ -6818,12 +6889,12 @@ components:
           type: string
           minLength: 16
           maxLength: 128
-          pattern: "^digest_[A-Za-z0-9_-]{6,119}$"
+          pattern: "^digest_[A-Za-z0-9_-]{9,121}$"
         providerCorrelationReference:
           type: string
           minLength: 16
           maxLength: 128
-          pattern: "^provref_[A-Za-z0-9_-]{6,118}$"
+          pattern: "^provref_[A-Za-z0-9_-]{8,120}$"
         redaction:
           $ref: "#/components/schemas/RedactionMetadata"
         auditMetadataKeys:
@@ -6856,7 +6927,7 @@ components:
           type: string
           minLength: 16
           maxLength: 128
-          pattern: "^provref_[A-Za-z0-9_-]{6,118}$"
+          pattern: "^provref_[A-Za-z0-9_-]{8,120}$"
         retryEligibility:
           $ref: "#/components/schemas/RetryEligibility"
         retryAfter:
@@ -6950,12 +7021,12 @@ components:
       type: object
       additionalProperties: false
       required:
-        - ageMilliseconds
         - stateSource
       properties:
         ageMilliseconds:
           type: integer
           minimum: 0
+          description: Projection lag in milliseconds when the read-model is available. Omitted when stateSource is `unavailable` so callers do not infer unbounded time-since-last-event.
         stateSource:
           type: string
           enum:
