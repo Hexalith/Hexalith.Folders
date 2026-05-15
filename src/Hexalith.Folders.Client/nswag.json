@@ -3,13 +3,13 @@
   "documentGenerator": {
     "fromDocument": {
       "url": "../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
-      "output": null,
-      "newLineBehavior": "LF"
+      "output": null
     }
   },
   "codeGenerators": {
     "openApiToCSharpClient": {
       "generateClientClasses": true,
+      "newLineBehavior": "LF",
       "suppressClientClassesOutput": false,
       "generateClientInterfaces": true,
       "suppressClientInterfacesOutput": false,

@@ -6,6 +6,13 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Generation\**\*.cs" />
+    <EmbeddedResource Remove="Generation\**" />
+    <None Remove="Generation\**" />
+    <None Include="Generation\Hexalith.Folders.Client.Generation.csproj" Pack="false" />
+    <None Include="Generation\Program.cs" Pack="false" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NSwag.MSBuild" PrivateAssets="all" />
   </ItemGroup>
@@ -19,6 +26,7 @@
     <HexalithFoldersContractSpine>$(MSBuildProjectDirectory)\..\Hexalith.Folders.Contracts\openapi\hexalith.folders.v1.yaml</HexalithFoldersContractSpine>
     <HexalithFoldersGeneratedClient>$(MSBuildProjectDirectory)\Generated\HexalithFoldersClient.g.cs</HexalithFoldersGeneratedClient>
     <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)\Generated\HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
+    <HexalithFoldersHelperGeneratorProject>$(MSBuildProjectDirectory)\Generation\Hexalith.Folders.Client.Generation.csproj</HexalithFoldersHelperGeneratorProject>
   </PropertyGroup>
   <Target Name="GenerateHexalithFoldersClient"
           BeforeTargets="BeforeCompile"
@@ -29,9 +37,18 @@
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
           Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
+  <Target Name="GenerateHexalithFoldersIdempotencyHelpers"
+          BeforeTargets="BeforeCompile"
+          DependsOnTargets="GenerateHexalithFoldersClient"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)\Generation\Program.cs"
+          Outputs="$(HexalithFoldersGeneratedHelpers)"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -- --repository-root &quot;$(MSBuildProjectDirectory)\..\..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)\nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot;" />
+  </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           BeforeTargets="CoreCompile"
-          DependsOnTargets="GenerateHexalithFoldersClient"
+          DependsOnTargets="GenerateHexalithFoldersIdempotencyHelpers"
           Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersGeneratedHelpers)"
           Outputs="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp"
           Condition="'$(DesignTimeBuild)' != 'true'">

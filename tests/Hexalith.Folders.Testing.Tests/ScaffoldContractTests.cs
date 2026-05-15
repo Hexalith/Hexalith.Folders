@@ -426,6 +426,7 @@ public sealed class ScaffoldContractTests
             .Select(area => Path.Combine(root, area))
             .Where(Directory.Exists)
             .SelectMany(area => SafeEnumerate(area, "Hexalith.Folders*.csproj", SearchOption.AllDirectories))
+            .Where(path => !Normalize(Path.GetRelativePath(root, path)).StartsWith("src/Hexalith.Folders.Client/Generation/", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal);
     }
 

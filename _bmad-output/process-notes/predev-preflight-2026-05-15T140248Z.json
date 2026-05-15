@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-15T15:02:50Z",
+  "timestamp": "2026-05-15T14:02:48Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -12,7 +12,7 @@
       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
       "result": "pass",
       "details": "PARSE OK",
-      "file_size_bytes": 7943,
+      "file_size_bytes": 7951,
       "line_count": 157,
       "top_level_keys": [
         "development_status",
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs\n M src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs\n M src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj\n M src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs\n M src/Hexalith.Folders.Client/nswag.json\n M tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs\n M tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj\n M tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs\n?? src/Hexalith.Folders.Client/Generation/\n",
+      "stdout": " M src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs\n M src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs\n M src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj\n M src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs\n M src/Hexalith.Folders.Client/nswag.json\n M tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs\n M tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj\n?? src/Hexalith.Folders.Client/Generation/\n",
       "stderr": "",
-      "dirty_path_count": 11,
+      "dirty_path_count": 8,
       "result": "fail",
-      "details": "11 dirty path(s)"
+      "details": "8 dirty path(s)"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
