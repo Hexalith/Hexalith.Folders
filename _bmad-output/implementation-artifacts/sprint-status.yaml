@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-15T12:40:34+02:00
+# last_updated: 2026-05-15T13:20:00+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -63,8 +63,8 @@ development_status:
   epic-1-retrospective: optional
 
   # Epic 2: Tenant-Scoped Folder Access And Lifecycle
-  epic-2: backlog
-  2-1-stand-up-domain-service-host-with-tenants-integration: backlog
+  epic-2: in-progress
+  2-1-stand-up-domain-service-host-with-tenants-integration: ready-for-dev
   2-2-implement-organization-aggregate-acl-baseline: backlog
   2-3-create-folders-within-a-tenant: backlog
   2-4-grant-and-revoke-folder-access: backlog
