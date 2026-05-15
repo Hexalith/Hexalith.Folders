@@ -1,6 +1,6 @@
 # Story 1.12: Wire NSwag SDK generation with idempotency helpers
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-12
 
@@ -31,56 +31,56 @@ so that .NET callers use the same operation shapes and retry identity semantics 
 
 ## Tasks / Subtasks
 
-- [ ] Confirm prerequisites and freeze the generation source. (AC: 1, 4, 5, 9, 11)
-  - [ ] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
-  - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/idempotency-encoding-corpus.json`, `tests/fixtures/previous-spine.yaml`, and `tests/fixtures/parity-contract.schema.json`.
-  - [ ] Inspect current Story 1.6 through Story 1.11 artifacts before assuming operation IDs, request schemas, or `x-hexalith-*` metadata names.
-  - [ ] Treat missing or malformed Contract Spine metadata as prerequisite drift. Do not invent equivalence fields, header rules, error categories, or operation names inside the generator.
-  - [ ] Do not initialize or update nested submodules.
-- [ ] Add deterministic NSwag generation wiring in the client project. (AC: 1, 4, 5, 8, 9, 14, 16)
-  - [ ] Add NSwag package/tool references through central package management in `Directory.Packages.props`; do not add inline package versions in project files.
-  - [ ] Add `Hexalith.Folders.Client` generation configuration, such as `nswag.json` plus an MSBuild target in `Hexalith.Folders.Client.csproj`, using the Contract Spine file as input.
-  - [ ] Generate C# clients and DTOs under `src/Hexalith.Folders.Client/Generated/`; make the folder clearly generated and keep manual extension code outside it.
-  - [ ] Use `HttpClient` injection and avoid generated clients owning the lifetime of shared `HttpClient`.
-  - [ ] Preserve async-only APIs and `CancellationToken` support; do not generate sync methods.
-  - [ ] Preserve operation IDs and route names from the spine; do not regroup operations in a way that makes adapter parity rows ambiguous.
-  - [ ] Keep generated output deterministic: stable namespace, stable class names, stable collection types, stable nullable behavior, no timestamps, no machine-local paths, and no environment-dependent base URL.
-  - [ ] Add stale-output detection that compares the generated clients/helpers against the current Contract Spine input and generation configuration without timestamp or machine-local-path dependence.
-- [ ] Generate idempotency helper code from Contract Spine extensions. (AC: 2, 3, 4, 6, 7, 12, 13, 15, 16)
-  - [ ] For every mutating operation with `x-hexalith-idempotency-equivalence`, generate a helper on the relevant request DTO or companion partial type named `ComputeIdempotencyHash()`.
-  - [ ] Classify helper eligibility from the OpenAPI operation method and declared `x-hexalith-idempotency-equivalence`; non-mutating operations must never receive helpers, and mutating operations without valid equivalence metadata fail generation instead of hashing whole payloads.
-  - [ ] Base helper input only on the declared field list. Field paths must be consumed in declared lexicographic order; fail generation when the list is missing, duplicated, not lexicographic, or points to a missing schema property.
-  - [ ] Resolve declared field paths through local `$ref`, `allOf`, nullable, array, and object schema shapes with deterministic diagnostics; unsupported `oneOf` or ambiguous union shapes fail closed until the Contract Spine records a discriminator or explicit mapping.
-  - [ ] Use a deterministic canonical representation before hashing. The representation must distinguish null from omitted values unless the schema declares an explicit default-equivalence rule, and the implementation must either preserve property presence or reject helper generation for DTO shapes where presence cannot be observed.
-  - [ ] Normalize only fields whose parser-policy classification allows normalization. Do not globally normalize opaque identifiers, branch names, provider references, commit metadata classifications, or path metadata.
-  - [ ] For path metadata fields, apply exactly one safe percent-decode step only where Story 1.5 classified that field as eligible; reject double-decode ambiguity.
-  - [ ] Use SHA-256 or another explicitly documented stable hash algorithm with UTF-8 canonical bytes and an algorithm label in the helper output or test fixture expectations.
-  - [ ] Emit provenance for each helper that is safe to inspect, such as operation ID, extension pointer, schema pointer, normalized generation configuration hash, and Contract Spine content hash; do not emit raw request values or machine-local paths.
-  - [ ] Never include raw file content, raw diffs, provider tokens, credential material, raw provider payloads, generated context payloads, production URLs, local filesystem paths, or unauthorized resource hints in canonical helper input.
-  - [ ] Do not implement runtime idempotency persistence, retry storage, EventStore command handling, or provider side effects.
-- [ ] Add focused local tests for generation and helper behavior. (AC: 1, 2, 3, 6, 7, 8, 9, 10, 12, 14, 15, 16)
-  - [ ] Add or update tests under `tests/Hexalith.Folders.Client.Tests/` that run without Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, network calls, production secrets, or initialized nested submodules.
-  - [ ] Verify generation can run from a clean checkout using only repository files and central package versions.
-  - [ ] Verify generated clients compile and expose expected operation-derived method or interface names for the currently authored Contract Spine operations.
-  - [ ] Verify mutating DTO helpers exist only where the Contract Spine declares idempotency equivalence; query operations must not get helper methods or idempotency-key defaults.
-  - [ ] Verify malformed extension metadata fails closed with clear diagnostics, including unknown shapes, duplicate fields, missing schema properties, non-lexicographic field lists, unsupported normalization declarations, and ambiguous metadata-versus-content field references.
-  - [ ] Verify local `$ref`, `allOf`, nullable, array, and object field-path resolution succeeds only for deterministic shapes, and ambiguous `oneOf`/union shapes fail with a contract-drift diagnostic.
-  - [ ] Verify canonical helper results are stable across repeated invocations and independent of object property declaration order.
-  - [ ] Verify fixture-driven parser-policy cases from `idempotency-encoding-corpus.json`: Unicode variants, zero-width joiner cases, ULID casing, duplicate JSON key rejection expectation, null versus omitted, percent encoding, malformed percent sequences, encoded slash, double-decode attempts, whitespace, and malformed key examples where applicable.
-  - [ ] Verify file mutation helpers hash declared metadata such as file name, content type, or content-hash references when declared, while proving raw bytes, stream identity, multipart boundaries, temporary names, and local paths do not affect helper input or outputs.
-  - [ ] Verify generated exception or response handling preserves RFC 9457 Problem Details plus Hexalith fields without requiring adapters to parse messages.
-  - [ ] Verify stale generated clients/helpers are detected after a controlled Contract Spine or generation-config change, and verify diagnostics expose only safe provenance, not payload values, absolute paths, URLs, tokens, or unauthorized hints.
-  - [ ] Verify negative scope: no server runtime, domain aggregate, provider adapter, CLI, MCP, UI, worker, parity oracle result row, CI workflow, or nested-submodule changes are introduced.
-- [ ] Record generation decisions for downstream stories. (AC: 4, 8, 10, 12, 13, 14, 16)
-  - [ ] Add a concise note such as `docs/contract/sdk-generation-and-idempotency-helpers.md` if generation details, hash format, or deferred decisions need a stable human-readable home.
-  - [ ] Record exact generated file locations, rerun command, deterministic-output expectations, line-ending and banner/timestamp policy, stale-output detection behavior, safe provenance fields, and how Story 1.13 should consume operation IDs and helper metadata.
-  - [ ] Record that generated NSwag files are not manually edited; customization belongs in companion or partial files outside `Generated/`.
-  - [ ] Record that downstream Story 1.13 and Story 1.14 consumers must use generated operation IDs and helper entry points instead of reimplementing hash construction or generation policy.
-  - [ ] Record deferred owners for final parity-oracle rows, CI golden-file gate wiring, runtime idempotency persistence, SDK convenience `UploadFileAsync(stream)`, CLI and MCP wrappers, and release documentation.
-- [ ] Run verification. (AC: 1, 2, 6, 8, 9)
-  - [ ] Run the focused client generation tests.
-  - [ ] Run generation twice from the same Contract Spine input and verify normalized generated bytes have no diff, with tool banners and timestamps disabled, suppressed, or normalized.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if the current scaffold and active Contract Spine changes allow it. If blocked by unrelated in-progress Story 1.7 work or prerequisite drift, record the exact blocker without expanding this story scope.
+- [x] Confirm prerequisites and freeze the generation source. (AC: 1, 4, 5, 9, 11)
+  - [x] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
+  - [x] Inspect `docs/contract/idempotency-and-parity-rules.md`, `tests/fixtures/idempotency-encoding-corpus.json`, `tests/fixtures/previous-spine.yaml`, and `tests/fixtures/parity-contract.schema.json`.
+  - [x] Inspect current Story 1.6 through Story 1.11 artifacts before assuming operation IDs, request schemas, or `x-hexalith-*` metadata names.
+  - [x] Treat missing or malformed Contract Spine metadata as prerequisite drift. Do not invent equivalence fields, header rules, error categories, or operation names inside the generator.
+  - [x] Do not initialize or update nested submodules.
+- [x] Add deterministic NSwag generation wiring in the client project. (AC: 1, 4, 5, 8, 9, 14, 16)
+  - [x] Add NSwag package/tool references through central package management in `Directory.Packages.props`; do not add inline package versions in project files.
+  - [x] Add `Hexalith.Folders.Client` generation configuration, such as `nswag.json` plus an MSBuild target in `Hexalith.Folders.Client.csproj`, using the Contract Spine file as input.
+  - [x] Generate C# clients and DTOs under `src/Hexalith.Folders.Client/Generated/`; make the folder clearly generated and keep manual extension code outside it.
+  - [x] Use `HttpClient` injection and avoid generated clients owning the lifetime of shared `HttpClient`.
+  - [x] Preserve async-only APIs and `CancellationToken` support; do not generate sync methods.
+  - [x] Preserve operation IDs and route names from the spine; do not regroup operations in a way that makes adapter parity rows ambiguous.
+  - [x] Keep generated output deterministic: stable namespace, stable class names, stable collection types, stable nullable behavior, no timestamps, no machine-local paths, and no environment-dependent base URL.
+  - [x] Add stale-output detection that compares the generated clients/helpers against the current Contract Spine input and generation configuration without timestamp or machine-local-path dependence.
+- [x] Generate idempotency helper code from Contract Spine extensions. (AC: 2, 3, 4, 6, 7, 12, 13, 15, 16)
+  - [x] For every mutating operation with `x-hexalith-idempotency-equivalence`, generate a helper on the relevant request DTO or companion partial type named `ComputeIdempotencyHash()`.
+  - [x] Classify helper eligibility from the OpenAPI operation method and declared `x-hexalith-idempotency-equivalence`; non-mutating operations must never receive helpers, and mutating operations without valid equivalence metadata fail generation instead of hashing whole payloads.
+  - [x] Base helper input only on the declared field list. Field paths must be consumed in declared lexicographic order; fail generation when the list is missing, duplicated, not lexicographic, or points to a missing schema property.
+  - [x] Resolve declared field paths through local `$ref`, `allOf`, nullable, array, and object schema shapes with deterministic diagnostics; unsupported `oneOf` or ambiguous union shapes fail closed until the Contract Spine records a discriminator or explicit mapping.
+  - [x] Use a deterministic canonical representation before hashing. The representation must distinguish null from omitted values unless the schema declares an explicit default-equivalence rule, and the implementation must either preserve property presence or reject helper generation for DTO shapes where presence cannot be observed.
+  - [x] Normalize only fields whose parser-policy classification allows normalization. Do not globally normalize opaque identifiers, branch names, provider references, commit metadata classifications, or path metadata.
+  - [x] For path metadata fields, apply exactly one safe percent-decode step only where Story 1.5 classified that field as eligible; reject double-decode ambiguity.
+  - [x] Use SHA-256 or another explicitly documented stable hash algorithm with UTF-8 canonical bytes and an algorithm label in the helper output or test fixture expectations.
+  - [x] Emit provenance for each helper that is safe to inspect, such as operation ID, extension pointer, schema pointer, normalized generation configuration hash, and Contract Spine content hash; do not emit raw request values or machine-local paths.
+  - [x] Never include raw file content, raw diffs, provider tokens, credential material, raw provider payloads, generated context payloads, production URLs, local filesystem paths, or unauthorized resource hints in canonical helper input.
+  - [x] Do not implement runtime idempotency persistence, retry storage, EventStore command handling, or provider side effects.
+- [x] Add focused local tests for generation and helper behavior. (AC: 1, 2, 3, 6, 7, 8, 9, 10, 12, 14, 15, 16)
+  - [x] Add or update tests under `tests/Hexalith.Folders.Client.Tests/` that run without Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, network calls, production secrets, or initialized nested submodules.
+  - [x] Verify generation can run from a clean checkout using only repository files and central package versions.
+  - [x] Verify generated clients compile and expose expected operation-derived method or interface names for the currently authored Contract Spine operations.
+  - [x] Verify mutating DTO helpers exist only where the Contract Spine declares idempotency equivalence; query operations must not get helper methods or idempotency-key defaults.
+  - [x] Verify malformed extension metadata fails closed with clear diagnostics, including unknown shapes, duplicate fields, missing schema properties, non-lexicographic field lists, unsupported normalization declarations, and ambiguous metadata-versus-content field references.
+  - [x] Verify local `$ref`, `allOf`, nullable, array, and object field-path resolution succeeds only for deterministic shapes, and ambiguous `oneOf`/union shapes fail with a contract-drift diagnostic.
+  - [x] Verify canonical helper results are stable across repeated invocations and independent of object property declaration order.
+  - [x] Verify fixture-driven parser-policy cases from `idempotency-encoding-corpus.json`: Unicode variants, zero-width joiner cases, ULID casing, duplicate JSON key rejection expectation, null versus omitted, percent encoding, malformed percent sequences, encoded slash, double-decode attempts, whitespace, and malformed key examples where applicable.
+  - [x] Verify file mutation helpers hash declared metadata such as file name, content type, or content-hash references when declared, while proving raw bytes, stream identity, multipart boundaries, temporary names, and local paths do not affect helper input or outputs.
+  - [x] Verify generated exception or response handling preserves RFC 9457 Problem Details plus Hexalith fields without requiring adapters to parse messages.
+  - [x] Verify stale generated clients/helpers are detected after a controlled Contract Spine or generation-config change, and verify diagnostics expose only safe provenance, not payload values, absolute paths, URLs, tokens, or unauthorized hints.
+  - [x] Verify negative scope: no server runtime, domain aggregate, provider adapter, CLI, MCP, UI, worker, parity oracle result row, CI workflow, or nested-submodule changes are introduced.
+- [x] Record generation decisions for downstream stories. (AC: 4, 8, 10, 12, 13, 14, 16)
+  - [x] Add a concise note such as `docs/contract/sdk-generation-and-idempotency-helpers.md` if generation details, hash format, or deferred decisions need a stable human-readable home.
+  - [x] Record exact generated file locations, rerun command, deterministic-output expectations, line-ending and banner/timestamp policy, stale-output detection behavior, safe provenance fields, and how Story 1.13 should consume operation IDs and helper metadata.
+  - [x] Record that generated NSwag files are not manually edited; customization belongs in companion or partial files outside `Generated/`.
+  - [x] Record that downstream Story 1.13 and Story 1.14 consumers must use generated operation IDs and helper entry points instead of reimplementing hash construction or generation policy.
+  - [x] Record deferred owners for final parity-oracle rows, CI golden-file gate wiring, runtime idempotency persistence, SDK convenience `UploadFileAsync(stream)`, CLI and MCP wrappers, and release documentation.
+- [x] Run verification. (AC: 1, 2, 6, 8, 9)
+  - [x] Run the focused client generation tests.
+  - [x] Run generation twice from the same Contract Spine input and verify normalized generated bytes have no diff, with tool banners and timestamps disabled, suppressed, or normalized.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if the current scaffold and active Contract Spine changes allow it. If blocked by unrelated in-progress Story 1.7 work or prerequisite drift, record the exact blocker without expanding this story scope.
 
 ## Dev Notes
 
@@ -206,18 +206,47 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
 | 2026-05-12 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-12 | Applied party-mode review hardening for canonical idempotency hash bytes, helper eligibility, deterministic generation evidence, and generated-code ownership. | Codex |
 | 2026-05-13 | Applied advanced-elicitation hardening for stale-output detection, field-path resolution, safe helper provenance, and leak-safe diagnostics. | Codex |
+| 2026-05-15 | Implemented NSwag client generation, generated idempotency helper companions, deterministic/stale-output tests, and downstream SDK generation documentation. Story ready for review. | Codex |
 
 ## Dev Agent Record
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-15: Red phase confirmed with `dotnet test .\tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj --no-restore --filter "FullyQualifiedName~ClientGenerationTests"` failing on missing generated client/idempotency namespaces.
+- 2026-05-15: Focused client tests passed with `dotnet test .\tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj --filter "FullyQualifiedName~ClientGenerationTests"` (7/7).
+- 2026-05-15: Full client test project passed with `dotnet test .\tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj` (8/8).
+- 2026-05-15: Forced two-pass NSwag generation produced stable `HexalithFoldersClient.g.cs` SHA-256 `E50BC13F4F251C2E4021608C882552B6E57F5634A7BAC93A7A3AB6749FF339C6`.
+- 2026-05-15: Full solution build passed with `dotnet build .\Hexalith.Folders.slnx` (0 warnings, 0 errors).
+- 2026-05-15: Full regression suite passed with `dotnet test .\Hexalith.Folders.slnx`.
+
 ### Completion Notes List
 
+- Implemented NSwag.MSBuild wiring in `Hexalith.Folders.Client` using the Contract Spine OpenAPI file as the single source input, generated async-only `HttpClient`-injected clients/DTOs under `Generated/`, and kept behavior out of `Hexalith.Folders.Contracts`.
+- Added generated companion idempotency helpers with `sha256:<lowercase-hex>` output, lexicographic field order, culture-invariant canonical scalar formatting, null-versus-omitted distinction for observable fields, metadata-only file mutation hashing, safe provenance hashes, and content-hash-based stale-output detection.
+- Added focused offline client tests covering NSwag configuration, generated artifact provenance, helper eligibility for mutating DTOs, no helper exposure for query/result DTOs, canonical hash stability, null-versus-omitted distinction, metadata-only file mutation behavior, and stale-output detection.
+- Added downstream documentation for rerun command, generated file ownership, canonical hash bytes, deterministic output expectations, stale detection behavior, and Story 1.13/1.14 ownership boundaries.
+- Updated earlier negative-scope guardrail tests so they now permit Story 1.12-owned client generation while continuing to block server, domain, provider, CLI, MCP, UI, worker, parity-oracle, and CI scope bleed.
+
 ### File List
+
+- Directory.Packages.props
+- docs/contract/sdk-generation-and-idempotency-helpers.md
+- src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
+- src/Hexalith.Folders.Client/nswag.json
+- src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs
+- src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+- src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
+- tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs
+- tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
 
 ## Party-Mode Review
 

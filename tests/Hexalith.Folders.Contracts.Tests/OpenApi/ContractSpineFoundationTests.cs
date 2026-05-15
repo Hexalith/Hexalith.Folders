@@ -339,7 +339,6 @@ public sealed class ContractSpineFoundationTests
 
         string[] forbiddenGeneratedRoots =
         [
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "Generated"),
         ];
         foreach (string generatedRoot in forbiddenGeneratedRoots)

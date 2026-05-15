@@ -496,8 +496,6 @@ public sealed class AuditOpsConsoleContractGroupTests
 
         (string Project, string Pattern, string Description)[] forbiddenCategories =
         [
-            ("Hexalith.Folders.Client", "Generated/**/*.cs", "generated SDK output"),
-            ("Hexalith.Folders.Client", "**/Nswag*.json", "NSwag generation configuration"),
             ("Hexalith.Folders.Server", "Endpoints/**/*.cs", "REST handlers/endpoints"),
             ("Hexalith.Folders.Server", "Commands/**/*.cs", "server-side commands"),
             ("Hexalith.Folders", "Aggregates/**/*.cs", "domain aggregate behavior"),

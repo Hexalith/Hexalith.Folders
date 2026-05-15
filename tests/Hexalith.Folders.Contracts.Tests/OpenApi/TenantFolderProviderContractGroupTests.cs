@@ -266,7 +266,6 @@ public sealed class TenantFolderProviderContractGroupTests
     {
         string[] forbiddenRoots =
         [
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Cli", "Commands"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Mcp", "Tools"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.UI", "Pages"),

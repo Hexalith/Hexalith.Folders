@@ -406,7 +406,6 @@ public sealed class ContractRulesArtifactTests
         string[] nswagConfigs =
         [
             Path.Combine(root, "nswag.json"),
-            Path.Combine(root, "src", "Hexalith.Folders.Client", "nswag.json"),
             Path.Combine(root, "src", "Hexalith.Folders.Sdk", "nswag.json"),
             Path.Combine(root, "src", "Hexalith.Folders.Contracts", "nswag.json")
         ];

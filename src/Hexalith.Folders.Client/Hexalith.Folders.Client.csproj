@@ -6,9 +6,37 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NSwag.MSBuild" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Client.Tests" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <HexalithFoldersContractSpine>$(MSBuildProjectDirectory)\..\Hexalith.Folders.Contracts\openapi\hexalith.folders.v1.yaml</HexalithFoldersContractSpine>
+    <HexalithFoldersGeneratedClient>$(MSBuildProjectDirectory)\Generated\HexalithFoldersClient.g.cs</HexalithFoldersGeneratedClient>
+    <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)\Generated\HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
+  </PropertyGroup>
+  <Target Name="GenerateHexalithFoldersClient"
+          BeforeTargets="BeforeCompile"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json"
+          Outputs="$(HexalithFoldersGeneratedClient)"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <MakeDir Directories="$(MSBuildProjectDirectory)\Generated" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
+          Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
+          BeforeTargets="CoreCompile"
+          DependsOnTargets="GenerateHexalithFoldersClient"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersGeneratedHelpers)"
+          Outputs="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Error Condition="!Exists('$(HexalithFoldersGeneratedHelpers)')"
+           Text="Generated idempotency helper file is missing: $(HexalithFoldersGeneratedHelpers)" />
+    <Touch Files="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp" AlwaysCreate="true" />
+  </Target>
 </Project>

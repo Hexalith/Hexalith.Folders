@@ -275,7 +275,6 @@ public sealed class FileContextContractGroupTests
 
         string[] forbiddenRoots =
         [
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Endpoints", "FileEndpoints.cs"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Endpoints", "ContextQueryEndpoints.cs"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Cli", "Commands"),
