@@ -28,6 +28,10 @@ so that surface divergence fails before feature implementation can depend on it.
 14. Given server-vs-spine validation must not compare the Contract Spine to itself, when the gate is implemented, then it uses a repository-local server-emitted OpenAPI artifact or explicitly configured generation command as the server source; if no offline server source exists without Aspire, Dapr, credentials, live providers, or nested submodules, it reports `prerequisite-drift` and fails closed.
 15. Given generated outputs must be stable across developer machines and CI runners, when NSwag, spine normalization, or parity generation is invoked, then the implementation pins the command, working directory, tool/config path, version source, output paths, line-ending normalization, and timestamp/banner handling used for deterministic comparison.
 16. Given maintainers need actionable CI failures, when any contract/generated-artifact gate fails, then it emits one of the bounded categories `contract-spine-drift`, `server-spine-mismatch`, `previous-spine-drift`, `generated-client-drift`, `parity-oracle-mismatch`, `generation-nondeterminism`, or `prerequisite-drift` with repository-relative path, operation/schema identifier when available, gate name, and remediation hint.
+17. Given CI validation must be non-mutating by default, when generated-client, normalization, or parity checks run in validation mode, then they write to an isolated deterministic comparison location or explicitly documented check mode and leave tracked generated outputs unchanged unless a separate developer refresh command is intentionally invoked.
+18. Given server OpenAPI source authority must be unambiguous, when the server-vs-spine gate resolves its server source, then zero, multiple, or self-referential sources fail as `prerequisite-drift` instead of selecting a source by path ordering or comparing the Contract Spine to itself.
+19. Given symmetric drift may allow approved removals only with evidence, when a deprecation entry is evaluated, then the gate accepts only metadata-only evidence that identifies the prior operation ID, replacement or retirement rationale, approval reference, effective version/date, and repository-relative source of the approval; missing or dangling evidence fails as `previous-spine-drift`.
+20. Given GitHub Actions annotations, uploaded artifacts, and job summaries can be retained outside console logs, when gates report failures, then those surfaces follow the same metadata-only diagnostic rules and must not publish raw diffs, file contents, generated client bodies, tenant data, local absolute paths, provider payloads, tokens, credentials, or production URLs.
 
 ## Tasks / Subtasks
 
@@ -38,21 +42,23 @@ so that surface divergence fails before feature implementation can depend on it.
   - [ ] Inspect Story 1.10 through Story 1.13 artifacts before assuming generated-client paths, parity-oracle commands, or operation inventory.
   - [ ] Inspect `tests/fixtures/previous-spine.yaml`, `tests/fixtures/parity-contract.schema.json`, and `tests/fixtures/parity-contract.yaml` if present.
   - [ ] Treat absent generated SDK output, absent parity oracle output, absent server OpenAPI emission, or placeholder-only previous-spine content as prerequisite drift unless the implemented gate can fail closed with a clear developer message.
-  - [ ] Build a prerequisite matrix covering the current Contract Spine, server OpenAPI source, previous-spine baseline, Story 1.12 generated-client output and NSwag config/version, Story 1.13 parity oracle output and schema, workflow file, and local gate command entry point.
+  - [ ] Build a prerequisite matrix covering the current Contract Spine, single non-self server OpenAPI source, previous-spine baseline and deprecation-evidence source, Story 1.12 generated-client output and NSwag config/version, Story 1.13 parity oracle output and schema, validation-vs-refresh command modes, workflow file, and local gate command entry point.
   - [ ] Do not initialize or update nested submodules. If submodules are needed for local validation, initialize only the root-level modules listed in `AGENTS.md`.
 - [ ] Wire the GitHub Actions contract/generated-artifact workflow. (AC: 1, 7, 8, 9, 11)
   - [ ] Add or update `.github/workflows/ci.yml` or a focused `.github/workflows/contract-spine.yml` following existing Hexalith naming if present.
   - [ ] Use `actions/checkout` and `actions/setup-dotnet` with pinned major versions current at implementation time, and configure setup from the repository `global.json` rather than an implicit runner SDK.
   - [ ] Run from the repository root with explicit commands: `dotnet restore Hexalith.Folders.slnx`, `dotnet build Hexalith.Folders.slnx`, and focused contract/generated-artifact test commands.
   - [ ] Keep NuGet caching optional and deterministic. If caching is enabled through `setup-dotnet`, require lock-file support or document why caching is deferred; do not introduce cache keys that contain tenant data, absolute paths, or mutable timestamps.
-  - [ ] Keep all workflow diagnostics repository-relative and metadata-only.
+  - [ ] Keep all workflow diagnostics, annotations, job summaries, and uploaded artifacts repository-relative and metadata-only; do not upload raw diffs or generated file contents as evidence.
   - [ ] Do not add release publishing, package signing, live provider drift, Dapr policy conformance, redaction sentinel, cache-key tenant-prefix, C6 matrix, exit-criteria, or safety-invariant jobs in this story.
 - [ ] Add or wire local gate commands that CI can call. (AC: 1, 2, 3, 4, 5, 6, 7, 12)
   - [ ] Prefer repository scripts or focused test entry points that developers can run locally before pushing.
-  - [ ] For server-vs-spine validation, compare normalized server-emitted OpenAPI against the Contract Spine. If server emission does not exist yet, add a fail-closed placeholder test or script with an explicit prerequisite-drift diagnostic rather than mocking success.
+  - [ ] For server-vs-spine validation, compare normalized server-emitted OpenAPI against the Contract Spine. If server emission does not exist yet, if more than one server source is plausible, or if the only source is the Contract Spine itself, add a fail-closed placeholder test or script with an explicit prerequisite-drift diagnostic rather than mocking success.
   - [ ] For symmetric drift detection, compare current Contract Spine operations against `tests/fixtures/previous-spine.yaml` and fail removed or incompatible operations without approved deprecation evidence.
   - [ ] If `previous-spine.yaml` still has placeholder `operations: []`, fail closed as `prerequisite-drift` and do not treat the empty operation set as an approved public baseline.
+  - [ ] Validate approved deprecation evidence as metadata only: prior operation ID, replacement or retirement rationale, approval reference, effective version/date, and repository-relative approval source.
   - [ ] For NSwag golden-file consistency, re-run the Story 1.12 generation command and fail when generated output has a diff. Use `git diff --exit-code` only against generated-client/helper paths owned by Story 1.12.
+  - [ ] Run generated-client and parity validation in non-mutating check mode or an isolated deterministic comparison directory; keep developer refresh commands separate and documented.
   - [ ] Pin deterministic generation inputs for NSwag and parity checks: command, working directory, tool/config path, version source, output paths, line endings, and timestamp/banner handling.
   - [ ] For parity schema validation, validate `tests/fixtures/parity-contract.yaml` against `tests/fixtures/parity-contract.schema.json` before parity tests consume rows.
   - [ ] For parity completeness, assert every current OpenAPI operation appears once and only once in `parity-contract.yaml`.
@@ -63,13 +69,15 @@ so that surface divergence fails before feature implementation can depend on it.
   - [ ] Verify symmetric drift fails for removed operations, renamed operation IDs, changed mutating/read classification, and missing deprecation evidence.
   - [ ] Verify generated-client golden-file detection fails on stale generated output and ignores only explicitly documented normalization artifacts.
   - [ ] Verify parity schema validation fails on missing required row fields, unknown adapter names, unknown canonical error categories, duplicate operations, and rows for non-existent operation IDs.
+  - [ ] Verify ambiguous server OpenAPI source discovery, self-referential server source configuration, dangling deprecation evidence, and invalid approval metadata fail with bounded categories.
   - [ ] Verify placeholder baselines, missing server OpenAPI sources, malformed spines, stale generated clients, stale parity oracle rows, additive-only changes, breaking changes, reorder-only changes, metadata-only changes, and redacted-diagnostic cases.
   - [ ] Verify repeated gate execution is deterministic and does not rewrite files unless the developer intentionally runs a generation command.
-  - [ ] Verify failure diagnostics do not include raw payloads, file contents, diffs, tokens, credentials, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
+  - [ ] Verify failure diagnostics, GitHub annotations, job summaries, and uploaded artifacts do not include raw payloads, file contents, diffs, generated client bodies, tokens, credentials, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
 - [ ] Document developer and CI usage. (AC: 1, 7, 8, 11, 12)
   - [ ] Add or update focused documentation, such as `docs/contract/contract-spine-ci-gates.md`, with local commands, CI job names, owned inputs, owned outputs, and expected failure categories.
   - [ ] Document the bounded failure categories: `contract-spine-drift`, `server-spine-mismatch`, `previous-spine-drift`, `generated-client-drift`, `parity-oracle-mismatch`, `generation-nondeterminism`, and `prerequisite-drift`.
   - [ ] Document one local gate command block that mirrors the GitHub Actions steps and states the offline prerequisites; it must not require Aspire, Dapr, credentials, live providers, or nested submodules.
+  - [ ] Document validation-mode commands separately from refresh commands, including which commands must leave tracked generated output unchanged.
   - [ ] Document how to refresh generated SDK output and parity oracle output without hand-editing generated files or parity rows.
   - [ ] Document how `previous-spine.yaml` is updated only when a new public baseline is approved, and how deprecation evidence is recorded.
   - [ ] Document prerequisite drift separately from test failure so developers know whether to run Story 1.12, Story 1.13, server OpenAPI work, or baseline approval work next.
@@ -123,12 +131,14 @@ tests/fixtures/parity-contract.yaml
 - Server-vs-spine comparison must be normalized and deterministic. Normalize formatting/order only where semantics are unchanged; do not hide operation, schema, required-header, Problem Details, or `x-hexalith-*` metadata drift.
 - Symmetric drift must detect removed operations and incompatible changes relative to `previous-spine.yaml`. An approved deprecation entry is required before a removal can pass.
 - NSwag golden-file validation must re-run generation and compare only generated-client/helper paths. It must not run broad `git diff --exit-code` across unrelated dirty development files.
+- Validation-mode generation must compare isolated output or check-mode results against committed generated artifacts without mutating tracked files. Refresh commands may update generated outputs, but CI gates should not rely on in-place mutation to detect drift.
 - Parity schema validation must run before any parity row consumer tests. Completeness must compare the current OpenAPI operation set to generated rows, not to a hard-coded operation list.
 - Gate commands must fail closed with actionable prerequisite-drift diagnostics when Story 1.12, Story 1.13, server OpenAPI emission, or previous-spine baseline work is missing.
-- Diagnostics may include operation IDs, schema JSON pointers, extension names, normalized content hashes, gate names, and repository-relative paths only.
+- Diagnostics may include operation IDs, schema JSON pointers, extension names, normalized content hashes, gate names, and repository-relative paths only. This restriction applies equally to console logs, test output, GitHub annotations, job summaries, and uploaded artifacts.
 - Failure categories are bounded to `contract-spine-drift`, `server-spine-mismatch`, `previous-spine-drift`, `generated-client-drift`, `parity-oracle-mismatch`, `generation-nondeterminism`, and `prerequisite-drift`.
 - The server-vs-spine gate must use a repository-local server OpenAPI source distinct from the checked-in Contract Spine. If no offline source exists, it must fail closed as `prerequisite-drift` rather than comparing the spine to itself.
 - The placeholder `tests/fixtures/previous-spine.yaml` shape with `operations: []` is not an approved public baseline. Until a real prior-spine baseline is present, the symmetric drift gate must fail closed as `prerequisite-drift`.
+- Approved previous-spine deprecation evidence must be metadata-only and must point to an existing repository-relative approval source. Dangling, content-heavy, or external-only approval claims are not enough to pass symmetric drift.
 
 ### Previous Story Intelligence
 
@@ -192,6 +202,7 @@ tests/fixtures/parity-contract.yaml
 |---|---|---|
 | 2026-05-13 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-15 | Applied party-mode review hardening for fail-closed prerequisites, deterministic gate inputs, failure taxonomy, and local/CI command parity. | Codex |
+| 2026-05-15 | Applied advanced-elicitation hardening for validation-mode non-mutation, server source authority, deprecation evidence, and metadata-only CI reporting surfaces. | Codex |
 
 ## Party-Mode Review
 
@@ -215,3 +226,15 @@ TBD by dev-story agent
 ### Completion Notes List
 
 ### File List
+
+## Advanced Elicitation
+
+- Date: 2026-05-15T16:07:39Z
+- Selected story key: 1-14-wire-contract-spine-drift-and-generated-client-ci-gates
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-14-wire-contract-spine-drift-and-generated-client-ci-gates`
+- Batch 1 method names: Red Team vs Blue Team, Failure Mode Analysis, Self-Consistency Validation, Comparative Analysis Matrix, Critique and Refine
+- Reshuffled Batch 2 method names: First Principles Analysis, Pre-mortem Analysis, Security Audit Personas, Graph of Thoughts, Active Recall Testing
+- Findings summary: Elicitation found that the story already constrained scope and fail-closed prerequisites, but still needed sharper safeguards for non-mutating validation mode, ambiguous server-source resolution, previous-spine deprecation evidence, and diagnostic leakage through GitHub annotations, job summaries, and uploaded artifacts.
+- Changes applied: Added acceptance criteria and task guidance requiring validation-mode gates to leave tracked generated outputs unchanged, single non-self server OpenAPI source resolution, metadata-only deprecation evidence, bounded handling for ambiguous/self-referential server sources, redaction coverage across all CI reporting surfaces, tests for dangling evidence and annotation/artifact leakage, and documentation that separates validation commands from refresh commands.
+- Findings deferred: Exact command names, output comparison directory, approval evidence file format, and workflow artifact retention policy remain implementation choices inside this story's existing CI/gate scope.
+- Final recommendation: ready-for-dev
