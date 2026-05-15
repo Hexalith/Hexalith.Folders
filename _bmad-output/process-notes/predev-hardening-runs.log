@@ -96,3 +96,4 @@
 2026-05-15T11:20:00Z	create-story	2-1-stand-up-domain-service-host-with-tenants-integration	ok	created Story 2.1 and marked Epic 2 in progress with Story 2.1 ready for dev
 2026-05-15T12:05:44Z	party-mode-review	1-15-wire-safety-invariant-ci-gates	ok	recorded party-mode trace and applied safety gate story hardening
 2026-05-15T12:57:13Z	party-mode-review	1-16-wire-exit-criteria-and-parity-completeness-gates	ok	recorded party-mode trace and applied governance/completeness gate story hardening
+2026-05-15T14:22:02Z	party-mode-review	2-1-stand-up-domain-service-host-with-tenants-integration	ok	recorded party-mode trace and applied Tenants integration story hardening
