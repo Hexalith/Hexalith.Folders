@@ -382,6 +382,34 @@ public sealed class AuditOpsConsoleContractGroupTests
             .Where(o => !StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal))
             .ToArray();
 
+        // Triggers for projection-stale / projection-unavailable propagation: any operation that already
+        // declares it is read-model- or projection-backed should also declare the widened categories so a
+        // partial adoption (declaring projection_stale but not projection_unavailable, or vice versa) is
+        // mechanically rejected.
+        string[] projectionTouchingTriggers =
+        [
+            "read_model_unavailable",
+            "projection_stale",
+            "projection_unavailable",
+            "query_timeout",
+            "response_limit_exceeded",
+        ];
+
+        // Triggers for failed_operation propagation: any operation that contemplates a provider-failure-or-
+        // reconciliation outcome should declare the widened canonical category so adopters can switch on a
+        // single value regardless of whether the failure was provider, projection, or reconciliation flavored.
+        // Availability/rate categories (`provider_unavailable`, `provider_rate_limited`) are intentionally
+        // excluded — they describe transient unavailability rather than a terminal operation outcome.
+        string[] failedOperationTriggers =
+        [
+            "provider_failure_known",
+            "unknown_provider_outcome",
+            "reconciliation_required",
+        ];
+
+        List<string> sweptProjectionOperations = new(earlierStoryOperations.Length);
+        List<string> sweptFailedOperationOperations = new(earlierStoryOperations.Length);
+
         foreach (Operation operation in earlierStoryOperations)
         {
             if (!operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-canonical-error-categories")))
@@ -394,19 +422,25 @@ public sealed class AuditOpsConsoleContractGroupTests
                 .Select(value => value.Value ?? string.Empty)
                 .ToArray();
 
-            if (categories.Contains("read_model_unavailable", StringComparer.Ordinal))
+            if (categories.Any(c => projectionTouchingTriggers.Contains(c, StringComparer.Ordinal)))
             {
                 categories.ShouldContain("projection_stale", $"{operation.OperationId} must consume the widened projection-stale category.");
                 categories.ShouldContain("projection_unavailable", $"{operation.OperationId} must consume the widened projection-unavailable category.");
+                sweptProjectionOperations.Add(operation.OperationId);
             }
 
-            if (categories.Contains("provider_failure_known", StringComparer.Ordinal)
-                || categories.Contains("unknown_provider_outcome", StringComparer.Ordinal)
-                || categories.Contains("reconciliation_required", StringComparer.Ordinal))
+            if (categories.Any(c => failedOperationTriggers.Contains(c, StringComparer.Ordinal)))
             {
                 categories.ShouldContain("failed_operation", $"{operation.OperationId} must consume the widened failed-operation category.");
+                sweptFailedOperationOperations.Add(operation.OperationId);
             }
         }
+
+        // Explicit positive coverage assertion: the sweep must reach a non-trivial set of earlier-story
+        // operations. A regression where every earlier-story operation drops its projection-touching trigger
+        // (silently bypassing the sweep) should fail the test rather than passing vacuously.
+        sweptProjectionOperations.Count.ShouldBeGreaterThanOrEqualTo(1, "P-Sweep-1 sweep must reach at least one earlier-story operation; zero hits would indicate the trigger set was bypassed.");
+        sweptFailedOperationOperations.Count.ShouldBeGreaterThanOrEqualTo(1, "P-Sweep-1 sweep must reach at least one earlier-story operation declaring a provider-or-reconciliation failure path.");
     }
 
     [Fact]
@@ -495,6 +529,121 @@ public sealed class AuditOpsConsoleContractGroupTests
 
             matches.ShouldBeEmpty($"Story 1.11 negative scope: {description} ({project}/{pattern}) must not be added.");
         }
+    }
+
+    [Fact]
+    public void AuditOpsConsoleSchemas_EnforceBehavioralInvariantsFromFollowUpReview()
+    {
+        // Behavioral negative-case coverage for the invariants added by the 2026-05-15 follow-up review:
+        //   * `RedactableDiagnosticIdentifier`/`RedactableAuditActorReference`/`RedactableAuditOperationReference`
+        //     reject co-presence of `value` and `redaction.visibility: redacted`.
+        //   * `RedactableAuditTimestamp` rejects co-presence of `value` and either `precision: redacted` or
+        //     `redaction.visibility: redacted`.
+        //   * `DiagnosticBase` and `ProjectionFreshnessDiagnostics` bind `trust.availability` (or `availability`)
+        //     to `freshness.stale` only when both fields are required in the conditional branches.
+        //   * `WorkspaceLockStatus.required` references only declared properties (catches partial renames).
+        //   * `LockDiagnostics`/`ProviderStatusDiagnostics`/`ReadinessDiagnostics` carry audience-conditional
+        //     classification constraints on their wrapped identifier fields.
+        //   * Every page example conforms to `PaginationMetadata` required: [limit, isTruncated] and rejects
+        //     the legacy `hasMore` key under `additionalProperties: false`.
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
+        YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
+
+        foreach (string wrapperName in new[]
+        {
+            "RedactableDiagnosticIdentifier",
+            "RedactableAuditActorReference",
+            "RedactableAuditOperationReference",
+        })
+        {
+            YamlMappingNode wrapper = RequiredMapping(schemas, wrapperName);
+            string serialized = SerializeYaml(wrapper);
+            serialized.ShouldContain("allOf:", Case.Insensitive, wrapperName);
+            serialized.ShouldContain("visibility:", Case.Insensitive, wrapperName);
+            serialized.ShouldContain("const: redacted", Case.Insensitive, wrapperName);
+            serialized.ShouldContain("not:", Case.Insensitive, $"{wrapperName} must carry a `not: required: [value]` clause that forbids cleartext when redacted.");
+            serialized.ShouldMatch(@"not:[\s\S]*?required:[\s\S]*?value", $"{wrapperName} must include `value` inside the forbidden-when-redacted (`not: required:`) clause.");
+        }
+
+        YamlMappingNode timestampWrapper = RequiredMapping(schemas, "RedactableAuditTimestamp");
+        string timestampSerialized = SerializeYaml(timestampWrapper);
+        timestampSerialized.ShouldContain("precision:", Case.Insensitive);
+        timestampSerialized.ShouldContain("const: redacted", Case.Insensitive);
+        timestampSerialized.ShouldContain("not:", Case.Insensitive, "RedactableAuditTimestamp must forbid `value` when `precision: redacted` and when `redaction.visibility: redacted`.");
+        timestampSerialized.ShouldMatch(@"not:[\s\S]*?required:[\s\S]*?value", "RedactableAuditTimestamp must include `value` inside the forbidden-when-redacted (`not: required:`) clause.");
+
+        YamlMappingNode diagnosticBase = RequiredMapping(schemas, "DiagnosticBase");
+        string diagnosticBaseSerialized = SerializeYaml(diagnosticBase);
+        // The if/then branches must require `availability` (so the conditional fires only when the field is
+        // present) and require `stale` inside the matching `then.freshness` (so the constraint doesn't pass
+        // vacuously when `stale` is omitted). The substring shape below mirrors how YamlDotNet serializes the
+        // nested `required: [availability]` and `required: [stale]` inline-flow markers.
+        diagnosticBaseSerialized.ShouldContain("required:", Case.Insensitive);
+        diagnosticBaseSerialized.ShouldMatch(@"if:[\s\S]*?required:[\s\S]*?availability[\s\S]*?then:[\s\S]*?required:[\s\S]*?stale", "DiagnosticBase if/then must require both `availability` (inside `if`) and `stale` (inside `then`) so the invariant is enforced rather than passing vacuously.");
+
+        YamlMappingNode projectionFreshness = RequiredMapping(schemas, "ProjectionFreshnessDiagnostics");
+        string projectionFreshnessSerialized = SerializeYaml(projectionFreshness);
+        projectionFreshnessSerialized.ShouldMatch(@"if:[\s\S]*?required:[\s\S]*?availability[\s\S]*?then:[\s\S]*?required:[\s\S]*?stale", "ProjectionFreshnessDiagnostics if/then must require both `availability` (inside `if`) and `stale` (inside `then`).");
+        projectionFreshnessSerialized.ShouldContain("unevaluatedProperties: false", Case.Insensitive, "ProjectionFreshnessDiagnostics must use unevaluatedProperties: false for consistency with the six other diagnostic subclasses composed via allOf.");
+
+        // WorkspaceLockStatus correctness gate: every `required` entry must appear in `properties`. This catches
+        // partial-rename regressions where a property gets a new name but the required list still references
+        // the old name (the schema would become unsatisfiable under `additionalProperties: false`).
+        YamlMappingNode workspaceLockStatus = RequiredMapping(schemas, "WorkspaceLockStatus");
+        string[] requiredKeys = RequiredSequence(workspaceLockStatus, "required").OfType<YamlScalarNode>().Select(n => n.Value ?? string.Empty).ToArray();
+        YamlMappingNode workspaceLockProperties = RequiredMapping(workspaceLockStatus, "properties");
+        string[] declaredKeys = workspaceLockProperties.Children.Keys.OfType<YamlScalarNode>().Select(n => n.Value ?? string.Empty).ToArray();
+        foreach (string requiredKey in requiredKeys)
+        {
+            declaredKeys.ShouldContain(requiredKey, $"WorkspaceLockStatus declares `{requiredKey}` in `required:` but does not declare it in `properties:`. The schema would be unsatisfiable under `additionalProperties: false`.");
+        }
+
+        // Audience-conditional classification structural assertion: each diagnostic subclass that carries a
+        // RedactableDiagnosticIdentifier field must constrain its classification value by `audience`.
+        foreach (string subclassName in new[]
+        {
+            "LockDiagnostics",
+            "ProviderStatusDiagnostics",
+            "ReadinessDiagnostics",
+        })
+        {
+            string subclassSerialized = SerializeYaml(RequiredMapping(schemas, subclassName));
+            subclassSerialized.ShouldContain("audience:", Case.Insensitive, subclassName);
+            subclassSerialized.ShouldContain("const: consumer", Case.Insensitive, $"{subclassName} must constrain wrapper classification when `audience: consumer`.");
+            subclassSerialized.ShouldContain("const: authorized_operator", Case.Insensitive, $"{subclassName} must constrain wrapper classification when `audience: authorized_operator`.");
+            subclassSerialized.ShouldContain("const: consumer_safe", Case.Insensitive, $"{subclassName} must require `consumer_safe` classification for consumer audiences.");
+            subclassSerialized.ShouldContain("const: operator_sanitized", Case.Insensitive, $"{subclassName} must require `operator_sanitized` classification for operator audiences.");
+        }
+
+        // Pagination example shape: every example that declares a `page` mapping must use `isTruncated` and
+        // must NOT use the legacy `hasMore` key (rejected by `additionalProperties: false` on
+        // `PaginationMetadata`). This guards against the P2 regression class where new examples drift from
+        // the schema's authoritative key vocabulary.
+        foreach (KeyValuePair<YamlNode, YamlNode> exampleEntry in examples.Children)
+        {
+            string exampleName = exampleEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+            if (exampleEntry.Value is not YamlMappingNode exampleNode || !exampleNode.Children.TryGetValue(new YamlScalarNode("value"), out YamlNode? valueNode) || valueNode is not YamlMappingNode value)
+            {
+                continue;
+            }
+
+            if (!value.Children.TryGetValue(new YamlScalarNode("page"), out YamlNode? pageNode) || pageNode is not YamlMappingNode page)
+            {
+                continue;
+            }
+
+            page.Children.ContainsKey(new YamlScalarNode("hasMore")).ShouldBeFalse($"Example `{exampleName}` uses the legacy `hasMore` key; `PaginationMetadata` requires `isTruncated` under `additionalProperties: false`.");
+            page.Children.ContainsKey(new YamlScalarNode("isTruncated")).ShouldBeTrue($"Example `{exampleName}` is missing the required `isTruncated` key from `PaginationMetadata.required`.");
+            page.Children.ContainsKey(new YamlScalarNode("limit")).ShouldBeTrue($"Example `{exampleName}` is missing the required `limit` key from `PaginationMetadata.required`.");
+        }
+
+        // PrefixedOpaqueIdentifier boundary alignment: the shared pattern and per-prefix sibling patterns must
+        // all use the `{8,119}` tail so that the pattern range and the `minLength: 16 / maxLength: 128` length
+        // range agree at both boundaries for every known prefix (`actorref_`, `digest_`, `changeref_`, `provref_`).
+        YamlMappingNode prefixedSchema = RequiredMapping(schemas, "PrefixedOpaqueIdentifier");
+        GetScalar(prefixedSchema, "pattern").ShouldContain("{8,119}", Case.Sensitive, "PrefixedOpaqueIdentifier pattern tail must be {8,119} to keep both length-extreme boundaries reachable for the registered prefixes.");
+        GetScalar(prefixedSchema, "pattern").ShouldContain("[a-z][a-z0-9]{2,}_", Case.Sensitive, "PrefixedOpaqueIdentifier prefix must require at least three lowercase characters so a single-letter namespace cannot defeat domain classification.");
     }
 
     private static bool MatchesGlob(string relativePath, string pattern)

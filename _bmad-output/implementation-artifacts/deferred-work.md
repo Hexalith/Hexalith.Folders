@@ -2,6 +2,14 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups follow-up (2026-05-15)
+
+Items deferred from the adversarial code review against follow-up commit `8d339b8` (which itself was intended to close items deferred on 2026-05-14). These three findings need work that crosses story boundaries or requires coordinated design choices.
+
+- W1: P-Schema-9 normalization incomplete across earlier-story digest/correlation patterns. The new shared `PrefixedOpaqueIdentifier` schema (yaml:6847) claims coverage of `digest_`, `changeref_`, and `provref_` prefixes, but `RepositoryBinding.changedPathMetadataDigest` (yaml:8384), `CommitEvidence.digest` (yaml:8562), `CommitEvidence.providerCorrelationReference` (yaml:8567, 8600) still hand-roll their own patterns. Either re-point those sites to the shared schema or narrow the schema's advertised coverage. Cross-story sweep best owned alongside the still-deferred P-Sweep-1 closure. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: RepositoryBinding, CommitEvidence`)
+- W2: Cross-redaction invariant between record-level `redaction.visibility: redacted` and per-field `evidenceTimestamp.precision: redacted` (and similar paired fields on `actorReference`, `operationId`, future audience-conditional fields) is unenforced. A server could legitimately emit `record-redacted` with `evidenceTimestamp.precision: exact` and a real timestamp. Fix needs the same JSON-Schema-2020-12 `if/then` conditional design pattern P-Schema-8 used for trust/freshness; best bundled with the operator-audience hardening story that closes D4 (`AuditRecord` correlation-ID exposure). (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: AuditRecord, AuditTrailEntryRedacted example`)
+- W3: `PrincipalMismatchSafeDenialProblem` example uses HTTP 404 + `category: not_found`. Other tenant/principal-related safe-denial paths in the corpus map to `tenant_access_denied`. Speculative drift without a fuller cross-corpus check. Revisit alongside the audience-equivalence rework that defines canonical category mappings for principal-mismatch scenarios. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: PrincipalMismatchSafeDenialProblem`)
+
 ## Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups (2026-05-14)
 
 Patches identified by the code review that were NOT applied in the same pass due to scope or coordinated-design impact. Each entry includes a reason and a one-line implementation pointer for a follow-up story.

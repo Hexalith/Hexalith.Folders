@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-15T10:02:11Z",
+  "timestamp": "2026-05-15T09:02:19Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n M docs/contract/audit-ops-console-contract-groups.md\n M src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml\n M tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs\n?? _tmp_review_1_11_followup.diff\n",
+      "stdout": " M _bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n?? _tmp_review_1_11_followup.diff\n",
       "stderr": "",
-      "dirty_path_count": 6,
+      "dirty_path_count": 3,
       "result": "fail",
-      "details": "6 dirty path(s)"
+      "details": "3 dirty path(s)"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."

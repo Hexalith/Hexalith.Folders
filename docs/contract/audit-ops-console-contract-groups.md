@@ -47,6 +47,23 @@ Unauthorized, wrong-tenant, hidden, redacted, unknown, missing, stale, projectio
 
 Redaction-sensitive references are now object-wrapped instead of scalar-only where field presence or exact values could become an oracle: audit actor, audit operation, audit timestamp, lock reference, provider binding reference, readiness summary references, and operation timeline workspace evidence all carry redaction metadata. Diagnostic response schemas require at least one field-classification entry, use `unevaluatedProperties: false` on composed `allOf` schemas, and bind availability to freshness staleness with JSON Schema conditionals. Synthetic examples now cover empty pages, limit-boundary pages, boundary-duplicate continuation, empty-page continuation, tampered cursor / changed-filter, tenant/principal-mismatch, invalid-sort, and the `auto_recovering` / `available` disposition vocabulary.
 
+The 2026-05-15 follow-up code review against commit `8d339b8` further tightened the contract surface:
+
+- `WorkspaceLockStatus` consumes the redaction wrapper consistently. The schema's `required` list and the three published examples were realigned with the renamed `workspaceReference` property, and the schema is once again satisfiable. Editing `WorkspaceLockStatus` is a Story 1.8 scope touch recorded in the Story 1.11 Change Log.
+- `LockDiagnostics.lockReference`, `ProviderStatusDiagnostics.providerBindingReference`, and `OperationTimelineEntry.workspaceReference` are now in the `required:` lists of their owning schemas so field-presence no longer changes between consumer and operator audiences; the wrapper alone now carries audience semantics through `redaction.visibility`.
+- `RedactableDiagnosticIdentifier`, `RedactableAuditActorReference`, `RedactableAuditOperationReference`, and `RedactableAuditTimestamp` carry a conditional `allOf` block that forbids `value` when `redaction.visibility: redacted` (or `precision: redacted` for the timestamp wrapper). Strict validators now reject any redacted wrapper that still carries a cleartext value.
+- The `if/then` invariant binding `availability` to `freshness.stale` requires both `availability` and `stale` to be present inside its branches so the cross-field constraint is enforced in both directions rather than passing vacuously when either property is omitted.
+- The eight page examples use the required `isTruncated` field instead of `hasMore`, matching `PaginationMetadata.required` and `additionalProperties: false`.
+- `PrefixedOpaqueIdentifier` requires at least three lowercase characters before the underscore and a tail of `{8,119}` characters. Sibling per-prefix patterns on `actorref_`, `digest_`, `changeref_`, and `provref_` match the narrower tail bound so pattern and length constraints agree at both boundaries.
+
+### Cross-Audience Correlation Policy
+
+`correlationId` and `taskId` are exposed in cleartext across audit and timeline records even when the wider record is redacted. Incident reconstruction relies on these identifiers to stitch evidence across surfaces (REST, SDK, CLI, MCP, EventStore envelopes, projections, logs, traces, audit) for principals who hold partial audit authority. The identifiers are opaque, tenant-scoped, and non-authoritative; they cannot establish tenant authority, override ACLs, or upgrade diagnostic audience.
+
+`durationMilliseconds` on redacted audit records is bucketed to a 100ms granularity (the synthetic example uses `100`) so a small value cannot become a side-channel for early-deny code paths. Runtime audit emitters are required to round to the nearest 100ms when the record's `redaction.visibility` is `redacted`. Authorized non-redacted records continue to expose exact durations because the actor identity is already visible.
+
+Operator-audience hardening (wrapping `taskId` / `correlationId` in audience-gated containers, finer-grained duration bucketing, or audience-conditional disclosure) remains tracked as cross-story follow-up work in `_bmad-output/implementation-artifacts/deferred-work.md`.
+
 ## Deferred Decisions
 
 - Final C5 freshness/performance targets remain reference-pending.

@@ -1,0 +1,1254 @@
+diff --git a/_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md b/_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md
+index eb322a7..ed63a75 100644
+--- a/_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md
++++ b/_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md
+@@ -1,6 +1,6 @@
+ # Story 1.11: Author audit and ops-console query contract groups
+ 
+-Status: in-progress
++Status: review
+ 
+ Created: 2026-05-12
+ 
+@@ -144,17 +144,17 @@ Applied:
+ 
+ Deferred to follow-up (require larger surgery than this code-review pass can absorb safely):
+ 
+-- [ ] [Review][Patch] `DiagnosticBase` + `allOf` + `additionalProperties: false` JSON Schema gotcha [yaml ~8534 + 6 subclasses] — Replacing `additionalProperties: false` with `unevaluatedProperties: false` on the composed schemas (or moving the strict-mode anchor) needs to be done in coordination across base + 6 subclasses + all 7 example payloads + the contract foundation tests that may assert specific additionalProperties behavior. Tracked in deferred-work. [sources: blind+edge]
+-- [ ] [Review][Patch] `AuditRecord` redaction shape leaks timing and actor identity [AuditRecord schema + example] — Wrapping `evidenceTimestamp` / `actorReference` / `operationId` in audience-gated `RedactionMetadata` requires schema design choices (bucketed timestamps vs. sentinel replacement, optionality vs. null), example regeneration, and propagation to the audit-leakage-corpus test guards. Tracked in deferred-work. [sources: edge+blind]
+-- [ ] [Review][Patch] Cursor/filter tamper, principal-mismatch, invalid-sort, boundary-duplicate, empty-page negative-case tests absent — Adding explicit negative-case tests requires either contract-level fixtures (representative cursors, tamper variants, principal contexts) or a runtime test surface; neither lands in a single edit pass. Tracked in deferred-work. [sources: auditor+edge]
+-- [ ] [Review][Patch] `DiagnosticBase.fieldClassifications` is optional with no `minItems` — Requiring `fieldClassifications` on operator-audience responses needs an audience-conditional schema (or split base into consumer/operator variants) and example regeneration. Tracked in deferred-work. [sources: edge]
+-- [ ] [Review][Patch] `ReadinessDiagnostics` schema lacks provider/folder/workspace summary references — Adding operator-audience-gated summary references needs design choices (DiagnosticSafeIdentifier vs. inline refs, redaction shape, audience gating). Tracked in deferred-work. [sources: auditor]
+-- [ ] [Review][Patch] `CanonicalErrorCategory` / `WorkspaceErrorCategory` enum widening not propagated to earlier-story operations — Sweep across Stories 1.7-1.10 operations' `x-hexalith-canonical-error-categories` arrays. Mechanical but cross-story; safer to do in a dedicated propagation story. Tracked in deferred-work. [sources: edge]
+-- [ ] [Review][Patch] Opaque-identifier patterns are inconsistent across siblings — Factoring a shared `PrefixedOpaqueIdentifier` schema touches every prefixed-identifier type. Tracked in deferred-work. [sources: blind]
+-- [ ] [Review][Patch] `AuditTrailPage`/`OperationTimelinePage` examples cover only the single-result case — Adding boundary-scenario examples (zero/limit/beyond-last) is straightforward but the corpus is several hundred lines; defer alongside the audience-equivalence rework. Tracked in deferred-work. [sources: edge+auditor]
+-- [ ] [Review][Patch] No cross-field consistency between `DiagnosticTrustEvidence.availability` and `FreshnessMetadata.stale` — Adding a cross-field invariant requires `if/then` JSON-Schema-2020-12 conditionals or refactoring the two fields into a single state machine. Tracked in deferred-work. [sources: edge]
+-- [ ] [Review][Patch] `LockDiagnostics.lockReference` and `ProviderStatusDiagnostics.providerBindingReference` field-presence is an audience oracle — Requires audience-conditional schema or RedactionMetadata sentinel; coordinated with the broader audience-partitioning rework. Tracked in deferred-work. [sources: edge]
+-- [ ] [Review][Patch] `OperationTimelineEntry.workspaceId` leaks cross-workspace evidence — Coordinated with the AuditRecord redaction shape rework. Tracked in deferred-work. [sources: edge]
++- [x] [Review][Patch] `DiagnosticBase` + `allOf` + `additionalProperties: false` JSON Schema gotcha [yaml ~8534 + 6 subclasses] — Replacing `additionalProperties: false` with `unevaluatedProperties: false` on the composed schemas (or moving the strict-mode anchor) needs to be done in coordination across base + 6 subclasses + all 7 example payloads + the contract foundation tests that may assert specific additionalProperties behavior. Tracked in deferred-work. [sources: blind+edge]
++- [x] [Review][Patch] `AuditRecord` redaction shape leaks timing and actor identity [AuditRecord schema + example] — Wrapping `evidenceTimestamp` / `actorReference` / `operationId` in audience-gated `RedactionMetadata` requires schema design choices (bucketed timestamps vs. sentinel replacement, optionality vs. null), example regeneration, and propagation to the audit-leakage-corpus test guards. Tracked in deferred-work. [sources: edge+blind]
++- [x] [Review][Patch] Cursor/filter tamper, principal-mismatch, invalid-sort, boundary-duplicate, empty-page negative-case tests absent — Adding explicit negative-case tests requires either contract-level fixtures (representative cursors, tamper variants, principal contexts) or a runtime test surface; neither lands in a single edit pass. Tracked in deferred-work. [sources: auditor+edge]
++- [x] [Review][Patch] `DiagnosticBase.fieldClassifications` is optional with no `minItems` — Requiring `fieldClassifications` on operator-audience responses needs an audience-conditional schema (or split base into consumer/operator variants) and example regeneration. Tracked in deferred-work. [sources: edge]
++- [x] [Review][Patch] `ReadinessDiagnostics` schema lacks provider/folder/workspace summary references — Adding operator-audience-gated summary references needs design choices (DiagnosticSafeIdentifier vs. inline refs, redaction shape, audience gating). Tracked in deferred-work. [sources: auditor]
++- [x] [Review][Patch] `CanonicalErrorCategory` / `WorkspaceErrorCategory` enum widening not propagated to earlier-story operations — Sweep across Stories 1.7-1.10 operations' `x-hexalith-canonical-error-categories` arrays. Mechanical but cross-story; safer to do in a dedicated propagation story. Tracked in deferred-work. [sources: edge]
++- [x] [Review][Patch] Opaque-identifier patterns are inconsistent across siblings — Factoring a shared `PrefixedOpaqueIdentifier` schema touches every prefixed-identifier type. Tracked in deferred-work. [sources: blind]
++- [x] [Review][Patch] `AuditTrailPage`/`OperationTimelinePage` examples cover only the single-result case — Adding boundary-scenario examples (zero/limit/beyond-last) is straightforward but the corpus is several hundred lines; defer alongside the audience-equivalence rework. Tracked in deferred-work. [sources: edge+auditor]
++- [x] [Review][Patch] No cross-field consistency between `DiagnosticTrustEvidence.availability` and `FreshnessMetadata.stale` — Adding a cross-field invariant requires `if/then` JSON-Schema-2020-12 conditionals or refactoring the two fields into a single state machine. Tracked in deferred-work. [sources: edge]
++- [x] [Review][Patch] `LockDiagnostics.lockReference` and `ProviderStatusDiagnostics.providerBindingReference` field-presence is an audience oracle — Requires audience-conditional schema or RedactionMetadata sentinel; coordinated with the broader audience-partitioning rework. Tracked in deferred-work. [sources: edge]
++- [x] [Review][Patch] `OperationTimelineEntry.workspaceId` leaks cross-workspace evidence — Coordinated with the AuditRecord redaction shape rework. Tracked in deferred-work. [sources: edge]
+ 
+ #### Defer (pre-existing or out-of-scope for this story)
+ 
+@@ -353,6 +353,7 @@ Do not add provider readiness commands, workspace/lock commands, file/context qu
+ 
+ | Date | Change | Author |
+ |---|---|---|
++| 2026-05-15 | Resolved remaining review patch follow-ups: composed diagnostic strictness, redaction wrappers, cursor/audience/boundary examples, field-classification requirements, readiness summary references, error-category propagation, prefixed identifier normalization, freshness invariants, and audience-oracle reference wrappers. Full solution tests and build pass. | Codex |
+ | 2026-05-14 | Code review patches applied: deleted orphan `AuditAccessDeniedProblem` example; renamed `GetOperationTimelineEntry` path key from `{operationId}` to `{timelineEntryId}`; added `404 SafeAuthorizationDenial404` and `409 ProjectionStaleProblem` to `GetReadinessDiagnostics` and `GetProjectionFreshness`; added `409 ProjectionStaleProblem` to the eight sibling ops that already declared `projection_stale` (`GetAuditRecord`, `ListOperationTimeline`, `GetOperationTimelineEntry`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`); marked `SyncStatusDiagnostics.acceptedCommandState` and `ProjectionAvailability.{redacted,unknown}` as reference-pending C5; added shape constraint to `AuditTrailPage.retentionClass` / `OperationTimelinePage.retentionClass`; added `PageLimit.maximum` and `MetadataFilter.pattern` with reference-pending C4 documentation; added `task_id` to `ListAuditTrail.x-hexalith-audit-metadata-keys`; added `oneOf` discriminator to `ChangedPathEvidence` so `digest`/`reference` are required iff `evidenceKind` matches; relaxed `DiagnosticFieldClassificationEntry.field` pattern to allow snake_case metadata keys; introduced `TimelineEntryId` shared parameter. Test side: removed orphan example assertion; broadened operationId uniqueness to whole-spec; hardened Idempotency-Key absence check to reject inline `name: Idempotency-Key` parameters; added new `AuditOpsConsoleOperations_DeclareConsistentSafeDenialResponseCodes` test enforcing 200/401/403/404/503 + 409 (when projection_stale is in canonical-error-categories) across all eleven Story 1.11 operations; replaced fragile inline forbidden-substring list with an audit-leakage-corpus-driven sentinel check loaded from `tests/fixtures/audit-leakage-corpus.json`. Scope expansion recorded: `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs` was edited (docstring update) outside the spec's Allowed Files list because the helper is shared infrastructure consumed by Stories 1.4 and 1.5 negative-scope tests; the edit clarifies that the regex anchors at `/api/v1/<fragment>`, so the new Story 1.11 paths under `/api/v1/folders/...` and `/api/v1/ops-console/...` do not trip the assertion (the helper remains correct without changing the forbidden-fragment list). Full contract test suite passes: 35/35 (1 new test added). | Claude (code-review) |
+ | 2026-05-14 | Implemented audit and ops-console query contract groups, focused validation, and contract notes. | Codex |
+ | 2026-05-12 | Applied advanced elicitation hardening for diagnostic audience partitioning, field classification, retention/freshness evidence, cursor/filter tamper validation, and offline validator negative cases. | Codex |
+@@ -420,6 +421,11 @@ GPT-5 Codex
+ - 2026-05-14: Green/refactor validation passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore`.
+ - 2026-05-14: Full regression validation passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+ - 2026-05-14: Solution build validation passed with `dotnet build Hexalith.Folders.slnx --no-restore`.
++- 2026-05-15: Red phase confirmed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore --filter "FullyQualifiedName~AuditOpsConsoleContractGroupTests"` failing on missing review-patch schemas and examples.
++- 2026-05-15: Red phase confirmed for cross-story error-category propagation with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore --filter "FullyQualifiedName~AuditOpsConsoleReviewSweep"` failing on `GetFolderLifecycleStatus`.
++- 2026-05-15: Focused contract validation passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` (38/38).
++- 2026-05-15: Full regression validation passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
++- 2026-05-15: Solution build validation passed with `dotnet build Hexalith.Folders.slnx --no-restore`.
+ 
+ ### Completion Notes List
+ 
+@@ -427,6 +433,7 @@ GPT-5 Codex
+ - Added read-only ops-console diagnostic query operations for readiness, lock, dirty-state, failed-operation, provider-status, sync-status, and projection freshness.
+ - Added diagnostic/audit schemas, synthetic examples, canonical projection stale/unavailable categories, audience and field-classification vocabulary, and C3/C5 reference-pending markers.
+ - Added focused OpenAPI validation for Story 1.11 and updated existing guardrails now that ops-console is an owned Contract Spine surface.
++- Resolved remaining review patch follow-ups with redaction-aware wrapper schemas, composed diagnostic strictness, required field-classification evidence, readiness summary references, cursor/audience/boundary examples, freshness consistency invariants, prefixed identifier normalization, and widened error-category propagation across earlier contract groups.
+ 
+ ### File List
+ 
+@@ -435,5 +442,6 @@ GPT-5 Codex
+ - `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
+ - `tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs`
+ - `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs`
++- `_bmad-output/implementation-artifacts/deferred-work.md`
+ - `_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md`
+ - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+diff --git a/docs/contract/audit-ops-console-contract-groups.md b/docs/contract/audit-ops-console-contract-groups.md
+index a37d2f8..383f76b 100644
+--- a/docs/contract/audit-ops-console-contract-groups.md
++++ b/docs/contract/audit-ops-console-contract-groups.md
+@@ -43,6 +43,10 @@ Story 1.11 adds only OpenAPI Contract Spine declarations for audit trail, operat
+ 
+ Unauthorized, wrong-tenant, hidden, redacted, unknown, missing, stale, projection-unavailable, tampered-cursor, changed-filter, tenant/principal-mismatch, invalid-sort, boundary-duplicate, and empty-page continuation cases all preserve safe-denial parity. Cursors are service-issued opaque non-authoritative values; they cannot encode tenant authority, ACL decisions, raw query text, provider material, or unredacted path lists.
+ 
++## Review Patch Resolution Notes
++
++Redaction-sensitive references are now object-wrapped instead of scalar-only where field presence or exact values could become an oracle: audit actor, audit operation, audit timestamp, lock reference, provider binding reference, readiness summary references, and operation timeline workspace evidence all carry redaction metadata. Diagnostic response schemas require at least one field-classification entry, use `unevaluatedProperties: false` on composed `allOf` schemas, and bind availability to freshness staleness with JSON Schema conditionals. Synthetic examples now cover empty pages, limit-boundary pages, boundary-duplicate continuation, empty-page continuation, tampered cursor / changed-filter, tenant/principal-mismatch, invalid-sort, and the `auto_recovering` / `available` disposition vocabulary.
++
+ ## Deferred Decisions
+ 
+ - Final C5 freshness/performance targets remain reference-pending.
+diff --git a/src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml b/src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+index f5ef4f8..926a57a 100644
+--- a/src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
++++ b/src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+@@ -173,6 +173,8 @@ paths:
+         - cross_tenant_access_denied
+         - not_found
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -327,6 +329,8 @@ paths:
+         - folder_acl_denied
+         - validation_error
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -477,6 +481,8 @@ paths:
+         - tenant_access_denied
+         - folder_acl_denied
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -629,6 +635,8 @@ paths:
+         - cross_tenant_access_denied
+         - not_found
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - redacted
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+@@ -710,6 +718,8 @@ paths:
+         - provider_rate_limited
+         - unsupported_provider_capability
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: provider_binding_ref
+@@ -776,6 +786,8 @@ paths:
+         - tenant_access_denied
+         - provider_unavailable
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: capability_profile_ref
+@@ -863,6 +875,7 @@ paths:
+         - repository_conflict
+         - unsupported_provider_capability
+         - unknown_provider_outcome
++        - failed_operation
+         - reconciliation_required
+         - idempotency_conflict
+         - validation_error
+@@ -966,6 +979,7 @@ paths:
+         - repository_conflict
+         - unsupported_provider_capability
+         - unknown_provider_outcome
++        - failed_operation
+         - reconciliation_required
+         - idempotency_conflict
+         - validation_error
+@@ -1047,6 +1061,8 @@ paths:
+         - not_found
+         - redacted
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -1205,6 +1221,8 @@ paths:
+         - not_found
+         - redacted
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -1347,6 +1365,7 @@ paths:
+         - workspace_locked
+         - lock_conflict
+         - unknown_provider_outcome
++        - failed_operation
+         - reconciliation_required
+         - state_transition_invalid
+         - validation_error
+@@ -1488,6 +1507,8 @@ paths:
+         - lock_expired
+         - authorization_revocation_detected
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - state_transition_invalid
+         - validation_error
+         - idempotency_conflict
+@@ -1600,6 +1621,8 @@ paths:
+         - lock_expired
+         - stale_workspace
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -1734,6 +1757,7 @@ paths:
+         - lock_expired
+         - authorization_revocation_detected
+         - reconciliation_required
++        - failed_operation
+         - state_transition_invalid
+         - validation_error
+         - idempotency_conflict
+@@ -1836,8 +1860,11 @@ paths:
+         - folder_acl_denied
+         - provider_unavailable
+         - unknown_provider_outcome
++        - failed_operation
+         - reconciliation_required
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -1938,6 +1965,8 @@ paths:
+         - tenant_access_denied
+         - folder_acl_denied
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - internal_error
+       x-hexalith-audit-metadata-keys:
+         - name: folder_id
+@@ -2094,6 +2123,7 @@ paths:
+         - input_limit_exceeded
+         - file_operation_failed
+         - provider_failure_known
++        - failed_operation
+         - unknown_provider_outcome
+         - reconciliation_required
+         - state_transition_invalid
+@@ -2259,6 +2289,7 @@ paths:
+         - input_limit_exceeded
+         - file_operation_failed
+         - provider_failure_known
++        - failed_operation
+         - unknown_provider_outcome
+         - reconciliation_required
+         - state_transition_invalid
+@@ -2408,6 +2439,7 @@ paths:
+         - path_validation_failed
+         - file_operation_failed
+         - provider_failure_known
++        - failed_operation
+         - unknown_provider_outcome
+         - reconciliation_required
+         - state_transition_invalid
+@@ -2530,6 +2562,8 @@ paths:
+         - response_limit_exceeded
+         - query_timeout
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - redacted
+         - validation_error
+         - internal_error
+@@ -2649,6 +2683,8 @@ paths:
+         - response_limit_exceeded
+         - query_timeout
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - redacted
+         - validation_error
+         - internal_error
+@@ -2767,6 +2803,8 @@ paths:
+         - response_limit_exceeded
+         - query_timeout
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - redacted
+         - validation_error
+         - internal_error
+@@ -2889,6 +2927,8 @@ paths:
+         - response_limit_exceeded
+         - query_timeout
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - redacted
+         - validation_error
+         - internal_error
+@@ -3037,6 +3077,8 @@ paths:
+         - response_limit_exceeded
+         - query_timeout
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - redacted
+         - validation_error
+         - internal_error
+@@ -3219,9 +3261,12 @@ paths:
+         - dirty_workspace
+         - commit_failed
+         - provider_failure_known
++        - failed_operation
+         - unknown_provider_outcome
+         - reconciliation_required
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - validation_error
+         - idempotency_conflict
+         - state_transition_invalid
+@@ -3335,6 +3380,8 @@ paths:
+         - tenant_access_denied
+         - folder_acl_denied
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - not_found
+         - redacted
+         - internal_error
+@@ -3427,6 +3474,8 @@ paths:
+         - authentication_failure
+         - tenant_access_denied
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - not_found
+         - redacted
+         - internal_error
+@@ -3512,6 +3561,8 @@ paths:
+         - tenant_access_denied
+         - folder_acl_denied
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - not_found
+         - redacted
+         - internal_error
+@@ -3603,9 +3654,12 @@ paths:
+         - tenant_access_denied
+         - folder_acl_denied
+         - provider_failure_known
++        - failed_operation
+         - unknown_provider_outcome
+         - reconciliation_required
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - not_found
+         - redacted
+         - internal_error
+@@ -3699,7 +3753,10 @@ paths:
+         - tenant_access_denied
+         - folder_acl_denied
+         - reconciliation_required
++        - failed_operation
+         - read_model_unavailable
++        - projection_stale
++        - projection_unavailable
+         - not_found
+         - redacted
+         - internal_error
+@@ -6242,15 +6299,30 @@ components:
+       value:
+         entries:
+           - auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD001
+-            actorReference: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA001
++            actorReference:
++              value: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA001
++              classification: operator_sanitized
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
+             taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+-            operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR001
++            operationId:
++              value: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR001
++              classification: operator_sanitized
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
+             correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR001
+             resultStatus: success
+             sanitizedErrorCategory: success
+             retryable: false
+             durationMilliseconds: 142
+-            evidenceTimestamp: "2026-05-14T08:30:00Z"
++            evidenceTimestamp:
++              value: "2026-05-14T08:30:00Z"
++              precision: exact
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
+             redaction:
+               visibility: metadata_only
+               reasonCode: not_redacted
+@@ -6277,15 +6349,27 @@ components:
+       summary: Authorized audit record with sanitized redaction state.
+       value:
+         auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD002
+-        actorReference: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA002
++        actorReference:
++          classification: operator_sanitized
++          redaction:
++            visibility: redacted
++            reasonCode: operator_scope_required
+         taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK002
+-        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR002
++        operationId:
++          classification: operator_sanitized
++          redaction:
++            visibility: redacted
++            reasonCode: operator_scope_required
+         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR002
+         resultStatus: redacted
+         sanitizedErrorCategory: redacted
+         retryable: false
+         durationMilliseconds: 18
+-        evidenceTimestamp: "2026-05-14T08:35:00Z"
++        evidenceTimestamp:
++          precision: redacted
++          redaction:
++            visibility: redacted
++            reasonCode: operator_scope_required
+         redaction:
+           visibility: redacted
+           reasonCode: operator_scope_required
+@@ -6306,7 +6390,12 @@ components:
+             operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR003
+             taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK003
+             correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR003
+-            workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK003
++            workspaceReference:
++              value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK003
++              classification: operator_sanitized
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
+             stateTransition:
+               fromState: locked
+               toState: changes_staged
+@@ -6337,7 +6426,12 @@ components:
+         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR004
+         taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK004
+         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR004
+-        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK004
++        workspaceReference:
++          value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK004
++          classification: operator_sanitized
++          redaction:
++            visibility: metadata_only
++            reasonCode: not_redacted
+         stateTransition:
+           fromState: changes_staged
+           toState: unknown_provider_outcome
+@@ -6364,6 +6458,30 @@ components:
+         fieldClassifications:
+           - field: readinessStatus
+             classification: consumer_safe
++          - field: providerSummaryReference
++            classification: operator_sanitized
++          - field: folderSummaryReference
++            classification: operator_sanitized
++          - field: workspaceSummaryReference
++            classification: operator_sanitized
++        providerSummaryReference:
++          value: opaque_01HZY7Z6N7J4Q2X8Y9V0PBR005
++          classification: operator_sanitized
++          redaction:
++            visibility: metadata_only
++            reasonCode: not_redacted
++        folderSummaryReference:
++          value: opaque_01HZY7Z6N7J4Q2X8Y9V0FLD005
++          classification: operator_sanitized
++          redaction:
++            visibility: metadata_only
++            reasonCode: not_redacted
++        workspaceSummaryReference:
++          value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK005
++          classification: operator_sanitized
++          redaction:
++            visibility: metadata_only
++            reasonCode: not_redacted
+         freshness:
+           readConsistency: eventually_consistent
+           observedAt: "2026-05-14T08:50:00Z"
+@@ -6377,6 +6495,12 @@ components:
+         lockReference:
+           value: opaque_01HZY7Z6N7J4Q2X8Y9V0LCK001
+           classification: operator_sanitized
++          redaction:
++            visibility: metadata_only
++            reasonCode: not_redacted
++        fieldClassifications:
++          - field: lockReference
++            classification: operator_sanitized
+         trust:
+           availability: available
+           freshnessAgeMilliseconds: 300
+@@ -6396,6 +6520,9 @@ components:
+           evidenceKind: digest
+           digest: digest_01HZY7Z6N7J4Q2X8Y9V0CPD007
+           classification: operator_sanitized
++        fieldClassifications:
++          - field: changedPathEvidence
++            classification: operator_sanitized
+         trust:
+           availability: available
+           freshnessAgeMilliseconds: 610
+@@ -6418,6 +6545,13 @@ components:
+           eligible: false
+           reasonCode: operator_review_required
+           advisoryOnly: true
++        fieldClassifications:
++          - field: operationId
++            classification: operator_sanitized
++          - field: taskId
++            classification: operator_sanitized
++          - field: sanitizedErrorCategory
++            classification: consumer_safe
+         trust:
+           availability: available
+           freshnessAgeMilliseconds: 710
+@@ -6436,7 +6570,15 @@ components:
+         providerBindingReference:
+           value: opaque_01HZY7Z6N7J4Q2X8Y9V0PBR009
+           classification: operator_sanitized
++          redaction:
++            visibility: metadata_only
++            reasonCode: not_redacted
+         providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PCR009
++        fieldClassifications:
++          - field: providerBindingReference
++            classification: operator_sanitized
++          - field: providerCorrelationReference
++            classification: operator_sanitized
+         trust:
+           availability: available
+           freshnessAgeMilliseconds: 530
+@@ -6455,6 +6597,13 @@ components:
+         acceptedCommandState: accepted
+         projectedState: unknown_provider_outcome
+         providerOutcomeState: reconciliation_required
++        fieldClassifications:
++          - field: acceptedCommandState
++            classification: consumer_safe
++          - field: projectedState
++            classification: consumer_safe
++          - field: providerOutcomeState
++            classification: consumer_safe
+         trust:
+           availability: stale
+           freshnessAgeMilliseconds: 1800
+@@ -6475,11 +6624,199 @@ components:
+         staleReasonCode: projection_lag
+         unavailableReasonCode: none
+         freshnessTarget: "TODO(reference-pending): C5 projection freshness target"
++        fieldClassifications:
++          - field: projectionName
++            classification: consumer_safe
++          - field: availability
++            classification: consumer_safe
++          - field: freshnessAgeMilliseconds
++            classification: consumer_safe
+         freshness:
+           readConsistency: eventually_consistent
+           observedAt: "2026-05-14T09:20:00Z"
+           projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR011
+           stale: true
++    AuditTrailPageEmpty:
++      summary: Empty authorized audit trail page.
++      value:
++        entries: []
++        page:
++          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR020
++          limit: 50
++          hasMore: false
++        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
++        freshness:
++          readConsistency: eventually_consistent
++          observedAt: "2026-05-14T09:25:00Z"
++          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR020
++          stale: false
++    AuditTrailPageLimitBoundary:
++      summary: Authorized audit trail page at the configured result boundary.
++      value:
++        entries:
++          - auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD021
++            actorReference:
++              value: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA021
++              classification: operator_sanitized
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
++            operationId:
++              value: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR021
++              classification: operator_sanitized
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
++            correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR021
++            resultStatus: success
++            sanitizedErrorCategory: success
++            retryable: false
++            durationMilliseconds: 64
++            evidenceTimestamp:
++              value: "2026-05-14T09:26:00Z"
++              precision: exact
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
++            redaction:
++              visibility: metadata_only
++              reasonCode: not_redacted
++            freshness:
++              readConsistency: eventually_consistent
++              observedAt: "2026-05-14T09:26:03Z"
++              projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR021
++              stale: false
++        page:
++          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR021
++          limit: 100
++          hasMore: true
++        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
++        freshness:
++          readConsistency: eventually_consistent
++          observedAt: "2026-05-14T09:26:03Z"
++          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR021
++          stale: false
++    OperationTimelinePageEmpty:
++      summary: Empty authorized operation timeline page.
++      value:
++        entries: []
++        page:
++          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR022
++          limit: 50
++          hasMore: false
++        retentionClass: "TODO(reference-pending): C3 timeline retention approval"
++        freshness:
++          readConsistency: eventually_consistent
++          observedAt: "2026-05-14T09:30:00Z"
++          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR022
++          stale: false
++    OperationTimelinePageLimitBoundary:
++      summary: Authorized operation timeline page at the result boundary.
++      value:
++        entries:
++          - timelineEntryId: opaque_01HZY7Z6N7J4Q2X8Y9V0TLE023
++            operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR023
++            taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK023
++            correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR023
++            workspaceReference:
++              value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK023
++              classification: operator_sanitized
++              redaction:
++                visibility: metadata_only
++                reasonCode: not_redacted
++            stateTransition:
++              fromState: prepared
++              toState: locked
++              disposition: auto_recovering
++            sanitizedResult: success
++            retryable: true
++            durationMilliseconds: 95
++            evidenceTimestamp: "2026-05-14T09:31:00Z"
++            freshness:
++              readConsistency: eventually_consistent
++              observedAt: "2026-05-14T09:31:03Z"
++              projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR023
++              stale: false
++        page:
++          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR023
++          limit: 100
++          hasMore: true
++        retentionClass: "TODO(reference-pending): C3 timeline retention approval"
++        freshness:
++          readConsistency: eventually_consistent
++          observedAt: "2026-05-14T09:31:03Z"
++          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR023
++          stale: false
++    BoundaryDuplicatePage:
++      summary: Boundary-duplicate page continuation preserves ordering without exposing hidden rows.
++      value:
++        entries: []
++        page:
++          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR024
++          limit: 100
++          hasMore: true
++        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
++        freshness:
++          readConsistency: eventually_consistent
++          observedAt: "2026-05-14T09:32:00Z"
++          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR024
++          stale: false
++    EmptyPageContinuation:
++      summary: Empty-page continuation after security trimming.
++      value:
++        entries: []
++        page:
++          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR025
++          limit: 100
++          hasMore: true
++        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
++        freshness:
++          readConsistency: eventually_consistent
++          observedAt: "2026-05-14T09:33:00Z"
++          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR025
++          stale: false
++    CursorTamperProblem:
++      summary: Tampered-cursor or changed-filter request rejected without existence hints.
++      value:
++        type: about:blank
++        title: Invalid cursor
++        status: 400
++        category: validation_error
++        code: tampered_cursor_or_changed_filter
++        message: The continuation cursor is invalid for this bounded metadata query.
++        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR026
++        retryable: false
++        clientAction: restart_query
++        details:
++          visibility: metadata_only
++    PrincipalMismatchSafeDenialProblem:
++      summary: Tenant/principal-mismatch safe denial.
++      value:
++        type: about:blank
++        title: Resource not available
++        status: 404
++        category: not_found
++        code: safe_denial
++        message: The requested diagnostic evidence is not available.
++        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR027
++        retryable: false
++        clientAction: verify_authorization
++        details:
++          visibility: metadata_only
++    InvalidSortProblem:
++      summary: Invalid-sort request rejected before projection observation.
++      value:
++        type: about:blank
++        title: Invalid sort
++        status: 400
++        category: validation_error
++        code: invalid_sort
++        message: The requested sort is not supported for this metadata query.
++        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR028
++        retryable: false
++        clientAction: revise_request
++        details:
++          visibility: metadata_only
+     ProjectionStaleProblem:
+       value:
+         type: about:blank
+@@ -6507,6 +6844,12 @@ components:
+         details:
+           visibility: metadata_only
+   schemas:
++    PrefixedOpaqueIdentifier:
++      type: string
++      minLength: 16
++      maxLength: 128
++      pattern: "^[a-z][a-z0-9]*_[A-Za-z0-9_-]{8,120}$"
++      description: Shared namespace-prefixed opaque identifier shape for sanitized references such as actorref_, digest_, changeref_, and provref_. Prefixes classify evidence domains; values are non-secret metadata and never tenant authority.
+     OpaqueIdentifier:
+       type: string
+       minLength: 16
+@@ -7330,8 +7673,8 @@ components:
+         - retryEligibility
+         - freshness
+       properties:
+-        workspaceId:
+-          $ref: "#/components/schemas/OpaqueIdentifier"
++        workspaceReference:
++          $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+         lockState:
+           $ref: "#/components/schemas/LockState"
+         lease:
+@@ -8378,6 +8721,68 @@ components:
+           minLength: 1
+           maxLength: 80
+           pattern: "^[a-z][a-z0-9_]{0,79}$"
++    RedactableDiagnosticIdentifier:
++      type: object
++      additionalProperties: false
++      required:
++        - classification
++        - redaction
++      properties:
++        value:
++          $ref: "#/components/schemas/OpaqueIdentifier"
++        classification:
++          $ref: "#/components/schemas/DiagnosticFieldClassification"
++        redaction:
++          $ref: "#/components/schemas/RedactionMetadata"
++      description: Audience-gated diagnostic identifier. The property remains present for authorized response shapes, while `value` is omitted when the identifier is redacted, unknown, or not visible to the diagnostic audience.
++    RedactableAuditActorReference:
++      type: object
++      additionalProperties: false
++      required:
++        - classification
++        - redaction
++      properties:
++        value:
++          allOf:
++            - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
++          pattern: "^actorref_[A-Za-z0-9_-]{8,120}$"
++        classification:
++          $ref: "#/components/schemas/DiagnosticFieldClassification"
++        redaction:
++          $ref: "#/components/schemas/RedactionMetadata"
++      description: Audience-gated audit actor reference. Redacted records retain redaction metadata without exposing actor identity.
++    RedactableAuditOperationReference:
++      type: object
++      additionalProperties: false
++      required:
++        - classification
++        - redaction
++      properties:
++        value:
++          $ref: "#/components/schemas/OpaqueIdentifier"
++        classification:
++          $ref: "#/components/schemas/DiagnosticFieldClassification"
++        redaction:
++          $ref: "#/components/schemas/RedactionMetadata"
++      description: Audience-gated audit operation reference. Redacted records retain redaction metadata without exposing operation identity.
++    RedactableAuditTimestamp:
++      type: object
++      additionalProperties: false
++      required:
++        - precision
++        - redaction
++      properties:
++        value:
++          $ref: "#/components/schemas/UtcDateTime"
++        precision:
++          type: string
++          enum:
++            - exact
++            - bucketed
++            - redacted
++        redaction:
++          $ref: "#/components/schemas/RedactionMetadata"
++      description: Audience-gated audit timestamp. Redacted records can disclose a redaction state or bucket precision without leaking exact event timing.
+     AuditTrailPage:
+       type: object
+       additionalProperties: false
+@@ -8421,15 +8826,11 @@ components:
+         auditRecordId:
+           $ref: "#/components/schemas/OpaqueIdentifier"
+         actorReference:
+-          type: string
+-          minLength: 16
+-          maxLength: 128
+-          pattern: "^actorref_[A-Za-z0-9_-]{7,119}$"
+-          x-hexalith-sensitive-metadata-tier: tenant_sensitive
++          $ref: "#/components/schemas/RedactableAuditActorReference"
+         taskId:
+           $ref: "#/components/schemas/OpaqueIdentifier"
+         operationId:
+-          $ref: "#/components/schemas/OpaqueIdentifier"
++          $ref: "#/components/schemas/RedactableAuditOperationReference"
+         correlationId:
+           $ref: "#/components/schemas/OpaqueIdentifier"
+         resultStatus:
+@@ -8443,7 +8844,7 @@ components:
+           minimum: 0
+           maximum: 86400000
+         evidenceTimestamp:
+-          $ref: "#/components/schemas/UtcDateTime"
++          $ref: "#/components/schemas/RedactableAuditTimestamp"
+         redaction:
+           $ref: "#/components/schemas/RedactionMetadata"
+         changedPathEvidence:
+@@ -8496,8 +8897,8 @@ components:
+           $ref: "#/components/schemas/OpaqueIdentifier"
+         correlationId:
+           $ref: "#/components/schemas/OpaqueIdentifier"
+-        workspaceId:
+-          $ref: "#/components/schemas/OpaqueIdentifier"
++        workspaceReference:
++          $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+         stateTransition:
+           $ref: "#/components/schemas/DiagnosticStateTransition"
+         sanitizedResult:
+@@ -8588,16 +8989,14 @@ components:
+             - redacted
+             - unavailable
+         digest:
+-          type: string
+-          minLength: 16
+-          maxLength: 128
+-          pattern: "^digest_[A-Za-z0-9_-]{9,121}$"
++          allOf:
++            - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
++          pattern: "^digest_[A-Za-z0-9_-]{8,120}$"
+           x-hexalith-sensitive-metadata-tier: tenant_sensitive
+         reference:
+-          type: string
+-          minLength: 16
+-          maxLength: 128
+-          pattern: "^changeref_[A-Za-z0-9_-]{6,118}$"
++          allOf:
++            - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
++          pattern: "^changeref_[A-Za-z0-9_-]{8,120}$"
+           x-hexalith-sensitive-metadata-tier: tenant_sensitive
+         classification:
+           $ref: "#/components/schemas/DiagnosticFieldClassification"
+@@ -8662,12 +9061,12 @@ components:
+           pattern: "^[a-z][a-z0-9_]{0,79}$"
+     DiagnosticBase:
+       type: object
+-      additionalProperties: false
+       required:
+         - audience
+         - status
+         - disposition
+         - trust
++        - fieldClassifications
+         - freshness
+       properties:
+         audience:
+@@ -8683,35 +9082,77 @@ components:
+           $ref: "#/components/schemas/DiagnosticTrustEvidence"
+         fieldClassifications:
+           type: array
++          minItems: 1
+           maxItems: 32
+           items:
+             $ref: "#/components/schemas/DiagnosticFieldClassificationEntry"
+         freshness:
+           $ref: "#/components/schemas/FreshnessMetadata"
++      allOf:
++        - if:
++            properties:
++              trust:
++                properties:
++                  availability:
++                    const: available
++          then:
++            properties:
++              freshness:
++                properties:
++                  stale:
++                    const: false
++        - if:
++            properties:
++              trust:
++                properties:
++                  availability:
++                    enum:
++                      - stale
++                      - unavailable
++                      - redacted
++                      - unknown
++          then:
++            properties:
++              freshness:
++                properties:
++                  stale:
++                    const: true
+     ReadinessDiagnostics:
+       allOf:
+         - $ref: "#/components/schemas/DiagnosticBase"
++        - type: object
++          required:
++            - providerSummaryReference
++            - folderSummaryReference
++            - workspaceSummaryReference
++          properties:
++            providerSummaryReference:
++              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
++            folderSummaryReference:
++              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
++            workspaceSummaryReference:
++              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
++      unevaluatedProperties: false
+     LockDiagnostics:
+       allOf:
+         - $ref: "#/components/schemas/DiagnosticBase"
+         - type: object
+-          additionalProperties: false
+           properties:
+             lockReference:
+-              $ref: "#/components/schemas/DiagnosticSafeIdentifier"
++              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
++      unevaluatedProperties: false
+     DirtyStateDiagnostics:
+       allOf:
+         - $ref: "#/components/schemas/DiagnosticBase"
+         - type: object
+-          additionalProperties: false
+           properties:
+             changedPathEvidence:
+               $ref: "#/components/schemas/ChangedPathEvidence"
++      unevaluatedProperties: false
+     FailedOperationDiagnostics:
+       allOf:
+         - $ref: "#/components/schemas/DiagnosticBase"
+         - type: object
+-          additionalProperties: false
+           properties:
+             operationId:
+               $ref: "#/components/schemas/OpaqueIdentifier"
+@@ -8721,25 +9162,24 @@ components:
+               $ref: "#/components/schemas/CanonicalErrorCategory"
+             retryEligibility:
+               $ref: "#/components/schemas/RetryEligibility"
++      unevaluatedProperties: false
+     ProviderStatusDiagnostics:
+       allOf:
+         - $ref: "#/components/schemas/DiagnosticBase"
+         - type: object
+-          additionalProperties: false
+           properties:
+             providerBindingReference:
+-              $ref: "#/components/schemas/DiagnosticSafeIdentifier"
++              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+             providerCorrelationReference:
+-              type: string
+-              minLength: 16
+-              maxLength: 128
++              allOf:
++                - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
+               pattern: "^provref_[A-Za-z0-9_-]{8,120}$"
+               x-hexalith-sensitive-metadata-tier: tenant_sensitive
++      unevaluatedProperties: false
+     SyncStatusDiagnostics:
+       allOf:
+         - $ref: "#/components/schemas/DiagnosticBase"
+         - type: object
+-          additionalProperties: false
+           properties:
+             acceptedCommandState:
+               type: string
+@@ -8753,6 +9193,7 @@ components:
+               $ref: "#/components/schemas/LifecycleState"
+             providerOutcomeState:
+               $ref: "#/components/schemas/ProviderOutcomeState"
++      unevaluatedProperties: false
+     ProjectionFreshnessDiagnostics:
+       type: object
+       additionalProperties: false
+@@ -8765,6 +9206,7 @@ components:
+         - staleReasonCode
+         - unavailableReasonCode
+         - freshnessTarget
++        - fieldClassifications
+         - freshness
+       properties:
+         audience:
+@@ -8799,8 +9241,39 @@ components:
+           type: string
+           minLength: 1
+           maxLength: 160
++        fieldClassifications:
++          type: array
++          minItems: 1
++          maxItems: 32
++          items:
++            $ref: "#/components/schemas/DiagnosticFieldClassificationEntry"
+         freshness:
+           $ref: "#/components/schemas/FreshnessMetadata"
++      allOf:
++        - if:
++            properties:
++              availability:
++                const: available
++          then:
++            properties:
++              freshness:
++                properties:
++                  stale:
++                    const: false
++        - if:
++            properties:
++              availability:
++                enum:
++                  - stale
++                  - unavailable
++                  - redacted
++                  - unknown
++          then:
++            properties:
++              freshness:
++                properties:
++                  stale:
++                    const: true
+     CanonicalErrorCategory:
+       type: string
+       enum:
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
+index 07248be..dd654c6 100644
+--- a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
+@@ -265,6 +265,150 @@ public sealed class AuditOpsConsoleContractGroupTests
+         }
+     }
+ 
++    [Fact]
++    public void AuditOpsConsoleSchemas_CloseReviewPatchGaps()
++    {
++        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
++        YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
++
++        foreach (string schemaName in new[]
++        {
++            "PrefixedOpaqueIdentifier",
++            "RedactableDiagnosticIdentifier",
++            "RedactableAuditActorReference",
++            "RedactableAuditOperationReference",
++            "RedactableAuditTimestamp",
++        })
++        {
++            RequiredMapping(schemas, schemaName);
++        }
++
++        string diagnosticBase = SerializeYaml(RequiredMapping(schemas, "DiagnosticBase"));
++        diagnosticBase.ShouldNotContain("additionalProperties: false", Case.Insensitive);
++        diagnosticBase.ShouldContain("fieldClassifications", Case.Insensitive);
++        diagnosticBase.ShouldContain("minItems: 1", Case.Insensitive);
++        diagnosticBase.ShouldContain("if:", Case.Insensitive);
++        diagnosticBase.ShouldContain("then:", Case.Insensitive);
++
++        foreach (string schemaName in new[]
++        {
++            "ReadinessDiagnostics",
++            "LockDiagnostics",
++            "DirtyStateDiagnostics",
++            "FailedOperationDiagnostics",
++            "ProviderStatusDiagnostics",
++            "SyncStatusDiagnostics",
++        })
++        {
++            string schema = SerializeYaml(RequiredMapping(schemas, schemaName));
++            schema.ShouldContain("unevaluatedProperties: false", Case.Insensitive, schemaName);
++        }
++
++        string readiness = SerializeYaml(RequiredMapping(schemas, "ReadinessDiagnostics"));
++        readiness.ShouldContain("providerSummaryReference", Case.Insensitive);
++        readiness.ShouldContain("folderSummaryReference", Case.Insensitive);
++        readiness.ShouldContain("workspaceSummaryReference", Case.Insensitive);
++
++        string auditRecord = SerializeYaml(RequiredMapping(schemas, "AuditRecord"));
++        auditRecord.ShouldContain("RedactableAuditActorReference", Case.Insensitive);
++        auditRecord.ShouldContain("RedactableAuditOperationReference", Case.Insensitive);
++        auditRecord.ShouldContain("RedactableAuditTimestamp", Case.Insensitive);
++
++        string operationTimelineEntry = SerializeYaml(RequiredMapping(schemas, "OperationTimelineEntry"));
++        operationTimelineEntry.ShouldContain("workspaceReference", Case.Insensitive);
++        operationTimelineEntry.ShouldContain("RedactableDiagnosticIdentifier", Case.Insensitive);
++
++        string lockDiagnostics = SerializeYaml(RequiredMapping(schemas, "LockDiagnostics"));
++        lockDiagnostics.ShouldContain("RedactableDiagnosticIdentifier", Case.Insensitive);
++        string providerStatusDiagnostics = SerializeYaml(RequiredMapping(schemas, "ProviderStatusDiagnostics"));
++        providerStatusDiagnostics.ShouldContain("RedactableDiagnosticIdentifier", Case.Insensitive);
++
++        string trustEvidence = SerializeYaml(RequiredMapping(schemas, "DiagnosticTrustEvidence"));
++        trustEvidence.ShouldContain("availability", Case.Insensitive);
++        trustEvidence.ShouldContain("freshnessAgeMilliseconds", Case.Insensitive);
++
++        string projectionFreshness = SerializeYaml(RequiredMapping(schemas, "ProjectionFreshnessDiagnostics"));
++        projectionFreshness.ShouldContain("if:", Case.Insensitive);
++        projectionFreshness.ShouldContain("then:", Case.Insensitive);
++    }
++
++    [Fact]
++    public void AuditOpsConsoleContracts_DeclareCursorAudienceAndBoundaryNegativeCases()
++    {
++        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
++        YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
++
++        foreach (string exampleName in new[]
++        {
++            "AuditTrailPageEmpty",
++            "AuditTrailPageLimitBoundary",
++            "OperationTimelinePageEmpty",
++            "OperationTimelinePageLimitBoundary",
++            "CursorTamperProblem",
++            "PrincipalMismatchSafeDenialProblem",
++            "InvalidSortProblem",
++            "BoundaryDuplicatePage",
++            "EmptyPageContinuation",
++        })
++        {
++            examples.Children.ContainsKey(new YamlScalarNode(exampleName)).ShouldBeTrue(exampleName);
++        }
++
++        string notes = File.Exists(ContractNotesPath) ? File.ReadAllText(ContractNotesPath) : string.Empty;
++        string combinedExamples = string.Join("\n", examples.Children.Select(entry => SerializeYaml(entry.Value)));
++        string combined = notes + "\n" + combinedExamples;
++
++        foreach (string required in new[]
++        {
++            "tampered-cursor",
++            "changed-filter",
++            "tenant/principal-mismatch",
++            "invalid-sort",
++            "boundary-duplicate",
++            "empty-page continuation",
++            "auto_recovering",
++            "available",
++        })
++        {
++            combined.ShouldContain(required, Case.Insensitive);
++        }
++    }
++
++    [Fact]
++    public void AuditOpsConsoleReviewSweep_PropagatesWidenedCategoriesToEarlierStoryOperations()
++    {
++        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
++        Operation[] earlierStoryOperations = EnumerateOperations(root)
++            .Where(o => !StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal))
++            .ToArray();
++
++        foreach (Operation operation in earlierStoryOperations)
++        {
++            if (!operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-canonical-error-categories")))
++            {
++                continue;
++            }
++
++            string[] categories = RequiredSequence(operation.Node, "x-hexalith-canonical-error-categories")
++                .OfType<YamlScalarNode>()
++                .Select(value => value.Value ?? string.Empty)
++                .ToArray();
++
++            if (categories.Contains("read_model_unavailable", StringComparer.Ordinal))
++            {
++                categories.ShouldContain("projection_stale", $"{operation.OperationId} must consume the widened projection-stale category.");
++                categories.ShouldContain("projection_unavailable", $"{operation.OperationId} must consume the widened projection-unavailable category.");
++            }
++
++            if (categories.Contains("provider_failure_known", StringComparer.Ordinal)
++                || categories.Contains("unknown_provider_outcome", StringComparer.Ordinal)
++                || categories.Contains("reconciliation_required", StringComparer.Ordinal))
++            {
++                categories.ShouldContain("failed_operation", $"{operation.OperationId} must consume the widened failed-operation category.");
++            }
++        }
++    }
++
+     [Fact]
+     public void AuditOpsConsoleNotes_RecordEvidenceMapAudienceMatrixAndDeferredPolicy()
+     {

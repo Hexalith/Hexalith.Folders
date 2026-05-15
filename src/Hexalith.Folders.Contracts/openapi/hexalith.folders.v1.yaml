@@ -5391,7 +5391,12 @@ components:
     WorkspaceLockStatus:
       summary: Authorized caller — active lock held by a task in scope.
       value:
-        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        workspaceReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
         lockState: locked
         lease:
           lockId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D2
@@ -5419,7 +5424,12 @@ components:
     WorkspaceLockStatusUnlocked:
       summary: Authorized caller — workspace has no active lock; lease metadata is omitted entirely.
       value:
-        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        workspaceReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
         lockState: unlocked
         retryEligibility:
           retryable: true
@@ -5439,7 +5449,12 @@ components:
     WorkspaceLockStatusExpired:
       summary: Authorized caller — lock lease has expired; lease history visible because authorization succeeded.
       value:
-        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+        workspaceReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D4
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
         lockState: expired
         lease:
           lockId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2D2
@@ -6338,7 +6353,7 @@ components:
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR001
           limit: 50
-          hasMore: false
+          isTruncated: false
         retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6346,7 +6361,8 @@ components:
           projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR001
           stale: false
     AuditRecordRedacted:
-      summary: Authorized audit record with sanitized redaction state.
+      summary: |
+        Authorized audit record with sanitized redaction state. `correlationId` and `taskId` remain in cleartext across redaction so incident reconstruction can stitch records by correlation; `durationMilliseconds` is bucketed to 100ms granularity (here `100`) to avoid early-deny timing oracles. See `docs/contract/audit-ops-console-contract-groups.md` for the cross-audience correlation policy.
       value:
         auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD002
         actorReference:
@@ -6364,7 +6380,7 @@ components:
         resultStatus: redacted
         sanitizedErrorCategory: redacted
         retryable: false
-        durationMilliseconds: 18
+        durationMilliseconds: 100
         evidenceTimestamp:
           precision: redacted
           redaction:
@@ -6412,7 +6428,7 @@ components:
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR003
           limit: 50
-          hasMore: false
+          isTruncated: false
         retentionClass: "TODO(reference-pending): C3 timeline retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6625,12 +6641,24 @@ components:
         unavailableReasonCode: none
         freshnessTarget: "TODO(reference-pending): C5 projection freshness target"
         fieldClassifications:
+          - field: audience
+            classification: operator_sanitized
           - field: projectionName
             classification: consumer_safe
           - field: availability
             classification: consumer_safe
           - field: freshnessAgeMilliseconds
             classification: consumer_safe
+          - field: elapsedMilliseconds
+            classification: operator_sanitized
+          - field: staleReasonCode
+            classification: operator_sanitized
+          - field: unavailableReasonCode
+            classification: operator_sanitized
+          - field: freshnessTarget
+            classification: operator_sanitized
+          - field: projectionWatermark
+            classification: operator_sanitized
         freshness:
           readConsistency: eventually_consistent
           observedAt: "2026-05-14T09:20:00Z"
@@ -6643,7 +6671,7 @@ components:
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR020
           limit: 50
-          hasMore: false
+          isTruncated: false
         retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6651,7 +6679,7 @@ components:
           projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR020
           stale: false
     AuditTrailPageLimitBoundary:
-      summary: Authorized audit trail page at the configured result boundary.
+      summary: "Authorized audit trail page at the configured result boundary — entries fills the requested limit and `isTruncated: true` signals more pages."
       value:
         entries:
           - auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD021
@@ -6688,8 +6716,8 @@ components:
               stale: false
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR021
-          limit: 100
-          hasMore: true
+          limit: 1
+          isTruncated: true
         retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6703,7 +6731,7 @@ components:
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR022
           limit: 50
-          hasMore: false
+          isTruncated: false
         retentionClass: "TODO(reference-pending): C3 timeline retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6711,7 +6739,7 @@ components:
           projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR022
           stale: false
     OperationTimelinePageLimitBoundary:
-      summary: Authorized operation timeline page at the result boundary.
+      summary: "Authorized operation timeline page at the result boundary — entries fills the requested limit and `isTruncated: true` signals more pages."
       value:
         entries:
           - timelineEntryId: opaque_01HZY7Z6N7J4Q2X8Y9V0TLE023
@@ -6739,8 +6767,8 @@ components:
               stale: false
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR023
-          limit: 100
-          hasMore: true
+          limit: 1
+          isTruncated: true
         retentionClass: "TODO(reference-pending): C3 timeline retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6754,7 +6782,7 @@ components:
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR024
           limit: 100
-          hasMore: true
+          isTruncated: true
         retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6768,7 +6796,7 @@ components:
         page:
           cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR025
           limit: 100
-          hasMore: true
+          isTruncated: true
         retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
         freshness:
           readConsistency: eventually_consistent
@@ -6848,8 +6876,8 @@ components:
       type: string
       minLength: 16
       maxLength: 128
-      pattern: "^[a-z][a-z0-9]*_[A-Za-z0-9_-]{8,120}$"
-      description: Shared namespace-prefixed opaque identifier shape for sanitized references such as actorref_, digest_, changeref_, and provref_. Prefixes classify evidence domains; values are non-secret metadata and never tenant authority.
+      pattern: "^[a-z][a-z0-9]{2,}_[A-Za-z0-9_-]{8,119}$"
+      description: Shared namespace-prefixed opaque identifier shape for sanitized references such as actorref_, digest_, changeref_, and provref_. The prefix is at least three lowercase characters before the underscore so that a single-letter namespace cannot defeat domain classification; the tail is bounded so that the overall length stays within the 16/128 minLength/maxLength envelope regardless of which prefix is used. Values are non-secret metadata and never tenant authority.
     OpaqueIdentifier:
       type: string
       minLength: 16
@@ -7668,7 +7696,7 @@ components:
       type: object
       additionalProperties: false
       required:
-        - workspaceId
+        - workspaceReference
         - lockState
         - retryEligibility
         - freshness
@@ -8734,7 +8762,19 @@ components:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
         redaction:
           $ref: "#/components/schemas/RedactionMetadata"
-      description: Audience-gated diagnostic identifier. The property remains present for authorized response shapes, while `value` is omitted when the identifier is redacted, unknown, or not visible to the diagnostic audience.
+      allOf:
+        - if:
+            required: [redaction]
+            properties:
+              redaction:
+                required: [visibility]
+                properties:
+                  visibility:
+                    const: redacted
+          then:
+            not:
+              required: [value]
+      description: Audience-gated diagnostic identifier. The property remains present for authorized response shapes, while `value` is omitted when the identifier is redacted, unknown, or not visible to the diagnostic audience. The redacted-implies-no-value invariant is enforced by the conditional `allOf` block.
     RedactableAuditActorReference:
       type: object
       additionalProperties: false
@@ -8745,12 +8785,24 @@ components:
         value:
           allOf:
             - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
-          pattern: "^actorref_[A-Za-z0-9_-]{8,120}$"
+          pattern: "^actorref_[A-Za-z0-9_-]{8,119}$"
         classification:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
         redaction:
           $ref: "#/components/schemas/RedactionMetadata"
-      description: Audience-gated audit actor reference. Redacted records retain redaction metadata without exposing actor identity.
+      allOf:
+        - if:
+            required: [redaction]
+            properties:
+              redaction:
+                required: [visibility]
+                properties:
+                  visibility:
+                    const: redacted
+          then:
+            not:
+              required: [value]
+      description: Audience-gated audit actor reference. Redacted records retain redaction metadata without exposing actor identity. The redacted-implies-no-value invariant is enforced by the conditional `allOf` block.
     RedactableAuditOperationReference:
       type: object
       additionalProperties: false
@@ -8764,7 +8816,19 @@ components:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
         redaction:
           $ref: "#/components/schemas/RedactionMetadata"
-      description: Audience-gated audit operation reference. Redacted records retain redaction metadata without exposing operation identity.
+      allOf:
+        - if:
+            required: [redaction]
+            properties:
+              redaction:
+                required: [visibility]
+                properties:
+                  visibility:
+                    const: redacted
+          then:
+            not:
+              required: [value]
+      description: Audience-gated audit operation reference. Redacted records retain redaction metadata without exposing operation identity. The redacted-implies-no-value invariant is enforced by the conditional `allOf` block.
     RedactableAuditTimestamp:
       type: object
       additionalProperties: false
@@ -8782,7 +8846,27 @@ components:
             - redacted
         redaction:
           $ref: "#/components/schemas/RedactionMetadata"
-      description: Audience-gated audit timestamp. Redacted records can disclose a redaction state or bucket precision without leaking exact event timing.
+      allOf:
+        - if:
+            required: [precision]
+            properties:
+              precision:
+                const: redacted
+          then:
+            not:
+              required: [value]
+        - if:
+            required: [redaction]
+            properties:
+              redaction:
+                required: [visibility]
+                properties:
+                  visibility:
+                    const: redacted
+          then:
+            not:
+              required: [value]
+      description: "Audience-gated audit timestamp. Redacted records can disclose a redaction state or bucket precision without leaking exact event timing. The redacted-implies-no-value invariant binds both `precision: redacted` and `redaction.visibility: redacted` to absence of `value`."
     AuditTrailPage:
       type: object
       additionalProperties: false
@@ -8882,6 +8966,7 @@ components:
         - operationId
         - taskId
         - correlationId
+        - workspaceReference
         - stateTransition
         - sanitizedResult
         - retryable
@@ -8991,12 +9076,12 @@ components:
         digest:
           allOf:
             - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
-          pattern: "^digest_[A-Za-z0-9_-]{8,120}$"
+          pattern: "^digest_[A-Za-z0-9_-]{8,119}$"
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         reference:
           allOf:
             - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
-          pattern: "^changeref_[A-Za-z0-9_-]{8,120}$"
+          pattern: "^changeref_[A-Za-z0-9_-]{8,119}$"
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         classification:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
@@ -9090,20 +9175,26 @@ components:
           $ref: "#/components/schemas/FreshnessMetadata"
       allOf:
         - if:
+            required: [trust]
             properties:
               trust:
+                required: [availability]
                 properties:
                   availability:
                     const: available
           then:
+            required: [freshness]
             properties:
               freshness:
+                required: [stale]
                 properties:
                   stale:
                     const: false
         - if:
+            required: [trust]
             properties:
               trust:
+                required: [availability]
                 properties:
                   availability:
                     enum:
@@ -9112,8 +9203,10 @@ components:
                       - redacted
                       - unknown
           then:
+            required: [freshness]
             properties:
               freshness:
+                required: [stale]
                 properties:
                   stale:
                     const: true
@@ -9132,14 +9225,92 @@ components:
               $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
             workspaceSummaryReference:
               $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+        - if:
+            required: [audience]
+            properties:
+              audience:
+                const: consumer
+          then:
+            properties:
+              providerSummaryReference:
+                properties:
+                  classification:
+                    const: consumer_safe
+                  redaction:
+                    properties:
+                      visibility:
+                        const: redacted
+              folderSummaryReference:
+                properties:
+                  classification:
+                    const: consumer_safe
+                  redaction:
+                    properties:
+                      visibility:
+                        const: redacted
+              workspaceSummaryReference:
+                properties:
+                  classification:
+                    const: consumer_safe
+                  redaction:
+                    properties:
+                      visibility:
+                        const: redacted
+        - if:
+            required: [audience]
+            properties:
+              audience:
+                const: authorized_operator
+          then:
+            properties:
+              providerSummaryReference:
+                properties:
+                  classification:
+                    const: operator_sanitized
+              folderSummaryReference:
+                properties:
+                  classification:
+                    const: operator_sanitized
+              workspaceSummaryReference:
+                properties:
+                  classification:
+                    const: operator_sanitized
       unevaluatedProperties: false
     LockDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
+          required:
+            - lockReference
           properties:
             lockReference:
               $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+        - if:
+            required: [audience]
+            properties:
+              audience:
+                const: consumer
+          then:
+            properties:
+              lockReference:
+                properties:
+                  classification:
+                    const: consumer_safe
+                  redaction:
+                    properties:
+                      visibility:
+                        const: redacted
+        - if:
+            required: [audience]
+            properties:
+              audience:
+                const: authorized_operator
+          then:
+            properties:
+              lockReference:
+                properties:
+                  classification:
+                    const: operator_sanitized
       unevaluatedProperties: false
     DirtyStateDiagnostics:
       allOf:
@@ -9167,14 +9338,42 @@ components:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
+          required:
+            - providerBindingReference
           properties:
             providerBindingReference:
               $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
             providerCorrelationReference:
               allOf:
                 - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
-              pattern: "^provref_[A-Za-z0-9_-]{8,120}$"
+              pattern: "^provref_[A-Za-z0-9_-]{8,119}$"
               x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        - if:
+            required: [audience]
+            properties:
+              audience:
+                const: consumer
+          then:
+            properties:
+              providerBindingReference:
+                properties:
+                  classification:
+                    const: consumer_safe
+                  redaction:
+                    properties:
+                      visibility:
+                        const: redacted
+        - if:
+            required: [audience]
+            properties:
+              audience:
+                const: authorized_operator
+          then:
+            properties:
+              providerBindingReference:
+                properties:
+                  classification:
+                    const: operator_sanitized
       unevaluatedProperties: false
     SyncStatusDiagnostics:
       allOf:
@@ -9196,7 +9395,7 @@ components:
       unevaluatedProperties: false
     ProjectionFreshnessDiagnostics:
       type: object
-      additionalProperties: false
+      unevaluatedProperties: false
       required:
         - audience
         - projectionName
@@ -9251,16 +9450,20 @@ components:
           $ref: "#/components/schemas/FreshnessMetadata"
       allOf:
         - if:
+            required: [availability]
             properties:
               availability:
                 const: available
           then:
+            required: [freshness]
             properties:
               freshness:
+                required: [stale]
                 properties:
                   stale:
                     const: false
         - if:
+            required: [availability]
             properties:
               availability:
                 enum:
@@ -9269,8 +9472,10 @@ components:
                   - redacted
                   - unknown
           then:
+            required: [freshness]
             properties:
               freshness:
+                required: [stale]
                 properties:
                   stale:
                     const: true
