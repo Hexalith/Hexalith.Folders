@@ -6,8 +6,10 @@ namespace Hexalith.Folders.Testing.Tests.Helpers;
 /// <summary>
 /// Shared assertions used by Stories 1.4 and 1.5 artifact tests to confirm that the Contract Spine
 /// has not absorbed operation groups owned by later stories (workspace/lock, file/context,
-/// commit/status, and audit families not yet explicitly owned). Strengthened beyond simple prefix matching so that
-/// e.g. <c>/api/v1/files-context</c> is also caught.
+/// commit/status). The regex anchors at <c>/api/v1/&lt;fragment&gt;</c>, so Story 1.11 audit/ops-console
+/// paths under <c>/api/v1/folders/{folderId}/audit-trail</c> and <c>/api/v1/ops-console/...</c> do not trip
+/// the assertion. Strengthened beyond simple prefix matching so that e.g. <c>/api/v1/files-context</c>
+/// is also caught.
 /// </summary>
 internal static class SpineContractAssertions
 {

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Shouldly;
 using Xunit;
@@ -10,6 +11,7 @@ public sealed class AuditOpsConsoleContractGroupTests
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
     private static readonly string ContractNotesPath = Path.Combine(RepositoryRoot, "docs", "contract", "audit-ops-console-contract-groups.md");
+    private static readonly string AuditLeakageCorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "audit-leakage-corpus.json");
 
     private static readonly string[] AuditOperationIds =
     [
@@ -36,17 +38,23 @@ public sealed class AuditOpsConsoleContractGroupTests
     public void AuditOpsConsoleOperations_MatchStoryAllowListAndResolveRefs()
     {
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
-        Operation[] operations = EnumerateOperations(root).Where(o => StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
+        Operation[] allOperations = EnumerateOperations(root).ToArray();
+        Operation[] operations = allOperations.Where(o => StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
 
         operations.Select(o => o.OperationId).Order(StringComparer.Ordinal).ShouldBe(StoryOperationIds.Order(StringComparer.Ordinal));
         operations.Select(o => o.OperationId).ShouldBeUnique();
+
+        // Broader negative-case guard: operationIds must also be unique across the entire spec, not only
+        // within this story's allow-list. A Story 1.11 operationId colliding with an unrelated operationId
+        // elsewhere would silently slip past the per-story uniqueness check.
+        allOperations.Select(o => o.OperationId).ShouldBeUnique();
 
         Dictionary<string, (string Method, string Path)> expected = new(StringComparer.Ordinal)
         {
             ["ListAuditTrail"] = ("get", "/api/v1/folders/{folderId}/audit-trail"),
             ["GetAuditRecord"] = ("get", "/api/v1/folders/{folderId}/audit-trail/{auditRecordId}"),
             ["ListOperationTimeline"] = ("get", "/api/v1/folders/{folderId}/operation-timeline"),
-            ["GetOperationTimelineEntry"] = ("get", "/api/v1/folders/{folderId}/operation-timeline/{operationId}"),
+            ["GetOperationTimelineEntry"] = ("get", "/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}"),
             ["GetReadinessDiagnostics"] = ("get", "/api/v1/ops-console/readiness-diagnostics"),
             ["GetLockDiagnostics"] = ("get", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics"),
             ["GetDirtyStateDiagnostics"] = ("get", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics"),
@@ -75,7 +83,11 @@ public sealed class AuditOpsConsoleContractGroupTests
         foreach (Operation operation in operations)
         {
             YamlMappingNode[] parameters = EnumerateParameters(operation.PathItem, operation.Node).ToArray();
+            // Reject the canonical $ref AND any inline declaration that names the header `Idempotency-Key`,
+            // so a future contributor cannot reintroduce idempotency on a query via an alternate $ref path
+            // or by declaring the header inline.
             parameters.Any(p => GetOptionalScalar(p, "$ref") == "#/components/parameters/IdempotencyKey").ShouldBeFalse(operation.OperationId);
+            parameters.Any(p => string.Equals(GetOptionalScalar(p, "name"), "Idempotency-Key", StringComparison.OrdinalIgnoreCase)).ShouldBeFalse(operation.OperationId);
             operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-idempotency-key")).ShouldBeFalse(operation.OperationId);
 
             RequiredMapping(operation.Node, "x-hexalith-read-consistency");
@@ -165,20 +177,24 @@ public sealed class AuditOpsConsoleContractGroupTests
             "ProjectionFreshnessDiagnostics",
             "ProjectionStaleProblem",
             "ProjectionUnavailableProblem",
-            "AuditAccessDeniedProblem",
         })
         {
             examples.Children.ContainsKey(new YamlScalarNode(exampleName)).ShouldBeTrue(exampleName);
         }
 
         string combinedExamples = string.Join("\n", examples.Children.Select(entry => SerializeYaml(entry.Value)));
+
+        // Shape-based forbidden patterns. These complement the corpus-driven sentinel check below.
+        // Patterns target raw leak shapes, not legitimate vocabulary substrings; the previous "secret" /
+        // "token_" substring tests are removed because they false-positive on `secret`/`credential_sensitive`
+        // vocabulary references and false-negative on encoded tokens.
         string[] forbiddenLeakPatterns =
         [
             "diff --git",
             "rawCommitMessage",
             "raw_commit_message",
-            "changedPaths",
-            "providerPayload",
+            "rawChangedPaths",
+            "rawProviderPayload",
             "generatedContext",
             "github.com/",
             "forgejo.example",
@@ -186,8 +202,6 @@ public sealed class AuditOpsConsoleContractGroupTests
             "/home/",
             "@example.com",
             "Bearer ",
-            "token_",
-            "secret",
         ];
 
         foreach (string forbidden in forbiddenLeakPatterns)
@@ -195,10 +209,60 @@ public sealed class AuditOpsConsoleContractGroupTests
             combinedExamples.ShouldNotContain(forbidden, Case.Insensitive, $"Story 1.11 examples must stay synthetic and metadata-only: {forbidden}");
         }
 
+        // Project-context rule: redaction/sentinel tests MUST iterate `tests/fixtures/audit-leakage-corpus.json`
+        // and assert that none of its synthetic sentinel values are baked into contract examples. The corpus is
+        // the canonical source for leakage canaries; a hardcoded inline list would drift.
+        File.Exists(AuditLeakageCorpusPath).ShouldBeTrue(AuditLeakageCorpusPath);
+        using JsonDocument corpus = JsonDocument.Parse(File.ReadAllText(AuditLeakageCorpusPath));
+        JsonElement sentinels = corpus.RootElement.GetProperty("sentinel_samples");
+        sentinels.GetArrayLength().ShouldBeGreaterThan(0);
+        foreach (JsonElement sentinel in sentinels.EnumerateArray())
+        {
+            string sentinelValue = sentinel.GetProperty("value").GetString() ?? string.Empty;
+            sentinelValue.ShouldNotBeNullOrWhiteSpace();
+            combinedExamples.ShouldNotContain(
+                sentinelValue,
+                Case.Insensitive,
+                $"audit-leakage-corpus sentinel `{sentinel.GetProperty("id").GetString()}` must not appear in Story 1.11 contract examples.");
+        }
+
         string changedPathEvidence = SerializeYaml(RequiredMapping(schemas, "ChangedPathEvidence"));
         changedPathEvidence.ShouldContain("digest", Case.Insensitive);
         changedPathEvidence.ShouldContain("reference", Case.Insensitive);
         changedPathEvidence.ShouldNotContain("raw changed path", Case.Insensitive);
+    }
+
+    [Fact]
+    public void AuditOpsConsoleOperations_DeclareConsistentSafeDenialResponseCodes()
+    {
+        // AC 7 / AC 19 require hidden-resource equivalence across audit and ops-console operations.
+        // The minimum safe-denial response set is {401, 403, 404, 503} for every operation that names
+        // `projection_stale` in its canonical-error-categories must also expose 409. Asymmetry here would
+        // let callers fingerprint authorization audience or projection state via the response-code surface.
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        Operation[] operations = EnumerateOperations(root).Where(o => StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
+        operations.Length.ShouldBe(StoryOperationIds.Length);
+
+        foreach (Operation operation in operations)
+        {
+            YamlMappingNode responses = RequiredMapping(operation.Node, "responses");
+            string[] codes = responses.Children.Keys.OfType<YamlScalarNode>().Select(k => k.Value ?? string.Empty).ToArray();
+
+            foreach (string expected in new[] { "200", "401", "403", "404", "503" })
+            {
+                codes.ShouldContain(expected, $"{operation.OperationId} must declare HTTP {expected} for safe-denial parity.");
+            }
+
+            string[] canonicalCategories = RequiredSequence(operation.Node, "x-hexalith-canonical-error-categories")
+                .OfType<YamlScalarNode>()
+                .Select(v => v.Value ?? string.Empty)
+                .ToArray();
+
+            if (canonicalCategories.Contains("projection_stale", StringComparer.Ordinal))
+            {
+                codes.ShouldContain("409", $"{operation.OperationId} declares projection_stale in canonical-error-categories and must therefore declare HTTP 409 for projection-stale parity.");
+            }
+        }
     }
 
     [Fact]

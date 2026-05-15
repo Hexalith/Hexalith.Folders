@@ -3818,6 +3818,9 @@ paths:
         - name: folder_id
           sensitivity: tenant_sensitive
           description: Opaque folder reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Opaque task reference. Present on audit records produced by task-scoped operations; absent for non-task-scoped audit evidence.
         - name: operation_id
           sensitivity: tenant_sensitive
           description: Opaque operation reference.
@@ -3874,6 +3877,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -3957,6 +3969,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4013,19 +4034,21 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
-  /api/v1/folders/{folderId}/operation-timeline/{operationId}:
+  /api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}:
     get:
       tags:
         - audit
       operationId: GetOperationTimelineEntry
       summary: Get one authorized operation timeline entry.
       description: >
-        Returns metadata-only timeline evidence for a single operation after authorization.
-        Tenant authority is not established by the operationId path value, and hidden
-        or wrong-tenant evidence remains safe-denied.
+        Returns metadata-only timeline evidence for a single timeline entry after authorization.
+        Tenant authority is not established by the timelineEntryId path value, and hidden
+        or wrong-tenant evidence remains safe-denied. One operation can produce multiple timeline
+        entries (state transitions over its lifecycle); use ListOperationTimeline to enumerate
+        entries for an operation and this endpoint to retrieve a specific entry by its id.
       parameters:
         - $ref: "#/components/parameters/FolderId"
-        - $ref: "#/components/parameters/OperationId"
+        - $ref: "#/components/parameters/TimelineEntryId"
         - $ref: "#/components/parameters/CorrelationId"
         - $ref: "#/components/parameters/Freshness"
       responses:
@@ -4044,6 +4067,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4123,6 +4155,17 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the readiness diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4202,6 +4245,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4286,6 +4338,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4372,6 +4433,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4458,6 +4528,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4545,6 +4624,15 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
           $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           $ref: "#/components/responses/ReadModelUnavailable"
       x-hexalith-read-consistency:
@@ -4627,6 +4715,17 @@ paths:
           $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "409":
+          description: Projection backing the freshness diagnostic is stale beyond the safe threshold.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/ProjectionStaleProblem"
         "503":
           description: Projection unavailable.
           content:
@@ -4775,19 +4874,21 @@ components:
       name: limit
       in: query
       required: false
-      description: Requested result bound. C4 numeric defaults remain approval-bound until PM approval.
+      description: "Requested result bound. C4 numeric defaults remain approval-bound until PM approval; the defensive ceiling of 1000 is a TODO(reference-pending C4 input limit) value derived from sibling C4 evidence and MUST be replaced once C4 is frozen. Runtime servers MUST clamp to the smaller of the requested value and the configured maximum and surface the effective limit alongside the requested value in pagination metadata."
       schema:
         type: integer
         minimum: 1
+        maximum: 1000
     MetadataFilter:
       name: filter
       in: query
       required: false
-      description: Future bounded metadata filter expression. Raw file contents and path lists are not valid filter payloads.
+      description: "Future bounded metadata filter expression. Raw file contents and path lists are not valid filter payloads. Allowed filter-key vocabulary for ListAuditTrail and ListOperationTimeline is TODO(reference-pending C4); until frozen, runtime servers MUST reject any filter key not in their per-operation allow-list and SHOULD emit `validation_error` for unknown keys. The shape pattern below restricts characters only, not semantics."
       schema:
         type: string
         minLength: 1
         maxLength: 256
+        pattern: '^[a-z][A-Za-z0-9_=.,*\- ]{0,255}$'
     FolderId:
       name: folderId
       in: path
@@ -4828,6 +4929,13 @@ components:
       in: path
       required: true
       description: Opaque operation identifier scoped by authorized tenant, folder, workspace, task, and operation family. It is not tenant authority.
+      schema:
+        $ref: "#/components/schemas/OpaqueIdentifier"
+    TimelineEntryId:
+      name: timelineEntryId
+      in: path
+      required: true
+      description: "Opaque identifier for a single operation-timeline entry (one row in the timeline projection). One operation can produce multiple timeline entries (state transitions over its lifecycle), so the entry id is the unique key for `GetOperationTimelineEntry`. Tenant authority is not established by this value."
       schema:
         $ref: "#/components/schemas/OpaqueIdentifier"
     AuditRecordId:
@@ -6398,19 +6506,6 @@ components:
         clientAction: retry
         details:
           visibility: metadata_only
-    AuditAccessDeniedProblem:
-      value:
-        type: about:blank
-        title: Audit access unavailable
-        status: 403
-        category: audit_access_denied
-        code: resource_unavailable
-        message: The requested audit evidence is unavailable.
-        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR014
-        retryable: false
-        clientAction: no_action
-        details:
-          visibility: redacted
   schemas:
     OpaqueIdentifier:
       type: string
@@ -8303,7 +8398,8 @@ components:
           type: string
           minLength: 1
           maxLength: 160
-          description: C3 retention evidence class or explicit TODO(reference-pending) marker; this contract does not define retention jobs.
+          pattern: '^(?:TODO\(reference-pending\):.{1,140}|[a-z][a-z0-9_]{0,79})$'
+          description: "C3 audit-trail retention evidence class identifier (snake_case) or an explicit `TODO(reference-pending):` marker. Runtime servers must emit an approved identifier once C3 vocabulary is frozen; until then, the only legal value is a `TODO(reference-pending):...` marker. This contract does not define retention jobs."
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
     AuditRecord:
@@ -8449,6 +8545,7 @@ components:
         - unavailable
         - redacted
         - unknown
+      description: "Projection availability vocabulary. `available`, `stale`, and `unavailable` are stable; `redacted` and `unknown` are TODO(reference-pending C5) candidate values kept pending Story C5 freshness/availability vocabulary approval. Consumers MUST treat the latter two as reference-pending and not as a frozen contract."
     DiagnosticFieldClassificationEntry:
       type: object
       additionalProperties: false
@@ -8460,7 +8557,8 @@ components:
           type: string
           minLength: 1
           maxLength: 80
-          pattern: "^[a-z][A-Za-z0-9]{0,79}$"
+          pattern: "^[a-z][A-Za-z0-9_]{0,79}$"
+          description: Field identifier. Accepts camelCase body properties and snake_case audit-metadata keys; consumers must not assume a single casing convention.
         classification:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
     DiagnosticSafeIdentifier:
@@ -8477,7 +8575,7 @@ components:
     ChangedPathEvidence:
       type: object
       additionalProperties: false
-      description: Changed path evidence uses digest/reference metadata only; it never carries a visible path list, content sample, or diff.
+      description: Changed path evidence uses digest/reference metadata only; it never carries a visible path list, content sample, or diff. `digest` is required iff `evidenceKind == digest`, `reference` is required iff `evidenceKind == reference`, and both fields MUST be absent when `evidenceKind` is `redacted` or `unavailable`.
       required:
         - evidenceKind
         - classification
@@ -8503,6 +8601,39 @@ components:
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         classification:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
+      oneOf:
+        - title: digest-evidence
+          required: [digest]
+          properties:
+            evidenceKind:
+              const: digest
+          not:
+            anyOf:
+              - required: [reference]
+        - title: reference-evidence
+          required: [reference]
+          properties:
+            evidenceKind:
+              const: reference
+          not:
+            anyOf:
+              - required: [digest]
+        - title: redacted-evidence
+          properties:
+            evidenceKind:
+              const: redacted
+          not:
+            anyOf:
+              - required: [digest]
+              - required: [reference]
+        - title: unavailable-evidence
+          properties:
+            evidenceKind:
+              const: unavailable
+          not:
+            anyOf:
+              - required: [digest]
+              - required: [reference]
     DiagnosticTrustEvidence:
       type: object
       additionalProperties: false
@@ -8617,6 +8748,7 @@ components:
                 - failed
                 - completed
                 - unavailable
+              description: "TODO(reference-pending C5/C6) approved acceptedCommandState vocabulary owner. This inline enum is a candidate set pending shared C6-aligned accepted-command-state vocabulary; do not treat these four values as a frozen contract."
             projectedState:
               $ref: "#/components/schemas/LifecycleState"
             providerOutcomeState:
