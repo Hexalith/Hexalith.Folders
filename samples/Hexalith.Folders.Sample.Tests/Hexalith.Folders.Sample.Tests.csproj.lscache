@@ -396,7 +396,7 @@ SampleSmokeTests.cs
   Microsoft.VisualStudio.TestPlatform.Common.dll
   Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
   testhost.dll
- newtonsoft.json/13.0.3/lib/net6.0/Newtonsoft.Json.dll
+ newtonsoft.json/13.0.4/lib/net6.0/Newtonsoft.Json.dll
  shouldly/4.3.0/lib/net9.0/Shouldly.dll
  system.codedom/6.0.0/lib/net6.0/System.CodeDom.dll
  system.management/6.0.1/lib/net6.0/System.Management.dll

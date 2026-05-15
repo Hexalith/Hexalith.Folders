@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-15T13:01:07Z",
+  "timestamp": "2026-05-15T11:19:53Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -12,7 +12,7 @@
       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
       "result": "pass",
       "details": "PARSE OK",
-      "file_size_bytes": 7951,
+      "file_size_bytes": 7933,
       "line_count": 157,
       "top_level_keys": [
         "development_status",
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M Hexalith.EventStore\n M Hexalith.FrontComposer\n M Hexalith.Memories\n M _bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj.lscache\n M samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj.lscache\n M src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj.lscache\n M src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache\n M src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj.lscache\n M src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj.lscache\n M tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj.lscache\n M tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache\n M tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj.lscache\n M tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj.lscache\n?? _bmad-output/implementation-artifacts/review-1-12-diff.patch\n",
+      "stdout": "?? _bmad-output/implementation-artifacts/review-1-12-diff.patch\n",
       "stderr": "",
-      "dirty_path_count": 16,
+      "dirty_path_count": 1,
       "result": "fail",
-      "details": "16 dirty path(s)"
+      "details": "1 dirty path(s)"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."

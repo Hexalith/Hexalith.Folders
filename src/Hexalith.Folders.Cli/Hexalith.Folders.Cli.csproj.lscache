@@ -373,7 +373,9 @@ Program.cs
  System.Xml.XPath.dll
  System.Xml.XPath.XDocument.dll
  WindowsBase.dll
-<NUGET>/system.commandline/2.0.5/lib/net8.0/System.CommandLine.dll
+<NUGET>/
+ newtonsoft.json/13.0.4/lib/net6.0/Newtonsoft.Json.dll
+ system.commandline/2.0.5/lib/net8.0/System.CommandLine.dll
 
 [analyzerReferences]
 <DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.8/analyzers/dotnet/cs/
