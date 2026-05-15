@@ -97,3 +97,4 @@
 2026-05-15T12:05:44Z	party-mode-review	1-15-wire-safety-invariant-ci-gates	ok	recorded party-mode trace and applied safety gate story hardening
 2026-05-15T12:57:13Z	party-mode-review	1-16-wire-exit-criteria-and-parity-completeness-gates	ok	recorded party-mode trace and applied governance/completeness gate story hardening
 2026-05-15T14:22:02Z	party-mode-review	2-1-stand-up-domain-service-host-with-tenants-integration	ok	recorded party-mode trace and applied Tenants integration story hardening
+2026-05-15T15:05:23Z	advanced-elicitation	1-13-generate-the-c13-parity-oracle	ok	recorded advanced-elicitation trace and applied source-authority/baseline hardening

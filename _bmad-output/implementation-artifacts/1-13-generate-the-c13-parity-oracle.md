@@ -28,20 +28,23 @@ so that cross-surface tests consume one source of truth for transport and behavi
 14. Given some C3/C4/S-2/C6 values may still be reference-pending, when generation encounters an explicitly reference-pending value, then it carries a bounded `reference_pending` marker only when the source contract names the unresolved decision and the schema allows the marker; otherwise it fails with a clear prerequisite-drift diagnostic. The generator must not invent final policy values or allow unbounded pending markers.
 15. Given active contract work may be in progress, when implementation starts, then the developer inspects the current OpenAPI file, contract notes, existing tests, and active Story 1.7 through Story 1.12 artifacts before assuming the operation inventory or metadata names.
 16. Given a maintainer changes the Contract Spine, when the local parity oracle is regenerated, then the resulting artifact and diagnostics identify which REST, SDK, CLI, MCP, and UI adapter expectations are present, missing, stale, removed, or reference-pending from one local metadata-only artifact.
+17. Given canonical inputs can disagree, when OpenAPI extensions, rule-table documentation, architecture adapter rules, generated SDK helper provenance, schemas, or previous-spine baselines conflict, then generation fails with bounded `prerequisite_drift` diagnostics instead of choosing an implicit winner or inventing fallback policy.
 
 ## Tasks / Subtasks
 
-- [ ] Confirm current Contract Spine and fixture prerequisites. (AC: 1, 3, 4, 5, 11, 14, 15)
+- [ ] Confirm current Contract Spine and fixture prerequisites. (AC: 1, 3, 4, 5, 11, 14, 15, 17)
   - [ ] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
   - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `docs/contract/*contract-groups.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/previous-spine.yaml`, and `tests/tools/parity-oracle-generator/README.md`.
   - [ ] Inspect Story 1.7 through Story 1.12 artifacts for downstream ownership notes and reference-pending decisions before editing generator behavior.
   - [ ] Treat missing OpenAPI extensions, missing operation IDs, malformed parity metadata, unresolved `$ref`, unsupported schema shape, or inconsistent docs-vs-spine rows as prerequisite drift.
+  - [ ] Build and document a source-authority matrix before deriving rows: OpenAPI operation metadata owns transport facts, rule tables and architecture own adapter semantics, schemas own allowed row shape, generated SDK helper provenance owns helper identity only, and `previous-spine.yaml` owns removal/deprecation comparison.
+  - [ ] Fail with metadata-only `prerequisite_drift` when canonical sources disagree or when a required source is missing for a non-reference-pending field.
   - [ ] Do not initialize or update nested submodules.
-- [ ] Implement the parity-oracle generator under the existing tool path. (AC: 1, 2, 5, 6, 8, 10, 11, 14)
+- [ ] Implement the parity-oracle generator under the existing tool path. (AC: 1, 2, 5, 6, 8, 10, 11, 14, 17)
   - [ ] Replace the placeholder-only `tests/tools/parity-oracle-generator/README.md` ownership note with implementation documentation while preserving ownership and non-leakage rules.
   - [ ] Add generator source under `tests/tools/parity-oracle-generator/` using the repo's .NET conventions unless a smaller script is explicitly justified by existing tooling.
   - [ ] Read OpenAPI with structured YAML parsing; do not derive rows through ad hoc line matching.
-  - [ ] Resolve local OpenAPI `$ref` pointers deterministically and fail on unresolved external references or ambiguous schema metadata.
+  - [ ] Resolve local OpenAPI `$ref` pointers deterministically and fail on unresolved external references, ambiguous schema metadata, or conflicting canonical inputs.
   - [ ] Emit `tests/fixtures/parity-contract.yaml` deterministically from repository-relative inputs.
   - [ ] Include safe provenance such as generator version, Contract Spine content hash, schema hash, source file names, and generated timestamp policy only if it remains byte-stable or explicitly normalized.
   - [ ] Keep generated output metadata-only and synthetic where examples are needed.
@@ -61,7 +64,7 @@ so that cross-surface tests consume one source of truth for transport and behavi
   - [ ] Map MCP failure kinds one-to-one to canonical categories; do not collapse categories for convenience.
   - [ ] Preserve SDK caller/provider idempotency sourcing, CLI `--idempotency-key` or `--allow-auto-key`, MCP `idempotencyKey`, correlation sourcing, task ID sourcing, and credential sourcing.
   - [ ] Do not generate CLI commands, MCP tools, SDK client code, or adapter wrappers in this story.
-- [ ] Add local validation and generator tests. (AC: 2, 3, 4, 7, 8, 9, 10, 11, 14)
+- [ ] Add local validation and generator tests. (AC: 2, 3, 4, 7, 8, 9, 10, 11, 14, 17)
   - [ ] Add focused tests under the most appropriate existing test project, likely `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` or a small tool test project if needed.
   - [ ] Verify all current Contract Spine operations appear exactly once in generated parity rows.
   - [ ] Verify generated rows validate against `tests/fixtures/parity-contract.schema.json`.
@@ -71,6 +74,7 @@ so that cross-surface tests consume one source of truth for transport and behavi
   - [ ] Verify deterministic output by running the generator twice and comparing normalized bytes.
   - [ ] Verify diagnostics and generated fixtures do not contain forbidden leak patterns such as raw content, diffs, provider tokens, credential material, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
   - [ ] Verify reference-pending values are either schema-bounded or fail as prerequisite drift; do not allow silent defaults.
+  - [ ] Verify source-authority conflicts fail deterministically, including OpenAPI-vs-rule-table mismatch, schema enum mismatch, missing helper provenance where required, and stale or placeholder previous-spine baselines.
   - [ ] Maintain an AC-to-test matrix that maps each acceptance criterion to a fixture input, expected generated row or diagnostic, negative case, and test file.
 - [ ] Record downstream handoff and negative scope. (AC: 10, 12, 13, 15)
   - [ ] Document the generator command, input files, output file, deterministic-output policy, schema-validation command, and expected developer workflow.
@@ -163,6 +167,8 @@ Do not freeze this list in code. Tests should derive the current operation set f
 - Resolve local JSON Pointer references such as `#/components/...`; reject unresolved or external references unless the story explicitly documents a safe bounded fallback.
 - Generate one row per operation ID. Duplicate operation IDs are a hard failure.
 - Keep row order deterministic by operation ID and keep deterministic serialization settings under source control.
+- Apply the documented source-authority matrix consistently. The generator may combine canonical sources, but it must not use docs, generated SDK implementation bodies, or inferred naming conventions to override explicit OpenAPI extension metadata.
+- Treat `tests/fixtures/previous-spine.yaml` with `operations: []` as a synthetic placeholder. Removal detection must fail closed unless implementation replaces it with a captured baseline or records an explicit, test-covered first-baseline initialization mode.
 - Treat operation identity as `HTTP method + normalized path + operationId`; emit deterministic diagnostics for added, removed, renamed, request/response schema, status-code, idempotency, read-consistency, and operation-family drift.
 - Keep generated `operation_id` values aligned with OpenAPI `operationId`; do not invent adapter-specific names.
 - Keep adapter expectations bounded to `rest`, `sdk`, `cli`, `mcp`, and `ui` as allowed by the schema. UI should appear only for operations-console projection rows where explicitly documented.
@@ -175,6 +181,7 @@ Do not freeze this list in code. Tests should derive the current operation set f
 ### Oracle Contract
 
 - The generated oracle should expose a stable top-level shape for metadata/provenance, operation rows, diagnostics, drift entries, and fixture references when the schema permits those sections.
+- Each row and diagnostic should carry repository-relative source pointers to the canonical inputs used for derivation, but no raw file contents or generated payload excerpts.
 - Diagnostics must use bounded levels such as `error`, `warning`, and `reference_pending`; new levels require schema updates and focused schema tests.
 - Drift entries must be sorted by operation identity and drift category, and must include only metadata-safe source pointers.
 - `reference_pending` is allowed only for explicitly documented unresolved C3/C4/S-2/C6 values. It must identify the source decision and owning criterion without raw payloads, tenant data, credentials, or local machine paths.
@@ -222,6 +229,7 @@ Do not freeze this list in code. Tests should derive the current operation set f
 - Prefer focused tests around generator input parsing, row derivation, schema validation, deterministic output, drift detection, and leak-safe diagnostics.
 - Reuse current OpenAPI contract-test helper patterns where practical: load `YamlStream`, enumerate operations, resolve local refs, and assert exact bounded values.
 - Add negative fixture cases for missing idempotency metadata, query operations accepting idempotency keys, missing read consistency, duplicate operation IDs, unsupported references, removed operations without deprecation, and forbidden diagnostic leaks.
+- Add negative fixture cases for source-authority conflicts, stale generated SDK helper provenance, schema enum drift, and placeholder previous-spine baselines.
 - Include one positive minimal contract fixture, one lifecycle/negative contract fixture set, one removed-operation baseline pair, and one deterministic byte-stability test.
 - Verify the generator touches only the intended output paths and leaves unrelated files unchanged.
 - Keep tests resilient to operation inventory growth by deriving current operations from OpenAPI. Only assert exact operation allow-lists where a contract group owns a fixed subset.
@@ -258,6 +266,7 @@ Do not freeze this list in code. Tests should derive the current operation set f
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-15 | Applied advanced-elicitation hardening for source-authority conflicts, previous-spine baseline semantics, deterministic prerequisite-drift fixtures, and metadata-only derivation evidence. | Codex |
 | 2026-05-14 | Applied party-mode review clarification pass for drift semantics, deterministic output, diagnostics, reference-pending bounds, maintainer workflow, and acceptance-test mapping. | Codex |
 | 2026-05-13 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
@@ -284,6 +293,30 @@ Do not freeze this list in code. Tests should derive the current operation set f
   - CI wiring, release gates, server-vs-spine validation, generated-client consistency gates, and workflow enforcement remain Story 1.14 scope.
   - Runtime parity enforcement, provider-backed behavior, SDK/CLI/MCP generation changes, adapter wrappers, UI/console presentation, and localization implementation remain future-story scope.
 - Final recommendation: ready-for-dev after applied story clarification pass.
+
+## Advanced Elicitation
+
+- Date: 2026-05-15T17:04:33+02:00
+- Selected story: `1-13-generate-the-c13-parity-oracle`
+- Command/skill invocation used: `/bmad-advanced-elicitation 1-13-generate-the-c13-parity-oracle`
+- Batch 1 methods: Red Team vs Blue Team; Failure Mode Analysis; Self-Consistency Validation; Comparative Analysis Matrix; Critique and Refine
+- Reshuffled Batch 2 methods: First Principles Analysis; Pre-mortem Analysis; Security Audit Personas; Graph of Thoughts; Active Recall Testing
+- Findings summary:
+  - Red-team and failure-mode review found that the story still allowed implicit source precedence when OpenAPI metadata, documentation rule tables, architecture adapter rules, schemas, generated SDK helper provenance, or previous-spine baselines disagree.
+  - Self-consistency and comparative review found that `previous-spine.yaml` was named as a synthetic placeholder but did not yet force an explicit first-baseline decision before removal-drift semantics become meaningful.
+  - Security and graph-of-thought review found that generated diagnostics needed source pointers for auditability while preserving the metadata-only safety boundary.
+  - Active-recall review found that test expectations should include conflict fixtures, schema enum drift, stale helper provenance, and placeholder baseline handling in addition to ordinary row derivation.
+- Changes applied:
+  - Added AC 17 requiring bounded `prerequisite_drift` diagnostics for canonical-source conflicts instead of implicit fallback policy.
+  - Added task guidance for a source-authority matrix and deterministic conflict handling.
+  - Clarified generator requirements for explicit source precedence and fail-closed placeholder previous-spine behavior.
+  - Clarified oracle output evidence with repository-relative source pointers and no raw payload excerpts.
+  - Expanded testing guidance for source-authority conflicts, stale helper provenance, schema enum drift, and previous-spine placeholder fixtures.
+- Findings deferred:
+  - Choosing the exact final parity row schema fields remains implementation scope under AC 11.
+  - Replacing the synthetic previous-spine baseline with a captured baseline remains implementation scope, but the story now requires an explicit test-covered decision.
+  - CI workflow enforcement remains Story 1.14 scope.
+- Final recommendation: ready-for-dev after applied advanced-elicitation clarification pass.
 
 ## Dev Agent Record
 
