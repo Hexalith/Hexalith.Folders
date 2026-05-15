@@ -1,6 +1,6 @@
 # Story 1.11: Author audit and ops-console query contract groups
 
-Status: in-progress
+Status: review
 
 Created: 2026-05-12
 
@@ -144,17 +144,17 @@ Applied:
 
 Deferred to follow-up (require larger surgery than this code-review pass can absorb safely):
 
-- [ ] [Review][Patch] `DiagnosticBase` + `allOf` + `additionalProperties: false` JSON Schema gotcha [yaml ~8534 + 6 subclasses] — Replacing `additionalProperties: false` with `unevaluatedProperties: false` on the composed schemas (or moving the strict-mode anchor) needs to be done in coordination across base + 6 subclasses + all 7 example payloads + the contract foundation tests that may assert specific additionalProperties behavior. Tracked in deferred-work. [sources: blind+edge]
-- [ ] [Review][Patch] `AuditRecord` redaction shape leaks timing and actor identity [AuditRecord schema + example] — Wrapping `evidenceTimestamp` / `actorReference` / `operationId` in audience-gated `RedactionMetadata` requires schema design choices (bucketed timestamps vs. sentinel replacement, optionality vs. null), example regeneration, and propagation to the audit-leakage-corpus test guards. Tracked in deferred-work. [sources: edge+blind]
-- [ ] [Review][Patch] Cursor/filter tamper, principal-mismatch, invalid-sort, boundary-duplicate, empty-page negative-case tests absent — Adding explicit negative-case tests requires either contract-level fixtures (representative cursors, tamper variants, principal contexts) or a runtime test surface; neither lands in a single edit pass. Tracked in deferred-work. [sources: auditor+edge]
-- [ ] [Review][Patch] `DiagnosticBase.fieldClassifications` is optional with no `minItems` — Requiring `fieldClassifications` on operator-audience responses needs an audience-conditional schema (or split base into consumer/operator variants) and example regeneration. Tracked in deferred-work. [sources: edge]
-- [ ] [Review][Patch] `ReadinessDiagnostics` schema lacks provider/folder/workspace summary references — Adding operator-audience-gated summary references needs design choices (DiagnosticSafeIdentifier vs. inline refs, redaction shape, audience gating). Tracked in deferred-work. [sources: auditor]
-- [ ] [Review][Patch] `CanonicalErrorCategory` / `WorkspaceErrorCategory` enum widening not propagated to earlier-story operations — Sweep across Stories 1.7-1.10 operations' `x-hexalith-canonical-error-categories` arrays. Mechanical but cross-story; safer to do in a dedicated propagation story. Tracked in deferred-work. [sources: edge]
-- [ ] [Review][Patch] Opaque-identifier patterns are inconsistent across siblings — Factoring a shared `PrefixedOpaqueIdentifier` schema touches every prefixed-identifier type. Tracked in deferred-work. [sources: blind]
-- [ ] [Review][Patch] `AuditTrailPage`/`OperationTimelinePage` examples cover only the single-result case — Adding boundary-scenario examples (zero/limit/beyond-last) is straightforward but the corpus is several hundred lines; defer alongside the audience-equivalence rework. Tracked in deferred-work. [sources: edge+auditor]
-- [ ] [Review][Patch] No cross-field consistency between `DiagnosticTrustEvidence.availability` and `FreshnessMetadata.stale` — Adding a cross-field invariant requires `if/then` JSON-Schema-2020-12 conditionals or refactoring the two fields into a single state machine. Tracked in deferred-work. [sources: edge]
-- [ ] [Review][Patch] `LockDiagnostics.lockReference` and `ProviderStatusDiagnostics.providerBindingReference` field-presence is an audience oracle — Requires audience-conditional schema or RedactionMetadata sentinel; coordinated with the broader audience-partitioning rework. Tracked in deferred-work. [sources: edge]
-- [ ] [Review][Patch] `OperationTimelineEntry.workspaceId` leaks cross-workspace evidence — Coordinated with the AuditRecord redaction shape rework. Tracked in deferred-work. [sources: edge]
+- [x] [Review][Patch] `DiagnosticBase` + `allOf` + `additionalProperties: false` JSON Schema gotcha [yaml ~8534 + 6 subclasses] — Replacing `additionalProperties: false` with `unevaluatedProperties: false` on the composed schemas (or moving the strict-mode anchor) needs to be done in coordination across base + 6 subclasses + all 7 example payloads + the contract foundation tests that may assert specific additionalProperties behavior. Tracked in deferred-work. [sources: blind+edge]
+- [x] [Review][Patch] `AuditRecord` redaction shape leaks timing and actor identity [AuditRecord schema + example] — Wrapping `evidenceTimestamp` / `actorReference` / `operationId` in audience-gated `RedactionMetadata` requires schema design choices (bucketed timestamps vs. sentinel replacement, optionality vs. null), example regeneration, and propagation to the audit-leakage-corpus test guards. Tracked in deferred-work. [sources: edge+blind]
+- [x] [Review][Patch] Cursor/filter tamper, principal-mismatch, invalid-sort, boundary-duplicate, empty-page negative-case tests absent — Adding explicit negative-case tests requires either contract-level fixtures (representative cursors, tamper variants, principal contexts) or a runtime test surface; neither lands in a single edit pass. Tracked in deferred-work. [sources: auditor+edge]
+- [x] [Review][Patch] `DiagnosticBase.fieldClassifications` is optional with no `minItems` — Requiring `fieldClassifications` on operator-audience responses needs an audience-conditional schema (or split base into consumer/operator variants) and example regeneration. Tracked in deferred-work. [sources: edge]
+- [x] [Review][Patch] `ReadinessDiagnostics` schema lacks provider/folder/workspace summary references — Adding operator-audience-gated summary references needs design choices (DiagnosticSafeIdentifier vs. inline refs, redaction shape, audience gating). Tracked in deferred-work. [sources: auditor]
+- [x] [Review][Patch] `CanonicalErrorCategory` / `WorkspaceErrorCategory` enum widening not propagated to earlier-story operations — Sweep across Stories 1.7-1.10 operations' `x-hexalith-canonical-error-categories` arrays. Mechanical but cross-story; safer to do in a dedicated propagation story. Tracked in deferred-work. [sources: edge]
+- [x] [Review][Patch] Opaque-identifier patterns are inconsistent across siblings — Factoring a shared `PrefixedOpaqueIdentifier` schema touches every prefixed-identifier type. Tracked in deferred-work. [sources: blind]
+- [x] [Review][Patch] `AuditTrailPage`/`OperationTimelinePage` examples cover only the single-result case — Adding boundary-scenario examples (zero/limit/beyond-last) is straightforward but the corpus is several hundred lines; defer alongside the audience-equivalence rework. Tracked in deferred-work. [sources: edge+auditor]
+- [x] [Review][Patch] No cross-field consistency between `DiagnosticTrustEvidence.availability` and `FreshnessMetadata.stale` — Adding a cross-field invariant requires `if/then` JSON-Schema-2020-12 conditionals or refactoring the two fields into a single state machine. Tracked in deferred-work. [sources: edge]
+- [x] [Review][Patch] `LockDiagnostics.lockReference` and `ProviderStatusDiagnostics.providerBindingReference` field-presence is an audience oracle — Requires audience-conditional schema or RedactionMetadata sentinel; coordinated with the broader audience-partitioning rework. Tracked in deferred-work. [sources: edge]
+- [x] [Review][Patch] `OperationTimelineEntry.workspaceId` leaks cross-workspace evidence — Coordinated with the AuditRecord redaction shape rework. Tracked in deferred-work. [sources: edge]
 
 #### Defer (pre-existing or out-of-scope for this story)
 
@@ -353,6 +353,7 @@ Do not add provider readiness commands, workspace/lock commands, file/context qu
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-15 | Resolved remaining review patch follow-ups: composed diagnostic strictness, redaction wrappers, cursor/audience/boundary examples, field-classification requirements, readiness summary references, error-category propagation, prefixed identifier normalization, freshness invariants, and audience-oracle reference wrappers. Full solution tests and build pass. | Codex |
 | 2026-05-14 | Code review patches applied: deleted orphan `AuditAccessDeniedProblem` example; renamed `GetOperationTimelineEntry` path key from `{operationId}` to `{timelineEntryId}`; added `404 SafeAuthorizationDenial404` and `409 ProjectionStaleProblem` to `GetReadinessDiagnostics` and `GetProjectionFreshness`; added `409 ProjectionStaleProblem` to the eight sibling ops that already declared `projection_stale` (`GetAuditRecord`, `ListOperationTimeline`, `GetOperationTimelineEntry`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`); marked `SyncStatusDiagnostics.acceptedCommandState` and `ProjectionAvailability.{redacted,unknown}` as reference-pending C5; added shape constraint to `AuditTrailPage.retentionClass` / `OperationTimelinePage.retentionClass`; added `PageLimit.maximum` and `MetadataFilter.pattern` with reference-pending C4 documentation; added `task_id` to `ListAuditTrail.x-hexalith-audit-metadata-keys`; added `oneOf` discriminator to `ChangedPathEvidence` so `digest`/`reference` are required iff `evidenceKind` matches; relaxed `DiagnosticFieldClassificationEntry.field` pattern to allow snake_case metadata keys; introduced `TimelineEntryId` shared parameter. Test side: removed orphan example assertion; broadened operationId uniqueness to whole-spec; hardened Idempotency-Key absence check to reject inline `name: Idempotency-Key` parameters; added new `AuditOpsConsoleOperations_DeclareConsistentSafeDenialResponseCodes` test enforcing 200/401/403/404/503 + 409 (when projection_stale is in canonical-error-categories) across all eleven Story 1.11 operations; replaced fragile inline forbidden-substring list with an audit-leakage-corpus-driven sentinel check loaded from `tests/fixtures/audit-leakage-corpus.json`. Scope expansion recorded: `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs` was edited (docstring update) outside the spec's Allowed Files list because the helper is shared infrastructure consumed by Stories 1.4 and 1.5 negative-scope tests; the edit clarifies that the regex anchors at `/api/v1/<fragment>`, so the new Story 1.11 paths under `/api/v1/folders/...` and `/api/v1/ops-console/...` do not trip the assertion (the helper remains correct without changing the forbidden-fragment list). Full contract test suite passes: 35/35 (1 new test added). | Claude (code-review) |
 | 2026-05-14 | Implemented audit and ops-console query contract groups, focused validation, and contract notes. | Codex |
 | 2026-05-12 | Applied advanced elicitation hardening for diagnostic audience partitioning, field classification, retention/freshness evidence, cursor/filter tamper validation, and offline validator negative cases. | Codex |
@@ -420,6 +421,11 @@ GPT-5 Codex
 - 2026-05-14: Green/refactor validation passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore`.
 - 2026-05-14: Full regression validation passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
 - 2026-05-14: Solution build validation passed with `dotnet build Hexalith.Folders.slnx --no-restore`.
+- 2026-05-15: Red phase confirmed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore --filter "FullyQualifiedName~AuditOpsConsoleContractGroupTests"` failing on missing review-patch schemas and examples.
+- 2026-05-15: Red phase confirmed for cross-story error-category propagation with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore --filter "FullyQualifiedName~AuditOpsConsoleReviewSweep"` failing on `GetFolderLifecycleStatus`.
+- 2026-05-15: Focused contract validation passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` (38/38).
+- 2026-05-15: Full regression validation passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+- 2026-05-15: Solution build validation passed with `dotnet build Hexalith.Folders.slnx --no-restore`.
 
 ### Completion Notes List
 
@@ -427,6 +433,7 @@ GPT-5 Codex
 - Added read-only ops-console diagnostic query operations for readiness, lock, dirty-state, failed-operation, provider-status, sync-status, and projection freshness.
 - Added diagnostic/audit schemas, synthetic examples, canonical projection stale/unavailable categories, audience and field-classification vocabulary, and C3/C5 reference-pending markers.
 - Added focused OpenAPI validation for Story 1.11 and updated existing guardrails now that ops-console is an owned Contract Spine surface.
+- Resolved remaining review patch follow-ups with redaction-aware wrapper schemas, composed diagnostic strictness, required field-classification evidence, readiness summary references, cursor/audience/boundary examples, freshness consistency invariants, prefixed identifier normalization, and widened error-category propagation across earlier contract groups.
 
 ### File List
 
@@ -435,5 +442,6 @@ GPT-5 Codex
 - `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
 - `tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs`
 - `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs`
+- `_bmad-output/implementation-artifacts/deferred-work.md`
 - `_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`

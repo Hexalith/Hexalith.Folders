@@ -43,6 +43,10 @@ Story 1.11 adds only OpenAPI Contract Spine declarations for audit trail, operat
 
 Unauthorized, wrong-tenant, hidden, redacted, unknown, missing, stale, projection-unavailable, tampered-cursor, changed-filter, tenant/principal-mismatch, invalid-sort, boundary-duplicate, and empty-page continuation cases all preserve safe-denial parity. Cursors are service-issued opaque non-authoritative values; they cannot encode tenant authority, ACL decisions, raw query text, provider material, or unredacted path lists.
 
+## Review Patch Resolution Notes
+
+Redaction-sensitive references are now object-wrapped instead of scalar-only where field presence or exact values could become an oracle: audit actor, audit operation, audit timestamp, lock reference, provider binding reference, readiness summary references, and operation timeline workspace evidence all carry redaction metadata. Diagnostic response schemas require at least one field-classification entry, use `unevaluatedProperties: false` on composed `allOf` schemas, and bind availability to freshness staleness with JSON Schema conditionals. Synthetic examples now cover empty pages, limit-boundary pages, boundary-duplicate continuation, empty-page continuation, tampered cursor / changed-filter, tenant/principal-mismatch, invalid-sort, and the `auto_recovering` / `available` disposition vocabulary.
+
 ## Deferred Decisions
 
 - Final C5 freshness/performance targets remain reference-pending.

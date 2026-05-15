@@ -266,6 +266,150 @@ public sealed class AuditOpsConsoleContractGroupTests
     }
 
     [Fact]
+    public void AuditOpsConsoleSchemas_CloseReviewPatchGaps()
+    {
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
+
+        foreach (string schemaName in new[]
+        {
+            "PrefixedOpaqueIdentifier",
+            "RedactableDiagnosticIdentifier",
+            "RedactableAuditActorReference",
+            "RedactableAuditOperationReference",
+            "RedactableAuditTimestamp",
+        })
+        {
+            RequiredMapping(schemas, schemaName);
+        }
+
+        string diagnosticBase = SerializeYaml(RequiredMapping(schemas, "DiagnosticBase"));
+        diagnosticBase.ShouldNotContain("additionalProperties: false", Case.Insensitive);
+        diagnosticBase.ShouldContain("fieldClassifications", Case.Insensitive);
+        diagnosticBase.ShouldContain("minItems: 1", Case.Insensitive);
+        diagnosticBase.ShouldContain("if:", Case.Insensitive);
+        diagnosticBase.ShouldContain("then:", Case.Insensitive);
+
+        foreach (string schemaName in new[]
+        {
+            "ReadinessDiagnostics",
+            "LockDiagnostics",
+            "DirtyStateDiagnostics",
+            "FailedOperationDiagnostics",
+            "ProviderStatusDiagnostics",
+            "SyncStatusDiagnostics",
+        })
+        {
+            string schema = SerializeYaml(RequiredMapping(schemas, schemaName));
+            schema.ShouldContain("unevaluatedProperties: false", Case.Insensitive, schemaName);
+        }
+
+        string readiness = SerializeYaml(RequiredMapping(schemas, "ReadinessDiagnostics"));
+        readiness.ShouldContain("providerSummaryReference", Case.Insensitive);
+        readiness.ShouldContain("folderSummaryReference", Case.Insensitive);
+        readiness.ShouldContain("workspaceSummaryReference", Case.Insensitive);
+
+        string auditRecord = SerializeYaml(RequiredMapping(schemas, "AuditRecord"));
+        auditRecord.ShouldContain("RedactableAuditActorReference", Case.Insensitive);
+        auditRecord.ShouldContain("RedactableAuditOperationReference", Case.Insensitive);
+        auditRecord.ShouldContain("RedactableAuditTimestamp", Case.Insensitive);
+
+        string operationTimelineEntry = SerializeYaml(RequiredMapping(schemas, "OperationTimelineEntry"));
+        operationTimelineEntry.ShouldContain("workspaceReference", Case.Insensitive);
+        operationTimelineEntry.ShouldContain("RedactableDiagnosticIdentifier", Case.Insensitive);
+
+        string lockDiagnostics = SerializeYaml(RequiredMapping(schemas, "LockDiagnostics"));
+        lockDiagnostics.ShouldContain("RedactableDiagnosticIdentifier", Case.Insensitive);
+        string providerStatusDiagnostics = SerializeYaml(RequiredMapping(schemas, "ProviderStatusDiagnostics"));
+        providerStatusDiagnostics.ShouldContain("RedactableDiagnosticIdentifier", Case.Insensitive);
+
+        string trustEvidence = SerializeYaml(RequiredMapping(schemas, "DiagnosticTrustEvidence"));
+        trustEvidence.ShouldContain("availability", Case.Insensitive);
+        trustEvidence.ShouldContain("freshnessAgeMilliseconds", Case.Insensitive);
+
+        string projectionFreshness = SerializeYaml(RequiredMapping(schemas, "ProjectionFreshnessDiagnostics"));
+        projectionFreshness.ShouldContain("if:", Case.Insensitive);
+        projectionFreshness.ShouldContain("then:", Case.Insensitive);
+    }
+
+    [Fact]
+    public void AuditOpsConsoleContracts_DeclareCursorAudienceAndBoundaryNegativeCases()
+    {
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
+
+        foreach (string exampleName in new[]
+        {
+            "AuditTrailPageEmpty",
+            "AuditTrailPageLimitBoundary",
+            "OperationTimelinePageEmpty",
+            "OperationTimelinePageLimitBoundary",
+            "CursorTamperProblem",
+            "PrincipalMismatchSafeDenialProblem",
+            "InvalidSortProblem",
+            "BoundaryDuplicatePage",
+            "EmptyPageContinuation",
+        })
+        {
+            examples.Children.ContainsKey(new YamlScalarNode(exampleName)).ShouldBeTrue(exampleName);
+        }
+
+        string notes = File.Exists(ContractNotesPath) ? File.ReadAllText(ContractNotesPath) : string.Empty;
+        string combinedExamples = string.Join("\n", examples.Children.Select(entry => SerializeYaml(entry.Value)));
+        string combined = notes + "\n" + combinedExamples;
+
+        foreach (string required in new[]
+        {
+            "tampered-cursor",
+            "changed-filter",
+            "tenant/principal-mismatch",
+            "invalid-sort",
+            "boundary-duplicate",
+            "empty-page continuation",
+            "auto_recovering",
+            "available",
+        })
+        {
+            combined.ShouldContain(required, Case.Insensitive);
+        }
+    }
+
+    [Fact]
+    public void AuditOpsConsoleReviewSweep_PropagatesWidenedCategoriesToEarlierStoryOperations()
+    {
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        Operation[] earlierStoryOperations = EnumerateOperations(root)
+            .Where(o => !StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal))
+            .ToArray();
+
+        foreach (Operation operation in earlierStoryOperations)
+        {
+            if (!operation.Node.Children.ContainsKey(new YamlScalarNode("x-hexalith-canonical-error-categories")))
+            {
+                continue;
+            }
+
+            string[] categories = RequiredSequence(operation.Node, "x-hexalith-canonical-error-categories")
+                .OfType<YamlScalarNode>()
+                .Select(value => value.Value ?? string.Empty)
+                .ToArray();
+
+            if (categories.Contains("read_model_unavailable", StringComparer.Ordinal))
+            {
+                categories.ShouldContain("projection_stale", $"{operation.OperationId} must consume the widened projection-stale category.");
+                categories.ShouldContain("projection_unavailable", $"{operation.OperationId} must consume the widened projection-unavailable category.");
+            }
+
+            if (categories.Contains("provider_failure_known", StringComparer.Ordinal)
+                || categories.Contains("unknown_provider_outcome", StringComparer.Ordinal)
+                || categories.Contains("reconciliation_required", StringComparer.Ordinal))
+            {
+                categories.ShouldContain("failed_operation", $"{operation.OperationId} must consume the widened failed-operation category.");
+            }
+        }
+    }
+
+    [Fact]
     public void AuditOpsConsoleNotes_RecordEvidenceMapAudienceMatrixAndDeferredPolicy()
     {
         File.Exists(ContractNotesPath).ShouldBeTrue(ContractNotesPath);

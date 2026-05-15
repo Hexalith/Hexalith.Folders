@@ -173,6 +173,8 @@ paths:
         - cross_tenant_access_denied
         - not_found
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -327,6 +329,8 @@ paths:
         - folder_acl_denied
         - validation_error
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -477,6 +481,8 @@ paths:
         - tenant_access_denied
         - folder_acl_denied
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -629,6 +635,8 @@ paths:
         - cross_tenant_access_denied
         - not_found
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - redacted
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -710,6 +718,8 @@ paths:
         - provider_rate_limited
         - unsupported_provider_capability
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: provider_binding_ref
@@ -776,6 +786,8 @@ paths:
         - tenant_access_denied
         - provider_unavailable
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: capability_profile_ref
@@ -863,6 +875,7 @@ paths:
         - repository_conflict
         - unsupported_provider_capability
         - unknown_provider_outcome
+        - failed_operation
         - reconciliation_required
         - idempotency_conflict
         - validation_error
@@ -966,6 +979,7 @@ paths:
         - repository_conflict
         - unsupported_provider_capability
         - unknown_provider_outcome
+        - failed_operation
         - reconciliation_required
         - idempotency_conflict
         - validation_error
@@ -1047,6 +1061,8 @@ paths:
         - not_found
         - redacted
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1205,6 +1221,8 @@ paths:
         - not_found
         - redacted
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1347,6 +1365,7 @@ paths:
         - workspace_locked
         - lock_conflict
         - unknown_provider_outcome
+        - failed_operation
         - reconciliation_required
         - state_transition_invalid
         - validation_error
@@ -1488,6 +1507,8 @@ paths:
         - lock_expired
         - authorization_revocation_detected
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
@@ -1600,6 +1621,8 @@ paths:
         - lock_expired
         - stale_workspace
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1734,6 +1757,7 @@ paths:
         - lock_expired
         - authorization_revocation_detected
         - reconciliation_required
+        - failed_operation
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
@@ -1836,8 +1860,11 @@ paths:
         - folder_acl_denied
         - provider_unavailable
         - unknown_provider_outcome
+        - failed_operation
         - reconciliation_required
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1938,6 +1965,8 @@ paths:
         - tenant_access_denied
         - folder_acl_denied
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -2094,6 +2123,7 @@ paths:
         - input_limit_exceeded
         - file_operation_failed
         - provider_failure_known
+        - failed_operation
         - unknown_provider_outcome
         - reconciliation_required
         - state_transition_invalid
@@ -2259,6 +2289,7 @@ paths:
         - input_limit_exceeded
         - file_operation_failed
         - provider_failure_known
+        - failed_operation
         - unknown_provider_outcome
         - reconciliation_required
         - state_transition_invalid
@@ -2408,6 +2439,7 @@ paths:
         - path_validation_failed
         - file_operation_failed
         - provider_failure_known
+        - failed_operation
         - unknown_provider_outcome
         - reconciliation_required
         - state_transition_invalid
@@ -2530,6 +2562,8 @@ paths:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - redacted
         - validation_error
         - internal_error
@@ -2649,6 +2683,8 @@ paths:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - redacted
         - validation_error
         - internal_error
@@ -2767,6 +2803,8 @@ paths:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - redacted
         - validation_error
         - internal_error
@@ -2889,6 +2927,8 @@ paths:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - redacted
         - validation_error
         - internal_error
@@ -3037,6 +3077,8 @@ paths:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - redacted
         - validation_error
         - internal_error
@@ -3219,9 +3261,12 @@ paths:
         - dirty_workspace
         - commit_failed
         - provider_failure_known
+        - failed_operation
         - unknown_provider_outcome
         - reconciliation_required
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - validation_error
         - idempotency_conflict
         - state_transition_invalid
@@ -3335,6 +3380,8 @@ paths:
         - tenant_access_denied
         - folder_acl_denied
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - not_found
         - redacted
         - internal_error
@@ -3427,6 +3474,8 @@ paths:
         - authentication_failure
         - tenant_access_denied
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - not_found
         - redacted
         - internal_error
@@ -3512,6 +3561,8 @@ paths:
         - tenant_access_denied
         - folder_acl_denied
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - not_found
         - redacted
         - internal_error
@@ -3603,9 +3654,12 @@ paths:
         - tenant_access_denied
         - folder_acl_denied
         - provider_failure_known
+        - failed_operation
         - unknown_provider_outcome
         - reconciliation_required
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - not_found
         - redacted
         - internal_error
@@ -3699,7 +3753,10 @@ paths:
         - tenant_access_denied
         - folder_acl_denied
         - reconciliation_required
+        - failed_operation
         - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
         - not_found
         - redacted
         - internal_error
@@ -6242,15 +6299,30 @@ components:
       value:
         entries:
           - auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD001
-            actorReference: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA001
+            actorReference:
+              value: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA001
+              classification: operator_sanitized
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
             taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
-            operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR001
+            operationId:
+              value: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR001
+              classification: operator_sanitized
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
             correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR001
             resultStatus: success
             sanitizedErrorCategory: success
             retryable: false
             durationMilliseconds: 142
-            evidenceTimestamp: "2026-05-14T08:30:00Z"
+            evidenceTimestamp:
+              value: "2026-05-14T08:30:00Z"
+              precision: exact
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
             redaction:
               visibility: metadata_only
               reasonCode: not_redacted
@@ -6277,15 +6349,27 @@ components:
       summary: Authorized audit record with sanitized redaction state.
       value:
         auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD002
-        actorReference: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA002
+        actorReference:
+          classification: operator_sanitized
+          redaction:
+            visibility: redacted
+            reasonCode: operator_scope_required
         taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK002
-        operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR002
+        operationId:
+          classification: operator_sanitized
+          redaction:
+            visibility: redacted
+            reasonCode: operator_scope_required
         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR002
         resultStatus: redacted
         sanitizedErrorCategory: redacted
         retryable: false
         durationMilliseconds: 18
-        evidenceTimestamp: "2026-05-14T08:35:00Z"
+        evidenceTimestamp:
+          precision: redacted
+          redaction:
+            visibility: redacted
+            reasonCode: operator_scope_required
         redaction:
           visibility: redacted
           reasonCode: operator_scope_required
@@ -6306,7 +6390,12 @@ components:
             operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR003
             taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK003
             correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR003
-            workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK003
+            workspaceReference:
+              value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK003
+              classification: operator_sanitized
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
             stateTransition:
               fromState: locked
               toState: changes_staged
@@ -6337,7 +6426,12 @@ components:
         operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR004
         taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK004
         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR004
-        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK004
+        workspaceReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK004
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
         stateTransition:
           fromState: changes_staged
           toState: unknown_provider_outcome
@@ -6364,6 +6458,30 @@ components:
         fieldClassifications:
           - field: readinessStatus
             classification: consumer_safe
+          - field: providerSummaryReference
+            classification: operator_sanitized
+          - field: folderSummaryReference
+            classification: operator_sanitized
+          - field: workspaceSummaryReference
+            classification: operator_sanitized
+        providerSummaryReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0PBR005
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
+        folderSummaryReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0FLD005
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
+        workspaceSummaryReference:
+          value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK005
+          classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
         freshness:
           readConsistency: eventually_consistent
           observedAt: "2026-05-14T08:50:00Z"
@@ -6377,6 +6495,12 @@ components:
         lockReference:
           value: opaque_01HZY7Z6N7J4Q2X8Y9V0LCK001
           classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
+        fieldClassifications:
+          - field: lockReference
+            classification: operator_sanitized
         trust:
           availability: available
           freshnessAgeMilliseconds: 300
@@ -6396,6 +6520,9 @@ components:
           evidenceKind: digest
           digest: digest_01HZY7Z6N7J4Q2X8Y9V0CPD007
           classification: operator_sanitized
+        fieldClassifications:
+          - field: changedPathEvidence
+            classification: operator_sanitized
         trust:
           availability: available
           freshnessAgeMilliseconds: 610
@@ -6418,6 +6545,13 @@ components:
           eligible: false
           reasonCode: operator_review_required
           advisoryOnly: true
+        fieldClassifications:
+          - field: operationId
+            classification: operator_sanitized
+          - field: taskId
+            classification: operator_sanitized
+          - field: sanitizedErrorCategory
+            classification: consumer_safe
         trust:
           availability: available
           freshnessAgeMilliseconds: 710
@@ -6436,7 +6570,15 @@ components:
         providerBindingReference:
           value: opaque_01HZY7Z6N7J4Q2X8Y9V0PBR009
           classification: operator_sanitized
+          redaction:
+            visibility: metadata_only
+            reasonCode: not_redacted
         providerCorrelationReference: provref_01HZY7Z6N7J4Q2X8Y9V0PCR009
+        fieldClassifications:
+          - field: providerBindingReference
+            classification: operator_sanitized
+          - field: providerCorrelationReference
+            classification: operator_sanitized
         trust:
           availability: available
           freshnessAgeMilliseconds: 530
@@ -6455,6 +6597,13 @@ components:
         acceptedCommandState: accepted
         projectedState: unknown_provider_outcome
         providerOutcomeState: reconciliation_required
+        fieldClassifications:
+          - field: acceptedCommandState
+            classification: consumer_safe
+          - field: projectedState
+            classification: consumer_safe
+          - field: providerOutcomeState
+            classification: consumer_safe
         trust:
           availability: stale
           freshnessAgeMilliseconds: 1800
@@ -6475,11 +6624,199 @@ components:
         staleReasonCode: projection_lag
         unavailableReasonCode: none
         freshnessTarget: "TODO(reference-pending): C5 projection freshness target"
+        fieldClassifications:
+          - field: projectionName
+            classification: consumer_safe
+          - field: availability
+            classification: consumer_safe
+          - field: freshnessAgeMilliseconds
+            classification: consumer_safe
         freshness:
           readConsistency: eventually_consistent
           observedAt: "2026-05-14T09:20:00Z"
           projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR011
           stale: true
+    AuditTrailPageEmpty:
+      summary: Empty authorized audit trail page.
+      value:
+        entries: []
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR020
+          limit: 50
+          hasMore: false
+        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:25:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR020
+          stale: false
+    AuditTrailPageLimitBoundary:
+      summary: Authorized audit trail page at the configured result boundary.
+      value:
+        entries:
+          - auditRecordId: opaque_01HZY7Z6N7J4Q2X8Y9V0AUD021
+            actorReference:
+              value: actorref_01HZY7Z6N7J4Q2X8Y9V0AAA021
+              classification: operator_sanitized
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
+            operationId:
+              value: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR021
+              classification: operator_sanitized
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
+            correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR021
+            resultStatus: success
+            sanitizedErrorCategory: success
+            retryable: false
+            durationMilliseconds: 64
+            evidenceTimestamp:
+              value: "2026-05-14T09:26:00Z"
+              precision: exact
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
+            redaction:
+              visibility: metadata_only
+              reasonCode: not_redacted
+            freshness:
+              readConsistency: eventually_consistent
+              observedAt: "2026-05-14T09:26:03Z"
+              projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR021
+              stale: false
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR021
+          limit: 100
+          hasMore: true
+        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:26:03Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR021
+          stale: false
+    OperationTimelinePageEmpty:
+      summary: Empty authorized operation timeline page.
+      value:
+        entries: []
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR022
+          limit: 50
+          hasMore: false
+        retentionClass: "TODO(reference-pending): C3 timeline retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:30:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR022
+          stale: false
+    OperationTimelinePageLimitBoundary:
+      summary: Authorized operation timeline page at the result boundary.
+      value:
+        entries:
+          - timelineEntryId: opaque_01HZY7Z6N7J4Q2X8Y9V0TLE023
+            operationId: opaque_01HZY7Z6N7J4Q2X8Y9V0OPR023
+            taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK023
+            correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR023
+            workspaceReference:
+              value: opaque_01HZY7Z6N7J4Q2X8Y9V0WRK023
+              classification: operator_sanitized
+              redaction:
+                visibility: metadata_only
+                reasonCode: not_redacted
+            stateTransition:
+              fromState: prepared
+              toState: locked
+              disposition: auto_recovering
+            sanitizedResult: success
+            retryable: true
+            durationMilliseconds: 95
+            evidenceTimestamp: "2026-05-14T09:31:00Z"
+            freshness:
+              readConsistency: eventually_consistent
+              observedAt: "2026-05-14T09:31:03Z"
+              projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR023
+              stale: false
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR023
+          limit: 100
+          hasMore: true
+        retentionClass: "TODO(reference-pending): C3 timeline retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:31:03Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR023
+          stale: false
+    BoundaryDuplicatePage:
+      summary: Boundary-duplicate page continuation preserves ordering without exposing hidden rows.
+      value:
+        entries: []
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR024
+          limit: 100
+          hasMore: true
+        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:32:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR024
+          stale: false
+    EmptyPageContinuation:
+      summary: Empty-page continuation after security trimming.
+      value:
+        entries: []
+        page:
+          cursor: opaque_01HZY7Z6N7J4Q2X8Y9V0CUR025
+          limit: 100
+          hasMore: true
+        retentionClass: "TODO(reference-pending): C3 audit metadata retention approval"
+        freshness:
+          readConsistency: eventually_consistent
+          observedAt: "2026-05-14T09:33:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0WTR025
+          stale: false
+    CursorTamperProblem:
+      summary: Tampered-cursor or changed-filter request rejected without existence hints.
+      value:
+        type: about:blank
+        title: Invalid cursor
+        status: 400
+        category: validation_error
+        code: tampered_cursor_or_changed_filter
+        message: The continuation cursor is invalid for this bounded metadata query.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR026
+        retryable: false
+        clientAction: restart_query
+        details:
+          visibility: metadata_only
+    PrincipalMismatchSafeDenialProblem:
+      summary: Tenant/principal-mismatch safe denial.
+      value:
+        type: about:blank
+        title: Resource not available
+        status: 404
+        category: not_found
+        code: safe_denial
+        message: The requested diagnostic evidence is not available.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR027
+        retryable: false
+        clientAction: verify_authorization
+        details:
+          visibility: metadata_only
+    InvalidSortProblem:
+      summary: Invalid-sort request rejected before projection observation.
+      value:
+        type: about:blank
+        title: Invalid sort
+        status: 400
+        category: validation_error
+        code: invalid_sort
+        message: The requested sort is not supported for this metadata query.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0COR028
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
     ProjectionStaleProblem:
       value:
         type: about:blank
@@ -6507,6 +6844,12 @@ components:
         details:
           visibility: metadata_only
   schemas:
+    PrefixedOpaqueIdentifier:
+      type: string
+      minLength: 16
+      maxLength: 128
+      pattern: "^[a-z][a-z0-9]*_[A-Za-z0-9_-]{8,120}$"
+      description: Shared namespace-prefixed opaque identifier shape for sanitized references such as actorref_, digest_, changeref_, and provref_. Prefixes classify evidence domains; values are non-secret metadata and never tenant authority.
     OpaqueIdentifier:
       type: string
       minLength: 16
@@ -7330,8 +7673,8 @@ components:
         - retryEligibility
         - freshness
       properties:
-        workspaceId:
-          $ref: "#/components/schemas/OpaqueIdentifier"
+        workspaceReference:
+          $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
         lockState:
           $ref: "#/components/schemas/LockState"
         lease:
@@ -8378,6 +8721,68 @@ components:
           minLength: 1
           maxLength: 80
           pattern: "^[a-z][a-z0-9_]{0,79}$"
+    RedactableDiagnosticIdentifier:
+      type: object
+      additionalProperties: false
+      required:
+        - classification
+        - redaction
+      properties:
+        value:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        classification:
+          $ref: "#/components/schemas/DiagnosticFieldClassification"
+        redaction:
+          $ref: "#/components/schemas/RedactionMetadata"
+      description: Audience-gated diagnostic identifier. The property remains present for authorized response shapes, while `value` is omitted when the identifier is redacted, unknown, or not visible to the diagnostic audience.
+    RedactableAuditActorReference:
+      type: object
+      additionalProperties: false
+      required:
+        - classification
+        - redaction
+      properties:
+        value:
+          allOf:
+            - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
+          pattern: "^actorref_[A-Za-z0-9_-]{8,120}$"
+        classification:
+          $ref: "#/components/schemas/DiagnosticFieldClassification"
+        redaction:
+          $ref: "#/components/schemas/RedactionMetadata"
+      description: Audience-gated audit actor reference. Redacted records retain redaction metadata without exposing actor identity.
+    RedactableAuditOperationReference:
+      type: object
+      additionalProperties: false
+      required:
+        - classification
+        - redaction
+      properties:
+        value:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        classification:
+          $ref: "#/components/schemas/DiagnosticFieldClassification"
+        redaction:
+          $ref: "#/components/schemas/RedactionMetadata"
+      description: Audience-gated audit operation reference. Redacted records retain redaction metadata without exposing operation identity.
+    RedactableAuditTimestamp:
+      type: object
+      additionalProperties: false
+      required:
+        - precision
+        - redaction
+      properties:
+        value:
+          $ref: "#/components/schemas/UtcDateTime"
+        precision:
+          type: string
+          enum:
+            - exact
+            - bucketed
+            - redacted
+        redaction:
+          $ref: "#/components/schemas/RedactionMetadata"
+      description: Audience-gated audit timestamp. Redacted records can disclose a redaction state or bucket precision without leaking exact event timing.
     AuditTrailPage:
       type: object
       additionalProperties: false
@@ -8421,15 +8826,11 @@ components:
         auditRecordId:
           $ref: "#/components/schemas/OpaqueIdentifier"
         actorReference:
-          type: string
-          minLength: 16
-          maxLength: 128
-          pattern: "^actorref_[A-Za-z0-9_-]{7,119}$"
-          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+          $ref: "#/components/schemas/RedactableAuditActorReference"
         taskId:
           $ref: "#/components/schemas/OpaqueIdentifier"
         operationId:
-          $ref: "#/components/schemas/OpaqueIdentifier"
+          $ref: "#/components/schemas/RedactableAuditOperationReference"
         correlationId:
           $ref: "#/components/schemas/OpaqueIdentifier"
         resultStatus:
@@ -8443,7 +8844,7 @@ components:
           minimum: 0
           maximum: 86400000
         evidenceTimestamp:
-          $ref: "#/components/schemas/UtcDateTime"
+          $ref: "#/components/schemas/RedactableAuditTimestamp"
         redaction:
           $ref: "#/components/schemas/RedactionMetadata"
         changedPathEvidence:
@@ -8496,8 +8897,8 @@ components:
           $ref: "#/components/schemas/OpaqueIdentifier"
         correlationId:
           $ref: "#/components/schemas/OpaqueIdentifier"
-        workspaceId:
-          $ref: "#/components/schemas/OpaqueIdentifier"
+        workspaceReference:
+          $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
         stateTransition:
           $ref: "#/components/schemas/DiagnosticStateTransition"
         sanitizedResult:
@@ -8588,16 +8989,14 @@ components:
             - redacted
             - unavailable
         digest:
-          type: string
-          minLength: 16
-          maxLength: 128
-          pattern: "^digest_[A-Za-z0-9_-]{9,121}$"
+          allOf:
+            - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
+          pattern: "^digest_[A-Za-z0-9_-]{8,120}$"
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         reference:
-          type: string
-          minLength: 16
-          maxLength: 128
-          pattern: "^changeref_[A-Za-z0-9_-]{6,118}$"
+          allOf:
+            - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
+          pattern: "^changeref_[A-Za-z0-9_-]{8,120}$"
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         classification:
           $ref: "#/components/schemas/DiagnosticFieldClassification"
@@ -8662,12 +9061,12 @@ components:
           pattern: "^[a-z][a-z0-9_]{0,79}$"
     DiagnosticBase:
       type: object
-      additionalProperties: false
       required:
         - audience
         - status
         - disposition
         - trust
+        - fieldClassifications
         - freshness
       properties:
         audience:
@@ -8683,35 +9082,77 @@ components:
           $ref: "#/components/schemas/DiagnosticTrustEvidence"
         fieldClassifications:
           type: array
+          minItems: 1
           maxItems: 32
           items:
             $ref: "#/components/schemas/DiagnosticFieldClassificationEntry"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+      allOf:
+        - if:
+            properties:
+              trust:
+                properties:
+                  availability:
+                    const: available
+          then:
+            properties:
+              freshness:
+                properties:
+                  stale:
+                    const: false
+        - if:
+            properties:
+              trust:
+                properties:
+                  availability:
+                    enum:
+                      - stale
+                      - unavailable
+                      - redacted
+                      - unknown
+          then:
+            properties:
+              freshness:
+                properties:
+                  stale:
+                    const: true
     ReadinessDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
+        - type: object
+          required:
+            - providerSummaryReference
+            - folderSummaryReference
+            - workspaceSummaryReference
+          properties:
+            providerSummaryReference:
+              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+            folderSummaryReference:
+              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+            workspaceSummaryReference:
+              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+      unevaluatedProperties: false
     LockDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
-          additionalProperties: false
           properties:
             lockReference:
-              $ref: "#/components/schemas/DiagnosticSafeIdentifier"
+              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
+      unevaluatedProperties: false
     DirtyStateDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
-          additionalProperties: false
           properties:
             changedPathEvidence:
               $ref: "#/components/schemas/ChangedPathEvidence"
+      unevaluatedProperties: false
     FailedOperationDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
-          additionalProperties: false
           properties:
             operationId:
               $ref: "#/components/schemas/OpaqueIdentifier"
@@ -8721,25 +9162,24 @@ components:
               $ref: "#/components/schemas/CanonicalErrorCategory"
             retryEligibility:
               $ref: "#/components/schemas/RetryEligibility"
+      unevaluatedProperties: false
     ProviderStatusDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
-          additionalProperties: false
           properties:
             providerBindingReference:
-              $ref: "#/components/schemas/DiagnosticSafeIdentifier"
+              $ref: "#/components/schemas/RedactableDiagnosticIdentifier"
             providerCorrelationReference:
-              type: string
-              minLength: 16
-              maxLength: 128
+              allOf:
+                - $ref: "#/components/schemas/PrefixedOpaqueIdentifier"
               pattern: "^provref_[A-Za-z0-9_-]{8,120}$"
               x-hexalith-sensitive-metadata-tier: tenant_sensitive
+      unevaluatedProperties: false
     SyncStatusDiagnostics:
       allOf:
         - $ref: "#/components/schemas/DiagnosticBase"
         - type: object
-          additionalProperties: false
           properties:
             acceptedCommandState:
               type: string
@@ -8753,6 +9193,7 @@ components:
               $ref: "#/components/schemas/LifecycleState"
             providerOutcomeState:
               $ref: "#/components/schemas/ProviderOutcomeState"
+      unevaluatedProperties: false
     ProjectionFreshnessDiagnostics:
       type: object
       additionalProperties: false
@@ -8765,6 +9206,7 @@ components:
         - staleReasonCode
         - unavailableReasonCode
         - freshnessTarget
+        - fieldClassifications
         - freshness
       properties:
         audience:
@@ -8799,8 +9241,39 @@ components:
           type: string
           minLength: 1
           maxLength: 160
+        fieldClassifications:
+          type: array
+          minItems: 1
+          maxItems: 32
+          items:
+            $ref: "#/components/schemas/DiagnosticFieldClassificationEntry"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+      allOf:
+        - if:
+            properties:
+              availability:
+                const: available
+          then:
+            properties:
+              freshness:
+                properties:
+                  stale:
+                    const: false
+        - if:
+            properties:
+              availability:
+                enum:
+                  - stale
+                  - unavailable
+                  - redacted
+                  - unknown
+          then:
+            properties:
+              freshness:
+                properties:
+                  stale:
+                    const: true
     CanonicalErrorCategory:
       type: string
       enum:
