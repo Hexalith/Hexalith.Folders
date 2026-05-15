@@ -98,6 +98,34 @@ tests/tools/
 - Equivalent file names are acceptable when they preserve the same ownership boundaries.
 - Do not implement runtime behavior, Contract Spine operation groups, SDK generation policy, parity-oracle derivation, safety-invariant scanning, provider drift, Dapr policy conformance, CLI/MCP/UI work, release publishing, or nested-submodule initialization.
 - This story may inspect generated or checked-in artifacts but must not hand-edit generated SDK output or generated parity rows.
+- Story 1.16 validates and wires gate entry points only. It must not regenerate OpenAPI, NSwag helpers, parity oracle rows, generated SDKs, parity schemas, safety scan rules, or CI restore/build/test lanes owned by Stories 1.12 through 1.15.
+
+### Canonical Inputs And Command Contract
+
+- Local execution must expose one repository-root command surface for the governance/completeness gates, and CI must invoke that same command surface instead of reimplementing checks in workflow YAML.
+- The local command contract must document expected working directory, exit codes, generated report paths, and offline assumptions. A missing prerequisite must produce a non-zero exit with `prerequisite_drift`, not a skipped or passing result.
+- Read-only prior-story inputs include:
+  - `_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md`
+  - `_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md`
+  - `_bmad-output/implementation-artifacts/1-13-generate-the-c13-parity-oracle.md`
+  - `_bmad-output/implementation-artifacts/1-14-wire-contract-spine-drift-and-generated-client-ci-gates.md`
+  - `_bmad-output/implementation-artifacts/1-15-wire-safety-invariant-ci-gates.md`
+  - `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
+  - `tests/fixtures/idempotency-encoding-corpus.json`
+  - `tests/fixtures/idempotency-encoding-corpus.schema.json`
+  - `tests/fixtures/parity-contract.yaml`
+  - `tests/fixtures/parity-contract.schema.json`
+- Parity completeness must be computed from the current OpenAPI operation inventory and the checked-in or generated `tests/fixtures/parity-contract.yaml` after schema validation against `tests/fixtures/parity-contract.schema.json`. The gate must fail closed when the parity artifact is missing, stale, malformed, duplicated, or references missing operation IDs; it must not hand-author or regenerate parity rows.
+- Pattern-example compilation must define the marker format, included documentation globs, generated-folder exclusions, target framework, and classification for documentation-only examples before scanning broadly.
+- Cache-key lint exceptions require an explicit allowlist record with owner, reason, scope, review status or expiry, and evidence linkage. Pattern-only exemptions are not sufficient.
+
+### Status And Diagnostics Semantics
+
+- Exit-criteria evidence status values must be machine-readable. Only `approved` satisfies a criterion. `reference_pending` is allowed only as tracked non-completion with owner, criterion ID, verification gap, and bounded reason; it must not silently pass a completeness gate. `invalid`, `placeholder`, unknown, missing, malformed, unreadable, or schema-invalid rows fail closed.
+- Unknown C0-C13 rows, missing required C0-C13 rows, duplicate criterion rows, and artifact paths outside approved repository-relative locations fail closed.
+- Every gate must include at least one positive fixture and one negative fixture proving the expected failure mode for evidence rows, corpus consumption, marked examples, cache-key exceptions, parity coverage, and prerequisite drift.
+- Safe diagnostics apply to console logs, test output, exceptions, generated reports, SARIF, markdown summaries, and CI annotations. They may include gate names, rule IDs, criterion IDs, row IDs, operation IDs, sample IDs, placeholder states, schema pointers, repository-relative artifact paths, bounded categories, counts, and safe hashes only.
+- Diagnostics must not include raw payloads, file contents, diffs, provider tokens, credentials, tenant data, local absolute paths, production URLs, cache key values, provider responses, tenant seed data, or unauthorized-resource hints.
 
 ### Current Repository State To Inspect
 
@@ -119,6 +147,7 @@ tests/tools/
 - Cache-key lint must reason about tenant scope, not just string prefixes. Safe exceptions need explicit classification and must not include tenant, provider, or environment values.
 - Parity completeness must compare current OpenAPI operations to generated parity rows. It must not rely on stale operation inventories in story text.
 - Gate diagnostics must be safe by construction. Prefer criterion IDs, operation IDs, sample IDs, category names, schema pointers, and content hashes over raw values.
+- Reviewer documentation must include a checklist for running the local command, locating generated reports, checking required evidence columns, confirming positive and negative fixtures, validating placeholder semantics, reviewing cache-key exceptions, and classifying parity failures caused by added, removed, renamed, duplicate, or intentionally excluded operations.
 
 ### Previous Story Intelligence
 
@@ -143,6 +172,7 @@ tests/tools/
 - Good negative cases: missing C13 evidence row, generic `PLACEHOLDER` evidence after a gate is active, an idempotency corpus case with no consumer test, a helper test that collapses null and omitted, a compilable example with an API drift error, a tenant data cache key without tenant scope, a parity row for a removed operation, duplicate parity rows, and failure diagnostics that try to echo raw values.
 - Good positive cases: bounded reference-pending decisions name the criterion and owner, every idempotency corpus case maps to a consumer, examples marked documentation-only are skipped with evidence, non-tenant tool caches are explicitly classified, and parity completeness derives current operations from OpenAPI.
 - Keep assertions precise and scoped to repository-owned artifacts. Do not add broad secret scanning or release validation claims that belong to Story 1.15 or later production-hardening stories.
+- CI/local parity tests must prove the workflow invokes the same local command entry point used by developers. Workflow-only shell logic is acceptable for setup and orchestration, but not for the gate implementation itself.
 
 ### References
 
@@ -181,6 +211,7 @@ tests/tools/
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-15 | Applied party-mode review hardening for command contracts, artifact authority, status semantics, diagnostics, and reviewer workflow. | Codex |
 | 2026-05-14 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 
 ## Dev Agent Record
@@ -194,3 +225,23 @@ TBD by dev-story agent
 ### Completion Notes List
 
 ### File List
+
+## Party-Mode Review
+
+- Date/time: 2026-05-15T12:57:13Z
+- Selected story key: `1-16-wire-exit-criteria-and-parity-completeness-gates`
+- Command/skill invocation used: `/bmad-party-mode 1-16-wire-exit-criteria-and-parity-completeness-gates; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor), Paige (Technical Writer)
+- Findings summary: reviewers agreed the story needed tighter deterministic command contracts, canonical artifact and fixture authority, machine-readable status semantics, explicit no-generation boundaries, fail-closed prerequisite discovery, cache-key exception governance, safe diagnostics across all outputs, and reviewer-facing workflow guidance before development.
+- Changes applied:
+  - Added canonical inputs and command contract guidance requiring one repository-root local command reused by CI.
+  - Added explicit read-only prior-story inputs and parity fixture/schema authority.
+  - Added no-generation boundary language for OpenAPI, NSwag helpers, parity rows, generated SDKs, safety scanning, and workflow lanes.
+  - Added status semantics for `approved`, `reference_pending`, invalid, placeholder, missing, malformed, duplicate, and unknown evidence rows.
+  - Added safe diagnostics constraints for logs, reports, SARIF, markdown summaries, exceptions, and CI annotations.
+  - Added reviewer documentation and CI/local parity expectations.
+- Findings deferred:
+  - Exact local command name and report artifact paths remain implementation decisions within the documented command contract.
+  - Exact compilable-example marker format and cache-key exception allowlist file name remain implementation details, but must satisfy the story constraints.
+  - CI placement may be a step or job inside the Story 1.14 lane as long as it invokes the shared local command.
+- Final recommendation: ready-for-dev
