@@ -57,6 +57,10 @@ field=<lexicographic_field_path>;present=<true|false>;value=<typed_value_or_omit
 
 Scalar formatting is culture-invariant. Strings escape line breaks, backslashes, and field separators. Enum values use OpenAPI wire values. Objects are serialized as sorted JSON. Explicit null and omitted values are distinct when the companion helper can observe presence; otherwise callers must use the generated presence companion property.
 
+Decimal values are encoded with their sign, scale, and 96-bit integer components rather than a display string. This preserves distinctions such as `1m`, `1.0m`, and `1.00m` if a future spine field declares decimal scale as semantically meaningful.
+
+The Contract Spine currently declares `path_metadata` and `path_policy_class` as separate equivalence fields for file mutations. The helper therefore includes `pathPolicyClass` once inside the canonical `path_metadata` JSON object and once as the top-level `path_policy_class` scalar; this is intentional spine-driven redundancy, not SDK-side field invention.
+
 ## Downstream Ownership
 
 Story 1.13 owns final C13 parity rows and must consume generated operation IDs and helper entry points instead of reimplementing hash construction.

@@ -30,8 +30,7 @@ File.WriteAllText(outputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Iden
 static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyList<OperationModel> operations)
 {
     YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
-    List<HelperModel> helpers = [];
-    HashSet<string> generatedSchemas = [];
+    Dictionary<string, List<HelperVariantModel>> variantsBySchema = new(StringComparer.Ordinal);
 
     foreach (OperationModel operation in operations.Where(o => o.IdempotencyFields.Count > 0))
     {
@@ -50,13 +49,17 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
             throw new InvalidOperationException($"Operation {operation.OperationId} idempotency fields are not in lexicographic order.");
         }
 
-        if (!generatedSchemas.Add(operation.RequestSchema))
+        HashSet<string> uniqueFields = new(StringComparer.Ordinal);
+        foreach (string field in operation.IdempotencyFields)
         {
-            continue;
+            if (!uniqueFields.Add(field))
+            {
+                throw new InvalidOperationException($"Operation {operation.OperationId} declares duplicate idempotency field '{field}'.");
+            }
         }
 
         YamlMappingNode schema = RequiredMapping(schemas, operation.RequestSchema);
-        IReadOnlyDictionary<string, YamlMappingNode> schemaProperties = ReadProperties(schema);
+        IReadOnlyDictionary<string, SchemaPropertyModel> schemaProperties = ReadProperties(schema);
         List<FieldModel> fields = [];
         List<ParameterModel> helperParameters = [];
 
@@ -72,29 +75,68 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
             .ThenBy(p => p.Field, StringComparer.Ordinal)
             .ToArray();
 
-        helpers.Add(new HelperModel(operation.RequestSchema, operation.OperationId, operation.IdempotencyFields, fields, orderedParameters));
+        if (!variantsBySchema.TryGetValue(operation.RequestSchema, out List<HelperVariantModel>? variants))
+        {
+            variants = [];
+            variantsBySchema.Add(operation.RequestSchema, variants);
+        }
+
+        variants.Add(new HelperVariantModel(operation.OperationId, operation.IdempotencyFields, fields, orderedParameters));
     }
+
+    List<HelperModel> helpers = variantsBySchema
+        .Select(group => new HelperModel(
+            group.Key,
+            group.Value.OrderBy(v => v.OperationId, StringComparer.Ordinal).ToArray(),
+            group.Value
+                .SelectMany(v => v.Parameters)
+                .GroupBy(p => p.Field, StringComparer.Ordinal)
+                .Select(g => g.First())
+                .ToArray()))
+        .OrderBy(h => h.SchemaName, StringComparer.Ordinal)
+        .ToList();
 
     if (!helpers.Any(h => h.SchemaName == "FileMutationRequest"))
     {
         throw new InvalidOperationException("FileMutationRequest helper was not generated from the Contract Spine.");
     }
 
-    return helpers.OrderBy(h => h.SchemaName, StringComparer.Ordinal).ToArray();
+    return helpers;
 }
 
 static FieldModel ResolveField(
     OperationModel operation,
     string field,
     string schemaName,
-    IReadOnlyDictionary<string, YamlMappingNode> schemaProperties,
+    IReadOnlyDictionary<string, SchemaPropertyModel> schemaProperties,
     List<ParameterModel> helperParameters)
 {
-    Dictionary<string, string> operationParameters = operation.Parameters.ToDictionary(p => NormalizeName(p.Name), p => p.Name, StringComparer.Ordinal);
+    Dictionary<string, string> operationParameters = [];
+    foreach (ParameterModel parameter in operation.Parameters)
+    {
+        string normalized = NormalizeName(parameter.Name);
+        if (operationParameters.TryGetValue(normalized, out string? existing))
+        {
+            if (!string.Equals(existing, parameter.Name, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"Operation {operation.OperationId} has duplicate normalized parameter '{normalized}' from '{existing}' and '{parameter.Name}'.");
+            }
+
+            continue;
+        }
+
+        operationParameters.Add(normalized, parameter.Name);
+    }
+
     if (operationParameters.TryGetValue(field, out string? parameterName))
     {
         string parameter = EnsureParameter(helperParameters, field, parameterName);
         return new FieldModel(field, "true", parameter);
+    }
+
+    if (TryResolveSpecialField(schemaName, field, out FieldModel? specialField))
+    {
+        return specialField!;
     }
 
     string[] parts = field.Split('.', StringSplitOptions.RemoveEmptyEntries);
@@ -102,16 +144,6 @@ static FieldModel ResolveField(
     if (parts.Length > 1 && !schemaProperties.ContainsKey(ToJsonPropertyName(parts[0])) && SchemaMatchesLogicalPrefix(schemaName, parts[0]))
     {
         bodyParts = parts[1..];
-    }
-
-    if (schemaName == "FileMutationRequest" && field == "content_hash_reference")
-    {
-        return new FieldModel(field, "ContentHashReference is not null", "ContentHashReference");
-    }
-
-    if (schemaName == "FileMutationRequest" && field == "path_policy_class")
-    {
-        return new FieldModel(field, "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass");
     }
 
     string firstJsonName = ToJsonPropertyName(bodyParts[0]);
@@ -130,11 +162,27 @@ static FieldModel ResolveField(
     return new FieldModel(field, $"{rootProperty} is not null", $"{rootProperty}?.{string.Join(".", bodyParts.Skip(1).Select(ToPropertyName))}");
 }
 
+static bool TryResolveSpecialField(string schemaName, string field, out FieldModel? model)
+{
+    // FileMutationRequest spine fields are declared at components.schemas.FileMutationRequest.
+    model = (schemaName, field) switch
+    {
+        ("FileMutationRequest", "content_hash_reference") => new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),
+        ("FileMutationRequest", "file_operation_kind") => new FieldModel("file_operation_kind", "true", "ResolveFileMutationOperationKindWireValue()"),
+        ("FileMutationRequest", "operation_id") => new FieldModel("operation_id", "OperationId is not null", "OperationId"),
+        ("FileMutationRequest", "path_metadata") => new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
+        ("FileMutationRequest", "path_policy_class") => new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
+        _ => null,
+    };
+
+    return model is not null;
+}
+
 static bool SchemaMatchesLogicalPrefix(string schemaName, string prefix)
 {
     string normalizedSchema = NormalizeName(schemaName);
     string normalizedPrefix = NormalizeName(prefix);
-    return normalizedSchema == normalizedPrefix + "_request" || normalizedSchema == normalizedPrefix + "request" || normalizedSchema == normalizedPrefix;
+    return normalizedSchema == normalizedPrefix + "_request";
 }
 
 static string EnsureParameter(List<ParameterModel> parameters, string field, string openApiName)
@@ -149,17 +197,35 @@ static string EnsureParameter(List<ParameterModel> parameters, string field, str
     return name;
 }
 
-static IReadOnlyDictionary<string, YamlMappingNode> ReadProperties(YamlMappingNode schema)
+static IReadOnlyDictionary<string, SchemaPropertyModel> ReadProperties(YamlMappingNode schema)
 {
-    if (!schema.Children.TryGetValue(new YamlScalarNode("properties"), out YamlNode? propertiesNode))
+    Dictionary<string, SchemaPropertyModel> properties = new(StringComparer.Ordinal);
+    AddProperties(schema, properties);
+
+    if (schema.Children.TryGetValue(new YamlScalarNode("oneOf"), out YamlNode? oneOfNode))
     {
-        return new Dictionary<string, YamlMappingNode>(StringComparer.Ordinal);
+        foreach (YamlNode branchNode in oneOfNode.ShouldBeSequence("oneOf"))
+        {
+            AddProperties(branchNode.ShouldBeMapping("oneOf branch"), properties);
+        }
     }
 
-    return propertiesNode.ShouldBeMapping("properties").Children.ToDictionary(
-        p => p.Key.ShouldBeScalar("property").Value ?? string.Empty,
-        p => p.Value.ShouldBeMapping("property"),
-        StringComparer.Ordinal);
+    return properties;
+}
+
+static void AddProperties(YamlMappingNode schema, Dictionary<string, SchemaPropertyModel> properties)
+{
+    HashSet<string> required = ReadStringSequence(schema, "required").ToHashSet(StringComparer.Ordinal);
+    if (!schema.Children.TryGetValue(new YamlScalarNode("properties"), out YamlNode? propertiesNode))
+    {
+        return;
+    }
+
+    foreach (KeyValuePair<YamlNode, YamlNode> property in propertiesNode.ShouldBeMapping("properties").Children)
+    {
+        string name = property.Key.ShouldBeScalar("property").Value ?? string.Empty;
+        properties[name] = new SchemaPropertyModel(property.Value.ShouldBeMapping("property"), required.Contains(name));
+    }
 }
 
 static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
@@ -172,7 +238,7 @@ static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
 
         foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
         {
-            string method = methodEntry.Key.ShouldBeScalar("method").Value ?? string.Empty;
+            string method = (methodEntry.Key.ShouldBeScalar("method").Value ?? string.Empty).ToLowerInvariant();
             if (method is not ("get" or "post" or "put" or "patch" or "delete"))
             {
                 continue;
@@ -180,6 +246,7 @@ static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
 
             YamlMappingNode operation = methodEntry.Value.ShouldBeMapping("operation");
             string operationId = RequiredScalar(operation, "operationId");
+            ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
             List<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
             string? requestSchema = TryReadRequestSchema(operation);
             IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
@@ -273,11 +340,7 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("                ? new(true, \"generated artifacts match Contract Spine inputs\")");
     code.AppendLine("                : new(false, \"generated artifact content hashes do not match Contract Spine inputs\");");
     code.AppendLine("        }");
-    code.AppendLine("        catch (IOException exception)");
-    code.AppendLine("        {");
-    code.AppendLine("            return new(false, exception.GetType().Name);");
-    code.AppendLine("        }");
-    code.AppendLine("        catch (UnauthorizedAccessException exception)");
+    code.AppendLine("        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)");
     code.AppendLine("        {");
     code.AppendLine("            return new(false, exception.GetType().Name);");
     code.AppendLine("        }");
@@ -294,7 +357,7 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("    }");
     code.AppendLine();
     code.AppendLine("    private static string NormalizeGeneratedHelperHash(string value) =>");
-    code.AppendLine("        Regex.Replace(NormalizeText(value), \"GeneratedHelpersSha256 = \\\"[0-9a-f]+\\\"\", \"GeneratedHelpersSha256 = \\\"__GENERATED_HELPERS_SHA256__\\\"\", RegexOptions.CultureInvariant);");
+    code.AppendLine("        Regex.Replace(NormalizeText(value), \"^\\\\s*public const string GeneratedHelpersSha256 = \\\"[0-9a-fA-F_]+\\\";\", \"    public const string GeneratedHelpersSha256 = \\\"__GENERATED_HELPERS_SHA256__\\\";\", RegexOptions.CultureInvariant | RegexOptions.Multiline);");
     code.AppendLine();
     code.AppendLine("    private static string NormalizeText(string value) => value.Replace(\"\\r\\n\", \"\\n\", StringComparison.Ordinal).Replace(\"\\r\", \"\\n\", StringComparison.Ordinal);");
     code.AppendLine();
@@ -306,6 +369,8 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("{");
     code.AppendLine("    public ProblemDetails? ProblemDetails => TryGetProblemDetails();");
     code.AppendLine();
+    code.AppendLine("    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);");
+    code.AppendLine();
     code.AppendLine("    private ProblemDetails? TryGetProblemDetails()");
     code.AppendLine("    {");
     code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
@@ -313,13 +378,35 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("            return typed.Result;");
     code.AppendLine("        }");
     code.AppendLine();
-    code.AppendLine("        try");
-    code.AppendLine("        {");
-    code.AppendLine("            return string.IsNullOrWhiteSpace(Response) ? null : JsonConvert.DeserializeObject<ProblemDetails>(Response);");
-    code.AppendLine("        }");
-    code.AppendLine("        catch (JsonException)");
+    code.AppendLine("        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;");
+    code.AppendLine("    }");
+    code.AppendLine();
+    code.AppendLine("    private string? TryReadProblemDetails(out ProblemDetails? problem)");
+    code.AppendLine("    {");
+    code.AppendLine("        problem = null;");
+    code.AppendLine("        if (string.IsNullOrWhiteSpace(Response))");
     code.AppendLine("        {");
     code.AppendLine("            return null;");
+    code.AppendLine("        }");
+    code.AppendLine();
+    code.AppendLine("        try");
+    code.AppendLine("        {");
+    code.AppendLine("            using StringReader stringReader = new(Response);");
+    code.AppendLine("            using JsonTextReader jsonReader = new(stringReader)");
+    code.AppendLine("            {");
+    code.AppendLine("                DateParseHandling = DateParseHandling.None,");
+    code.AppendLine("                FloatParseHandling = FloatParseHandling.Decimal,");
+    code.AppendLine("            };");
+    code.AppendLine("            JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings");
+    code.AppendLine("            {");
+    code.AppendLine("                Culture = System.Globalization.CultureInfo.InvariantCulture,");
+    code.AppendLine("            });");
+    code.AppendLine("            problem = serializer.Deserialize<ProblemDetails>(jsonReader);");
+    code.AppendLine("            return null;");
+    code.AppendLine("        }");
+    code.AppendLine("        catch (JsonException exception)");
+    code.AppendLine("        {");
+    code.AppendLine("            return exception.GetType().Name;");
     code.AppendLine("        }");
     code.AppendLine("    }");
     code.AppendLine("}");
@@ -359,37 +446,73 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
         code.AppendLine("    [JsonProperty(\"contentHashReference\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
         code.AppendLine("    public string? ContentHashReference { get; set; }");
         code.AppendLine();
+        code.AppendLine("    private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;");
+        code.AppendLine();
     }
 
     string parameters = string.Join(", ", helper.Parameters.Select(p => "string " + p.Name));
-    code.AppendLine($"    public string ComputeIdempotencyHash({parameters}) =>");
-    code.AppendLine("        HexalithIdempotencyHasher.Compute(");
-    code.AppendLine(helper.SchemaName == "FileMutationRequest" ? "            ResolveFileMutationOperationId()," : $"            \"{helper.OperationId}\",");
-    code.AppendLine("            new[]");
-    code.AppendLine("            {");
-    foreach (FieldModel field in helper.Fields)
+    if (helper.Variants.Count == 1)
     {
-        string present = field.Path == "parent_folder_id" ? "ParentFolderIdSpecified || ParentFolderId is not null" : field.PresentExpression;
-        code.AppendLine($"                new IdempotencyField(\"{field.Path}\", {present}, {field.ValueExpression}),");
+        code.AppendLine($"    public string ComputeIdempotencyHash({parameters}) =>");
+        RenderComputeExpression(code, helper.Variants[0], "        ");
+        code.AppendLine(";");
     }
+    else
+    {
+        code.AppendLine($"    public string ComputeIdempotencyHash({parameters})");
+        code.AppendLine("    {");
+        code.AppendLine("        string operationId = ResolveFileMutationOperationId();");
+        code.AppendLine("        return operationId switch");
+        code.AppendLine("        {");
+        foreach (HelperVariantModel variant in helper.Variants)
+        {
+            code.AppendLine($"            \"{variant.OperationId}\" =>");
+            RenderComputeExpression(code, variant, "                ");
+            code.AppendLine("            ,");
+        }
 
-    code.AppendLine("            });");
+        code.AppendLine("            _ => throw new InvalidOperationException($\"Unsupported file mutation operation '{operationId}'.\"),");
+        code.AppendLine("        };");
+        code.AppendLine("    }");
+    }
 
     if (helper.SchemaName == "FileMutationRequest")
     {
         code.AppendLine();
-        code.AppendLine("    private string ResolveFileMutationOperationId() => string.Equals(Convert.ToString(TransportOperation, System.Globalization.CultureInfo.InvariantCulture), \"metadataOnlyRemoval\", StringComparison.Ordinal)");
-        code.AppendLine("        ? \"RemoveFile\"");
-        code.AppendLine("        : FileOperationKind switch");
+        code.AppendLine("    private string ResolveFileMutationOperationId() => FileOperationKind switch");
         code.AppendLine("    {");
         code.AppendLine("        FileMutationRequestFileOperationKind.Add => \"AddFile\",");
         code.AppendLine("        FileMutationRequestFileOperationKind.Change => \"ChangeFile\",");
+        code.AppendLine("        RemoveFileOperationKind => \"RemoveFile\",");
+        code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{FileOperationKind}'.\"),");
+        code.AppendLine("    };");
+        code.AppendLine();
+        code.AppendLine("    private string ResolveFileMutationOperationKindWireValue() => FileOperationKind switch");
+        code.AppendLine("    {");
+        code.AppendLine("        FileMutationRequestFileOperationKind.Add => \"add\",");
+        code.AppendLine("        FileMutationRequestFileOperationKind.Change => \"change\",");
+        code.AppendLine("        RemoveFileOperationKind => \"remove\",");
         code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{FileOperationKind}'.\"),");
         code.AppendLine("    };");
     }
 
     code.AppendLine("}");
     code.AppendLine();
+}
+
+static void RenderComputeExpression(StringBuilder code, HelperVariantModel variant, string indent)
+{
+    code.AppendLine(indent + "HexalithIdempotencyHasher.Compute(");
+    code.AppendLine(indent + $"    \"{variant.OperationId}\",");
+    code.AppendLine(indent + "    new[]");
+    code.AppendLine(indent + "    {");
+    foreach (FieldModel field in variant.Fields)
+    {
+        string present = field.Path == "parent_folder_id" ? "ParentFolderIdSpecified || ParentFolderId is not null" : field.PresentExpression;
+        code.AppendLine(indent + $"        new IdempotencyField(\"{field.Path}\", {present}, {field.ValueExpression}),");
+    }
+
+    code.AppendLine(indent + "    })");
 }
 
 static YamlMappingNode LoadYaml(string path)
@@ -476,7 +599,7 @@ static string NormalizeName(string value)
     string normalized = builder.ToString();
     return normalized switch
     {
-        string taskHeader when taskHeader.StartsWith("x_hexalith_task", StringComparison.Ordinal) => "task_id",
+        "x_hexalith_task_id" => "task_id",
         "idempotency_key" => "idempotency_key",
         "correlation_id" => "correlation_id",
         _ => normalized,
@@ -488,6 +611,11 @@ static Dictionary<string, string> ParseArguments(string[] values)
     Dictionary<string, string> parsed = new(StringComparer.Ordinal);
     for (int i = 0; i < values.Length; i += 2)
     {
+        if (!values[i].StartsWith("--", StringComparison.Ordinal))
+        {
+            throw new ArgumentException($"Expected argument name starting with '--' at position {i}, but found '{values[i]}'.");
+        }
+
         if (i + 1 >= values.Length)
         {
             throw new ArgumentException($"Missing value for {values[i]}.");
@@ -505,7 +633,7 @@ static string RequiredArgument(IReadOnlyDictionary<string, string> values, strin
 static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
 
 static string NormalizeGeneratedHelperHash(string value) =>
-    Regex.Replace(NormalizeText(value), "GeneratedHelpersSha256 = \"[0-9a-f_]+\"", "GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\"", RegexOptions.CultureInvariant);
+    Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
 
 static string Sha256(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
 
@@ -521,11 +649,17 @@ internal sealed record ParameterModel(string Field, string Name);
 
 internal sealed record FieldModel(string Path, string PresentExpression, string ValueExpression);
 
-internal sealed record HelperModel(
-    string SchemaName,
+internal sealed record SchemaPropertyModel(YamlMappingNode Schema, bool Required);
+
+internal sealed record HelperVariantModel(
     string OperationId,
     IReadOnlyList<string> DeclaredFields,
     IReadOnlyList<FieldModel> Fields,
+    IReadOnlyList<ParameterModel> Parameters);
+
+internal sealed record HelperModel(
+    string SchemaName,
+    IReadOnlyList<HelperVariantModel> Variants,
     IReadOnlyList<ParameterModel> Parameters);
 
 internal static class YamlNodeExtensions

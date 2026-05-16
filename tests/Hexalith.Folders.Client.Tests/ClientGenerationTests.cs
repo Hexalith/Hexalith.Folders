@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Client.Idempotency;
 using Newtonsoft.Json;
@@ -63,21 +64,25 @@ public sealed class ClientGenerationTests
         OpenApiOperation[] operations = LoadOperations().ToArray();
         Assembly clientAssembly = typeof(CreateFolderRequest).Assembly;
 
-        foreach (string schema in operations.Where(o => o.IdempotencyFields.Count > 0).Select(o => o.RequestSchema).WhereNotNull().Distinct(StringComparer.Ordinal))
+        foreach (IGrouping<string, OpenApiOperation> group in operations.Where(o => o.IdempotencyFields.Count > 0).Where(o => o.RequestSchema is not null).GroupBy(o => o.RequestSchema!, StringComparer.Ordinal))
         {
-            Type type = clientAssembly.GetType("Hexalith.Folders.Client.Generated." + schema).ShouldNotBeNull();
+            Type type = clientAssembly.GetType("Hexalith.Folders.Client.Generated." + group.Key).ShouldNotBeNull();
             MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => m.Name == "ComputeIdempotencyHash").ToArray();
-            methods.Length.ShouldBe(1, schema);
-            methods[0].ReturnType.ShouldBe(typeof(string), schema);
+            methods.Length.ShouldBe(1, group.Key);
+            methods[0].ReturnType.ShouldBe(typeof(string), group.Key);
+
+            string[] expectedParameterTypes = group
+                .SelectMany(o => o.Parameters.Where(p => o.IdempotencyFields.Contains(p.Field, StringComparer.Ordinal)))
+                .GroupBy(p => p.Field, StringComparer.Ordinal)
+                .Select(g => typeof(string).FullName!)
+                .ToArray();
+            methods[0].GetParameters().Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
         }
 
         foreach (string schema in operations.Where(o => o.IdempotencyFields.Count == 0).Select(o => o.RequestSchema).WhereNotNull().Distinct(StringComparer.Ordinal))
         {
-            Type? type = clientAssembly.GetType("Hexalith.Folders.Client.Generated." + schema);
-            if (type is not null)
-            {
-                type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Any(m => m.Name == "ComputeIdempotencyHash").ShouldBeFalse(schema);
-            }
+            Type type = clientAssembly.GetType("Hexalith.Folders.Client.Generated." + schema).ShouldNotBeNull();
+            type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Any(m => m.Name == "ComputeIdempotencyHash").ShouldBeFalse(schema);
         }
     }
 
@@ -109,7 +114,7 @@ public sealed class ClientGenerationTests
     {
         var add = CreateFileMutation(FileMutationRequestFileOperationKind.Add, "PutFileInline");
         var change = CreateFileMutation(FileMutationRequestFileOperationKind.Change, "PutFileInline");
-        var remove = CreateFileMutation(FileMutationRequestFileOperationKind.Add, "metadataOnlyRemoval");
+        var remove = CreateFileMutation((FileMutationRequestFileOperationKind)2, "metadataOnlyRemoval");
         remove.ContentHashReference = null;
 
         string workspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001";
@@ -192,6 +197,33 @@ public sealed class ClientGenerationTests
     }
 
     [Fact]
+    public void HelperGenerationTargetRegeneratesWhenContractSpineChanges()
+    {
+        string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-generation-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+        string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
+        string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
+        string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+        File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
+
+        string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
+        using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "dotnet",
+            Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+        })!;
+
+        process.WaitForExit(120_000).ShouldBeTrue();
+        string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
+        process.ExitCode.ShouldBe(0, combinedOutput);
+        File.Exists(output).ShouldBeTrue();
+        File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
+    }
+
+    [Fact]
     public void CanonicalHasherFailsClosedForMalformedMetadata()
     {
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Test", [
@@ -223,6 +255,24 @@ public sealed class ClientGenerationTests
 
         JsonElement duplicateKey = cases.Single(c => c.GetProperty("category").GetString() == "duplicate-json-key");
         Should.Throw<Newtonsoft.Json.JsonReaderException>(() => HexalithIdempotencyHasher.NormalizeJsonText(duplicateKey.GetProperty("input").GetString()!));
+
+        foreach (JsonElement corpusCase in cases.Where(c => c.GetProperty("category").GetString() != "duplicate-json-key"))
+        {
+            string classification = corpusCase.GetProperty("equivalence_classification").GetString() ?? string.Empty;
+            string left = ComputeCorpusHash(corpusCase.GetProperty("input"));
+            string right = ComputeCorpusHash(corpusCase.GetProperty("comparison_input"));
+
+            if (classification.StartsWith("non-equivalent", StringComparison.Ordinal) ||
+                classification.StartsWith("equivalent-only", StringComparison.Ordinal) ||
+                classification == "parser-rejected")
+            {
+                left.ShouldNotBe(right, corpusCase.GetProperty("id").GetString());
+            }
+            else if (classification == "equivalent-after-lexicographic-field-ordering")
+            {
+                left.ShouldBe(right, corpusCase.GetProperty("id").GetString());
+            }
+        }
     }
 
     [Fact]
@@ -244,17 +294,37 @@ public sealed class ClientGenerationTests
         string response = JsonConvert.SerializeObject(problem);
         var untyped = new HexalithFoldersApiException("message", 400, response, new Dictionary<string, IEnumerable<string>>(), null!);
         untyped.ProblemDetails.ShouldNotBeNull().Code.ShouldBe("validation_error");
+        untyped.ProblemDetailsParseDiagnostic.ShouldBeNull();
+
+        var malformed = new HexalithFoldersApiException("message", 400, "{not valid json", new Dictionary<string, IEnumerable<string>>(), null!);
+        malformed.ProblemDetails.ShouldBeNull();
+        malformed.ProblemDetailsParseDiagnostic.ShouldNotBeNull();
     }
 
     [Fact]
     public void HelperGeneratorProjectIsBuildTimeInput()
     {
         string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-        string content = File.ReadAllText(project);
+        XDocument document = XDocument.Load(project);
 
-        content.ShouldContain("GenerateHexalithFoldersIdempotencyHelpers");
-        content.ShouldContain("Hexalith.Folders.Client.Generation.csproj");
-        content.ShouldContain("$(HexalithFoldersGeneratedHelpers)");
+        XElement target = document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersIdempotencyHelpers");
+        target.Attribute("BeforeTargets")?.Value.ShouldBe("BeforeCompile");
+        target.Attribute("Inputs")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
+        target.Attribute("Inputs")?.Value.ShouldContain("Generation\\Program.cs");
+        target.Attribute("Outputs")?.Value.ShouldBe("$(HexalithFoldersGeneratedHelpers)");
+        target.Descendants("Exec").Single().Attribute("Command")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
+    }
+
+    [Fact]
+    public void CanonicalHasherPinsPrimitiveEdgeFormatting()
+    {
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, int.MinValue)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-2147483648"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, ulong.MaxValue)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:18446744073709551615"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 0)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:0"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, -1)]).ShouldBe(ExpectedHash("operation=Primitive", "field=value;present=true;value=n:-1"));
+        HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.0m)])
+            .ShouldNotBe(HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, 1.00m)]));
+        Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))]));
     }
 
     private static FileMutationRequest CreateFileMutation(FileMutationRequestFileOperationKind kind, object transportOperation) =>
@@ -281,6 +351,18 @@ public sealed class ClientGenerationTests
         return "sha256:" + Convert.ToHexString(digest).ToLowerInvariant();
     }
 
+    private static string ComputeCorpusHash(JsonElement value)
+    {
+        object? material = value.ValueKind switch
+        {
+            JsonValueKind.String => value.GetString(),
+            JsonValueKind.Object => Newtonsoft.Json.Linq.JToken.Parse(value.GetRawText()),
+            _ => value.GetRawText(),
+        };
+
+        return HexalithIdempotencyHasher.Compute("Corpus", [new IdempotencyField("synthetic_field", true, material)]);
+    }
+
     private static IReadOnlyList<OpenApiOperation> LoadOperations()
     {
         using StreamReader reader = File.OpenText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
@@ -292,6 +374,7 @@ public sealed class ClientGenerationTests
         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
         {
             YamlMappingNode path = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
+            IReadOnlyList<OpenApiParameter> pathParameters = EnumerateParameters(path).ToArray();
             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in path.Children)
             {
                 string method = methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
@@ -304,7 +387,8 @@ public sealed class ClientGenerationTests
                 string operationId = RequiredScalar(operation, "operationId");
                 string? requestSchema = TryReadRequestSchema(operation);
                 IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
-                operations.Add(new OpenApiOperation(operationId, requestSchema, fields));
+                IReadOnlyList<OpenApiParameter> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
+                operations.Add(new OpenApiOperation(operationId, requestSchema, fields, parameters));
             }
         }
 
@@ -335,6 +419,23 @@ public sealed class ClientGenerationTests
         return value.ShouldBeOfType<YamlSequenceNode>().Children.Select(node => node.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).ToArray();
     }
 
+    private static IEnumerable<OpenApiParameter> EnumerateParameters(YamlMappingNode mapping)
+    {
+        if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
+        {
+            yield break;
+        }
+
+        foreach (YamlNode parameterNode in parametersNode.ShouldBeOfType<YamlSequenceNode>())
+        {
+            YamlMappingNode parameter = parameterNode.ShouldBeOfType<YamlMappingNode>();
+            string name = parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode)
+                ? (referenceNode.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).Split('/').Last()
+                : RequiredScalar(parameter, "name");
+            yield return new OpenApiParameter(NormalizeName(name), name);
+        }
+    }
+
     private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
     {
         mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
@@ -349,15 +450,56 @@ public sealed class ClientGenerationTests
 
     private static string LocateRepositoryRoot()
     {
-        string? metadata = typeof(ClientGenerationTests).Assembly
-            .GetCustomAttributes<AssemblyMetadataAttribute>()
-            .FirstOrDefault(attribute => attribute.Key == "RepositoryRoot")
-            ?.Value;
-        ArgumentException.ThrowIfNullOrWhiteSpace(metadata);
-        return Path.GetFullPath(metadata);
+        DirectoryInfo? directory = new(Path.GetDirectoryName(typeof(ClientGenerationTests).Assembly.Location)!);
+        while (directory is not null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new InvalidOperationException("Could not locate Hexalith.Folders.slnx from the test assembly location.");
     }
 
-    private sealed record OpenApiOperation(string OperationId, string? RequestSchema, IReadOnlyList<string> IdempotencyFields);
+    private static string NormalizeName(string value)
+    {
+        StringBuilder builder = new(value.Length);
+        for (int i = 0; i < value.Length; i++)
+        {
+            char character = value[i];
+            if (character is '_' or '-')
+            {
+                if (builder.Length > 0 && builder[^1] != '_')
+                {
+                    builder.Append('_');
+                }
+            }
+            else if (char.IsLetterOrDigit(character))
+            {
+                if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_')
+                {
+                    builder.Append('_');
+                }
+
+                builder.Append(char.ToLowerInvariant(character));
+            }
+        }
+
+        return builder.ToString() switch
+        {
+            "x_hexalith_task_id" => "task_id",
+            "idempotency_key" => "idempotency_key",
+            "correlation_id" => "correlation_id",
+            string normalized => normalized,
+        };
+    }
+
+    private sealed record OpenApiOperation(string OperationId, string? RequestSchema, IReadOnlyList<string> IdempotencyFields, IReadOnlyList<OpenApiParameter> Parameters);
+
+    private sealed record OpenApiParameter(string Field, string Name);
 }
 
 internal static class EnumerableExtensions

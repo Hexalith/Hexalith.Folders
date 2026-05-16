@@ -39,7 +39,6 @@
   </Target>
   <Target Name="GenerateHexalithFoldersIdempotencyHelpers"
           BeforeTargets="BeforeCompile"
-          DependsOnTargets="GenerateHexalithFoldersClient"
           Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)\Generation\Program.cs"
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
@@ -48,7 +47,7 @@
   </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           BeforeTargets="CoreCompile"
-          DependsOnTargets="GenerateHexalithFoldersIdempotencyHelpers"
+          DependsOnTargets="GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers"
           Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersGeneratedHelpers)"
           Outputs="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp"
           Condition="'$(DesignTimeBuild)' != 'true'">

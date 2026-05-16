@@ -21,7 +21,7 @@ public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2";
     public const string GenerationConfigurationSha256 = "313de39da4e8a84e00f0c66e23f4e5240e4df8779f007e566807810219a9ae61";
-    public const string GeneratedHelpersSha256 = "66e42d3f31cb42001d9dac6deed2a49743f7246e89cef44e3143a59658ebcb56";
+    public const string GeneratedHelpersSha256 = "421e0da8481e68e1c122af39707815b5c4c89a96a58d332186e8f94f3e74b2ca";
 
     public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;
 
@@ -41,11 +41,7 @@ public static class HexalithFoldersGeneratedArtifacts
                 ? new(true, "generated artifacts match Contract Spine inputs")
                 : new(false, "generated artifact content hashes do not match Contract Spine inputs");
         }
-        catch (IOException exception)
-        {
-            return new(false, exception.GetType().Name);
-        }
-        catch (UnauthorizedAccessException exception)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)
         {
             return new(false, exception.GetType().Name);
         }
@@ -62,7 +58,7 @@ public static class HexalithFoldersGeneratedArtifacts
     }
 
     private static string NormalizeGeneratedHelperHash(string value) =>
-        Regex.Replace(NormalizeText(value), "GeneratedHelpersSha256 = \"[0-9a-f]+\"", "GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\"", RegexOptions.CultureInvariant);
+        Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
 
     private static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
 
@@ -74,6 +70,8 @@ public partial class HexalithFoldersApiException
 {
     public ProblemDetails? ProblemDetails => TryGetProblemDetails();
 
+    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);
+
     private ProblemDetails? TryGetProblemDetails()
     {
         if (this is HexalithFoldersApiException<ProblemDetails> typed)
@@ -81,13 +79,35 @@ public partial class HexalithFoldersApiException
             return typed.Result;
         }
 
-        try
-        {
-            return string.IsNullOrWhiteSpace(Response) ? null : JsonConvert.DeserializeObject<ProblemDetails>(Response);
-        }
-        catch (JsonException)
+        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;
+    }
+
+    private string? TryReadProblemDetails(out ProblemDetails? problem)
+    {
+        problem = null;
+        if (string.IsNullOrWhiteSpace(Response))
         {
             return null;
+        }
+
+        try
+        {
+            using StringReader stringReader = new(Response);
+            using JsonTextReader jsonReader = new(stringReader)
+            {
+                DateParseHandling = DateParseHandling.None,
+                FloatParseHandling = FloatParseHandling.Decimal,
+            };
+            JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
+            {
+                Culture = System.Globalization.CultureInfo.InvariantCulture,
+            });
+            problem = serializer.Deserialize<ProblemDetails>(jsonReader);
+            return null;
+        }
+        catch (JsonException exception)
+        {
+            return exception.GetType().Name;
         }
     }
 }
@@ -102,7 +122,8 @@ public partial class ArchiveFolderRequest
                 new IdempotencyField("archive_reason_code", true, ArchiveReasonCode),
                 new IdempotencyField("folder_id", true, folderId),
                 new IdempotencyField("request_schema_version", true, RequestSchemaVersion),
-            });
+            })
+;
 }
 
 public partial class BindRepositoryRequest
@@ -116,7 +137,8 @@ public partial class BindRepositoryRequest
                 new IdempotencyField("external_repository_ref", true, ExternalRepositoryRef),
                 new IdempotencyField("folder_id", true, folderId),
                 new IdempotencyField("provider_binding_ref", true, ProviderBindingRef),
-            });
+            })
+;
 }
 
 public partial class BranchRefPolicyRequest
@@ -132,7 +154,8 @@ public partial class BranchRefPolicyRequest
                 new IdempotencyField("branch_ref_policy.protected_ref_patterns", true, ProtectedRefPatterns),
                 new IdempotencyField("folder_id", true, folderId),
                 new IdempotencyField("repository_binding_id", true, RepositoryBindingId),
-            });
+            })
+;
 }
 
 public partial class CommitWorkspaceRequest
@@ -149,7 +172,8 @@ public partial class CommitWorkspaceRequest
                 new IdempotencyField("operation_id", true, OperationId),
                 new IdempotencyField("task_id", true, taskId),
                 new IdempotencyField("workspace_id", true, workspaceId),
-            });
+            })
+;
 }
 
 public partial class ConfigureProviderBindingRequest
@@ -163,7 +187,8 @@ public partial class ConfigureProviderBindingRequest
                 new IdempotencyField("non_secret_credential_reference", true, NonSecretCredentialReference),
                 new IdempotencyField("provider_binding_ref", true, providerBindingRef),
                 new IdempotencyField("provider_family_ref", true, ProviderFamilyRef),
-            });
+            })
+;
 }
 
 public partial class CreateFolderRequest
@@ -179,7 +204,8 @@ public partial class CreateFolderRequest
                 new IdempotencyField("folder_metadata.display_name", FolderMetadata is not null, FolderMetadata?.DisplayName),
                 new IdempotencyField("parent_folder_id", ParentFolderIdSpecified || ParentFolderId is not null, ParentFolderId),
                 new IdempotencyField("request_schema_version", true, RequestSchemaVersion),
-            });
+            })
+;
 }
 
 public partial class CreateRepositoryBackedFolderRequest
@@ -193,7 +219,8 @@ public partial class CreateRepositoryBackedFolderRequest
                 new IdempotencyField("folder_metadata.display_name", FolderMetadata is not null, FolderMetadata?.DisplayName),
                 new IdempotencyField("provider_binding_ref", true, ProviderBindingRef),
                 new IdempotencyField("repository_profile_ref", true, RepositoryProfileRef),
-            });
+            })
+;
 }
 
 public partial class FileMutationRequest
@@ -210,26 +237,71 @@ public partial class FileMutationRequest
     [JsonProperty("contentHashReference", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
     public string? ContentHashReference { get; set; }
 
-    public string ComputeIdempotencyHash(string workspaceId, string taskId) =>
-        HexalithIdempotencyHasher.Compute(
-            ResolveFileMutationOperationId(),
-            new[]
-            {
-                new IdempotencyField("content_hash_reference", ContentHashReference is not null, ContentHashReference),
-                new IdempotencyField("file_operation_kind", true, FileOperationKind),
-                new IdempotencyField("operation_id", true, OperationId),
-                new IdempotencyField("path_metadata", true, PathMetadata),
-                new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
-                new IdempotencyField("task_id", true, taskId),
-                new IdempotencyField("workspace_id", true, workspaceId),
-            });
+    private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;
 
-    private string ResolveFileMutationOperationId() => string.Equals(Convert.ToString(TransportOperation, System.Globalization.CultureInfo.InvariantCulture), "metadataOnlyRemoval", StringComparison.Ordinal)
-        ? "RemoveFile"
-        : FileOperationKind switch
+    public string ComputeIdempotencyHash(string workspaceId, string taskId)
+    {
+        string operationId = ResolveFileMutationOperationId();
+        return operationId switch
+        {
+            "AddFile" =>
+                HexalithIdempotencyHasher.Compute(
+                    "AddFile",
+                    new[]
+                    {
+                        new IdempotencyField("content_hash_reference", ContentHashReference is not null, ContentHashReference),
+                        new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
+                        new IdempotencyField("operation_id", OperationId is not null, OperationId),
+                        new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("task_id", true, taskId),
+                        new IdempotencyField("workspace_id", true, workspaceId),
+                    })
+            ,
+            "ChangeFile" =>
+                HexalithIdempotencyHasher.Compute(
+                    "ChangeFile",
+                    new[]
+                    {
+                        new IdempotencyField("content_hash_reference", ContentHashReference is not null, ContentHashReference),
+                        new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
+                        new IdempotencyField("operation_id", OperationId is not null, OperationId),
+                        new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("task_id", true, taskId),
+                        new IdempotencyField("workspace_id", true, workspaceId),
+                    })
+            ,
+            "RemoveFile" =>
+                HexalithIdempotencyHasher.Compute(
+                    "RemoveFile",
+                    new[]
+                    {
+                        new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
+                        new IdempotencyField("operation_id", OperationId is not null, OperationId),
+                        new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("task_id", true, taskId),
+                        new IdempotencyField("workspace_id", true, workspaceId),
+                    })
+            ,
+            _ => throw new InvalidOperationException($"Unsupported file mutation operation '{operationId}'."),
+        };
+    }
+
+    private string ResolveFileMutationOperationId() => FileOperationKind switch
     {
         FileMutationRequestFileOperationKind.Add => "AddFile",
         FileMutationRequestFileOperationKind.Change => "ChangeFile",
+        RemoveFileOperationKind => "RemoveFile",
+        _ => throw new InvalidOperationException($"Unsupported file operation kind '{FileOperationKind}'."),
+    };
+
+    private string ResolveFileMutationOperationKindWireValue() => FileOperationKind switch
+    {
+        FileMutationRequestFileOperationKind.Add => "add",
+        FileMutationRequestFileOperationKind.Change => "change",
+        RemoveFileOperationKind => "remove",
         _ => throw new InvalidOperationException($"Unsupported file operation kind '{FileOperationKind}'."),
     };
 }
@@ -246,7 +318,8 @@ public partial class LockWorkspaceRequest
                 new IdempotencyField("requested_lease_seconds", true, RequestedLeaseSeconds),
                 new IdempotencyField("task_id", true, taskId),
                 new IdempotencyField("workspace_id", true, workspaceId),
-            });
+            })
+;
 }
 
 public partial class PrepareWorkspaceRequest
@@ -262,7 +335,8 @@ public partial class PrepareWorkspaceRequest
                 new IdempotencyField("task_id", true, taskId),
                 new IdempotencyField("workspace_id", true, workspaceId),
                 new IdempotencyField("workspace_policy_ref", true, WorkspacePolicyRef),
-            });
+            })
+;
 }
 
 public partial class ReleaseWorkspaceLockRequest
@@ -277,7 +351,8 @@ public partial class ReleaseWorkspaceLockRequest
                 new IdempotencyField("lock_ownership_proof", true, LockOwnershipProof),
                 new IdempotencyField("task_id", true, taskId),
                 new IdempotencyField("workspace_id", true, workspaceId),
-            });
+            })
+;
 }
 
 public partial class UpdateFolderAclEntryRequest
@@ -292,6 +367,7 @@ public partial class UpdateFolderAclEntryRequest
                 new IdempotencyField("folder_id", true, folderId),
                 new IdempotencyField("permission_level", true, PermissionLevel),
                 new IdempotencyField("subject_ref", true, SubjectRef),
-            });
+            })
+;
 }
 

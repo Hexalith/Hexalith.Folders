@@ -182,7 +182,7 @@ public sealed class ContractRulesArtifactTests
         }
 
         File.Exists(Path.Combine(root, "tests", "fixtures", "parity-contract.yaml"))
-            .ShouldBeFalse("Story 1.5 must not generate parity result rows; Story 1.13 owns parity-contract.yaml.");
+            .ShouldBeTrue("Story 1.13 owns the generated parity result rows.");
 
         AssertNoStory15ContrabandScope(root);
     }
@@ -416,7 +416,7 @@ public sealed class ContractRulesArtifactTests
         }
 
         string parityOracleRunner = Path.Combine(root, "tests", "tools", "parity-oracle-generator", "Program.cs");
-        File.Exists(parityOracleRunner).ShouldBeFalse("Story 1.5 must not introduce a parity-oracle generator runner; Story 1.13 owns oracle generation.");
+        File.Exists(parityOracleRunner).ShouldBeTrue("Story 1.13 owns the parity-oracle generator runner.");
     }
 
     private static string RepositoryRoot()

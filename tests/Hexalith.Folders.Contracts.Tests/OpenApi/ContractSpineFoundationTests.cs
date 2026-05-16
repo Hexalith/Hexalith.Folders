@@ -244,7 +244,7 @@ public sealed class ContractSpineFoundationTests
             Regex.IsMatch(combined, pattern).ShouldBeFalse($"contract artifacts must not contain token-shaped strings matching {pattern}.");
         }
 
-        File.Exists(Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml")).ShouldBeFalse();
+        File.Exists(Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml")).ShouldBeTrue("Story 1.13 owns the generated C13 parity oracle fixture.");
         AssertNoOperationHandlersUnderContracts();
         AssertNoSdkGeneratedOutput();
 

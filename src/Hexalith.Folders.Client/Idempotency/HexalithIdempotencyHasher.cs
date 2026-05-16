@@ -39,9 +39,9 @@ public static class HexalithIdempotencyHasher
             bool flag => "b:" + (flag ? "true" : "false"),
             Enum enumValue => "s:" + Escape(GetEnumWireValue(enumValue)),
             Guid guid => "s:" + guid.ToString("D", CultureInfo.InvariantCulture).ToLowerInvariant(),
-            DateTime dateTime => "t:" + dateTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+            DateTime dateTime => CanonicalizeDateTime(dateTime),
             DateTimeOffset dateTimeOffset => "t:" + dateTimeOffset.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
-            decimal number => "n:" + number.ToString("G29", CultureInfo.InvariantCulture),
+            decimal number => CanonicalizeDecimal(number),
             double number => CanonicalizeFloatingPoint(number),
             float number => CanonicalizeFloatingPoint(number),
             byte or sbyte or short or ushort or int or uint or long or ulong => "n:" + Convert.ToString(value, CultureInfo.InvariantCulture),
@@ -58,6 +58,7 @@ public static class HexalithIdempotencyHasher
             Culture = CultureInfo.InvariantCulture,
         }));
 
+        RejectDuplicateProperties(token, "$");
         return SortToken(token).ToString(Formatting.None);
     }
 
@@ -101,7 +102,7 @@ public static class HexalithIdempotencyHasher
         return member?.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? value.ToString();
     }
 
-    private static string Escape(string value)
+    internal static string Escape(string value)
     {
         StringBuilder builder = new(value.Length);
         foreach (char character in value)
@@ -136,7 +137,7 @@ public static class HexalithIdempotencyHasher
             ArgumentException.ThrowIfNullOrWhiteSpace(field.Path);
             if (previous is not null && string.CompareOrdinal(previous, field.Path) > 0)
             {
-                throw new InvalidOperationException("Idempotency fields must be supplied in declared lexicographic order.");
+                throw new InvalidOperationException("Idempotency fields must be in ordinal-ascending order (matches spine declaration).");
             }
 
             if (!seen.Add(field.Path))
@@ -156,6 +157,24 @@ public static class HexalithIdempotencyHasher
         }
 
         return "n:" + value.ToString("R", CultureInfo.InvariantCulture);
+    }
+
+    private static string CanonicalizeDateTime(DateTime value)
+    {
+        if (value.Kind != DateTimeKind.Utc)
+        {
+            throw new InvalidOperationException("DateTime values must be UTC before idempotency canonicalization.");
+        }
+
+        return "t:" + value.ToString("O", CultureInfo.InvariantCulture);
+    }
+
+    private static string CanonicalizeDecimal(decimal value)
+    {
+        int[] bits = decimal.GetBits(value);
+        int scale = (bits[3] >> 16) & 0x7F;
+        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
+        return string.Create(CultureInfo.InvariantCulture, $"decimal:{(negative ? "-" : "+")}:{scale}:{bits[2]:x8}:{bits[1]:x8}:{bits[0]:x8}");
     }
 
     private static void RejectDuplicateProperties(JToken token, string path)
@@ -200,6 +219,6 @@ public readonly record struct IdempotencyField(string Path, bool Present, object
     public string ToCanonicalLine()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(Path);
-        return "field=" + HexalithIdempotencyHasher.Canonicalize(Path)[2..] + ";present=" + Present.ToString(CultureInfo.InvariantCulture).ToLowerInvariant() + ";value=" + (Present ? HexalithIdempotencyHasher.Canonicalize(Value) : "omitted");
+        return "field=" + HexalithIdempotencyHasher.Escape(Path) + ";present=" + Present.ToString(CultureInfo.InvariantCulture).ToLowerInvariant() + ";value=" + (Present ? HexalithIdempotencyHasher.Canonicalize(Value) : "omitted");
     }
 }

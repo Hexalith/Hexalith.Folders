@@ -14,10 +14,4 @@
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="YamlDotNet" />
   </ItemGroup>
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-      <_Parameter1>RepositoryRoot</_Parameter1>
-      <_Parameter2>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\..'))</_Parameter2>
-    </AssemblyAttribute>
-  </ItemGroup>
 </Project>

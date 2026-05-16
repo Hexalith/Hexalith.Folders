@@ -427,6 +427,7 @@ public sealed class ScaffoldContractTests
             .Where(Directory.Exists)
             .SelectMany(area => SafeEnumerate(area, "Hexalith.Folders*.csproj", SearchOption.AllDirectories))
             .Where(path => !Normalize(Path.GetRelativePath(root, path)).StartsWith("src/Hexalith.Folders.Client/Generation/", StringComparison.Ordinal))
+            .Where(path => !Normalize(Path.GetRelativePath(root, path)).StartsWith("tests/tools/parity-oracle-generator/", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal);
     }
 

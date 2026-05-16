@@ -1,6 +1,6 @@
 # Story 1.13: Generate the C13 parity oracle
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-13
 
@@ -32,61 +32,61 @@ so that cross-surface tests consume one source of truth for transport and behavi
 
 ## Tasks / Subtasks
 
-- [ ] Confirm current Contract Spine and fixture prerequisites. (AC: 1, 3, 4, 5, 11, 14, 15, 17)
-  - [ ] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
-  - [ ] Inspect `docs/contract/idempotency-and-parity-rules.md`, `docs/contract/*contract-groups.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/previous-spine.yaml`, and `tests/tools/parity-oracle-generator/README.md`.
-  - [ ] Inspect Story 1.7 through Story 1.12 artifacts for downstream ownership notes and reference-pending decisions before editing generator behavior.
-  - [ ] Treat missing OpenAPI extensions, missing operation IDs, malformed parity metadata, unresolved `$ref`, unsupported schema shape, or inconsistent docs-vs-spine rows as prerequisite drift.
-  - [ ] Build and document a source-authority matrix before deriving rows: OpenAPI operation metadata owns transport facts, rule tables and architecture own adapter semantics, schemas own allowed row shape, generated SDK helper provenance owns helper identity only, and `previous-spine.yaml` owns removal/deprecation comparison.
-  - [ ] Fail with metadata-only `prerequisite_drift` when canonical sources disagree or when a required source is missing for a non-reference-pending field.
-  - [ ] Do not initialize or update nested submodules.
-- [ ] Implement the parity-oracle generator under the existing tool path. (AC: 1, 2, 5, 6, 8, 10, 11, 14, 17)
-  - [ ] Replace the placeholder-only `tests/tools/parity-oracle-generator/README.md` ownership note with implementation documentation while preserving ownership and non-leakage rules.
-  - [ ] Add generator source under `tests/tools/parity-oracle-generator/` using the repo's .NET conventions unless a smaller script is explicitly justified by existing tooling.
-  - [ ] Read OpenAPI with structured YAML parsing; do not derive rows through ad hoc line matching.
-  - [ ] Resolve local OpenAPI `$ref` pointers deterministically and fail on unresolved external references, ambiguous schema metadata, or conflicting canonical inputs.
-  - [ ] Emit `tests/fixtures/parity-contract.yaml` deterministically from repository-relative inputs.
-  - [ ] Include safe provenance such as generator version, Contract Spine content hash, schema hash, source file names, and generated timestamp policy only if it remains byte-stable or explicitly normalized.
-  - [ ] Keep generated output metadata-only and synthetic where examples are needed.
-- [ ] Derive transport parity columns from canonical sources. (AC: 3, 4, 5, 7, 9, 14)
-  - [ ] Classify operation families from HTTP method, path, operation ID, and existing rule tables: mutating command, query/status, context query, audit, or operations-console projection.
-  - [ ] Require `Idempotency-Key` and `x-hexalith-idempotency-equivalence` for mutating operations; require no idempotency key for non-mutating operations.
-  - [ ] Derive `read_consistency_class` from `x-hexalith-read-consistency` for non-mutating operations.
-  - [ ] Derive `error_code_set` from `x-hexalith-canonical-error-categories` and fail if an operation lacks a bounded category set.
-  - [ ] Derive `audit_metadata_keys` from `x-hexalith-audit-metadata-keys` or documented operation-rule rows; do not include raw values.
-  - [ ] Derive correlation field path from the canonical headers and Problem Details fields, preserving `X-Correlation-Id` and `X-Hexalith-Task-Id` semantics.
-  - [ ] Derive terminal states from lifecycle metadata where available and from bounded lifecycle/status schemas only when the source is explicit.
-  - [ ] Compare current operations with `tests/fixtures/previous-spine.yaml`; fail removed operations unless the baseline records an approved deprecation window.
-- [ ] Derive behavioral parity columns without duplicating adapter semantics. (AC: 6, 9, 10, 13)
-  - [ ] Consume the Adapter Parity Contract from `_bmad-output/planning-artifacts/architecture.md` and the stable rule tables in `docs/contract/idempotency-and-parity-rules.md`.
-  - [ ] Map SDK pre-call failures separately from server-returned Problem Details so pre-SDK and post-SDK errors cannot both apply to one case.
-  - [ ] Map CLI exit codes exactly to canonical categories: 0 success, 64 client configuration or usage, 65 credential missing, 66 tenant access denied, 67 workspace locked, 68 idempotency conflict, 69 validation error, 70 known provider failure, 71 unknown provider outcome, 72 reconciliation required, 73 not found, 74 state transition invalid, 75 redacted, 1 internal error.
-  - [ ] Map MCP failure kinds one-to-one to canonical categories; do not collapse categories for convenience.
-  - [ ] Preserve SDK caller/provider idempotency sourcing, CLI `--idempotency-key` or `--allow-auto-key`, MCP `idempotencyKey`, correlation sourcing, task ID sourcing, and credential sourcing.
-  - [ ] Do not generate CLI commands, MCP tools, SDK client code, or adapter wrappers in this story.
-- [ ] Add local validation and generator tests. (AC: 2, 3, 4, 7, 8, 9, 10, 11, 14, 17)
-  - [ ] Add focused tests under the most appropriate existing test project, likely `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` or a small tool test project if needed.
-  - [ ] Verify all current Contract Spine operations appear exactly once in generated parity rows.
-  - [ ] Verify generated rows validate against `tests/fixtures/parity-contract.schema.json`.
-  - [ ] Verify mutating operations fail when idempotency metadata is missing, malformed, duplicated, not lexicographically ordered where required, or inconsistent with HTTP method.
-  - [ ] Verify non-mutating operations fail if they accept idempotency keys or lack read-consistency metadata.
-  - [ ] Verify symmetric drift detection catches removed operations when `previous-spine.yaml` lacks an approved deprecation entry.
-  - [ ] Verify deterministic output by running the generator twice and comparing normalized bytes.
-  - [ ] Verify diagnostics and generated fixtures do not contain forbidden leak patterns such as raw content, diffs, provider tokens, credential material, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
-  - [ ] Verify reference-pending values are either schema-bounded or fail as prerequisite drift; do not allow silent defaults.
-  - [ ] Verify source-authority conflicts fail deterministically, including OpenAPI-vs-rule-table mismatch, schema enum mismatch, missing helper provenance where required, and stale or placeholder previous-spine baselines.
-  - [ ] Maintain an AC-to-test matrix that maps each acceptance criterion to a fixture input, expected generated row or diagnostic, negative case, and test file.
-- [ ] Record downstream handoff and negative scope. (AC: 10, 12, 13, 15)
-  - [ ] Document the generator command, input files, output file, deterministic-output policy, schema-validation command, and expected developer workflow.
-  - [ ] Document that Story 1.14 owns CI workflow wiring, server-vs-spine validation, generated-client consistency gates, and release gates.
-  - [ ] Document that Epic 5 owns consuming the oracle in SDK, REST, CLI, and MCP tests.
-  - [ ] Document that Epic 4 owns runtime idempotency persistence, workspace lifecycle execution, provider side effects, and reconciliation.
-  - [ ] Document any prerequisite drift discovered during implementation with exact source file and operation ID.
-- [ ] Run verification. (AC: 1, 2, 8, 10, 12)
-  - [ ] Run the focused generator and schema-validation tests.
-  - [ ] Run the parity generator twice and verify generated output is byte-stable.
-  - [ ] Run `dotnet test` for the affected test project.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if the current active contract work allows it; if blocked by unrelated in-progress Story 1.10 changes or prerequisite drift, record the exact blocker.
+- [x] Confirm current Contract Spine and fixture prerequisites. (AC: 1, 3, 4, 5, 11, 14, 15, 17)
+  - [x] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
+  - [x] Inspect `docs/contract/idempotency-and-parity-rules.md`, `docs/contract/*contract-groups.md`, `tests/fixtures/parity-contract.schema.json`, `tests/fixtures/previous-spine.yaml`, and `tests/tools/parity-oracle-generator/README.md`.
+  - [x] Inspect Story 1.7 through Story 1.12 artifacts for downstream ownership notes and reference-pending decisions before editing generator behavior.
+  - [x] Treat missing OpenAPI extensions, missing operation IDs, malformed parity metadata, unresolved `$ref`, unsupported schema shape, or inconsistent docs-vs-spine rows as prerequisite drift.
+  - [x] Build and document a source-authority matrix before deriving rows: OpenAPI operation metadata owns transport facts, rule tables and architecture own adapter semantics, schemas own allowed row shape, generated SDK helper provenance owns helper identity only, and `previous-spine.yaml` owns removal/deprecation comparison.
+  - [x] Fail with metadata-only `prerequisite_drift` when canonical sources disagree or when a required source is missing for a non-reference-pending field.
+  - [x] Do not initialize or update nested submodules.
+- [x] Implement the parity-oracle generator under the existing tool path. (AC: 1, 2, 5, 6, 8, 10, 11, 14, 17)
+  - [x] Replace the placeholder-only `tests/tools/parity-oracle-generator/README.md` ownership note with implementation documentation while preserving ownership and non-leakage rules.
+  - [x] Add generator source under `tests/tools/parity-oracle-generator/` using the repo's .NET conventions unless a smaller script is explicitly justified by existing tooling.
+  - [x] Read OpenAPI with structured YAML parsing; do not derive rows through ad hoc line matching.
+  - [x] Resolve local OpenAPI `$ref` pointers deterministically and fail on unresolved external references, ambiguous schema metadata, or conflicting canonical inputs.
+  - [x] Emit `tests/fixtures/parity-contract.yaml` deterministically from repository-relative inputs.
+  - [x] Include safe provenance such as generator version, Contract Spine content hash, schema hash, source file names, and generated timestamp policy only if it remains byte-stable or explicitly normalized.
+  - [x] Keep generated output metadata-only and synthetic where examples are needed.
+- [x] Derive transport parity columns from canonical sources. (AC: 3, 4, 5, 7, 9, 14)
+  - [x] Classify operation families from HTTP method, path, operation ID, and existing rule tables: mutating command, query/status, context query, audit, or operations-console projection.
+  - [x] Require `Idempotency-Key` and `x-hexalith-idempotency-equivalence` for mutating operations; require no idempotency key for non-mutating operations.
+  - [x] Derive `read_consistency_class` from `x-hexalith-read-consistency` for non-mutating operations.
+  - [x] Derive `error_code_set` from `x-hexalith-canonical-error-categories` and fail if an operation lacks a bounded category set.
+  - [x] Derive `audit_metadata_keys` from `x-hexalith-audit-metadata-keys` or documented operation-rule rows; do not include raw values.
+  - [x] Derive correlation field path from the canonical headers and Problem Details fields, preserving `X-Correlation-Id` and `X-Hexalith-Task-Id` semantics.
+  - [x] Derive terminal states from lifecycle metadata where available and from bounded lifecycle/status schemas only when the source is explicit.
+  - [x] Compare current operations with `tests/fixtures/previous-spine.yaml`; fail removed operations unless the baseline records an approved deprecation window.
+- [x] Derive behavioral parity columns without duplicating adapter semantics. (AC: 6, 9, 10, 13)
+  - [x] Consume the Adapter Parity Contract from `_bmad-output/planning-artifacts/architecture.md` and the stable rule tables in `docs/contract/idempotency-and-parity-rules.md`.
+  - [x] Map SDK pre-call failures separately from server-returned Problem Details so pre-SDK and post-SDK errors cannot both apply to one case.
+  - [x] Map CLI exit codes exactly to canonical categories: 0 success, 64 client configuration or usage, 65 credential missing, 66 tenant access denied, 67 workspace locked, 68 idempotency conflict, 69 validation error, 70 known provider failure, 71 unknown provider outcome, 72 reconciliation required, 73 not found, 74 state transition invalid, 75 redacted, 1 internal error.
+  - [x] Map MCP failure kinds one-to-one to canonical categories; do not collapse categories for convenience.
+  - [x] Preserve SDK caller/provider idempotency sourcing, CLI `--idempotency-key` or `--allow-auto-key`, MCP `idempotencyKey`, correlation sourcing, task ID sourcing, and credential sourcing.
+  - [x] Do not generate CLI commands, MCP tools, SDK client code, or adapter wrappers in this story.
+- [x] Add local validation and generator tests. (AC: 2, 3, 4, 7, 8, 9, 10, 11, 14, 17)
+  - [x] Add focused tests under the most appropriate existing test project, likely `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` or a small tool test project if needed.
+  - [x] Verify all current Contract Spine operations appear exactly once in generated parity rows.
+  - [x] Verify generated rows validate against `tests/fixtures/parity-contract.schema.json`.
+  - [x] Verify mutating operations fail when idempotency metadata is missing, malformed, duplicated, not lexicographically ordered where required, or inconsistent with HTTP method.
+  - [x] Verify non-mutating operations fail if they accept idempotency keys or lack read-consistency metadata.
+  - [x] Verify symmetric drift detection catches removed operations when `previous-spine.yaml` lacks an approved deprecation entry.
+  - [x] Verify deterministic output by running the generator twice and comparing normalized bytes.
+  - [x] Verify diagnostics and generated fixtures do not contain forbidden leak patterns such as raw content, diffs, provider tokens, credential material, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
+  - [x] Verify reference-pending values are either schema-bounded or fail as prerequisite drift; do not allow silent defaults.
+  - [x] Verify source-authority conflicts fail deterministically, including OpenAPI-vs-rule-table mismatch, schema enum mismatch, missing helper provenance where required, and stale or placeholder previous-spine baselines.
+  - [x] Maintain an AC-to-test matrix that maps each acceptance criterion to a fixture input, expected generated row or diagnostic, negative case, and test file.
+- [x] Record downstream handoff and negative scope. (AC: 10, 12, 13, 15)
+  - [x] Document the generator command, input files, output file, deterministic-output policy, schema-validation command, and expected developer workflow.
+  - [x] Document that Story 1.14 owns CI workflow wiring, server-vs-spine validation, generated-client consistency gates, and release gates.
+  - [x] Document that Epic 5 owns consuming the oracle in SDK, REST, CLI, and MCP tests.
+  - [x] Document that Epic 4 owns runtime idempotency persistence, workspace lifecycle execution, provider side effects, and reconciliation.
+  - [x] Document any prerequisite drift discovered during implementation with exact source file and operation ID.
+- [x] Run verification. (AC: 1, 2, 8, 10, 12)
+  - [x] Run the focused generator and schema-validation tests.
+  - [x] Run the parity generator twice and verify generated output is byte-stable.
+  - [x] Run `dotnet test` for the affected test project.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if the current active contract work allows it; if blocked by unrelated in-progress Story 1.10 changes or prerequisite drift, record the exact blocker.
 
 ## Dev Notes
 
@@ -269,6 +269,7 @@ Do not freeze this list in code. Tests should derive the current operation set f
 | 2026-05-15 | Applied advanced-elicitation hardening for source-authority conflicts, previous-spine baseline semantics, deterministic prerequisite-drift fixtures, and metadata-only derivation evidence. | Codex |
 | 2026-05-14 | Applied party-mode review clarification pass for drift semantics, deterministic output, diagnostics, reference-pending bounds, maintainer workflow, and acceptance-test mapping. | Codex |
 | 2026-05-13 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+| 2026-05-16 | Implemented the local C13 parity-oracle generator, generated `parity-contract.yaml`, added validation tests and handoff docs, and moved story to review. | Codex |
 
 ## Party-Mode Review
 
@@ -322,10 +323,35 @@ Do not freeze this list in code. Tests should derive the current operation set f
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-16: Built generator with `dotnet build tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj` (0 warnings, 0 errors).
+- 2026-05-16: Generated oracle with `dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root D:\Hexalith.Folders`.
+- 2026-05-16: Focused contract tests passed with `dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-restore` (46/46).
+- 2026-05-16: Deterministic oracle generation reran twice with unchanged SHA-256 `B49479273D0AAFD77F4BA3FE1592AE594B1FEB78478640BBD49296E2426D7B1A`.
+- 2026-05-16: Full solution build passed with `dotnet build Hexalith.Folders.slnx` (0 warnings, 0 errors).
+- 2026-05-16: Full regression suite passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+
 ### Completion Notes List
 
+- Implemented a .NET/YamlDotNet parity-oracle generator under `tests/tools/parity-oracle-generator/` that reads the OpenAPI Contract Spine with structured YAML parsing and emits deterministic rows to `tests/fixtures/parity-contract.yaml`.
+- Derived operation family, read consistency, idempotency-key rule, canonical error categories, audit metadata keys, correlation field path, terminal states, adapter expectations, and behavioral parity columns from bounded canonical sources.
+- Added fail-closed `prerequisite_drift` diagnostics for duplicate operation IDs, missing mutating idempotency metadata, duplicate/non-sorted idempotency fields, non-mutating idempotency metadata, missing read consistency, missing canonical errors, missing audit keys, and removed previous-spine operations without approved deprecation.
+- Updated the parity schema enum bounds to match the current Contract Spine canonical error and MCP failure vocabulary while preserving the required row shape.
+- Added focused contract tests for operation coverage, row-schema validation, mutating/non-mutating idempotency rules, deterministic bytes, metadata-only output, missing metadata, duplicate fields, and previous-spine removal drift.
+- Added generator README and contract handoff documentation with the command, input/output files, source-authority matrix, deterministic-output policy, validation evidence, and Story 1.14/Epic 5/Epic 4 ownership boundaries.
+
 ### File List
+
+- docs/contract/parity-oracle-generator.md
+- tests/fixtures/parity-contract.yaml
+- tests/fixtures/parity-contract.schema.json
+- tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj
+- tests/tools/parity-oracle-generator/Program.cs
+- tests/tools/parity-oracle-generator/README.md
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs
+- tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
+- tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+- tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
