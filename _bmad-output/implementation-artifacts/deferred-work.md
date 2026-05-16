@@ -2,6 +2,17 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)
+
+Items deferred from the round-2 adversarial review against follow-up commits `0ed5673` + `15d6598` over baseline `2b33945`. Defensive validation and CI-bootstrap concerns out of story scope.
+
+- Generation subproject offline-build reliance (`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:46`) — `dotnet run --project Generation\Hexalith.Folders.Client.Generation.csproj` requires successful restore on every host build; fresh checkout without NuGet cache fails. Belongs to Story 1.14 (CI gates).
+- Typed `ProblemDetails` companion folder placement (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:73-93`) — conceptually neither idempotency nor NSwag-generated; could move under `Idempotency/` or split into its own generated file. Non-blocking ownership concern.
+- Defensive validation for empty parameter `$ref` / empty `name` scalar (`src/Hexalith.Folders.Client/Generation/Program.cs:201-211`) — spine currently has neither; defensive only.
+- Defensive validation for zero-document YAML (`src/Hexalith.Folders.Client/Generation/Program.cs:398-400`) — spine always has at least one document; `yaml.Documents[0]` is safe in practice.
+- Defensive validation for bare-filename `outputPath` (`src/Hexalith.Folders.Client/Generation/Program.cs:27`) — MSBuild target always provides absolute path; only triggers under direct CLI invocation with a bare filename.
+- Multi-level nested-path NRE risk (`src/Hexalith.Folders.Client/Generation/Program.cs:130`) — `Root?.A.B.C` is null-safe only on the first hop; revisit if spine adds 3+ level equivalence paths.
+
 ## Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups follow-up (2026-05-15)
 
 Items deferred from the adversarial code review against follow-up commit `8d339b8` (which itself was intended to close items deferred on 2026-05-14). These three findings need work that crosses story boundaries or requires coordinated design choices.
