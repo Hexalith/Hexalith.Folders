@@ -2,6 +2,15 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-13-generate-the-c13-parity-oracle (2026-05-17)
+
+Items deferred from the `/bmad-code-review 1.13` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit 7c8f176, Story 1.13 surface only.
+
+- Provenance hash is YAML-comment + normalized-text — not authenticated file digest (`tests/tools/parity-oracle-generator/Program.cs:2996-2999, 3310-3311, 3379-3381`). Downstream YAML parsers strip the comment; `SHA256(NormalizeLineEndings(text))` doesn't match on-disk file digest with BOM/line-ending differences. Re-evaluate when downstream consumers need verifiable provenance.
+- Generator does not resolve OpenAPI `$ref` for operation request/response schemas (`tests/tools/parity-oracle-generator/Program.cs:3137-3146`). Blocks AC 7 schema-drift detection but the simplified column set in this story does not need schema bodies. Reopen if/when schema-drift detection becomes scope.
+- `correlation_field_path` always emits `headers.X-Correlation-Id` (`tests/tools/parity-oracle-generator/Program.cs:3128`). Spec invites richer paths (`problem.correlationId`, `result.correlationId`, `metadata.correlationId`) but the canonical `x-hexalith-correlation.correlationHeader` declaration is sufficient today. Add when canonical sources change.
+- Test-helper `LoadOperationIds` only recognizes lowercase canonical HTTP verbs (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:283-290`). Divergence from generator's case-insensitivity would underestimate inventory; harmless until contract authors use uppercase verbs.
+
 ## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)
 
 Items deferred from the Round 4 external review against the post-Round-3-hardening working tree. The Acceptance Auditor verdict was `pass-with-minor` — all 16 ACs satisfied — so these are non-blocking hardening opportunities.

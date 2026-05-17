@@ -97,9 +97,11 @@ public sealed class FixtureContractTests
         previousSpine.ShouldContainKey("operations");
         previousSpine.ShouldNotContainKey("openapi");
 
-        // Patch 3: direct line assertion guards against multi-line YAML block sequences that the hand-rolled parser cannot detect
-        rawPreviousSpine.ShouldContain("operations: []", Case.Sensitive,
-            "previous-spine.yaml must declare operations as an empty flow sequence on a single line.");
+        // Patch (Story 1.13 P-25): previous-spine.yaml is now a captured baseline of the Contract Spine,
+        // not an empty placeholder. The captured form must contain at least one operation entry written
+        // in YAML block-sequence form ('  - operation_id: ...').
+        rawPreviousSpine.ShouldContain("  - operation_id:", Case.Sensitive,
+            "previous-spine.yaml must declare operations as a non-empty block sequence after baseline capture.");
 
         // Patch 6: verify all ownership fields are present and boolean flags are explicitly true (AC6 gap)
         foreach (string field in OwnershipFields)

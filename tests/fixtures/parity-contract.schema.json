@@ -28,6 +28,7 @@
     "read_consistency_class",
     "transport_parity",
     "behavioral_parity",
+    "outcome_mapping",
     "adapter_expectations",
     "ownership"
   ],
@@ -186,6 +187,41 @@
         }
       }
     },
+    "outcome_mapping": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "canonical_error_category",
+          "cli_exit_code",
+          "mcp_failure_kind",
+          "pre_sdk_error_class"
+        ],
+        "properties": {
+          "canonical_error_category": {
+            "$ref": "#/$defs/canonical_error_category"
+          },
+          "cli_exit_code": {
+            "$ref": "#/$defs/cli_exit_code"
+          },
+          "mcp_failure_kind": {
+            "$ref": "#/$defs/mcp_failure_kind"
+          },
+          "pre_sdk_error_class": {
+            "enum": [
+              "none",
+              "usage_error",
+              "client_configuration_error",
+              "credential_missing",
+              "local_validation_error"
+            ]
+          }
+        }
+      }
+    },
     "adapter_expectations": {
       "type": "array",
       "minItems": 1,
@@ -241,7 +277,6 @@
         "provider_readiness_failed",
         "provider_failure_known",
         "unknown_provider_outcome",
-        "provider_outcome_unknown",
         "provider_permission_insufficient",
         "provider_unavailable",
         "provider_rate_limited",
@@ -305,7 +340,6 @@
         "provider_readiness_failed",
         "provider_failure_known",
         "unknown_provider_outcome",
-        "provider_outcome_unknown",
         "provider_permission_insufficient",
         "provider_unavailable",
         "provider_rate_limited",

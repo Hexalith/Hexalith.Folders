@@ -1,12 +1,13 @@
 # generated_by: tests/tools/parity-oracle-generator
 # contract_spine_sha256: 43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2
-# parity_schema_sha256: 0adbcba6bc437c78c9cdd063b11297b6923998fb961bd542be04b4135e00914d
+# parity_schema_sha256: f9c0c3a3d0d74bd6062ca18299f35e25301b0c545b4bed4746e214154b716fca
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
+# diagnostics_count: 0
 - operation_id: 'AddFile'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -49,11 +50,88 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'authorization_revocation_detected'
+      cli_exit_code: 73
+      mcp_failure_kind: 'authorization_revocation_detected'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'file_operation_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'file_operation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_not_owned'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_not_owned'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -67,7 +145,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -92,11 +170,36 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -110,7 +213,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -144,11 +247,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'cross_tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'cross_tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'duplicate_binding'
+      cli_exit_code: 70
+      mcp_failure_kind: 'duplicate_binding'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_readiness_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_readiness_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'repository_conflict'
+      cli_exit_code: 70
+      mcp_failure_kind: 'repository_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unsupported_provider_capability'
+      cli_exit_code: 70
+      mcp_failure_kind: 'unsupported_provider_capability'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -162,7 +318,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -205,11 +361,88 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'authorization_revocation_detected'
+      cli_exit_code: 73
+      mcp_failure_kind: 'authorization_revocation_detected'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'file_operation_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'file_operation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_not_owned'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_not_owned'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -223,7 +456,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -271,11 +504,104 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'authorization_revocation_detected'
+      cli_exit_code: 73
+      mcp_failure_kind: 'authorization_revocation_detected'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'commit_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'commit_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'cross_tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'cross_tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'dirty_workspace'
+      cli_exit_code: 72
+      mcp_failure_kind: 'dirty_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_not_owned'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_not_owned'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_not_ready'
+      cli_exit_code: 72
+      mcp_failure_kind: 'workspace_not_ready'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -289,7 +615,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -314,11 +640,36 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -332,7 +683,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'credential_reference_invalid'
@@ -358,11 +709,40 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'credential_reference_invalid'
+      cli_exit_code: 65
+      mcp_failure_kind: 'credential_reference_invalid'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -376,7 +756,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'idempotency_conflict'
@@ -400,11 +780,32 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -418,7 +819,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -450,11 +851,56 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_readiness_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_readiness_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'repository_conflict'
+      cli_exit_code: 70
+      mcp_failure_kind: 'repository_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unsupported_provider_capability'
+      cli_exit_code: 70
+      mcp_failure_kind: 'unsupported_provider_capability'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -497,11 +943,52 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'audit_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'audit_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -515,7 +1002,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -544,11 +1031,52 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'cross_tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'cross_tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -562,7 +1090,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -593,11 +1121,48 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -611,7 +1176,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'dirty_workspace'
@@ -643,11 +1208,60 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'dirty_workspace'
+      cli_exit_code: 72
+      mcp_failure_kind: 'dirty_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -662,7 +1276,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -688,11 +1302,40 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -706,7 +1349,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -740,11 +1383,68 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -759,7 +1459,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -794,11 +1494,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -812,7 +1565,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -840,11 +1593,48 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'cross_tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'cross_tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -858,7 +1648,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -889,11 +1679,56 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -938,11 +1773,52 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'audit_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'audit_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -956,7 +1832,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -983,11 +1859,48 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -1002,7 +1915,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -1029,11 +1942,48 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'cross_tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'cross_tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1047,7 +1997,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -1082,11 +2032,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1100,7 +2103,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1133,11 +2136,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_rate_limited'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_rate_limited'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -1152,7 +2208,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -1177,11 +2233,40 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1195,7 +2280,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -1225,11 +2310,60 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_rate_limited'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_rate_limited'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -1244,7 +2378,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -1277,11 +2411,56 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1295,7 +2474,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -1324,11 +2503,52 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'cross_tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'cross_tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1342,7 +2562,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1375,11 +2595,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
     - 'ui'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
@@ -1394,7 +2667,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -1423,11 +2696,44 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1441,7 +2747,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1476,11 +2782,52 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1494,7 +2841,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -1528,11 +2875,56 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1546,7 +2938,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1577,11 +2969,48 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1595,7 +3024,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1625,11 +3054,40 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1643,7 +3101,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1679,11 +3137,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1730,11 +3241,60 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'audit_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'audit_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1748,7 +3308,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1774,11 +3334,44 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1792,7 +3385,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1828,11 +3421,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1878,11 +3524,60 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'audit_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'audit_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1896,7 +3591,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -1935,11 +3630,68 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'authorization_revocation_detected'
+      cli_exit_code: 73
+      mcp_failure_kind: 'authorization_revocation_detected'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_conflict'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -1953,7 +3705,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'branch_ref_policy_invalid'
@@ -1995,11 +3747,80 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'branch_ref_policy_invalid'
+      cli_exit_code: 69
+      mcp_failure_kind: 'branch_ref_policy_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_conflict'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_readiness_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_readiness_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'repository_binding_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'repository_binding_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_preparation_failed'
+      cli_exit_code: 72
+      mcp_failure_kind: 'workspace_preparation_failed'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -2013,7 +3834,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -2048,11 +3869,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -2066,7 +3940,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -2103,11 +3977,60 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'authorization_revocation_detected'
+      cli_exit_code: 73
+      mcp_failure_kind: 'authorization_revocation_detected'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_not_owned'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_not_owned'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -2121,7 +4044,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -2161,11 +4084,84 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'authorization_revocation_detected'
+      cli_exit_code: 73
+      mcp_failure_kind: 'authorization_revocation_detected'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'failed_operation'
+      cli_exit_code: 70
+      mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'file_operation_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'file_operation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_expired'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_expired'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'lock_not_owned'
+      cli_exit_code: 67
+      mcp_failure_kind: 'lock_not_owned'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_failure_known'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_failure_known'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'reconciliation_required'
+      cli_exit_code: 72
+      mcp_failure_kind: 'reconciliation_required'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'stale_workspace'
+      cli_exit_code: 67
+      mcp_failure_kind: 'stale_workspace'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'state_transition_invalid'
+      cli_exit_code: 74
+      mcp_failure_kind: 'state_transition_invalid'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unknown_provider_outcome'
+      cli_exit_code: 71
+      mcp_failure_kind: 'unknown_provider_outcome'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'workspace_locked'
+      cli_exit_code: 67
+      mcp_failure_kind: 'workspace_locked'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -2179,7 +4175,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -2215,11 +4211,64 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'path_validation_failed'
+      cli_exit_code: 69
+      mcp_failure_kind: 'path_validation_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -2233,7 +4282,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -2258,11 +4307,36 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_conflict'
+      cli_exit_code: 68
+      mcp_failure_kind: 'idempotency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
@@ -2276,7 +4350,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'tenant_access_denied'
+    auth_outcome_class: 'credential_missing'
     error_code_set:
       - 'authentication_failure'
       - 'credential_reference_invalid'
@@ -2307,11 +4381,60 @@
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'credential_reference_invalid'
+      cli_exit_code: 65
+      mcp_failure_kind: 'credential_reference_invalid'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_permission_insufficient'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_permission_insufficient'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_rate_limited'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_rate_limited'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_readiness_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_readiness_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_unavailable'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'unsupported_provider_capability'
+      cli_exit_code: 70
+      mcp_failure_kind: 'unsupported_provider_capability'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
-    - 'rest'
-    - 'sdk'
     - 'cli'
     - 'mcp'
+    - 'rest'
+    - 'sdk'
   ownership:
     owner_workstream: 'C13 parity oracle generation'
     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'

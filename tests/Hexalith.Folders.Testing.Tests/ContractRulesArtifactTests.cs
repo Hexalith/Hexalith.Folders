@@ -245,7 +245,10 @@ public sealed class ContractRulesArtifactTests
         failureKinds.ShouldContain("query_timeout");
         failureKinds.ShouldContain("read_model_unavailable");
         failureKinds.ShouldContain("idempotency_conflict");
-        failureKinds.ShouldContain("provider_outcome_unknown");
+        // Story 1.13 P-26 collapsed the duplicate spelling 'provider_outcome_unknown' to the canonical
+        // 'unknown_provider_outcome'. Both still describe the same failure kind.
+        failureKinds.ShouldContain("unknown_provider_outcome");
+        failureKinds.ShouldNotContain("provider_outcome_unknown");
         failureKinds.ShouldContain("state_transition_invalid");
 
         string[] errorCategories = rootElement.GetProperty("$defs").GetProperty("canonical_error_category").GetProperty("enum")

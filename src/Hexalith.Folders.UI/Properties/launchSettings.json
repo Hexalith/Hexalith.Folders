@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Hexalith.Folders.UI": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54153;http://localhost:54154"
+    }
+  }
+}

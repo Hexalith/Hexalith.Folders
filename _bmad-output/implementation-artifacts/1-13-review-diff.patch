@@ -1,0 +1,3448 @@
+diff --git a/docs/contract/parity-oracle-generator.md b/docs/contract/parity-oracle-generator.md
+new file mode 100644
+index 0000000..5cfe107
+--- /dev/null
++++ b/docs/contract/parity-oracle-generator.md
+@@ -0,0 +1,61 @@
++# Parity Oracle Generator
++
++Status: Story 1.13 implementation note.
++
++## Local Command
++
++```text
++dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root <repo-root>
++```
++
++The default output is:
++
++```text
++tests/fixtures/parity-contract.yaml
++```
++
++## Inputs
++
++- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
++- `tests/fixtures/parity-contract.schema.json`
++- `tests/fixtures/previous-spine.yaml`
++- `docs/contract/idempotency-and-parity-rules.md`
++- `_bmad-output/planning-artifacts/architecture.md`
++- Story 1.12 generated SDK helper provenance, for safe operation/helper identity only
++
++## Source Authority Matrix
++
++| Source | Owns |
++|---|---|
++| OpenAPI operation metadata | Operation IDs, HTTP method/path identity, idempotency metadata, canonical errors, read consistency, audit keys, correlation headers, authorization metadata |
++| Idempotency and parity rules | Adapter semantics, sourcing rules, CLI and MCP behavioral parity expectations |
++| Architecture Adapter Parity Contract | Behavioral parity dimensions and bounded adapter expectations |
++| Parity row schema | Allowed row shape and enum bounds |
++| Previous spine baseline | Symmetric removal/deprecation comparison |
++| Story 1.12 helper provenance | Helper identity only; not hash construction policy |
++
++Conflicts fail as `prerequisite_drift`; the generator does not invent fallback policy.
++
++## Deterministic Output Policy
++
++The generated YAML is a sequence of schema-valid rows sorted by `operation_id`. Output is UTF-8 without BOM, LF-only, timestamp-free, and metadata-only. Safe provenance is emitted as comments containing content hashes and source names, not local absolute paths.
++
++## Validation
++
++Focused tests in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs` verify operation coverage, row schema requirements and enums, mutating/non-mutating idempotency rules, deterministic bytes, metadata-only output, and fail-closed missing idempotency metadata.
++
++## AC-To-Test Matrix
++
++| Acceptance Criteria | Positive Evidence | Negative Evidence |
++|---|---|---|
++| AC1, AC3, AC4, AC5 | `GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce`; `GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules` | Missing mutating idempotency metadata fails as `prerequisite_drift` |
++| AC2, AC11 | `GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns` | Schema enum mismatches fail row validation assertions |
++| AC6, AC13 | Behavioral columns asserted in generated rows and sourced from bounded adapter rules | Pre-SDK and post-SDK categories remain separate row columns |
++| AC7, AC17 | Previous-spine comparison runs during generation | Removed previous-spine operation without approved deprecation fails closed |
++| AC8, AC10, AC14, AC16 | `GeneratorOutputIsByteStableAndMetadataOnly` | Forbidden leak strings and local absolute paths are rejected |
++| AC12 | No CI workflow files are modified by this story | Story 1.14 ownership documented here and in the tool README |
++| AC15 | Current OpenAPI, contract docs, previous-spine fixture, schema, and Story 1.12 provenance were inspected before implementation | Source conflicts and malformed metadata fail as `prerequisite_drift` |
++
++## Downstream Ownership
++
++Story 1.14 owns CI workflow wiring, generated-client consistency gates, server-vs-spine validation, and release gates. Epic 5 owns consuming the oracle in SDK, REST, CLI, and MCP tests. Epic 4 owns runtime idempotency persistence, workspace lifecycle execution, provider side effects, and reconciliation.
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs
+index 4788a42..bad01a4 100644
+--- a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs
+@@ -244,7 +244,7 @@ public sealed class ContractSpineFoundationTests
+             Regex.IsMatch(combined, pattern).ShouldBeFalse($"contract artifacts must not contain token-shaped strings matching {pattern}.");
+         }
+ 
+-        File.Exists(Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml")).ShouldBeFalse();
++        File.Exists(Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml")).ShouldBeTrue("Story 1.13 owns the generated C13 parity oracle fixture.");
+         AssertNoOperationHandlersUnderContracts();
+         AssertNoSdkGeneratedOutput();
+ 
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
+new file mode 100644
+index 0000000..70ee91e
+--- /dev/null
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
+@@ -0,0 +1,299 @@
++using System.Diagnostics;
++using System.Text;
++using System.Text.Json;
++using Shouldly;
++using Xunit;
++using YamlDotNet.RepresentationModel;
++
++namespace Hexalith.Folders.Contracts.Tests.OpenApi;
++
++public sealed class ParityOracleGeneratorTests
++{
++    private static readonly string RepositoryRoot = FindRepositoryRoot();
++    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
++    private static readonly string OraclePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml");
++    private static readonly string SchemaPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.schema.json");
++    private static readonly string GeneratorProject = Path.Combine(RepositoryRoot, "tests", "tools", "parity-oracle-generator", "Hexalith.Folders.ParityOracleGenerator.csproj");
++
++    [Fact]
++    public void GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce()
++    {
++        string[] openApiOperations = LoadOperationIds(OpenApiPath);
++        YamlMappingNode[] rows = LoadRows(OraclePath);
++
++        rows.Select(row => RequiredScalar(row, "operation_id")).Order(StringComparer.Ordinal).ToArray().ShouldBe(openApiOperations);
++        rows.Select(row => RequiredScalar(row, "operation_id")).Distinct(StringComparer.Ordinal).Count().ShouldBe(rows.Length);
++    }
++
++    [Fact]
++    public void GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns()
++    {
++        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(SchemaPath));
++        YamlMappingNode[] rows = LoadRows(OraclePath);
++
++        string[] rootRequired = ReadRequired(schema.RootElement).ToArray();
++        string[] transportRequired = ReadRequired(schema.RootElement.GetProperty("properties").GetProperty("transport_parity")).ToArray();
++        string[] behavioralRequired = ReadRequired(schema.RootElement.GetProperty("properties").GetProperty("behavioral_parity")).ToArray();
++        Dictionary<string, HashSet<string>> enums = LoadSchemaEnums(schema.RootElement);
++
++        foreach (YamlMappingNode row in rows)
++        {
++            AssertRequired(row, rootRequired);
++            RequiredSequence(row, "adapter_expectations").Children
++                .Select(item => item.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty)
++                .ShouldAllBe(adapter => enums["adapter_name"].Contains(adapter));
++
++            enums["operation_family"].ShouldContain(RequiredScalar(row, "operation_family"));
++            enums["read_consistency_class"].ShouldContain(RequiredScalar(row, "read_consistency_class"));
++
++            YamlMappingNode transport = RequiredMapping(row, "transport_parity");
++            AssertRequired(transport, transportRequired);
++            enums["auth_outcome_class"].ShouldContain(RequiredScalar(transport, "auth_outcome_class"));
++            enums["idempotency_key_rule"].ShouldContain(RequiredScalar(transport, "idempotency_key_rule"));
++            RequiredSequence(transport, "error_code_set").Children
++                .Select(item => item.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty)
++                .ShouldAllBe(category => enums["canonical_error_category"].Contains(category));
++
++            YamlMappingNode behavioral = RequiredMapping(row, "behavioral_parity");
++            AssertRequired(behavioral, behavioralRequired);
++            enums["pre_sdk_error_class"].ShouldContain(RequiredScalar(behavioral, "pre_sdk_error_class"));
++            enums["idempotency_key_sourcing"].ShouldContain(RequiredScalar(behavioral, "idempotency_key_sourcing"));
++            enums["correlation_id_sourcing"].ShouldContain(RequiredScalar(behavioral, "correlation_id_sourcing"));
++            enums["task_id_sourcing"].ShouldContain(RequiredScalar(behavioral, "task_id_sourcing"));
++            enums["credential_sourcing"].ShouldContain(RequiredScalar(behavioral, "credential_sourcing"));
++            enums["mcp_failure_kind"].ShouldContain(RequiredScalar(behavioral, "mcp_failure_kind"));
++        }
++    }
++
++    [Fact]
++    public void GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules()
++    {
++        YamlMappingNode[] rows = LoadRows(OraclePath);
++
++        foreach (YamlMappingNode row in rows)
++        {
++            string family = RequiredScalar(row, "operation_family");
++            string readConsistency = RequiredScalar(row, "read_consistency_class");
++            string idempotencyRule = RequiredScalar(RequiredMapping(row, "transport_parity"), "idempotency_key_rule");
++
++            if (family == "mutating_command")
++            {
++                readConsistency.ShouldBe("not_applicable");
++                idempotencyRule.ShouldBeOneOf("required_for_mutating_command", "required_with_operation_id");
++            }
++            else
++            {
++                readConsistency.ShouldNotBe("not_applicable");
++                idempotencyRule.ShouldBe("not_accepted_for_non_mutating_operation");
++            }
++        }
++    }
++
++    [Fact]
++    public void GeneratorOutputIsByteStableAndMetadataOnly()
++    {
++        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-" + Guid.NewGuid().ToString("N"));
++        Directory.CreateDirectory(temp);
++        string first = Path.Combine(temp, "first.yaml");
++        string second = Path.Combine(temp, "second.yaml");
++
++        RunGenerator(OpenApiPath, first).ShouldBe(0);
++        RunGenerator(OpenApiPath, second).ShouldBe(0);
++        File.ReadAllBytes(second).ShouldBe(File.ReadAllBytes(first));
++
++        string output = File.ReadAllText(first);
++        string[] forbidden =
++        [
++            "diff --git",
++            "provider_token",
++            "credential_material",
++            "contentBytes",
++            "raw provider payload",
++            "https://",
++            RepositoryRoot,
++        ];
++        foreach (string value in forbidden)
++        {
++            output.ShouldNotContain(value, Case.Insensitive);
++        }
++    }
++
++    [Fact]
++    public void GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing()
++    {
++        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-negative-" + Guid.NewGuid().ToString("N"));
++        Directory.CreateDirectory(temp);
++        string mutatedContract = Path.Combine(temp, "hexalith.folders.v1.yaml");
++        string contract = File.ReadAllText(OpenApiPath);
++        File.WriteAllText(mutatedContract, contract.Replace("x-hexalith-idempotency-equivalence:", "x-disabled-idempotency-equivalence:", StringComparison.Ordinal), Encoding.UTF8);
++
++        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
++
++        result.ExitCode.ShouldNotBe(0);
++        (result.Output + result.Error).ShouldContain("prerequisite_drift", Case.Insensitive);
++    }
++
++    [Fact]
++    public void GeneratorFailsClosedForDuplicateIdempotencyFields()
++    {
++        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-duplicate-" + Guid.NewGuid().ToString("N"));
++        Directory.CreateDirectory(temp);
++        string mutatedContract = Path.Combine(temp, "hexalith.folders.v1.yaml");
++        string contract = File.ReadAllText(OpenApiPath);
++        File.WriteAllText(mutatedContract, contract.Replace("        - parent_folder_id\n        - request_schema_version", "        - parent_folder_id\n        - parent_folder_id\n        - request_schema_version", StringComparison.Ordinal), Encoding.UTF8);
++
++        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
++
++        result.ExitCode.ShouldNotBe(0);
++        (result.Output + result.Error).ShouldContain("duplicate idempotency fields", Case.Insensitive);
++    }
++
++    [Fact]
++    public void GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation()
++    {
++        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-removed-" + Guid.NewGuid().ToString("N"));
++        Directory.CreateDirectory(temp);
++        string previousSpine = Path.Combine(temp, "previous-spine.yaml");
++        File.WriteAllText(previousSpine, """
++version: test
++operations:
++  - operation_id: RemovedSyntheticOperation
++    method: get
++    path: /api/v1/synthetic/removed
++""", Encoding.UTF8);
++
++        GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
++
++        result.ExitCode.ShouldNotBe(0);
++        (result.Output + result.Error).ShouldContain("removed without approved deprecation", Case.Insensitive);
++    }
++
++    private static int RunGenerator(string contractPath, string outputPath) =>
++        RunGeneratorDetailed(contractPath, outputPath).ExitCode;
++
++    private static GeneratorResult RunGeneratorDetailed(string contractPath, string outputPath, string? previousSpinePath = null)
++    {
++        string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
++        using Process process = Process.Start(new ProcessStartInfo
++        {
++            FileName = "dotnet",
++            Arguments = $"run --project \"{GeneratorProject}\" -- --repository-root \"{RepositoryRoot}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
++            RedirectStandardError = true,
++            RedirectStandardOutput = true,
++            UseShellExecute = false,
++        })!;
++
++        process.WaitForExit(120_000).ShouldBeTrue();
++        return new(process.ExitCode, process.StandardOutput.ReadToEnd(), process.StandardError.ReadToEnd());
++    }
++
++    private static string[] LoadOperationIds(string path)
++    {
++        YamlMappingNode root = LoadYamlMapping(path);
++        List<string> operations = [];
++        foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
++        {
++            YamlMappingNode pathItem = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
++            foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
++            {
++                string method = methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
++                if (method is "get" or "post" or "put" or "patch" or "delete")
++                {
++                    operations.Add(RequiredScalar(methodEntry.Value.ShouldBeOfType<YamlMappingNode>(), "operationId"));
++                }
++            }
++        }
++
++        return operations.Order(StringComparer.Ordinal).ToArray();
++    }
++
++    private static YamlMappingNode[] LoadRows(string path)
++    {
++        using StreamReader reader = File.OpenText(path);
++        YamlStream yaml = new();
++        yaml.Load(reader);
++        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlSequenceNode>()
++            .Children
++            .Select(row => row.ShouldBeOfType<YamlMappingNode>())
++            .ToArray();
++    }
++
++    private static Dictionary<string, HashSet<string>> LoadSchemaEnums(JsonElement root)
++    {
++        Dictionary<string, HashSet<string>> values = new(StringComparer.Ordinal)
++        {
++            ["operation_family"] = ReadEnum(root.GetProperty("properties").GetProperty("operation_family")),
++            ["read_consistency_class"] = ReadEnum(root.GetProperty("properties").GetProperty("read_consistency_class")),
++            ["auth_outcome_class"] = ReadEnum(root.GetProperty("properties").GetProperty("transport_parity").GetProperty("properties").GetProperty("auth_outcome_class")),
++            ["idempotency_key_rule"] = ReadEnum(root.GetProperty("properties").GetProperty("transport_parity").GetProperty("properties").GetProperty("idempotency_key_rule")),
++            ["pre_sdk_error_class"] = ReadEnum(root.GetProperty("properties").GetProperty("behavioral_parity").GetProperty("properties").GetProperty("pre_sdk_error_class")),
++            ["idempotency_key_sourcing"] = ReadEnum(root.GetProperty("properties").GetProperty("behavioral_parity").GetProperty("properties").GetProperty("idempotency_key_sourcing")),
++            ["correlation_id_sourcing"] = ReadEnum(root.GetProperty("properties").GetProperty("behavioral_parity").GetProperty("properties").GetProperty("correlation_id_sourcing")),
++            ["task_id_sourcing"] = ReadEnum(root.GetProperty("properties").GetProperty("behavioral_parity").GetProperty("properties").GetProperty("task_id_sourcing")),
++            ["credential_sourcing"] = ReadEnum(root.GetProperty("properties").GetProperty("behavioral_parity").GetProperty("properties").GetProperty("credential_sourcing")),
++            ["adapter_name"] = ReadEnum(root.GetProperty("$defs").GetProperty("adapter_name")),
++            ["canonical_error_category"] = ReadEnum(root.GetProperty("$defs").GetProperty("canonical_error_category")),
++            ["mcp_failure_kind"] = ReadEnum(root.GetProperty("$defs").GetProperty("mcp_failure_kind")),
++        };
++
++        return values;
++    }
++
++    private static HashSet<string> ReadEnum(JsonElement element) =>
++        element.GetProperty("enum").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToHashSet(StringComparer.Ordinal);
++
++    private static IEnumerable<string> ReadRequired(JsonElement element) =>
++        element.GetProperty("required").EnumerateArray().Select(item => item.GetString() ?? string.Empty);
++
++    private static void AssertRequired(YamlMappingNode mapping, IEnumerable<string> required)
++    {
++        foreach (string key in required)
++        {
++            mapping.Children.ContainsKey(new YamlScalarNode(key)).ShouldBeTrue(key);
++        }
++    }
++
++    private static YamlMappingNode LoadYamlMapping(string path)
++    {
++        using StreamReader reader = File.OpenText(path);
++        YamlStream yaml = new();
++        yaml.Load(reader);
++        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
++    }
++
++    private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
++    {
++        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
++        return value.ShouldBeOfType<YamlMappingNode>();
++    }
++
++    private static YamlSequenceNode RequiredSequence(YamlMappingNode mapping, string key)
++    {
++        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
++        return value.ShouldBeOfType<YamlSequenceNode>();
++    }
++
++    private static string RequiredScalar(YamlMappingNode mapping, string key)
++    {
++        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
++        return value.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
++    }
++
++    private static string FindRepositoryRoot()
++    {
++        string current = AppContext.BaseDirectory;
++        while (!string.IsNullOrEmpty(current))
++        {
++            if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
++            {
++                return current;
++            }
++
++            current = Directory.GetParent(current)?.FullName ?? string.Empty;
++        }
++
++        throw new InvalidOperationException("Could not locate repository root.");
++    }
++
++    private sealed record GeneratorResult(int ExitCode, string Output, string Error);
++}
+diff --git a/tests/fixtures/parity-contract.schema.json b/tests/fixtures/parity-contract.schema.json
+index 6ec0011..1567426 100644
+--- a/tests/fixtures/parity-contract.schema.json
++++ b/tests/fixtures/parity-contract.schema.json
+@@ -212,33 +212,52 @@
+     "canonical_error_category": {
+       "enum": [
+         "success",
++        "authentication_failure",
+         "client_configuration_error",
+         "credential_missing",
+         "credential_reference_missing",
++        "credential_reference_invalid",
+         "tenant_access_denied",
++        "cross_tenant_access_denied",
+         "folder_acl_denied",
+         "audit_access_denied",
++        "validation_error",
+         "workspace_locked",
++        "lock_conflict",
++        "lock_expired",
++        "lock_not_owned",
++        "stale_workspace",
++        "authorization_revocation_detected",
+         "workspace_not_ready",
++        "workspace_preparation_failed",
+         "dirty_workspace",
+         "commit_failed",
+         "file_operation_failed",
+         "path_validation_failed",
+         "idempotency_conflict",
+-        "validation_error",
+         "input_limit_exceeded",
+         "response_limit_exceeded",
+         "query_timeout",
++        "provider_readiness_failed",
+         "provider_failure_known",
++        "unknown_provider_outcome",
+         "provider_outcome_unknown",
+         "provider_permission_insufficient",
++        "provider_unavailable",
++        "provider_rate_limited",
+         "unsupported_provider_capability",
++        "repository_binding_unavailable",
++        "branch_ref_policy_invalid",
+         "repository_conflict",
+         "duplicate_binding",
+         "reconciliation_required",
+         "not_found",
+         "state_transition_invalid",
+         "read_model_unavailable",
++        "projection_stale",
++        "projection_unavailable",
++        "range_unsatisfiable",
++        "failed_operation",
+         "redacted",
+         "internal_error"
+       ]
+@@ -264,23 +283,51 @@
+     "mcp_failure_kind": {
+       "enum": [
+         "none",
++        "authentication_failure",
+         "usage_error",
+         "credential_missing",
++        "credential_reference_invalid",
+         "tenant_access_denied",
++        "cross_tenant_access_denied",
+         "folder_acl_denied",
+         "audit_access_denied",
+         "workspace_locked",
++        "lock_conflict",
++        "lock_expired",
++        "lock_not_owned",
++        "stale_workspace",
++        "authorization_revocation_detected",
+         "idempotency_conflict",
+         "validation_error",
+         "input_limit_exceeded",
+         "response_limit_exceeded",
+         "query_timeout",
++        "provider_readiness_failed",
+         "provider_failure_known",
++        "unknown_provider_outcome",
+         "provider_outcome_unknown",
++        "provider_permission_insufficient",
++        "provider_unavailable",
++        "provider_rate_limited",
++        "repository_binding_unavailable",
++        "branch_ref_policy_invalid",
++        "workspace_not_ready",
++        "workspace_preparation_failed",
++        "dirty_workspace",
++        "commit_failed",
++        "file_operation_failed",
++        "path_validation_failed",
++        "repository_conflict",
++        "duplicate_binding",
++        "unsupported_provider_capability",
+         "reconciliation_required",
+         "not_found",
+         "state_transition_invalid",
+         "read_model_unavailable",
++        "projection_stale",
++        "projection_unavailable",
++        "range_unsatisfiable",
++        "failed_operation",
+         "redacted",
+         "internal_error"
+       ]
+diff --git a/tests/fixtures/parity-contract.yaml b/tests/fixtures/parity-contract.yaml
+new file mode 100644
+index 0000000..febb145
+--- /dev/null
++++ b/tests/fixtures/parity-contract.yaml
+@@ -0,0 +1,2323 @@
++# generated_by: tests/tools/parity-oracle-generator
++# contract_spine_sha256: 43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2
++# parity_schema_sha256: 0adbcba6bc437c78c9cdd063b11297b6923998fb961bd542be04b4135e00914d
++# source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
++- operation_id: 'AddFile'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'authorization_revocation_detected'
++      - 'failed_operation'
++      - 'file_operation_failed'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'lock_expired'
++      - 'lock_not_owned'
++      - 'path_validation_failed'
++      - 'provider_failure_known'
++      - 'reconciliation_required'
++      - 'stale_workspace'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'validation_error'
++      - 'workspace_locked'
++    idempotency_key_rule: 'required_with_operation_id'
++    audit_metadata_keys:
++      - 'byte_count'
++      - 'content_hash_reference'
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'path_policy_class'
++      - 'result'
++      - 'task_id'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ArchiveFolder'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'BindRepository'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'cross_tenant_access_denied'
++      - 'duplicate_binding'
++      - 'failed_operation'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'provider_readiness_failed'
++      - 'reconciliation_required'
++      - 'repository_conflict'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'unsupported_provider_capability'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'external_repository_ref'
++      - 'folder_id'
++      - 'operation_id'
++      - 'provider_binding_ref'
++      - 'repository_binding_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ChangeFile'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'authorization_revocation_detected'
++      - 'failed_operation'
++      - 'file_operation_failed'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'lock_expired'
++      - 'lock_not_owned'
++      - 'path_validation_failed'
++      - 'provider_failure_known'
++      - 'reconciliation_required'
++      - 'stale_workspace'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'validation_error'
++      - 'workspace_locked'
++    idempotency_key_rule: 'required_with_operation_id'
++    audit_metadata_keys:
++      - 'byte_count'
++      - 'content_hash_reference'
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'path_policy_class'
++      - 'result'
++      - 'task_id'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'CommitWorkspace'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'authorization_revocation_detected'
++      - 'commit_failed'
++      - 'cross_tenant_access_denied'
++      - 'dirty_workspace'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'lock_expired'
++      - 'lock_not_owned'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_failure_known'
++      - 'read_model_unavailable'
++      - 'reconciliation_required'
++      - 'stale_workspace'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'validation_error'
++      - 'workspace_locked'
++      - 'workspace_not_ready'
++    idempotency_key_rule: 'required_with_operation_id'
++    audit_metadata_keys:
++      - 'author_metadata_reference'
++      - 'branch_ref_policy_ref'
++      - 'changed_path_metadata_digest'
++      - 'commit_message_classification'
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'retryability'
++      - 'task_id'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ConfigureBranchRefPolicy'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'branch_ref_policy_ref'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ConfigureProviderBinding'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'credential_reference_invalid'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'provider_unavailable'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'operation_id'
++      - 'provider_binding_ref'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'CreateFolder'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'CreateRepositoryBackedFolder'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'failed_operation'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'provider_readiness_failed'
++      - 'reconciliation_required'
++      - 'repository_conflict'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'unsupported_provider_capability'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'branch_ref_policy_ref'
++      - 'folder_id'
++      - 'operation_id'
++      - 'provider_binding_ref'
++      - 'repository_binding_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetAuditRecord'
++  operation_family: 'audit'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'audit_access_denied'
++    error_code_set:
++      - 'audit_access_denied'
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'sensitive_metadata_tier'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'audit_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetBranchRefPolicy'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'cross_tenant_access_denied'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'branch_ref_policy_ref'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetCommitEvidence'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'changed_path_metadata_digest'
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'provider_correlation_reference'
++      - 'sensitive_metadata_tier'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetDirtyStateDiagnostics'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'dirty_workspace'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'stale_workspace'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'changed_path_metadata_digest'
++      - 'folder_id'
++      - 'projection_watermark'
++      - 'sensitive_metadata_tier'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetEffectivePermissions'
++  operation_family: 'query_status'
++  read_consistency_class: 'read-your-writes'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'authorization_outcome'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetFailedOperationDiagnostics'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_failure_known'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'reconciliation_required'
++      - 'redacted'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'task_id'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetFolderFileMetadata'
++  operation_family: 'context_query'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'path_validation_failed'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'configured_limit'
++      - 'correlation_id'
++      - 'elapsed_milliseconds'
++      - 'folder_id'
++      - 'query_family'
++      - 'result_count'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'context_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetFolderLifecycleStatus'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'cross_tenant_access_denied'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'folder_id'
++      - 'lifecycle_state'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetLockDiagnostics'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'stale_workspace'
++      - 'tenant_access_denied'
++      - 'workspace_locked'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'folder_id'
++      - 'lock_id'
++      - 'lock_status'
++      - 'projection_watermark'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetOperationTimelineEntry'
++  operation_family: 'audit'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'audit_access_denied'
++    error_code_set:
++      - 'audit_access_denied'
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'lifecycle_state'
++      - 'operation_id'
++      - 'task_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'audit_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetProjectionFreshness'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'elapsed_milliseconds'
++      - 'projection_watermark'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetProviderBinding'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'cross_tenant_access_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'operation_id'
++      - 'provider_binding_ref'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetProviderOutcome'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_failure_known'
++      - 'read_model_unavailable'
++      - 'reconciliation_required'
++      - 'redacted'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'projection_watermark'
++      - 'provider_correlation_reference'
++      - 'retryability'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetProviderStatusDiagnostics'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_failure_known'
++      - 'provider_rate_limited'
++      - 'provider_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'folder_id'
++      - 'projection_watermark'
++      - 'provider_binding_ref'
++      - 'provider_correlation_reference'
++      - 'readiness_status'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetProviderSupportEvidence'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'internal_error'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_unavailable'
++      - 'read_model_unavailable'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'capability_profile_ref'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetReadinessDiagnostics'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_failure_known'
++      - 'provider_rate_limited'
++      - 'provider_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'projection_watermark'
++      - 'readiness_status'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetReconciliationStatus'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'reconciliation_required'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'projection_watermark'
++      - 'reconciliation_id'
++      - 'retryability'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetRepositoryBinding'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'cross_tenant_access_denied'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'folder_id'
++      - 'operation_id'
++      - 'repository_binding_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetSyncStatusDiagnostics'
++  operation_family: 'operations_console_projection'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_failure_known'
++      - 'provider_unavailable'
++      - 'read_model_unavailable'
++      - 'reconciliation_required'
++      - 'redacted'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'folder_id'
++      - 'projection_watermark'
++      - 'provider_correlation_reference'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projection_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++    - 'ui'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetTaskStatus'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'lifecycle_state'
++      - 'operation_id'
++      - 'projection_watermark'
++      - 'retryability'
++      - 'task_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetWorkspaceLock'
++  operation_family: 'query_status'
++  read_consistency_class: 'read-your-writes'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'lock_expired'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'stale_workspace'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'lease_status'
++      - 'lock_id'
++      - 'lock_status'
++      - 'operation_id'
++      - 'projection_watermark'
++      - 'result'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetWorkspaceRetryEligibility'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_unavailable'
++      - 'read_model_unavailable'
++      - 'reconciliation_required'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++      - 'retryability'
++      - 'task_id'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetWorkspaceStatus'
++  operation_family: 'query_status'
++  read_consistency_class: 'read-your-writes'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'projection_watermark'
++      - 'retryability'
++      - 'task_id'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GetWorkspaceTransitionEvidence'
++  operation_family: 'query_status'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'evidence_timestamp'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++      - 'task_id'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'GlobFolderFiles'
++  operation_family: 'context_query'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'path_validation_failed'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'configured_limit'
++      - 'correlation_id'
++      - 'elapsed_milliseconds'
++      - 'folder_id'
++      - 'query_family'
++      - 'result_count'
++      - 'truncation'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'context_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ListAuditTrail'
++  operation_family: 'audit'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'audit_access_denied'
++    error_code_set:
++      - 'audit_access_denied'
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'projection_watermark'
++      - 'retention_class'
++      - 'task_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'audit_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ListFolderAclEntries'
++  operation_family: 'query_status'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ListFolderFiles'
++  operation_family: 'context_query'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'path_validation_failed'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'configured_limit'
++      - 'correlation_id'
++      - 'elapsed_milliseconds'
++      - 'folder_id'
++      - 'query_family'
++      - 'result_count'
++      - 'truncation'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'context_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ListOperationTimeline'
++  operation_family: 'audit'
++  read_consistency_class: 'eventually-consistent'
++  transport_parity:
++    auth_outcome_class: 'audit_access_denied'
++    error_code_set:
++      - 'audit_access_denied'
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'internal_error'
++      - 'not_found'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'projection_watermark'
++      - 'task_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'audit_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'LockWorkspace'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'authorization_revocation_detected'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'lock_conflict'
++      - 'lock_expired'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'read_model_unavailable'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'validation_error'
++      - 'workspace_locked'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'lease_status'
++      - 'lock_id'
++      - 'lock_status'
++      - 'operation_id'
++      - 'result'
++      - 'task_id'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'PrepareWorkspace'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'branch_ref_policy_invalid'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'lock_conflict'
++      - 'provider_readiness_failed'
++      - 'provider_unavailable'
++      - 'reconciliation_required'
++      - 'repository_binding_unavailable'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'validation_error'
++      - 'workspace_locked'
++      - 'workspace_preparation_failed'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'branch_ref_policy_ref'
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'repository_binding_id'
++      - 'result'
++      - 'retryability'
++      - 'task_id'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ReadFileRange'
++  operation_family: 'context_query'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'path_validation_failed'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'byte_count'
++      - 'configured_limit'
++      - 'correlation_id'
++      - 'elapsed_milliseconds'
++      - 'folder_id'
++      - 'query_family'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'context_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ReleaseWorkspaceLock'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'authorization_revocation_detected'
++      - 'failed_operation'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'lock_expired'
++      - 'lock_not_owned'
++      - 'reconciliation_required'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'lease_status'
++      - 'lock_id'
++      - 'lock_status'
++      - 'operation_id'
++      - 'result'
++      - 'task_id'
++      - 'workspace_id'
++      - 'workspace_state'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'RemoveFile'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'authorization_revocation_detected'
++      - 'failed_operation'
++      - 'file_operation_failed'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'lock_expired'
++      - 'lock_not_owned'
++      - 'path_validation_failed'
++      - 'provider_failure_known'
++      - 'reconciliation_required'
++      - 'stale_workspace'
++      - 'state_transition_invalid'
++      - 'tenant_access_denied'
++      - 'unknown_provider_outcome'
++      - 'validation_error'
++      - 'workspace_locked'
++    idempotency_key_rule: 'required_with_operation_id'
++    audit_metadata_keys:
++      - 'correlation_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'path_policy_class'
++      - 'result'
++      - 'task_id'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'SearchFolderFiles'
++  operation_family: 'context_query'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'input_limit_exceeded'
++      - 'internal_error'
++      - 'path_validation_failed'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'query_timeout'
++      - 'read_model_unavailable'
++      - 'redacted'
++      - 'response_limit_exceeded'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'configured_limit'
++      - 'correlation_id'
++      - 'elapsed_milliseconds'
++      - 'folder_id'
++      - 'query_family'
++      - 'result_count'
++      - 'truncation'
++      - 'workspace_id'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'context_returned'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'UpdateFolderAclEntry'
++  operation_family: 'mutating_command'
++  read_consistency_class: 'not_applicable'
++  transport_parity:
++    auth_outcome_class: 'folder_acl_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'folder_acl_denied'
++      - 'idempotency_conflict'
++      - 'internal_error'
++      - 'tenant_access_denied'
++      - 'validation_error'
++    idempotency_key_rule: 'required_for_mutating_command'
++    audit_metadata_keys:
++      - 'acl_entry_id'
++      - 'folder_id'
++      - 'operation_id'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'accepted'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'caller_provided'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'caller_provided'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
++- operation_id: 'ValidateProviderReadiness'
++  operation_family: 'query_status'
++  read_consistency_class: 'snapshot-per-task'
++  transport_parity:
++    auth_outcome_class: 'tenant_access_denied'
++    error_code_set:
++      - 'authentication_failure'
++      - 'credential_reference_invalid'
++      - 'internal_error'
++      - 'projection_stale'
++      - 'projection_unavailable'
++      - 'provider_permission_insufficient'
++      - 'provider_rate_limited'
++      - 'provider_readiness_failed'
++      - 'provider_unavailable'
++      - 'read_model_unavailable'
++      - 'tenant_access_denied'
++      - 'unsupported_provider_capability'
++    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
++    audit_metadata_keys:
++      - 'operation_id'
++      - 'provider_binding_ref'
++      - 'readiness_status'
++      - 'result'
++    correlation_field_path: 'headers.X-Correlation-Id'
++    terminal_states:
++      - 'projected'
++  behavioral_parity:
++    pre_sdk_error_class: 'none'
++    idempotency_key_sourcing: 'not_accepted'
++    correlation_id_sourcing: 'caller_provided'
++    task_id_sourcing: 'not_task_scoped'
++    credential_sourcing: 'sdk_configuration'
++    cli_exit_code: 0
++    mcp_failure_kind: 'none'
++  adapter_expectations:
++    - 'rest'
++    - 'sdk'
++    - 'cli'
++    - 'mcp'
++  ownership:
++    owner_workstream: 'C13 parity oracle generation'
++    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
++    known_omissions:
++      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
++    mutation_rules:
++      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
++    non_policy_placeholder: true
++    synthetic_data_only: true
+diff --git a/tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj b/tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj
+new file mode 100644
+index 0000000..e0dd124
+--- /dev/null
++++ b/tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj
+@@ -0,0 +1,9 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup>
++    <OutputType>Exe</OutputType>
++    <IsPackable>false</IsPackable>
++  </PropertyGroup>
++  <ItemGroup>
++    <PackageReference Include="YamlDotNet" />
++  </ItemGroup>
++</Project>
+diff --git a/tests/tools/parity-oracle-generator/Program.cs b/tests/tools/parity-oracle-generator/Program.cs
+new file mode 100644
+index 0000000..c61a661
+--- /dev/null
++++ b/tests/tools/parity-oracle-generator/Program.cs
+@@ -0,0 +1,548 @@
++using System.Globalization;
++using System.Security.Cryptography;
++using System.Text;
++using YamlDotNet.RepresentationModel;
++
++Dictionary<string, string> arguments = ParseArguments(args);
++string repositoryRoot = Path.GetFullPath(arguments.GetValueOrDefault("--repository-root", LocateRepositoryRoot()));
++string contractPath = Path.GetFullPath(arguments.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml")));
++string schemaPath = Path.GetFullPath(arguments.GetValueOrDefault("--schema", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.schema.json")));
++string previousSpinePath = Path.GetFullPath(arguments.GetValueOrDefault("--previous-spine", Path.Combine(repositoryRoot, "tests", "fixtures", "previous-spine.yaml")));
++string outputPath = Path.GetFullPath(arguments.GetValueOrDefault("--output", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.yaml")));
++
++YamlMappingNode root = LoadYaml(contractPath);
++IReadOnlyList<OperationModel> operations = EnumerateOperations(root).OrderBy(o => o.OperationId, StringComparer.Ordinal).ToArray();
++ValidateOperationInventory(operations);
++ValidatePreviousSpine(previousSpinePath, operations);
++
++string output = RenderRows(operations, contractPath, schemaPath);
++Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
++File.WriteAllText(outputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
++
++static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root)
++{
++    List<OperationModel> operations = [];
++    foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
++    {
++        string path = pathEntry.Key.AsScalar("path").Value ?? string.Empty;
++        YamlMappingNode pathItem = pathEntry.Value.AsMapping("path item");
++        IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem).ToArray();
++
++        foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
++        {
++            string method = (methodEntry.Key.AsScalar("method").Value ?? string.Empty).ToLowerInvariant();
++            if (method is not ("get" or "post" or "put" or "patch" or "delete"))
++            {
++                continue;
++            }
++
++            YamlMappingNode operation = methodEntry.Value.AsMapping("operation");
++            string operationId = RequiredScalar(operation, "operationId");
++            ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
++            IReadOnlyList<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
++            string[] tags = ReadStringSequence(operation, "tags").ToArray();
++            string[] idempotencyFields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence").ToArray();
++            string[] errorCategories = ReadStringSequence(operation, "x-hexalith-canonical-error-categories").Select(NormalizeErrorCategory).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
++            string[] auditKeys = ReadAuditMetadataKeys(operation).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
++            string? readConsistency = ReadConsistencyClass(operation);
++            bool hasIdempotencyKey = HasIdempotencyKey(parameters, operation);
++            string correlationHeader = ReadNestedScalar(operation, "x-hexalith-correlation", "correlationHeader") ?? "X-Correlation-Id";
++
++            operations.Add(new OperationModel(
++                Method: method,
++                Path: NormalizePath(path),
++                OperationId: operationId,
++                Tags: tags,
++                Parameters: parameters,
++                HasIdempotencyKey: hasIdempotencyKey,
++                IdempotencyFields: idempotencyFields,
++                ReadConsistencyClass: readConsistency,
++                ErrorCategories: errorCategories,
++                AuditMetadataKeys: auditKeys,
++                CorrelationHeader: correlationHeader));
++        }
++    }
++
++    return operations;
++}
++
++static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations)
++{
++    foreach (IGrouping<string, OperationModel> duplicate in operations.GroupBy(o => o.OperationId, StringComparer.Ordinal).Where(g => g.Count() > 1))
++    {
++        throw new InvalidOperationException($"prerequisite_drift: duplicate operationId '{duplicate.Key}'.");
++    }
++
++    foreach (OperationModel operation in operations)
++    {
++        if (operation.ErrorCategories.Count == 0)
++        {
++            throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} lacks x-hexalith-canonical-error-categories.");
++        }
++
++        if (operation.AuditMetadataKeys.Count == 0)
++        {
++            throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} lacks x-hexalith-audit-metadata-keys.");
++        }
++
++        if (operation.IsMutatingCommand)
++        {
++            if (!operation.HasIdempotencyKey || operation.IdempotencyFields.Count == 0)
++            {
++                throw new InvalidOperationException($"prerequisite_drift: mutating operation {operation.OperationId} lacks required idempotency metadata.");
++            }
++
++            if (operation.IdempotencyFields.Distinct(StringComparer.Ordinal).Count() != operation.IdempotencyFields.Count)
++            {
++                throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} declares duplicate idempotency fields.");
++            }
++
++            if (!operation.IdempotencyFields.SequenceEqual(operation.IdempotencyFields.Order(StringComparer.Ordinal), StringComparer.Ordinal))
++            {
++                throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} idempotency fields are not ordinal-sorted.");
++            }
++        }
++        else
++        {
++            if (operation.HasIdempotencyKey || operation.IdempotencyFields.Count > 0)
++            {
++                throw new InvalidOperationException($"prerequisite_drift: non-mutating operation {operation.OperationId} accepts idempotency metadata.");
++            }
++
++            if (string.IsNullOrWhiteSpace(operation.ReadConsistencyClass))
++            {
++                throw new InvalidOperationException($"prerequisite_drift: non-mutating operation {operation.OperationId} lacks x-hexalith-read-consistency.");
++            }
++        }
++    }
++}
++
++static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<OperationModel> currentOperations)
++{
++    if (!File.Exists(previousSpinePath))
++    {
++        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml is missing.");
++    }
++
++    YamlMappingNode previous = LoadYaml(previousSpinePath);
++    if (!previous.Children.TryGetValue(new YamlScalarNode("operations"), out YamlNode? operationsNode))
++    {
++        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml lacks operations.");
++    }
++
++    HashSet<string> currentIdentities = currentOperations.Select(o => o.Identity).ToHashSet(StringComparer.Ordinal);
++    foreach (YamlNode node in operationsNode.AsSequence("previous operations"))
++    {
++        YamlMappingNode operation = node.AsMapping("previous operation");
++        string operationId = ReadFlexibleScalar(operation, "operation_id", "operationId");
++        string method = ReadFlexibleScalar(operation, "method", "http_method").ToLowerInvariant();
++        string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
++        string identity = method + " " + path + " " + operationId;
++        if (!currentIdentities.Contains(identity) && !HasApprovedDeprecation(operation))
++        {
++            throw new InvalidOperationException($"prerequisite_drift: previous operation removed without approved deprecation '{identity}'.");
++        }
++    }
++}
++
++static string RenderRows(IReadOnlyList<OperationModel> operations, string contractPath, string schemaPath)
++{
++    StringBuilder builder = new();
++    builder.Append("# generated_by: tests/tools/parity-oracle-generator\n");
++    builder.Append("# contract_spine_sha256: ").Append(Sha256(File.ReadAllText(contractPath).NormalizeLineEndings())).Append('\n');
++    builder.Append("# parity_schema_sha256: ").Append(Sha256(File.ReadAllText(schemaPath).NormalizeLineEndings())).Append('\n');
++    builder.Append("# source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract\n");
++
++    foreach (OperationModel operation in operations)
++    {
++        RenderRow(builder, operation);
++    }
++
++    return builder.ToString();
++}
++
++static void RenderRow(StringBuilder builder, OperationModel operation)
++{
++    string family = operation.OperationFamily;
++    builder.Append("- operation_id: ").Append(Quote(operation.OperationId)).Append('\n');
++    builder.Append("  operation_family: ").Append(Quote(family)).Append('\n');
++    builder.Append("  read_consistency_class: ").Append(Quote(operation.IsMutatingCommand ? "not_applicable" : operation.ReadConsistencyClass!)).Append('\n');
++    builder.Append("  transport_parity:\n");
++    builder.Append("    auth_outcome_class: ").Append(Quote(AuthOutcomeClass(operation))).Append('\n');
++    builder.Append("    error_code_set:\n");
++    foreach (string category in operation.ErrorCategories)
++    {
++        builder.Append("      - ").Append(Quote(category)).Append('\n');
++    }
++
++    builder.Append("    idempotency_key_rule: ").Append(Quote(IdempotencyRule(operation))).Append('\n');
++    builder.Append("    audit_metadata_keys:\n");
++    foreach (string key in operation.AuditMetadataKeys)
++    {
++        builder.Append("      - ").Append(Quote(key)).Append('\n');
++    }
++
++    builder.Append("    correlation_field_path: ").Append(Quote("headers." + operation.CorrelationHeader)).Append('\n');
++    builder.Append("    terminal_states:\n");
++    foreach (string state in TerminalStates(operation))
++    {
++        builder.Append("      - ").Append(Quote(state)).Append('\n');
++    }
++
++    builder.Append("  behavioral_parity:\n");
++    builder.Append("    pre_sdk_error_class: ").Append(Quote("none")).Append('\n');
++    builder.Append("    idempotency_key_sourcing: ").Append(Quote(operation.IsMutatingCommand ? "caller_provided" : "not_accepted")).Append('\n');
++    builder.Append("    correlation_id_sourcing: ").Append(Quote("caller_provided")).Append('\n');
++    builder.Append("    task_id_sourcing: ").Append(Quote(operation.Parameters.Any(p => p.Field == "task_id") ? "caller_provided" : "not_task_scoped")).Append('\n');
++    builder.Append("    credential_sourcing: ").Append(Quote("sdk_configuration")).Append('\n');
++    builder.Append("    cli_exit_code: 0\n");
++    builder.Append("    mcp_failure_kind: ").Append(Quote("none")).Append('\n');
++    builder.Append("  adapter_expectations:\n");
++    foreach (string adapter in AdapterExpectations(operation))
++    {
++        builder.Append("    - ").Append(Quote(adapter)).Append('\n');
++    }
++
++    builder.Append("  ownership:\n");
++    builder.Append("    owner_workstream: ").Append(Quote("C13 parity oracle generation")).Append('\n');
++    builder.Append("    future_test_use: ").Append(Quote("SDK, REST, CLI, and MCP parity tests consume this generated row.")).Append('\n');
++    builder.Append("    known_omissions:\n");
++    builder.Append("      - ").Append(Quote("Runtime adapter behavior is implemented by later Epic 5 stories.")).Append('\n');
++    builder.Append("    mutation_rules:\n");
++    builder.Append("      - ").Append(Quote("Regenerate from the Contract Spine; do not hand-edit operation rows.")).Append('\n');
++    builder.Append("    non_policy_placeholder: true\n");
++    builder.Append("    synthetic_data_only: true\n");
++}
++
++static string AuthOutcomeClass(OperationModel operation)
++{
++    if (operation.ErrorCategories.Contains("audit_access_denied", StringComparer.Ordinal))
++    {
++        return "audit_access_denied";
++    }
++
++    if (operation.ErrorCategories.Contains("credential_missing", StringComparer.Ordinal))
++    {
++        return "credential_missing";
++    }
++
++    if (operation.ErrorCategories.Contains("folder_acl_denied", StringComparer.Ordinal))
++    {
++        return "folder_acl_denied";
++    }
++
++    if (operation.ErrorCategories.Contains("tenant_access_denied", StringComparer.Ordinal))
++    {
++        return "tenant_access_denied";
++    }
++
++    return operation.ErrorCategories.Contains("not_found", StringComparer.Ordinal) ? "safe_not_found" : "tenant_authorized";
++}
++
++static string IdempotencyRule(OperationModel operation)
++{
++    if (!operation.IsMutatingCommand)
++    {
++        return "not_accepted_for_non_mutating_operation";
++    }
++
++    return operation.IdempotencyFields.Contains("operation_id", StringComparer.Ordinal)
++        ? "required_with_operation_id"
++        : "required_for_mutating_command";
++}
++
++static string[] TerminalStates(OperationModel operation)
++{
++    if (operation.IsMutatingCommand)
++    {
++        return ["accepted"];
++    }
++
++    return operation.OperationFamily switch
++    {
++        "context_query" => ["context_returned"],
++        "audit" => ["audit_returned"],
++        "operations_console_projection" => ["projection_returned"],
++        _ => ["projected"],
++    };
++}
++
++static string[] AdapterExpectations(OperationModel operation)
++{
++    List<string> adapters = ["rest", "sdk", "cli", "mcp"];
++    if (operation.OperationFamily == "operations_console_projection")
++    {
++        adapters.Add("ui");
++    }
++
++    return adapters.ToArray();
++}
++
++static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
++{
++    if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
++    {
++        yield break;
++    }
++
++    foreach (YamlNode node in parametersNode.AsSequence("parameters"))
++    {
++        YamlMappingNode parameter = node.AsMapping("parameter");
++        string name;
++        if (parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
++        {
++            name = (referenceNode.AsScalar("$ref").Value ?? string.Empty).Split('/').Last();
++        }
++        else
++        {
++            name = RequiredScalar(parameter, "name");
++        }
++
++        yield return new ParameterModel(NormalizeName(name), name);
++    }
++}
++
++static bool HasIdempotencyKey(IReadOnlyList<ParameterModel> parameters, YamlMappingNode operation) =>
++    parameters.Any(p => p.Field == "idempotency_key") ||
++    operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-idempotency-key"));
++
++static string? ReadConsistencyClass(YamlMappingNode operation)
++{
++    string? raw = ReadNestedScalar(operation, "x-hexalith-read-consistency", "class");
++    return raw?.Replace("_", "-", StringComparison.Ordinal);
++}
++
++static IEnumerable<string> ReadAuditMetadataKeys(YamlMappingNode operation)
++{
++    if (!operation.Children.TryGetValue(new YamlScalarNode("x-hexalith-audit-metadata-keys"), out YamlNode? node))
++    {
++        yield break;
++    }
++
++    foreach (YamlNode item in node.AsSequence("x-hexalith-audit-metadata-keys"))
++    {
++        yield return RequiredScalar(item.AsMapping("audit metadata key"), "name");
++    }
++}
++
++static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
++{
++    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node))
++    {
++        return [];
++    }
++
++    return node.AsSequence(key).Children.Select(c => c.AsScalar(key).Value ?? string.Empty).ToArray();
++}
++
++static string? ReadNestedScalar(YamlMappingNode mapping, string parent, string key)
++{
++    if (!mapping.Children.TryGetValue(new YamlScalarNode(parent), out YamlNode? node))
++    {
++        return null;
++    }
++
++    YamlMappingNode parentMapping = node.AsMapping(parent);
++    return parentMapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value)
++        ? value.AsScalar(key).Value
++        : null;
++}
++
++static string ReadFlexibleScalar(YamlMappingNode mapping, params string[] keys)
++{
++    foreach (string key in keys)
++    {
++        if (mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
++        {
++            return value.AsScalar(key).Value ?? string.Empty;
++        }
++    }
++
++    throw new InvalidOperationException($"Missing scalar '{string.Join("|", keys)}'.");
++}
++
++static bool HasApprovedDeprecation(YamlMappingNode operation) =>
++    operation.Children.TryGetValue(new YamlScalarNode("deprecation"), out YamlNode? deprecationNode) &&
++    deprecationNode.AsMapping("deprecation").Children.TryGetValue(new YamlScalarNode("approved"), out YamlNode? approvedNode) &&
++    string.Equals(approvedNode.AsScalar("approved").Value, "true", StringComparison.OrdinalIgnoreCase);
++
++static string NormalizeErrorCategory(string category) => category switch
++{
++    "provider_outcome_unknown" => "unknown_provider_outcome",
++    _ => category,
++};
++
++static string NormalizePath(string path)
++{
++    string trimmed = path.Trim();
++    while (trimmed.Contains("//", StringComparison.Ordinal))
++    {
++        trimmed = trimmed.Replace("//", "/", StringComparison.Ordinal);
++    }
++
++    return trimmed;
++}
++
++static string NormalizeName(string value)
++{
++    StringBuilder builder = new(value.Length);
++    for (int i = 0; i < value.Length; i++)
++    {
++        char c = value[i];
++        if (c is '-' or '_')
++        {
++            if (builder.Length > 0 && builder[^1] != '_')
++            {
++                builder.Append('_');
++            }
++        }
++        else if (char.IsLetterOrDigit(c))
++        {
++            if (char.IsUpper(c) && i > 0 && builder.Length > 0 && builder[^1] != '_')
++            {
++                builder.Append('_');
++            }
++
++            builder.Append(char.ToLowerInvariant(c));
++        }
++    }
++
++    return builder.ToString() switch
++    {
++        "x_hexalith_task_id" => "task_id",
++        "idempotency_key" => "idempotency_key",
++        "correlation_id" => "correlation_id",
++        string normalized => normalized,
++    };
++}
++
++static string Quote(string value) => "'" + value.Replace("'", "''", StringComparison.Ordinal) + "'";
++
++static Dictionary<string, string> ParseArguments(string[] values)
++{
++    Dictionary<string, string> parsed = new(StringComparer.Ordinal);
++    for (int i = 0; i < values.Length; i += 2)
++    {
++        if (i + 1 >= values.Length || !values[i].StartsWith("--", StringComparison.Ordinal))
++        {
++            throw new ArgumentException($"Arguments must be supplied as --key value pairs. Invalid token at position {i}.");
++        }
++
++        parsed[values[i]] = values[i + 1];
++    }
++
++    return parsed;
++}
++
++static YamlMappingNode LoadYaml(string path)
++{
++    using StreamReader reader = File.OpenText(path);
++    YamlStream yaml = new();
++    yaml.Load(reader);
++    return yaml.Documents[0].RootNode.AsMapping("root");
++}
++
++static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
++{
++    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node))
++    {
++        throw new InvalidOperationException($"Missing mapping '{key}'.");
++    }
++
++    return node.AsMapping(key);
++}
++
++static string RequiredScalar(YamlMappingNode mapping, string key)
++{
++    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node))
++    {
++        throw new InvalidOperationException($"Missing scalar '{key}'.");
++    }
++
++    return node.AsScalar(key).Value ?? string.Empty;
++}
++
++static string Sha256(string value) =>
++    Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
++
++static string LocateRepositoryRoot()
++{
++    string current = AppContext.BaseDirectory;
++    while (!string.IsNullOrWhiteSpace(current))
++    {
++        if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
++        {
++            return current;
++        }
++
++        current = Directory.GetParent(current)?.FullName ?? string.Empty;
++    }
++
++    return Directory.GetCurrentDirectory();
++}
++
++internal sealed record OperationModel(
++    string Method,
++    string Path,
++    string OperationId,
++    IReadOnlyList<string> Tags,
++    IReadOnlyList<ParameterModel> Parameters,
++    bool HasIdempotencyKey,
++    IReadOnlyList<string> IdempotencyFields,
++    string? ReadConsistencyClass,
++    IReadOnlyList<string> ErrorCategories,
++    IReadOnlyList<string> AuditMetadataKeys,
++    string CorrelationHeader)
++{
++    public string Identity => Method + " " + Path + " " + OperationId;
++
++    public bool IsMutatingCommand => IdempotencyFields.Count > 0;
++
++    public string OperationFamily
++    {
++        get
++        {
++            if (IsMutatingCommand)
++            {
++                return "mutating_command";
++            }
++
++            if (Tags.Contains("context-queries", StringComparer.Ordinal))
++            {
++                return "context_query";
++            }
++
++            if (Tags.Contains("audit", StringComparer.Ordinal))
++            {
++                return "audit";
++            }
++
++            if (Tags.Contains("ops-console", StringComparer.Ordinal))
++            {
++                return "operations_console_projection";
++            }
++
++            return "query_status";
++        }
++    }
++}
++
++internal sealed record ParameterModel(string Field, string Name);
++
++internal static class TextExtensions
++{
++    public static string NormalizeLineEndings(this string value) =>
++        value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
++}
++
++internal static class YamlExtensions
++{
++    public static YamlMappingNode AsMapping(this YamlNode node, string name) =>
++        node as YamlMappingNode ?? throw new InvalidOperationException($"{name} must be a mapping.");
++
++    public static YamlSequenceNode AsSequence(this YamlNode node, string name) =>
++        node as YamlSequenceNode ?? throw new InvalidOperationException($"{name} must be a sequence.");
++
++    public static YamlScalarNode AsScalar(this YamlNode node, string name) =>
++        node as YamlScalarNode ?? throw new InvalidOperationException($"{name} must be a scalar.");
++}
+diff --git a/tests/tools/parity-oracle-generator/README.md b/tests/tools/parity-oracle-generator/README.md
+index 6ac2a93..2e6a85d 100644
+--- a/tests/tools/parity-oracle-generator/README.md
++++ b/tests/tools/parity-oracle-generator/README.md
+@@ -1,12 +1,47 @@
+ # Parity Oracle Generator
+ 
+-This directory is a placeholder for the future parity oracle generator. Story 1.3 only reserves the path and records ownership; it does not implement generator behavior or final parity semantics.
++This tool generates `tests/fixtures/parity-contract.yaml` from the OpenAPI Contract Spine and validates prerequisite metadata before writing rows.
++
++## Command
++
++```text
++dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root <repo-root>
++```
++
++Optional arguments:
++
++```text
++--contract <path-to-hexalith.folders.v1.yaml>
++--schema <path-to-parity-contract.schema.json>
++--previous-spine <path-to-previous-spine.yaml>
++--output <path-to-parity-contract.yaml>
++```
++
++## Source Authority
++
++- OpenAPI operation metadata owns transport facts, operation IDs, idempotency metadata, canonical error categories, read consistency, audit metadata keys, correlation headers, and authorization metadata.
++- `docs/contract/idempotency-and-parity-rules.md` and the architecture Adapter Parity Contract own adapter semantics such as idempotency-key sourcing, correlation sourcing, task-ID sourcing, credential sourcing, CLI exit codes, and MCP failure kinds.
++- `tests/fixtures/parity-contract.schema.json` owns the bounded row shape and allowed enum values.
++- `tests/fixtures/previous-spine.yaml` owns symmetric removal/deprecation comparison. The current synthetic empty baseline is treated as first-baseline initialization; non-empty removed operations fail unless they carry approved deprecation metadata.
++- Story 1.12 generated helper provenance is consumed only as safe operation/helper identity context; this generator does not reimplement SDK hash construction.
++
++## Deterministic Output
++
++Rows are sorted by `operation_id`, arrays are sorted when source order is not normative, output is UTF-8 without BOM and LF-only, and timestamps are not emitted. Safe provenance appears only as comments containing content hashes and repository-relative source names.
++
++## Failure Behavior
++
++The generator fails closed with `prerequisite_drift` diagnostics for duplicate operation IDs, missing mutating idempotency metadata, non-mutating idempotency metadata, missing read consistency, missing canonical error categories, missing audit metadata keys, unresolved previous-spine removal without approved deprecation, and malformed arguments.
++
++## Handoff
++
++Story 1.14 owns CI workflow wiring and release gates. Epic 5 owns SDK, REST, CLI, and MCP consumption tests. Runtime idempotency persistence, workspace lifecycle execution, provider side effects, and reconciliation remain Epic 4 scope.
+ 
+ ## Ownership Metadata
+ 
+ - owner_workstream: Phase 1 Contract Spine and C13 parity-oracle generator stories.
+ - future_test_use: Generate and validate REST, SDK, CLI, and MCP parity rows from the Contract Spine and parity fixtures.
+-- known_omissions: No generator code, operation inventory, comparison engine, CLI/MCP mapping table, or final oracle output format is defined here.
+-- mutation_rules: Do not add executable generator behavior until the owning parity story defines the oracle contract.
++- known_omissions: CI wiring and downstream adapter consumption remain in later stories.
++- mutation_rules: Regenerate `tests/fixtures/parity-contract.yaml` from repository inputs; do not hand-edit generated operation rows.
+ - non_policy_placeholder: true
+ - synthetic_data_only: true
