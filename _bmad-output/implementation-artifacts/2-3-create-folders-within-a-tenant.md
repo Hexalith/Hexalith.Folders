@@ -10,19 +10,27 @@ As an authorized actor,
 I want to create logical folders inside my tenant,
 so that repository-backed workspace tasks have a tenant-scoped logical home.
 
+## Terms
+
+- Authoritative tenant context means the managed tenant ID supplied by the authenticated execution context or EventStore envelope. Tenant IDs in request bodies, routes, query strings, or client-controlled headers are validation inputs only.
+- Tenant and ACL gates mean the ordered authorization boundary of authoritative tenant context, Story 2.1 tenant-access evidence, and Story 2.2 `create_folder` ACL evidence.
+- Safe metadata means stable metadata fields that are allowed in events, results, logs, diagnostics, audit, and projections: tenant ID, folder ID, lifecycle/result code, safe display name, optional safe description/tags/path label, correlation/task/idempotency IDs, safe actor/principal ID, and event version/sequence when available.
+- Opaque folder ID means an immutable generated or validated identifier that is never derived from tenant name, display name, path label, repository name, provider name, stream name, or folder hierarchy.
+- Minimal replay projection means the smallest tenant-scoped read model needed to prove creation event replay for existence, lifecycle state, and safe metadata. It is not a public folder listing/query feature.
+
 ## Acceptance Criteria
 
 1. Given the `FolderAggregate` does not yet exist, when this story is implemented, then the aggregate, state, command, event, result, and rejection types are introduced under `src/Hexalith.Folders/Aggregates/Folder/` using EventStore-oriented naming and opaque folder identity.
-2. Given authoritative managed tenant context, Story 2.1 tenant-access evidence, and Story 2.2 organization ACL permission for `create_folder` are all present, when `CreateFolder` is accepted, then the folder stream is created in the `{managedTenantId}:folders:{folderId}` shape with an active logical lifecycle state and safe metadata needed for later repository binding.
+2. Given authoritative managed tenant context, Story 2.1 tenant-access evidence, and Story 2.2 organization ACL permission for `create_folder` are all present in that order, when `CreateFolder` is accepted, then the folder stream is created in the `{managedTenantId}:folders:{folderId}` shape with an active logical lifecycle state and safe metadata needed for later repository binding.
 3. Given tenant identity appears in command payloads, routes, query parameters, or client-controlled headers, when create-folder command context is built, then tenant authority comes only from authentication context or EventStore envelopes; payload tenant IDs are validation inputs only.
 4. Given folder identity is supplied or generated, when the command is processed, then folder IDs are opaque immutable values and are never derived from display name, path, repository name, provider name, or tenant name.
 5. Given folder metadata is supplied, when it is accepted, then display name, optional description, optional projected path label, and optional tags are validated as metadata-only values; raw file contents, diffs, generated context payloads, provider credential material, repository URLs, branch names, and unauthorized resource identifiers are rejected or omitted.
-6. Given tenant-access evidence is stale, unavailable, disabled, unknown, malformed, future-dated, replay-conflicting, tenant-mismatched, denied, or missing authoritative tenant context, when `CreateFolder` is evaluated, then it rejects before stream-name construction, stream loading, event append, aggregate mutation, audit lookup, diagnostic lookup, provider readiness checks, or repository operations.
-7. Given ACL evidence does not grant `create_folder`, is unavailable, or cannot be evaluated from stable Story 2.2 result evidence, when `CreateFolder` is evaluated, then it rejects with metadata-only `folder_acl_denied` or equivalent stable evidence before stream loading or mutation.
-8. Given the same idempotency key and equivalent canonical create-folder payload are retried, when the command is processed, then the same logical result is returned without duplicating events; given the same idempotency key and materially different payload are processed, then the command rejects as `idempotency_conflict`.
-9. Given a folder already exists for the same opaque folder ID in the same tenant, when create is retried without matching idempotency equivalence, then the command returns deterministic duplicate/already-exists evidence without appending a second creation event.
-10. Given a folder creation result is accepted, rejected, duplicate, unauthorized, or idempotency-conflicted, when callers or tests inspect it, then stable result codes and safe metadata are available without parsing localized text, event type names, stack traces, or diagnostic strings.
-11. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodules, when unit and smoke tests execute, then folder creation, validation, tenant evidence gates, ACL gates, idempotency behavior, stream shape, metadata-only leakage boundaries, and projection replay are covered with in-memory fakes.
+6. Given tenant-access evidence is stale, unavailable, disabled, unknown, malformed, future-dated, replay-conflicting, tenant-mismatched, denied, or missing authoritative tenant context, when `CreateFolder` is evaluated, then it rejects before stream-name construction, durable/cache key construction, stream loading, duplicate lookup, event append, aggregate mutation, projection update, audit lookup, diagnostic lookup, provider readiness checks, or repository operations.
+7. Given ACL evidence does not grant `create_folder`, is unavailable, or cannot be evaluated from stable Story 2.2 result evidence, when `CreateFolder` is evaluated, then it rejects with metadata-only `folder_acl_denied` or equivalent stable evidence before durable/cache key construction, stream loading, duplicate lookup, append, projection update, diagnostics, audit lookup, or mutation.
+8. Given the same idempotency key and equivalent canonical create-folder payload are retried after tenant and ACL gates pass, when the command is processed, then the same logical result is returned without duplicating events; given the same idempotency key and materially different payload are processed, then the command rejects as `idempotency_conflict`; given tenant or ACL gates fail, then prior folder existence and idempotency records are not disclosed.
+9. Given a folder already exists for the same opaque folder ID in the same tenant, when create is retried without matching idempotency equivalence, then the command returns deterministic duplicate/already-exists evidence without appending a second creation event; display-name, projected path-label, and parent-folder uniqueness are deferred and must not be introduced as duplicate rules in this story.
+10. Given a folder creation result is accepted, rejected, duplicate, unauthorized, or idempotency-conflicted, when callers or tests inspect it, then stable result codes such as `created`, `idempotent_replay`, `idempotency_conflict`, `duplicate_folder`, `invalid_folder_id`, `invalid_folder_metadata`, `tenant_evidence_missing`, `tenant_access_denied`, `folder_acl_denied`, `acl_evidence_unavailable`, and `validation_failed` plus safe metadata are available without parsing localized text, event type names, stack traces, or diagnostic strings.
+11. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodules, when unit and smoke tests execute, then folder creation, validation, tenant evidence gates, ACL gates, idempotency behavior, stream shape, metadata-only leakage boundaries, and projection replay are covered with in-memory fakes and spies that fail on forbidden side effects.
 12. Given this story creates logical folders only, when implementation is complete, then it does not implement provider readiness, repository creation, repository binding, workspace preparation, locks, file mutation, commits, folder ACL grant/revoke, effective-permission query endpoints, archive behavior, CLI/MCP/UI commands, workers, production Dapr policy mapping, repair workflows, local-only folder mode, webhooks, brownfield adoption, or multi-organization-per-tenant behavior.
 
 ## Tasks / Subtasks
@@ -44,7 +52,7 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
   - [ ] Consume the Story 2.1 tenant-access authorizer/projection boundary before building the folder stream name.
   - [ ] Consume Story 2.2 organization ACL baseline evidence for `create_folder`; if the full Story 2.2 implementation is still in flight, define a narrow interface boundary and tests that model allowed, denied, unavailable, malformed, and stale ACL evidence without duplicating ACL aggregate logic.
   - [ ] Treat tenant IDs from route/body/query/header as comparison values only, never as authority that selects the aggregate stream.
-  - [ ] Ensure every non-allowed tenant or ACL result rejects before stream-name construction, stream load, append, mutation, diagnostics lookup, audit lookup, provider readiness checks, or repository operations.
+  - [ ] Ensure every non-allowed tenant or ACL result rejects before stream-name construction, durable/cache key construction, stream load, duplicate lookup, append, mutation, projection update, diagnostics lookup, audit lookup, provider readiness checks, or repository operations.
   - [ ] Keep authorization evidence metadata-only and stable-code based. Do not expose membership inventories, role display names, group names, user emails, raw projection payloads, or whether unauthorized folders already exist.
 - [ ] Add idempotency and duplicate handling. (AC: 8, 9, 10)
   - [ ] Reuse the project idempotency equivalence rules established in Epic 1 and the client helper semantics already generated in `src/Hexalith.Folders.Client/Generated/`.
@@ -55,6 +63,8 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
   - [ ] Return deterministic `already_exists` or equivalent evidence when a folder stream already contains a creation event for the same folder ID and the request is not an equivalent replay.
 - [ ] Add folder-list projection and replay support only as needed for creation evidence. (AC: 2, 10, 11)
   - [ ] Add minimal projection/event-apply coverage that can derive tenant-scoped folder existence, lifecycle state, and safe metadata from creation events.
+  - [ ] Prove replay isolation for two tenants with matching folder names, path labels, and folder-ID-like input values; tenant scope must come from the stream/envelope metadata and cannot collide across tenants.
+  - [ ] Cover empty streams, duplicate creation events, malformed metadata-only events, and replay ordering deterministically without external services.
   - [ ] Keep projection output metadata-only and tenant-scoped; do not add public listing/query endpoints unless the Contract Spine already exposes the shape and the implementation can stay within this story's logical-folder scope.
   - [ ] Do not implement hierarchy moves, folder archive, repository binding, provider readiness, workspace state, file context, or effective-permission inspection in this projection.
 - [ ] Add tests and fixtures. (AC: 1-12)
@@ -62,6 +72,8 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
   - [ ] Add authorization gate tests for allowed tenant plus `create_folder`, stale/unavailable/disabled/unknown/malformed/future/replay-conflicting tenant evidence, tenant mismatch, missing authoritative tenant, denied ACL, unavailable ACL evidence, and malformed ACL evidence.
   - [ ] Add idempotency tests for equivalent replay, same key plus changed folder metadata, same key plus changed folder ID, and already-existing folder without equivalent replay.
   - [ ] Add metadata leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file paths, file contents, diffs, generated context payloads, arbitrary tenant configuration values, user emails, group display names, and unauthorized resource names.
+  - [ ] Add sequencing tests named like `RejectsBeforeStreamNameWhenTenantMissing`, `RejectsBeforeLoadWhenTenantNotEvidenced`, and `RejectsBeforeAppendWhenCreateFolderAclMissing`, or equivalent local names that encode the forbidden side-effect boundary.
+  - [ ] Use in-memory spies for EventStore access, tenant evidence, ACL evidence, idempotency store, clock/time, validators, diagnostics sink, and audit sink so rejected paths can prove zero stream naming/loading/appending/projection/diagnostic/audit/provider/repository side effects.
   - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable folder creation builders that delegate to production validation rules.
   - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
   - [ ] Use pure in-memory fakes only for EventStore seams, tenant evidence, ACL evidence, clock/time, validators, idempotency records, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
@@ -96,6 +108,7 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
 - Keep `Hexalith.Folders.Contracts` behavior-free. Folder aggregate logic, command validation, idempotency equivalence, tenant/ACL gates, and EventStore command handling belong in `Hexalith.Folders` and tests, not in Contracts.
 - Keep aggregates pure. The aggregate applies commands, validates invariants that do not require I/O, and produces events/results; Dapr, provider, filesystem, Git, UI, CLI, MCP, workers, diagnostics, and projection-store side effects stay outside aggregate state transitions.
 - Authorization order for mutation paths is authoritative tenant context, Story 2.1 tenant evidence, Story 2.2 folder-create ACL evidence, then stream load/mutation. Do not construct stream names or load streams before fail-closed gates have passed.
+- Idempotency and duplicate lookups happen only after tenant and ACL gates pass. Unauthorized, stale, unavailable, malformed, or denied evidence must not reveal whether a folder stream, idempotency record, or duplicate folder already exists.
 - Use C# file-scoped namespaces, nullable-aware records/classes, one public type per file, PascalCase types/members, camelCase locals, and async APIs where I/O boundaries are introduced.
 - Use stable result codes, enum values, and metadata fields in tests. Do not assert localized or user-facing diagnostic text.
 - Events, logs, traces, metrics, projections, audit records, and errors must remain metadata-only and must not include raw credential values, provider tokens, file contents, diffs, generated context payloads, repository names, branch names, raw paths, user emails, group display names, or unauthorized resource existence.
@@ -119,9 +132,11 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
 
 ### Do Not Touch
 
-- Do not edit generated SDK files in `src/Hexalith.Folders.Client/Generated/`.
-- Do not add or modify OpenAPI Contract Spine operations unless implementation discovers a blocking mismatch that is explicitly handled through the contract workflow.
-- Do not implement provider readiness, provider adapters, repository creation, repository binding, branch policy, workspace preparation, locks, file mutation, commits, context query, folder ACL grant/revoke, effective-permission query endpoints, archive behavior, CLI, MCP, UI, workers, production Dapr policy, or repair workflows.
+- Contracts and SDK: Do not edit generated SDK files in `src/Hexalith.Folders.Client/Generated/`; do not add or modify OpenAPI Contract Spine operations unless implementation discovers a blocking mismatch that is explicitly handled through the contract workflow.
+- Storage/provider: Do not implement provider readiness, provider adapters, repository creation, repository binding, branch policy, local-only folder mode, webhooks, or brownfield adoption.
+- Workspace/file behavior: Do not implement workspace preparation, locks, file mutation, commits, context query, file browsing, or filesystem paths.
+- Permission/lifecycle management: Do not implement folder ACL grant/revoke, effective-permission query endpoints, archive behavior, repair workflows, or multi-organization-per-tenant behavior.
+- UX/surface/worker behavior: Do not implement CLI, MCP, UI, workers, operations-console mutation paths, or production Dapr policy.
 - Do not make display name, path, repository name, provider name, or tenant name part of folder identity.
 - Do not initialize nested submodules or use recursive submodule commands.
 
@@ -163,6 +178,18 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
 | Date | Change | Author |
 |---|---|---|
 | 2026-05-17 | Created story with folder aggregate creation, tenant/ACL pre-load gates, idempotency, metadata-only event, projection replay, and offline test guardrails. | Codex |
+| 2026-05-17 | Applied party-mode review hardening for terms, gate ordering, idempotency disclosure, duplicate scope, projection replay isolation, and test spies. | Codex |
+
+## Party-Mode Review
+
+- ISO date and time: 2026-05-17T10:56:49Z
+- Selected story key: `2-3-create-folders-within-a-tenant`
+- Command/skill invocation used: `/bmad-party-mode 2-3-create-folders-within-a-tenant; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor), Paige (Technical Writer)
+- Findings summary: Reviewers agreed the story was in the correct product scope but needed clarification before dev on authoritative tenant source, strict gate order before any stream/idempotency/diagnostic/audit side effects, ACL evidence dependency, idempotency disclosure boundaries, duplicate-folder meaning, safe metadata terms, projection replay isolation, and offline negative-control tests.
+- Changes applied: Added a Terms section; tightened AC2, AC6, AC7, AC8, AC9, AC10, and AC11; added sequencing, projection replay, and spy-fixture subtasks; clarified idempotency lookup ordering; grouped exclusions by category; and recorded the trace separately from future advanced elicitation evidence.
+- Findings deferred: Folder display-name uniqueness within a tenant; whether projected path label is cosmetic metadata or a future hierarchy locator; final replay projection shape beyond creation evidence; whether denied attempts emit audit records and the exact redacted field set; whether idempotency helper should stay folder-local or become reusable after another aggregate needs it.
+- Final recommendation: `ready-for-dev`
 
 ## Dev Agent Record
 
