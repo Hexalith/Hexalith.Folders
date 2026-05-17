@@ -31,8 +31,9 @@ public sealed class ContractSpineCiGateTests
         workflow.ShouldNotContain("semantic-release", Case.Insensitive);
         workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
 
-        script.ShouldContain("tests\\Hexalith.Folders.Contracts.Tests\\Hexalith.Folders.Contracts.Tests.csproj");
-        script.ShouldContain("tests\\Hexalith.Folders.Client.Tests\\Hexalith.Folders.Client.Tests.csproj");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
+        script.ShouldContain("tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj");
+        script.ShouldContain("$LASTEXITCODE");
         script.ShouldNotContain("--recursive", Case.Insensitive);
     }
 
@@ -133,6 +134,14 @@ public sealed class ContractSpineCiGateTests
         AssertMetadataOnly(documentation);
     }
 
+    private static readonly string[] ExcludedSubtreeSegments =
+    [
+        $"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}",
+        $"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}",
+        $"{Path.DirectorySeparatorChar}Generated{Path.DirectorySeparatorChar}",
+        $"{Path.DirectorySeparatorChar}node_modules{Path.DirectorySeparatorChar}",
+    ];
+
     private static string[] DiscoverServerOpenApiSources()
     {
         string src = Path.Combine(RepositoryRoot, "src");
@@ -144,6 +153,7 @@ public sealed class ContractSpineCiGateTests
         return Directory.EnumerateFiles(src, "*.*", SearchOption.AllDirectories)
             .Where(path => path.Contains($"{Path.DirectorySeparatorChar}Hexalith.Folders.Server{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
             .Where(path => Path.GetExtension(path) is ".yaml" or ".yml" or ".json")
+            .Where(path => !ExcludedSubtreeSegments.Any(segment => path.Contains(segment, StringComparison.Ordinal)))
             .Where(path =>
             {
                 string relative = ToRepositoryPath(path);
@@ -152,12 +162,33 @@ public sealed class ContractSpineCiGateTests
                     return false;
                 }
 
-                string content = File.ReadAllText(path);
-                return content.Contains("openapi:", StringComparison.OrdinalIgnoreCase) || content.Contains("\"openapi\"", StringComparison.OrdinalIgnoreCase);
+                return ContainsTopLevelOpenApiKey(path);
             })
             .Select(ToRepositoryPath)
             .Order(StringComparer.Ordinal)
             .ToArray();
+    }
+
+    private static bool ContainsTopLevelOpenApiKey(string path)
+    {
+        using StreamReader reader = File.OpenText(path);
+        for (int read = 0; read < 64; read++)
+        {
+            string? line = reader.ReadLine();
+            if (line is null)
+            {
+                return false;
+            }
+
+            string trimmed = line.TrimStart();
+            if (trimmed.StartsWith("openapi:", StringComparison.OrdinalIgnoreCase)
+                || trimmed.StartsWith("\"openapi\"", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static GateDiagnostic EvaluateServerSource(IReadOnlyList<string> repositoryRelativeCandidates)

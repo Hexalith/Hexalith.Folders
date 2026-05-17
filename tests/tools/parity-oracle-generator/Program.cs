@@ -53,13 +53,13 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
     {
         if (pathEntry.Key is not YamlScalarNode pathKeyScalar)
         {
-            throw new InvalidOperationException("prerequisite_drift: non-scalar key under OpenAPI paths.");
+            throw new InvalidOperationException("prerequisite-drift: non-scalar key under OpenAPI paths.");
         }
 
         string? rawPath = pathKeyScalar.Value;
         if (rawPath is null || string.IsNullOrWhiteSpace(rawPath) || rawPath == "~")
         {
-            throw new InvalidOperationException("prerequisite_drift: empty or null path key in OpenAPI paths.");
+            throw new InvalidOperationException("prerequisite-drift: empty or null path key in OpenAPI paths.");
         }
 
         string path = rawPath;
@@ -82,7 +82,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
             {
                 if (method == "$ref")
                 {
-                    throw new InvalidOperationException($"prerequisite_drift: path '{path}' uses path-item $ref which is not supported by this generator.");
+                    throw new InvalidOperationException($"prerequisite-drift: path '{path}' uses path-item $ref which is not supported by this generator.");
                 }
                 continue;
             }
@@ -100,7 +100,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
 
             if (!recognizedMethods.Contains(method))
             {
-                throw new InvalidOperationException($"prerequisite_drift: unsupported HTTP method '{methodKey}' at path '{path}'.");
+                throw new InvalidOperationException($"prerequisite-drift: unsupported HTTP method '{methodKey}' at path '{path}'.");
             }
 
             YamlMappingNode operation = methodEntry.Value.AsMapping($"operation {method} {path}");
@@ -147,7 +147,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
             if (routeIdentities.TryGetValue(routeKey, out OperationModel? existing))
             {
                 throw new InvalidOperationException(
-                    $"prerequisite_drift: route '{routeKey}' bound to both operationId '{existing.OperationId}' and '{operationId}'.");
+                    $"prerequisite-drift: route '{routeKey}' bound to both operationId '{existing.OperationId}' and '{operationId}'.");
             }
             routeIdentities[routeKey] = model;
             operations.Add(model);
@@ -161,19 +161,19 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
 {
     foreach (IGrouping<string, OperationModel> duplicate in operations.GroupBy(o => o.OperationId, StringComparer.Ordinal).Where(g => g.Count() > 1))
     {
-        throw new InvalidOperationException($"prerequisite_drift: duplicate operationId '{duplicate.Key}'.");
+        throw new InvalidOperationException($"prerequisite-drift: duplicate operationId '{duplicate.Key}'.");
     }
 
     foreach (OperationModel operation in operations)
     {
         if (operation.ErrorCategories.Count == 0)
         {
-            throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} lacks x-hexalith-canonical-error-categories.");
+            throw new InvalidOperationException($"prerequisite-drift: operation {operation.OperationId} lacks x-hexalith-canonical-error-categories.");
         }
 
         if (operation.AuditMetadataKeys.Count == 0)
         {
-            throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} lacks x-hexalith-audit-metadata-keys.");
+            throw new InvalidOperationException($"prerequisite-drift: operation {operation.OperationId} lacks x-hexalith-audit-metadata-keys.");
         }
 
         foreach (string auditKey in operation.AuditMetadataKeys)
@@ -181,7 +181,7 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
             if (!AuditKeyPattern.IsMatch(auditKey))
             {
                 throw new InvalidOperationException(
-                    $"prerequisite_drift: operation {operation.OperationId} audit metadata key '{auditKey}' violates pattern ^[a-z][a-z0-9_]*$.");
+                    $"prerequisite-drift: operation {operation.OperationId} audit metadata key '{auditKey}' violates pattern ^[a-z][a-z0-9_]*$.");
             }
         }
 
@@ -209,29 +209,29 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
         {
             if (!operation.HasIdempotencyKey || operation.IdempotencyFields.Count == 0)
             {
-                throw new InvalidOperationException($"prerequisite_drift: mutating operation {operation.OperationId} lacks required idempotency metadata.");
+                throw new InvalidOperationException($"prerequisite-drift: mutating operation {operation.OperationId} lacks required idempotency metadata.");
             }
 
             if (operation.IdempotencyFields.Distinct(StringComparer.Ordinal).Count() != operation.IdempotencyFields.Count)
             {
-                throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} declares duplicate idempotency fields.");
+                throw new InvalidOperationException($"prerequisite-drift: operation {operation.OperationId} declares duplicate idempotency fields.");
             }
 
             if (!operation.IdempotencyFields.SequenceEqual(operation.IdempotencyFields.Order(StringComparer.Ordinal), StringComparer.Ordinal))
             {
-                throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} idempotency fields are not ordinal-sorted.");
+                throw new InvalidOperationException($"prerequisite-drift: operation {operation.OperationId} idempotency fields are not ordinal-sorted.");
             }
         }
         else
         {
             if (operation.HasIdempotencyKey || operation.IdempotencyFields.Count > 0)
             {
-                throw new InvalidOperationException($"prerequisite_drift: non-mutating operation {operation.OperationId} accepts idempotency metadata.");
+                throw new InvalidOperationException($"prerequisite-drift: non-mutating operation {operation.OperationId} accepts idempotency metadata.");
             }
 
             if (string.IsNullOrWhiteSpace(operation.ReadConsistencyClass))
             {
-                throw new InvalidOperationException($"prerequisite_drift: non-mutating operation {operation.OperationId} lacks x-hexalith-read-consistency.");
+                throw new InvalidOperationException($"prerequisite-drift: non-mutating operation {operation.OperationId} lacks x-hexalith-read-consistency.");
             }
         }
 
@@ -240,7 +240,7 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
             if (!OutcomeMappings.TryGetValue(category, out _))
             {
                 throw new InvalidOperationException(
-                    $"prerequisite_drift: operation {operation.OperationId} declares canonical category '{category}' with no behavioral parity mapping. Update Adapter Outcome Parity rule table before emission.");
+                    $"prerequisite-drift: operation {operation.OperationId} declares canonical category '{category}' with no behavioral parity mapping. Update Adapter Outcome Parity rule table before emission.");
             }
         }
     }
@@ -250,7 +250,7 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
 {
     if (!File.Exists(previousSpinePath))
     {
-        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml is missing.");
+        throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml is missing.");
     }
 
     YamlMappingNode previous;
@@ -260,28 +260,28 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
     }
     catch (Exception ex)
     {
-        throw new InvalidOperationException($"prerequisite_drift: previous-spine.yaml is unparseable: {ex.Message}");
+        throw new InvalidOperationException($"prerequisite-drift: previous-spine.yaml is unparseable: {ex.Message}");
     }
 
     if (!previous.Children.TryGetValue(new YamlScalarNode("operations"), out YamlNode? operationsNode))
     {
-        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml lacks operations.");
+        throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml lacks operations.");
     }
 
     if (operationsNode is YamlScalarNode { Value: null or "" })
     {
-        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml operations is null.");
+        throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml operations is null.");
     }
 
     YamlSequenceNode operationsSeq = operationsNode as YamlSequenceNode
-        ?? throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml operations must be a sequence.");
+        ?? throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml operations must be a sequence.");
 
     if (operationsSeq.Children.Count == 0)
     {
         if (!allowEmptyBaseline)
         {
             throw new InvalidOperationException(
-                "prerequisite_drift: previous-spine.yaml has empty operations and --allow-empty-baseline was not passed. Run with --initialize-baseline to capture the current spine.");
+                "prerequisite-drift: previous-spine.yaml has empty operations and --allow-empty-baseline was not passed. Run with --initialize-baseline to capture the current spine.");
         }
 
         diagnostics.Add(new Diagnostic(
@@ -313,7 +313,7 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
     {
         if (node is not YamlMappingNode operation)
         {
-            throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml operation entry must be a mapping.");
+            throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml operation entry must be a mapping.");
         }
 
         string operationId = ReadFlexibleScalar(operation, "operation_id", "operationId");
@@ -337,23 +337,23 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         if (routeMatches && operationIdMatches)
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: previous operation '{operationId}' both renamed (route '{method} {path}' now binds '{renamed!.OperationId}') and moved (id '{operationId}' now at '{moved!.Method} {moved.Path}') without approved deprecation.");
+                $"prerequisite-drift: previous operation '{operationId}' both renamed (route '{method} {path}' now binds '{renamed!.OperationId}') and moved (id '{operationId}' now at '{moved!.Method} {moved.Path}') without approved deprecation.");
         }
 
         if (routeMatches)
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: previous operationId '{operationId}' renamed to '{renamed!.OperationId}' at route '{method} {path}' without approved deprecation.");
+                $"prerequisite-drift: previous operationId '{operationId}' renamed to '{renamed!.OperationId}' at route '{method} {path}' without approved deprecation.");
         }
 
         if (operationIdMatches)
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: previous operation '{operationId}' moved from '{method} {path}' to '{moved!.Method} {moved.Path}' without approved deprecation.");
+                $"prerequisite-drift: previous operation '{operationId}' moved from '{method} {path}' to '{moved!.Method} {moved.Path}' without approved deprecation.");
         }
 
         throw new InvalidOperationException(
-            $"prerequisite_drift: previous operation removed without approved deprecation '{identity}'.");
+            $"prerequisite-drift: previous operation removed without approved deprecation '{identity}'.");
     }
 
     // Additive-drift check. Only enforced when the baseline explicitly declares an
@@ -374,7 +374,7 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         }
 
         throw new InvalidOperationException(
-            $"prerequisite_drift: current operationId '{current.OperationId}' is not in the previous-spine baseline and is not listed under approved_additions. "
+            $"prerequisite-drift: current operationId '{current.OperationId}' is not in the previous-spine baseline and is not listed under approved_additions. "
             + "Either add the operationId to `approved_additions:` in tests/fixtures/previous-spine.yaml or rerun with --initialize-baseline after an intentional sweep.");
     }
 }
@@ -394,14 +394,14 @@ static HashSet<string> ReadApprovedAdditions(YamlMappingNode previous)
 
     if (node is not YamlSequenceNode sequence)
     {
-        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml approved_additions must be a sequence of operationIds.");
+        throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml approved_additions must be a sequence of operationIds.");
     }
 
     foreach (YamlNode entry in sequence)
     {
         if (entry is not YamlScalarNode scalar || string.IsNullOrWhiteSpace(scalar.Value))
         {
-            throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml approved_additions entries must be non-empty scalar operationIds.");
+            throw new InvalidOperationException("prerequisite-drift: previous-spine.yaml approved_additions entries must be non-empty scalar operationIds.");
         }
 
         approved.Add(scalar.Value!);
@@ -793,7 +793,7 @@ static string ReadFlexibleScalar(YamlMappingNode mapping, params string[] keys)
         }
     }
 
-    throw new InvalidOperationException($"prerequisite_drift: previous-spine entry missing required scalar '{string.Join("|", keys)}'.");
+    throw new InvalidOperationException($"prerequisite-drift: previous-spine entry missing required scalar '{string.Join("|", keys)}'.");
 }
 
 static bool HasApprovedDeprecation(YamlMappingNode operation, string repositoryRoot)
@@ -814,10 +814,11 @@ static bool HasApprovedDeprecation(YamlMappingNode operation, string repositoryR
         return false;
     }
 
-    _ = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "rationale");
-    _ = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "approval_reference");
-    _ = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "effective_date");
-    string approvalSource = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "approval_source");
+    YamlMappingNode deprecation = deprecationNode.AsMapping("deprecation");
+    _ = ReadDeprecationEvidenceScalar(deprecation, "rationale");
+    _ = ReadDeprecationEvidenceScalar(deprecation, "approval_reference");
+    _ = ReadDeprecationEvidenceScalar(deprecation, "effective_date");
+    string approvalSource = ReadDeprecationEvidenceScalar(deprecation, "approval_source");
     ValidateRepositoryRelativeApprovalSource(repositoryRoot, approvalSource);
     return true;
 }
@@ -919,7 +920,7 @@ static void ValidateOperationIdShape(string operationId)
     if (!OperationIdPattern.IsMatch(operationId))
     {
         throw new InvalidOperationException(
-            $"prerequisite_drift: operationId '{operationId}' violates pattern ^[A-Z][A-Za-z0-9]*$.");
+            $"prerequisite-drift: operationId '{operationId}' violates pattern ^[A-Z][A-Za-z0-9]*$.");
     }
 }
 
@@ -931,7 +932,7 @@ static string Quote(string value)
         if (char.IsControl(c) && c != '\t')
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: value contains control character (codepoint {(int)c:X4}); cannot emit safely.");
+                $"prerequisite-drift: value contains control character (codepoint {(int)c:X4}); cannot emit safely.");
         }
 
         // U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR) are NOT classified as control
@@ -940,7 +941,7 @@ static string Quote(string value)
         if (c == '\u2028' || c == '\u2029')
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: value contains line/paragraph separator (codepoint {(int)c:X4}); cannot emit safely.");
+                $"prerequisite-drift: value contains line/paragraph separator (codepoint {(int)c:X4}); cannot emit safely.");
         }
 
         if (char.IsHighSurrogate(c))
@@ -948,7 +949,7 @@ static string Quote(string value)
             if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
             {
                 throw new InvalidOperationException(
-                    $"prerequisite_drift: value contains lone high surrogate (codepoint {(int)c:X4}); cannot emit safely.");
+                    $"prerequisite-drift: value contains lone high surrogate (codepoint {(int)c:X4}); cannot emit safely.");
             }
 
             // Skip the well-formed low surrogate; the next loop iteration will land on the char
@@ -960,7 +961,7 @@ static string Quote(string value)
         if (char.IsLowSurrogate(c))
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: value contains lone low surrogate (codepoint {(int)c:X4}); cannot emit safely.");
+                $"prerequisite-drift: value contains lone low surrogate (codepoint {(int)c:X4}); cannot emit safely.");
         }
     }
 
@@ -977,7 +978,7 @@ static YamlMappingNode LoadYaml(string path)
 {
     if (!File.Exists(path))
     {
-        throw new InvalidOperationException($"prerequisite_drift: required input file is missing: {path}");
+        throw new InvalidOperationException($"prerequisite-drift: required input file is missing: {path}");
     }
 
     // Read bytes once, then strip an optional UTF-8 BOM before handing the text to YamlDotNet.
@@ -995,13 +996,13 @@ static YamlMappingNode LoadYaml(string path)
 
     if (yaml.Documents.Count == 0)
     {
-        throw new InvalidOperationException($"prerequisite_drift: YAML input '{path}' contains no documents.");
+        throw new InvalidOperationException($"prerequisite-drift: YAML input '{path}' contains no documents.");
     }
 
     if (yaml.Documents.Count > 1)
     {
         throw new InvalidOperationException(
-            $"prerequisite_drift: YAML input '{path}' contains multiple documents; generator requires a single document per file.");
+            $"prerequisite-drift: YAML input '{path}' contains multiple documents; generator requires a single document per file.");
     }
 
     return yaml.Documents[0].RootNode.AsMapping("root");
@@ -1139,7 +1140,7 @@ internal sealed record GeneratorOptions(
         }
 
         throw new InvalidOperationException(
-            "prerequisite_drift: could not locate repository root (Hexalith.Folders.slnx not found). Pass --repository-root explicitly.");
+            "prerequisite-drift: could not locate repository root (Hexalith.Folders.slnx not found). Pass --repository-root explicitly.");
     }
 }
 

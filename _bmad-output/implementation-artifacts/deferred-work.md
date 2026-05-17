@@ -2,6 +2,17 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)
+
+Items deferred from the `/bmad-code-review 1.14` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `1efdb19`.
+
+- Isolated regeneration does not copy repo-root `nuget.config` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-227`]. CI runner happens to use the same `nuget.org`-only sources today; revisit if a private feed is added.
+- Removal of `--no-build` from generator-invoking tests adds an incremental MSBuild check per test [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:404`]. Accepted trade-off for the `obj/` lock race; `[Collection("ParityOracleGenerator")]` keeps it serial.
+- Workflow lacks `concurrency:`, `timeout-minutes:`, and `workflow_dispatch:` [`.github/workflows/contract-spine.yml`]. Hygiene items not required by AC8; revisit when a shared workflow pattern emerges with Stories 1.15/1.16.
+- `fetch-depth: 1` (shallow checkout) [`.github/workflows/contract-spine.yml:23`]. No current gate uses git history; future drift gates that diff tags must override.
+- Case-sensitivity / symlink edge cases in `ValidateRepositoryRelativeApprovalSource` [`tests/tools/parity-oracle-generator/Program.cs:783-801`]. `OrdinalIgnoreCase` prefix check accepts case-mismatched paths on Linux; not exploitable today (no symlinks in `docs/`).
+- Per-file allow-list pattern in negative-scope test [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs:286-298`]. Allows only `contract-spine.yml`; Stories 1.15/1.16 will add more entries one at a time. Consider an expected-set assertion when 1.15 lands.
+
 ## Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)
 
 Items deferred from the `/bmad-code-review 1.13` round-3 triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over `7c8f176..HEAD` patches.

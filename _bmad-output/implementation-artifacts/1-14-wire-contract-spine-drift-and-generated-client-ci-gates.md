@@ -1,6 +1,6 @@
 # Story 1.14: Wire Contract Spine drift and generated-client CI gates
 
-Status: review
+Status: done
 
 Created: 2026-05-13
 
@@ -204,6 +204,7 @@ tests/fixtures/parity-contract.yaml
 | 2026-05-15 | Applied party-mode review hardening for fail-closed prerequisites, deterministic gate inputs, failure taxonomy, and local/CI command parity. | Codex |
 | 2026-05-15 | Applied advanced-elicitation hardening for validation-mode non-mutation, server source authority, deprecation evidence, and metadata-only CI reporting surfaces. | Codex |
 | 2026-05-17 | Wired contract/generated-artifact CI gates, local gate command, fail-closed prerequisite tests, generated-client golden-file validation, and developer documentation. Story ready for review. | Codex |
+| 2026-05-17 | Applied code-review patches: renamed `prerequisite_drift` to AC16 hyphenated `prerequisite-drift` across the parity-oracle generator/tests/docs, switched the gate script to forward-slash paths with per-project `$LASTEXITCODE` propagation, redacted local absolute paths in `ClientGenerationTests` failure messages, added a lock around the shared `RunProcess` `StringBuilder`, wrapped temp cleanup in a fail-safe helper, narrowed `DiscoverServerOpenApiSources` to first-line `openapi:` detection and excluded `bin/obj/Generated/` subtrees, and cached the `deprecation` mapping in `HasApprovedDeprecation`. Full solution test suite passes. | Claude (Opus 4.7) |
 
 ## Party-Mode Review
 
@@ -255,6 +256,40 @@ Codex (GPT-5)
 - `tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`
 - `_bmad-output/implementation-artifacts/1-14-wire-contract-spine-drift-and-generated-client-ci-gates.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+### Review Findings
+
+_Code review on 2026-05-17 (commit `1efdb19`). Layers: Blind Hunter, Edge Case Hunter, Acceptance Auditor. Triage: 1 decision-needed, 7 patch, 6 deferred, 14 dismissed as noise._
+
+- [x] [Review][Decision] Failure-category spelling: `prerequisite_drift` (underscore) vs AC16 bounded `prerequisite-drift` (hyphen) — `tests/tools/parity-oracle-generator/Program.cs` emits the underscored form in ~39 sites (lines 56, 62, 85, 103, 150, 164, 171, 176, 184, 212, 217, 222, 229, 234, 243, 253, 263, 268, 273, 277, 284, 316, 340, 346, 352, 356, 377, 397, 404, 796, 922, 934, 943, 951, 963, 980, 998, 1004, 1142). Newly added deprecation-evidence emissions (lines 829, 835, 840, 850, 860, 865) correctly use hyphenated `previous-spine-drift`. `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:178` asserts the underscored form, perpetuating the mismatch. AC16 binds the diagnostic taxonomy to hyphenated tokens. The underscored spelling pre-dates this story (Story 1.13), but the file is in scope for Story 1.14 changes. **Decision needed:** fix the spelling now (rename emissions + tests; verify no other consumers grep for the underscored form) OR defer to a focused cleanup story and amend AC16 to allow the transitional spelling.
+
+- [x] [Review][Patch] PowerShell script does not propagate `dotnet test` exit codes [tests/tools/run-contract-spine-gates.ps1:16-17] — `$ErrorActionPreference = 'Stop'` only affects native PowerShell errors; non-zero exit from `dotnet test` does not terminate the script. First `dotnet test` failure is masked by the second invocation; the script's exit code is the second test's exit code only. CI passes incorrectly when only the Contracts gates fail.
+
+- [x] [Review][Patch] Script uses Windows-style backslash csproj paths but workflow runs on `ubuntu-latest` [tests/tools/run-contract-spine-gates.ps1:16-17 and tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs:34-35] — paths `tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj` and `tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj` resolve on Windows but not under .NET on Linux, which treats `\` as a literal filename character. The test at line 34-35 explicitly locks the backslash form, so the script-content assertion passes on Linux while the actual script invocation fails to locate the projects. Use forward slashes (`tests/Hexalith.Folders.Contracts.Tests/...`), or build paths with `[IO.Path]::Combine`, and update the corresponding test assertions.
+
+- [x] [Review][Patch] Local absolute paths leak through Shouldly failure messages [tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:235, 242, 304] — `restore.ExitCode.ShouldBe(0, restore.Output)`, `generation.ExitCode.ShouldBe(0, generation.Output)`, and `process.ExitCode.ShouldBe(0, combinedOutput)` embed `dotnet`/`dotnet msbuild` stdout+stderr in the failure message. That output contains the per-test temp path under `Path.GetTempPath()` (e.g., `/tmp/hexalith-folders-golden-<guid>/...` on Linux or `C:\Users\runner\AppData\Local\Temp\...` on Windows). AC11 explicitly forbids local absolute paths in CI diagnostics. Redact paths or include only a content hash and gate name in the failure message.
+
+- [x] [Review][Patch] `RunProcess` shares an unlocked `StringBuilder` between OutputDataReceived and ErrorDataReceived handlers [tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:286-290] — both events are raised on threadpool threads and concurrently call `output.AppendLine`. `StringBuilder` is not thread-safe; concurrent calls can interleave bytes, corrupt internal state, or throw `NullReferenceException`. Wrap appends in a `lock` (or replace with `ConcurrentQueue<string>` then join at the end).
+
+- [x] [Review][Patch] `Directory.Delete(tempRoot, recursive: true)` in `finally` swallows original test exceptions [tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:251, 310] — when the delete throws (locked files from MSBuild residue on Windows, long paths exceeding `MAX_PATH`, or read-only NuGet restore artifacts), the cleanup exception propagates and hides the actual test failure. Wrap the delete in `try/catch` and re-throw only if there was no in-flight exception.
+
+- [x] [Review][Patch] `DiscoverServerOpenApiSources` scans every `*.yaml`/`*.yml`/`*.json` under `src/` for the literal `openapi:` substring [tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs:136-161] — picks up false positives from `bin/`, `obj/`, generated outputs, README snippets, settings files, and copy-pasted release notes. Exclude `bin/`, `obj/`, and `Generated/` subtrees at minimum; consider requiring `openapi:` to appear within the first N lines (top-level YAML key) rather than anywhere in the file.
+
+- [x] [Review][Patch] `HasApprovedDeprecation` re-parses the `deprecation` mapping four times [tests/tools/parity-oracle-generator/Program.cs:817-822] — each `deprecationNode.AsMapping("deprecation")` call repeats type validation. Cache the mapping once into a local: `var dep = deprecationNode.AsMapping("deprecation"); ReadDeprecationEvidenceScalar(dep, ...);`.
+
+- [x] [Review][Defer] [tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-227] Isolated regeneration does not copy repo-root `nuget.config` — pre-existing scaffold; in practice CI runner uses the same `nuget.org`-only sources so the comparison happens to be byte-stable. Document and revisit if a private feed is added.
+
+- [x] [Review][Defer] [tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:404] Removal of `--no-build` makes every generator-invoking test incur an incremental MSBuild check — slows CI but the test class is serialized via `[Collection("ParityOracleGenerator")]`. Acceptable trade-off for the lock race; revisit if CI duration becomes a problem.
+
+- [x] [Review][Defer] [.github/workflows/contract-spine.yml] No `concurrency:` group, no `timeout-minutes`, no `workflow_dispatch:` — hygiene items that AC8 does not require. Add when other workflows land in Story 1.15/1.16 and a shared pattern emerges.
+
+- [x] [Review][Defer] [.github/workflows/contract-spine.yml:23] `fetch-depth: 1` (shallow checkout) — no gate in this diff needs git history; future drift gates that diff against tags must override.
+
+- [x] [Review][Defer] [tests/tools/parity-oracle-generator/Program.cs:783-801] Case-sensitivity and symlink edge cases in `ValidateRepositoryRelativeApprovalSource` — uses `OrdinalIgnoreCase` prefix check; correct on Windows, accepts case-mismatched approval paths on Linux where the filesystem is case-sensitive. Not exploitable today (no symlinks in `docs/`), revisit when introducing approval sources outside `docs/`.
+
+- [x] [Review][Defer] [tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs:286-298] Per-file allow-list pattern for negative-scope test — currently allows only `contract-spine.yml`. Stories 1.15 and 1.16 will need to extend this allow-list one file at a time. Consider replacing with a sorted expected-set assertion when 1.15 lands.
+
+- Dismissed (14): exact action-version locking (intentional per AC8); substring matching on workflow YAML (test-only domain); `permissions: contents: read` and OIDC concerns (read-only token is correct); fork-PR security worry (token is read-only by default); NSwag byte-equality fragility (NSwag version pinned via CPM, no embedded timestamps); AC10 process verification (cannot verify from diff alone); AC20 absence-of-surfaces (workflow does not emit annotations or upload artifacts); AC15 banner/timestamp pinning (inherited transitively from Story 1.12 generators); `AssertMetadataOnly` heuristic completeness; `https://` in forbidden list (doc currently has no URLs); `--recursive` substring fragility; `using System.Diagnostics;` ordering; comment hygiene; `ProcessResult` formatting noise.
 
 ## Advanced Elicitation
 

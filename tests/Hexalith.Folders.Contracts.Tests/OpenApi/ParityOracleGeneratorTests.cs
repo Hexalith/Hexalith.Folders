@@ -175,7 +175,7 @@ public sealed class ParityOracleGeneratorTests
         GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
 
         result.ExitCode.ShouldNotBe(0);
-        (result.Output + result.Error).ShouldContain("prerequisite_drift", Case.Insensitive);
+        (result.Output + result.Error).ShouldContain("prerequisite-drift", Case.Insensitive);
     }
 
     [Fact]
@@ -429,7 +429,7 @@ operations:
 
             // After a successful timed wait, call the parameterless overload to guarantee the
             // async output/error readers have flushed their final buffered lines. Without this,
-            // assertions that grep for trailing `prerequisite_drift` messages can be flaky.
+            // assertions that grep for trailing `prerequisite-drift` messages can be flaky.
             process.WaitForExit();
         }
         catch

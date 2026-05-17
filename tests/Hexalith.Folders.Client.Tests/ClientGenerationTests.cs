@@ -232,14 +232,14 @@ public sealed class ClientGenerationTests
 
             string project = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
             ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\"", tempRoot, 180_000);
-            restore.ExitCode.ShouldBe(0, restore.Output);
+            restore.ExitCode.ShouldBe(0, RedactDiagnosticOutput(restore.Output, tempRoot));
 
             ProcessResult generation = RunProcess(
                 "dotnet",
                 $"msbuild \"{project}\" /t:GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
                 tempRoot,
                 240_000);
-            generation.ExitCode.ShouldBe(0, generation.Output);
+            generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, tempRoot));
 
             string generatedClient = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs");
             string generatedHelpers = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
@@ -248,7 +248,7 @@ public sealed class ClientGenerationTests
         }
         finally
         {
-            Directory.Delete(tempRoot, recursive: true);
+            TryDeleteDirectory(tempRoot);
         }
     }
 
@@ -301,13 +301,13 @@ public sealed class ClientGenerationTests
             }
 
             string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
-            process.ExitCode.ShouldBe(0, combinedOutput);
+            process.ExitCode.ShouldBe(0, RedactDiagnosticOutput(combinedOutput, tempRoot));
             File.Exists(output).ShouldBeTrue();
             File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
         }
         finally
         {
-            Directory.Delete(tempRoot, recursive: true);
+            TryDeleteDirectory(tempRoot);
         }
     }
 
@@ -467,6 +467,31 @@ public sealed class ClientGenerationTests
     private static string NormalizeLineEndings(string value) =>
         value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
 
+    private static string RedactDiagnosticOutput(string raw, string tempRoot)
+    {
+        // AC11: CI diagnostics must not include local absolute paths. Replace temp and repo roots
+        // with bounded placeholders before embedding captured process output in failure messages.
+        string redacted = raw.Replace(tempRoot, "<TEMP_ROOT>", StringComparison.OrdinalIgnoreCase);
+        redacted = redacted.Replace(RepositoryRoot, "<REPOSITORY_ROOT>", StringComparison.OrdinalIgnoreCase);
+        return redacted;
+    }
+
+    private static void TryDeleteDirectory(string path)
+    {
+        try
+        {
+            Directory.Delete(path, recursive: true);
+        }
+        catch (IOException)
+        {
+            // Best-effort cleanup. Locked files (Windows MSBuild residue) or long paths must not
+            // mask the test's original outcome.
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
     private static void CopyRepositoryFile(string relativePath, string destinationRoot)
     {
         string source = Path.Combine(RepositoryRoot, relativePath);
@@ -489,8 +514,9 @@ public sealed class ClientGenerationTests
 
         using Process process = Process.Start(startInfo) ?? throw new InvalidOperationException($"Failed to start {fileName}.");
         StringBuilder output = new();
-        process.OutputDataReceived += (_, e) => { if (e.Data is not null) { output.AppendLine(e.Data); } };
-        process.ErrorDataReceived += (_, e) => { if (e.Data is not null) { output.AppendLine(e.Data); } };
+        object outputLock = new();
+        process.OutputDataReceived += (_, e) => { if (e.Data is not null) { lock (outputLock) { output.AppendLine(e.Data); } } };
+        process.ErrorDataReceived += (_, e) => { if (e.Data is not null) { lock (outputLock) { output.AppendLine(e.Data); } } };
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
         if (!process.WaitForExit(timeoutMilliseconds))

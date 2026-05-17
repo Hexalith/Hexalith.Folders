@@ -34,7 +34,7 @@ tests/fixtures/parity-contract.yaml
 | Previous spine baseline | Symmetric removal/deprecation comparison |
 | Story 1.12 helper provenance | Helper identity only; not hash construction policy |
 
-Conflicts fail as `prerequisite_drift`; the generator does not invent fallback policy.
+Conflicts fail as `prerequisite-drift`; the generator does not invent fallback policy.
 
 ## Deterministic Output Policy
 
@@ -48,13 +48,13 @@ Focused tests in `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGen
 
 | Acceptance Criteria | Positive Evidence | Negative Evidence |
 |---|---|---|
-| AC1, AC3, AC4, AC5 | `GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce`; `GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules` | Missing mutating idempotency metadata fails as `prerequisite_drift` |
+| AC1, AC3, AC4, AC5 | `GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce`; `GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules` | Missing mutating idempotency metadata fails as `prerequisite-drift` |
 | AC2, AC11 | `GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns` | Schema enum mismatches fail row validation assertions |
 | AC6, AC13 | Behavioral columns asserted in generated rows and sourced from bounded adapter rules | Pre-SDK and post-SDK categories remain separate row columns |
 | AC7, AC17 | Previous-spine comparison runs during generation | Removed previous-spine operation without approved deprecation fails closed |
 | AC8, AC10, AC14, AC16 | `GeneratorOutputIsByteStableAndMetadataOnly` | Forbidden leak strings and local absolute paths are rejected |
 | AC12 | No CI workflow files are modified by this story | Story 1.14 ownership documented here and in the tool README |
-| AC15 | Current OpenAPI, contract docs, previous-spine fixture, schema, and Story 1.12 provenance were inspected before implementation | Source conflicts and malformed metadata fail as `prerequisite_drift` |
+| AC15 | Current OpenAPI, contract docs, previous-spine fixture, schema, and Story 1.12 provenance were inspected before implementation | Source conflicts and malformed metadata fail as `prerequisite-drift` |
 
 ## Downstream Ownership
 
