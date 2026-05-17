@@ -16,7 +16,9 @@ Optional arguments:
 --previous-spine <path-to-previous-spine.yaml>
 --output <path-to-parity-contract.yaml>
 --initialize-baseline       Snapshot the current OpenAPI as the previous-spine baseline and exit.
---allow-empty-baseline      Accept an empty `operations: []` baseline (downgrades drift to warning).
+--allow-empty-baseline      Accept an empty `operations: []` baseline and SKIP symmetric drift
+                            detection entirely (no warnings, no rename/move/removal checks).
+                            Use only when intentionally resetting the baseline.
 --help                      Show usage and exit.
 ```
 
@@ -35,7 +37,7 @@ The command overwrites `tests/fixtures/previous-spine.yaml` with the captured op
 - OpenAPI operation metadata owns transport facts, operation IDs, idempotency metadata, canonical error categories, read consistency, audit metadata keys, correlation headers, and authorization metadata.
 - `docs/contract/idempotency-and-parity-rules.md` and the architecture Adapter Parity Contract own adapter semantics such as idempotency-key sourcing, correlation sourcing, task-ID sourcing, credential sourcing, CLI exit codes, and MCP failure kinds.
 - `tests/fixtures/parity-contract.schema.json` owns the bounded row shape and allowed enum values.
-- `tests/fixtures/previous-spine.yaml` owns symmetric removal/deprecation comparison. The baseline is a captured snapshot of the prior Contract Spine; empty `operations: []` is rejected unless `--allow-empty-baseline` is passed explicitly. Removed, renamed, or moved operations fail closed unless they carry an `approved: true` (or any YAML-truthy literal) deprecation entry.
+- `tests/fixtures/previous-spine.yaml` owns symmetric removal/deprecation comparison and additive intent. The baseline is a captured snapshot of the prior Contract Spine; empty `operations: []` is rejected unless `--allow-empty-baseline` is passed explicitly. Removed, renamed, or moved operations fail closed unless they carry an `approved: true` (YAML 1.2 literal; `yes` is grandfathered) deprecation entry. New operationIds that do not appear in `operations:` must be listed under a top-level `approved_additions:` sequence — additions are intent-controlled the same way removals are.
 - Story 1.12 generated helper provenance is consumed only as safe operation/helper identity context; this generator does not reimplement SDK hash construction.
 
 ## Deterministic Output

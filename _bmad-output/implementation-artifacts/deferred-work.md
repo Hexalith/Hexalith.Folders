@@ -2,6 +2,18 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)
+
+Items deferred from the `/bmad-code-review 1.13` round-3 triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over `7c8f176..HEAD` patches.
+
+- `SafeCommentText` insufficient leak guard for diagnostic stream [`tests/tools/parity-oracle-generator/Program.cs` SafeCommentText helper] — hypothetical; no concrete leak path identified. Re-evaluate if diagnostic content sources expand beyond bounded code-constructed strings.
+- `--initialize-baseline` silently overwrites without `--force`/backup [`tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch`] — UX concern, not correctness. Failing-CI path of least resistance is to nuke the baseline; mitigated socially by sprint review.
+- `AuditKey` regex does not check duplicate-after-normalization [`tests/tools/parity-oracle-generator/Program.cs ReadAuditMetadataKeys`] — the lowercase requirement catches mixed-case duplicates today; reopen if the audit-key vocabulary loosens its case rule.
+- Argument parser lacks `--` end-of-options sentinel [`tests/tools/parity-oracle-generator/Program.cs GeneratorOptions.Parse`] — not exercised; current callers never pass values starting with `--`.
+- `NormalizeName` leading separator/digit silently produces invalid names [`tests/tools/parity-oracle-generator/Program.cs NormalizeName`] — current OpenAPI does not declare parameters with these shapes.
+- `read_consistency_class` enum mixes underscore (`not_applicable`) and hyphen (`eventually-consistent`) forms [`tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass`, `tests/fixtures/parity-contract.schema.json`] — intentional schema choice that survived prior reviews; harmonize during a future schema-cleanup sweep.
+- `ReadConsistencyClass` extra-keys / scalar-form produces opaque "value not in enum" rather than `prerequisite_drift:` [`tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass`] — diagnostic surface improvement only.
+
 ## Deferred from: code review of 1-13-generate-the-c13-parity-oracle (2026-05-17)
 
 Items deferred from the `/bmad-code-review 1.13` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit 7c8f176, Story 1.13 surface only.

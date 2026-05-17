@@ -1,0 +1,14 @@
+* text=auto
+
+# Story 1.13 (C13 parity oracle) requires byte-stable LF output for fixtures the
+# generator emits. Force LF on checkout so the committed-vs-generated equality
+# assertion in ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly
+# is independent of git's autocrlf setting.
+tests/fixtures/parity-contract.yaml text eol=lf
+tests/fixtures/parity-contract.schema.json text eol=lf
+tests/fixtures/previous-spine.yaml text eol=lf
+
+# Contract sources read by the generator must also be LF so the embedded
+# contract_spine_sha256 / parity_schema_sha256 provenance is reproducible.
+src/Hexalith.Folders.Contracts/openapi/*.yaml text eol=lf
+src/Hexalith.Folders.Contracts/openapi/**/*.yaml text eol=lf

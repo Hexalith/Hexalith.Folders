@@ -7,7 +7,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -145,7 +145,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -213,7 +213,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -318,7 +318,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -456,7 +456,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -615,7 +615,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -683,7 +683,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'credential_reference_invalid'
@@ -756,7 +756,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'idempotency_conflict'
@@ -819,7 +819,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -1002,7 +1002,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -1090,7 +1090,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1176,7 +1176,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'dirty_workspace'
@@ -1276,7 +1276,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1349,7 +1349,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -1459,7 +1459,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1565,7 +1565,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -1648,7 +1648,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -1832,7 +1832,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -1915,7 +1915,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -1997,7 +1997,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -2103,7 +2103,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -2208,7 +2208,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -2280,7 +2280,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -2378,7 +2378,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -2474,7 +2474,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'cross_tenant_access_denied'
@@ -2562,7 +2562,7 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -2667,7 +2667,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'internal_error'
@@ -2747,7 +2747,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -2841,7 +2841,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
@@ -2938,7 +2938,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -3024,7 +3024,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -3101,7 +3101,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -3308,7 +3308,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -3385,7 +3385,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -3591,7 +3591,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -3705,7 +3705,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'branch_ref_policy_invalid'
@@ -3834,7 +3834,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -3940,7 +3940,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -4044,7 +4044,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -4175,7 +4175,7 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -4282,7 +4282,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'folder_acl_denied'
     error_code_set:
       - 'authentication_failure'
       - 'folder_acl_denied'
@@ -4350,7 +4350,7 @@
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'credential_missing'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'credential_reference_invalid'

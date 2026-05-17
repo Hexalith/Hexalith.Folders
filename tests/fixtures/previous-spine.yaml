@@ -10,8 +10,13 @@ ownership:
   mutation_rules:
     - Replace via the generator's --initialize-baseline command after intentional contract changes.
     - Add explicit deprecation entries for intentionally removed or renamed operations.
+    - Add new operationIds to `approved_additions:` to acknowledge a sanctioned addition.
   non_policy_placeholder: true
   synthetic_data_only: true
+# Operation IDs added to the Contract Spine AFTER the captured baseline. Each entry is a deliberate
+# acknowledgment that the addition is intentional — the generator and the focused inventory test
+# both fail closed on unlisted additions to surface accidental scope creep.
+approved_additions: []
 operations:
   - operation_id: 'AddFile'
     method: 'post'

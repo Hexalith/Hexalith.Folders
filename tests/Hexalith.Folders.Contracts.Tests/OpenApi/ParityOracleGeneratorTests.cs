@@ -8,6 +8,11 @@ using YamlDotNet.RepresentationModel;
 
 namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
+// Serialize generator invocations across the test class: each test shells out to `dotnet run`
+// against the same generator project, and concurrent invocations can race on the project's
+// obj/ build locks even with --no-build (NETSDK metadata is touched on each call). Disabling
+// per-class parallelism removes that race deterministically.
+[Collection("ParityOracleGenerator")]
 public sealed class ParityOracleGeneratorTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
@@ -151,8 +156,13 @@ public sealed class ParityOracleGeneratorTests
         string output = File.ReadAllText(first);
         AssertNoLeakage(output);
 
-        // Committed parity-contract.yaml must match what the generator produces today.
-        File.ReadAllBytes(OraclePath).ShouldBe(File.ReadAllBytes(first));
+        // Committed parity-contract.yaml must match what the generator produces today. Normalize
+        // line endings on both sides so a Windows checkout with git autocrlf=true (which rewrites
+        // the committed LF to CRLF on disk) does not break this assertion; the contract is "the
+        // generator output text is byte-stable", not "git's on-disk encoding is byte-stable".
+        string committed = NormalizeLineEndings(File.ReadAllText(OraclePath));
+        string generated = NormalizeLineEndings(File.ReadAllText(first));
+        committed.ShouldBe(generated, "Committed parity-contract.yaml is out of sync with generator output. Regenerate the oracle via `dotnet run --project tests/tools/parity-oracle-generator`.");
     }
 
     [Fact]
@@ -177,7 +187,9 @@ public sealed class ParityOracleGeneratorTests
         string contract = NormalizeLineEndings(File.ReadAllText(OpenApiPath));
         string before = "        - parent_folder_id\n        - request_schema_version";
         string after = "        - parent_folder_id\n        - parent_folder_id\n        - request_schema_version";
-        contract.ShouldContain(before, customMessage: "Test fixture anchor not found in OpenAPI; adjust the anchor.");
+        int firstIndex = contract.IndexOf(before, StringComparison.Ordinal);
+        firstIndex.ShouldBeGreaterThanOrEqualTo(0, customMessage: "Test fixture anchor not found in OpenAPI; adjust the anchor.");
+        contract.IndexOf(before, firstIndex + 1, StringComparison.Ordinal).ShouldBe(-1, "Test fixture anchor matches more than one operation; adjust the anchor so the mutation is targeted.");
         string mutated = contract.Replace(before, after, StringComparison.Ordinal);
         File.WriteAllText(mutatedContract, mutated, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
@@ -240,19 +252,37 @@ operations:
     }
 
     [Fact]
-    public void PreviousSpineBaselineMatchesCurrentOperationInventory()
+    public void PreviousSpineBaselineCoversEveryCurrentOperation()
     {
         string[] currentOps = LoadOperationIds(OpenApiPath);
         YamlMappingNode baseline = LoadYamlMapping(PreviousSpinePath);
+
         baseline.Children.TryGetValue(new YamlScalarNode("operations"), out YamlNode? operationsNode).ShouldBeTrue();
         YamlSequenceNode seq = operationsNode.ShouldBeOfType<YamlSequenceNode>();
-        string[] baselineOps = seq.Children
+        HashSet<string> baselineOps = seq.Children
             .Cast<YamlMappingNode>()
             .Select(op => RequiredScalar(op, "operation_id"))
-            .Order(StringComparer.Ordinal)
+            .ToHashSet(StringComparer.Ordinal);
+
+        HashSet<string> approvedAdditions = new(StringComparer.Ordinal);
+        if (baseline.Children.TryGetValue(new YamlScalarNode("approved_additions"), out YamlNode? additionsNode) && additionsNode is YamlSequenceNode additionsSeq)
+        {
+            foreach (YamlNode entry in additionsSeq.Children)
+            {
+                if (entry is YamlScalarNode scalar && !string.IsNullOrWhiteSpace(scalar.Value))
+                {
+                    approvedAdditions.Add(scalar.Value!);
+                }
+            }
+        }
+
+        string[] unaccountedAdditions = currentOps
+            .Where(op => !baselineOps.Contains(op) && !approvedAdditions.Contains(op))
             .ToArray();
 
-        baselineOps.ShouldBe(currentOps, customMessage: "Run the generator with --initialize-baseline to refresh after intentional contract changes.");
+        unaccountedAdditions.ShouldBeEmpty(
+            "These operationIds are present in the OpenAPI Contract Spine but absent from both the previous-spine baseline and the approved_additions list. "
+            + "Either add them to `approved_additions:` in tests/fixtures/previous-spine.yaml or rerun the generator with `--initialize-baseline` after an intentional sweep.");
     }
 
     [Fact]
@@ -327,6 +357,7 @@ operations:
             RedirectStandardOutput = true,
             UseShellExecute = false,
         };
+
         using Process process = Process.Start(info)!;
 
         // Drain stdout/stderr concurrently so a full pipe buffer cannot deadlock the child.
@@ -336,7 +367,30 @@ operations:
         process.ErrorDataReceived += (_, e) => { if (e.Data is not null) { stderr.AppendLine(e.Data); } };
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
-        process.WaitForExit(180_000).ShouldBeTrue();
+
+        try
+        {
+            if (!process.WaitForExit(180_000))
+            {
+                try { process.Kill(entireProcessTree: true); } catch { /* best effort */ }
+                throw new TimeoutException("Generator did not exit within 180 seconds.");
+            }
+
+            // After a successful timed wait, call the parameterless overload to guarantee the
+            // async output/error readers have flushed their final buffered lines. Without this,
+            // assertions that grep for trailing `prerequisite_drift` messages can be flaky.
+            process.WaitForExit();
+        }
+        catch
+        {
+            if (!process.HasExited)
+            {
+                try { process.Kill(entireProcessTree: true); } catch { /* best effort */ }
+            }
+
+            throw;
+        }
+
         return new(process.ExitCode, stdout.ToString(), stderr.ToString());
     }
 

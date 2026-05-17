@@ -1,0 +1,4639 @@
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
+index 70ee91e..8f5e423 100644
+--- a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
+@@ -1,6 +1,7 @@
+ using System.Diagnostics;
+ using System.Text;
+ using System.Text.Json;
++using System.Text.RegularExpressions;
+ using Shouldly;
+ using Xunit;
+ using YamlDotNet.RepresentationModel;
+@@ -13,6 +14,7 @@ public sealed class ParityOracleGeneratorTests
+     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+     private static readonly string OraclePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml");
+     private static readonly string SchemaPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.schema.json");
++    private static readonly string PreviousSpinePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "previous-spine.yaml");
+     private static readonly string GeneratorProject = Path.Combine(RepositoryRoot, "tests", "tools", "parity-oracle-generator", "Hexalith.Folders.ParityOracleGenerator.csproj");
+ 
+     [Fact]
+@@ -34,11 +36,19 @@ public sealed class ParityOracleGeneratorTests
+         string[] rootRequired = ReadRequired(schema.RootElement).ToArray();
+         string[] transportRequired = ReadRequired(schema.RootElement.GetProperty("properties").GetProperty("transport_parity")).ToArray();
+         string[] behavioralRequired = ReadRequired(schema.RootElement.GetProperty("properties").GetProperty("behavioral_parity")).ToArray();
++        string[] outcomeRequired = ReadRequired(schema.RootElement.GetProperty("properties").GetProperty("outcome_mapping").GetProperty("items")).ToArray();
+         Dictionary<string, HashSet<string>> enums = LoadSchemaEnums(schema.RootElement);
++        HashSet<int> cliExitCodes = ReadIntEnum(schema.RootElement.GetProperty("$defs").GetProperty("cli_exit_code"));
++        Regex auditKeyPattern = new("^[a-z][a-z0-9_]*$");
++        Regex correlationPattern = new(@"^(headers|problem|result|metadata)\.[A-Za-z0-9_.-]+$");
++        Regex operationIdPattern = new("^[A-Z][A-Za-z0-9]*$");
+ 
+         foreach (YamlMappingNode row in rows)
+         {
+             AssertRequired(row, rootRequired);
++            string operationId = RequiredScalar(row, "operation_id");
++            operationIdPattern.IsMatch(operationId).ShouldBeTrue($"operation_id '{operationId}' must match shape regex");
++
+             RequiredSequence(row, "adapter_expectations").Children
+                 .Select(item => item.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty)
+                 .ShouldAllBe(adapter => enums["adapter_name"].Contains(adapter));
+@@ -53,6 +63,10 @@ public sealed class ParityOracleGeneratorTests
+             RequiredSequence(transport, "error_code_set").Children
+                 .Select(item => item.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty)
+                 .ShouldAllBe(category => enums["canonical_error_category"].Contains(category));
++            RequiredSequence(transport, "audit_metadata_keys").Children
++                .Select(item => item.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty)
++                .ShouldAllBe(key => auditKeyPattern.IsMatch(key));
++            correlationPattern.IsMatch(RequiredScalar(transport, "correlation_field_path")).ShouldBeTrue();
+ 
+             YamlMappingNode behavioral = RequiredMapping(row, "behavioral_parity");
+             AssertRequired(behavioral, behavioralRequired);
+@@ -62,6 +76,18 @@ public sealed class ParityOracleGeneratorTests
+             enums["task_id_sourcing"].ShouldContain(RequiredScalar(behavioral, "task_id_sourcing"));
+             enums["credential_sourcing"].ShouldContain(RequiredScalar(behavioral, "credential_sourcing"));
+             enums["mcp_failure_kind"].ShouldContain(RequiredScalar(behavioral, "mcp_failure_kind"));
++            cliExitCodes.ShouldContain(int.Parse(RequiredScalar(behavioral, "cli_exit_code")));
++
++            YamlSequenceNode outcomeMapping = RequiredSequence(row, "outcome_mapping");
++            outcomeMapping.Children.Count.ShouldBeGreaterThan(0);
++            foreach (YamlMappingNode mapping in outcomeMapping.Children.Cast<YamlMappingNode>())
++            {
++                AssertRequired(mapping, outcomeRequired);
++                enums["canonical_error_category"].ShouldContain(RequiredScalar(mapping, "canonical_error_category"));
++                enums["mcp_failure_kind"].ShouldContain(RequiredScalar(mapping, "mcp_failure_kind"));
++                enums["pre_sdk_error_class"].ShouldContain(RequiredScalar(mapping, "pre_sdk_error_class"));
++                cliExitCodes.ShouldContain(int.Parse(RequiredScalar(mapping, "cli_exit_code")));
++            }
+         }
+     }
+ 
+@@ -89,11 +115,32 @@ public sealed class ParityOracleGeneratorTests
+         }
+     }
+ 
++    [Fact]
++    public void GeneratedOutcomeMappingPopulatesEveryDeclaredErrorCategory()
++    {
++        YamlMappingNode[] rows = LoadRows(OraclePath);
++
++        foreach (YamlMappingNode row in rows)
++        {
++            HashSet<string> errorCategories = RequiredSequence(RequiredMapping(row, "transport_parity"), "error_code_set")
++                .Children
++                .Select(item => item.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty)
++                .ToHashSet(StringComparer.Ordinal);
++
++            HashSet<string> outcomeCategories = RequiredSequence(row, "outcome_mapping")
++                .Children
++                .Cast<YamlMappingNode>()
++                .Select(mapping => RequiredScalar(mapping, "canonical_error_category"))
++                .ToHashSet(StringComparer.Ordinal);
++
++            outcomeCategories.ShouldBe(errorCategories);
++        }
++    }
++
+     [Fact]
+     public void GeneratorOutputIsByteStableAndMetadataOnly()
+     {
+-        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-" + Guid.NewGuid().ToString("N"));
+-        Directory.CreateDirectory(temp);
++        string temp = NewTempDirectory("hexalith-parity");
+         string first = Path.Combine(temp, "first.yaml");
+         string second = Path.Combine(temp, "second.yaml");
+ 
+@@ -102,27 +149,16 @@ public sealed class ParityOracleGeneratorTests
+         File.ReadAllBytes(second).ShouldBe(File.ReadAllBytes(first));
+ 
+         string output = File.ReadAllText(first);
+-        string[] forbidden =
+-        [
+-            "diff --git",
+-            "provider_token",
+-            "credential_material",
+-            "contentBytes",
+-            "raw provider payload",
+-            "https://",
+-            RepositoryRoot,
+-        ];
+-        foreach (string value in forbidden)
+-        {
+-            output.ShouldNotContain(value, Case.Insensitive);
+-        }
++        AssertNoLeakage(output);
++
++        // Committed parity-contract.yaml must match what the generator produces today.
++        File.ReadAllBytes(OraclePath).ShouldBe(File.ReadAllBytes(first));
+     }
+ 
+     [Fact]
+     public void GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing()
+     {
+-        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-negative-" + Guid.NewGuid().ToString("N"));
+-        Directory.CreateDirectory(temp);
++        string temp = NewTempDirectory("hexalith-parity-negative");
+         string mutatedContract = Path.Combine(temp, "hexalith.folders.v1.yaml");
+         string contract = File.ReadAllText(OpenApiPath);
+         File.WriteAllText(mutatedContract, contract.Replace("x-hexalith-idempotency-equivalence:", "x-disabled-idempotency-equivalence:", StringComparison.Ordinal), Encoding.UTF8);
+@@ -136,11 +172,14 @@ public sealed class ParityOracleGeneratorTests
+     [Fact]
+     public void GeneratorFailsClosedForDuplicateIdempotencyFields()
+     {
+-        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-duplicate-" + Guid.NewGuid().ToString("N"));
+-        Directory.CreateDirectory(temp);
++        string temp = NewTempDirectory("hexalith-parity-duplicate");
+         string mutatedContract = Path.Combine(temp, "hexalith.folders.v1.yaml");
+-        string contract = File.ReadAllText(OpenApiPath);
+-        File.WriteAllText(mutatedContract, contract.Replace("        - parent_folder_id\n        - request_schema_version", "        - parent_folder_id\n        - parent_folder_id\n        - request_schema_version", StringComparison.Ordinal), Encoding.UTF8);
++        string contract = NormalizeLineEndings(File.ReadAllText(OpenApiPath));
++        string before = "        - parent_folder_id\n        - request_schema_version";
++        string after = "        - parent_folder_id\n        - parent_folder_id\n        - request_schema_version";
++        contract.ShouldContain(before, customMessage: "Test fixture anchor not found in OpenAPI; adjust the anchor.");
++        string mutated = contract.Replace(before, after, StringComparison.Ordinal);
++        File.WriteAllText(mutatedContract, mutated, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+ 
+         GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
+ 
+@@ -151,8 +190,7 @@ public sealed class ParityOracleGeneratorTests
+     [Fact]
+     public void GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation()
+     {
+-        string temp = Path.Combine(Path.GetTempPath(), "hexalith-parity-removed-" + Guid.NewGuid().ToString("N"));
+-        Directory.CreateDirectory(temp);
++        string temp = NewTempDirectory("hexalith-parity-removed");
+         string previousSpine = Path.Combine(temp, "previous-spine.yaml");
+         File.WriteAllText(previousSpine, """
+ version: test
+@@ -160,7 +198,7 @@ operations:
+   - operation_id: RemovedSyntheticOperation
+     method: get
+     path: /api/v1/synthetic/removed
+-""", Encoding.UTF8);
++""", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+ 
+         GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
+ 
+@@ -168,23 +206,138 @@ operations:
+         (result.Output + result.Error).ShouldContain("removed without approved deprecation", Case.Insensitive);
+     }
+ 
++    [Fact]
++    public void GeneratorFailsClosedForEmptyBaselineWithoutOverride()
++    {
++        string temp = NewTempDirectory("hexalith-parity-empty-baseline");
++        string previousSpine = Path.Combine(temp, "previous-spine.yaml");
++        File.WriteAllText(previousSpine, "version: synthetic\noperations: []\n", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
++
++        GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
++
++        result.ExitCode.ShouldNotBe(0);
++        (result.Output + result.Error).ShouldContain("empty operations", Case.Insensitive);
++    }
++
++    [Fact]
++    public void GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral()
++    {
++        string temp = NewTempDirectory("hexalith-parity-yaml-bool");
++        string previousSpine = Path.Combine(temp, "previous-spine.yaml");
++        File.WriteAllText(previousSpine, """
++version: test
++operations:
++  - operation_id: RemovedSyntheticOperation
++    method: get
++    path: /api/v1/synthetic/removed
++    deprecation:
++      approved: yes
++""", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
++
++        GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
++
++        result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
++    }
++
++    [Fact]
++    public void PreviousSpineBaselineMatchesCurrentOperationInventory()
++    {
++        string[] currentOps = LoadOperationIds(OpenApiPath);
++        YamlMappingNode baseline = LoadYamlMapping(PreviousSpinePath);
++        baseline.Children.TryGetValue(new YamlScalarNode("operations"), out YamlNode? operationsNode).ShouldBeTrue();
++        YamlSequenceNode seq = operationsNode.ShouldBeOfType<YamlSequenceNode>();
++        string[] baselineOps = seq.Children
++            .Cast<YamlMappingNode>()
++            .Select(op => RequiredScalar(op, "operation_id"))
++            .Order(StringComparer.Ordinal)
++            .ToArray();
++
++        baselineOps.ShouldBe(currentOps, customMessage: "Run the generator with --initialize-baseline to refresh after intentional contract changes.");
++    }
++
++    [Fact]
++    public void ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown()
++    {
++        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(SchemaPath));
++        HashSet<string> categoryEnum = ReadEnum(schema.RootElement.GetProperty("$defs").GetProperty("canonical_error_category"));
++        HashSet<string> mcpEnum = ReadEnum(schema.RootElement.GetProperty("$defs").GetProperty("mcp_failure_kind"));
++
++        categoryEnum.ShouldContain("unknown_provider_outcome");
++        categoryEnum.ShouldNotContain("provider_outcome_unknown");
++        mcpEnum.ShouldContain("unknown_provider_outcome");
++        mcpEnum.ShouldNotContain("provider_outcome_unknown");
++    }
++
++    [Fact]
++    public void ParitySchemaOutcomeMappingShapeIsBounded()
++    {
++        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(SchemaPath));
++        JsonElement outcomeMapping = schema.RootElement.GetProperty("properties").GetProperty("outcome_mapping");
++
++        outcomeMapping.GetProperty("type").GetString().ShouldBe("array");
++        outcomeMapping.GetProperty("uniqueItems").GetBoolean().ShouldBeTrue();
++        outcomeMapping.GetProperty("minItems").GetInt32().ShouldBe(1);
++        JsonElement item = outcomeMapping.GetProperty("items");
++        item.GetProperty("additionalProperties").GetBoolean().ShouldBeFalse();
++        string[] required = item.GetProperty("required").EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToArray();
++        required.ShouldBe(["canonical_error_category", "cli_exit_code", "mcp_failure_kind", "pre_sdk_error_class"], ignoreOrder: true);
++    }
++
++    private static string NewTempDirectory(string prefix)
++    {
++        string dir = Path.Combine(Path.GetTempPath(), $"{prefix}-{Guid.NewGuid():N}");
++        Directory.CreateDirectory(dir);
++        return dir;
++    }
++
++    private static void AssertNoLeakage(string output)
++    {
++        string[] forbidden =
++        [
++            "diff --git",
++            "provider_token",
++            "credential_material",
++            "contentBytes",
++            "raw provider payload",
++            "https://",
++            RepositoryRoot,
++            RepositoryRoot.Replace("\\", "/", StringComparison.Ordinal),
++            RepositoryRoot.Replace("\\", "\\\\", StringComparison.Ordinal),
++        ];
++        foreach (string value in forbidden)
++        {
++            output.ShouldNotContain(value, Case.Insensitive);
++        }
++    }
++
++    private static string NormalizeLineEndings(string value) =>
++        value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
++
+     private static int RunGenerator(string contractPath, string outputPath) =>
+         RunGeneratorDetailed(contractPath, outputPath).ExitCode;
+ 
+     private static GeneratorResult RunGeneratorDetailed(string contractPath, string outputPath, string? previousSpinePath = null)
+     {
+         string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
+-        using Process process = Process.Start(new ProcessStartInfo
++        ProcessStartInfo info = new()
+         {
+             FileName = "dotnet",
+-            Arguments = $"run --project \"{GeneratorProject}\" -- --repository-root \"{RepositoryRoot}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
++            Arguments = $"run --project \"{GeneratorProject}\" --no-build -- --repository-root \"{RepositoryRoot}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
+             RedirectStandardError = true,
+             RedirectStandardOutput = true,
+             UseShellExecute = false,
+-        })!;
+-
+-        process.WaitForExit(120_000).ShouldBeTrue();
+-        return new(process.ExitCode, process.StandardOutput.ReadToEnd(), process.StandardError.ReadToEnd());
++        };
++        using Process process = Process.Start(info)!;
++
++        // Drain stdout/stderr concurrently so a full pipe buffer cannot deadlock the child.
++        StringBuilder stdout = new();
++        StringBuilder stderr = new();
++        process.OutputDataReceived += (_, e) => { if (e.Data is not null) { stdout.AppendLine(e.Data); } };
++        process.ErrorDataReceived += (_, e) => { if (e.Data is not null) { stderr.AppendLine(e.Data); } };
++        process.BeginOutputReadLine();
++        process.BeginErrorReadLine();
++        process.WaitForExit(180_000).ShouldBeTrue();
++        return new(process.ExitCode, stdout.ToString(), stderr.ToString());
+     }
+ 
+     private static string[] LoadOperationIds(string path)
+@@ -196,7 +349,7 @@ operations:
+             YamlMappingNode pathItem = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
+             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
+             {
+-                string method = methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
++                string method = (methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).ToLowerInvariant();
+                 if (method is "get" or "post" or "put" or "patch" or "delete")
+                 {
+                     operations.Add(RequiredScalar(methodEntry.Value.ShouldBeOfType<YamlMappingNode>(), "operationId"));
+@@ -242,6 +395,9 @@ operations:
+     private static HashSet<string> ReadEnum(JsonElement element) =>
+         element.GetProperty("enum").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToHashSet(StringComparer.Ordinal);
+ 
++    private static HashSet<int> ReadIntEnum(JsonElement element) =>
++        element.GetProperty("enum").EnumerateArray().Select(item => item.GetInt32()).ToHashSet();
++
+     private static IEnumerable<string> ReadRequired(JsonElement element) =>
+         element.GetProperty("required").EnumerateArray().Select(item => item.GetString() ?? string.Empty);
+ 
+diff --git a/tests/fixtures/parity-contract.schema.json b/tests/fixtures/parity-contract.schema.json
+index 1567426..155cedf 100644
+--- a/tests/fixtures/parity-contract.schema.json
++++ b/tests/fixtures/parity-contract.schema.json
+@@ -28,6 +28,7 @@
+     "read_consistency_class",
+     "transport_parity",
+     "behavioral_parity",
++    "outcome_mapping",
+     "adapter_expectations",
+     "ownership"
+   ],
+@@ -186,6 +187,41 @@
+         }
+       }
+     },
++    "outcome_mapping": {
++      "type": "array",
++      "minItems": 1,
++      "uniqueItems": true,
++      "items": {
++        "type": "object",
++        "additionalProperties": false,
++        "required": [
++          "canonical_error_category",
++          "cli_exit_code",
++          "mcp_failure_kind",
++          "pre_sdk_error_class"
++        ],
++        "properties": {
++          "canonical_error_category": {
++            "$ref": "#/$defs/canonical_error_category"
++          },
++          "cli_exit_code": {
++            "$ref": "#/$defs/cli_exit_code"
++          },
++          "mcp_failure_kind": {
++            "$ref": "#/$defs/mcp_failure_kind"
++          },
++          "pre_sdk_error_class": {
++            "enum": [
++              "none",
++              "usage_error",
++              "client_configuration_error",
++              "credential_missing",
++              "local_validation_error"
++            ]
++          }
++        }
++      }
++    },
+     "adapter_expectations": {
+       "type": "array",
+       "minItems": 1,
+@@ -241,7 +277,6 @@
+         "provider_readiness_failed",
+         "provider_failure_known",
+         "unknown_provider_outcome",
+-        "provider_outcome_unknown",
+         "provider_permission_insufficient",
+         "provider_unavailable",
+         "provider_rate_limited",
+@@ -305,7 +340,6 @@
+         "provider_readiness_failed",
+         "provider_failure_known",
+         "unknown_provider_outcome",
+-        "provider_outcome_unknown",
+         "provider_permission_insufficient",
+         "provider_unavailable",
+         "provider_rate_limited",
+diff --git a/tests/fixtures/parity-contract.yaml b/tests/fixtures/parity-contract.yaml
+index febb145..b956fcd 100644
+--- a/tests/fixtures/parity-contract.yaml
++++ b/tests/fixtures/parity-contract.yaml
+@@ -1,12 +1,13 @@
+ # generated_by: tests/tools/parity-oracle-generator
+ # contract_spine_sha256: 43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2
+-# parity_schema_sha256: 0adbcba6bc437c78c9cdd063b11297b6923998fb961bd542be04b4135e00914d
++# parity_schema_sha256: f9c0c3a3d0d74bd6062ca18299f35e25301b0c545b4bed4746e214154b716fca
+ # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
++# diagnostics_count: 0
+ - operation_id: 'AddFile'
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'authorization_revocation_detected'
+@@ -49,11 +50,88 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'authorization_revocation_detected'
++      cli_exit_code: 73
++      mcp_failure_kind: 'authorization_revocation_detected'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'file_operation_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'file_operation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_not_owned'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_not_owned'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -67,7 +145,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -92,11 +170,36 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -110,7 +213,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'cross_tenant_access_denied'
+@@ -144,11 +247,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'cross_tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'cross_tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'duplicate_binding'
++      cli_exit_code: 70
++      mcp_failure_kind: 'duplicate_binding'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_readiness_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_readiness_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'repository_conflict'
++      cli_exit_code: 70
++      mcp_failure_kind: 'repository_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unsupported_provider_capability'
++      cli_exit_code: 70
++      mcp_failure_kind: 'unsupported_provider_capability'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -162,7 +318,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'authorization_revocation_detected'
+@@ -205,11 +361,88 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'authorization_revocation_detected'
++      cli_exit_code: 73
++      mcp_failure_kind: 'authorization_revocation_detected'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'file_operation_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'file_operation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_not_owned'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_not_owned'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -223,7 +456,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'authorization_revocation_detected'
+@@ -271,11 +504,104 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'authorization_revocation_detected'
++      cli_exit_code: 73
++      mcp_failure_kind: 'authorization_revocation_detected'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'commit_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'commit_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'cross_tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'cross_tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'dirty_workspace'
++      cli_exit_code: 72
++      mcp_failure_kind: 'dirty_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_not_owned'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_not_owned'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_not_ready'
++      cli_exit_code: 72
++      mcp_failure_kind: 'workspace_not_ready'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -289,7 +615,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -314,11 +640,36 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -332,7 +683,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'credential_reference_invalid'
+@@ -358,11 +709,40 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'credential_reference_invalid'
++      cli_exit_code: 65
++      mcp_failure_kind: 'credential_reference_invalid'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -376,7 +756,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'idempotency_conflict'
+@@ -400,11 +780,32 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -418,7 +819,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'failed_operation'
+@@ -450,11 +851,56 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_readiness_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_readiness_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'repository_conflict'
++      cli_exit_code: 70
++      mcp_failure_kind: 'repository_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unsupported_provider_capability'
++      cli_exit_code: 70
++      mcp_failure_kind: 'unsupported_provider_capability'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -497,11 +943,52 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'audit_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'audit_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -515,7 +1002,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'cross_tenant_access_denied'
+@@ -544,11 +1031,52 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'cross_tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'cross_tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -562,7 +1090,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -593,11 +1121,48 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -611,7 +1176,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'dirty_workspace'
+@@ -643,11 +1208,60 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'dirty_workspace'
++      cli_exit_code: 72
++      mcp_failure_kind: 'dirty_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -662,7 +1276,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'read-your-writes'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -688,11 +1302,40 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -706,7 +1349,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'failed_operation'
+@@ -740,11 +1383,68 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -759,7 +1459,7 @@
+   operation_family: 'context_query'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -794,11 +1494,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -812,7 +1565,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'cross_tenant_access_denied'
+@@ -840,11 +1593,48 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'cross_tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'cross_tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -858,7 +1648,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -889,11 +1679,56 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -938,11 +1773,52 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'audit_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'audit_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -956,7 +1832,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'internal_error'
+@@ -983,11 +1859,48 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -1002,7 +1915,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'cross_tenant_access_denied'
+@@ -1029,11 +1942,48 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'cross_tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'cross_tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1047,7 +1997,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'failed_operation'
+@@ -1082,11 +2032,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1100,7 +2103,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1133,11 +2136,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_rate_limited'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_rate_limited'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -1152,7 +2208,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'internal_error'
+@@ -1177,11 +2233,40 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1195,7 +2280,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'internal_error'
+@@ -1225,11 +2310,60 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_rate_limited'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_rate_limited'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -1244,7 +2378,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'failed_operation'
+@@ -1277,11 +2411,56 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1295,7 +2474,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'cross_tenant_access_denied'
+@@ -1324,11 +2503,52 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'cross_tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'cross_tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1342,7 +2562,7 @@
+   operation_family: 'operations_console_projection'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1375,11 +2595,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+     - 'ui'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+@@ -1394,7 +2667,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'internal_error'
+@@ -1423,11 +2696,44 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1441,7 +2747,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'read-your-writes'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1476,11 +2782,52 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1494,7 +2841,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'failed_operation'
+@@ -1528,11 +2875,56 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1546,7 +2938,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'read-your-writes'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1577,11 +2969,48 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1595,7 +3024,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1625,11 +3054,40 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1643,7 +3101,7 @@
+   operation_family: 'context_query'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1679,11 +3137,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1730,11 +3241,60 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'audit_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'audit_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1748,7 +3308,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'eventually-consistent'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1774,11 +3334,44 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1792,7 +3385,7 @@
+   operation_family: 'context_query'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -1828,11 +3421,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1878,11 +3524,60 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'audit_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'audit_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'not_found'
++      cli_exit_code: 73
++      mcp_failure_kind: 'not_found'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1896,7 +3591,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'authorization_revocation_detected'
+@@ -1935,11 +3630,68 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'authorization_revocation_detected'
++      cli_exit_code: 73
++      mcp_failure_kind: 'authorization_revocation_detected'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_conflict'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -1953,7 +3705,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'branch_ref_policy_invalid'
+@@ -1995,11 +3747,80 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'branch_ref_policy_invalid'
++      cli_exit_code: 69
++      mcp_failure_kind: 'branch_ref_policy_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_conflict'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_readiness_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_readiness_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'repository_binding_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'repository_binding_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_preparation_failed'
++      cli_exit_code: 72
++      mcp_failure_kind: 'workspace_preparation_failed'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -2013,7 +3834,7 @@
+   operation_family: 'context_query'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -2048,11 +3869,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -2066,7 +3940,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'authorization_revocation_detected'
+@@ -2103,11 +3977,60 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'authorization_revocation_detected'
++      cli_exit_code: 73
++      mcp_failure_kind: 'authorization_revocation_detected'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_not_owned'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_not_owned'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -2121,7 +4044,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'authorization_revocation_detected'
+@@ -2161,11 +4084,84 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'authorization_revocation_detected'
++      cli_exit_code: 73
++      mcp_failure_kind: 'authorization_revocation_detected'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'failed_operation'
++      cli_exit_code: 70
++      mcp_failure_kind: 'failed_operation'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'file_operation_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'file_operation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_expired'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_expired'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'lock_not_owned'
++      cli_exit_code: 67
++      mcp_failure_kind: 'lock_not_owned'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_failure_known'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_failure_known'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'reconciliation_required'
++      cli_exit_code: 72
++      mcp_failure_kind: 'reconciliation_required'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'stale_workspace'
++      cli_exit_code: 67
++      mcp_failure_kind: 'stale_workspace'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'state_transition_invalid'
++      cli_exit_code: 74
++      mcp_failure_kind: 'state_transition_invalid'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unknown_provider_outcome'
++      cli_exit_code: 71
++      mcp_failure_kind: 'unknown_provider_outcome'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'workspace_locked'
++      cli_exit_code: 67
++      mcp_failure_kind: 'workspace_locked'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -2179,7 +4175,7 @@
+   operation_family: 'context_query'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -2215,11 +4211,64 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'input_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'input_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'path_validation_failed'
++      cli_exit_code: 69
++      mcp_failure_kind: 'path_validation_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'query_timeout'
++      cli_exit_code: 1
++      mcp_failure_kind: 'query_timeout'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'redacted'
++      cli_exit_code: 75
++      mcp_failure_kind: 'redacted'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'response_limit_exceeded'
++      cli_exit_code: 69
++      mcp_failure_kind: 'response_limit_exceeded'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -2233,7 +4282,7 @@
+   operation_family: 'mutating_command'
+   read_consistency_class: 'not_applicable'
+   transport_parity:
+-    auth_outcome_class: 'folder_acl_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'folder_acl_denied'
+@@ -2258,11 +4307,36 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'folder_acl_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'folder_acl_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'idempotency_conflict'
++      cli_exit_code: 68
++      mcp_failure_kind: 'idempotency_conflict'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'validation_error'
++      cli_exit_code: 69
++      mcp_failure_kind: 'validation_error'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+@@ -2276,7 +4350,7 @@
+   operation_family: 'query_status'
+   read_consistency_class: 'snapshot-per-task'
+   transport_parity:
+-    auth_outcome_class: 'tenant_access_denied'
++    auth_outcome_class: 'credential_missing'
+     error_code_set:
+       - 'authentication_failure'
+       - 'credential_reference_invalid'
+@@ -2307,11 +4381,60 @@
+     credential_sourcing: 'sdk_configuration'
+     cli_exit_code: 0
+     mcp_failure_kind: 'none'
++  outcome_mapping:
++    - canonical_error_category: 'authentication_failure'
++      cli_exit_code: 65
++      mcp_failure_kind: 'authentication_failure'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'credential_reference_invalid'
++      cli_exit_code: 65
++      mcp_failure_kind: 'credential_reference_invalid'
++      pre_sdk_error_class: 'credential_missing'
++    - canonical_error_category: 'internal_error'
++      cli_exit_code: 1
++      mcp_failure_kind: 'internal_error'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_stale'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_stale'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'projection_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'projection_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_permission_insufficient'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_permission_insufficient'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_rate_limited'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_rate_limited'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_readiness_failed'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_readiness_failed'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'provider_unavailable'
++      cli_exit_code: 70
++      mcp_failure_kind: 'provider_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'read_model_unavailable'
++      cli_exit_code: 72
++      mcp_failure_kind: 'read_model_unavailable'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'tenant_access_denied'
++      cli_exit_code: 66
++      mcp_failure_kind: 'tenant_access_denied'
++      pre_sdk_error_class: 'none'
++    - canonical_error_category: 'unsupported_provider_capability'
++      cli_exit_code: 70
++      mcp_failure_kind: 'unsupported_provider_capability'
++      pre_sdk_error_class: 'none'
+   adapter_expectations:
+-    - 'rest'
+-    - 'sdk'
+     - 'cli'
+     - 'mcp'
++    - 'rest'
++    - 'sdk'
+   ownership:
+     owner_workstream: 'C13 parity oracle generation'
+     future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+diff --git a/tests/fixtures/previous-spine.yaml b/tests/fixtures/previous-spine.yaml
+index b502af6..46c91ec 100644
+--- a/tests/fixtures/previous-spine.yaml
++++ b/tests/fixtures/previous-spine.yaml
+@@ -1,16 +1,153 @@
+-version: 0.1.0-fixture-seed
+-source_marker: synthetic-placeholder-not-openapi
+-intent: Minimal previous-spine seed for future symmetric drift detection.
++version: captured-baseline
++source_marker: captured-from-openapi
++intent: First captured Contract Spine baseline for symmetric drift detection.
+ ownership:
+   owner_workstream: Phase 1 Contract Spine and drift-detection stories
+-  future_test_use: Replaced by a captured v1 Contract Spine snapshot before drift checks become blocking.
++  future_test_use: Symmetric drift detection input for parity-oracle generation.
+   known_omissions:
+-    - No OpenAPI root key
+-    - No operation details
+-    - No schema components
++    - No request/response schema fingerprints
++    - No status-code surface
+   mutation_rules:
+-    - Keep this file synthetic until the Contract Spine story owns replacement.
+-    - Do not add partial public API semantics here.
++    - Replace via the generator's --initialize-baseline command after intentional contract changes.
++    - Add explicit deprecation entries for intentionally removed or renamed operations.
+   non_policy_placeholder: true
+   synthetic_data_only: true
+-operations: []
++operations:
++  - operation_id: 'AddFile'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
++  - operation_id: 'ArchiveFolder'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/archive'
++  - operation_id: 'BindRepository'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/repository-bindings'
++  - operation_id: 'ChangeFile'
++    method: 'put'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change'
++  - operation_id: 'CommitWorkspace'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits'
++  - operation_id: 'ConfigureBranchRefPolicy'
++    method: 'put'
++    path: '/api/v1/folders/{folderId}/branch-ref-policy'
++  - operation_id: 'ConfigureProviderBinding'
++    method: 'put'
++    path: '/api/v1/provider-bindings/{providerBindingRef}'
++  - operation_id: 'CreateFolder'
++    method: 'post'
++    path: '/api/v1/folders'
++  - operation_id: 'CreateRepositoryBackedFolder'
++    method: 'post'
++    path: '/api/v1/folders/repository-backed'
++  - operation_id: 'GetAuditRecord'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
++  - operation_id: 'GetBranchRefPolicy'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/branch-ref-policy'
++  - operation_id: 'GetCommitEvidence'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence'
++  - operation_id: 'GetDirtyStateDiagnostics'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics'
++  - operation_id: 'GetEffectivePermissions'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/effective-permissions'
++  - operation_id: 'GetFailedOperationDiagnostics'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics'
++  - operation_id: 'GetFolderFileMetadata'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata'
++  - operation_id: 'GetFolderLifecycleStatus'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/lifecycle-status'
++  - operation_id: 'GetLockDiagnostics'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics'
++  - operation_id: 'GetOperationTimelineEntry'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
++  - operation_id: 'GetProjectionFreshness'
++    method: 'get'
++    path: '/api/v1/ops-console/projection-freshness'
++  - operation_id: 'GetProviderBinding'
++    method: 'get'
++    path: '/api/v1/provider-bindings/{providerBindingRef}'
++  - operation_id: 'GetProviderOutcome'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome'
++  - operation_id: 'GetProviderStatusDiagnostics'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics'
++  - operation_id: 'GetProviderSupportEvidence'
++    method: 'get'
++    path: '/api/v1/provider-readiness/support-evidence'
++  - operation_id: 'GetReadinessDiagnostics'
++    method: 'get'
++    path: '/api/v1/ops-console/readiness-diagnostics'
++  - operation_id: 'GetReconciliationStatus'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status'
++  - operation_id: 'GetRepositoryBinding'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}'
++  - operation_id: 'GetSyncStatusDiagnostics'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics'
++  - operation_id: 'GetTaskStatus'
++    method: 'get'
++    path: '/api/v1/tasks/{taskId}/status'
++  - operation_id: 'GetWorkspaceLock'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'
++  - operation_id: 'GetWorkspaceRetryEligibility'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility'
++  - operation_id: 'GetWorkspaceStatus'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
++  - operation_id: 'GetWorkspaceTransitionEvidence'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence'
++  - operation_id: 'GlobFolderFiles'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob'
++  - operation_id: 'ListAuditTrail'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/audit-trail'
++  - operation_id: 'ListFolderAclEntries'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/acl'
++  - operation_id: 'ListFolderFiles'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
++  - operation_id: 'ListOperationTimeline'
++    method: 'get'
++    path: '/api/v1/folders/{folderId}/operation-timeline'
++  - operation_id: 'LockWorkspace'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'
++  - operation_id: 'PrepareWorkspace'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation'
++  - operation_id: 'ReadFileRange'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read'
++  - operation_id: 'ReleaseWorkspaceLock'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release'
++  - operation_id: 'RemoveFile'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove'
++  - operation_id: 'SearchFolderFiles'
++    method: 'post'
++    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search'
++  - operation_id: 'UpdateFolderAclEntry'
++    method: 'put'
++    path: '/api/v1/folders/{folderId}/acl/{aclEntryId}'
++  - operation_id: 'ValidateProviderReadiness'
++    method: 'post'
++    path: '/api/v1/provider-readiness/validations'
+diff --git a/tests/tools/parity-oracle-generator/Program.cs b/tests/tools/parity-oracle-generator/Program.cs
+index c61a661..c40a3d6 100644
+--- a/tests/tools/parity-oracle-generator/Program.cs
++++ b/tests/tools/parity-oracle-generator/Program.cs
+@@ -1,54 +1,119 @@
+ using System.Globalization;
+ using System.Security.Cryptography;
+ using System.Text;
++using System.Text.RegularExpressions;
+ using YamlDotNet.RepresentationModel;
++using static GeneratorConstants;
+ 
+-Dictionary<string, string> arguments = ParseArguments(args);
+-string repositoryRoot = Path.GetFullPath(arguments.GetValueOrDefault("--repository-root", LocateRepositoryRoot()));
+-string contractPath = Path.GetFullPath(arguments.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml")));
+-string schemaPath = Path.GetFullPath(arguments.GetValueOrDefault("--schema", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.schema.json")));
+-string previousSpinePath = Path.GetFullPath(arguments.GetValueOrDefault("--previous-spine", Path.Combine(repositoryRoot, "tests", "fixtures", "previous-spine.yaml")));
+-string outputPath = Path.GetFullPath(arguments.GetValueOrDefault("--output", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.yaml")));
++GeneratorOptions options = GeneratorOptions.Parse(args);
+ 
+-YamlMappingNode root = LoadYaml(contractPath);
+-IReadOnlyList<OperationModel> operations = EnumerateOperations(root).OrderBy(o => o.OperationId, StringComparer.Ordinal).ToArray();
+-ValidateOperationInventory(operations);
+-ValidatePreviousSpine(previousSpinePath, operations);
++if (options.InitializeBaseline)
++{
++    YamlMappingNode rootForBaseline = LoadYaml(options.ContractPath);
++    IReadOnlyList<OperationModel> baselineOps = EnumerateOperations(rootForBaseline, new List<Diagnostic>()).OrderBy(o => o.OperationId, StringComparer.Ordinal).ToArray();
++    string baselineYaml = RenderBaseline(baselineOps);
++    Directory.CreateDirectory(Path.GetDirectoryName(options.PreviousSpinePath) ?? ".");
++    File.WriteAllText(options.PreviousSpinePath, baselineYaml, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
++    Console.WriteLine($"Wrote baseline with {baselineOps.Count} operations to {options.PreviousSpinePath}");
++    return 0;
++}
++
++List<Diagnostic> diagnostics = [];
++YamlMappingNode root = LoadYaml(options.ContractPath);
++IReadOnlyList<OperationModel> operations = EnumerateOperations(root, diagnostics)
++    .OrderBy(o => o.OperationId, StringComparer.Ordinal)
++    .ToArray();
++ValidateOperationInventory(operations, diagnostics);
++ValidatePreviousSpine(options.PreviousSpinePath, operations, diagnostics, options.AllowEmptyBaseline);
+ 
+-string output = RenderRows(operations, contractPath, schemaPath);
+-Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+-File.WriteAllText(outputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
++string output = RenderOracle(operations, diagnostics, options);
++Directory.CreateDirectory(Path.GetDirectoryName(options.OutputPath) ?? ".");
++File.WriteAllText(options.OutputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
++return 0;
+ 
+-static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root)
++static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, List<Diagnostic> diagnostics)
+ {
++    HashSet<string> pathItemReservedKeys = new(StringComparer.Ordinal)
++    {
++        "parameters", "summary", "description", "servers", "$ref",
++    };
++    HashSet<string> recognizedMethods = new(StringComparer.Ordinal)
++    {
++        "get", "post", "put", "patch", "delete",
++    };
++    HashSet<string> nonInventoryMethods = new(StringComparer.Ordinal)
++    {
++        "head", "options", "trace",
++    };
++
+     List<OperationModel> operations = [];
++    Dictionary<string, OperationModel> routeIdentities = new(StringComparer.Ordinal);
++
+     foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
+     {
+         string path = pathEntry.Key.AsScalar("path").Value ?? string.Empty;
+-        YamlMappingNode pathItem = pathEntry.Value.AsMapping("path item");
++        if (string.IsNullOrWhiteSpace(path))
++        {
++            throw new InvalidOperationException("prerequisite_drift: empty path key in OpenAPI paths.");
++        }
++
++        YamlMappingNode pathItem = pathEntry.Value.AsMapping($"path item '{path}'");
+         IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem).ToArray();
+ 
+         foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
+         {
+-            string method = (methodEntry.Key.AsScalar("method").Value ?? string.Empty).ToLowerInvariant();
+-            if (method is not ("get" or "post" or "put" or "patch" or "delete"))
++            string methodKey = methodEntry.Key.AsScalar("method").Value ?? string.Empty;
++            string method = methodKey.ToLowerInvariant();
++
++            if (pathItemReservedKeys.Contains(method))
+             {
++                if (method == "$ref")
++                {
++                    throw new InvalidOperationException($"prerequisite_drift: path '{path}' uses path-item $ref which is not supported by this generator.");
++                }
+                 continue;
+             }
+ 
+-            YamlMappingNode operation = methodEntry.Value.AsMapping("operation");
++            if (nonInventoryMethods.Contains(method))
++            {
++                diagnostics.Add(new Diagnostic(
++                    Level: "warning",
++                    Category: "non_inventory_method",
++                    OperationId: null,
++                    SourcePointer: $"paths.{path}.{method}",
++                    Message: $"HTTP method '{method}' is not part of the parity inventory and was skipped."));
++                continue;
++            }
++
++            if (!recognizedMethods.Contains(method))
++            {
++                throw new InvalidOperationException($"prerequisite_drift: unsupported HTTP method '{methodKey}' at path '{path}'.");
++            }
++
++            YamlMappingNode operation = methodEntry.Value.AsMapping($"operation {method} {path}");
+             string operationId = RequiredScalar(operation, "operationId");
+             ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
++            ValidateOperationIdShape(operationId);
++
+             IReadOnlyList<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
+             string[] tags = ReadStringSequence(operation, "tags").ToArray();
+             string[] idempotencyFields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence").ToArray();
+-            string[] errorCategories = ReadStringSequence(operation, "x-hexalith-canonical-error-categories").Select(NormalizeErrorCategory).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+-            string[] auditKeys = ReadAuditMetadataKeys(operation).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
++            string[] errorCategories = ReadStringSequence(operation, "x-hexalith-canonical-error-categories")
++                .Select(NormalizeErrorCategory)
++                .Distinct(StringComparer.Ordinal)
++                .Order(StringComparer.Ordinal)
++                .ToArray();
++            string[] auditKeys = ReadAuditMetadataKeys(operation)
++                .Distinct(StringComparer.Ordinal)
++                .Order(StringComparer.Ordinal)
++                .ToArray();
+             string? readConsistency = ReadConsistencyClass(operation);
+             bool hasIdempotencyKey = HasIdempotencyKey(parameters, operation);
+             string correlationHeader = ReadNestedScalar(operation, "x-hexalith-correlation", "correlationHeader") ?? "X-Correlation-Id";
++            AuthorizationMetadata? authorization = ReadAuthorization(operation);
++            bool hasParityDimensions = operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-parity-dimensions"));
+ 
+-            operations.Add(new OperationModel(
++            OperationModel model = new(
+                 Method: method,
+                 Path: NormalizePath(path),
+                 OperationId: operationId,
+@@ -59,14 +124,25 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root)
+                 ReadConsistencyClass: readConsistency,
+                 ErrorCategories: errorCategories,
+                 AuditMetadataKeys: auditKeys,
+-                CorrelationHeader: correlationHeader));
++                CorrelationHeader: correlationHeader,
++                Authorization: authorization,
++                HasParityDimensions: hasParityDimensions);
++
++            string routeKey = method + " " + NormalizePath(path);
++            if (routeIdentities.TryGetValue(routeKey, out OperationModel? existing))
++            {
++                throw new InvalidOperationException(
++                    $"prerequisite_drift: route '{routeKey}' bound to both operationId '{existing.OperationId}' and '{operationId}'.");
++            }
++            routeIdentities[routeKey] = model;
++            operations.Add(model);
+         }
+     }
+ 
+     return operations;
+ }
+ 
+-static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations)
++static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations, List<Diagnostic> diagnostics)
+ {
+     foreach (IGrouping<string, OperationModel> duplicate in operations.GroupBy(o => o.OperationId, StringComparer.Ordinal).Where(g => g.Count() > 1))
+     {
+@@ -85,6 +161,35 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations)
+             throw new InvalidOperationException($"prerequisite_drift: operation {operation.OperationId} lacks x-hexalith-audit-metadata-keys.");
+         }
+ 
++        foreach (string auditKey in operation.AuditMetadataKeys)
++        {
++            if (!AuditKeyPattern.IsMatch(auditKey))
++            {
++                throw new InvalidOperationException(
++                    $"prerequisite_drift: operation {operation.OperationId} audit metadata key '{auditKey}' violates pattern ^[a-z][a-z0-9_]*$.");
++            }
++        }
++
++        if (!operation.HasParityDimensions)
++        {
++            diagnostics.Add(new Diagnostic(
++                Level: "reference_pending",
++                Category: "missing_parity_dimensions",
++                OperationId: operation.OperationId,
++                SourcePointer: $"paths.{operation.Path}.{operation.Method}",
++                Message: "x-hexalith-parity-dimensions not declared on operation; reference-pending until canonical metadata is supplied."));
++        }
++
++        if (operation.Authorization is null)
++        {
++            diagnostics.Add(new Diagnostic(
++                Level: "reference_pending",
++                Category: "missing_authorization_metadata",
++                OperationId: operation.OperationId,
++                SourcePointer: $"paths.{operation.Path}.{operation.Method}",
++                Message: "x-hexalith-authorization not declared on operation; auth_outcome_class falls back to error-category inference."));
++        }
++
+         if (operation.IsMutatingCommand)
+         {
+             if (!operation.HasIdempotencyKey || operation.IdempotencyFields.Count == 0)
+@@ -114,44 +219,134 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations)
+                 throw new InvalidOperationException($"prerequisite_drift: non-mutating operation {operation.OperationId} lacks x-hexalith-read-consistency.");
+             }
+         }
++
++        foreach (string category in operation.ErrorCategories)
++        {
++            if (!OutcomeMappings.TryGetValue(category, out _))
++            {
++                throw new InvalidOperationException(
++                    $"prerequisite_drift: operation {operation.OperationId} declares canonical category '{category}' with no behavioral parity mapping. Update Adapter Outcome Parity rule table before emission.");
++            }
++        }
+     }
+ }
+ 
+-static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<OperationModel> currentOperations)
++static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<OperationModel> currentOperations, List<Diagnostic> diagnostics, bool allowEmptyBaseline)
+ {
+     if (!File.Exists(previousSpinePath))
+     {
+         throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml is missing.");
+     }
+ 
+-    YamlMappingNode previous = LoadYaml(previousSpinePath);
++    YamlMappingNode previous;
++    try
++    {
++        previous = LoadYaml(previousSpinePath);
++    }
++    catch (Exception ex)
++    {
++        throw new InvalidOperationException($"prerequisite_drift: previous-spine.yaml is unparseable: {ex.Message}");
++    }
++
+     if (!previous.Children.TryGetValue(new YamlScalarNode("operations"), out YamlNode? operationsNode))
+     {
+         throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml lacks operations.");
+     }
+ 
++    if (operationsNode is YamlScalarNode { Value: null or "" })
++    {
++        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml operations is null.");
++    }
++
++    YamlSequenceNode operationsSeq = operationsNode as YamlSequenceNode
++        ?? throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml operations must be a sequence.");
++
++    if (operationsSeq.Children.Count == 0)
++    {
++        if (!allowEmptyBaseline)
++        {
++            throw new InvalidOperationException(
++                "prerequisite_drift: previous-spine.yaml has empty operations and --allow-empty-baseline was not passed. Run with --initialize-baseline to capture the current spine.");
++        }
++
++        diagnostics.Add(new Diagnostic(
++            Level: "warning",
++            Category: "empty_previous_spine_baseline",
++            OperationId: null,
++            SourcePointer: "tests/fixtures/previous-spine.yaml",
++            Message: "Previous spine baseline is empty; symmetric drift detection is disabled until a captured baseline is committed."));
++        return;
++    }
++
+     HashSet<string> currentIdentities = currentOperations.Select(o => o.Identity).ToHashSet(StringComparer.Ordinal);
+-    foreach (YamlNode node in operationsNode.AsSequence("previous operations"))
++    Dictionary<string, OperationModel> currentByRoute = currentOperations.ToDictionary(o => o.Method + " " + o.Path, o => o, StringComparer.Ordinal);
++    Dictionary<string, OperationModel> currentByOperationId = currentOperations.ToDictionary(o => o.OperationId, o => o, StringComparer.Ordinal);
++
++    foreach (YamlNode node in operationsSeq)
+     {
+         YamlMappingNode operation = node.AsMapping("previous operation");
+         string operationId = ReadFlexibleScalar(operation, "operation_id", "operationId");
+         string method = ReadFlexibleScalar(operation, "method", "http_method").ToLowerInvariant();
+         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
+         string identity = method + " " + path + " " + operationId;
+-        if (!currentIdentities.Contains(identity) && !HasApprovedDeprecation(operation))
++
++        if (currentIdentities.Contains(identity))
+         {
+-            throw new InvalidOperationException($"prerequisite_drift: previous operation removed without approved deprecation '{identity}'.");
++            continue;
++        }
++
++        string routeKey = method + " " + path;
++        if (currentByRoute.TryGetValue(routeKey, out OperationModel? renamed))
++        {
++            if (HasApprovedDeprecation(operation))
++            {
++                continue;
++            }
++
++            throw new InvalidOperationException(
++                $"prerequisite_drift: previous operationId '{operationId}' renamed to '{renamed.OperationId}' at route '{routeKey}' without approved deprecation.");
++        }
++
++        if (currentByOperationId.TryGetValue(operationId, out OperationModel? moved))
++        {
++            if (HasApprovedDeprecation(operation))
++            {
++                continue;
++            }
++
++            throw new InvalidOperationException(
++                $"prerequisite_drift: previous operation '{operationId}' moved from '{routeKey}' to '{moved.Method} {moved.Path}' without approved deprecation.");
++        }
++
++        if (!HasApprovedDeprecation(operation))
++        {
++            throw new InvalidOperationException(
++                $"prerequisite_drift: previous operation removed without approved deprecation '{identity}'.");
+         }
+     }
+ }
+ 
+-static string RenderRows(IReadOnlyList<OperationModel> operations, string contractPath, string schemaPath)
++static string RenderOracle(IReadOnlyList<OperationModel> operations, IReadOnlyList<Diagnostic> diagnostics, GeneratorOptions options)
+ {
+     StringBuilder builder = new();
+     builder.Append("# generated_by: tests/tools/parity-oracle-generator\n");
+-    builder.Append("# contract_spine_sha256: ").Append(Sha256(File.ReadAllText(contractPath).NormalizeLineEndings())).Append('\n');
+-    builder.Append("# parity_schema_sha256: ").Append(Sha256(File.ReadAllText(schemaPath).NormalizeLineEndings())).Append('\n');
++    builder.Append("# contract_spine_sha256: ").Append(Sha256(File.ReadAllText(options.ContractPath).NormalizeLineEndings())).Append('\n');
++    builder.Append("# parity_schema_sha256: ").Append(Sha256(File.ReadAllText(options.SchemaPath).NormalizeLineEndings())).Append('\n');
+     builder.Append("# source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract\n");
++    builder.Append("# diagnostics_count: ").Append(diagnostics.Count.ToString(CultureInfo.InvariantCulture)).Append('\n');
++
++    foreach (Diagnostic diagnostic in diagnostics
++                 .OrderBy(d => d.Level, StringComparer.Ordinal)
++                 .ThenBy(d => d.Category, StringComparer.Ordinal)
++                 .ThenBy(d => d.OperationId ?? string.Empty, StringComparer.Ordinal))
++    {
++        builder.Append("# diagnostic: level=").Append(diagnostic.Level)
++               .Append(" category=").Append(diagnostic.Category)
++               .Append(" operation=").Append(diagnostic.OperationId ?? "-")
++               .Append(" source=").Append(diagnostic.SourcePointer ?? "-")
++               .Append(" message=").Append(SafeCommentText(diagnostic.Message))
++               .Append('\n');
++    }
+ 
+     foreach (OperationModel operation in operations)
+     {
+@@ -184,21 +379,33 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
+ 
+     builder.Append("    correlation_field_path: ").Append(Quote("headers." + operation.CorrelationHeader)).Append('\n');
+     builder.Append("    terminal_states:\n");
+-    foreach (string state in TerminalStates(operation))
++    foreach (string state in TerminalStates(operation).OrderBy(s => s, StringComparer.Ordinal))
+     {
+         builder.Append("      - ").Append(Quote(state)).Append('\n');
+     }
+ 
++    OutcomeMapping successOutcome = OutcomeMappings["success"];
+     builder.Append("  behavioral_parity:\n");
+-    builder.Append("    pre_sdk_error_class: ").Append(Quote("none")).Append('\n');
+-    builder.Append("    idempotency_key_sourcing: ").Append(Quote(operation.IsMutatingCommand ? "caller_provided" : "not_accepted")).Append('\n');
++    builder.Append("    pre_sdk_error_class: ").Append(Quote(successOutcome.PreSdkErrorClass)).Append('\n');
++    builder.Append("    idempotency_key_sourcing: ").Append(Quote(IdempotencyKeySourcing(operation))).Append('\n');
+     builder.Append("    correlation_id_sourcing: ").Append(Quote("caller_provided")).Append('\n');
+-    builder.Append("    task_id_sourcing: ").Append(Quote(operation.Parameters.Any(p => p.Field == "task_id") ? "caller_provided" : "not_task_scoped")).Append('\n');
++    builder.Append("    task_id_sourcing: ").Append(Quote(TaskIdSourcing(operation))).Append('\n');
+     builder.Append("    credential_sourcing: ").Append(Quote("sdk_configuration")).Append('\n');
+-    builder.Append("    cli_exit_code: 0\n");
+-    builder.Append("    mcp_failure_kind: ").Append(Quote("none")).Append('\n');
++    builder.Append("    cli_exit_code: ").Append(successOutcome.CliExitCode.ToString(CultureInfo.InvariantCulture)).Append('\n');
++    builder.Append("    mcp_failure_kind: ").Append(Quote(successOutcome.McpFailureKind)).Append('\n');
++
++    builder.Append("  outcome_mapping:\n");
++    foreach (string category in operation.ErrorCategories)
++    {
++        OutcomeMapping mapping = OutcomeMappings[category];
++        builder.Append("    - canonical_error_category: ").Append(Quote(category)).Append('\n');
++        builder.Append("      cli_exit_code: ").Append(mapping.CliExitCode.ToString(CultureInfo.InvariantCulture)).Append('\n');
++        builder.Append("      mcp_failure_kind: ").Append(Quote(mapping.McpFailureKind)).Append('\n');
++        builder.Append("      pre_sdk_error_class: ").Append(Quote(mapping.PreSdkErrorClass)).Append('\n');
++    }
++
+     builder.Append("  adapter_expectations:\n");
+-    foreach (string adapter in AdapterExpectations(operation))
++    foreach (string adapter in AdapterExpectations(operation).OrderBy(a => a, StringComparer.Ordinal))
+     {
+         builder.Append("    - ").Append(Quote(adapter)).Append('\n');
+     }
+@@ -214,14 +421,51 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
+     builder.Append("    synthetic_data_only: true\n");
+ }
+ 
++static string RenderBaseline(IReadOnlyList<OperationModel> operations)
++{
++    StringBuilder builder = new();
++    builder.Append("version: captured-baseline\n");
++    builder.Append("source_marker: captured-from-openapi\n");
++    builder.Append("intent: First captured Contract Spine baseline for symmetric drift detection.\n");
++    builder.Append("ownership:\n");
++    builder.Append("  owner_workstream: Phase 1 Contract Spine and drift-detection stories\n");
++    builder.Append("  future_test_use: Symmetric drift detection input for parity-oracle generation.\n");
++    builder.Append("  known_omissions:\n");
++    builder.Append("    - No request/response schema fingerprints\n");
++    builder.Append("    - No status-code surface\n");
++    builder.Append("  mutation_rules:\n");
++    builder.Append("    - Replace via the generator's --initialize-baseline command after intentional contract changes.\n");
++    builder.Append("    - Add explicit deprecation entries for intentionally removed or renamed operations.\n");
++    builder.Append("  non_policy_placeholder: true\n");
++    builder.Append("  synthetic_data_only: true\n");
++    builder.Append("operations:\n");
++    foreach (OperationModel operation in operations.OrderBy(o => o.OperationId, StringComparer.Ordinal))
++    {
++        builder.Append("  - operation_id: ").Append(Quote(operation.OperationId)).Append('\n');
++        builder.Append("    method: ").Append(Quote(operation.Method)).Append('\n');
++        builder.Append("    path: ").Append(Quote(operation.Path)).Append('\n');
++    }
++
++    return builder.ToString();
++}
++
+ static string AuthOutcomeClass(OperationModel operation)
+ {
++    if (operation.Authorization?.SafeDenial is { } safeDenial && safeDenial.Length > 0)
++    {
++        // Authorization metadata is declared but the schema only allows the bounded outcome enum;
++        // continue with the error-category-driven derivation while preserving authorization presence
++        // as a documented input (see Adapter Parity Contract for derivation rules).
++    }
++
+     if (operation.ErrorCategories.Contains("audit_access_denied", StringComparer.Ordinal))
+     {
+         return "audit_access_denied";
+     }
+ 
+-    if (operation.ErrorCategories.Contains("credential_missing", StringComparer.Ordinal))
++    if (operation.ErrorCategories.Contains("credential_missing", StringComparer.Ordinal) ||
++        operation.ErrorCategories.Contains("credential_reference_invalid", StringComparer.Ordinal) ||
++        operation.ErrorCategories.Contains("authentication_failure", StringComparer.Ordinal))
+     {
+         return "credential_missing";
+     }
+@@ -231,12 +475,15 @@ static string AuthOutcomeClass(OperationModel operation)
+         return "folder_acl_denied";
+     }
+ 
+-    if (operation.ErrorCategories.Contains("tenant_access_denied", StringComparer.Ordinal))
++    if (operation.ErrorCategories.Contains("tenant_access_denied", StringComparer.Ordinal) ||
++        operation.ErrorCategories.Contains("cross_tenant_access_denied", StringComparer.Ordinal))
+     {
+         return "tenant_access_denied";
+     }
+ 
+-    return operation.ErrorCategories.Contains("not_found", StringComparer.Ordinal) ? "safe_not_found" : "tenant_authorized";
++    return operation.ErrorCategories.Contains("not_found", StringComparer.Ordinal)
++        ? "safe_not_found"
++        : "tenant_authorized";
+ }
+ 
+ static string IdempotencyRule(OperationModel operation)
+@@ -251,6 +498,17 @@ static string IdempotencyRule(OperationModel operation)
+         : "required_for_mutating_command";
+ }
+ 
++static string IdempotencyKeySourcing(OperationModel operation) =>
++    operation.IsMutatingCommand ? "caller_provided" : "not_accepted";
++
++static string TaskIdSourcing(OperationModel operation)
++{
++    bool taskScoped =
++        operation.Parameters.Any(p => p.Field == "task_id") ||
++        operation.IdempotencyFields.Contains("task_id", StringComparer.Ordinal);
++    return taskScoped ? "caller_provided" : "not_task_scoped";
++}
++
+ static string[] TerminalStates(OperationModel operation)
+ {
+     if (operation.IsMutatingCommand)
+@@ -291,7 +549,9 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
+         string name;
+         if (parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
+         {
+-            name = (referenceNode.AsScalar("$ref").Value ?? string.Empty).Split('/').Last();
++            string referencePath = referenceNode.AsScalar("$ref").Value ?? string.Empty;
++            string referenceFragment = referencePath.Split('/').Last();
++            name = StripParameterReferenceSuffix(referenceFragment);
+         }
+         else
+         {
+@@ -302,6 +562,19 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
+     }
+ }
+ 
++static string StripParameterReferenceSuffix(string referenceFragment)
++{
++    string[] suffixes = ["Header", "Parameter", "Query", "Path"];
++    foreach (string suffix in suffixes)
++    {
++        if (referenceFragment.EndsWith(suffix, StringComparison.Ordinal) && referenceFragment.Length > suffix.Length)
++        {
++            return referenceFragment[..^suffix.Length];
++        }
++    }
++    return referenceFragment;
++}
++
+ static bool HasIdempotencyKey(IReadOnlyList<ParameterModel> parameters, YamlMappingNode operation) =>
+     parameters.Any(p => p.Field == "idempotency_key") ||
+     operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-idempotency-key"));
+@@ -309,7 +582,38 @@ static bool HasIdempotencyKey(IReadOnlyList<ParameterModel> parameters, YamlMapp
+ static string? ReadConsistencyClass(YamlMappingNode operation)
+ {
+     string? raw = ReadNestedScalar(operation, "x-hexalith-read-consistency", "class");
+-    return raw?.Replace("_", "-", StringComparison.Ordinal);
++    if (raw is null)
++    {
++        return null;
++    }
++
++    string normalized = raw.Replace("_", "-", StringComparison.Ordinal);
++    if (normalized == "not-applicable")
++    {
++        normalized = "not_applicable";
++    }
++    return normalized;
++}
++
++static AuthorizationMetadata? ReadAuthorization(YamlMappingNode operation)
++{
++    if (!operation.Children.TryGetValue(new YamlScalarNode("x-hexalith-authorization"), out YamlNode? node))
++    {
++        return null;
++    }
++
++    YamlMappingNode mapping = node.AsMapping("x-hexalith-authorization");
++    string requirement = mapping.Children.TryGetValue(new YamlScalarNode("requirement"), out YamlNode? req)
++        ? req.AsScalar("requirement").Value ?? string.Empty
++        : string.Empty;
++    string tenantAuthority = mapping.Children.TryGetValue(new YamlScalarNode("tenantAuthority"), out YamlNode? auth)
++        ? auth.AsScalar("tenantAuthority").Value ?? string.Empty
++        : string.Empty;
++    string safeDenial = mapping.Children.TryGetValue(new YamlScalarNode("safeDenial"), out YamlNode? denial)
++        ? denial.AsScalar("safeDenial").Value ?? string.Empty
++        : string.Empty;
++
++    return new AuthorizationMetadata(requirement, tenantAuthority, safeDenial);
+ }
+ 
+ static IEnumerable<string> ReadAuditMetadataKeys(YamlMappingNode operation)
+@@ -361,25 +665,36 @@ static string ReadFlexibleScalar(YamlMappingNode mapping, params string[] keys)
+     throw new InvalidOperationException($"Missing scalar '{string.Join("|", keys)}'.");
+ }
+ 
+-static bool HasApprovedDeprecation(YamlMappingNode operation) =>
+-    operation.Children.TryGetValue(new YamlScalarNode("deprecation"), out YamlNode? deprecationNode) &&
+-    deprecationNode.AsMapping("deprecation").Children.TryGetValue(new YamlScalarNode("approved"), out YamlNode? approvedNode) &&
+-    string.Equals(approvedNode.AsScalar("approved").Value, "true", StringComparison.OrdinalIgnoreCase);
++static bool HasApprovedDeprecation(YamlMappingNode operation)
++{
++    if (!operation.Children.TryGetValue(new YamlScalarNode("deprecation"), out YamlNode? deprecationNode))
++    {
++        return false;
++    }
++
++    if (!deprecationNode.AsMapping("deprecation").Children.TryGetValue(new YamlScalarNode("approved"), out YamlNode? approvedNode))
++    {
++        return false;
++    }
++
++    string raw = approvedNode.AsScalar("approved").Value ?? string.Empty;
++    return YamlBooleanTrueLiterals.Contains(raw);
++}
+ 
+ static string NormalizeErrorCategory(string category) => category switch
+ {
+-    "provider_outcome_unknown" => "unknown_provider_outcome",
++    // Removed silent rewrite for provider_outcome_unknown → unknown_provider_outcome (Story 1.13 P-26).
++    // Generator now requires the OpenAPI Contract Spine to use the canonical 'unknown_provider_outcome' name.
+     _ => category,
+ };
+ 
+ static string NormalizePath(string path)
+ {
+     string trimmed = path.Trim();
+-    while (trimmed.Contains("//", StringComparison.Ordinal))
++    if (trimmed.Length > 1 && trimmed.EndsWith('/'))
+     {
+-        trimmed = trimmed.Replace("//", "/", StringComparison.Ordinal);
++        trimmed = trimmed[..^1];
+     }
+-
+     return trimmed;
+ }
+ 
+@@ -410,32 +725,45 @@ static string NormalizeName(string value)
+     return builder.ToString() switch
+     {
+         "x_hexalith_task_id" => "task_id",
+-        "idempotency_key" => "idempotency_key",
+-        "correlation_id" => "correlation_id",
+         string normalized => normalized,
+     };
+ }
+ 
+-static string Quote(string value) => "'" + value.Replace("'", "''", StringComparison.Ordinal) + "'";
++static void ValidateOperationIdShape(string operationId)
++{
++    if (!OperationIdPattern.IsMatch(operationId))
++    {
++        throw new InvalidOperationException(
++            $"prerequisite_drift: operationId '{operationId}' violates pattern ^[A-Z][A-Za-z0-9]*$.");
++    }
++}
+ 
+-static Dictionary<string, string> ParseArguments(string[] values)
++static string Quote(string value)
+ {
+-    Dictionary<string, string> parsed = new(StringComparer.Ordinal);
+-    for (int i = 0; i < values.Length; i += 2)
++    foreach (char c in value)
+     {
+-        if (i + 1 >= values.Length || !values[i].StartsWith("--", StringComparison.Ordinal))
++        if (char.IsControl(c) && c != '\t')
+         {
+-            throw new ArgumentException($"Arguments must be supplied as --key value pairs. Invalid token at position {i}.");
++            throw new InvalidOperationException(
++                $"prerequisite_drift: value contains control character (codepoint {(int)c:X4}); cannot emit safely.");
+         }
+-
+-        parsed[values[i]] = values[i + 1];
+     }
+-
+-    return parsed;
++    return "'" + value.Replace("'", "''", StringComparison.Ordinal) + "'";
+ }
+ 
++static string SafeCommentText(string value) =>
++    value
++        .Replace('\r', ' ')
++        .Replace('\n', ' ')
++        .Replace('#', ' ');
++
+ static YamlMappingNode LoadYaml(string path)
+ {
++    if (!File.Exists(path))
++    {
++        throw new InvalidOperationException($"prerequisite_drift: required input file is missing: {path}");
++    }
++
+     using StreamReader reader = File.OpenText(path);
+     YamlStream yaml = new();
+     yaml.Load(reader);
+@@ -465,20 +793,104 @@ static string RequiredScalar(YamlMappingNode mapping, string key)
+ static string Sha256(string value) =>
+     Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
+ 
+-static string LocateRepositoryRoot()
++#pragma warning disable SA1402 // multiple types in file (single-file tool)
++internal sealed record GeneratorOptions(
++    string RepositoryRoot,
++    string ContractPath,
++    string SchemaPath,
++    string PreviousSpinePath,
++    string OutputPath,
++    bool InitializeBaseline,
++    bool AllowEmptyBaseline)
+ {
+-    string current = AppContext.BaseDirectory;
+-    while (!string.IsNullOrWhiteSpace(current))
++    public static GeneratorOptions Parse(string[] args)
+     {
+-        if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
++        Dictionary<string, string> parsed = new(StringComparer.Ordinal);
++        HashSet<string> flags = new(StringComparer.Ordinal);
++
++        int i = 0;
++        while (i < args.Length)
++        {
++            string token = args[i];
++            if (!token.StartsWith("--", StringComparison.Ordinal))
++            {
++                throw new ArgumentException($"Unexpected positional argument '{token}' at position {i}; arguments must be --key value pairs or --flag.");
++            }
++
++            if (token is "--help" or "--initialize-baseline" or "--allow-empty-baseline")
++            {
++                if (!flags.Add(token))
++                {
++                    throw new ArgumentException($"Flag '{token}' supplied more than once.");
++                }
++                i += 1;
++                continue;
++            }
++
++            if (i + 1 >= args.Length)
++            {
++                throw new ArgumentException($"Missing value for argument '{token}'.");
++            }
++
++            string value = args[i + 1];
++            if (value.StartsWith("--", StringComparison.Ordinal))
++            {
++                throw new ArgumentException($"Missing value for argument '{token}'; got another flag '{value}'.");
++            }
++
++            if (parsed.ContainsKey(token))
++            {
++                throw new ArgumentException($"Argument '{token}' supplied more than once.");
++            }
++
++            parsed[token] = value;
++            i += 2;
++        }
++
++        if (flags.Contains("--help"))
+         {
+-            return current;
++            Console.WriteLine("Usage: parity-oracle-generator [--repository-root <path>] [--contract <path>] [--schema <path>] [--previous-spine <path>] [--output <path>] [--initialize-baseline] [--allow-empty-baseline]");
++            Environment.Exit(0);
+         }
+ 
+-        current = Directory.GetParent(current)?.FullName ?? string.Empty;
++        string repositoryRoot = Path.GetFullPath(parsed.GetValueOrDefault("--repository-root", LocateRepositoryRoot()));
++        return new GeneratorOptions(
++            RepositoryRoot: repositoryRoot,
++            ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))),
++            SchemaPath: Path.GetFullPath(parsed.GetValueOrDefault("--schema", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.schema.json"))),
++            PreviousSpinePath: Path.GetFullPath(parsed.GetValueOrDefault("--previous-spine", Path.Combine(repositoryRoot, "tests", "fixtures", "previous-spine.yaml"))),
++            OutputPath: Path.GetFullPath(parsed.GetValueOrDefault("--output", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.yaml"))),
++            InitializeBaseline: flags.Contains("--initialize-baseline"),
++            AllowEmptyBaseline: flags.Contains("--allow-empty-baseline"));
+     }
+ 
+-    return Directory.GetCurrentDirectory();
++    private static string LocateRepositoryRoot()
++    {
++        string current = AppContext.BaseDirectory;
++        while (!string.IsNullOrWhiteSpace(current))
++        {
++            if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
++            {
++                return current;
++            }
++
++            current = Directory.GetParent(current)?.FullName ?? string.Empty;
++        }
++
++        current = Directory.GetCurrentDirectory();
++        while (!string.IsNullOrWhiteSpace(current))
++        {
++            if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
++            {
++                return current;
++            }
++
++            current = Directory.GetParent(current)?.FullName ?? string.Empty;
++        }
++
++        throw new InvalidOperationException(
++            "prerequisite_drift: could not locate repository root (Hexalith.Folders.slnx not found). Pass --repository-root explicitly.");
++    }
+ }
+ 
+ internal sealed record OperationModel(
+@@ -492,7 +904,9 @@ internal sealed record OperationModel(
+     string? ReadConsistencyClass,
+     IReadOnlyList<string> ErrorCategories,
+     IReadOnlyList<string> AuditMetadataKeys,
+-    string CorrelationHeader)
++    string CorrelationHeader,
++    AuthorizationMetadata? Authorization,
++    bool HasParityDimensions)
+ {
+     public string Identity => Method + " " + Path + " " + OperationId;
+ 
+@@ -528,6 +942,9 @@ internal sealed record OperationModel(
+ }
+ 
+ internal sealed record ParameterModel(string Field, string Name);
++internal sealed record AuthorizationMetadata(string Requirement, string TenantAuthority, string SafeDenial);
++internal sealed record Diagnostic(string Level, string Category, string? OperationId, string? SourcePointer, string Message);
++internal sealed record OutcomeMapping(int CliExitCode, string McpFailureKind, string PreSdkErrorClass);
+ 
+ internal static class TextExtensions
+ {
+@@ -546,3 +963,74 @@ internal static class YamlExtensions
+     public static YamlScalarNode AsScalar(this YamlNode node, string name) =>
+         node as YamlScalarNode ?? throw new InvalidOperationException($"{name} must be a scalar.");
+ }
++
++internal static class GeneratorConstants
++{
++    public static readonly Regex OperationIdPattern = new("^[A-Z][A-Za-z0-9]*$", RegexOptions.Compiled);
++    public static readonly Regex AuditKeyPattern = new("^[a-z][a-z0-9_]*$", RegexOptions.Compiled);
++
++    // YAML 1.2 strictly recognizes true/false/True/False/TRUE/FALSE as booleans. YamlDotNet preserves the
++    // scalar's lexical form, so honoring 1.1-style aliases makes deprecation entries authoring-friendly.
++    public static readonly HashSet<string> YamlBooleanTrueLiterals = new(StringComparer.OrdinalIgnoreCase)
++    {
++        "true", "yes", "on", "y", "1",
++    };
++
++    // Adapter Outcome Parity table from docs/contract/idempotency-and-parity-rules.md (Story 1.5).
++    // Extended with bounded inference for canonical_error categories beyond the 15 representative
++    // outcomes so generation does not fail closed on every operation. Updates require schema-bounded
++    // enum changes and a focused-test addition.
++    public static readonly IReadOnlyDictionary<string, OutcomeMapping> OutcomeMappings =
++        new Dictionary<string, OutcomeMapping>(StringComparer.Ordinal)
++        {
++            ["success"] = new(0, "none", "none"),
++            ["authentication_failure"] = new(65, "authentication_failure", "credential_missing"),
++            ["client_configuration_error"] = new(64, "usage_error", "client_configuration_error"),
++            ["credential_missing"] = new(65, "credential_missing", "credential_missing"),
++            ["credential_reference_missing"] = new(65, "credential_missing", "credential_missing"),
++            ["credential_reference_invalid"] = new(65, "credential_reference_invalid", "credential_missing"),
++            ["tenant_access_denied"] = new(66, "tenant_access_denied", "none"),
++            ["cross_tenant_access_denied"] = new(66, "cross_tenant_access_denied", "none"),
++            ["folder_acl_denied"] = new(66, "folder_acl_denied", "none"),
++            ["audit_access_denied"] = new(66, "audit_access_denied", "none"),
++            ["validation_error"] = new(69, "validation_error", "none"),
++            ["workspace_locked"] = new(67, "workspace_locked", "none"),
++            ["lock_conflict"] = new(67, "lock_conflict", "none"),
++            ["lock_expired"] = new(67, "lock_expired", "none"),
++            ["lock_not_owned"] = new(67, "lock_not_owned", "none"),
++            ["stale_workspace"] = new(67, "stale_workspace", "none"),
++            ["authorization_revocation_detected"] = new(73, "authorization_revocation_detected", "none"),
++            ["workspace_not_ready"] = new(72, "workspace_not_ready", "none"),
++            ["workspace_preparation_failed"] = new(72, "workspace_preparation_failed", "none"),
++            ["dirty_workspace"] = new(72, "dirty_workspace", "none"),
++            ["commit_failed"] = new(70, "commit_failed", "none"),
++            ["file_operation_failed"] = new(70, "file_operation_failed", "none"),
++            ["path_validation_failed"] = new(69, "path_validation_failed", "none"),
++            ["idempotency_conflict"] = new(68, "idempotency_conflict", "none"),
++            ["input_limit_exceeded"] = new(69, "input_limit_exceeded", "none"),
++            ["response_limit_exceeded"] = new(69, "response_limit_exceeded", "none"),
++            ["query_timeout"] = new(1, "query_timeout", "none"),
++            ["provider_readiness_failed"] = new(70, "provider_readiness_failed", "none"),
++            ["provider_failure_known"] = new(70, "provider_failure_known", "none"),
++            ["unknown_provider_outcome"] = new(71, "unknown_provider_outcome", "none"),
++            ["provider_permission_insufficient"] = new(70, "provider_permission_insufficient", "none"),
++            ["provider_unavailable"] = new(70, "provider_unavailable", "none"),
++            ["provider_rate_limited"] = new(70, "provider_rate_limited", "none"),
++            ["unsupported_provider_capability"] = new(70, "unsupported_provider_capability", "none"),
++            ["repository_binding_unavailable"] = new(70, "repository_binding_unavailable", "none"),
++            ["branch_ref_policy_invalid"] = new(69, "branch_ref_policy_invalid", "none"),
++            ["repository_conflict"] = new(70, "repository_conflict", "none"),
++            ["duplicate_binding"] = new(70, "duplicate_binding", "none"),
++            ["reconciliation_required"] = new(72, "reconciliation_required", "none"),
++            ["not_found"] = new(73, "not_found", "none"),
++            ["state_transition_invalid"] = new(74, "state_transition_invalid", "none"),
++            ["read_model_unavailable"] = new(72, "read_model_unavailable", "none"),
++            ["projection_stale"] = new(72, "projection_stale", "none"),
++            ["projection_unavailable"] = new(72, "projection_unavailable", "none"),
++            ["range_unsatisfiable"] = new(69, "range_unsatisfiable", "none"),
++            ["failed_operation"] = new(70, "failed_operation", "none"),
++            ["redacted"] = new(75, "redacted", "none"),
++            ["internal_error"] = new(1, "internal_error", "none"),
++        };
++}
++#pragma warning restore SA1402
+diff --git a/tests/tools/parity-oracle-generator/README.md b/tests/tools/parity-oracle-generator/README.md
+index 2e6a85d..c18c501 100644
+--- a/tests/tools/parity-oracle-generator/README.md
++++ b/tests/tools/parity-oracle-generator/README.md
+@@ -15,14 +15,27 @@ Optional arguments:
+ --schema <path-to-parity-contract.schema.json>
+ --previous-spine <path-to-previous-spine.yaml>
+ --output <path-to-parity-contract.yaml>
++--initialize-baseline       Snapshot the current OpenAPI as the previous-spine baseline and exit.
++--allow-empty-baseline      Accept an empty `operations: []` baseline (downgrades drift to warning).
++--help                      Show usage and exit.
+ ```
+ 
++### Initialize the baseline
++
++Run once whenever the Contract Spine is intentionally rewritten:
++
++```text
++dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root <repo-root> --initialize-baseline
++```
++
++The command overwrites `tests/fixtures/previous-spine.yaml` with the captured operation inventory and exits without emitting the parity oracle. Commit the regenerated baseline alongside any intentional contract change so subsequent runs perform meaningful symmetric drift detection.
++
+ ## Source Authority
+ 
+ - OpenAPI operation metadata owns transport facts, operation IDs, idempotency metadata, canonical error categories, read consistency, audit metadata keys, correlation headers, and authorization metadata.
+ - `docs/contract/idempotency-and-parity-rules.md` and the architecture Adapter Parity Contract own adapter semantics such as idempotency-key sourcing, correlation sourcing, task-ID sourcing, credential sourcing, CLI exit codes, and MCP failure kinds.
+ - `tests/fixtures/parity-contract.schema.json` owns the bounded row shape and allowed enum values.
+-- `tests/fixtures/previous-spine.yaml` owns symmetric removal/deprecation comparison. The current synthetic empty baseline is treated as first-baseline initialization; non-empty removed operations fail unless they carry approved deprecation metadata.
++- `tests/fixtures/previous-spine.yaml` owns symmetric removal/deprecation comparison. The baseline is a captured snapshot of the prior Contract Spine; empty `operations: []` is rejected unless `--allow-empty-baseline` is passed explicitly. Removed, renamed, or moved operations fail closed unless they carry an `approved: true` (or any YAML-truthy literal) deprecation entry.
+ - Story 1.12 generated helper provenance is consumed only as safe operation/helper identity context; this generator does not reimplement SDK hash construction.
+ 
+ ## Deterministic Output
+@@ -31,7 +44,7 @@ Rows are sorted by `operation_id`, arrays are sorted when source order is not no
+ 
+ ## Failure Behavior
+ 
+-The generator fails closed with `prerequisite_drift` diagnostics for duplicate operation IDs, missing mutating idempotency metadata, non-mutating idempotency metadata, missing read consistency, missing canonical error categories, missing audit metadata keys, unresolved previous-spine removal without approved deprecation, and malformed arguments.
++The generator fails closed with `prerequisite_drift` diagnostics for duplicate operation IDs, duplicate routes (same method+path with different operationIds), missing mutating idempotency metadata, non-mutating idempotency metadata, missing read consistency, missing canonical error categories, missing audit metadata keys, audit-key pattern violations (`^[a-z][a-z0-9_]*$`), operationId pattern violations (`^[A-Z][A-Za-z0-9]*$`), control-character values that cannot be safely YAML-encoded, unresolved local OpenAPI `$ref` or path-item `$ref` constructs, unsupported HTTP methods, unparseable previous-spine baselines, `operations: null`, removed/renamed/moved previous-spine operations without an approved deprecation, canonical-error categories with no behavioral-parity mapping, and malformed arguments. HEAD/OPTIONS/TRACE methods and missing `x-hexalith-authorization` or `x-hexalith-parity-dimensions` extensions surface as non-blocking warnings or `reference_pending` markers in the generated oracle's diagnostic header.
+ 
+ ## Handoff
+ 

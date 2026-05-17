@@ -40,5 +40,6 @@
     <Project Path="tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj" />
+    <Project Path="tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj" />
   </Folder>
 </Solution>

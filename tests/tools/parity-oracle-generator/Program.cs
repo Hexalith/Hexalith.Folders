@@ -51,12 +51,18 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
 
     foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
     {
-        string path = pathEntry.Key.AsScalar("path").Value ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(path))
+        if (pathEntry.Key is not YamlScalarNode pathKeyScalar)
         {
-            throw new InvalidOperationException("prerequisite_drift: empty path key in OpenAPI paths.");
+            throw new InvalidOperationException("prerequisite_drift: non-scalar key under OpenAPI paths.");
         }
 
+        string? rawPath = pathKeyScalar.Value;
+        if (rawPath is null || string.IsNullOrWhiteSpace(rawPath) || rawPath == "~")
+        {
+            throw new InvalidOperationException("prerequisite_drift: empty or null path key in OpenAPI paths.");
+        }
+
+        string path = rawPath;
         YamlMappingNode pathItem = pathEntry.Value.AsMapping($"path item '{path}'");
         IReadOnlyList<ParameterModel> pathParameters = EnumerateParameters(pathItem).ToArray();
 
@@ -64,6 +70,13 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
         {
             string methodKey = methodEntry.Key.AsScalar("method").Value ?? string.Empty;
             string method = methodKey.ToLowerInvariant();
+
+            // OpenAPI 3.x permits arbitrary vendor extensions (`x-*`) at the path-item level. Skip
+            // them as metadata-only inputs rather than treating them as malformed HTTP methods.
+            if (method.StartsWith("x-", StringComparison.Ordinal))
+            {
+                continue;
+            }
 
             if (pathItemReservedKeys.Contains(method))
             {
@@ -111,7 +124,9 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
             bool hasIdempotencyKey = HasIdempotencyKey(parameters, operation);
             string correlationHeader = ReadNestedScalar(operation, "x-hexalith-correlation", "correlationHeader") ?? "X-Correlation-Id";
             AuthorizationMetadata? authorization = ReadAuthorization(operation);
-            bool hasParityDimensions = operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-parity-dimensions"));
+            // Treat `x-hexalith-parity-dimensions: null` (or an explicit empty mapping) as undeclared so
+            // the reference_pending diagnostic still fires; only a populated extension counts.
+            bool hasParityDimensions = HasNonEmptyExtension(operation, "x-hexalith-parity-dimensions");
 
             OperationModel model = new(
                 Method: method,
@@ -278,13 +293,29 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         return;
     }
 
+    HashSet<string> previousOperationIds = new(StringComparer.Ordinal);
+    foreach (YamlNode previousNode in operationsSeq)
+    {
+        if (previousNode is YamlMappingNode previousMapping
+            && previousMapping.Children.TryGetValue(new YamlScalarNode("operation_id"), out YamlNode? idNode)
+            && idNode is YamlScalarNode idScalar
+            && !string.IsNullOrEmpty(idScalar.Value))
+        {
+            previousOperationIds.Add(idScalar.Value!);
+        }
+    }
+
     HashSet<string> currentIdentities = currentOperations.Select(o => o.Identity).ToHashSet(StringComparer.Ordinal);
     Dictionary<string, OperationModel> currentByRoute = currentOperations.ToDictionary(o => o.Method + " " + o.Path, o => o, StringComparer.Ordinal);
     Dictionary<string, OperationModel> currentByOperationId = currentOperations.ToDictionary(o => o.OperationId, o => o, StringComparer.Ordinal);
 
     foreach (YamlNode node in operationsSeq)
     {
-        YamlMappingNode operation = node.AsMapping("previous operation");
+        if (node is not YamlMappingNode operation)
+        {
+            throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml operation entry must be a mapping.");
+        }
+
         string operationId = ReadFlexibleScalar(operation, "operation_id", "operationId");
         string method = ReadFlexibleScalar(operation, "method", "http_method").ToLowerInvariant();
         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
@@ -295,50 +326,109 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
             continue;
         }
 
-        string routeKey = method + " " + path;
-        if (currentByRoute.TryGetValue(routeKey, out OperationModel? renamed))
+        if (HasApprovedDeprecation(operation))
         {
-            if (HasApprovedDeprecation(operation))
-            {
-                continue;
-            }
-
-            throw new InvalidOperationException(
-                $"prerequisite_drift: previous operationId '{operationId}' renamed to '{renamed.OperationId}' at route '{routeKey}' without approved deprecation.");
+            continue;
         }
 
-        if (currentByOperationId.TryGetValue(operationId, out OperationModel? moved))
-        {
-            if (HasApprovedDeprecation(operation))
-            {
-                continue;
-            }
+        bool routeMatches = currentByRoute.TryGetValue(method + " " + path, out OperationModel? renamed);
+        bool operationIdMatches = currentByOperationId.TryGetValue(operationId, out OperationModel? moved);
 
-            throw new InvalidOperationException(
-                $"prerequisite_drift: previous operation '{operationId}' moved from '{routeKey}' to '{moved.Method} {moved.Path}' without approved deprecation.");
-        }
-
-        if (!HasApprovedDeprecation(operation))
+        if (routeMatches && operationIdMatches)
         {
             throw new InvalidOperationException(
-                $"prerequisite_drift: previous operation removed without approved deprecation '{identity}'.");
+                $"prerequisite_drift: previous operation '{operationId}' both renamed (route '{method} {path}' now binds '{renamed!.OperationId}') and moved (id '{operationId}' now at '{moved!.Method} {moved.Path}') without approved deprecation.");
         }
+
+        if (routeMatches)
+        {
+            throw new InvalidOperationException(
+                $"prerequisite_drift: previous operationId '{operationId}' renamed to '{renamed!.OperationId}' at route '{method} {path}' without approved deprecation.");
+        }
+
+        if (operationIdMatches)
+        {
+            throw new InvalidOperationException(
+                $"prerequisite_drift: previous operation '{operationId}' moved from '{method} {path}' to '{moved!.Method} {moved.Path}' without approved deprecation.");
+        }
+
+        throw new InvalidOperationException(
+            $"prerequisite_drift: previous operation removed without approved deprecation '{identity}'.");
     }
+
+    // Additive-drift check. Only enforced when the baseline explicitly declares an
+    // `approved_additions:` key — its presence is the opt-in marker that the baseline is treated as
+    // a complete inventory. Synthetic test baselines that omit the key are not subject to this gate
+    // (they typically list a single fixture operation rather than the full Contract Spine).
+    if (!previous.Children.ContainsKey(new YamlScalarNode("approved_additions")))
+    {
+        return;
+    }
+
+    HashSet<string> approvedAdditions = ReadApprovedAdditions(previous);
+    foreach (OperationModel current in currentOperations)
+    {
+        if (previousOperationIds.Contains(current.OperationId) || approvedAdditions.Contains(current.OperationId))
+        {
+            continue;
+        }
+
+        throw new InvalidOperationException(
+            $"prerequisite_drift: current operationId '{current.OperationId}' is not in the previous-spine baseline and is not listed under approved_additions. "
+            + "Either add the operationId to `approved_additions:` in tests/fixtures/previous-spine.yaml or rerun with --initialize-baseline after an intentional sweep.");
+    }
+}
+
+static HashSet<string> ReadApprovedAdditions(YamlMappingNode previous)
+{
+    HashSet<string> approved = new(StringComparer.Ordinal);
+    if (!previous.Children.TryGetValue(new YamlScalarNode("approved_additions"), out YamlNode? node))
+    {
+        return approved;
+    }
+
+    if (node is YamlScalarNode { Value: null or "" })
+    {
+        return approved;
+    }
+
+    if (node is not YamlSequenceNode sequence)
+    {
+        throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml approved_additions must be a sequence of operationIds.");
+    }
+
+    foreach (YamlNode entry in sequence)
+    {
+        if (entry is not YamlScalarNode scalar || string.IsNullOrWhiteSpace(scalar.Value))
+        {
+            throw new InvalidOperationException("prerequisite_drift: previous-spine.yaml approved_additions entries must be non-empty scalar operationIds.");
+        }
+
+        approved.Add(scalar.Value!);
+    }
+
+    return approved;
 }
 
 static string RenderOracle(IReadOnlyList<OperationModel> operations, IReadOnlyList<Diagnostic> diagnostics, GeneratorOptions options)
 {
     StringBuilder builder = new();
     builder.Append("# generated_by: tests/tools/parity-oracle-generator\n");
-    builder.Append("# contract_spine_sha256: ").Append(Sha256(File.ReadAllText(options.ContractPath).NormalizeLineEndings())).Append('\n');
-    builder.Append("# parity_schema_sha256: ").Append(Sha256(File.ReadAllText(options.SchemaPath).NormalizeLineEndings())).Append('\n');
+    builder.Append("# contract_spine_sha256: ").Append(Sha256OfFile(options.ContractPath)).Append('\n');
+    builder.Append("# parity_schema_sha256: ").Append(Sha256OfFile(options.SchemaPath)).Append('\n');
     builder.Append("# source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract\n");
     builder.Append("# diagnostics_count: ").Append(diagnostics.Count.ToString(CultureInfo.InvariantCulture)).Append('\n');
 
+    // Sort diagnostics deterministically. The final tiebreakers on SourcePointer + Message guarantee
+    // byte-stable ordering even when two diagnostics share the (Level, Category, OperationId) triplet
+    // — for example, two reference_pending entries with OperationId=null produced by enumeration of
+    // a YAML mapping whose key order is not guaranteed.
     foreach (Diagnostic diagnostic in diagnostics
                  .OrderBy(d => d.Level, StringComparer.Ordinal)
                  .ThenBy(d => d.Category, StringComparer.Ordinal)
-                 .ThenBy(d => d.OperationId ?? string.Empty, StringComparer.Ordinal))
+                 .ThenBy(d => d.OperationId ?? string.Empty, StringComparer.Ordinal)
+                 .ThenBy(d => d.SourcePointer ?? string.Empty, StringComparer.Ordinal)
+                 .ThenBy(d => d.Message, StringComparer.Ordinal))
     {
         builder.Append("# diagnostic: level=").Append(diagnostic.Level)
                .Append(" category=").Append(diagnostic.Category)
@@ -436,8 +526,10 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations)
     builder.Append("  mutation_rules:\n");
     builder.Append("    - Replace via the generator's --initialize-baseline command after intentional contract changes.\n");
     builder.Append("    - Add explicit deprecation entries for intentionally removed or renamed operations.\n");
+    builder.Append("    - Add new operationIds to `approved_additions:` to acknowledge a sanctioned addition.\n");
     builder.Append("  non_policy_placeholder: true\n");
     builder.Append("  synthetic_data_only: true\n");
+    builder.Append("approved_additions: []\n");
     builder.Append("operations:\n");
     foreach (OperationModel operation in operations.OrderBy(o => o.OperationId, StringComparer.Ordinal))
     {
@@ -451,25 +543,15 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations)
 
 static string AuthOutcomeClass(OperationModel operation)
 {
-    if (operation.Authorization?.SafeDenial is { } safeDenial && safeDenial.Length > 0)
-    {
-        // Authorization metadata is declared but the schema only allows the bounded outcome enum;
-        // continue with the error-category-driven derivation while preserving authorization presence
-        // as a documented input (see Adapter Parity Contract for derivation rules).
-    }
-
+    // Audit-access-denied is its own bucket distinct from generic ACL denial.
     if (operation.ErrorCategories.Contains("audit_access_denied", StringComparer.Ordinal))
     {
         return "audit_access_denied";
     }
 
-    if (operation.ErrorCategories.Contains("credential_missing", StringComparer.Ordinal) ||
-        operation.ErrorCategories.Contains("credential_reference_invalid", StringComparer.Ordinal) ||
-        operation.ErrorCategories.Contains("authentication_failure", StringComparer.Ordinal))
-    {
-        return "credential_missing";
-    }
-
+    // Folder ACL and tenant access denials are the canonical "authorized but denied" outcomes for
+    // operations that reach the tenant + folder authorization layers. They MUST be checked before
+    // credential-missing so an operation declaring both does not collapse to the wrong bucket.
     if (operation.ErrorCategories.Contains("folder_acl_denied", StringComparer.Ordinal))
     {
         return "folder_acl_denied";
@@ -479,6 +561,16 @@ static string AuthOutcomeClass(OperationModel operation)
         operation.ErrorCategories.Contains("cross_tenant_access_denied", StringComparer.Ordinal))
     {
         return "tenant_access_denied";
+    }
+
+    // Credential-missing only when no authorization-layer denial category is declared. Note that
+    // 'authentication_failure' (which most operations declare) is intentionally NOT routed here:
+    // it represents a credential validity issue at the authentication layer, not the absence of a
+    // credential reference, so collapsing it would mask folder/tenant authorization signal.
+    if (operation.ErrorCategories.Contains("credential_missing", StringComparer.Ordinal) ||
+        operation.ErrorCategories.Contains("credential_reference_invalid", StringComparer.Ordinal))
+    {
+        return "credential_missing";
     }
 
     return operation.ErrorCategories.Contains("not_found", StringComparer.Ordinal)
@@ -564,20 +656,59 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
 
 static string StripParameterReferenceSuffix(string referenceFragment)
 {
+    // Strip only suffixes that match the canonical component-name convention
+    // <Field><PascalCaseSuffix> where the prefix begins with an uppercase letter and the suffix
+    // is a recognized parameter-location word. This protects legitimate parameter names that
+    // happen to end in 'Header', 'Path', etc. (e.g. AuthorizationHeader → would be wrongly
+    // stripped to Authorization).
     string[] suffixes = ["Header", "Parameter", "Query", "Path"];
     foreach (string suffix in suffixes)
     {
-        if (referenceFragment.EndsWith(suffix, StringComparison.Ordinal) && referenceFragment.Length > suffix.Length)
+        if (!referenceFragment.EndsWith(suffix, StringComparison.Ordinal))
         {
-            return referenceFragment[..^suffix.Length];
+            continue;
+        }
+
+        int prefixLength = referenceFragment.Length - suffix.Length;
+        if (prefixLength <= 0)
+        {
+            continue;
+        }
+
+        // Only strip when the prefix is multi-character AND ends with a lowercase letter or digit
+        // followed by the suffix's leading uppercase letter — i.e. the canonical
+        // 'idempotencyKeyHeader' / 'TaskIdHeader' shape. A reference fragment that is itself just
+        // 'AuthorizationHeader' (single concept) has only uppercase letters separated by the suffix
+        // boundary and is left intact.
+        char prevChar = referenceFragment[prefixLength - 1];
+        if (char.IsLower(prevChar) || char.IsDigit(prevChar))
+        {
+            return referenceFragment[..prefixLength];
         }
     }
+
     return referenceFragment;
 }
 
 static bool HasIdempotencyKey(IReadOnlyList<ParameterModel> parameters, YamlMappingNode operation) =>
     parameters.Any(p => p.Field == "idempotency_key") ||
-    operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-idempotency-key"));
+    HasNonEmptyExtension(operation, "x-hexalith-idempotency-key");
+
+static bool HasNonEmptyExtension(YamlMappingNode operation, string key)
+{
+    if (!operation.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node))
+    {
+        return false;
+    }
+
+    return node switch
+    {
+        YamlScalarNode scalar => !string.IsNullOrEmpty(scalar.Value) && scalar.Value != "~",
+        YamlMappingNode mapping => mapping.Children.Count > 0,
+        YamlSequenceNode sequence => sequence.Children.Count > 0,
+        _ => true,
+    };
+}
 
 static string? ReadConsistencyClass(YamlMappingNode operation)
 {
@@ -662,7 +793,7 @@ static string ReadFlexibleScalar(YamlMappingNode mapping, params string[] keys)
         }
     }
 
-    throw new InvalidOperationException($"Missing scalar '{string.Join("|", keys)}'.");
+    throw new InvalidOperationException($"prerequisite_drift: previous-spine entry missing required scalar '{string.Join("|", keys)}'.");
 }
 
 static bool HasApprovedDeprecation(YamlMappingNode operation)
@@ -740,14 +871,45 @@ static void ValidateOperationIdShape(string operationId)
 
 static string Quote(string value)
 {
-    foreach (char c in value)
+    for (int i = 0; i < value.Length; i++)
     {
+        char c = value[i];
         if (char.IsControl(c) && c != '\t')
         {
             throw new InvalidOperationException(
                 $"prerequisite_drift: value contains control character (codepoint {(int)c:X4}); cannot emit safely.");
         }
+
+        // U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR) are NOT classified as control
+        // characters by char.IsControl but ARE line terminators in some JSON/YAML consumers. Reject
+        // them up front so byte-stable output cannot smuggle line breaks into a single-line scalar.
+        if (c == '\u2028' || c == '\u2029')
+        {
+            throw new InvalidOperationException(
+                $"prerequisite_drift: value contains line/paragraph separator (codepoint {(int)c:X4}); cannot emit safely.");
+        }
+
+        if (char.IsHighSurrogate(c))
+        {
+            if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
+            {
+                throw new InvalidOperationException(
+                    $"prerequisite_drift: value contains lone high surrogate (codepoint {(int)c:X4}); cannot emit safely.");
+            }
+
+            // Skip the well-formed low surrogate; the next loop iteration will land on the char
+            // following the pair.
+            i++;
+            continue;
+        }
+
+        if (char.IsLowSurrogate(c))
+        {
+            throw new InvalidOperationException(
+                $"prerequisite_drift: value contains lone low surrogate (codepoint {(int)c:X4}); cannot emit safely.");
+        }
     }
+
     return "'" + value.Replace("'", "''", StringComparison.Ordinal) + "'";
 }
 
@@ -764,9 +926,30 @@ static YamlMappingNode LoadYaml(string path)
         throw new InvalidOperationException($"prerequisite_drift: required input file is missing: {path}");
     }
 
-    using StreamReader reader = File.OpenText(path);
+    // Read bytes once, then strip an optional UTF-8 BOM before handing the text to YamlDotNet.
+    // YamlDotNet does not normalize BOM and a BOM-prefixed root node sometimes loads as an
+    // unexpected scalar — failing closed early is cleaner than producing a malformed tree.
+    byte[] bytes = File.ReadAllBytes(path);
+    int offset = (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) ? 3 : 0;
+    string text = Encoding.UTF8.GetString(bytes, offset, bytes.Length - offset);
+
     YamlStream yaml = new();
-    yaml.Load(reader);
+    using (StringReader reader = new(text))
+    {
+        yaml.Load(reader);
+    }
+
+    if (yaml.Documents.Count == 0)
+    {
+        throw new InvalidOperationException($"prerequisite_drift: YAML input '{path}' contains no documents.");
+    }
+
+    if (yaml.Documents.Count > 1)
+    {
+        throw new InvalidOperationException(
+            $"prerequisite_drift: YAML input '{path}' contains multiple documents; generator requires a single document per file.");
+    }
+
     return yaml.Documents[0].RootNode.AsMapping("root");
 }
 
@@ -792,6 +975,17 @@ static string RequiredScalar(YamlMappingNode mapping, string key)
 
 static string Sha256(string value) =>
     Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
+
+// Read the file's UTF-8 bytes (BOM-stripped) and normalize line endings to LF before hashing.
+// Using one read avoids TOCTOU between LoadYaml() and the provenance hash, and BOM stripping keeps
+// the hash stable across machines whose editors insert/preserve BOM differently.
+static string Sha256OfFile(string path)
+{
+    byte[] bytes = File.ReadAllBytes(path);
+    int offset = (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) ? 3 : 0;
+    string normalized = Encoding.UTF8.GetString(bytes, offset, bytes.Length - offset).NormalizeLineEndings();
+    return Sha256(normalized);
+}
 
 #pragma warning disable SA1402 // multiple types in file (single-file tool)
 internal sealed record GeneratorOptions(
@@ -853,7 +1047,9 @@ internal sealed record GeneratorOptions(
             Environment.Exit(0);
         }
 
-        string repositoryRoot = Path.GetFullPath(parsed.GetValueOrDefault("--repository-root", LocateRepositoryRoot()));
+        // Avoid eager LocateRepositoryRoot() evaluation when the caller supplied --repository-root.
+        // Dictionary.GetValueOrDefault would evaluate the default expression even on hit.
+        string repositoryRoot = Path.GetFullPath(parsed.TryGetValue("--repository-root", out string? rootArg) ? rootArg : LocateRepositoryRoot());
         return new GeneratorOptions(
             RepositoryRoot: repositoryRoot,
             ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))),
@@ -969,11 +1165,15 @@ internal static class GeneratorConstants
     public static readonly Regex OperationIdPattern = new("^[A-Z][A-Za-z0-9]*$", RegexOptions.Compiled);
     public static readonly Regex AuditKeyPattern = new("^[a-z][a-z0-9_]*$", RegexOptions.Compiled);
 
-    // YAML 1.2 strictly recognizes true/false/True/False/TRUE/FALSE as booleans. YamlDotNet preserves the
-    // scalar's lexical form, so honoring 1.1-style aliases makes deprecation entries authoring-friendly.
+    // YAML 1.2 recognizes ONLY the literal scalars true/false (case-insensitive). The legacy YAML 1.1
+    // aliases (yes/no/on/off/y/n/1/0) are explicitly excluded because previous-spine deprecation entries
+    // are a fail-closed drift guard; a stray `approved: 1` (typically a misalignment with a numeric
+    // workspace identifier) must NOT silently bless an operation removal. 'yes' is grandfathered for
+    // backwards compatibility with already-committed baseline fixtures and the focused test that asserts
+    // it; new authoring should use the YAML 1.2 'true' literal.
     public static readonly HashSet<string> YamlBooleanTrueLiterals = new(StringComparer.OrdinalIgnoreCase)
     {
-        "true", "yes", "on", "y", "1",
+        "true", "yes",
     };
 
     // Adapter Outcome Parity table from docs/contract/idempotency-and-parity-rules.md (Story 1.5).

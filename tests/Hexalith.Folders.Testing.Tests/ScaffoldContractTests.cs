@@ -33,7 +33,8 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
-        "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj"
+        "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+        "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj"
     ];
 
     private static readonly string[] RequiredCanonicalSubmodules =
@@ -427,7 +428,6 @@ public sealed class ScaffoldContractTests
             .Where(Directory.Exists)
             .SelectMany(area => SafeEnumerate(area, "Hexalith.Folders*.csproj", SearchOption.AllDirectories))
             .Where(path => !Normalize(Path.GetRelativePath(root, path)).StartsWith("src/Hexalith.Folders.Client/Generation/", StringComparison.Ordinal))
-            .Where(path => !Normalize(Path.GetRelativePath(root, path)).StartsWith("tests/tools/parity-oracle-generator/", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal);
     }
 
