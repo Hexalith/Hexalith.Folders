@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-17T12:43:41+02:00
+# last_updated: 2026-05-17T12:49:59+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-17T12:43:41+02:00
+last_updated: 2026-05-17T12:49:59+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -66,7 +66,7 @@ development_status:
   epic-2: in-progress
   2-1-stand-up-domain-service-host-with-tenants-integration: ready-for-dev
   2-2-implement-organization-aggregate-acl-baseline: ready-for-dev
-  2-3-create-folders-within-a-tenant: backlog
+  2-3-create-folders-within-a-tenant: ready-for-dev
   2-4-grant-and-revoke-folder-access: backlog
   2-5-inspect-effective-permissions: backlog
   2-6-enforce-layered-authorization-with-safe-denials: backlog
