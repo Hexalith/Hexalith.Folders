@@ -14,14 +14,14 @@ so that every folder operation has tenant identity and availability semantics be
 
 1. Given the scaffolded `Hexalith.Folders.Server` host exists, when the host starts, then it registers the Folders EventStore domain-service surfaces for `/process` command invocation and `/project` query invocation, keeps external REST routes aligned with the Contract Spine, and does not introduce a second behavior path.
 2. Given Tenants integration is wired, when the Folders host runs behind a Dapr sidecar, then it calls `UseCloudEvents()`, exposes `MapSubscribeHandler()`, maps the Tenants subscription route `/tenants/events`, subscribes through pub/sub component `pubsub` to topic `system.tenants.events`, and routes those events through a Folders-owned tenant-access projection pipeline.
-3. Given Tenants events are received, when `TenantCreated`, `TenantUpdated`, `TenantDisabled`, `TenantEnabled`, `UserAddedToTenant`, `UserRemovedFromTenant`, `UserRoleChanged`, `TenantConfigurationSet`, or `TenantConfigurationRemoved` envelopes are processed, then `FolderTenantAccessProjection` is updated idempotently using the envelope `MessageId` and per-tenant `SequenceNumber` with metadata-only state needed for folder authorization.
+3. Given Tenants events are received, when `TenantCreated`, `TenantUpdated`, `TenantDisabled`, `TenantEnabled`, `UserAddedToTenant`, `UserRemovedFromTenant`, `UserRoleChanged`, `TenantConfigurationSet`, or `TenantConfigurationRemoved` envelopes are processed, then `FolderTenantAccessProjection` is updated idempotently using the envelope `MessageId` and per-tenant `SequenceNumber` with metadata-only state needed for folder authorization; duplicate message IDs with divergent envelope metadata are recorded as replay conflicts and must not advance the projection watermark.
 4. Given tenant projection data is stale, missing, malformed, replay-conflicting, from a future timestamp, or unavailable, when a mutating folder operation is authorized through REST or EventStore `/process`, then authorization fails closed before folder, workspace, credential, repository, lock, provider, cache, or audit resources are touched.
-5. Given Tenants is unavailable but local projection data is within the documented freshness budget, when a read-only folder diagnostic path from the Contract Spine is authorized, then the path can use bounded stale projection data while returning explicit freshness metadata (`projectionWatermark`, `lastEventTimestamp`, `projectionAge`, `freshnessStatus`, and source); mutations still require fresh authorization or rejection.
+5. Given Tenants is unavailable but local projection data is within the documented freshness budget, when a read-only folder diagnostic path from the Contract Spine is authorized, then the path can use bounded stale projection data while returning explicit freshness metadata (`projectionWatermark`, `lastEventTimestamp`, `projectionAge`, `freshnessStatus`, and source) without exposing membership lists, raw projection payloads, or unauthorized resource existence; mutations still require fresh authorization or rejection.
 6. Given local Aspire topology is started, when AppHost composes EventStore, Tenants, Folders.Server, Folders.Workers, Folders.UI, Keycloak, Redis, and Dapr sidecars, then stable app IDs are used: `eventstore`, `tenants`, `folders`, `folders-workers`, and `folders-ui`.
 7. Given tenant identity appears in payloads, routes, query parameters, or client-controlled headers, when the server builds authorization context, then authoritative tenant scope comes only from authentication context and EventStore envelopes; route, body, query, and client-controlled header tenant IDs are validation inputs only and must never establish authorization context.
 8. Given tests run without provider credentials, tenant seed data, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodules, when unit and smoke tests execute, then Tenants projection, fail-closed authorization, endpoint registration, and Aspire wiring are validated with in-memory fakes, a fake clock, a fake projection store, or structural assertions.
 9. Given the tenant-access authorizer evaluates projection state, when it returns a result, then outcomes are bounded to allowed, denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, and replay_conflict, and diagnostics use stable codes plus metadata-only fields rather than user-facing English parsing.
-10. Given `TenantConfigurationSet` or `TenantConfigurationRemoved` events contain configuration keys, when the Folders projection handles them, then it stores only non-secret keys under the `folders.*` prefix needed for coarse tenant access and ignores or rejects all other keys without copying arbitrary Tenants configuration.
+10. Given `TenantConfigurationSet` or `TenantConfigurationRemoved` events contain configuration keys, when the Folders projection handles them, then it stores only non-secret `folders.*` key names and coarse access flags needed for tenant access, removes or tombstones matching keys on configuration-removal events, and ignores or rejects all other keys without copying arbitrary Tenants configuration values.
 
 ## Tasks / Subtasks
 
@@ -35,14 +35,17 @@ so that every folder operation has tenant identity and availability semantics be
   - [ ] Create `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs` or equivalent handlers that consume Tenants client events and update the projection idempotently.
   - [ ] Handle only `TenantCreated`, `TenantUpdated`, `TenantDisabled`, `TenantEnabled`, `UserAddedToTenant`, `UserRemovedFromTenant`, `UserRoleChanged`, `TenantConfigurationSet`, and `TenantConfigurationRemoved`; unknown event types must not grant access.
   - [ ] Deduplicate by `TenantEventEnvelope.MessageId`, apply per-tenant `SequenceNumber` monotonically, and treat replay conflicts, malformed payloads, missing tenant IDs, or future timestamps as fail-closed projection evidence.
+  - [ ] Persist deduplication keys, sequence evidence, replay-conflict markers, and projection watermarks through a projection-store abstraction; if that store is unavailable, authorizer calls must return `unavailable_projection` rather than falling back to in-memory success.
   - [ ] Store metadata only: tenant id, principal id, role/group/service-agent ids, event sequence/watermark, timestamps, and non-secret `folders.*` configuration keys.
   - [ ] Reject or ignore non-`folders.*` Tenants configuration keys; do not copy arbitrary Tenants configuration into Folders state.
+  - [ ] Apply `TenantConfigurationRemoved` as an explicit remove/tombstone operation for previously projected `folders.*` configuration keys so stale configuration cannot continue to authorize access.
 - [ ] Add tenant authorization and freshness services. (AC: 4, 5, 7)
   - [ ] Create `src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs` with explicit outcomes for allowed, denied, stale projection, unavailable projection, unknown tenant, disabled tenant, and malformed evidence.
   - [ ] Include explicit outcomes for tenant mismatch, missing authoritative tenant, replay conflict, and future projection timestamps.
   - [ ] Define a configurable projection freshness budget with a test default of five minutes, using an injectable UTC clock; missing, future, expired, malformed, or unavailable projection timestamps fail closed for mutations.
   - [ ] Ensure mutation checks fail closed on stale, missing, malformed, replay-conflicting, future-dated, or unavailable projection data.
   - [ ] Ensure read-only diagnostic checks can use bounded stale data only when the response includes projection freshness evidence and the caller is otherwise authorized.
+  - [ ] Keep diagnostic responses metadata-only: expose stable result codes and freshness fields, but not raw Tenants payloads, membership inventories, role lists, configuration values, or whether an unauthorized folder/resource exists.
   - [ ] Do not create a new public diagnostic route outside the Contract Spine; if no read-only diagnostic operation exists at implementation time, test the authorizer response shape instead.
   - [ ] Do not trust tenant ids supplied by request body, route, query, or client-controlled headers; compare them only against authentication or EventStore envelope tenant context.
 - [ ] Wire Dapr/Aspire topology using sibling-module patterns. (AC: 2, 6)
@@ -51,8 +54,9 @@ so that every folder operation has tenant identity and availability semantics be
   - [ ] Resolve Dapr access-control files from the AppHost directory, following the Tenants AppHost fallback pattern.
 - [ ] Add tests and fixtures for fail-closed behavior. (AC: 2, 3, 4, 5, 6, 8)
   - [ ] Add unit tests under `tests/Hexalith.Folders.Tests` for projection event handling, idempotent replay, ignored non-`folders.*` config, disabled tenant, removed principal, stale projection, and unavailable projection.
-  - [ ] Add unit tests for malformed events, missing authoritative tenant context, future timestamps, replay conflicts, tenant mismatches between request and authoritative context, and bounded stale diagnostic reads.
+  - [ ] Add unit tests for malformed events, missing authoritative tenant context, future timestamps, replay conflicts, duplicate message IDs with divergent metadata, tenant mismatches between request and authoritative context, configuration removals, and bounded stale diagnostic reads.
   - [ ] Add server tests under `tests/Hexalith.Folders.Server.Tests` proving CloudEvents, subscribe handler, Tenants event endpoint registration, topic/pubsub names, and unknown-event behavior are present without starting external Dapr.
+  - [ ] Assert endpoint registration through route metadata, endpoint data sources, or equivalent structural surfaces rather than live Dapr discovery calls.
   - [ ] Add AppHost/Aspire structural tests under `tests/Hexalith.Folders.IntegrationTests` or a focused Aspire test project for stable app IDs and component references without requiring live provider credentials.
   - [ ] Add negative tests proving a request-supplied tenant id cannot authorize a mutation when the authenticated/EventStore tenant differs.
 
@@ -131,6 +135,8 @@ so that every folder operation has tenant identity and availability semantics be
 - Do not use request body, route, query, or client headers as tenant authority.
 - Do not parse localized/user-facing diagnostic sentences in tests; assert stable result codes, enum values, metadata fields, and repository-owned route names.
 - Do not log or project raw provider tokens, secrets, file contents, diffs, generated context payloads, or unauthorized resource existence.
+- Do not let duplicate `MessageId` values with divergent tenant, sequence, timestamp, event type, or payload metadata advance the local projection.
+- Do not expose raw membership, role, or configuration values through stale diagnostic responses; diagnostics should prove freshness and status only.
 - Do not create another source of truth for tenant roles inside Folders; the local projection is derived evidence from Hexalith.Tenants.
 - Do not use an in-memory Dapr state store for cross-sidecar state in AppHost; sibling Tenants notes explain that per-sidecar in-memory stores break shared command/status behavior.
 
@@ -152,6 +158,7 @@ so that every folder operation has tenant identity and availability semantics be
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-17 | Applied advanced-elicitation hardening for replay conflicts, projection-store failure semantics, diagnostic leakage boundaries, configuration removals, and structural endpoint tests. | Codex |
 | 2026-05-15 | Applied party-mode review hardening for freshness semantics, Tenants event mapping, Dapr subscription shape, tenant authority, fail-closed outcomes, and offline tests. | Codex |
 
 ## Party-Mode Review
@@ -173,6 +180,27 @@ so that every folder operation has tenant identity and availability semantics be
   - Exact production freshness budget, persistence store choice for projection/deduplication, final diagnostic endpoint availability, and service-agent/global-admin behavior remain implementation or later architecture decisions.
   - Folder ACL semantics, folder lifecycle behavior, provider integrations, repair workflows, CLI/MCP/UI behavior, and Story 2.2 policy decisions remain out of scope.
 - Final recommendation: ready-for-dev after applied story clarification pass.
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-17T09:27:11Z
+- Selected story key: `2-1-stand-up-domain-service-host-with-tenants-integration`
+- Command/skill invocation used: `/bmad-advanced-elicitation 2-1-stand-up-domain-service-host-with-tenants-integration`
+- Batch 1 method names: Red Team vs Blue Team; Failure Mode Analysis; Security Audit Personas; Self-Consistency Validation; Pre-mortem Analysis
+- Reshuffled Batch 2 method names: Architecture Decision Records; Graph of Thoughts; User Persona Focus Group; Chaos Monkey Scenarios; Critique and Refine
+- Findings summary:
+  - The highest-risk ambiguity was whether duplicate `MessageId` handling, projection-store failures, and configuration removals could accidentally leave stale positive tenant evidence in place.
+  - Diagnostic reads needed an explicit leakage boundary so bounded stale projection use cannot reveal membership, role, configuration, or resource-existence details.
+  - Endpoint and Dapr subscription verification needed to remain structural and offline to preserve the story's no-live-Dapr test constraint.
+- Changes applied:
+  - Added replay-conflict behavior for duplicate message IDs with divergent envelope metadata and required conflict evidence not to advance projection watermarks.
+  - Required deduplication keys, sequence evidence, replay-conflict markers, and watermarks to go through a projection-store abstraction, with store unavailability returning `unavailable_projection`.
+  - Tightened `TenantConfigurationRemoved` handling so removed `folders.*` keys are deleted or tombstoned and stale configuration cannot continue authorizing access.
+  - Clarified metadata-only diagnostic response limits and added tests for duplicate divergent messages, configuration removals, and structural endpoint registration.
+- Findings deferred:
+  - Exact production freshness budget, durable projection-store implementation choice, final diagnostic operation availability, and service-agent/global-admin integration remain implementation or later architecture decisions.
+  - Folder ACL semantics, lifecycle commands, provider integrations, repair workflows, CLI/MCP/UI behavior, and Story 2.2 policy remain out of scope.
+- Final recommendation: ready-for-dev after applied advanced-elicitation hardening.
 
 ## Dev Agent Record
 
