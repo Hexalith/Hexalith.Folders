@@ -10,8 +10,7 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 // Serialize generator invocations across the test class: each test shells out to `dotnet run`
 // against the same generator project, and concurrent invocations can race on the project's
-// obj/ build locks even with --no-build (NETSDK metadata is touched on each call). Disabling
-// per-class parallelism removes that race deterministically.
+// obj/ build locks. Disabling per-class parallelism removes that race deterministically.
 [Collection("ParityOracleGenerator")]
 public sealed class ParityOracleGeneratorTests
 {
@@ -244,11 +243,63 @@ operations:
     path: /api/v1/synthetic/removed
     deprecation:
       approved: yes
+      rationale: Synthetic removal fixture for Story 1.14 evidence validation.
+      approval_reference: story-1.14-test
+      effective_date: 2026-05-17
+      approval_source: docs/contract/parity-oracle-generator.md
 """, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
         GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
 
         result.ExitCode.ShouldBe(0, customMessage: result.Output + result.Error);
+    }
+
+    [Fact]
+    public void GeneratorFailsClosedForApprovedDeprecationWithoutEvidence()
+    {
+        string temp = NewTempDirectory("hexalith-parity-missing-deprecation-evidence");
+        string previousSpine = Path.Combine(temp, "previous-spine.yaml");
+        File.WriteAllText(previousSpine, """
+version: test
+operations:
+  - operation_id: RemovedSyntheticOperation
+    method: get
+    path: /api/v1/synthetic/removed
+    deprecation:
+      approved: true
+""", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+
+        GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("previous-spine-drift", Case.Insensitive);
+        (result.Output + result.Error).ShouldContain("rationale", Case.Insensitive);
+    }
+
+    [Fact]
+    public void GeneratorFailsClosedForDanglingDeprecationApprovalSource()
+    {
+        string temp = NewTempDirectory("hexalith-parity-dangling-deprecation-source");
+        string previousSpine = Path.Combine(temp, "previous-spine.yaml");
+        File.WriteAllText(previousSpine, """
+version: test
+operations:
+  - operation_id: RemovedSyntheticOperation
+    method: get
+    path: /api/v1/synthetic/removed
+    deprecation:
+      approved: true
+      rationale: Synthetic removal fixture for Story 1.14 evidence validation.
+      approval_reference: story-1.14-test
+      effective_date: 2026-05-17
+      approval_source: docs/contract/missing-approval-source.md
+""", new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+
+        GeneratorResult result = RunGeneratorDetailed(OpenApiPath, Path.Combine(temp, "parity-contract.yaml"), previousSpine);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("previous-spine-drift", Case.Insensitive);
+        (result.Output + result.Error).ShouldContain("approval_source", Case.Insensitive);
     }
 
     [Fact]
@@ -352,7 +403,7 @@ operations:
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --project \"{GeneratorProject}\" --no-build -- --repository-root \"{RepositoryRoot}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
+            Arguments = $"run --project \"{GeneratorProject}\" -- --repository-root \"{RepositoryRoot}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

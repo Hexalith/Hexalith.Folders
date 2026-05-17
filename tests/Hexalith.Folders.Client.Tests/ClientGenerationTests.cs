@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
+using System.Diagnostics;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Client.Generation.Shared;
 using Hexalith.Folders.Client.Idempotency;
@@ -201,6 +202,54 @@ public sealed class ClientGenerationTests
         HexalithFoldersGeneratedArtifacts.IsCurrent(spine + "\n# controlled stale-output test", configuration, helpers).ShouldBeFalse();
         HexalithFoldersGeneratedArtifacts.IsCurrent(spine, configuration.Replace("LF", "CRLF", StringComparison.Ordinal), helpers).ShouldBeFalse();
         HexalithFoldersGeneratedArtifacts.IsCurrent(spine, configuration, helpers + "\n// controlled stale-output test").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void GeneratedClientAndHelpersMatchIsolatedRegeneration()
+    {
+        string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-golden-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+        try
+        {
+            string[] files =
+            [
+                "Directory.Build.props",
+                "Directory.Packages.props",
+                "global.json",
+                "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
+                "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+                "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
+                "src/Hexalith.Folders.Client/nswag.json",
+                "src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj",
+                "src/Hexalith.Folders.Client/Generation/Program.cs",
+                "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
+                "src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs",
+            ];
+            foreach (string file in files)
+            {
+                CopyRepositoryFile(file, tempRoot);
+            }
+
+            string project = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
+            ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\"", tempRoot, 180_000);
+            restore.ExitCode.ShouldBe(0, restore.Output);
+
+            ProcessResult generation = RunProcess(
+                "dotnet",
+                $"msbuild \"{project}\" /t:GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
+                tempRoot,
+                240_000);
+            generation.ExitCode.ShouldBe(0, generation.Output);
+
+            string generatedClient = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs");
+            string generatedHelpers = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
+            NormalizeLineEndings(File.ReadAllText(generatedClient)).ShouldBe(NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersClient.g.cs"))));
+            NormalizeLineEndings(File.ReadAllText(generatedHelpers)).ShouldBe(NormalizeLineEndings(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"))));
+        }
+        finally
+        {
+            Directory.Delete(tempRoot, recursive: true);
+        }
     }
 
     [Fact]
@@ -415,6 +464,53 @@ public sealed class ClientGenerationTests
         return "sha256:" + Convert.ToHexString(digest).ToLowerInvariant();
     }
 
+    private static string NormalizeLineEndings(string value) =>
+        value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
+
+    private static void CopyRepositoryFile(string relativePath, string destinationRoot)
+    {
+        string source = Path.Combine(RepositoryRoot, relativePath);
+        string destination = Path.Combine(destinationRoot, relativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? destinationRoot);
+        File.Copy(source, destination);
+    }
+
+    private static ProcessResult RunProcess(string fileName, string arguments, string workingDirectory, int timeoutMilliseconds)
+    {
+        ProcessStartInfo startInfo = new()
+        {
+            FileName = fileName,
+            Arguments = arguments,
+            WorkingDirectory = workingDirectory,
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+        };
+
+        using Process process = Process.Start(startInfo) ?? throw new InvalidOperationException($"Failed to start {fileName}.");
+        StringBuilder output = new();
+        process.OutputDataReceived += (_, e) => { if (e.Data is not null) { output.AppendLine(e.Data); } };
+        process.ErrorDataReceived += (_, e) => { if (e.Data is not null) { output.AppendLine(e.Data); } };
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+        if (!process.WaitForExit(timeoutMilliseconds))
+        {
+            try
+            {
+                process.Kill(entireProcessTree: true);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            process.WaitForExit();
+            throw new TimeoutException($"{fileName} {arguments} did not exit within {timeoutMilliseconds}ms.");
+        }
+
+        process.WaitForExit();
+        return new(process.ExitCode, output.ToString());
+    }
+
     private static string ComputeCorpusHash(JsonElement value)
     {
         object? material = value.ValueKind switch
@@ -502,5 +598,6 @@ public sealed class ClientGenerationTests
     private sealed record OpenApiOperation(string OperationId, string? RequestSchema, IReadOnlyList<string> IdempotencyFields, IReadOnlyList<OpenApiParameter> Parameters);
 
     private sealed record OpenApiParameter(string Field, string Name);
-}
 
+    private sealed record ProcessResult(int ExitCode, string Output);
+}

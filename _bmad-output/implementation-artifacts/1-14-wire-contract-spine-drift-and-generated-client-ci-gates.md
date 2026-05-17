@@ -1,6 +1,6 @@
 # Story 1.14: Wire Contract Spine drift and generated-client CI gates
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-13
 
@@ -35,59 +35,59 @@ so that surface divergence fails before feature implementation can depend on it.
 
 ## Tasks / Subtasks
 
-- [ ] Confirm CI gate prerequisites and current artifact ownership. (AC: 1, 8, 10, 12)
-  - [ ] Inspect `.github/workflows/`; if it is still absent, create the first workflow file only for this story's contract/generated-artifact gates and do not add unrelated release or security workflows.
-  - [ ] Inspect `global.json`, `Directory.Packages.props`, `Hexalith.Folders.slnx`, and `tests/README.md` for the current restore/build/test lane.
-  - [ ] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
-  - [ ] Inspect Story 1.10 through Story 1.13 artifacts before assuming generated-client paths, parity-oracle commands, or operation inventory.
-  - [ ] Inspect `tests/fixtures/previous-spine.yaml`, `tests/fixtures/parity-contract.schema.json`, and `tests/fixtures/parity-contract.yaml` if present.
-  - [ ] Treat absent generated SDK output, absent parity oracle output, absent server OpenAPI emission, or placeholder-only previous-spine content as prerequisite drift unless the implemented gate can fail closed with a clear developer message.
-  - [ ] Build a prerequisite matrix covering the current Contract Spine, single non-self server OpenAPI source, previous-spine baseline and deprecation-evidence source, Story 1.12 generated-client output and NSwag config/version, Story 1.13 parity oracle output and schema, validation-vs-refresh command modes, workflow file, and local gate command entry point.
-  - [ ] Do not initialize or update nested submodules. If submodules are needed for local validation, initialize only the root-level modules listed in `AGENTS.md`.
-- [ ] Wire the GitHub Actions contract/generated-artifact workflow. (AC: 1, 7, 8, 9, 11)
-  - [ ] Add or update `.github/workflows/ci.yml` or a focused `.github/workflows/contract-spine.yml` following existing Hexalith naming if present.
-  - [ ] Use `actions/checkout` and `actions/setup-dotnet` with pinned major versions current at implementation time, and configure setup from the repository `global.json` rather than an implicit runner SDK.
-  - [ ] Run from the repository root with explicit commands: `dotnet restore Hexalith.Folders.slnx`, `dotnet build Hexalith.Folders.slnx`, and focused contract/generated-artifact test commands.
-  - [ ] Keep NuGet caching optional and deterministic. If caching is enabled through `setup-dotnet`, require lock-file support or document why caching is deferred; do not introduce cache keys that contain tenant data, absolute paths, or mutable timestamps.
-  - [ ] Keep all workflow diagnostics, annotations, job summaries, and uploaded artifacts repository-relative and metadata-only; do not upload raw diffs or generated file contents as evidence.
-  - [ ] Do not add release publishing, package signing, live provider drift, Dapr policy conformance, redaction sentinel, cache-key tenant-prefix, C6 matrix, exit-criteria, or safety-invariant jobs in this story.
-- [ ] Add or wire local gate commands that CI can call. (AC: 1, 2, 3, 4, 5, 6, 7, 12)
-  - [ ] Prefer repository scripts or focused test entry points that developers can run locally before pushing.
-  - [ ] For server-vs-spine validation, compare normalized server-emitted OpenAPI against the Contract Spine. If server emission does not exist yet, if more than one server source is plausible, or if the only source is the Contract Spine itself, add a fail-closed placeholder test or script with an explicit prerequisite-drift diagnostic rather than mocking success.
-  - [ ] For symmetric drift detection, compare current Contract Spine operations against `tests/fixtures/previous-spine.yaml` and fail removed or incompatible operations without approved deprecation evidence.
-  - [ ] If `previous-spine.yaml` still has placeholder `operations: []`, fail closed as `prerequisite-drift` and do not treat the empty operation set as an approved public baseline.
-  - [ ] Validate approved deprecation evidence as metadata only: prior operation ID, replacement or retirement rationale, approval reference, effective version/date, and repository-relative approval source.
-  - [ ] For NSwag golden-file consistency, re-run the Story 1.12 generation command and fail when generated output has a diff. Use `git diff --exit-code` only against generated-client/helper paths owned by Story 1.12.
-  - [ ] Run generated-client and parity validation in non-mutating check mode or an isolated deterministic comparison directory; keep developer refresh commands separate and documented.
-  - [ ] Pin deterministic generation inputs for NSwag and parity checks: command, working directory, tool/config path, version source, output paths, line endings, and timestamp/banner handling.
-  - [ ] For parity schema validation, validate `tests/fixtures/parity-contract.yaml` against `tests/fixtures/parity-contract.schema.json` before parity tests consume rows.
-  - [ ] For parity completeness, assert every current OpenAPI operation appears once and only once in `parity-contract.yaml`.
-  - [ ] If any Story 1.12 or Story 1.13 command is not yet implemented, record the exact missing command/path and make the gate fail closed with a targeted message.
-- [ ] Add focused tests for gate behavior. (AC: 2, 3, 4, 5, 6, 7, 11, 12)
-  - [ ] Add tests under the most appropriate existing project, likely `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` for OpenAPI/parity drift gates and `tests/Hexalith.Folders.Client.Tests/` for generated-client golden-file checks.
-  - [ ] Verify server-vs-spine comparison fails on operation ID drift, path/method drift, required header drift, Problem Details category drift, and extension metadata drift.
-  - [ ] Verify symmetric drift fails for removed operations, renamed operation IDs, changed mutating/read classification, and missing deprecation evidence.
-  - [ ] Verify generated-client golden-file detection fails on stale generated output and ignores only explicitly documented normalization artifacts.
-  - [ ] Verify parity schema validation fails on missing required row fields, unknown adapter names, unknown canonical error categories, duplicate operations, and rows for non-existent operation IDs.
-  - [ ] Verify ambiguous server OpenAPI source discovery, self-referential server source configuration, dangling deprecation evidence, and invalid approval metadata fail with bounded categories.
-  - [ ] Verify placeholder baselines, missing server OpenAPI sources, malformed spines, stale generated clients, stale parity oracle rows, additive-only changes, breaking changes, reorder-only changes, metadata-only changes, and redacted-diagnostic cases.
-  - [ ] Verify repeated gate execution is deterministic and does not rewrite files unless the developer intentionally runs a generation command.
-  - [ ] Verify failure diagnostics, GitHub annotations, job summaries, and uploaded artifacts do not include raw payloads, file contents, diffs, generated client bodies, tokens, credentials, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
-- [ ] Document developer and CI usage. (AC: 1, 7, 8, 11, 12)
-  - [ ] Add or update focused documentation, such as `docs/contract/contract-spine-ci-gates.md`, with local commands, CI job names, owned inputs, owned outputs, and expected failure categories.
-  - [ ] Document the bounded failure categories: `contract-spine-drift`, `server-spine-mismatch`, `previous-spine-drift`, `generated-client-drift`, `parity-oracle-mismatch`, `generation-nondeterminism`, and `prerequisite-drift`.
-  - [ ] Document one local gate command block that mirrors the GitHub Actions steps and states the offline prerequisites; it must not require Aspire, Dapr, credentials, live providers, or nested submodules.
-  - [ ] Document validation-mode commands separately from refresh commands, including which commands must leave tracked generated output unchanged.
-  - [ ] Document how to refresh generated SDK output and parity oracle output without hand-editing generated files or parity rows.
-  - [ ] Document how `previous-spine.yaml` is updated only when a new public baseline is approved, and how deprecation evidence is recorded.
-  - [ ] Document prerequisite drift separately from test failure so developers know whether to run Story 1.12, Story 1.13, server OpenAPI work, or baseline approval work next.
-  - [ ] Document that Stories 1.15 and 1.16 own safety invariant, exit-criteria, and parity-completeness release gates that are outside this story.
-- [ ] Run verification. (AC: 1, 5, 7, 8, 9, 11)
-  - [ ] Run the focused gate tests added or changed by this story.
-  - [ ] Run the workflow-equivalent local commands from the repository root.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if active Story 1.10 work and prerequisite drift allow it; if blocked, record the exact blocker.
-  - [ ] Confirm no nested submodules were initialized and no unrelated active Story 1.10 files were modified.
-  - [ ] Confirm generated artifacts are either unchanged after validation or intentionally regenerated by their owner commands with deterministic diffs.
+- [x] Confirm CI gate prerequisites and current artifact ownership. (AC: 1, 8, 10, 12)
+  - [x] Inspect `.github/workflows/`; if it is still absent, create the first workflow file only for this story's contract/generated-artifact gates and do not add unrelated release or security workflows.
+  - [x] Inspect `global.json`, `Directory.Packages.props`, `Hexalith.Folders.slnx`, and `tests/README.md` for the current restore/build/test lane.
+  - [x] Inspect `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
+  - [x] Inspect Story 1.10 through Story 1.13 artifacts before assuming generated-client paths, parity-oracle commands, or operation inventory.
+  - [x] Inspect `tests/fixtures/previous-spine.yaml`, `tests/fixtures/parity-contract.schema.json`, and `tests/fixtures/parity-contract.yaml` if present.
+  - [x] Treat absent generated SDK output, absent parity oracle output, absent server OpenAPI emission, or placeholder-only previous-spine content as prerequisite drift unless the implemented gate can fail closed with a clear developer message.
+  - [x] Build a prerequisite matrix covering the current Contract Spine, single non-self server OpenAPI source, previous-spine baseline and deprecation-evidence source, Story 1.12 generated-client output and NSwag config/version, Story 1.13 parity oracle output and schema, validation-vs-refresh command modes, workflow file, and local gate command entry point.
+  - [x] Do not initialize or update nested submodules. If submodules are needed for local validation, initialize only the root-level modules listed in `AGENTS.md`.
+- [x] Wire the GitHub Actions contract/generated-artifact workflow. (AC: 1, 7, 8, 9, 11)
+  - [x] Add or update `.github/workflows/ci.yml` or a focused `.github/workflows/contract-spine.yml` following existing Hexalith naming if present.
+  - [x] Use `actions/checkout` and `actions/setup-dotnet` with pinned major versions current at implementation time, and configure setup from the repository `global.json` rather than an implicit runner SDK.
+  - [x] Run from the repository root with explicit commands: `dotnet restore Hexalith.Folders.slnx`, `dotnet build Hexalith.Folders.slnx`, and focused contract/generated-artifact test commands.
+  - [x] Keep NuGet caching optional and deterministic. If caching is enabled through `setup-dotnet`, require lock-file support or document why caching is deferred; do not introduce cache keys that contain tenant data, absolute paths, or mutable timestamps.
+  - [x] Keep all workflow diagnostics, annotations, job summaries, and uploaded artifacts repository-relative and metadata-only; do not upload raw diffs or generated file contents as evidence.
+  - [x] Do not add release publishing, package signing, live provider drift, Dapr policy conformance, redaction sentinel, cache-key tenant-prefix, C6 matrix, exit-criteria, or safety-invariant jobs in this story.
+- [x] Add or wire local gate commands that CI can call. (AC: 1, 2, 3, 4, 5, 6, 7, 12)
+  - [x] Prefer repository scripts or focused test entry points that developers can run locally before pushing.
+  - [x] For server-vs-spine validation, compare normalized server-emitted OpenAPI against the Contract Spine. If server emission does not exist yet, if more than one server source is plausible, or if the only source is the Contract Spine itself, add a fail-closed placeholder test or script with an explicit prerequisite-drift diagnostic rather than mocking success.
+  - [x] For symmetric drift detection, compare current Contract Spine operations against `tests/fixtures/previous-spine.yaml` and fail removed or incompatible operations without approved deprecation evidence.
+  - [x] If `previous-spine.yaml` still has placeholder `operations: []`, fail closed as `prerequisite-drift` and do not treat the empty operation set as an approved public baseline.
+  - [x] Validate approved deprecation evidence as metadata only: prior operation ID, replacement or retirement rationale, approval reference, effective version/date, and repository-relative approval source.
+  - [x] For NSwag golden-file consistency, re-run the Story 1.12 generation command and fail when generated output has a diff. Use `git diff --exit-code` only against generated-client/helper paths owned by Story 1.12.
+  - [x] Run generated-client and parity validation in non-mutating check mode or an isolated deterministic comparison directory; keep developer refresh commands separate and documented.
+  - [x] Pin deterministic generation inputs for NSwag and parity checks: command, working directory, tool/config path, version source, output paths, line endings, and timestamp/banner handling.
+  - [x] For parity schema validation, validate `tests/fixtures/parity-contract.yaml` against `tests/fixtures/parity-contract.schema.json` before parity tests consume rows.
+  - [x] For parity completeness, assert every current OpenAPI operation appears once and only once in `parity-contract.yaml`.
+  - [x] If any Story 1.12 or Story 1.13 command is not yet implemented, record the exact missing command/path and make the gate fail closed with a targeted message.
+- [x] Add focused tests for gate behavior. (AC: 2, 3, 4, 5, 6, 7, 11, 12)
+  - [x] Add tests under the most appropriate existing project, likely `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` for OpenAPI/parity drift gates and `tests/Hexalith.Folders.Client.Tests/` for generated-client golden-file checks.
+  - [x] Verify server-vs-spine comparison fails on operation ID drift, path/method drift, required header drift, Problem Details category drift, and extension metadata drift.
+  - [x] Verify symmetric drift fails for removed operations, renamed operation IDs, changed mutating/read classification, and missing deprecation evidence.
+  - [x] Verify generated-client golden-file detection fails on stale generated output and ignores only explicitly documented normalization artifacts.
+  - [x] Verify parity schema validation fails on missing required row fields, unknown adapter names, unknown canonical error categories, duplicate operations, and rows for non-existent operation IDs.
+  - [x] Verify ambiguous server OpenAPI source discovery, self-referential server source configuration, dangling deprecation evidence, and invalid approval metadata fail with bounded categories.
+  - [x] Verify placeholder baselines, missing server OpenAPI sources, malformed spines, stale generated clients, stale parity oracle rows, additive-only changes, breaking changes, reorder-only changes, metadata-only changes, and redacted-diagnostic cases.
+  - [x] Verify repeated gate execution is deterministic and does not rewrite files unless the developer intentionally runs a generation command.
+  - [x] Verify failure diagnostics, GitHub annotations, job summaries, and uploaded artifacts do not include raw payloads, file contents, diffs, generated client bodies, tokens, credentials, local absolute paths, production URLs, tenant seed values, or unauthorized resource hints.
+- [x] Document developer and CI usage. (AC: 1, 7, 8, 11, 12)
+  - [x] Add or update focused documentation, such as `docs/contract/contract-spine-ci-gates.md`, with local commands, CI job names, owned inputs, owned outputs, and expected failure categories.
+  - [x] Document the bounded failure categories: `contract-spine-drift`, `server-spine-mismatch`, `previous-spine-drift`, `generated-client-drift`, `parity-oracle-mismatch`, `generation-nondeterminism`, and `prerequisite-drift`.
+  - [x] Document one local gate command block that mirrors the GitHub Actions steps and states the offline prerequisites; it must not require Aspire, Dapr, credentials, live providers, or nested submodules.
+  - [x] Document validation-mode commands separately from refresh commands, including which commands must leave tracked generated output unchanged.
+  - [x] Document how to refresh generated SDK output and parity oracle output without hand-editing generated files or parity rows.
+  - [x] Document how `previous-spine.yaml` is updated only when a new public baseline is approved, and how deprecation evidence is recorded.
+  - [x] Document prerequisite drift separately from test failure so developers know whether to run Story 1.12, Story 1.13, server OpenAPI work, or baseline approval work next.
+  - [x] Document that Stories 1.15 and 1.16 own safety invariant, exit-criteria, and parity-completeness release gates that are outside this story.
+- [x] Run verification. (AC: 1, 5, 7, 8, 9, 11)
+  - [x] Run the focused gate tests added or changed by this story.
+  - [x] Run the workflow-equivalent local commands from the repository root.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if active Story 1.10 work and prerequisite drift allow it; if blocked, record the exact blocker.
+  - [x] Confirm no nested submodules were initialized and no unrelated active Story 1.10 files were modified.
+  - [x] Confirm generated artifacts are either unchanged after validation or intentionally regenerated by their owner commands with deterministic diffs.
 
 ## Dev Notes
 
@@ -203,6 +203,7 @@ tests/fixtures/parity-contract.yaml
 | 2026-05-13 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-15 | Applied party-mode review hardening for fail-closed prerequisites, deterministic gate inputs, failure taxonomy, and local/CI command parity. | Codex |
 | 2026-05-15 | Applied advanced-elicitation hardening for validation-mode non-mutation, server source authority, deprecation evidence, and metadata-only CI reporting surfaces. | Codex |
+| 2026-05-17 | Wired contract/generated-artifact CI gates, local gate command, fail-closed prerequisite tests, generated-client golden-file validation, and developer documentation. Story ready for review. | Codex |
 
 ## Party-Mode Review
 
@@ -219,13 +220,41 @@ tests/fixtures/parity-contract.yaml
 
 ### Agent Model Used
 
-TBD by dev-story agent
+Codex (GPT-5)
 
 ### Debug Log References
 
+- 2026-05-17: Loaded BMad customization, project contexts, sprint status, and Story 1.14 before implementation.
+- 2026-05-17: Confirmed Story 1.14 is a fresh implementation and moved sprint/story status to in-progress.
+- 2026-05-17: Inspected workflow absence, restore/build/test lane, Contract Spine OpenAPI/vocabulary, Stories 1.10-1.13 artifacts, generated SDK output, parity oracle output, and previous-spine baseline.
+- 2026-05-17: Added focused GitHub Actions workflow and local gate script using repository `global.json`, root checkout without submodules, explicit restore/build, and focused gate tests.
+- 2026-05-17: Added server-source fail-closed tests, previous-spine baseline coverage tests, deprecation-evidence hardening, and generated-client isolated regeneration comparison.
+- 2026-05-17: Verified validation mode did not modify generated SDK output, `tests/fixtures/parity-contract.yaml`, or `tests/fixtures/previous-spine.yaml`.
+- 2026-05-17: Validation passed: focused OpenAPI gate tests, generated-client tests, local gate script, solution restore, solution build, and full solution test suite.
+
 ### Completion Notes List
 
+- Created `.github/workflows/contract-spine.yml` as the first focused contract/generated-artifact workflow. It uses `actions/checkout@v6`, `actions/setup-dotnet@v5`, `global-json-file: global.json`, explicit restore/build, and the local gate script; it does not add release, security, provider drift, exit-criteria, or safety-invariant jobs.
+- Added `tests/tools/run-contract-spine-gates.ps1` as the workflow-equivalent local entry point for OpenAPI/parity and generated-client gate tests.
+- Added `docs/contract/contract-spine-ci-gates.md` documenting the local/CI commands, gate inputs, validation-vs-refresh commands, bounded failure categories, prerequisite drift ownership, and Story 1.15/1.16 out-of-scope gates.
+- Added `ContractSpineCiGateTests` for workflow shape, server OpenAPI source fail-closed behavior, self/ambiguous source rejection, server-vs-spine mismatch categories, previous-spine baseline coverage, and metadata-only documentation/diagnostics.
+- Hardened previous-spine deprecation approval in the parity oracle generator so approved removals require metadata-only evidence with rationale, approval reference, effective date, and an existing repository-relative approval source.
+- Added generated-client golden-file coverage that regenerates the NSwag client and idempotency helpers in an isolated temp copy and compares normalized output to committed generated files without mutating tracked outputs.
+- Updated older Story 1.7 negative-scope test to allow only Story 1.14's focused contract-spine workflow while continuing to block unrelated workflow additions.
+- Server OpenAPI emission remains absent in the current server scaffold; Story 1.14 records and tests this as `prerequisite-drift` rather than comparing the Contract Spine to itself.
+
 ### File List
+
+- `.github/workflows/contract-spine.yml`
+- `docs/contract/contract-spine-ci-gates.md`
+- `tests/tools/run-contract-spine-gates.ps1`
+- `tests/tools/parity-oracle-generator/Program.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs`
+- `tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`
+- `_bmad-output/implementation-artifacts/1-14-wire-contract-spine-drift-and-generated-client-ci-gates.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
 
 ## Advanced Elicitation
 

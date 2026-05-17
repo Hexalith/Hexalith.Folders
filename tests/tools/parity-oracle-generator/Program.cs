@@ -24,7 +24,7 @@ IReadOnlyList<OperationModel> operations = EnumerateOperations(root, diagnostics
     .OrderBy(o => o.OperationId, StringComparer.Ordinal)
     .ToArray();
 ValidateOperationInventory(operations, diagnostics);
-ValidatePreviousSpine(options.PreviousSpinePath, operations, diagnostics, options.AllowEmptyBaseline);
+ValidatePreviousSpine(options.PreviousSpinePath, operations, diagnostics, options.AllowEmptyBaseline, options.RepositoryRoot);
 
 string output = RenderOracle(operations, diagnostics, options);
 Directory.CreateDirectory(Path.GetDirectoryName(options.OutputPath) ?? ".");
@@ -246,7 +246,7 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
     }
 }
 
-static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<OperationModel> currentOperations, List<Diagnostic> diagnostics, bool allowEmptyBaseline)
+static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<OperationModel> currentOperations, List<Diagnostic> diagnostics, bool allowEmptyBaseline, string repositoryRoot)
 {
     if (!File.Exists(previousSpinePath))
     {
@@ -326,7 +326,7 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
             continue;
         }
 
-        if (HasApprovedDeprecation(operation))
+        if (HasApprovedDeprecation(operation, repositoryRoot))
         {
             continue;
         }
@@ -796,7 +796,7 @@ static string ReadFlexibleScalar(YamlMappingNode mapping, params string[] keys)
     throw new InvalidOperationException($"prerequisite_drift: previous-spine entry missing required scalar '{string.Join("|", keys)}'.");
 }
 
-static bool HasApprovedDeprecation(YamlMappingNode operation)
+static bool HasApprovedDeprecation(YamlMappingNode operation, string repositoryRoot)
 {
     if (!operation.Children.TryGetValue(new YamlScalarNode("deprecation"), out YamlNode? deprecationNode))
     {
@@ -809,7 +809,61 @@ static bool HasApprovedDeprecation(YamlMappingNode operation)
     }
 
     string raw = approvedNode.AsScalar("approved").Value ?? string.Empty;
-    return YamlBooleanTrueLiterals.Contains(raw);
+    if (!YamlBooleanTrueLiterals.Contains(raw))
+    {
+        return false;
+    }
+
+    _ = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "rationale");
+    _ = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "approval_reference");
+    _ = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "effective_date");
+    string approvalSource = ReadDeprecationEvidenceScalar(deprecationNode.AsMapping("deprecation"), "approval_source");
+    ValidateRepositoryRelativeApprovalSource(repositoryRoot, approvalSource);
+    return true;
+}
+
+static string ReadDeprecationEvidenceScalar(YamlMappingNode deprecation, string key)
+{
+    if (!deprecation.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+    {
+        throw new InvalidOperationException($"previous-spine-drift: approved deprecation is missing metadata field '{key}'.");
+    }
+
+    string scalar = value.AsScalar(key).Value ?? string.Empty;
+    if (string.IsNullOrWhiteSpace(scalar))
+    {
+        throw new InvalidOperationException($"previous-spine-drift: approved deprecation metadata field '{key}' must be a non-empty scalar.");
+    }
+
+    if (scalar.Contains('\r') || scalar.Contains('\n'))
+    {
+        throw new InvalidOperationException($"previous-spine-drift: approved deprecation metadata field '{key}' must be a single-line scalar.");
+    }
+
+    return scalar;
+}
+
+static void ValidateRepositoryRelativeApprovalSource(string repositoryRoot, string approvalSource)
+{
+    if (Path.IsPathFullyQualified(approvalSource) || approvalSource.Contains("://", StringComparison.Ordinal))
+    {
+        throw new InvalidOperationException("previous-spine-drift: approved deprecation approval_source must be a repository-relative path.");
+    }
+
+    string normalizedRoot = Path.GetFullPath(repositoryRoot);
+    string fullSource = Path.GetFullPath(Path.Combine(normalizedRoot, approvalSource));
+    string rootWithSeparator = normalizedRoot.EndsWith(Path.DirectorySeparatorChar)
+        ? normalizedRoot
+        : normalizedRoot + Path.DirectorySeparatorChar;
+    if (!fullSource.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
+    {
+        throw new InvalidOperationException("previous-spine-drift: approved deprecation approval_source escapes the repository root.");
+    }
+
+    if (!File.Exists(fullSource))
+    {
+        throw new InvalidOperationException($"previous-spine-drift: approved deprecation approval_source does not exist: {approvalSource}");
+    }
 }
 
 static string NormalizeErrorCategory(string category) => category switch

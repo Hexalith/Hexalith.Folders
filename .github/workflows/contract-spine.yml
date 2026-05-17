@@ -1,0 +1,39 @@
+name: contract-spine-gates
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - next
+      - alpha
+      - beta
+
+permissions:
+  contents: read
+
+jobs:
+  contract-generated-artifact-gates:
+    name: contract and generated artifact gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore
+
+      - name: Run contract spine gates
+        shell: pwsh
+        run: ./tests/tools/run-contract-spine-gates.ps1 -NoRestore

@@ -283,7 +283,11 @@ public sealed class TenantFolderProviderContractGroupTests
             string[] workflowFiles = Directory.EnumerateFiles(githubRoot, "*.yml", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(githubRoot, "*.yaml", SearchOption.AllDirectories))
                 .ToArray();
-            workflowFiles.ShouldBeEmpty("Story 1.7 must not add CI gates.");
+            workflowFiles
+                .Select(file => Path.GetRelativePath(RepositoryRoot, file).Replace("\\", "/", StringComparison.Ordinal))
+                .Where(file => !string.Equals(file, ".github/workflows/contract-spine.yml", StringComparison.Ordinal))
+                .ToArray()
+                .ShouldBeEmpty("Story 1.7 must not add CI gates; Story 1.14 owns the focused contract-spine workflow.");
         }
     }
 
