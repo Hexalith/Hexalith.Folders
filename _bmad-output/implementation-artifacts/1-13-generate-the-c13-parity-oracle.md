@@ -1,6 +1,6 @@
 # Story 1.13: Generate the C13 parity oracle
 
-Status: in-progress
+Status: review
 
 Created: 2026-05-13
 
@@ -342,6 +342,7 @@ Do not freeze this list in code. Tests should derive the current operation set f
 | 2026-05-16 | Implemented the local C13 parity-oracle generator, generated `parity-contract.yaml`, added validation tests and handoff docs, and moved story to review. | Codex |
 | 2026-05-17 | Applied 27 patches from `/bmad-code-review 1.13`: hardened `ParseArguments` (no silent flag-as-value), `Quote` rejects control chars, `HasApprovedDeprecation` accepts YAML-truthy literals, `NormalizePath` strips trailing slashes without collapsing `//`, `EnumerateOperations` skips path-item `parameters`/`summary`/etc. without dropping operations and warns on HEAD/OPTIONS/TRACE, route-collision detection, `$ref` parameter normalization strips Header/Parameter/Query/Path suffix, audit-key pattern validation, operationId pattern validation, sorted `terminal_states`/`adapter_expectations`, prerequisite_drift for null/missing operations and unparseable previous-spine, expanded symmetric drift to detect renames and moves, `--initialize-baseline` captures the current spine, `--allow-empty-baseline` opts into the prior synthetic behavior, added per-canonical-category `outcome_mapping` column derived from the Adapter Outcome Parity rule table (P-24), deduped `provider_outcome_unknown`→`unknown_provider_outcome` in schema and removed the silent rewrite (P-26), added structured diagnostic comments at the top of the oracle for `reference_pending` carriers (P-27 minimal), captured the current OpenAPI as the first baseline at `tests/fixtures/previous-spine.yaml` (P-25), added focused schema enum tests, fixed `Process.WaitForExit`/`ReadToEnd` deadlock with async stream draining, switched tests to `--no-build` to avoid concurrent MSBuild races, added committed-oracle byte-stability assertion, added YAML-boolean deprecation test, added empty-baseline rejection test. | Claude |
 | 2026-05-17 | Recorded SDK/Client scope leak (P-23): commit 7c8f176 also touched `src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs`, `src/Hexalith.Folders.Client/Generation/Program.cs`, `src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`, and `tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`. Those files belong to Story 1.12 (NSwag SDK generation) per Story 1.13 Scope Boundary and were excluded from this code-review pass; they should be triaged in a separate Story 1.12 re-review. | Claude |
+| 2026-05-17 | Re-ran the completion gate, confirmed all tests pass, and moved Story 1.13 to review. | Codex |
 
 ## Party-Mode Review
 
@@ -405,6 +406,7 @@ GPT-5 Codex
 - 2026-05-16: Deterministic oracle generation reran twice with unchanged SHA-256 `B49479273D0AAFD77F4BA3FE1592AE594B1FEB78478640BBD49296E2426D7B1A`.
 - 2026-05-16: Full solution build passed with `dotnet build Hexalith.Folders.slnx` (0 warnings, 0 errors).
 - 2026-05-16: Full regression suite passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+- 2026-05-17: Completion-gate regression suite passed with `dotnet test Hexalith.Folders.slnx --no-restore` (0 failed).
 
 ### Completion Notes List
 
@@ -415,6 +417,7 @@ GPT-5 Codex
 - Added focused contract tests for operation coverage, row-schema validation, mutating/non-mutating idempotency rules, deterministic bytes, metadata-only output, missing metadata, duplicate fields, previous-spine removal drift, empty-baseline rejection, YAML-boolean deprecation acceptance, captured-baseline alignment with current inventory, schema-enum dedup, and `outcome_mapping` shape.
 - Added generator README and contract handoff documentation with the command, input/output files, source-authority matrix, deterministic-output policy, validation evidence, baseline initialization workflow, and Story 1.14/Epic 5/Epic 4 ownership boundaries.
 - Round-2 hardening (2026-05-17) applied 27 patches from `/bmad-code-review 1.13`: see Change Log entry of the same date. Notable behavior changes: each parity row now carries a `outcome_mapping[]` column mapping every declared canonical error category to its `cli_exit_code`, `mcp_failure_kind`, and `pre_sdk_error_class` per the Adapter Outcome Parity rule table; the generator emits structured `reference_pending` diagnostic comments in the oracle header for operations missing `x-hexalith-authorization` or `x-hexalith-parity-dimensions`; the previous-spine baseline is now a captured snapshot of the current 46-operation Contract Spine (committed at `tests/fixtures/previous-spine.yaml`); test runner now drains stdout/stderr concurrently and uses `--no-build` to avoid MSBuild lock races; the committed `parity-contract.yaml` is asserted byte-equal to a fresh generator run.
+- Completion gate re-run on 2026-05-17 confirmed all Story 1.13 tasks and review patches are checked, the file list is current, and the full regression suite passes; story is ready for review.
 
 ### File List
 
@@ -428,3 +431,5 @@ GPT-5 Codex
 - tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
 - tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
 - tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+- _bmad-output/implementation-artifacts/1-13-generate-the-c13-parity-oracle.md
+- _bmad-output/implementation-artifacts/sprint-status.yaml

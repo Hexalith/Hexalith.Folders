@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-17T12:00:00+02:00
+# last_updated: 2026-05-17T11:27:06+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-17T12:00:00+02:00
+last_updated: 2026-05-17T11:27:06+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -56,7 +56,7 @@ development_status:
   1-10-author-commit-and-workspace-status-contract-groups: done
   1-11-author-audit-and-ops-console-query-contract-groups: done
   1-12-wire-nswag-sdk-generation-with-idempotency-helpers: done
-  1-13-generate-the-c13-parity-oracle: in-progress
+  1-13-generate-the-c13-parity-oracle: review
   1-14-wire-contract-spine-drift-and-generated-client-ci-gates: ready-for-dev
   1-15-wire-safety-invariant-ci-gates: ready-for-dev
   1-16-wire-exit-criteria-and-parity-completeness-gates: ready-for-dev
