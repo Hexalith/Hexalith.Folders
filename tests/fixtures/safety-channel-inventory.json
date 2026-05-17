@@ -13,17 +13,23 @@
   ],
   "structured_exclusions": [
     ".git/**",
+    ".vs/**",
+    ".idea/**",
     "**/bin/**",
     "**/obj/**",
     "**/node_modules/**",
+    "TestResults/**",
+    "artifacts/**",
     "tests/fixtures/quarantine/**",
     "packages/**",
+    "**/.nuget/**",
     "*.dll",
     "*.exe",
     "*.pdb",
     "*.nupkg",
     "*.snupkg",
-    "*.zip"
+    "*.zip",
+    "*.binlog"
   ],
   "channels": [
     {
@@ -46,7 +52,7 @@
     },
     {
       "channel": "openapi-examples",
-      "owning_story": "1-6-through-1-11-contract-spine",
+      "owning_story": "1-6-author-contract-spine-foundation-and-shared-extension-vocabulary",
       "artifact_sources": ["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
@@ -55,7 +61,7 @@
     },
     {
       "channel": "problem-details-examples",
-      "owning_story": "1-6-through-1-11-contract-spine",
+      "owning_story": "1-6-author-contract-spine-foundation-and-shared-extension-vocabulary",
       "artifact_sources": ["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
@@ -82,7 +88,7 @@
     },
     {
       "channel": "developer-diagnostics",
-      "owning_story": "1-14-and-1-15-ci-gates",
+      "owning_story": "1-14-wire-contract-spine-drift-and-generated-client-ci-gates",
       "artifact_sources": ["docs/contract/contract-spine-ci-gates.md", "docs/contract/safety-invariant-ci-gates.md", "tests/tools/run-contract-spine-gates.ps1", "tests/tools/run-safety-invariant-gates.ps1"],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
@@ -91,7 +97,7 @@
     },
     {
       "channel": "ci-logs",
-      "owning_story": "1-14-and-1-15-ci-gates",
+      "owning_story": "1-14-wire-contract-spine-drift-and-generated-client-ci-gates",
       "artifact_sources": [".github/workflows/contract-spine.yml", "tests/tools/run-safety-invariant-gates.ps1"],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
@@ -104,12 +110,12 @@
       "artifact_sources": ["tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
-      "scan_forbidden_values": false,
+      "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
     },
     {
       "channel": "logs",
-      "owning_story": "2-x-runtime-observability",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -118,7 +124,7 @@
     },
     {
       "channel": "traces",
-      "owning_story": "2-x-runtime-observability",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -127,7 +133,7 @@
     },
     {
       "channel": "metric-labels",
-      "owning_story": "2-x-runtime-observability",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -136,7 +142,7 @@
     },
     {
       "channel": "telemetry-attributes",
-      "owning_story": "2-x-runtime-observability",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -145,7 +151,7 @@
     },
     {
       "channel": "events",
-      "owning_story": "2-x-domain-events",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -163,7 +169,7 @@
     },
     {
       "channel": "projections",
-      "owning_story": "2-x-runtime-projections",
+      "owning_story": "4-15-validate-lifecycle-replay-and-projection-determinism",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -172,7 +178,7 @@
     },
     {
       "channel": "provider-diagnostics",
-      "owning_story": "3-x-provider-adapters",
+      "owning_story": "3-5-validate-provider-readiness-with-safe-diagnostics",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
@@ -181,7 +187,7 @@
     },
     {
       "channel": "console-payloads",
-      "owning_story": "6-x-read-only-operations-console",
+      "owning_story": "6-2-scaffold-frontcomposer-hosted-read-only-operations-console",
       "artifact_sources": [],
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",

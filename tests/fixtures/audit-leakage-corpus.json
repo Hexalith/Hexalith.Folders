@@ -73,7 +73,7 @@
     {
       "id": "credential-shaped-provider-token",
       "category": "credential-shaped-value",
-      "value": "ghp_SYNTHETIC_SENTINEL_TOKEN_000000000000",
+      "value": "synthetic_pat_SENTINEL_NEVER_USABLE_0000000000",
       "classification": "synthetic-sentinel",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,

@@ -106,8 +106,21 @@ public sealed class SafetyInvariantGateTests
         using JsonDocument document = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
         JsonElement root = document.RootElement;
 
-        RequiredArray(root, "include_roots").SelectText().ShouldNotBeEmpty();
-        RequiredArray(root, "structured_exclusions").SelectText().ShouldContain("tests/fixtures/quarantine/**");
+        string[] includeRoots = RequiredArray(root, "include_roots").SelectText();
+        includeRoots.ShouldNotBeEmpty();
+        foreach (string includeRoot in includeRoots)
+        {
+            AssertRepositoryRelativePath(includeRoot, "include_roots");
+            PathExists(includeRoot).ShouldBeTrue($"include_roots entry '{includeRoot}' does not resolve to a repository artifact.");
+        }
+
+        string[] exclusions = RequiredArray(root, "structured_exclusions").SelectText();
+        exclusions.ShouldContain("tests/fixtures/quarantine/**");
+        exclusions.ShouldContain(".git/**");
+        foreach (string mandatoryExclusion in new[] { "**/bin/**", "**/obj/**" })
+        {
+            exclusions.ShouldContain(mandatoryExclusion);
+        }
 
         foreach (JsonElement channel in RequiredArray(root, "channels").EnumerateArray())
         {
@@ -115,10 +128,15 @@ public sealed class SafetyInvariantGateTests
             string status = RequiredString(channel, "prerequisite_status");
             string owner = RequiredString(channel, "owning_story");
             string diagnostic = RequiredString(channel, "diagnostic");
+            string safeAbsence = RequiredString(channel, "safe_absence_diagnostic");
 
             owner.ShouldNotBeNullOrWhiteSpace(name);
+            owner.ShouldNotContain("-x-", Case.Sensitive, $"{name} owning_story must not use wildcard placeholders like '2-x-...' (AC 15).");
+            owner.ShouldNotEndWith("-x", $"{name} owning_story must be a concrete story ID, not a wildcard (AC 15).");
             diagnostic.ShouldBeOneOf("covered", "SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
+            safeAbsence.ShouldBeOneOf("covered", "SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
             AssertMetadataOnly(diagnostic);
+            AssertMetadataOnly(safeAbsence);
 
             JsonElement sources = RequiredArray(channel, "artifact_sources");
             if (status == "covered")
@@ -134,6 +152,7 @@ public sealed class SafetyInvariantGateTests
             {
                 status.ShouldBeOneOf("reference-pending", "prerequisite-drift");
                 sources.GetArrayLength().ShouldBe(0, $"{name} is {status} and must not claim artifact coverage.");
+                safeAbsence.ShouldNotBe("covered", $"{name} is {status}; safe_absence_diagnostic must not be 'covered'.");
             }
         }
     }
@@ -171,8 +190,12 @@ public sealed class SafetyInvariantGateTests
         foreach (Operation operation in EnumerateOperations(root).Where(o => o.OperationId is "SearchFolderFiles" or "GlobFolderFiles" or "ReadFileRange" or "GetFolderFileMetadata"))
         {
             YamlSequenceNode order = RequiredSequence(RequiredMapping(operation.Node, "x-hexalith-authorization"), "order");
-            order.Children.Select(node => RequiredScalar(node, "authorization order")).Take(3).ToArray()
-                .ShouldBe(["tenant_access", "folder_acl", "path_policy"], operation.OperationId);
+            string[] orderSteps = order.Children
+                .Select(node => RequiredScalar(node, "authorization order"))
+                .ToArray();
+            orderSteps.Length.ShouldBeGreaterThanOrEqualTo(4, $"{operation.OperationId}: AC 9 requires tenant_access, folder_acl, path_policy at the front and query_execution at the end.");
+            orderSteps.Take(3).ToArray().ShouldBe(["tenant_access", "folder_acl", "path_policy"], $"{operation.OperationId}: AC 9 authorization-before-observation prefix.");
+            orderSteps[^1].ShouldBe("query_execution", $"{operation.OperationId}: AC 9 requires execution to be the final authorization step.");
 
             string serialized = SerializeYaml(operation.Node);
             serialized.ShouldContain("authorization", Case.Insensitive, operation.OperationId);
@@ -260,7 +283,7 @@ public sealed class SafetyInvariantGateTests
                 continue;
             }
 
-            if (text.Contains(sample.Value, StringComparison.Ordinal))
+            if (text.Contains(sample.Value, StringComparison.OrdinalIgnoreCase))
             {
                 yield return new(GateName, "SAFETY-FORBIDDEN-VALUE", repositoryPath, channel, sample.Id, sample.Classification, sample.Category, "Replace the raw value with an allowed provenance-safe representation.");
             }
@@ -295,7 +318,13 @@ public sealed class SafetyInvariantGateTests
             yield break;
         }
 
-        foreach (string file in Directory.EnumerateFiles(absolute, "*.*", SearchOption.AllDirectories))
+        EnumerationOptions enumerationOptions = new()
+        {
+            RecurseSubdirectories = true,
+            AttributesToSkip = FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System,
+        };
+
+        foreach (string file in Directory.EnumerateFiles(absolute, "*", enumerationOptions))
         {
             string relative = ToRepositoryPath(file);
             if (!IsExcludedByInventory(relative) && !IsBinaryFile(relative))
@@ -330,8 +359,11 @@ public sealed class SafetyInvariantGateTests
 
     private static bool IsBinaryFile(string repositoryPath)
     {
-        string extension = Path.GetExtension(repositoryPath);
-        return extension is ".dll" or ".exe" or ".pdb" or ".nupkg" or ".snupkg" or ".png" or ".jpg" or ".jpeg" or ".gif" or ".webp" or ".zip";
+        string extension = Path.GetExtension(repositoryPath).ToLowerInvariant();
+        return extension is ".dll" or ".exe" or ".pdb" or ".nupkg" or ".snupkg" or ".png" or ".jpg" or ".jpeg" or ".gif" or ".webp" or ".zip"
+            or ".so" or ".dylib" or ".lib" or ".bin" or ".tar" or ".gz" or ".7z" or ".rar"
+            or ".ico" or ".bmp" or ".tiff" or ".mp4" or ".mov" or ".pdf" or ".docx" or ".xlsx" or ".pptx"
+            or ".binlog";
     }
 
     private static bool PathExists(string repositoryPath)
@@ -346,6 +378,7 @@ public sealed class SafetyInvariantGateTests
         Path.IsPathFullyQualified(repositoryPath).ShouldBeFalse(because);
         repositoryPath.ShouldNotContain("\\", Case.Sensitive, because);
         repositoryPath.StartsWith("../", StringComparison.Ordinal).ShouldBeFalse(because);
+        repositoryPath.Split('/').ShouldNotContain("..", because);
     }
 
     private static void AssertMetadataOnly(string value)
@@ -482,18 +515,28 @@ public sealed class SafetyInvariantGateTests
 
     private static string FindRepositoryRoot()
     {
-        DirectoryInfo? current = new(AppContext.BaseDirectory);
-        while (current is not null)
+        string? githubWorkspace = Environment.GetEnvironmentVariable("GITHUB_WORKSPACE");
+        if (!string.IsNullOrEmpty(githubWorkspace)
+            && File.Exists(Path.Combine(githubWorkspace, "Hexalith.Folders.slnx")))
         {
-            if (File.Exists(Path.Combine(current.FullName, "Hexalith.Folders.slnx")))
-            {
-                return current.FullName;
-            }
-
-            current = current.Parent;
+            return githubWorkspace;
         }
 
-        throw new InvalidOperationException("Could not locate repository root.");
+        foreach (string seed in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
+        {
+            DirectoryInfo? current = new(seed);
+            while (current is not null)
+            {
+                if (File.Exists(Path.Combine(current.FullName, "Hexalith.Folders.slnx")))
+                {
+                    return current.FullName;
+                }
+
+                current = current.Parent;
+            }
+        }
+
+        throw new InvalidOperationException("SAFETY-PREREQUISITE-DRIFT: Could not locate Hexalith.Folders.slnx from AppContext.BaseDirectory, current directory, or GITHUB_WORKSPACE.");
     }
 
     private sealed record Operation(string OperationId, YamlMappingNode Node);

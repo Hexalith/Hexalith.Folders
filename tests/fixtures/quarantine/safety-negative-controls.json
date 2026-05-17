@@ -18,7 +18,7 @@
       "output_channel": "logs",
       "synthetic_data_only": true,
       "normative_example": false,
-      "contaminated_payload": "synthetic log emitted ghp_SYNTHETIC_SENTINEL_TOKEN_000000000000"
+      "contaminated_payload": "synthetic log emitted synthetic_pat_SENTINEL_NEVER_USABLE_0000000000"
     },
     {
       "id": "negative-control-problem-details-file-content",
