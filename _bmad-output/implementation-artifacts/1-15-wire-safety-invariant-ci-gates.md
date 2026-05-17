@@ -1,6 +1,6 @@
 # Story 1.15: Wire safety invariant CI gates
 
-Status: review
+Status: in-progress
 
 Created: 2026-05-13
 
