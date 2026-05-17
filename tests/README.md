@@ -93,6 +93,14 @@ dotnet test Hexalith.Folders.slnx --collect:"XPlat Code Coverage"
 
 Future CI gates should add focused jobs for the parity contract schema, C6 state-transition matrix coverage, redaction sentinel corpus, cache-key tenant prefix enforcement, and provider contract drift checks.
 
+Run the focused safety invariant gate locally:
+
+```powershell
+.\tests\tools\run-safety-invariant-gates.ps1 -NoRestore
+```
+
+This gate validates the synthetic sentinel corpus, channel inventory, quarantined negative controls, OpenAPI and Problem Details examples, generated artifact leakage scope, safe diagnostics, and CI wiring without requiring sidecars, provider credentials, production secrets, network calls, or nested submodule initialization.
+
 ## Knowledge References
 
 - BMAD TEA fragments: fixture architecture, data factories, test levels, test quality, Playwright configuration, API request, polling, logging, and contract testing.

@@ -1,22 +1,62 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "schema_version": "0.1.0-fixture-seed",
-  "intent": "Minimal synthetic sentinel corpus for future metadata redaction and leakage checks.",
+  "schema_version": "1.0.0",
+  "intent": "Authoritative synthetic sentinel corpus for metadata-only safety invariant gates.",
   "ownership": {
     "owner_workstream": "Redaction, audit, and safety-invariant CI stories",
-    "future_test_use": "Future tests iterate sentinel_samples to prove logs, events, diagnostics, audit records, metrics, and projections do not leak sensitive metadata.",
+    "future_test_use": "Safety gates iterate sentinel_samples across configured output channels and fail on raw sentinel emission.",
     "known_omissions": [
-      "No exhaustive sensitive metadata taxonomy",
-      "No final redaction policy",
-      "No provider-specific diagnostic inventory"
+      "Runtime redaction handlers are owned by later runtime stories.",
+      "Provider live diagnostics are reference-pending until provider adapters exist.",
+      "Tenant cache-key lint is owned by Story 1.16."
     ],
     "mutation_rules": [
       "Only synthetic metadata-only samples may be added.",
-      "Secret-shaped samples must keep synthetic_sentinel true and classification synthetic-sentinel."
+      "Every new category requires reviewer-visible corpus changes.",
+      "Negative controls belong only under tests/fixtures/quarantine/."
     ],
-    "non_policy_placeholder": true,
+    "non_policy_placeholder": false,
     "synthetic_data_only": true
   },
+  "classification_vocabulary": [
+    "confidential",
+    "generated-context-sensitive",
+    "metadata-placeholder",
+    "safe-provenance",
+    "synthetic-sentinel",
+    "tenant-sensitive",
+    "unauthorized-resource-hint"
+  ],
+  "forbidden_output_surfaces": [
+    "assertion-messages",
+    "audit-records",
+    "ci-logs",
+    "console-payloads",
+    "developer-diagnostics",
+    "events",
+    "generated-sdk",
+    "logs",
+    "metric-labels",
+    "openapi-examples",
+    "parity-artifacts",
+    "problem-details-examples",
+    "projections",
+    "provider-diagnostics",
+    "telemetry-attributes",
+    "traces"
+  ],
+  "allowed_provenance_vocabulary": [
+    "bounded_classification",
+    "content_hash",
+    "gate_name",
+    "operation_id",
+    "redaction_marker",
+    "repository_relative_path",
+    "rule_id",
+    "sample_id",
+    "schema_pointer",
+    "synthetic_category"
+  ],
   "sentinel_samples": [
     {
       "id": "secret-shaped-access-key",
@@ -25,7 +65,10 @@
       "classification": "synthetic-sentinel",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "notes": "Looks like an access key shape but is explicitly fake and must never be treated as credential material."
+      "forbidden_output_surfaces": ["logs", "traces", "metric-labels", "telemetry-attributes", "events", "audit-records", "projections", "provider-diagnostics", "console-payloads", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic access-key-shaped sentinel for proving redaction without credential material."
     },
     {
       "id": "credential-shaped-provider-token",
@@ -34,43 +77,202 @@
       "classification": "synthetic-sentinel",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "notes": "Fake provider-token shape for allow-listed redaction tests only."
+      "forbidden_output_surfaces": ["logs", "traces", "provider-diagnostics", "console-payloads", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic provider-token-shaped sentinel; never a usable credential."
     },
     {
-      "id": "file-path-metadata",
-      "category": "file-path-metadata",
-      "value": "synthetic/workspace/path-metadata-only.txt",
-      "classification": "metadata-placeholder",
+      "id": "file-content-marker",
+      "category": "file-content",
+      "value": "FILE_CONTENT_SYNTHETIC_NEVER_ECHO",
+      "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "notes": "Metadata-only path label with no real local, tenant, repository, or customer data."
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "console-payloads", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic file-content sentinel used only to prove raw content is never echoed."
+    },
+    {
+      "id": "generated-context-payload",
+      "category": "generated-context",
+      "value": "GENERATED_CONTEXT_SYNTHETIC_PAYLOAD",
+      "classification": "generated-context-sensitive",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "console-payloads", "generated-sdk", "parity-artifacts", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic generated-context sentinel for scanner coverage."
+    },
+    {
+      "id": "provider-payload-marker",
+      "category": "provider-payload",
+      "value": "PROVIDER_PAYLOAD_SYNTHETIC_BODY",
+      "classification": "confidential",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "provider-diagnostics", "events", "audit-records", "projections", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic provider payload sentinel; not a provider response."
+    },
+    {
+      "id": "tenant-data-marker",
+      "category": "tenant-data",
+      "value": "TENANT_DATA_SYNTHETIC_MARKER",
+      "classification": "tenant-sensitive",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "metric-labels", "telemetry-attributes", "events", "audit-records", "projections", "console-payloads", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic tenant-data sentinel with no real tenant identity."
+    },
+    {
+      "id": "unauthorized-resource-existence",
+      "category": "unauthorized-resource",
+      "value": "UNAUTHORIZED_RESOURCE_SYNTHETIC_EXISTS_HINT",
+      "classification": "unauthorized-resource-hint",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "console-payloads", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic unauthorized-resource sentinel for safe-denial checks."
+    },
+    {
+      "id": "local-path-marker",
+      "category": "local-absolute-path",
+      "value": "LOCAL_PATH_SYNTHETIC_DRIVE_SENTINEL",
+      "classification": "confidential",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "developer-diagnostics", "ci-logs", "assertion-messages", "generated-sdk", "parity-artifacts"],
+      "allowed_provenance_representations": ["repository_relative_path", "sample_id", "bounded_classification", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic local-path sentinel that is not a real absolute path."
+    },
+    {
+      "id": "production-url-marker",
+      "category": "production-url",
+      "value": "PRODUCTION_URL_SYNTHETIC_INVALID_HOST",
+      "classification": "confidential",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "provider-diagnostics", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic production-URL sentinel without a real URL."
+    },
+    {
+      "id": "path-metadata",
+      "category": "path-metadata",
+      "value": "synthetic/workspace/path-metadata-only.txt",
+      "classification": "tenant-sensitive",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "metric-labels", "telemetry-attributes", "events", "audit-records", "projections", "console-payloads", "provider-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["repository_relative_path", "sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic path metadata sample for classification handling."
     },
     {
       "id": "branch-name-metadata",
       "category": "branch-name",
       "value": "synthetic/task-branch",
-      "classification": "metadata-placeholder",
+      "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "notes": "Synthetic branch label for future audit metadata tests."
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "provider-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic branch metadata sample."
+    },
+    {
+      "id": "repository-name-metadata",
+      "category": "repository-name",
+      "value": "synthetic-repository-name",
+      "classification": "tenant-sensitive",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "provider-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic repository metadata sample."
     },
     {
       "id": "commit-message-metadata",
-      "category": "commit-message-metadata",
+      "category": "commit-message",
       "value": "Synthetic metadata-only commit title",
-      "classification": "metadata-placeholder",
+      "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "notes": "Commit metadata sample; no diffs or file contents are present."
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "provider-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic commit metadata sample with no author, diff, or file content."
     },
     {
-      "id": "provider-diagnostic-payload-metadata",
-      "category": "provider-diagnostic-payload-metadata",
-      "value": "synthetic-provider-rate-limit-marker",
+      "id": "actor-metadata",
+      "category": "actor-metadata",
+      "value": "ACTOR_SYNTHETIC_REF_001",
+      "classification": "tenant-sensitive",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "telemetry-attributes", "events", "audit-records", "projections", "console-payloads", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic actor reference sample."
+    },
+    {
+      "id": "correlation-metadata",
+      "category": "correlation-id",
+      "value": "corr_SYNTHETIC_01HZY7Z6N7J4Q2X8Y9V0SAFE01",
       "classification": "metadata-placeholder",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "notes": "Placeholder diagnostic marker with no provider URL, token, tenant, organization, or repository identifier."
+      "forbidden_output_surfaces": ["provider-diagnostics", "console-payloads", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "content_hash"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic correlation marker; production policies decide where correlation can remain visible."
+    },
+    {
+      "id": "diff-marker",
+      "category": "diff",
+      "value": "DIFF_SYNTHETIC_REMOVED_LINE_MARKER",
+      "classification": "confidential",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "provider-diagnostics", "developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic diff sentinel that is not a real patch."
+    },
+    {
+      "id": "diagnostic-echo-marker",
+      "category": "diagnostic-echo",
+      "value": "DIAGNOSTIC_ECHO_SYNTHETIC_FORBIDDEN",
+      "classification": "confidential",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["developer-diagnostics", "ci-logs", "assertion-messages"],
+      "allowed_provenance_representations": ["sample_id", "bounded_classification", "rule_id", "content_hash"],
+      "participates_in": ["positive", "negative-control"],
+      "safe_notes": "Synthetic diagnostic-echo sentinel for safe assertion messages."
+    },
+    {
+      "id": "safe-provenance-operation-id",
+      "category": "safe-provenance",
+      "value": "CreateFolder",
+      "classification": "safe-provenance",
+      "synthetic_sentinel": true,
+      "synthetic_data_only": true,
+      "forbidden_output_surfaces": ["provider-diagnostics"],
+      "allowed_provenance_representations": ["operation_id", "schema_pointer", "gate_name", "rule_id"],
+      "participates_in": ["positive"],
+      "safe_notes": "Synthetic safe-provenance sample showing that operation IDs can be allowed only in declared contexts."
     }
   ]
 }

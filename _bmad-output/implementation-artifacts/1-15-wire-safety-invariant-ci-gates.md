@@ -1,6 +1,6 @@
 # Story 1.15: Wire safety invariant CI gates
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-13
 
@@ -36,60 +36,60 @@ so that implementation cannot leak secrets, file contents, or tenant data throug
 
 ## Tasks / Subtasks
 
-- [ ] Confirm safety-gate prerequisites and current artifact ownership. (AC: 1, 2, 3, 4, 5, 6, 12, 13)
-  - [ ] Inspect `.github/workflows/`; if Story 1.14 has not created a workflow yet, create only the focused safety workflow or a narrowly named job that can later be composed with Story 1.14.
-  - [ ] Inspect `tests/fixtures/audit-leakage-corpus.json`, `tests/README.md`, `_bmad-output/project-context.md`, and `_bmad-output/planning-artifacts/architecture.md` sections on sentinel redaction, sensitive metadata classification, authorization order, and enforcement guidelines.
-  - [ ] Inspect Story 1.10 through Story 1.14 artifacts before assuming implemented OpenAPI examples, generated-client paths, parity rows, or CI workflow names.
-  - [ ] Inspect existing test projects for the best home for safety checks, especially `tests/Hexalith.Folders.Contracts.Tests/`, `tests/Hexalith.Folders.Testing.Tests/`, `tests/Hexalith.Folders.Server.Tests/`, `tests/Hexalith.Folders.UI.Tests/`, and any generated-artifact tests created by Stories 1.12 through 1.14.
-  - [ ] Create or update a channel inventory or manifest that names each scanned channel, owning story, artifact or test source, prerequisite status, and safe absence diagnostic.
-  - [ ] Validate that each manifest entry either points to an existing repository-relative artifact/test source or is explicitly marked `reference-pending` or `prerequisite-drift`; claimed coverage with a stale path must fail closed.
-  - [ ] Define explicit scan include roots and exclusions so the gate does not scan `.git`, package caches, build outputs, binary blobs, local machine paths, or undeclared generated directories.
-  - [ ] Treat missing runtime channels, missing generated artifacts, absent workflow files, or placeholder-only safety helpers as prerequisite drift unless the gate can fail closed with a targeted diagnostic.
-  - [ ] Do not initialize or update nested submodules. If submodules are needed for local validation, initialize only the root-level modules listed in `AGENTS.md`.
-- [ ] Harden the sentinel corpus contract. (AC: 1, 2, 7, 8, 11)
-  - [ ] Preserve `tests/fixtures/audit-leakage-corpus.json` as the single normative cross-project sentinel corpus.
-  - [ ] Add only synthetic sentinel samples needed to prove file-content, token, credential, generated-context, provider-payload, tenant-data, unauthorized-resource, local-path, production-URL, path, branch, repository, commit-message, actor, correlation, diff, diagnostic-echo, and safe-provenance rules.
-  - [ ] Require each sentinel to declare classification, category, forbidden output surfaces, allowed provenance-safe representations, and whether it participates in positive or intentionally contaminated negative-control fixtures.
-  - [ ] Add schema or fixture-contract tests that fail if a sample lacks `synthetic_sentinel`, `synthetic_data_only`, classification, category, ID, or safe notes.
-  - [ ] Add tests that fail when unknown classification labels or ad hoc local vocabulary appear outside the sentinel corpus contract.
-  - [ ] Add tests that fail if corpus samples look like real tenant IDs, real provider URLs, real repository names, real local absolute paths, real production hosts, real secrets, or raw content/diff excerpts.
-  - [ ] Keep new categories reviewer-visible in the corpus; do not hide policy expansion inside test code only.
-  - [ ] Keep intentionally contaminated negative-control fixtures in an explicitly named quarantine location and mark them so documentation, OpenAPI examples, generated outputs, and normative fixtures cannot consume them accidentally.
-  - [ ] Use custom safe assertion helpers or sanitized assertion messages for leakage tests so a test failure reports only rule ID, channel, sample ID, classification, and remediation hint, never the leaked value or raw payload.
-- [ ] Add or wire safety gate test entry points. (AC: 1, 3, 4, 7, 8, 9, 10, 11, 12)
-  - [ ] Prefer focused test projects or repository tools that can run locally and in CI with the same command.
-  - [ ] Scan generated and checked-in artifacts through structured parsers where practical: JSON for fixtures/schema files, YAML for OpenAPI/parity artifacts, and targeted text checks for docs or generated diagnostics.
-  - [ ] Cover logs/traces/metrics/events/audit/projections/provider diagnostics through available examples, fixtures, or channel-specific test seams. For channels not implemented yet, emit prerequisite-drift evidence rather than success.
-  - [ ] Include tags, dimensions, attributes, event names, span names, metric names, counters, exception metadata, and baggage in telemetry scans instead of scanning only message strings.
-  - [ ] Include at least one intentionally contaminated fixture per scan family so the gate proves forbidden values are detected without printing the forbidden values.
-  - [ ] Verify the negative-control path itself is excluded from normal artifact/example scans unless a test explicitly opts into contaminated-fixture validation.
-  - [ ] Validate OpenAPI examples and Problem Details examples for metadata-only fields, safe-denial shape, redaction shape, bounded classification, and absence of raw payload values.
-  - [ ] Validate generated SDK/parity/gate diagnostics for leakage and safe provenance only, without using broad `git diff --exit-code` across unrelated active development files and without asserting parity completeness, derivation, or generated-client correctness.
-  - [ ] Check context-query examples and tests for authorization-before-observation ordering and no search-first/filter-later leakage.
-  - [ ] Keep failure messages safe: report gate name, output channel, repository-relative artifact path, rule ID, synthetic sample ID, classification, and remediation hint only; never report the leaked value itself.
-  - [ ] Emit bounded missing-channel diagnostics such as `SAFETY-CHANNEL-MISSING` or `SAFETY-PREREQUISITE-DRIFT` with channel name, owner, and remediation hint only.
-- [ ] Wire the CI job for safety invariants. (AC: 1, 5, 6, 11, 12, 14)
-  - [ ] Add or update a focused GitHub Actions job for safety invariant gates, preferably in the workflow established by Story 1.14 if it exists by implementation time.
-  - [ ] Use one repository-root offline command, preferably backed by `tests/tools`, that CI invokes unchanged and that respects `global.json`, central package management, and the root-level submodule policy.
-  - [ ] Run restore/build/test steps only as needed for this safety gate lane; do not duplicate the full release pipeline.
-  - [ ] Keep all CI diagnostics repository-relative and metadata-only.
-  - [ ] Do not upload raw scanner inputs, contaminated fixtures, assertion diffs, generated snippets, local paths, or full CI logs as workflow artifacts; if artifacts are needed, upload only sanitized summaries with rule IDs, channel names, sample IDs, and content hashes.
-  - [ ] Do not add Dapr policy conformance, provider live drift, package publishing, release evidence, exit-criteria, cache-key tenant-prefix, idempotency-encoding, C6 matrix, or parity completeness jobs in this story.
-- [ ] Document developer and reviewer usage. (AC: 2, 4, 7, 8, 11, 12, 13)
-  - [ ] Add or update focused documentation such as `docs/contract/safety-invariant-ci-gates.md`.
-  - [ ] Document local commands, CI job names, scanned inputs, output-channel coverage, channel inventory fields, prerequisite-drift categories, and safe diagnostic format.
-  - [ ] Document how to add new synthetic sentinel categories and what reviewer approval is required.
-  - [ ] Document how negative-control quarantine paths differ from normative examples and how test failures are sanitized before reaching CI logs or uploaded artifacts.
-  - [ ] Document manifest freshness semantics, including when `reference-pending` is acceptable and when stale claimed coverage must fail.
-  - [ ] Document how redacted, unknown, missing, hidden, unauthorized, stale, and unavailable states differ without leaking resource existence.
-  - [ ] Add a reviewer checklist covering synthetic-only corpus changes, forbidden-value echo prevention, safe CI diagnostics, channel inventory coverage, generated-artifact leakage-only scope, and Story 1.16 scope boundaries.
-  - [ ] Document that Story 1.16 still owns tenant-prefixed cache-key lint and exit-criteria gates.
-- [ ] Run verification. (AC: 1, 2, 3, 11, 12, 14)
-  - [ ] Run the focused safety invariant tests.
-  - [ ] Run the workflow-equivalent local command from the repository root.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if active contract work and prerequisite drift allow it; if blocked, record the exact blocker.
-  - [ ] Confirm no nested submodules were initialized.
-  - [ ] Confirm no unrelated active Story 1.10 through Story 1.14 files were modified.
+- [x] Confirm safety-gate prerequisites and current artifact ownership. (AC: 1, 2, 3, 4, 5, 6, 12, 13)
+  - [x] Inspect `.github/workflows/`; if Story 1.14 has not created a workflow yet, create only the focused safety workflow or a narrowly named job that can later be composed with Story 1.14.
+  - [x] Inspect `tests/fixtures/audit-leakage-corpus.json`, `tests/README.md`, `_bmad-output/project-context.md`, and `_bmad-output/planning-artifacts/architecture.md` sections on sentinel redaction, sensitive metadata classification, authorization order, and enforcement guidelines.
+  - [x] Inspect Story 1.10 through Story 1.14 artifacts before assuming implemented OpenAPI examples, generated-client paths, parity rows, or CI workflow names.
+  - [x] Inspect existing test projects for the best home for safety checks, especially `tests/Hexalith.Folders.Contracts.Tests/`, `tests/Hexalith.Folders.Testing.Tests/`, `tests/Hexalith.Folders.Server.Tests/`, `tests/Hexalith.Folders.UI.Tests/`, and any generated-artifact tests created by Stories 1.12 through 1.14.
+  - [x] Create or update a channel inventory or manifest that names each scanned channel, owning story, artifact or test source, prerequisite status, and safe absence diagnostic.
+  - [x] Validate that each manifest entry either points to an existing repository-relative artifact/test source or is explicitly marked `reference-pending` or `prerequisite-drift`; claimed coverage with a stale path must fail closed.
+  - [x] Define explicit scan include roots and exclusions so the gate does not scan `.git`, package caches, build outputs, binary blobs, local machine paths, or undeclared generated directories.
+  - [x] Treat missing runtime channels, missing generated artifacts, absent workflow files, or placeholder-only safety helpers as prerequisite drift unless the gate can fail closed with a targeted diagnostic.
+  - [x] Do not initialize or update nested submodules. If submodules are needed for local validation, initialize only the root-level modules listed in `AGENTS.md`.
+- [x] Harden the sentinel corpus contract. (AC: 1, 2, 7, 8, 11)
+  - [x] Preserve `tests/fixtures/audit-leakage-corpus.json` as the single normative cross-project sentinel corpus.
+  - [x] Add only synthetic sentinel samples needed to prove file-content, token, credential, generated-context, provider-payload, tenant-data, unauthorized-resource, local-path, production-URL, path, branch, repository, commit-message, actor, correlation, diff, diagnostic-echo, and safe-provenance rules.
+  - [x] Require each sentinel to declare classification, category, forbidden output surfaces, allowed provenance-safe representations, and whether it participates in positive or intentionally contaminated negative-control fixtures.
+  - [x] Add schema or fixture-contract tests that fail if a sample lacks `synthetic_sentinel`, `synthetic_data_only`, classification, category, ID, or safe notes.
+  - [x] Add tests that fail when unknown classification labels or ad hoc local vocabulary appear outside the sentinel corpus contract.
+  - [x] Add tests that fail if corpus samples look like real tenant IDs, real provider URLs, real repository names, real local absolute paths, real production hosts, real secrets, or raw content/diff excerpts.
+  - [x] Keep new categories reviewer-visible in the corpus; do not hide policy expansion inside test code only.
+  - [x] Keep intentionally contaminated negative-control fixtures in an explicitly named quarantine location and mark them so documentation, OpenAPI examples, generated outputs, and normative fixtures cannot consume them accidentally.
+  - [x] Use custom safe assertion helpers or sanitized assertion messages for leakage tests so a test failure reports only rule ID, channel, sample ID, classification, and remediation hint, never the leaked value or raw payload.
+- [x] Add or wire safety gate test entry points. (AC: 1, 3, 4, 7, 8, 9, 10, 11, 12)
+  - [x] Prefer focused test projects or repository tools that can run locally and in CI with the same command.
+  - [x] Scan generated and checked-in artifacts through structured parsers where practical: JSON for fixtures/schema files, YAML for OpenAPI/parity artifacts, and targeted text checks for docs or generated diagnostics.
+  - [x] Cover logs/traces/metrics/events/audit/projections/provider diagnostics through available examples, fixtures, or channel-specific test seams. For channels not implemented yet, emit prerequisite-drift evidence rather than success.
+  - [x] Include tags, dimensions, attributes, event names, span names, metric names, counters, exception metadata, and baggage in telemetry scans instead of scanning only message strings.
+  - [x] Include at least one intentionally contaminated fixture per scan family so the gate proves forbidden values are detected without printing the forbidden values.
+  - [x] Verify the negative-control path itself is excluded from normal artifact/example scans unless a test explicitly opts into contaminated-fixture validation.
+  - [x] Validate OpenAPI examples and Problem Details examples for metadata-only fields, safe-denial shape, redaction shape, bounded classification, and absence of raw payload values.
+  - [x] Validate generated SDK/parity/gate diagnostics for leakage and safe provenance only, without using broad `git diff --exit-code` across unrelated active development files and without asserting parity completeness, derivation, or generated-client correctness.
+  - [x] Check context-query examples and tests for authorization-before-observation ordering and no search-first/filter-later leakage.
+  - [x] Keep failure messages safe: report gate name, output channel, repository-relative artifact path, rule ID, synthetic sample ID, classification, and remediation hint only; never report the leaked value itself.
+  - [x] Emit bounded missing-channel diagnostics such as `SAFETY-CHANNEL-MISSING` or `SAFETY-PREREQUISITE-DRIFT` with channel name, owner, and remediation hint only.
+- [x] Wire the CI job for safety invariants. (AC: 1, 5, 6, 11, 12, 14)
+  - [x] Add or update a focused GitHub Actions job for safety invariant gates, preferably in the workflow established by Story 1.14 if it exists by implementation time.
+  - [x] Use one repository-root offline command, preferably backed by `tests/tools`, that CI invokes unchanged and that respects `global.json`, central package management, and the root-level submodule policy.
+  - [x] Run restore/build/test steps only as needed for this safety gate lane; do not duplicate the full release pipeline.
+  - [x] Keep all CI diagnostics repository-relative and metadata-only.
+  - [x] Do not upload raw scanner inputs, contaminated fixtures, assertion diffs, generated snippets, local paths, or full CI logs as workflow artifacts; if artifacts are needed, upload only sanitized summaries with rule IDs, channel names, sample IDs, and content hashes.
+  - [x] Do not add Dapr policy conformance, provider live drift, package publishing, release evidence, exit-criteria, cache-key tenant-prefix, idempotency-encoding, C6 matrix, or parity completeness jobs in this story.
+- [x] Document developer and reviewer usage. (AC: 2, 4, 7, 8, 11, 12, 13)
+  - [x] Add or update focused documentation such as `docs/contract/safety-invariant-ci-gates.md`.
+  - [x] Document local commands, CI job names, scanned inputs, output-channel coverage, channel inventory fields, prerequisite-drift categories, and safe diagnostic format.
+  - [x] Document how to add new synthetic sentinel categories and what reviewer approval is required.
+  - [x] Document how negative-control quarantine paths differ from normative examples and how test failures are sanitized before reaching CI logs or uploaded artifacts.
+  - [x] Document manifest freshness semantics, including when `reference-pending` is acceptable and when stale claimed coverage must fail.
+  - [x] Document how redacted, unknown, missing, hidden, unauthorized, stale, and unavailable states differ without leaking resource existence.
+  - [x] Add a reviewer checklist covering synthetic-only corpus changes, forbidden-value echo prevention, safe CI diagnostics, channel inventory coverage, generated-artifact leakage-only scope, and Story 1.16 scope boundaries.
+  - [x] Document that Story 1.16 still owns tenant-prefixed cache-key lint and exit-criteria gates.
+- [x] Run verification. (AC: 1, 2, 3, 11, 12, 14)
+  - [x] Run the focused safety invariant tests.
+  - [x] Run the workflow-equivalent local command from the repository root.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if active contract work and prerequisite drift allow it; if blocked, record the exact blocker.
+  - [x] Confirm no nested submodules were initialized.
+  - [x] Confirm no unrelated active Story 1.10 through Story 1.14 files were modified.
 
 ## Dev Notes
 
@@ -196,6 +196,7 @@ docs/contract/safety-invariant-ci-gates.md
 | 2026-05-13 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
 | 2026-05-15 | Party-mode review applied channel inventory, bounded diagnostic, vocabulary authority, negative-control, telemetry, generated-artifact scope, and reviewer checklist hardening. | Codex |
 | 2026-05-16 | Advanced elicitation applied negative-control quarantine, manifest freshness, explicit scan-scope, and sanitized assertion/artifact hardening. | Codex |
+| 2026-05-17 | Implemented safety invariant corpus, manifest, quarantined negative controls, focused tests, local gate script, workflow wiring, and reviewer documentation. Story ready for review. | Codex |
 
 ## Party-Mode Review
 
@@ -242,10 +243,37 @@ docs/contract/safety-invariant-ci-gates.md
 
 ### Agent Model Used
 
-TBD by dev-story agent
+Codex (GPT-5)
 
 ### Debug Log References
 
+- 2026-05-17: Loaded BMAD customization, project contexts, sprint status, and Story 1.15 before implementation.
+- 2026-05-17: Confirmed Story 1.15 was ready for dev, moved story and sprint status to in-progress, and inspected Story 1.10 through Story 1.14 artifacts.
+- 2026-05-17: Inspected `.github/workflows/contract-spine.yml`, `tests/fixtures/audit-leakage-corpus.json`, `tests/README.md`, architecture safety sections, OpenAPI examples, generated SDK output, parity artifacts, and existing test projects.
+- 2026-05-17: Added failing RED safety gate tests first; initial focused run failed on missing manifest/quarantine/script/docs and unhardened corpus fields.
+- 2026-05-17: Hardened the corpus contract, added channel inventory, added quarantined negative controls, wired the local gate script into the existing workflow, and documented reviewer usage.
+- 2026-05-17: Validation passed: focused safety tests, fixture-contract tests, local safety gate script, contract-spine gate script, solution build, and full solution test suite.
+
 ### Completion Notes List
 
+- Added `SafetyInvariantGateTests` covering authoritative corpus vocabulary, synthetic-only fixture rules, channel manifest freshness, normal-scan quarantine exclusion, opt-in negative controls, sanitized diagnostics, OpenAPI/Problem Details leakage checks, context-query authorization ordering, and workflow/documentation wiring.
+- Expanded `tests/fixtures/audit-leakage-corpus.json` into the normative safety vocabulary with classified synthetic sentinels, forbidden output surfaces, allowed provenance-safe representations, and reviewer-visible categories.
+- Added `tests/fixtures/safety-channel-inventory.json` to track covered, `reference-pending`, and `prerequisite-drift` channels with repository-relative sources and bounded diagnostics.
+- Added quarantined synthetic negative controls under `tests/fixtures/quarantine/` and verified the gate detects them without echoing forbidden values in assertion output.
+- Reused the existing Story 1.14 workflow lane by adding a focused safety step after restore/build and contract gates; no duplicate release/security/provider/cache/exit-criteria jobs were added.
+- Updated existing fixture-contract tests so the audit corpus is treated as a normative vocabulary rather than a placeholder fixture.
+- Full validation passed without initializing or updating nested submodules.
+
 ### File List
+
+- `.github/workflows/contract-spine.yml`
+- `docs/contract/safety-invariant-ci-gates.md`
+- `tests/README.md`
+- `tests/tools/run-safety-invariant-gates.ps1`
+- `tests/fixtures/audit-leakage-corpus.json`
+- `tests/fixtures/safety-channel-inventory.json`
+- `tests/fixtures/quarantine/safety-negative-controls.json`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs`
+- `_bmad-output/implementation-artifacts/1-15-wire-safety-invariant-ci-gates.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`

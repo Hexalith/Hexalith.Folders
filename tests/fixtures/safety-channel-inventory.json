@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "1.0.0",
+  "gate": "safety-invariant",
+  "include_roots": [
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+    "src/Hexalith.Folders.Client/Generated",
+    "tests/fixtures/parity-contract.yaml",
+    "docs/contract",
+    ".github/workflows/contract-spine.yml",
+    "tests/tools/run-contract-spine-gates.ps1",
+    "tests/tools/run-safety-invariant-gates.ps1"
+  ],
+  "structured_exclusions": [
+    ".git/**",
+    "**/bin/**",
+    "**/obj/**",
+    "**/node_modules/**",
+    "tests/fixtures/quarantine/**",
+    "packages/**",
+    "*.dll",
+    "*.exe",
+    "*.pdb",
+    "*.nupkg",
+    "*.snupkg",
+    "*.zip"
+  ],
+  "channels": [
+    {
+      "channel": "sentinel-corpus-contract",
+      "owning_story": "1-15-wire-safety-invariant-ci-gates",
+      "artifact_sources": ["tests/fixtures/audit-leakage-corpus.json"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "covered"
+    },
+    {
+      "channel": "negative-control-quarantine",
+      "owning_story": "1-15-wire-safety-invariant-ci-gates",
+      "artifact_sources": ["tests/fixtures/quarantine/safety-negative-controls.json"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "covered"
+    },
+    {
+      "channel": "openapi-examples",
+      "owning_story": "1-6-through-1-11-contract-spine",
+      "artifact_sources": ["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "problem-details-examples",
+      "owning_story": "1-6-through-1-11-contract-spine",
+      "artifact_sources": ["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "parity-artifacts",
+      "owning_story": "1-13-generate-the-c13-parity-oracle",
+      "artifact_sources": ["tests/fixtures/parity-contract.yaml"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "generated-sdk",
+      "owning_story": "1-12-wire-nswag-sdk-generation-with-idempotency-helpers",
+      "artifact_sources": ["src/Hexalith.Folders.Client/Generated"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "developer-diagnostics",
+      "owning_story": "1-14-and-1-15-ci-gates",
+      "artifact_sources": ["docs/contract/contract-spine-ci-gates.md", "docs/contract/safety-invariant-ci-gates.md", "tests/tools/run-contract-spine-gates.ps1", "tests/tools/run-safety-invariant-gates.ps1"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "ci-logs",
+      "owning_story": "1-14-and-1-15-ci-gates",
+      "artifact_sources": [".github/workflows/contract-spine.yml", "tests/tools/run-safety-invariant-gates.ps1"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "assertion-messages",
+      "owning_story": "1-15-wire-safety-invariant-ci-gates",
+      "artifact_sources": ["tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "logs",
+      "owning_story": "2-x-runtime-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "traces",
+      "owning_story": "2-x-runtime-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "metric-labels",
+      "owning_story": "2-x-runtime-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "telemetry-attributes",
+      "owning_story": "2-x-runtime-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "events",
+      "owning_story": "2-x-domain-events",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "audit-records",
+      "owning_story": "1-11-author-audit-and-ops-console-query-contract-groups",
+      "artifact_sources": [],
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+    },
+    {
+      "channel": "projections",
+      "owning_story": "2-x-runtime-projections",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "provider-diagnostics",
+      "owning_story": "3-x-provider-adapters",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    },
+    {
+      "channel": "console-payloads",
+      "owning_story": "6-x-read-only-operations-console",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+    }
+  ]
+}

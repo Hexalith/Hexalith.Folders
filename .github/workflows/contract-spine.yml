@@ -37,3 +37,7 @@ jobs:
       - name: Run contract spine gates
         shell: pwsh
         run: ./tests/tools/run-contract-spine-gates.ps1 -NoRestore
+
+      - name: Run safety invariant gates
+        shell: pwsh
+        run: ./tests/tools/run-safety-invariant-gates.ps1 -NoRestore

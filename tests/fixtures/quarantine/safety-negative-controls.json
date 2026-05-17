@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "1.0.0",
+  "ownership": {
+    "owner_workstream": "Safety invariant negative controls",
+    "synthetic_data_only": true,
+    "quarantined_negative_controls": true,
+    "normative_example_source": false,
+    "mutation_rules": [
+      "These controls are scanned only by opt-in tests.",
+      "No documentation, OpenAPI example, generated output, or normative fixture may consume this file."
+    ]
+  },
+  "negative_controls": [
+    {
+      "id": "negative-control-log-token",
+      "sample_id": "credential-shaped-provider-token",
+      "output_channel": "logs",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "synthetic log emitted ghp_SYNTHETIC_SENTINEL_TOKEN_000000000000"
+    },
+    {
+      "id": "negative-control-problem-details-file-content",
+      "sample_id": "file-content-marker",
+      "output_channel": "problem-details-examples",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "problem details echoed FILE_CONTENT_SYNTHETIC_NEVER_ECHO"
+    },
+    {
+      "id": "negative-control-diagnostic-local-path",
+      "sample_id": "local-path-marker",
+      "output_channel": "developer-diagnostics",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "diagnostic echoed LOCAL_PATH_SYNTHETIC_DRIVE_SENTINEL"
+    },
+    {
+      "id": "negative-control-ci-diff-marker",
+      "sample_id": "diff-marker",
+      "output_channel": "ci-logs",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "ci summary echoed DIFF_SYNTHETIC_REMOVED_LINE_MARKER"
+    },
+    {
+      "id": "negative-control-unauthorized-resource",
+      "sample_id": "unauthorized-resource-existence",
+      "output_channel": "console-payloads",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "console payload exposed UNAUTHORIZED_RESOURCE_SYNTHETIC_EXISTS_HINT"
+    }
+  ]
+}

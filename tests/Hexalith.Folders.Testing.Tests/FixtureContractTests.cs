@@ -169,13 +169,17 @@ public sealed class FixtureContractTests
 
             string value = sample.GetProperty("value").GetString() ?? string.Empty;
 
-            // Patch 2: enforce classification for all samples, not only regex-matched ones
-            string expectedClassification = SecretShapedValue.IsMatch(value)
-                ? "synthetic-sentinel"
-                : "metadata-placeholder";
-            sample.GetProperty("classification").GetString()
-                .ShouldBe(expectedClassification,
-                    $"Sample '{sampleId}' must have classification '{expectedClassification}'.");
+            string classification = sample.GetProperty("classification").GetString() ?? string.Empty;
+            if (SecretShapedValue.IsMatch(value))
+            {
+                classification.ShouldBe("synthetic-sentinel",
+                    $"Secret-shaped sample '{sampleId}' must have classification 'synthetic-sentinel'.");
+            }
+
+            JsonElement vocabulary = document.RootElement.GetProperty("classification_vocabulary");
+            vocabulary.EnumerateArray()
+                .Select(item => item.GetString() ?? string.Empty)
+                .ShouldContain(classification, $"Sample '{sampleId}' must use the corpus classification vocabulary.");
         }
     }
 
@@ -223,7 +227,8 @@ public sealed class FixtureContractTests
                 $"{relativePath} ownership.{field} should be populated.");
         }
 
-        ownership.GetProperty("non_policy_placeholder").GetBoolean().ShouldBeTrue();
+        bool expectedPlaceholder = !string.Equals(relativePath, "tests/fixtures/audit-leakage-corpus.json", StringComparison.Ordinal);
+        ownership.GetProperty("non_policy_placeholder").GetBoolean().ShouldBe(expectedPlaceholder);
         ownership.GetProperty("synthetic_data_only").GetBoolean().ShouldBeTrue();
     }
 
