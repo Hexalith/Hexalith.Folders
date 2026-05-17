@@ -21,6 +21,9 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 7. Given Story 2.1 supplies fail-closed tenant-access projection evidence, when organization ACL commands are authorized, then stale, unavailable, disabled, unknown, malformed, replay-conflicting, future-dated, or tenant-mismatched projection evidence rejects before aggregate stream loading or resource-specific ACL changes are attempted.
 8. Given organization ACL baseline events exist, when projections or test fixtures consume them, then effective permissions can be derived deterministically by tenant, organization, principal kind, principal ID, and action without relying on localized diagnostic text.
 9. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodules, when unit and smoke tests execute, then ACL command validation, event application, rejection paths, idempotency behavior, and metadata-only leakage boundaries are covered with in-memory fakes.
+10. Given the organization ACL baseline records grant state only, when this story is implemented, then it does not implement folder inheritance, folder ACL overrides, public effective-permission query endpoints, runtime authorization enforcement beyond the pre-load tenant evidence gate, provider-specific subject resolution, or production Dapr policy mapping.
+11. Given ACL entries are compared, when duplicates, replays, grants, and revokes are evaluated, then the entry identity is the tuple of tenant, organization, principal kind, principal ID, and action; principal kinds remain namespace-separated so the same raw ID under different kinds never collides.
+12. Given Story 2.1 tenant-access evidence is consumed, when evidence is not `allowed`, then the command rejects before stream-name construction, stream loading, event append, aggregate mutation, or diagnostic/audit resource lookup, and tests prove those side effects did not occur.
 
 ## Tasks / Subtasks
 
@@ -28,29 +31,37 @@ so that folder permissions can be granted consistently to users, groups, roles, 
   - [ ] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`.
   - [ ] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`.
   - [ ] Add opaque value objects or validated identifiers for managed tenant ID, organization ID, principal ID, and ACL action where existing project types do not already provide them.
-  - [ ] Keep aggregate stream names in the `{managedTenantId}:organizations:{organizationId}` shape and reject empty segments, `:` characters, control characters, and the reserved `system` tenant for managed organization streams.
+  - [ ] Keep aggregate stream names in the `{managedTenantId}:organizations:{organizationId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed organization streams.
 - [ ] Define ACL baseline commands and metadata-only events. (AC: 2, 3, 5, 6)
   - [ ] Add commands for initializing the organization ACL baseline and granting/revoking baseline permissions for user, group, role, and delegated service-agent principals.
   - [ ] Add accepted events such as `OrganizationAclBaselineInitialized`, `OrganizationAclPrincipalGranted`, and `OrganizationAclPrincipalRevoked`, or equivalent names aligned with local EventStore conventions.
   - [ ] Add rejection events or result types with stable codes for unauthorized tenant context, invalid principal, unsupported action, duplicate/conflicting entry, stale tenant projection, unavailable tenant projection, disabled tenant, unknown tenant, tenant mismatch, and idempotency conflict.
   - [ ] Ensure event payloads are metadata-only and do not copy request payloads wholesale.
+  - [ ] Define the initial closed ACL action vocabulary as domain-owned value objects or enum values in `Hexalith.Folders`: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Do not add provider-specific or folder-override action names in this story.
+  - [ ] Define command/result inventory for `InitializeOrganizationAclBaseline`, `GrantOrganizationAclPrincipal`, and `RevokeOrganizationAclPrincipal` or equivalent local names, with result codes for accepted, already_applied, duplicate_entry, missing_entry, unsupported_action, invalid_principal, invalid_organization, invalid_tenant, reserved_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, replay_conflict, and idempotency_conflict.
 - [ ] Add fail-closed authorization integration points without pulling in later folder policy. (AC: 3, 4, 7)
   - [ ] Depend on the tenant-access authorizer/projection from Story 2.1 when available; if Story 2.1 implementation is still in flight, add an interface boundary and tests that model the fail-closed outcomes without duplicating Story 2.1 projection logic.
   - [ ] Check tenant projection evidence before organization stream loading or ACL mutation.
   - [ ] Treat tenant IDs from route/body/query/header as comparison values only, never as the authority that selects the aggregate stream.
+  - [ ] Require the authorization seam to receive authoritative managed tenant context from authentication context or EventStore envelopes plus Story 2.1 evidence fields: outcome code, projection watermark, last event timestamp, projection age/freshness status, sequence/version when available, and correlation/task/idempotency metadata. Future-dated evidence must reject through the Story 2.1 stable evidence code instead of creating a permissive fallback.
   - [ ] Do not implement folder-level ACL overrides, folder lifecycle, provider readiness, repository binding, workspace, CLI, MCP, UI, or worker behavior in this story.
 - [ ] Add idempotency and deterministic derivation support. (AC: 6, 8)
   - [ ] Reuse the project idempotency equivalence rules established in Epic 1; compare canonical ACL payload shape rather than raw JSON order.
   - [ ] Ensure duplicate equivalent commands do not append duplicate ACL events.
   - [ ] Provide deterministic state application for grant/revoke ordering and duplicate entries.
   - [ ] Add effective-permission derivation helpers only for organization baseline state; Story 2.5 owns public effective-permission inspection.
-- [ ] Add tests and fixtures. (AC: 1-9)
+  - [ ] Treat the same idempotency key plus the same canonical payload as the same logical result with no duplicate event; the same idempotency key plus a different canonical payload rejects as `idempotency_conflict`; a different idempotency key plus an already-present grant returns deterministic `already_applied` evidence or equivalent no-op result without appending a duplicate event.
+  - [ ] Derive organization-baseline permissions by set membership over tenant, organization, principal kind, principal ID, and action. Replaying events in any order that preserves causal version order must produce the same state; role/group inheritance and folder override precedence remain out of scope.
+- [ ] Add tests and fixtures. (AC: 1-12)
   - [ ] Add unit tests under `tests/Hexalith.Folders.Tests` for aggregate initialization, grant/revoke by principal kind, duplicate grants, revoke of missing grant, unsupported action, malformed IDs, and reserved tenant rejection.
   - [ ] Add authorization tests for stale/unavailable/disabled/unknown/malformed/replay-conflicting/future tenant projection evidence and tenant mismatch.
   - [ ] Add idempotency tests for equivalent replay and conflicting replay.
   - [ ] Add leakage tests that scan event/rejection/debug strings for credential, token, file content, repository, branch, and unauthorized-resource sentinel values.
   - [ ] Extend `src/Hexalith.Folders.Testing` factories only with reusable organization/ACL builders that delegate to production validation rules.
   - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
+  - [ ] Add focused tests named `OrganizationAclCommandValidationTests`, `OrganizationAclTenantEvidenceGateTests`, `OrganizationAclIdempotencyTests`, `OrganizationAclEffectivePermissionTests`, `OrganizationAclMetadataLeakageTests`, and `OrganizationAclStreamShapeTests` or equivalent locally consistent names.
+  - [ ] Add negative controls proving rejected tenant evidence does not construct stream names, read streams, append events, mutate aggregate state, or query diagnostic/audit resources.
+  - [ ] Use pure in-memory fakes only for EventStore seams, tenant evidence, clock/time, validators, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
 
 ## Dev Notes
 
@@ -75,6 +86,19 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 - `src/Hexalith.Folders.Testing/Factories/TestAuthorizationContext.cs` provides simple managed tenant and permission test context data. Extend it only if the ACL tests need reusable builders.
 - `tests/Hexalith.Folders.Tests/FoldersModuleSmokeTests.cs` is still scaffold-level; this story should add real aggregate tests without requiring live Dapr, EventStore, Tenants, provider credentials, or initialized nested submodules.
 - Active development work may already be modifying Story 1.12 and Story 1.13 files and contract/client tests. Treat those changes as unrelated unless the implementation branch explicitly rebases on them.
+
+### Party-Mode Clarifications
+
+- `ACL baseline` means organization-level grant/revoke membership state only. It does not implement folder inheritance, folder-specific overrides, public effective-permission endpoints, runtime authorization enforcement beyond the pre-load tenant evidence gate, provider-specific identity resolution, Keycloak group mapping, production Dapr policy, or cross-surface UI/CLI/MCP behavior.
+- Supported action names for this story are a closed domain vocabulary derived from the PRD folder ACL verbs: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Validation and semantics belong in `Hexalith.Folders`; Contracts may expose serializable names only if a later contract workflow explicitly requires it.
+- Principal kinds are `user`, `group`, `role`, and `delegated_service_agent`. Principal IDs are opaque, metadata-only identifiers; reject null, empty, whitespace-only, `:` characters, control characters, and any identifier that an existing project validator rejects. The principal kind is part of the identity key, so `user:abc` and `group:abc` are different entries even if the raw ID segment matches.
+- ACL entry identity is tenant, organization, principal kind, principal ID, and action. Re-granting the same entry is a deterministic no-op or `already_applied` result; revoking a missing entry is a deterministic `missing_entry` or equivalent no-op rejection; changing the action set requires explicit grant/revoke entries rather than rewriting prior event payloads.
+- The reserved managed tenant identifier is `system`; reject it before stream access, including casing or whitespace variants after invariant normalization. Also reject empty segments, `:` characters, and control characters in stream-name segments.
+- Organization ACL baseline may be initialized by the first accepted ACL baseline command if no prior organization-created event exists. This does not create multi-organization-per-tenant semantics or provider/repository binding behavior.
+- The pure aggregate must not call authorizers, projections, repositories, Dapr, EventStore, clock/random providers, tenant services, provider adapters, or diagnostics sinks. Application/domain-service seams perform tenant evidence and stream-loading guards before invoking pure aggregate state transitions.
+- Metadata-only events may carry stable replay identifiers needed to rebuild ACL state: tenant ID, organization ID, principal kind, principal ID, action, idempotency/correlation/task IDs, version/sequence, and reason/result code. They must not carry user names, display names, emails, auth tokens, raw headers, provider payloads, command bodies, repository names, branch names, file paths, diffs, generated context, arbitrary tenant configuration, or unauthorized resource identifiers.
+- Tenant evidence must use Story 2.1 outcome names and fields instead of a new authority model. Any non-`allowed` result, including stale, unavailable, disabled, unknown, malformed, replay-conflicting, future-dated, tenant-mismatched, denied, or missing-authoritative-tenant evidence, rejects before stream-name construction, stream loading, append, mutation, diagnostic lookup, or audit resource lookup.
+- Do not add cache or durable operational keys in this story. If implementation discovers a necessary durable key, it must be tenant-scoped and covered by tests, but that should be treated as a scope signal rather than the default path.
 
 ### Required Architecture Patterns
 
@@ -112,6 +136,9 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 - Test aggregate event application directly and through command-handling seams where available.
 - Include negative tests for malformed principal IDs, unsupported principal kinds/actions, duplicate/conflicting ACL entries, missing authoritative tenant context, reserved `system` tenant, tenant mismatch, and every fail-closed tenant projection outcome consumed from Story 2.1.
 - Include metadata leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file contents, diffs, generated context payloads, and unauthorized resource names.
+- Include subject collision tests proving the same raw ID can exist under different principal kinds without collision.
+- Include idempotency tests for exact command replay, same key plus different payload, different key plus same already-applied grant, and stale command sequence behavior.
+- Include positive and negative metadata tests: allowed diagnostics may include stable IDs/codes and correlation/task/idempotency metadata, while forbidden diagnostics must not include names, emails, raw auth tokens, provider payloads, command bodies, repository/branch/path values, diffs, generated context, stack traces with sensitive values, or unauthorized resource identifiers.
 
 ### Regression Traps
 
@@ -137,7 +164,27 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-17 | Applied party-mode review hardening for ACL vocabulary, principal identity, tenant evidence gating, idempotency semantics, metadata-only events, and offline test controls. | Codex |
 | 2026-05-16 | Created story with aggregate, ACL, tenant-authority, idempotency, and metadata-only guardrails. | Codex |
+
+## Party-Mode Review
+
+- Date/time: 2026-05-17T07:31:38Z
+- Selected story key: `2-2-implement-organization-aggregate-acl-baseline`
+- Command/skill invocation used: `/bmad-party-mode 2-2-implement-organization-aggregate-acl-baseline; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Master Test Architect and Quality Advisor), Paige (Technical Writer)
+- Findings summary:
+  - Reviewers agreed the story was directionally sound but needed executable definitions for tenant evidence, ACL subject identity, supported action vocabulary, duplicate/conflict semantics, idempotency equivalence, metadata-only event content, and offline tests before development.
+  - The main risks were accidentally trusting payload/header/route tenant IDs, inventing a parallel permission vocabulary, loading or mutating streams before fail-closed evidence checks, leaking descriptive identity/provider/resource data in diagnostics, and creating tests that pass against incompatible ACL interpretations.
+- Changes applied:
+  - Added acceptance criteria and task guidance for ACL baseline scope, principal/action identity, pre-stream-load tenant evidence gates, and no-op/conflict idempotency outcomes.
+  - Added a closed initial organization ACL action vocabulary derived from PRD folder ACL verbs, plus namespace-separated principal kinds and opaque principal ID validation rules.
+  - Added metadata-only event/rejection guidance that permits replay-critical stable identifiers while forbidding names, emails, tokens, raw headers, provider payloads, command bodies, repository/branch/path values, diffs, generated context, arbitrary tenant configuration, and unauthorized resource identifiers.
+  - Added offline test controls, named test groups, tenant evidence negative controls, subject collision tests, idempotency scenarios, and positive/negative leakage assertions.
+- Findings deferred:
+  - Folder inheritance and override precedence, public effective-permission query shape, provider-specific subject resolution, Keycloak group mapping, production Dapr policy mapping, generated SDK/OpenAPI contract naming, and delegated service-agent trust beyond baseline ACL entry validation remain out of scope for later stories or architecture decisions.
+  - Exact implementation class names may follow local EventStore conventions as long as the required commands, events, result codes, and metadata fields are covered.
+- Final recommendation: ready-for-dev after applied story clarification pass.
 
 ## Dev Agent Record
 
