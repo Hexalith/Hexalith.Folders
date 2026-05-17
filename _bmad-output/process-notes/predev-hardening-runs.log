@@ -147,3 +147,4 @@
 2026-05-17T10:31:43Z	none	-	none	ready buffer satisfied and all ready stories already have party-mode and advanced-elicitation traces
 2026-05-17T10:49:59Z	create-story	2-3-create-folders-within-a-tenant	ok	created folder creation story and marked ready-for-dev
 2026-05-17T10:56:49Z	party-mode-review	2-3-create-folders-within-a-tenant	ok	applied party-mode review hardening for gate ordering, idempotency disclosure, duplicate scope, projection replay, and test spies
+2026-05-17T11:01:46Z	advanced-elicitation	2-3-create-folders-within-a-tenant	ok	applied advanced-elicitation hardening for durable key scoping, metadata validation ordering, idempotency unavailability, and concurrent duplicates
