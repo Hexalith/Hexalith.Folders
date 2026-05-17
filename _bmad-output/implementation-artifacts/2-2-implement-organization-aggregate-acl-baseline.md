@@ -24,6 +24,9 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 10. Given the organization ACL baseline records grant state only, when this story is implemented, then it does not implement folder inheritance, folder ACL overrides, public effective-permission query endpoints, runtime authorization enforcement beyond the pre-load tenant evidence gate, provider-specific subject resolution, or production Dapr policy mapping.
 11. Given ACL entries are compared, when duplicates, replays, grants, and revokes are evaluated, then the entry identity is the tuple of tenant, organization, principal kind, principal ID, and action; principal kinds remain namespace-separated so the same raw ID under different kinds never collides.
 12. Given Story 2.1 tenant-access evidence is consumed, when evidence is not `allowed`, then the command rejects before stream-name construction, stream loading, event append, aggregate mutation, or diagnostic/audit resource lookup, and tests prove those side effects did not occur.
+13. Given one ACL command contains repeated entries, when entries are canonicalized, then exact duplicate tuples collapse to one deterministic operation while same-tuple conflicting operations in the same command reject before stream access or event append.
+14. Given idempotency equivalence is evaluated, when command type, tenant, organization, principal kind, principal ID, action, and operation intent differ after canonicalization, then the payloads are materially different even if raw JSON order, casing noise around identifiers, or duplicate exact entries differ.
+15. Given organization ACL result evidence is produced for accepted, no-op, rejected, or conflict outcomes, when callers or tests inspect it, then the result exposes stable codes and safe identifiers only and never requires parsing event names, localized messages, stack traces, or diagnostic text.
 
 ## Tasks / Subtasks
 
@@ -39,6 +42,8 @@ so that folder permissions can be granted consistently to users, groups, roles, 
   - [ ] Ensure event payloads are metadata-only and do not copy request payloads wholesale.
   - [ ] Define the initial closed ACL action vocabulary as domain-owned value objects or enum values in `Hexalith.Folders`: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Do not add provider-specific or folder-override action names in this story.
   - [ ] Define command/result inventory for `InitializeOrganizationAclBaseline`, `GrantOrganizationAclPrincipal`, and `RevokeOrganizationAclPrincipal` or equivalent local names, with result codes for accepted, already_applied, duplicate_entry, missing_entry, unsupported_action, invalid_principal, invalid_organization, invalid_tenant, reserved_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, replay_conflict, and idempotency_conflict.
+  - [ ] Treat ACL action values as ordinal, lower-snake-case domain tokens; reject localized labels, display names, aliases, mixed-case variants, provider-specific verbs, and unknown action strings rather than normalizing them into accepted permissions.
+  - [ ] Ensure stable result evidence is structured around result codes and metadata fields; tests must not infer behavior from event type names, exception text, stack traces, or localized diagnostics.
 - [ ] Add fail-closed authorization integration points without pulling in later folder policy. (AC: 3, 4, 7)
   - [ ] Depend on the tenant-access authorizer/projection from Story 2.1 when available; if Story 2.1 implementation is still in flight, add an interface boundary and tests that model the fail-closed outcomes without duplicating Story 2.1 projection logic.
   - [ ] Check tenant projection evidence before organization stream loading or ACL mutation.
@@ -52,6 +57,8 @@ so that folder permissions can be granted consistently to users, groups, roles, 
   - [ ] Add effective-permission derivation helpers only for organization baseline state; Story 2.5 owns public effective-permission inspection.
   - [ ] Treat the same idempotency key plus the same canonical payload as the same logical result with no duplicate event; the same idempotency key plus a different canonical payload rejects as `idempotency_conflict`; a different idempotency key plus an already-present grant returns deterministic `already_applied` evidence or equivalent no-op result without appending a duplicate event.
   - [ ] Derive organization-baseline permissions by set membership over tenant, organization, principal kind, principal ID, and action. Replaying events in any order that preserves causal version order must produce the same state; role/group inheritance and folder override precedence remain out of scope.
+  - [ ] Include command type and operation intent in the canonical idempotency payload so a grant and revoke for the same ACL tuple can never share an equivalence class.
+  - [ ] Canonicalize repeated entries before event creation: exact duplicates reduce to one entry; conflicting same-tuple grant/revoke or action interpretation rejects as `duplicate_entry`, `replay_conflict`, or a locally equivalent stable conflict code before append.
 - [ ] Add tests and fixtures. (AC: 1-12)
   - [ ] Add unit tests under `tests/Hexalith.Folders.Tests` for aggregate initialization, grant/revoke by principal kind, duplicate grants, revoke of missing grant, unsupported action, malformed IDs, and reserved tenant rejection.
   - [ ] Add authorization tests for stale/unavailable/disabled/unknown/malformed/replay-conflicting/future tenant projection evidence and tenant mismatch.
@@ -61,6 +68,8 @@ so that folder permissions can be granted consistently to users, groups, roles, 
   - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
   - [ ] Add focused tests named `OrganizationAclCommandValidationTests`, `OrganizationAclTenantEvidenceGateTests`, `OrganizationAclIdempotencyTests`, `OrganizationAclEffectivePermissionTests`, `OrganizationAclMetadataLeakageTests`, and `OrganizationAclStreamShapeTests` or equivalent locally consistent names.
   - [ ] Add negative controls proving rejected tenant evidence does not construct stream names, read streams, append events, mutate aggregate state, or query diagnostic/audit resources.
+  - [ ] Add intra-command duplicate/conflict tests covering exact duplicate grants, exact duplicate revokes, same idempotency key with reordered entries, same key with grant-vs-revoke intent changes, and mixed principal-kind collision attempts.
+  - [ ] Add structured-result tests proving accepted, already-applied, missing-entry, unsupported-action, tenant-evidence, replay-conflict, and idempotency-conflict outcomes can be asserted from stable codes and safe metadata without parsing diagnostic text.
   - [ ] Use pure in-memory fakes only for EventStore seams, tenant evidence, clock/time, validators, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
 
 ## Dev Notes
@@ -99,6 +108,14 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 - Metadata-only events may carry stable replay identifiers needed to rebuild ACL state: tenant ID, organization ID, principal kind, principal ID, action, idempotency/correlation/task IDs, version/sequence, and reason/result code. They must not carry user names, display names, emails, auth tokens, raw headers, provider payloads, command bodies, repository names, branch names, file paths, diffs, generated context, arbitrary tenant configuration, or unauthorized resource identifiers.
 - Tenant evidence must use Story 2.1 outcome names and fields instead of a new authority model. Any non-`allowed` result, including stale, unavailable, disabled, unknown, malformed, replay-conflicting, future-dated, tenant-mismatched, denied, or missing-authoritative-tenant evidence, rejects before stream-name construction, stream loading, append, mutation, diagnostic lookup, or audit resource lookup.
 - Do not add cache or durable operational keys in this story. If implementation discovers a necessary durable key, it must be tenant-scoped and covered by tests, but that should be treated as a scope signal rather than the default path.
+
+### Advanced Elicitation Hardening
+
+- Canonicalization must be explicit and culture-invariant. Tenant, organization, principal kind, principal ID, action, command type, and operation intent are the semantic idempotency inputs; raw JSON order, repeated exact entries, and transport formatting are not.
+- ACL action parsing is intentionally strict. The closed action vocabulary is accepted only as domain-owned lower-snake-case tokens; aliases, localized labels, display names, provider verbs, mixed-case variants, and unknown strings are rejected rather than coerced.
+- Intra-command duplicate handling happens before stream access or event append. Exact duplicate ACL tuples collapse deterministically; same-tuple conflicting grant/revoke intent or conflicting action interpretation rejects with stable conflict evidence.
+- Result evidence must be assertable without text parsing. Accepted, already-applied, missing-entry, unsupported-action, tenant evidence, replay-conflict, and idempotency-conflict outcomes expose stable codes plus safe identifiers and correlation/task/idempotency metadata.
+- Negative controls should prove every fail-closed path prevents stream-name construction, stream loading, append, aggregate mutation, diagnostic lookup, and audit-resource lookup, including duplicate/conflict and idempotency-conflict paths, not only tenant-evidence failures.
 
 ### Required Architecture Patterns
 
@@ -164,6 +181,7 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-17 | Applied advanced-elicitation hardening for ACL canonicalization, strict action parsing, duplicate/conflict handling, structured result evidence, and side-effect negative controls. | Codex |
 | 2026-05-17 | Applied party-mode review hardening for ACL vocabulary, principal identity, tenant evidence gating, idempotency semantics, metadata-only events, and offline test controls. | Codex |
 | 2026-05-16 | Created story with aggregate, ACL, tenant-authority, idempotency, and metadata-only guardrails. | Codex |
 
@@ -185,6 +203,24 @@ so that folder permissions can be granted consistently to users, groups, roles, 
   - Folder inheritance and override precedence, public effective-permission query shape, provider-specific subject resolution, Keycloak group mapping, production Dapr policy mapping, generated SDK/OpenAPI contract naming, and delegated service-agent trust beyond baseline ACL entry validation remain out of scope for later stories or architecture decisions.
   - Exact implementation class names may follow local EventStore conventions as long as the required commands, events, result codes, and metadata fields are covered.
 - Final recommendation: ready-for-dev after applied story clarification pass.
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-17T09:35:37Z
+- Selected story key: `2-2-implement-organization-aggregate-acl-baseline`
+- Command/skill invocation used: `/bmad-advanced-elicitation 2-2-implement-organization-aggregate-acl-baseline`
+- Batch 1 method names: Red Team vs Blue Team; Security Audit Personas; Failure Mode Analysis; Self-Consistency Validation; Pre-mortem Analysis
+- Reshuffled Batch 2 method names: First Principles Analysis; Graph of Thoughts; Chaos Monkey Scenarios; Comparative Analysis Matrix; Critique and Refine
+- Findings summary:
+  - The story already constrained the major ACL boundary, but advanced elicitation found remaining implementation traps around culture-sensitive canonicalization, accepting action aliases, collapsing intra-command duplicates too late, letting grant and revoke share idempotency equivalence, and forcing tests to parse diagnostic text instead of stable result evidence.
+  - The most important failure mode is any rejected command path that still constructs stream names, loads streams, appends events, mutates aggregate state, or queries diagnostics/audit resources before rejection evidence is produced.
+- Changes applied:
+  - Added acceptance criteria for intra-command duplicate/conflict handling, canonical idempotency payload inputs, and structured result evidence.
+  - Added task guidance for strict lower-snake-case action parsing, command intent in idempotency equivalence, exact duplicate collapse, grant-vs-revoke conflict rejection, and stable-code result assertions.
+  - Added advanced hardening notes and tests for duplicate/conflict, idempotency conflict, and side-effect negative controls across non-tenant rejection paths.
+- Findings deferred:
+  - Optimistic concurrency policy details, generated contract names, public effective-permission query response shape, provider-specific subject resolution, and production Dapr policy mapping remain out of scope for later stories or architecture decisions.
+- Final recommendation: ready-for-dev after applied advanced-elicitation hardening.
 
 ## Dev Agent Record
 
