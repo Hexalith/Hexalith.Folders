@@ -67,7 +67,7 @@ development_status:
   2-1-stand-up-domain-service-host-with-tenants-integration: ready-for-dev
   2-2-implement-organization-aggregate-acl-baseline: ready-for-dev
   2-3-create-folders-within-a-tenant: ready-for-dev
-  2-4-grant-and-revoke-folder-access: backlog
+  2-4-grant-and-revoke-folder-access: ready-for-dev
   2-5-inspect-effective-permissions: backlog
   2-6-enforce-layered-authorization-with-safe-denials: backlog
   2-7-inspect-folder-lifecycle-and-binding-status: backlog
