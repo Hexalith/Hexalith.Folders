@@ -2,12 +2,22 @@ param(
     [switch]$NoRestore
 )
 
+Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+    Write-Error 'SAFETY-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the safety invariant gate.'
+    exit 1
+}
+
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$repositoryRoot = Resolve-Path (Join-Path $scriptRoot '..' '..')
-Push-Location $repositoryRoot
+$toolsParent = Join-Path $scriptRoot '..'
+$repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
+$pushed = $false
 try {
+    Push-Location $repositoryRoot
+    $pushed = $true
+
     $restoreArgs = @()
     if ($NoRestore) {
         $restoreArgs += '--no-restore'
@@ -19,5 +29,7 @@ try {
     }
 }
 finally {
-    Pop-Location
+    if ($pushed) {
+        Pop-Location
+    }
 }

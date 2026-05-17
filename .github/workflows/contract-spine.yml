@@ -39,5 +39,7 @@ jobs:
         run: ./tests/tools/run-contract-spine-gates.ps1 -NoRestore
 
       - name: Run safety invariant gates
+        if: always()
         shell: pwsh
+        timeout-minutes: 15
         run: ./tests/tools/run-safety-invariant-gates.ps1 -NoRestore
