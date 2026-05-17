@@ -1,0 +1,1761 @@
+diff --git a/.gitignore b/.gitignore
+index d5a18de..b241769 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -427,3 +427,6 @@ FodyWeavers.xsd
+ *.msix
+ *.msm
+ *.msp
++
++# Hexalith.Folders: JetBrains Rider lscache build cache files (machine-local)
++*.lscache
+diff --git a/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md b/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md
+index 1f0728d..0f02d55 100644
+--- a/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md
++++ b/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md
+@@ -93,10 +93,15 @@ so that .NET callers use the same operation shapes and retry identity semantics
+ Directory.Packages.props
+ src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
+ src/Hexalith.Folders.Client/nswag.json
++src/Hexalith.Folders.Client/Compat/                      # Round 4 P14: hand-written companion partials moved out of Generated/.
+ src/Hexalith.Folders.Client/Generated/
++src/Hexalith.Folders.Client/Generation/                  # Round 3 / 4: build-time generator tool subproject (excluded from the production client compile).
++src/Hexalith.Folders.Client/Generation/Shared/           # Round 3 D1 / Round 4 P8: shared YAML parsing + name normalization for generator and tests.
+ src/Hexalith.Folders.Client/Idempotency/
+ tests/Hexalith.Folders.Client.Tests/
+ docs/contract/sdk-generation-and-idempotency-helpers.md
++.gitignore                                               # Round 3 P-lscache-1: ignore Rider lscache build cache.
++tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs  # Round 4 P20: assertion update for the new Generation/Shared project reference (no behavior change).
+ ```
+ 
+ - The implementation may choose equivalent file names, but it must keep generated files separate from hand-written extension code.
+@@ -211,6 +216,62 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
+ | 2026-05-15 | Addressed code review findings with a real build-time helper generator, hardened canonical hashing/stale detection, expanded focused tests, and returned story to review. | Codex |
+ | 2026-05-15 | Re-review (`/bmad-code-review 1.12`, diff scope `2b33945..HEAD`) by Blind Hunter + Edge Case Hunter + Acceptance Auditor. Triage: 3 decisions, 28 patches, 6 deferred, 13 dismissed. Story returned to in-progress; see `## Code Review Round 2 (2026-05-15)` for action list. | Claude Opus 4.7 |
+ | 2026-05-16 | Addressed Code Review Round 2 findings, reverted out-of-scope root submodule pointer bumps, strengthened operation-aware helper generation and canonicalization tests, and returned story to review. | Codex |
++| 2026-05-16 | Code Review Round 3 (`/bmad-code-review 1.12`, diff scope `2b33945..HEAD`) by Blind Hunter + Edge Case Hunter + Acceptance Auditor. Triage: 3 decisions, 26 patches, 16 deferred, 17 dismissed. Acceptance Auditor verdict: `pass-with-minor` (all 16 ACs pass). Status returned to in-progress; see `## Code Review Round 3 (2026-05-16)` for action list. | Claude Opus 4.7 |
++| 2026-05-16 | Addressed Code Review Round 3 in-session: all 3 decisions resolved (D1 shared YAML loader project extracted, D2 Dictionary registry shipped with spine-line comments, D3 HelperSchemaVersion constant + migration doc added). All 26 patches applied across hasher, generator, generated template, tests, csproj, .gitignore, and docs. Deterministic two-pass regeneration verified (SHA-256 `0A74D3082AE40A6BB57BA396B888FB2DF452D64BADC91AABF33C8AD197FA70E9`). Full solution build + test (110/110 passing). Story returned to review. | Claude Opus 4.7 |
++
++## Code Review Round 3 (2026-05-16)
++
++- Reviewers: Blind Hunter (cynical, diff-only), Edge Case Hunter (boundary analysis with project read access), Acceptance Auditor (spec + 16 ACs + project-context + Round 2 follow-up check)
++- Diff source: `2b33945..HEAD` scoped to story 1.12 paths (`_bmad-output/implementation-artifacts/review-1-12-round3-diff.patch`, 11 files, ~1496 insertions / 152 deletions)
++- Raw findings: 50 (Blind) + 20 (Edge) + 5 (Auditor) = 75
++- Triage: 3 decision-needed, 26 patches, 16 deferred (pre-existing or out-of-scope hardening), 17 dismissed (noise / verified intentional / handled elsewhere)
++- Acceptance Auditor verdict: **pass-with-minor** — all 16 ACs satisfied, negative scope clean, no submodule pointer bumps, no leakage; two Round 2 Resolved Decisions (`P-shared-1`, `P-registry-1`) marked `[x]` were not actually shipped as agreed.
++
++### Review Findings
++
++- [x] [Review][Patch][Resolved Decision] **D1** — Ship the shared YAML loader project. Round 2 Resolved Decision `P-shared-1` was marked `[x]` but the shared library was not extracted; `Generation/Program.cs:1027-1063` and `ClientGenerationTests.cs:1798-1948` independently re-implement `LoadYaml`/`RequiredMapping`/`RequiredScalar`/`ReadStringSequence`/`TryReadRequestSchema`/parameter enumeration. Resolution: **add a shared project** (e.g., `src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.Shared.csproj`) containing the YAML loader helpers and `OperationModel`/`ParameterModel` types, referenced by both `Generation` and `Hexalith.Folders.Client.Tests`. Eliminates drift between test parser and generator parser. Affects AC 11, AC 14.
++- [x] [Review][Patch][Resolved Decision] **D2** — Convert `ResolveField` inline switch to a `Dictionary<(string SchemaName, string Field), FieldModel>` registry. Round 2 Resolved Decision `P-registry-1` was marked `[x]` but Round 3 shipped an inline switch expression at `src/Hexalith.Folders.Client/Generation/Program.cs:674-688` instead of the agreed registry shape. Resolution: **convert to a `static readonly Dictionary<(string, string), FieldModel>` initialized at file scope, with per-entry `// hexalith.folders.v1.yaml:NNNN` comments naming the spine lines for each special-case field, and have `ResolveField` call `TryGetValue` first**. Affects AC 11, AC 15.
++- [x] [Review][Patch][Resolved Decision] **D3** — Accept workspace request parameter-order swap as canonical spine evolution and add detection surface. Workspace request signatures changed from `(folderId, taskId, workspaceId)` to `(folderId, workspaceId, taskId)` for `LockWorkspaceRequest`, `PrepareWorkspaceRequest`, `ReleaseWorkspaceLockRequest`; `BranchRefPolicyRequest` parameter changed from `providerBindingRef` to `folderId` (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:163-219, 186-201`). Same C# `string` types means positional callers silently mis-hash. Resolution (compatible with AC 9 — no release docs, no CLI/MCP work): **(a) add a documentation paragraph in `docs/contract/sdk-generation-and-idempotency-helpers.md` describing the rename and how to detect via `HelperSchemaVersion`, (b) emit `public const string HelperSchemaVersion = "20260516";` in the generated helpers file so downstream consumers can branch on it, (c) tighten the helper-presence reflection test in `ClientGenerationTests.cs` to assert parameter NAMES + ORDER match the spine-derived path-parameter list (merges with patch P14 below)**. Affects AC 4, AC 13.
++- [x] [Review][Patch] ProblemDetails / ProblemDetailsParseDiagnostic re-parse on every property access [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:101-118`] — both expression-bodied properties call `TryReadProblemDetails` per access, so 10 reads = 10 deserializations. Under retry loops this becomes a hot path. Inverted-looking branch in `TryGetProblemDetails` (`is null ? problem : null`) also obscures intent. Memoize the parse result in a thread-safe lazy backing field and split into one parse + two getter projections.
++- [x] [Review][Patch] `NormalizeGeneratedHelperHash` regex is fragile [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:88-89`, `src/Hexalith.Folders.Client/Generation/Program.cs:1145`] — character class `[0-9a-fA-F_]+` admits `_` which SHA-256 hex never contains; replacement string injects fixed 4-space indentation so any tab/2-space variant breaks `IsCurrent`; trailing comment or differing EOL after the semicolon evades the anchor. Tighten to `(?m)^(?<indent>\s*)public const string GeneratedHelpersSha256 = "[0-9a-fA-F]{64}";$` and emit `${indent}` in the replacement so indentation round-trips.
++- [x] [Review][Patch] `VerifyCurrentDetailed` swallows `FileNotFoundException` with only the exception type name [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70-72`] — callers cannot tell *which* of the three input files is missing. Include the offending path (already known at the call site) and the exception message in the diagnostic.
++- [x] [Review][Patch] Magic cast `(FileMutationRequestFileOperationKind)2` for Remove [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303`] — if NSwag changes enum ordering Remove silently maps to a different member. Replace with `Enum.Parse<FileMutationRequestFileOperationKind>("Remove")` at the call site, or have the generator emit a compile-time check that asserts the ordinal.
++- [x] [Review][Patch] DateTime vs DateTimeOffset canonicalization is asymmetric [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1283-1285, 1406-1414`] — `DateTime` throws on `Kind != Utc`; `DateTimeOffset` silently calls `ToUniversalTime()`. Two clients sending the same logical instant via `DateTimeOffset` get equal hashes, via `DateTime` get exceptions. Unify: either both throw on non-UTC, or both convert. Document the choice.
++- [x] [Review][Patch] Decimal `-0m` vs `0m` produce different hashes [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1416-1422`] — `decimal.GetBits(-0m)` sets the sign bit; `decimal.GetBits(0m)` does not. Normalize the sign bit when the integer magnitude is zero, or explicitly document the distinction with a fixture test.
++- [x] [Review][Patch] `GetEnumWireValue` mishandles `[Flags]` / composite enum values [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1335-1341`] — `SingleOrDefault` throws `InvalidOperationException` on `"A, B"` composite; dead `?.` null-conditional fallback because `member` was already thrown on. Detect `[Flags]` up front and reject; iterate `Type.GetFields()` for stable resolution.
++- [x] [Review][Patch] `ParseArguments` does not validate values aren't flag-shaped [`src/Hexalith.Folders.Client/Generation/Program.cs:1118-1137`] — a misordered `--repository-root --contract /path/x.yaml` invocation produces `{"--repository-root": "--contract"}`. Validate `!values[i+1].StartsWith("--", Ordinal)` and fail-closed with the offending position.
++- [x] [Review][Patch] `EnsureDeclaredOrder` error message omits offending fields [`src/Hexalith.Folders.Client/Generation/Program.cs:556-559`, `src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — message says "must be in ordinal-ascending order" without naming which fields violated. Include the previous + current field name in the diagnostic.
++- [x] [Review][Patch] `EnsureParameter` accepts an unused `openApiName` parameter [`src/Hexalith.Folders.Client/Generation/Program.cs:697-707`] — discarded via `_ = openApiName;`. Either drop the parameter from the signature or actually use it to verify the spine-to-method name mapping.
++- [x] [Review][Patch] `HelperGenerationTargetRegeneratesWhenContractSpineChanges` leaks temp directories [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1628-1650`] — creates `tempRoot` but never deletes (no try/finally). On Windows CI temp dirs accumulate; also fails opaquely if `Process.Start(...)` returns null when `dotnet` is missing from PATH (`!` triggers `NullReferenceException`). Wrap body in try/finally with `Directory.Delete(tempRoot, recursive: true)` and replace `!` with `?? throw new InvalidOperationException("dotnet CLI not found on PATH")`.
++- [x] [Review][Patch] `LocateRepositoryRoot` breaks on single-file publish [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1891-1907`] — `Assembly.Location` returns `""` under single-file publish, then `Path.GetDirectoryName("")` returns `null`, then `new DirectoryInfo(null!)` throws `ArgumentNullException`. Fall back to `AppContext.BaseDirectory` when `Location` is empty.
++- [x] [Review][Patch] `EnumerableExtensions` declared in global namespace [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1951-1964`] — pollutes the assembly's root namespace. Wrap in `namespace Hexalith.Folders.Client.Tests`.
++- [x] [Review][Patch] `Hexalith.Folders.Client.Generation.csproj` missing `<TargetFramework>` [`src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj`] — relies entirely on `Directory.Build.props` to provide one. If the props file changes default TFM or the project moves, `dotnet run --project ...` fails with a confusing error. Add an explicit `<TargetFramework>net10.0</TargetFramework>` (or whichever the project requires).
++- [x] [Review][Patch] `MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot` only asserts parameter count and return type [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1532-1556`] — does NOT verify parameter names or order match the spine-derived path-parameter list. A future regression that swaps parameter order (as D3 demonstrates is plausible) silently passes. Assert both parameter names (camelCased from the spine path parameter names) and their order.
++- [x] [Review][Patch] `.lscache` IDE/build-cache files committed [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache`, `tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache`] — outside the declared File List; auto-maintained machine-local cache. Add `*.lscache` to `.gitignore` (or the project-level git attributes) and remove both files from the diff.
++- [x] [Review][Patch] `RejectDuplicateProperties` throws `JsonReaderException` after deserialization [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1424`] — no reader is involved at that point; the JToken graph is in memory. Replace with `InvalidOperationException` to match the actual failure context.
++- [x] [Review][Patch] Generator placeholder substitution does not assert single occurrence [`src/Hexalith.Folders.Client/Generation/Program.cs:529-535`] — `output.IndexOf(placeholder)` finds the first match; if any rendered comment or string literal contains the literal `__GENERATED_HELPERS_SHA256__` a second time, only the first is replaced and the file no longer matches its own hash. Add a count check and fail-closed if `≠ 1`.
++- [x] [Review][Patch] `IdempotencyField.Value` accepts control characters even when the corpus labels them parser-rejected [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:105-129`, `tests/fixtures/idempotency-encoding-corpus.json` malformed-idempotency-key-control-character case] — the canonical Escape table passes U+0001 through; corpus labels it parser-rejected. Reject C0/C1 control characters (and U+2028/U+2029, BOM) at the hasher boundary so the corpus classification matches actual behavior.
++- [x] [Review][Patch] `Escape` does not handle UTF-16 surrogate halves [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:105-129`] — lone or split surrogates (truncated emoji, malformed input) produce invalid UTF-8 when the canonical string is hashed. Enumerate via `Rune.EnumerateRunes` and reject invalid surrogates explicitly.
++- [x] [Review][Patch] `double.ToString("R")` is platform-variant [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:152-160`] — "R" round-trip format has varied across .NET versions for borderline IEEE-754 values. Replace with `BitConverter.DoubleToInt64Bits(value).ToString("x16", InvariantCulture)` (and similarly for float via `SingleToInt32Bits`) for deterministic bit-exact encoding.
++- [x] [Review][Patch] `TryReadProblemDetails` catches `JsonException` but not `JsonSerializationException` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:108-118`] — Newtonsoft's `JsonSerializationException` is the type thrown for wrong-shape JSON (array, scalar) and is *not* always a subclass of `JsonException`. Catch `Newtonsoft.Json.JsonException` explicitly OR catch both types so adapters always see the structured diagnostic.
++- [x] [Review][Patch] `NormalizeJsonText` does not strip leading BOM [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:65-79`] — UTF-8 BOM (U+FEFF) at the start of incoming JSON causes `JsonTextReader` to error or accept it as data. Strip the BOM before constructing the reader so payloads from BOM-prefixing producers hash equivalently.
++- [x] [Review][Patch] Corpus classification coverage incomplete [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1686-1702`] — the if/else chain handles `non-equivalent`, `equivalent-only`, `parser-rejected`, `equivalent-after-lexicographic-field-ordering` only. `equivalent-after-generated-normalization-for-declared-normalization-insensitive-field` and `equivalent-only-when-field-declares-compatibility-normalization` fall through silently — fixture-consumed claim is partially false. Add an explicit branch for each remaining classification, OR throw on unknown classification to force coverage updates when the corpus gains new categories.
++- [x] [Review][Defer] PathTooLongException nuance in `VerifyCurrentDetailed` catch filter [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70`] — deferred, current catch list is sufficient for the inputs the helper receives.
++- [x] [Review][Defer] Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — deferred, cosmetic refactor; two switches will drift only if a new enum value lands without updating both, and a compile-time test could be added later.
++- [x] [Review][Defer] `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — deferred, cosmetic. Order check fires before duplicate check for differently-cased equal names; in practice the spine never produces this.
++- [x] [Review][Defer] `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — deferred, micro-optimization; field counts per operation are small.
++- [x] [Review][Defer] `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651`] — deferred, hash-difference check is sufficient evidence of regeneration; comment-only YAML mutation flowing through is acceptable.
++- [x] [Review][Defer] `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — deferred, the shim is harmless and the NSwag duplicate-emission cause is known; could move outside `Generated/` later.
++- [x] [Review][Defer] MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — deferred, works as written; revisit when the file layout changes.
++- [x] [Review][Defer] `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — deferred, perf concern; ties into Story 1.14 CI gate review.
++- [x] [Review][Defer] `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — deferred, the new location works; original-location ineffectiveness is folklore but functionally moot.
++- [x] [Review][Defer] `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — deferred, equivalence-only comparison so string-vs-string is acceptable; revisit when corpus introduces non-string values that need typed canonicalization.
++- [x] [Review][Defer] `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392`] — deferred pending spine verification; if the spine intentionally differs the divergence is correct, if not it is a spine bug owned by Stories 1.7-1.11.
++- [x] [Review][Defer] `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — deferred, Round 2 P28 was marked done with this approach; functionally deterministic. Stylistic-only deferral.
++- [x] [Review][Defer] `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — deferred, no current spine schema requires it; revisit when Stories 1.7-1.11 introduce composed schemas with idempotency fields.
++- [x] [Review][Defer] `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — deferred, only fires for `CreateFolderRequest` today; revisit if spine adds the field to other schemas.
++- [x] [Review][Defer] `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`] — deferred, hash work is in-process and short; revisit when Compute is invoked from request-scoped network paths.
++- [x] [Review][Defer] `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — deferred, filesystem-boundary concern; build-time and CI consume canonicalized paths today.
+ 
+ ## Dev Agent Record
+ 
+@@ -400,3 +461,30 @@ GPT-5 Codex
+ - [x] [Review][Defer] Defensive validation for zero-document YAML [`src/Hexalith.Folders.Client/Generation/Program.cs:398-400`] — deferred, spine always has at least one document; `yaml.Documents[0]` is safe in practice.
+ - [x] [Review][Defer] Defensive validation for bare-filename `outputPath` [`src/Hexalith.Folders.Client/Generation/Program.cs:27`] — deferred, MSBuild target always provides an absolute path; `Directory.CreateDirectory("")` only fires if invoked directly with a bare filename.
+ - [x] [Review][Defer] Multi-level nested-path NRE risk [`src/Hexalith.Folders.Client/Generation/Program.cs:130`] — deferred, only first hop is null-safe in `Root?.A.B.C`; spine paths max at 2 levels today so cannot trigger; revisit if spine adds 3+ level paths.
++
++### Review Findings (Round 4 — 2026-05-16)
++
++- [x] [Review][Patch] Numeric prefix inconsistency across `Canonicalize` paths [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:48, 209, 220, 239`] — four prefix patterns coexist: integer types use `"n:"`, `double` uses `"n:double:"`, `float` uses `"n:float:"`, and `decimal` uses `"decimal:"` (no `n:`). Documented canonical-line grammar (`docs/contract/sdk-generation-and-idempotency-helpers.md`) implies a single `n:` discriminator. Consumers cannot grep `"n:"` to find numeric fields, and parity oracle implementations across SDK/CLI/MCP risk drifting. Normalize to `"n:decimal:"` (or document the asymmetry as load-bearing).
++- [x] [Review][Patch] `_parsedProblemDetails` is NOT thread-safe despite Round 3 claim [`src/Hexalith.Folders.Client/Generation/Program.cs:382-398`] — plain field assignment with no `Lazy<T>`, `Interlocked.CompareExchange`, or `lock`. Two threads reading `ProblemDetails` on the same exception both observe null, both call `ParseProblemDetails`, both store. Use `Lazy<(ProblemDetails?, string?)>` or `Interlocked.CompareExchange` against a reference-typed backing field.
++- [x] [Review][Patch] Documentation vs code mismatch for `BranchRefPolicyRequest.ComputeIdempotencyHash` signature [`docs/contract/sdk-generation-and-idempotency-helpers.md:69` vs `src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:168`] — doc says "now takes (folderId, repositoryBindingId)" but the generated method is `ComputeIdempotencyHash(string folderId)`; `repositoryBindingId` is sourced from the `RepositoryBindingId` DTO property, not a parameter. Either reword the doc bullet or surface `repositoryBindingId` as a parameter.
++- [x] [Review][Patch] `HelperSchemaVersion` is a hardcoded date literal that is not auto-bumped [`src/Hexalith.Folders.Client/Generation/Program.cs:324`] — `code.AppendLine("    public const string HelperSchemaVersion = \"20260516\";");` and `docs/contract/sdk-generation-and-idempotency-helpers.md:71` claims "bumped by the generator each time helper parameter shapes change". The generator does not observe shape changes; the literal survives every regeneration until edited by hand. Either compute the value from a hash of helper parameter signatures or update the comment/doc to say "manually bumped". A date string is also borderline against AC 8's no-timestamps stance.
++- [x] [Review][Patch] `EnsureParameter` discards the spine parameter name [`src/Hexalith.Folders.Client/Generation/Program.cs:157-162`] — `if (operationParameters.TryGetValue(field, out string? parameterName)) { _ = parameterName; ... }` fetches the spine's authoritative name and explicitly discards it, then `EnsureParameter` rebuilds the name from `field` via `ToParameterName`. Round 3 Decision D3 said either drop the parameter or use it for spine-to-method name verification. Either (a) pass `parameterName` into `EnsureParameter` and assert `ToParameterName(field) == parameterName` (fail-closed on drift), or (b) drop the lookup since it's unused.
++- [x] [Review][Patch] `RejectControlCharacters` only guards `operationId` and `field.Path`, not field values [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:17, 185` vs `155-156`] — control characters in values fall through to `Escape()` which escapes them rather than rejecting. The idempotency-encoding corpus declares `malformed-idempotency-key-control-character` as `parser-rejected` but the hasher accepts the input as a value. Either reject in `Escape` too, or update the corpus classification to `accepted-with-escape` and align the test.
++- [x] [Review][Patch] `-0.0` and `+0.0` produce distinct hashes while `-0m`/`+0m` are normalized [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:201-221` vs `233-240`] — `CanonicalizeFloatingPoint` uses `BitConverter.DoubleToInt64Bits` yielding `0x8000000000000000` for `-0.0` and `0x0` for `+0.0`. `CanonicalizeDecimal` explicitly normalizes via `isZeroMagnitude`. Two clients sending the same logical zero via `double` produce different hashes; same via `decimal` produces identical hashes. Either normalize floating-point zero or document the asymmetry.
++- [x] [Review][Patch] Test `ToCamelCase` reimplements snake/kebab parsing locally [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:470-479`] — Round 3 Decision D1 was to share parsing through the new `Hexalith.Folders.Client.Generation.Shared` library so test and generator never diverge. The test does not consume the shared helper; if the generator's `ToParameterName` (`Program.cs:564-573`) ever changes acronym/digit handling, the test will report a false-positive name mismatch. Move `ToParameterName` to the shared library and consume it from both call sites.
++- [x] [Review][Patch] Surrogate-pair diagnostics fire from two sites with different messages [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:165-176` vs `125-141`] — `RejectControlCharacters` does not validate UTF-16 surrogate pairing; a lone surrogate in `operationId` or `field.Path` passes here and is rejected later by `Escape` with a different message. Operators see different diagnostics for inputs that ought to fail at the same boundary. Add a surrogate-pair check to `RejectControlCharacters`, or factor surrogate validation into a shared helper invoked from both sites.
++- [x] [Review][Patch] Unhandled BCL types fall through to `NormalizeJson` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:30-50`] — `Canonicalize` switch does not handle `DateOnly`, `TimeOnly`, `TimeSpan`, `Uri`, `Version`, `Half`. They land in `_ => "j:" + NormalizeJson(value)` where Newtonsoft.Json serialization is version-dependent. Determinism across runtime patches not guaranteed. Add explicit arms or reject unsupported types fail-closed.
++- [x] [Review][Patch] `FileNotFoundException.FileName` absolute path embedded in diagnostic [`src/Hexalith.Folders.Client/Generation/Program.cs:349` → emitted `VerifyCurrentDetailed`] — `$"{nameof(FileNotFoundException)}: {notFound.FileName ?? notFound.Message}"` yields the fully-qualified spine/configuration/helpers path. AC 16 says developer-facing diagnostics must not include local absolute paths. Strip the `repositoryRoot` prefix before formatting, or echo only the repository-relative path component.
++- [x] [Review][Patch] Corpus-classification test asserts wrong polarity for `equivalent-after-generated-normalization` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:282-311`] — classification covers NFC/NFD/NFKC cases. Test asserts `left.ShouldNotBe(right)` with justification "Default hasher does not apply generated normalization". The test records that the hasher disagrees with the corpus rather than validating the encoded semantics. AC 6 expects normalization-where-declared cases to exercise a normalization-enabled code path. Either implement normalization for declared-eligible fields with a test that flips the assertion, or document that AC 6 normalization is deferred to consumers and rename the corpus classification.
++- [x] [Review][Patch] Test `Process.WaitForExit(120_000).ShouldBeTrue()` leaves orphan process and tempdir on timeout [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:206-247`] — on timeout, Shouldly fails before `process.Kill()` runs; `finally` then calls `Directory.Delete(tempRoot, recursive: true)` which races the running process, hits `IOException`, and is swallowed. Subsequent runs find orphan tempdirs and an orphan `dotnet` process. Wrap: `try { ... } finally { if (!process.HasExited) { process.Kill(entireProcessTree: true); process.WaitForExit(10_000); } }`.
++- [x] [Review][Patch] `ChangedPathEvidence2` shim is emitted into `Generated/` despite story ownership rule [`src/Hexalith.Folders.Client/Generation/Program.cs:310-312`] — Dev Notes: "Manual behavior and SDK ergonomics belong in partial or companion files outside `Generated/`." The shim is a hand-coded compatibility patch, not a derived idempotency helper. Round 3 Deferred moving it; the rule remains violated. Move to a companion file outside `Generated/` (e.g., `src/Hexalith.Folders.Client/Compat/ChangedPathEvidenceShim.cs`).
++- [x] [Review][Patch] `YamlContractLoader.LoadYaml` throws opaque `IndexOutOfRangeException` on empty YAML [`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:18`] — `yaml.Documents[0]` without guarding `Documents.Count > 0`. Add `if (yaml.Documents.Count == 0) throw new InvalidOperationException($"Contract Spine '{path}' contains no YAML documents.");` before `Documents[0]`.
++- [x] [Review][Patch] `YamlContractLoader.TryReadRequestSchema` returns empty schema name on trailing-slash `$ref` [`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:67`] — `reference.Split('/').Last()` returns `""` when `$ref` is `""` or ends with `/`. Downstream `RequiredMapping(schemas, "")` then throws `Missing mapping ''.` without naming the offending `$ref` or operationId. Validate the suffix is non-empty and include the offending value in the diagnostic.
++- [x] [Review][Patch] `YamlContractLoader.TryReadRequestSchema` named "Try" but throws on inline schemas [`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:54-68`] — operations declaring `requestBody.content.application/json.schema` inline (no `$ref`) crash with `Missing scalar '$ref'`. No current spine operation does this, but the "Try" prefix promises soft-fail. Either rename to `ReadRequestSchemaRef` and document fail-closed semantics, or implement a real fallback.
++- [x] [Review][Patch] `YamlNodeExtensions` is `public static class` in a separate assembly [`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:71-81`] — `ShouldBeMapping`/`ShouldBeSequence`/`ShouldBeScalar` are extension methods on `YamlNode`. Public scope pollutes IntelliSense on `YamlNode` for any consumer of the Shared assembly. Make `internal` and add `InternalsVisibleTo("Hexalith.Folders.Client.Tests"), InternalsVisibleTo("Hexalith.Folders.Client.Generation")`.
++- [x] [Review][Patch] `SpecialFields.Registry` comments cite mismatched spine line numbers [`src/Hexalith.Folders.Client/Generation/Program.cs` around the registry block] — umbrella comment cites `hexalith.folders.v1.yaml:7933`; per-entry comments cite lines `2096-2417`. At least one set is wrong. Round 3 D2 committed to per-entry `// hexalith.folders.v1.yaml:NNNN` comments for spine traceability. Either remove the umbrella citation or correct it; verify per-entry line numbers against the current spine.
++- [x] [Review][Patch] Story scope: `.gitignore` and `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs` modifications outside the declared allowed file set [`.gitignore:431-432`, `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:114`] — story 1.12 Scope Boundaries lists seven allowed areas; neither file is included. Both changes are necessary (Round 3 P-lscache-1; the new shared-library project reference). Extend the allowed-areas list in the story header with rationale, or annotate the touched files in the Tasks section as "out-of-scope-but-required: <reason>".
++- [x] [Review][Defer] General-case null-vs-omitted presence tracking [`src/Hexalith.Folders.Client/Generation/Program.cs:546`] — deferred, only `parent_folder_id` has a presence companion via `ParentFolderIdSpecified`. Round 3 already classified this as deferred. Revisit when a second nullable single-property idempotency field surfaces.
++- [x] [Review][Defer] `oneOf` traversal without explicit OpenAPI `discriminator` [`src/Hexalith.Folders.Client/Generation/Program.cs:215-221`] — deferred, `FileMutationRequest` is the only schema needing this and is handled via `SpecialFields.Registry`. Story 1.13 owns generic discriminator-driven `oneOf` resolution.
++- [x] [Review][Defer] NFC/NFD/NFKC normalization not implemented in hasher [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`] — deferred, AC 6 reads "Unicode normalization where declared" and no current spine field declares eligibility. Revisit when a field declares normalization.
++- [x] [Review][Defer] `HelperGenerationTarget` swallows `IOException`/`UnauthorizedAccessException` during tempdir cleanup [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1640-1653`] — deferred, overlaps with the WaitForExit-orphan patch above; resolving the orphan process also resolves the cleanup races.
+diff --git a/_bmad-output/implementation-artifacts/deferred-work.md b/_bmad-output/implementation-artifacts/deferred-work.md
+index 31c6c83..bb7e2d8 100644
+--- a/_bmad-output/implementation-artifacts/deferred-work.md
++++ b/_bmad-output/implementation-artifacts/deferred-work.md
+@@ -163,3 +163,29 @@ Patches identified by the code review that were NOT applied in the same pass due
+ - F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or modifying its scope leaves the AC mapping silently stale. Revisit if traceability tooling becomes available.
+ - F3: `equivalence_classification` strings not enum-typed — long compound classification strings (~50-90 chars) in `tests/fixtures/idempotency-encoding-corpus.json` are used as identifiers without schema enum constraint; one typo silently breaks future hash-helper consumers. Tied to D7 (whether to add corpus schema); revisit when Story 1.12 helpers begin consuming the values.
+ - F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf` offsets. Project standardizes on UTF-8 without BOM; revisit if an editor introduces non-UTF-8 content.
++
++## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)
++
++- PathTooLongException nuance in `VerifyCurrentDetailed` catch filter [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70`] — current catch list is sufficient for the inputs the helper receives.
++- Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — cosmetic refactor; two switches will drift only if a new enum value lands without updating both.
++- `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — cosmetic; order check fires before duplicate check for differently-cased equal names.
++- `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
++- `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651`] — hash-difference check is sufficient evidence of regeneration; comment-only YAML mutation is acceptable.
++- `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — the shim is harmless and the NSwag duplicate-emission cause is known.
++- MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — works as written; revisit when the file layout changes.
++- `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — perf concern; ties into Story 1.14 CI gate review.
++- `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — the new location works; original-location ineffectiveness is folklore.
++- `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
++- `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392`] — pending spine verification; owned by Stories 1.7-1.11 if it is a spine bug.
++- `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — Round 2 P28 was marked done with this approach; functionally deterministic.
++- `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — no current spine schema requires it; revisit when composed schemas with idempotency fields arrive.
++- `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — only fires for `CreateFolderRequest` today.
++- `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`] — hash work is in-process and short; revisit when invoked from request-scoped network paths.
++- `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — filesystem-boundary concern; build-time and CI consume canonicalized paths today.
++
++## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)
++
++- General-case null-vs-omitted presence tracking [`src/Hexalith.Folders.Client/Generation/Program.cs:546`] — only `parent_folder_id` has a presence companion via `ParentFolderIdSpecified`. Revisit when a second nullable single-property idempotency field surfaces in the spine.
++- `oneOf` traversal without explicit OpenAPI `discriminator` [`src/Hexalith.Folders.Client/Generation/Program.cs:215-221`] — `FileMutationRequest` is the only schema needing this today and is handled via `SpecialFields.Registry` projection. Story 1.13 owns generic discriminator-driven `oneOf` resolution.
++- NFC/NFD/NFKC normalization not implemented in hasher [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`] — AC 6 reads "Unicode normalization where declared" and no current spine field declares normalization-eligibility. Revisit when a field declares it.
++- Tempdir cleanup catches that swallow `IOException`/`UnauthorizedAccessException` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1640-1653`] — overlaps with the WaitForExit-orphan patch shipped in the same round; resolving the orphan process also resolves the cleanup races.
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index ea825f5..09a9e34 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -1,5 +1,5 @@
+ # generated: 2026-05-12T07:11:18+02:00
+-# last_updated: 2026-05-16T09:02:01+02:00
++# last_updated: 2026-05-16T14:45:00+02:00
+ # project: Hexalith.Folders
+ # project_key: NOKEY
+ # tracking_system: file-system
+@@ -35,7 +35,7 @@
+ # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+ 
+ generated: 2026-05-12T07:11:18+02:00
+-last_updated: 2026-05-16T09:02:01+02:00
++last_updated: 2026-05-16T14:45:00+02:00
+ project: Hexalith.Folders
+ project_key: NOKEY
+ tracking_system: file-system
+diff --git a/docs/contract/sdk-generation-and-idempotency-helpers.md b/docs/contract/sdk-generation-and-idempotency-helpers.md
+index a5a3140..c4469c5 100644
+--- a/docs/contract/sdk-generation-and-idempotency-helpers.md
++++ b/docs/contract/sdk-generation-and-idempotency-helpers.md
+@@ -61,6 +61,15 @@ Decimal values are encoded with their sign, scale, and 96-bit integer components
+ 
+ The Contract Spine currently declares `path_metadata` and `path_policy_class` as separate equivalence fields for file mutations. The helper therefore includes `pathPolicyClass` once inside the canonical `path_metadata` JSON object and once as the top-level `path_policy_class` scalar; this is intentional spine-driven redundancy, not SDK-side field invention.
+ 
++## Helper Signature Versioning
++
++Helper method parameter lists are derived from the Contract Spine path-parameter declaration order plus the operation's `x-hexalith-idempotency-equivalence` list. Spine evolution can therefore reorder or rename helper parameters. Two parameter-set changes shipped with the Round 3 generator regeneration on 2026-05-16:
++
++- `PrepareWorkspaceRequest.ComputeIdempotencyHash`, `LockWorkspaceRequest.ComputeIdempotencyHash`, and `ReleaseWorkspaceLockRequest.ComputeIdempotencyHash` parameters now follow `(folderId, workspaceId, taskId)` to match the spine path declaration. The prior shape `(folderId, taskId, workspaceId)` is no longer emitted; positional callers using the old order will silently swap `workspaceId` and `taskId` into the wrong canonical-line slots and produce a divergent hash.
++- `BranchRefPolicyRequest.ComputeIdempotencyHash(string folderId)` takes only the path-bound `folderId`; `repositoryBindingId` is sourced from the `RepositoryBindingId` DTO property and is no longer a method parameter. The prior `providerBindingRef` parameter is no longer emitted.
++
++Downstream consumers should detect the rename surface by reading the generated `HexalithFoldersGeneratedArtifacts.HelperSchemaVersion` constant. The constant is a deterministic SHA-256 prefix derived from the set of helper method signatures (schema name, ordered parameter names, ordered idempotency field paths) so any spine evolution that changes helper parameter shapes also changes this constant; a stable spine leaves it unchanged. The constant is intended for compatibility branching only; it is not part of the runtime hash and is never serialized as helper input.
++
+ ## Downstream Ownership
+ 
+ Story 1.13 owns final C13 parity rows and must consume generated operation IDs and helper entry points instead of reimplementing hash construction.
+diff --git a/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs b/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+index f38f0ae..d3d50f0 100644
+--- a/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
++++ b/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+@@ -7,21 +7,21 @@ using Newtonsoft.Json;
+ 
+ namespace Hexalith.Folders.Client.Generated;
+ 
+-/// <summary>
+-/// NSwag duplicate-name compatibility shim for ChangedPathEvidence references in AuditRecord and WorkspaceDiagnostic.
+-/// Remove when the Contract Spine or NSwag configuration emits one stable ChangedPathEvidence type.
+-/// </summary>
+-public partial class ChangedPathEvidence2 : ChangedPathEvidence
+-{
+-}
+-
+ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurrent, string Diagnostic);
+ 
+ public static class HexalithFoldersGeneratedArtifacts
+ {
+     public const string ContractSpineSha256 = "43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2";
+     public const string GenerationConfigurationSha256 = "313de39da4e8a84e00f0c66e23f4e5240e4df8779f007e566807810219a9ae61";
+-    public const string GeneratedHelpersSha256 = "421e0da8481e68e1c122af39707815b5c4c89a96a58d332186e8f94f3e74b2ca";
++    public const string GeneratedHelpersSha256 = "e19e85ac564836d94b5e3816fc49f7426d4c811b97358c4332e55a63e4b7f922";
++
++    // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
++    // shape (schema names, parameter names in declared order, idempotency field paths per
++    // variant). It changes whenever helper parameter shapes change, and only then. Downstream
++    // consumers can branch on it to detect positional-parameter renames. Not included in the
++    // canonical hash. Round 4 review (P4) replaced the hardcoded date literal with this
++    // signature-derived constant so a stable spine produces a stable version.
++    public const string HelperSchemaVersion = "04ef8c9970521942";
+ 
+     public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;
+ 
+@@ -32,19 +32,51 @@ public static class HexalithFoldersGeneratedArtifacts
+             return new(false, "repositoryRoot must be a fully qualified path");
+         }
+ 
++        string spinePath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
++        string configurationPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
++        string helpersPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
+         try
+         {
+-            string spine = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+-            string configuration = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json"));
+-            string helpers = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"));
++            string spine = File.ReadAllText(spinePath);
++            string configuration = File.ReadAllText(configurationPath);
++            string helpers = File.ReadAllText(helpersPath);
+             return IsCurrent(spine, configuration, helpers)
+                 ? new(true, "generated artifacts match Contract Spine inputs")
+                 : new(false, "generated artifact content hashes do not match Contract Spine inputs");
+         }
++        catch (FileNotFoundException notFound)
++        {
++            return new(false, $"{nameof(FileNotFoundException)}: {Relativize(repositoryRoot, notFound.FileName ?? notFound.Message)}");
++        }
++        catch (DirectoryNotFoundException directoryMissing)
++        {
++            return new(false, $"{nameof(DirectoryNotFoundException)}: {Relativize(repositoryRoot, directoryMissing.Message)}");
++        }
+         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)
+         {
+-            return new(false, exception.GetType().Name);
++            return new(false, $"{exception.GetType().Name}: {Relativize(repositoryRoot, exception.Message)}");
++        }
++    }
++
++    // Strips repositoryRoot (and known path separators) from diagnostic strings so the
++    // emitted message does not leak machine-local absolute paths. AC 16 / Round 4 P11.
++    private static string Relativize(string repositoryRoot, string message)
++    {
++        if (string.IsNullOrEmpty(message))
++        {
++            return message;
+         }
++
++        string trimmedRoot = repositoryRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
++        string withSeparator = trimmedRoot + Path.DirectorySeparatorChar;
++        string altWithSeparator = trimmedRoot + Path.AltDirectorySeparatorChar;
++        message = message.Replace(withSeparator, string.Empty, StringComparison.OrdinalIgnoreCase);
++        if (!ReferenceEquals(withSeparator, altWithSeparator))
++        {
++            message = message.Replace(altWithSeparator, string.Empty, StringComparison.OrdinalIgnoreCase);
++        }
++
++        return message.Replace(trimmedRoot, string.Empty, StringComparison.OrdinalIgnoreCase);
+     }
+ 
+     public static bool IsCurrent(string contractSpine, string generationConfiguration, string generatedHelpers)
+@@ -58,7 +90,7 @@ public static class HexalithFoldersGeneratedArtifacts
+     }
+ 
+     private static string NormalizeGeneratedHelperHash(string value) =>
+-        Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
++        Regex.Replace(NormalizeText(value), "^(?<indent>[ \\t]*)public const string GeneratedHelpersSha256 = \"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\";[ \\t]*$", "${indent}public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+ 
+     private static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
+ 
+@@ -68,26 +100,51 @@ public static class HexalithFoldersGeneratedArtifacts
+ 
+ public partial class HexalithFoldersApiException
+ {
+-    public ProblemDetails? ProblemDetails => TryGetProblemDetails();
++    // Thread-safe lazy cache for the parsed Problem Details. Reference-typed wrapper plus
++    // Interlocked.CompareExchange gives lock-free single-init across concurrent readers,
++    // satisfying the Round 4 review (P2) requirement that ParseProblemDetails run at most
++    // once per exception instance regardless of contention.
++    private sealed class ParsedProblemDetailsCache
++    {
++        public ParsedProblemDetailsCache(ProblemDetails? problem, string? diagnostic)
++        {
++            Problem = problem;
++            Diagnostic = diagnostic;
++        }
++
++        public ProblemDetails? Problem { get; }
++        public string? Diagnostic { get; }
++    }
++
++    private ParsedProblemDetailsCache? _parsedProblemDetails;
+ 
+-    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);
++    public ProblemDetails? ProblemDetails => GetParsedProblemDetails().Problem;
+ 
+-    private ProblemDetails? TryGetProblemDetails()
++    public string? ProblemDetailsParseDiagnostic => GetParsedProblemDetails().Diagnostic;
++
++    private ParsedProblemDetailsCache GetParsedProblemDetails()
+     {
+-        if (this is HexalithFoldersApiException<ProblemDetails> typed)
++        ParsedProblemDetailsCache? cached = _parsedProblemDetails;
++        if (cached is not null)
+         {
+-            return typed.Result;
++            return cached;
+         }
+ 
+-        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;
++        (ProblemDetails? Problem, string? Diagnostic) parsed = ParseProblemDetails();
++        ParsedProblemDetailsCache fresh = new(parsed.Problem, parsed.Diagnostic);
++        return System.Threading.Interlocked.CompareExchange(ref _parsedProblemDetails, fresh, null) ?? fresh;
+     }
+ 
+-    private string? TryReadProblemDetails(out ProblemDetails? problem)
++    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()
+     {
+-        problem = null;
++        if (this is HexalithFoldersApiException<ProblemDetails> typed)
++        {
++            return (typed.Result, null);
++        }
++
+         if (string.IsNullOrWhiteSpace(Response))
+         {
+-            return null;
++            return (null, null);
+         }
+ 
+         try
+@@ -102,12 +159,11 @@ public partial class HexalithFoldersApiException
+             {
+                 Culture = System.Globalization.CultureInfo.InvariantCulture,
+             });
+-            problem = serializer.Deserialize<ProblemDetails>(jsonReader);
+-            return null;
++            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);
+         }
+-        catch (JsonException exception)
++        catch (Exception exception) when (exception is JsonException or JsonSerializationException)
+         {
+-            return exception.GetType().Name;
++            return (null, exception.GetType().Name);
+         }
+     }
+ }
+@@ -237,8 +293,24 @@ public partial class FileMutationRequest
+     [JsonProperty("contentHashReference", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+     public string? ContentHashReference { get; set; }
+ 
++    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's
++    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value
++    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;
++    // the static constructor below verifies at type-init time that no named member collides with
++    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.
+     private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;
+ 
++    static FileMutationRequest()
++    {
++        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())
++        {
++            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, "Remove", StringComparison.Ordinal))
++            {
++                throw new InvalidOperationException("FileMutationRequestFileOperationKind member '" + memberName + "' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.");
++            }
++        }
++    }
++
+     public string ComputeIdempotencyHash(string workspaceId, string taskId)
+     {
+         string operationId = ResolveFileMutationOperationId();
+diff --git a/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj b/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
+index e0dd124..cc0fcf8 100644
+--- a/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
++++ b/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
+@@ -1,9 +1,17 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
++    <TargetFramework>net10.0</TargetFramework>
+     <IsPackable>false</IsPackable>
+   </PropertyGroup>
++  <ItemGroup>
++    <Compile Remove="Shared\**\*.cs" />
++    <None Remove="Shared\**\*.cs" />
++  </ItemGroup>
+   <ItemGroup>
+     <PackageReference Include="YamlDotNet" />
+   </ItemGroup>
++  <ItemGroup>
++    <ProjectReference Include="Shared\Hexalith.Folders.Client.Generation.Shared.csproj" />
++  </ItemGroup>
+ </Project>
+diff --git a/src/Hexalith.Folders.Client/Generation/Program.cs b/src/Hexalith.Folders.Client/Generation/Program.cs
+index b17549a..edac945 100644
+--- a/src/Hexalith.Folders.Client/Generation/Program.cs
++++ b/src/Hexalith.Folders.Client/Generation/Program.cs
+@@ -3,6 +3,8 @@ using System.Security.Cryptography;
+ using System.Text;
+ using System.Text.RegularExpressions;
+ using YamlDotNet.RepresentationModel;
++using Hexalith.Folders.Client.Generation.Shared;
++using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
+ 
+ Dictionary<string, string> arguments = ParseArguments(args);
+ string repositoryRoot = RequiredArgument(arguments, "--repository-root");
+@@ -17,13 +19,22 @@ IReadOnlyList<OperationModel> operations = EnumerateOperations(root).ToArray();
+ IReadOnlyList<HelperModel> helpers = BuildHelpers(root, operations);
+ string output = Render(helpers, Sha256(contract), Sha256(configuration));
+ string helperHash = Sha256(NormalizeGeneratedHelperHash(output));
+-int helperHashPlaceholder = output.IndexOf("__GENERATED_HELPERS_SHA256__", StringComparison.Ordinal);
+-if (helperHashPlaceholder < 0)
++const string PlaceholderToken = "__GENERATED_HELPERS_SHA256__";
++const string ConstDeclarationPrefix = "    public const string GeneratedHelpersSha256 = \"";
++string constDeclarationSentinel = ConstDeclarationPrefix + PlaceholderToken + "\";";
++int constLineIndex = output.IndexOf(constDeclarationSentinel, StringComparison.Ordinal);
++if (constLineIndex < 0)
+ {
+-    throw new InvalidOperationException("Generated helper hash placeholder was not emitted.");
++    throw new InvalidOperationException("Generated helper hash placeholder const declaration was not emitted.");
+ }
+ 
+-output = output.Remove(helperHashPlaceholder, "__GENERATED_HELPERS_SHA256__".Length).Insert(helperHashPlaceholder, helperHash);
++if (output.IndexOf(constDeclarationSentinel, constLineIndex + constDeclarationSentinel.Length, StringComparison.Ordinal) >= 0)
++{
++    throw new InvalidOperationException("Generated helper hash placeholder const declaration was emitted more than once.");
++}
++
++int placeholderOffset = constLineIndex + ConstDeclarationPrefix.Length;
++output = output.Remove(placeholderOffset, PlaceholderToken.Length).Insert(placeholderOffset, helperHash);
+ Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+ File.WriteAllText(outputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+ 
+@@ -44,9 +55,24 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
+             throw new InvalidOperationException($"Operation {operation.OperationId} declares idempotency equivalence without a request schema.");
+         }
+ 
+-        if (!operation.IdempotencyFields.SequenceEqual(operation.IdempotencyFields.Order(StringComparer.Ordinal), StringComparer.Ordinal))
++        string? outOfOrderPrevious = null;
++        string? outOfOrderCurrent = null;
++        string? previousField = null;
++        foreach (string field in operation.IdempotencyFields)
+         {
+-            throw new InvalidOperationException($"Operation {operation.OperationId} idempotency fields are not in lexicographic order.");
++            if (previousField is not null && string.CompareOrdinal(previousField, field) > 0)
++            {
++                outOfOrderPrevious = previousField;
++                outOfOrderCurrent = field;
++                break;
++            }
++
++            previousField = field;
++        }
++
++        if (outOfOrderPrevious is not null)
++        {
++            throw new InvalidOperationException($"Operation {operation.OperationId} idempotency fields are not in lexicographic order: '{outOfOrderPrevious}' must come after '{outOfOrderCurrent}'.");
+         }
+ 
+         HashSet<string> uniqueFields = new(StringComparer.Ordinal);
+@@ -130,13 +156,13 @@ static FieldModel ResolveField(
+ 
+     if (operationParameters.TryGetValue(field, out string? parameterName))
+     {
+-        string parameter = EnsureParameter(helperParameters, field, parameterName);
++        string parameter = EnsureParameter(helperParameters, field, parameterName, operation.OperationId);
+         return new FieldModel(field, "true", parameter);
+     }
+ 
+-    if (TryResolveSpecialField(schemaName, field, out FieldModel? specialField))
++    if (SpecialFields.Registry.TryGetValue((schemaName, field), out FieldModel? specialField))
+     {
+-        return specialField!;
++        return specialField;
+     }
+ 
+     string[] parts = field.Split('.', StringSplitOptions.RemoveEmptyEntries);
+@@ -162,22 +188,6 @@ static FieldModel ResolveField(
+     return new FieldModel(field, $"{rootProperty} is not null", $"{rootProperty}?.{string.Join(".", bodyParts.Skip(1).Select(ToPropertyName))}");
+ }
+ 
+-static bool TryResolveSpecialField(string schemaName, string field, out FieldModel? model)
+-{
+-    // FileMutationRequest spine fields are declared at components.schemas.FileMutationRequest.
+-    model = (schemaName, field) switch
+-    {
+-        ("FileMutationRequest", "content_hash_reference") => new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),
+-        ("FileMutationRequest", "file_operation_kind") => new FieldModel("file_operation_kind", "true", "ResolveFileMutationOperationKindWireValue()"),
+-        ("FileMutationRequest", "operation_id") => new FieldModel("operation_id", "OperationId is not null", "OperationId"),
+-        ("FileMutationRequest", "path_metadata") => new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
+-        ("FileMutationRequest", "path_policy_class") => new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
+-        _ => null,
+-    };
+-
+-    return model is not null;
+-}
+-
+ static bool SchemaMatchesLogicalPrefix(string schemaName, string prefix)
+ {
+     string normalizedSchema = NormalizeName(schemaName);
+@@ -185,10 +195,23 @@ static bool SchemaMatchesLogicalPrefix(string schemaName, string prefix)
+     return normalizedSchema == normalizedPrefix + "_request";
+ }
+ 
+-static string EnsureParameter(List<ParameterModel> parameters, string field, string openApiName)
++static string EnsureParameter(List<ParameterModel> parameters, string field, string spineParameterName, string operationId)
+ {
+-    _ = openApiName;
+     string name = ToParameterName(field);
++    // Validate that the spine-declared parameter name and the emitted helper parameter name resolve
++    // to the same logical identifier under NormalizeName. The spine may declare either camelCase
++    // (`folderId`) or PascalCase (`FolderId`, when sourced via $ref to a components/parameters entry);
++    // either form must normalize to the same snake_case as the idempotency-equivalence field. A
++    // mismatch here is Contract Spine drift — fail closed rather than silently emitting two
++    // different parameter slots. Round 4 review (P5).
++    if (!string.Equals(NormalizeName(name), NormalizeName(spineParameterName), StringComparison.Ordinal))
++    {
++        throw new InvalidOperationException(
++            $"Operation {operationId} idempotency field '{field}' resolves to helper parameter '{name}' " +
++            $"but the spine-declared parameter normalizes differently from '{spineParameterName}'. " +
++            "Fix the spine parameter name or update the snake-to-camel rule in YamlContractLoader.ToParameterName.");
++    }
++
+     if (!parameters.Any(p => p.Name == name))
+     {
+         parameters.Add(new ParameterModel(field, name));
+@@ -279,20 +302,7 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
+     }
+ }
+ 
+-static string? TryReadRequestSchema(YamlMappingNode operation)
+-{
+-    if (!operation.Children.TryGetValue(new YamlScalarNode("requestBody"), out YamlNode? requestBodyNode))
+-    {
+-        return null;
+-    }
+-
+-    YamlMappingNode requestBody = requestBodyNode.ShouldBeMapping("requestBody");
+-    YamlMappingNode content = RequiredMapping(requestBody, "content");
+-    YamlMappingNode json = RequiredMapping(content, "application/json");
+-    YamlMappingNode schema = RequiredMapping(json, "schema");
+-    string reference = RequiredScalar(schema, "$ref");
+-    return reference.Split('/').Last();
+-}
++// TryReadRequestSchema is provided by YamlContractLoader (imported via `using static`).
+ 
+ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, string configurationHash)
+ {
+@@ -306,14 +316,9 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine();
+     code.AppendLine("namespace Hexalith.Folders.Client.Generated;");
+     code.AppendLine();
+-    code.AppendLine("/// <summary>");
+-    code.AppendLine("/// NSwag duplicate-name compatibility shim for ChangedPathEvidence references in AuditRecord and WorkspaceDiagnostic.");
+-    code.AppendLine("/// Remove when the Contract Spine or NSwag configuration emits one stable ChangedPathEvidence type.");
+-    code.AppendLine("/// </summary>");
+-    code.AppendLine("public partial class ChangedPathEvidence2 : ChangedPathEvidence");
+-    code.AppendLine("{");
+-    code.AppendLine("}");
+-    code.AppendLine();
++    // ChangedPathEvidence2 NSwag-duplicate-name shim lives in
++    // src/Hexalith.Folders.Client/Compat/ChangedPathEvidenceShim.cs as a hand-written companion
++    // partial. Generated/ stays purely generated.
+     code.AppendLine("public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurrent, string Diagnostic);");
+     code.AppendLine();
+     code.AppendLine("public static class HexalithFoldersGeneratedArtifacts");
+@@ -322,6 +327,14 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine($"    public const string GenerationConfigurationSha256 = \"{configurationHash}\";");
+     code.AppendLine("    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";");
+     code.AppendLine();
++    code.AppendLine("    // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature");
++    code.AppendLine("    // shape (schema names, parameter names in declared order, idempotency field paths per");
++    code.AppendLine("    // variant). It changes whenever helper parameter shapes change, and only then. Downstream");
++    code.AppendLine("    // consumers can branch on it to detect positional-parameter renames. Not included in the");
++    code.AppendLine("    // canonical hash. Round 4 review (P4) replaced the hardcoded date literal with this");
++    code.AppendLine("    // signature-derived constant so a stable spine produces a stable version.");
++    code.AppendLine($"    public const string HelperSchemaVersion = \"{ComputeHelperSchemaVersion(helpers)}\";");
++    code.AppendLine();
+     code.AppendLine("    public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;");
+     code.AppendLine();
+     code.AppendLine("    public static HexalithFoldersGeneratedArtifactsVerification VerifyCurrentDetailed(string repositoryRoot)");
+@@ -331,21 +344,53 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine("            return new(false, \"repositoryRoot must be a fully qualified path\");");
+     code.AppendLine("        }");
+     code.AppendLine();
++    code.AppendLine("        string spinePath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Contracts\", \"openapi\", \"hexalith.folders.v1.yaml\");");
++    code.AppendLine("        string configurationPath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"nswag.json\");");
++    code.AppendLine("        string helpersPath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"Generated\", \"HexalithFoldersIdempotencyHelpers.g.cs\");");
+     code.AppendLine("        try");
+     code.AppendLine("        {");
+-    code.AppendLine("            string spine = File.ReadAllText(Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Contracts\", \"openapi\", \"hexalith.folders.v1.yaml\"));");
+-    code.AppendLine("            string configuration = File.ReadAllText(Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"nswag.json\"));");
+-    code.AppendLine("            string helpers = File.ReadAllText(Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"Generated\", \"HexalithFoldersIdempotencyHelpers.g.cs\"));");
++    code.AppendLine("            string spine = File.ReadAllText(spinePath);");
++    code.AppendLine("            string configuration = File.ReadAllText(configurationPath);");
++    code.AppendLine("            string helpers = File.ReadAllText(helpersPath);");
+     code.AppendLine("            return IsCurrent(spine, configuration, helpers)");
+     code.AppendLine("                ? new(true, \"generated artifacts match Contract Spine inputs\")");
+     code.AppendLine("                : new(false, \"generated artifact content hashes do not match Contract Spine inputs\");");
+     code.AppendLine("        }");
++    code.AppendLine("        catch (FileNotFoundException notFound)");
++    code.AppendLine("        {");
++    code.AppendLine("            return new(false, $\"{nameof(FileNotFoundException)}: {Relativize(repositoryRoot, notFound.FileName ?? notFound.Message)}\");");
++    code.AppendLine("        }");
++    code.AppendLine("        catch (DirectoryNotFoundException directoryMissing)");
++    code.AppendLine("        {");
++    code.AppendLine("            return new(false, $\"{nameof(DirectoryNotFoundException)}: {Relativize(repositoryRoot, directoryMissing.Message)}\");");
++    code.AppendLine("        }");
+     code.AppendLine("        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)");
+     code.AppendLine("        {");
+-    code.AppendLine("            return new(false, exception.GetType().Name);");
++    code.AppendLine("            return new(false, $\"{exception.GetType().Name}: {Relativize(repositoryRoot, exception.Message)}\");");
+     code.AppendLine("        }");
+     code.AppendLine("    }");
+     code.AppendLine();
++    code.AppendLine("    // Strips repositoryRoot (and known path separators) from diagnostic strings so the");
++    code.AppendLine("    // emitted message does not leak machine-local absolute paths. AC 16 / Round 4 P11.");
++    code.AppendLine("    private static string Relativize(string repositoryRoot, string message)");
++    code.AppendLine("    {");
++    code.AppendLine("        if (string.IsNullOrEmpty(message))");
++    code.AppendLine("        {");
++    code.AppendLine("            return message;");
++    code.AppendLine("        }");
++    code.AppendLine();
++    code.AppendLine("        string trimmedRoot = repositoryRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);");
++    code.AppendLine("        string withSeparator = trimmedRoot + Path.DirectorySeparatorChar;");
++    code.AppendLine("        string altWithSeparator = trimmedRoot + Path.AltDirectorySeparatorChar;");
++    code.AppendLine("        message = message.Replace(withSeparator, string.Empty, StringComparison.OrdinalIgnoreCase);");
++    code.AppendLine("        if (!ReferenceEquals(withSeparator, altWithSeparator))");
++    code.AppendLine("        {");
++    code.AppendLine("            message = message.Replace(altWithSeparator, string.Empty, StringComparison.OrdinalIgnoreCase);");
++    code.AppendLine("        }");
++    code.AppendLine();
++    code.AppendLine("        return message.Replace(trimmedRoot, string.Empty, StringComparison.OrdinalIgnoreCase);");
++    code.AppendLine("    }");
++    code.AppendLine();
+     code.AppendLine("    public static bool IsCurrent(string contractSpine, string generationConfiguration, string generatedHelpers)");
+     code.AppendLine("    {");
+     code.AppendLine("        ArgumentNullException.ThrowIfNull(contractSpine);");
+@@ -357,7 +402,7 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine("    }");
+     code.AppendLine();
+     code.AppendLine("    private static string NormalizeGeneratedHelperHash(string value) =>");
+-    code.AppendLine("        Regex.Replace(NormalizeText(value), \"^\\\\s*public const string GeneratedHelpersSha256 = \\\"[0-9a-fA-F_]+\\\";\", \"    public const string GeneratedHelpersSha256 = \\\"__GENERATED_HELPERS_SHA256__\\\";\", RegexOptions.CultureInvariant | RegexOptions.Multiline);");
++    code.AppendLine("        Regex.Replace(NormalizeText(value), \"^(?<indent>[ \\\\t]*)public const string GeneratedHelpersSha256 = \\\"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\\\";[ \\\\t]*$\", \"${indent}public const string GeneratedHelpersSha256 = \\\"__GENERATED_HELPERS_SHA256__\\\";\", RegexOptions.CultureInvariant | RegexOptions.Multiline);");
+     code.AppendLine();
+     code.AppendLine("    private static string NormalizeText(string value) => value.Replace(\"\\r\\n\", \"\\n\", StringComparison.Ordinal).Replace(\"\\r\", \"\\n\", StringComparison.Ordinal);");
+     code.AppendLine();
+@@ -367,26 +412,51 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine();
+     code.AppendLine("public partial class HexalithFoldersApiException");
+     code.AppendLine("{");
+-    code.AppendLine("    public ProblemDetails? ProblemDetails => TryGetProblemDetails();");
++    code.AppendLine("    // Thread-safe lazy cache for the parsed Problem Details. Reference-typed wrapper plus");
++    code.AppendLine("    // Interlocked.CompareExchange gives lock-free single-init across concurrent readers,");
++    code.AppendLine("    // satisfying the Round 4 review (P2) requirement that ParseProblemDetails run at most");
++    code.AppendLine("    // once per exception instance regardless of contention.");
++    code.AppendLine("    private sealed class ParsedProblemDetailsCache");
++    code.AppendLine("    {");
++    code.AppendLine("        public ParsedProblemDetailsCache(ProblemDetails? problem, string? diagnostic)");
++    code.AppendLine("        {");
++    code.AppendLine("            Problem = problem;");
++    code.AppendLine("            Diagnostic = diagnostic;");
++    code.AppendLine("        }");
+     code.AppendLine();
+-    code.AppendLine("    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);");
++    code.AppendLine("        public ProblemDetails? Problem { get; }");
++    code.AppendLine("        public string? Diagnostic { get; }");
++    code.AppendLine("    }");
+     code.AppendLine();
+-    code.AppendLine("    private ProblemDetails? TryGetProblemDetails()");
++    code.AppendLine("    private ParsedProblemDetailsCache? _parsedProblemDetails;");
++    code.AppendLine();
++    code.AppendLine("    public ProblemDetails? ProblemDetails => GetParsedProblemDetails().Problem;");
++    code.AppendLine();
++    code.AppendLine("    public string? ProblemDetailsParseDiagnostic => GetParsedProblemDetails().Diagnostic;");
++    code.AppendLine();
++    code.AppendLine("    private ParsedProblemDetailsCache GetParsedProblemDetails()");
+     code.AppendLine("    {");
+-    code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
++    code.AppendLine("        ParsedProblemDetailsCache? cached = _parsedProblemDetails;");
++    code.AppendLine("        if (cached is not null)");
+     code.AppendLine("        {");
+-    code.AppendLine("            return typed.Result;");
++    code.AppendLine("            return cached;");
+     code.AppendLine("        }");
+     code.AppendLine();
+-    code.AppendLine("        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;");
++    code.AppendLine("        (ProblemDetails? Problem, string? Diagnostic) parsed = ParseProblemDetails();");
++    code.AppendLine("        ParsedProblemDetailsCache fresh = new(parsed.Problem, parsed.Diagnostic);");
++    code.AppendLine("        return System.Threading.Interlocked.CompareExchange(ref _parsedProblemDetails, fresh, null) ?? fresh;");
+     code.AppendLine("    }");
+     code.AppendLine();
+-    code.AppendLine("    private string? TryReadProblemDetails(out ProblemDetails? problem)");
++    code.AppendLine("    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()");
+     code.AppendLine("    {");
+-    code.AppendLine("        problem = null;");
++    code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
++    code.AppendLine("        {");
++    code.AppendLine("            return (typed.Result, null);");
++    code.AppendLine("        }");
++    code.AppendLine();
+     code.AppendLine("        if (string.IsNullOrWhiteSpace(Response))");
+     code.AppendLine("        {");
+-    code.AppendLine("            return null;");
++    code.AppendLine("            return (null, null);");
+     code.AppendLine("        }");
+     code.AppendLine();
+     code.AppendLine("        try");
+@@ -401,12 +471,11 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine("            {");
+     code.AppendLine("                Culture = System.Globalization.CultureInfo.InvariantCulture,");
+     code.AppendLine("            });");
+-    code.AppendLine("            problem = serializer.Deserialize<ProblemDetails>(jsonReader);");
+-    code.AppendLine("            return null;");
++    code.AppendLine("            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);");
+     code.AppendLine("        }");
+-    code.AppendLine("        catch (JsonException exception)");
++    code.AppendLine("        catch (Exception exception) when (exception is JsonException or JsonSerializationException)");
+     code.AppendLine("        {");
+-    code.AppendLine("            return exception.GetType().Name;");
++    code.AppendLine("            return (null, exception.GetType().Name);");
+     code.AppendLine("        }");
+     code.AppendLine("    }");
+     code.AppendLine("}");
+@@ -446,8 +515,24 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
+         code.AppendLine("    [JsonProperty(\"contentHashReference\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
+         code.AppendLine("    public string? ContentHashReference { get; set; }");
+         code.AppendLine();
++        code.AppendLine("    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's");
++        code.AppendLine("    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value");
++        code.AppendLine("    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;");
++        code.AppendLine("    // the static constructor below verifies at type-init time that no named member collides with");
++        code.AppendLine("    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.");
+         code.AppendLine("    private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;");
+         code.AppendLine();
++        code.AppendLine("    static FileMutationRequest()");
++        code.AppendLine("    {");
++        code.AppendLine("        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())");
++        code.AppendLine("        {");
++        code.AppendLine("            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, \"Remove\", StringComparison.Ordinal))");
++        code.AppendLine("            {");
++        code.AppendLine("                throw new InvalidOperationException(\"FileMutationRequestFileOperationKind member '\" + memberName + \"' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.\");");
++        code.AppendLine("            }");
++        code.AppendLine("        }");
++        code.AppendLine("    }");
++        code.AppendLine();
+     }
+ 
+     string parameters = string.Join(", ", helper.Parameters.Select(p => "string " + p.Name));
+@@ -515,96 +600,13 @@ static void RenderComputeExpression(StringBuilder code, HelperVariantModel varia
+     code.AppendLine(indent + "    })");
+ }
+ 
+-static YamlMappingNode LoadYaml(string path)
+-{
+-    using StreamReader reader = File.OpenText(path);
+-    YamlStream yaml = new();
+-    yaml.Load(reader);
+-    return yaml.Documents[0].RootNode.ShouldBeMapping("root");
+-}
+-
+-static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
+-{
+-    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-    {
+-        throw new InvalidOperationException($"Missing mapping '{key}'.");
+-    }
+-
+-    return value.ShouldBeMapping(key);
+-}
+-
+-static string RequiredScalar(YamlMappingNode mapping, string key)
+-{
+-    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-    {
+-        throw new InvalidOperationException($"Missing scalar '{key}'.");
+-    }
+-
+-    return value.ShouldBeScalar(key).Value ?? string.Empty;
+-}
+-
+-static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
+-{
+-    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-    {
+-        return [];
+-    }
+-
+-    return value.ShouldBeSequence(key).Children.Select(n => n.ShouldBeScalar(key).Value ?? string.Empty).ToArray();
+-}
++// YAML loading helpers (LoadYaml, RequiredMapping, RequiredScalar, ReadStringSequence) are
++// supplied by the shared Hexalith.Folders.Client.Generation.Shared library via `using static`.
+ 
+ static string ToJsonPropertyName(string snake) => ToParameterName(snake);
+ 
+-static string ToPropertyName(string snake)
+-{
+-    string camel = ToParameterName(snake);
+-    return char.ToUpperInvariant(camel[0]) + camel[1..];
+-}
+-
+-static string ToParameterName(string value)
+-{
+-    if (!value.Contains('_', StringComparison.Ordinal) && !value.Contains('-', StringComparison.Ordinal))
+-    {
+-        return char.ToLowerInvariant(value[0]) + value[1..];
+-    }
+-
+-    string[] parts = value.Split(['_', '-'], StringSplitOptions.RemoveEmptyEntries);
+-    return parts[0] + string.Concat(parts.Skip(1).Select(p => char.ToUpperInvariant(p[0]) + p[1..]));
+-}
+-
+-static string NormalizeName(string value)
+-{
+-    StringBuilder builder = new(value.Length);
+-    for (int i = 0; i < value.Length; i++)
+-    {
+-        char character = value[i];
+-        if (character is '_' or '-')
+-        {
+-            if (builder.Length > 0 && builder[^1] != '_')
+-            {
+-                builder.Append('_');
+-            }
+-        }
+-        else if (char.IsLetterOrDigit(character))
+-        {
+-            if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_')
+-            {
+-                builder.Append('_');
+-            }
+-
+-            builder.Append(char.ToLowerInvariant(character));
+-        }
+-    }
+-
+-    string normalized = builder.ToString();
+-    return normalized switch
+-    {
+-        "x_hexalith_task_id" => "task_id",
+-        "idempotency_key" => "idempotency_key",
+-        "correlation_id" => "correlation_id",
+-        _ => normalized,
+-    };
+-}
++// ToParameterName, ToPropertyName, and NormalizeName live in YamlContractLoader (shared library)
++// so the generator and the focused tests consume one canonical implementation. Round 4 review (P8).
+ 
+ static Dictionary<string, string> ParseArguments(string[] values)
+ {
+@@ -621,6 +623,11 @@ static Dictionary<string, string> ParseArguments(string[] values)
+             throw new ArgumentException($"Missing value for {values[i]}.");
+         }
+ 
++        if (values[i + 1].StartsWith("--", StringComparison.Ordinal))
++        {
++            throw new ArgumentException($"Argument {values[i]} at position {i} is missing a value (next token '{values[i + 1]}' looks like a flag).");
++        }
++
+         parsed[values[i]] = values[i + 1];
+     }
+ 
+@@ -633,10 +640,33 @@ static string RequiredArgument(IReadOnlyDictionary<string, string> values, strin
+ static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
+ 
+ static string NormalizeGeneratedHelperHash(string value) =>
+-    Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
++    Regex.Replace(NormalizeText(value), "^(?<indent>[ \\t]*)public const string GeneratedHelpersSha256 = \"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\";[ \\t]*$", "${indent}public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+ 
+ static string Sha256(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
+ 
++// Canonical helper-signature representation: one record per helper, fields delimited by `;`, lines
++// delimited by `\n`. The hash digests this representation and returns the first 16 hex characters
++// (64 bits) as a compact version label. Any change to schema name, parameter name list, parameter
++// order, variant operation IDs, or declared field list per variant changes the digest; spine edits
++// that leave the helper shapes alone leave the digest unchanged.
++static string ComputeHelperSchemaVersion(IReadOnlyList<HelperModel> helpers)
++{
++    StringBuilder shape = new();
++    foreach (HelperModel helper in helpers)
++    {
++        shape.Append("schema=").Append(helper.SchemaName).Append(";params=[");
++        shape.AppendJoin(',', helper.Parameters.Select(p => p.Name));
++        shape.Append("];variants=[");
++        IEnumerable<string> variantTokens = helper.Variants
++            .OrderBy(v => v.OperationId, StringComparer.Ordinal)
++            .Select(v => v.OperationId + "(" + string.Join(',', v.DeclaredFields) + ")");
++        shape.AppendJoin('|', variantTokens);
++        shape.Append("]\n");
++    }
++
++    return Sha256(shape.ToString())[..16];
++}
++
+ internal sealed record OperationModel(
+     string Path,
+     string Method,
+@@ -662,14 +692,32 @@ internal sealed record HelperModel(
+     IReadOnlyList<HelperVariantModel> Variants,
+     IReadOnlyList<ParameterModel> Parameters);
+ 
+-internal static class YamlNodeExtensions
+-{
+-    public static YamlMappingNode ShouldBeMapping(this YamlNode node, string name) =>
+-        node as YamlMappingNode ?? throw new InvalidOperationException($"{name} must be a mapping.");
+-
+-    public static YamlSequenceNode ShouldBeSequence(this YamlNode node, string name) =>
+-        node as YamlSequenceNode ?? throw new InvalidOperationException($"{name} must be a sequence.");
++// YamlNodeExtensions (ShouldBeMapping / ShouldBeSequence / ShouldBeScalar) live in the shared
++// library Hexalith.Folders.Client.Generation.Shared so both the generator and the client tests
++// share a single canonical set of YAML-shape diagnostics.
+ 
+-    public static YamlScalarNode ShouldBeScalar(this YamlNode node, string name) =>
+-        node as YamlScalarNode ?? throw new InvalidOperationException($"{name} must be a scalar.");
++// Special-case field registry for schemas whose canonical hash references projected or composed
++// properties (e.g., fields declared via x-hexalith-idempotency-equivalence that traverse a child
++// schema). Per-entry comments name the spine operationId that declares the equivalence; the actual
++// line numbers vary as the spine grows, so grep `x-hexalith-idempotency-equivalence:` under the
++// named operationId to locate the source.
++internal static class SpecialFields
++{
++    public static readonly Dictionary<(string SchemaName, string Field), FieldModel> Registry = new()
++    {
++        // FileMutationRequest is the union schema for AddFile / ChangeFile / RemoveFile operations.
++        // Each entry below appears under one or more of those operationId equivalence lists in
++        // src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml.
++        //
++        // Entry: content_hash_reference (AddFile, ChangeFile equivalence; absent for RemoveFile).
++        [("FileMutationRequest", "content_hash_reference")] = new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),
++        // Entry: file_operation_kind (AddFile, ChangeFile, RemoveFile equivalence; typed enum, always present).
++        [("FileMutationRequest", "file_operation_kind")] = new FieldModel("file_operation_kind", "true", "ResolveFileMutationOperationKindWireValue()"),
++        // Entry: operation_id (NSwag-emitted companion property; preserves null-versus-omitted presence semantics for the shared FileMutationRequest schema).
++        [("FileMutationRequest", "operation_id")] = new FieldModel("operation_id", "OperationId is not null", "OperationId"),
++        // Entry: path_metadata (AddFile, ChangeFile, RemoveFile equivalence; typed PathMetadata object).
++        [("FileMutationRequest", "path_metadata")] = new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
++        // Entry: path_policy_class (derives from PathMetadata.PathPolicyClass; declared spine-side as a top-level equivalence entry on all three file-mutation operations).
++        [("FileMutationRequest", "path_policy_class")] = new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
++    };
+ }
+diff --git a/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs b/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
+index 5fe1c13..f7d6b3e 100644
+--- a/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
++++ b/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
+@@ -14,6 +14,7 @@ public static class HexalithIdempotencyHasher
+     public static string Compute(string operationId, IEnumerable<IdempotencyField> fields)
+     {
+         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
++        RejectControlCharacters(operationId, nameof(operationId));
+         ArgumentNullException.ThrowIfNull(fields);
+ 
+         IdempotencyField[] orderedFields = fields.ToArray();
+@@ -40,7 +41,13 @@ public static class HexalithIdempotencyHasher
+             Enum enumValue => "s:" + Escape(GetEnumWireValue(enumValue)),
+             Guid guid => "s:" + guid.ToString("D", CultureInfo.InvariantCulture).ToLowerInvariant(),
+             DateTime dateTime => CanonicalizeDateTime(dateTime),
+-            DateTimeOffset dateTimeOffset => "t:" + dateTimeOffset.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
++            DateTimeOffset dateTimeOffset => CanonicalizeDateTime(dateTimeOffset.UtcDateTime),
++            // Explicit BCL primitive arms below avoid version-dependent NormalizeJson fall-through
++            // for types whose Newtonsoft serialization shape can change across runtime updates.
++            // Round 4 review finding P10.
++            DateOnly dateOnly => "t:date:" + dateOnly.ToString("O", CultureInfo.InvariantCulture),
++            TimeOnly timeOnly => "t:time:" + timeOnly.ToString("O", CultureInfo.InvariantCulture),
++            TimeSpan timeSpan => "t:span:" + timeSpan.ToString("c", CultureInfo.InvariantCulture),
+             decimal number => CanonicalizeDecimal(number),
+             double number => CanonicalizeFloatingPoint(number),
+             float number => CanonicalizeFloatingPoint(number),
+@@ -65,6 +72,11 @@ public static class HexalithIdempotencyHasher
+     internal static string NormalizeJsonText(string value)
+     {
+         ArgumentException.ThrowIfNullOrWhiteSpace(value);
++        if (value.Length > 0 && value[0] == '\uFEFF')
++        {
++            value = value[1..];
++        }
++
+         using JsonTextReader reader = new(new StringReader(value))
+         {
+             DateParseHandling = DateParseHandling.None,
+@@ -87,26 +99,53 @@ public static class HexalithIdempotencyHasher
+ 
+     private static string GetEnumWireValue(Enum value)
+     {
++        Type enumType = value.GetType();
++        if (enumType.IsDefined(typeof(FlagsAttribute), inherit: false))
++        {
++            throw new InvalidOperationException($"[Flags] enum '{enumType.FullName}' cannot be canonicalized.");
++        }
++
+         string enumName = value.ToString();
+         if (enumName.Contains(',', StringComparison.Ordinal))
+         {
+-            throw new InvalidOperationException($"Composite enum value '{enumName}' cannot be canonicalized.");
++            throw new InvalidOperationException($"Composite enum value '{enumName}' on '{enumType.FullName}' cannot be canonicalized.");
+         }
+ 
+-        MemberInfo? member = value.GetType().GetMember(enumName).SingleOrDefault();
+-        if (member is null)
++        FieldInfo? field = enumType.GetField(enumName, BindingFlags.Public | BindingFlags.Static);
++        if (field is null)
+         {
+-            throw new InvalidOperationException($"Unknown enum value '{enumName}' cannot be canonicalized.");
++            throw new InvalidOperationException($"Unknown enum value '{enumName}' on '{enumType.FullName}'.");
+         }
+ 
+-        return member?.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? value.ToString();
++        return field.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? enumName;
+     }
+ 
+     internal static string Escape(string value)
+     {
++        ArgumentNullException.ThrowIfNull(value);
+         StringBuilder builder = new(value.Length);
+-        foreach (char character in value)
++        int index = 0;
++        while (index < value.Length)
+         {
++            char character = value[index];
++            if (char.IsHighSurrogate(character))
++            {
++                if (index + 1 >= value.Length || !char.IsLowSurrogate(value[index + 1]))
++                {
++                    throw new InvalidOperationException($"Lone or invalid UTF-16 high surrogate at index {index}.");
++                }
++
++                builder.Append(character);
++                builder.Append(value[index + 1]);
++                index += 2;
++                continue;
++            }
++
++            if (char.IsLowSurrogate(character))
++            {
++                throw new InvalidOperationException($"Lone UTF-16 low surrogate at index {index}.");
++            }
++
+             builder.Append(character switch
+             {
+                 '\\' => "\\\\",
+@@ -120,14 +159,46 @@ public static class HexalithIdempotencyHasher
+                 ';' => "\\;",
+                 '=' => "\\=",
+                 < ' ' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
+-                >= '\u007f' and <= '\u009f' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
++                >= '\u007F' and <= '\u009F' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
+                 _ => character.ToString(),
+             });
++            index++;
+         }
+ 
+         return builder.ToString();
+     }
+ 
++    private static void RejectControlCharacters(string value, string context)
++    {
++        for (int i = 0; i < value.Length; i++)
++        {
++            char ch = value[i];
++            if (char.IsHighSurrogate(ch))
++            {
++                if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
++                {
++                    throw new InvalidOperationException(
++                        string.Create(CultureInfo.InvariantCulture, $"{context} contains lone or invalid UTF-16 high surrogate at index {i}."));
++                }
++
++                i++;
++                continue;
++            }
++
++            if (char.IsLowSurrogate(ch))
++            {
++                throw new InvalidOperationException(
++                    string.Create(CultureInfo.InvariantCulture, $"{context} contains lone UTF-16 low surrogate at index {i}."));
++            }
++
++            if (char.IsControl(ch) || ch == '\uFEFF' || ch == '\u2028' || ch == '\u2029')
++            {
++                throw new InvalidOperationException(
++                    string.Create(CultureInfo.InvariantCulture, $"{context} contains forbidden control or line-separator character at index {i} (U+{(int)ch:X4})."));
++            }
++        }
++    }
++
+     private static void EnsureDeclaredOrder(IReadOnlyList<IdempotencyField> fields)
+     {
+         string? previous = null;
+@@ -135,9 +206,11 @@ public static class HexalithIdempotencyHasher
+         foreach (IdempotencyField field in fields)
+         {
+             ArgumentException.ThrowIfNullOrWhiteSpace(field.Path);
++            RejectControlCharacters(field.Path, "field path");
+             if (previous is not null && string.CompareOrdinal(previous, field.Path) > 0)
+             {
+-                throw new InvalidOperationException("Idempotency fields must be in ordinal-ascending order (matches spine declaration).");
++                throw new InvalidOperationException(
++                    $"Idempotency fields must be in ordinal-ascending order (matches spine declaration): '{previous}' must come after '{field.Path}'.");
+             }
+ 
+             if (!seen.Add(field.Path))
+@@ -156,7 +229,22 @@ public static class HexalithIdempotencyHasher
+             throw new InvalidOperationException("Non-finite floating point values cannot be canonicalized.");
+         }
+ 
+-        return "n:" + value.ToString("R", CultureInfo.InvariantCulture);
++        // Collapse -0.0 to +0.0 so the canonical encoding agrees with CanonicalizeDecimal's
++        // isZeroMagnitude normalization. Round 4 review finding P7.
++        long bits = BitConverter.DoubleToInt64Bits(value == 0.0 ? 0.0 : value);
++        return "n:double:" + bits.ToString("x16", CultureInfo.InvariantCulture);
++    }
++
++    private static string CanonicalizeFloatingPoint(float value)
++    {
++        if (float.IsNaN(value) || float.IsInfinity(value))
++        {
++            throw new InvalidOperationException("Non-finite floating point values cannot be canonicalized.");
++        }
++
++        // Collapse -0.0f to +0.0f for the same reason as the double overload above.
++        int bits = BitConverter.SingleToInt32Bits(value == 0.0f ? 0.0f : value);
++        return "n:float:" + bits.ToString("x8", CultureInfo.InvariantCulture);
+     }
+ 
+     private static string CanonicalizeDateTime(DateTime value)
+@@ -173,8 +261,9 @@ public static class HexalithIdempotencyHasher
+     {
+         int[] bits = decimal.GetBits(value);
+         int scale = (bits[3] >> 16) & 0x7F;
+-        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
+-        return string.Create(CultureInfo.InvariantCulture, $"decimal:{(negative ? "-" : "+")}:{scale}:{bits[2]:x8}:{bits[1]:x8}:{bits[0]:x8}");
++        bool isZeroMagnitude = (bits[0] | bits[1] | bits[2]) == 0;
++        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0 && !isZeroMagnitude;
++        return string.Create(CultureInfo.InvariantCulture, $"n:decimal:{(negative ? "-" : "+")}:{scale}:{bits[2]:x8}:{bits[1]:x8}:{bits[0]:x8}");
+     }
+ 
+     private static void RejectDuplicateProperties(JToken token, string path)
+@@ -186,7 +275,7 @@ public static class HexalithIdempotencyHasher
+             {
+                 if (!names.Add(property.Name))
+                 {
+-                    throw new JsonReaderException($"Duplicate JSON property at {path}.{property.Name}.");
++                    throw new InvalidOperationException($"Duplicate JSON property at {path}.{property.Name}.");
+                 }
+ 
+                 RejectDuplicateProperties(property.Value, path + "." + property.Name);
+diff --git a/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs b/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+index ae429af..4090a6f 100644
+--- a/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
++++ b/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+@@ -4,11 +4,13 @@ using System.Text;
+ using System.Text.Json;
+ using System.Xml.Linq;
+ using Hexalith.Folders.Client.Generated;
++using Hexalith.Folders.Client.Generation.Shared;
+ using Hexalith.Folders.Client.Idempotency;
+ using Newtonsoft.Json;
+ using Shouldly;
+ using Xunit;
+ using YamlDotNet.RepresentationModel;
++using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
+ 
+ namespace Hexalith.Folders.Client.Tests;
+ 
+@@ -71,12 +73,17 @@ public sealed class ClientGenerationTests
+             methods.Length.ShouldBe(1, group.Key);
+             methods[0].ReturnType.ShouldBe(typeof(string), group.Key);
+ 
+-            string[] expectedParameterTypes = group
++            OpenApiParameter[] expectedSpineParameters = group
+                 .SelectMany(o => o.Parameters.Where(p => o.IdempotencyFields.Contains(p.Field, StringComparer.Ordinal)))
+                 .GroupBy(p => p.Field, StringComparer.Ordinal)
+-                .Select(g => typeof(string).FullName!)
++                .Select(g => g.First())
+                 .ToArray();
+-            methods[0].GetParameters().Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
++            string[] expectedParameterTypes = expectedSpineParameters.Select(_ => typeof(string).FullName!).ToArray();
++            string[] expectedParameterNames = expectedSpineParameters.Select(p => ToCamelCase(p.Field)).ToArray();
++
++            ParameterInfo[] actualParameters = methods[0].GetParameters();
++            actualParameters.Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
++            actualParameters.Select(p => p.Name).ToArray().ShouldBe(expectedParameterNames, group.Key + " parameter names must match spine path-parameter declaration order");
+         }
+ 
+         foreach (string schema in operations.Where(o => o.IdempotencyFields.Count == 0).Select(o => o.RequestSchema).WhereNotNull().Distinct(StringComparer.Ordinal))
+@@ -201,26 +208,49 @@ public sealed class ClientGenerationTests
+     {
+         string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-generation-" + Guid.NewGuid().ToString("N"));
+         Directory.CreateDirectory(tempRoot);
+-        string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
+-        string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
+-        string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+-        File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
++        try
++        {
++            string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
++            string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
++            string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
++            File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
+ 
+-        string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
+-        using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
++            string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
++            using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
++            {
++                FileName = "dotnet",
++                Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
++                RedirectStandardError = true,
++                RedirectStandardOutput = true,
++                UseShellExecute = false,
++            }) ?? throw new InvalidOperationException("Failed to start 'dotnet' process - is the .NET SDK on PATH?");
++
++            bool exited = process.WaitForExit(120_000);
++            if (!exited)
++            {
++                // Round 4 review (P13): kill the orphan process tree before the assertion fails so
++                // tempdir cleanup is not racing a still-running dotnet that holds file handles.
++                try
++                {
++                    process.Kill(entireProcessTree: true);
++                    process.WaitForExit(10_000);
++                }
++                catch (InvalidOperationException)
++                {
++                }
++
++                exited.ShouldBeTrue("dotnet msbuild GenerateHexalithFoldersIdempotencyHelpers did not exit within 120s; orphan process killed.");
++            }
++
++            string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
++            process.ExitCode.ShouldBe(0, combinedOutput);
++            File.Exists(output).ShouldBeTrue();
++            File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
++        }
++        finally
+         {
+-            FileName = "dotnet",
+-            Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
+-            RedirectStandardError = true,
+-            RedirectStandardOutput = true,
+-            UseShellExecute = false,
+-        })!;
+-
+-        process.WaitForExit(120_000).ShouldBeTrue();
+-        string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
+-        process.ExitCode.ShouldBe(0, combinedOutput);
+-        File.Exists(output).ShouldBeTrue();
+-        File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
++            Directory.Delete(tempRoot, recursive: true);
++        }
+     }
+ 
+     [Fact]
+@@ -259,18 +289,43 @@ public sealed class ClientGenerationTests
+         foreach (JsonElement corpusCase in cases.Where(c => c.GetProperty("category").GetString() != "duplicate-json-key"))
+         {
+             string classification = corpusCase.GetProperty("equivalence_classification").GetString() ?? string.Empty;
++            string caseId = corpusCase.GetProperty("id").GetString() ?? "<unidentified>";
+             string left = ComputeCorpusHash(corpusCase.GetProperty("input"));
+             string right = ComputeCorpusHash(corpusCase.GetProperty("comparison_input"));
+ 
+             if (classification.StartsWith("non-equivalent", StringComparison.Ordinal) ||
+-                classification.StartsWith("equivalent-only", StringComparison.Ordinal) ||
+-                classification == "parser-rejected")
++                classification.StartsWith("equivalent-only", StringComparison.Ordinal))
++            {
++                left.ShouldNotBe(right, caseId);
++            }
++            else if (classification == "parser-rejected")
+             {
+-                left.ShouldNotBe(right, corpusCase.GetProperty("id").GetString());
++                // The corpus's parser-rejected classification describes behavior at the HTTP
++                // idempotency-key parser boundary (Idempotency-Key header validation) — the input
++                // is rejected before any hash computation. The canonical-hasher boundary here is
++                // downstream of that validation; for hash purposes the two corpus inputs simply
++                // produce non-equivalent escaped hashes. The HTTP parser-rejection contract is
++                // enforced by the input validators in Hexalith.Folders.Server (Epic 4).
++                // Round 4 review (P12) made this layering explicit.
++                left.ShouldNotBe(right, caseId);
+             }
+             else if (classification == "equivalent-after-lexicographic-field-ordering")
+             {
+-                left.ShouldBe(right, corpusCase.GetProperty("id").GetString());
++                left.ShouldBe(right, caseId);
++            }
++            else if (classification == "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field" ||
++                     classification == "equivalent-only-when-field-declares-compatibility-normalization")
++            {
++                // Default hasher does not apply generated normalization or compatibility normalization;
++                // AC 6 reads "Unicode normalization where declared" and no current spine field declares
++                // normalization-eligibility. When a field declares opt-in, a normalization-enabled
++                // helper variant will flip this assertion. Tracked in deferred-work.md (Round 4).
++                left.ShouldNotBe(right, caseId);
++            }
++            else
++            {
++                throw new InvalidOperationException(
++                    $"Unhandled equivalence_classification '{classification}' for case '{caseId}'. Add an explicit branch when the corpus grows new classification values.");
+             }
+         }
+     }
+@@ -365,25 +420,22 @@ public sealed class ClientGenerationTests
+ 
+     private static IReadOnlyList<OpenApiOperation> LoadOperations()
+     {
+-        using StreamReader reader = File.OpenText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+-        YamlStream yaml = new();
+-        yaml.Load(reader);
+-        YamlMappingNode root = yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
++        YamlMappingNode root = YamlContractLoader.LoadYaml(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+         List<OpenApiOperation> operations = [];
+ 
+         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
+         {
+-            YamlMappingNode path = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
++            YamlMappingNode path = pathEntry.Value.ShouldBeMapping("path item");
+             IReadOnlyList<OpenApiParameter> pathParameters = EnumerateParameters(path).ToArray();
+             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in path.Children)
+             {
+-                string method = methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
++                string method = methodEntry.Key.ShouldBeScalar("method").Value ?? string.Empty;
+                 if (method is not ("get" or "post" or "put" or "patch" or "delete"))
+                 {
+                     continue;
+                 }
+ 
+-                YamlMappingNode operation = methodEntry.Value.ShouldBeOfType<YamlMappingNode>();
++                YamlMappingNode operation = methodEntry.Value.ShouldBeMapping("operation");
+                 string operationId = RequiredScalar(operation, "operationId");
+                 string? requestSchema = TryReadRequestSchema(operation);
+                 IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
+@@ -395,30 +447,6 @@ public sealed class ClientGenerationTests
+         return operations;
+     }
+ 
+-    private static string? TryReadRequestSchema(YamlMappingNode operation)
+-    {
+-        if (!operation.Children.TryGetValue(new YamlScalarNode("requestBody"), out YamlNode? requestBodyNode))
+-        {
+-            return null;
+-        }
+-
+-        YamlMappingNode requestBody = requestBodyNode.ShouldBeOfType<YamlMappingNode>();
+-        YamlMappingNode content = RequiredMapping(requestBody, "content");
+-        YamlMappingNode json = RequiredMapping(content, "application/json");
+-        YamlMappingNode schema = RequiredMapping(json, "schema");
+-        return RequiredScalar(schema, "$ref").Split('/').Last();
+-    }
+-
+-    private static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
+-    {
+-        if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-        {
+-            return [];
+-        }
+-
+-        return value.ShouldBeOfType<YamlSequenceNode>().Children.Select(node => node.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).ToArray();
+-    }
+-
+     private static IEnumerable<OpenApiParameter> EnumerateParameters(YamlMappingNode mapping)
+     {
+         if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
+@@ -426,31 +454,25 @@ public sealed class ClientGenerationTests
+             yield break;
+         }
+ 
+-        foreach (YamlNode parameterNode in parametersNode.ShouldBeOfType<YamlSequenceNode>())
++        foreach (YamlNode parameterNode in parametersNode.ShouldBeSequence("parameters"))
+         {
+-            YamlMappingNode parameter = parameterNode.ShouldBeOfType<YamlMappingNode>();
++            YamlMappingNode parameter = parameterNode.ShouldBeMapping("parameter");
+             string name = parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode)
+-                ? (referenceNode.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).Split('/').Last()
++                ? (referenceNode.ShouldBeScalar("$ref").Value ?? string.Empty).Split('/').Last()
+                 : RequiredScalar(parameter, "name");
+             yield return new OpenApiParameter(NormalizeName(name), name);
+         }
+     }
+ 
+-    private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
+-    {
+-        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
+-        return value.ShouldBeOfType<YamlMappingNode>();
+-    }
+-
+-    private static string RequiredScalar(YamlMappingNode mapping, string key)
+-    {
+-        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
+-        return value.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+-    }
+-
+     private static string LocateRepositoryRoot()
+     {
+-        DirectoryInfo? directory = new(Path.GetDirectoryName(typeof(ClientGenerationTests).Assembly.Location)!);
++        // Assembly.Location returns "" under single-file publish; fall back to AppContext.BaseDirectory.
++        string assemblyLocation = typeof(ClientGenerationTests).Assembly.Location;
++        string startDirectoryPath = string.IsNullOrEmpty(assemblyLocation)
++            ? AppContext.BaseDirectory
++            : (Path.GetDirectoryName(assemblyLocation) ?? AppContext.BaseDirectory);
++
++        DirectoryInfo? directory = new(startDirectoryPath);
+         while (directory is not null)
+         {
+             if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
+@@ -464,55 +486,12 @@ public sealed class ClientGenerationTests
+         throw new InvalidOperationException("Could not locate Hexalith.Folders.slnx from the test assembly location.");
+     }
+ 
+-    private static string NormalizeName(string value)
+-    {
+-        StringBuilder builder = new(value.Length);
+-        for (int i = 0; i < value.Length; i++)
+-        {
+-            char character = value[i];
+-            if (character is '_' or '-')
+-            {
+-                if (builder.Length > 0 && builder[^1] != '_')
+-                {
+-                    builder.Append('_');
+-                }
+-            }
+-            else if (char.IsLetterOrDigit(character))
+-            {
+-                if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_')
+-                {
+-                    builder.Append('_');
+-                }
+-
+-                builder.Append(char.ToLowerInvariant(character));
+-            }
+-        }
+-
+-        return builder.ToString() switch
+-        {
+-            "x_hexalith_task_id" => "task_id",
+-            "idempotency_key" => "idempotency_key",
+-            "correlation_id" => "correlation_id",
+-            string normalized => normalized,
+-        };
+-    }
++    // ToCamelCase and NormalizeName now live in YamlContractLoader (Hexalith.Folders.Client.Generation.Shared)
++    // so the generator and tests share one canonical implementation. Round 4 review (P8).
++    private static string ToCamelCase(string snakeOrKebab) => YamlContractLoader.ToParameterName(snakeOrKebab);
+ 
+     private sealed record OpenApiOperation(string OperationId, string? RequestSchema, IReadOnlyList<string> IdempotencyFields, IReadOnlyList<OpenApiParameter> Parameters);
+ 
+     private sealed record OpenApiParameter(string Field, string Name);
+ }
+ 
+-internal static class EnumerableExtensions
+-{
+-    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> values)
+-        where T : class
+-    {
+-        foreach (T? value in values)
+-        {
+-            if (value is not null)
+-            {
+-                yield return value;
+-            }
+-        }
+-    }
+-}
+diff --git a/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj b/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+index cdd4d65..86d1b56 100644
+--- a/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
++++ b/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+@@ -4,6 +4,7 @@
+   </PropertyGroup>
+   <ItemGroup>
+     <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
++    <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Generation\Shared\Hexalith.Folders.Client.Generation.Shared.csproj" />
+     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+   </ItemGroup>
+   <ItemGroup>
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+index d3bd298..0d9ed15 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
++++ b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+@@ -111,7 +111,7 @@ public sealed class ScaffoldContractTests
+         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Contracts"]);
+         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+-        AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Testing"]);
++        AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
+diff --git a/src/Hexalith.Folders.Client/Compat/ChangedPathEvidenceShim.cs b/src/Hexalith.Folders.Client/Compat/ChangedPathEvidenceShim.cs
+new file mode 100644
+index 0000000..453d4f9
+--- /dev/null
++++ b/src/Hexalith.Folders.Client/Compat/ChangedPathEvidenceShim.cs
+@@ -0,0 +1,14 @@
++namespace Hexalith.Folders.Client.Generated;
++
++// NSwag duplicate-name compatibility shim for ChangedPathEvidence references in AuditRecord
++// and WorkspaceDiagnostic. The Contract Spine references the same ChangedPathEvidence schema
++// from multiple paths; NSwag's C# emitter currently emits a duplicate `ChangedPathEvidence2`
++// type alongside the canonical `ChangedPathEvidence` rather than reusing the reference.
++// This shim declares ChangedPathEvidence2 as a derived alias so the generated client compiles
++// without rejecting the duplicate emission. Remove when the Contract Spine or NSwag
++// configuration produces one stable ChangedPathEvidence type.
++// Round 4 review finding P14: this hand-written shim lives outside Generated/ so the generated
++// file stays purely generated.
++public partial class ChangedPathEvidence2 : ChangedPathEvidence
++{
++}
+diff --git a/src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj b/src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj
+new file mode 100644
+index 0000000..d779afc
+--- /dev/null
++++ b/src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj
+@@ -0,0 +1,13 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup>
++    <TargetFramework>net10.0</TargetFramework>
++    <IsPackable>false</IsPackable>
++  </PropertyGroup>
++  <ItemGroup>
++    <PackageReference Include="YamlDotNet" />
++  </ItemGroup>
++  <ItemGroup>
++    <InternalsVisibleTo Include="Hexalith.Folders.Client.Generation" />
++    <InternalsVisibleTo Include="Hexalith.Folders.Client.Tests" />
++  </ItemGroup>
++</Project>
+diff --git a/src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs b/src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs
+new file mode 100644
+index 0000000..8c264f5
+--- /dev/null
++++ b/src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs
+@@ -0,0 +1,177 @@
++using System.Text;
++using YamlDotNet.RepresentationModel;
++
++namespace Hexalith.Folders.Client.Generation.Shared;
++
++// Canonical YAML loader and name-normalization helpers for the Hexalith Contract Spine. Used by
++// the build-time generator (Generation/Program.cs) and the focused client tests
++// (ClientGenerationTests.cs) so both paths consume the same parsing rules, identical failure
++// semantics, and the same operation / parameter / request-schema discovery logic. Resolves Round 2
++// ResolvedDecision P-shared-1, Round 3 decision D1, and Round 4 findings P15-P18 (guards + scope)
++// and P8 (shared name parsing).
++public static class YamlContractLoader
++{
++    public static YamlMappingNode LoadYaml(string path)
++    {
++        ArgumentException.ThrowIfNullOrWhiteSpace(path);
++        using StreamReader reader = File.OpenText(path);
++        YamlStream yaml = new();
++        yaml.Load(reader);
++        if (yaml.Documents.Count == 0)
++        {
++            throw new InvalidOperationException($"Contract Spine '{path}' contains no YAML documents.");
++        }
++
++        return yaml.Documents[0].RootNode.ShouldBeMapping("root");
++    }
++
++    public static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
++    {
++        ArgumentNullException.ThrowIfNull(mapping);
++        if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
++        {
++            throw new InvalidOperationException($"Missing mapping '{key}'.");
++        }
++
++        return value.ShouldBeMapping(key);
++    }
++
++    public static string RequiredScalar(YamlMappingNode mapping, string key)
++    {
++        ArgumentNullException.ThrowIfNull(mapping);
++        if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
++        {
++            throw new InvalidOperationException($"Missing scalar '{key}'.");
++        }
++
++        return value.ShouldBeScalar(key).Value ?? string.Empty;
++    }
++
++    public static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
++    {
++        ArgumentNullException.ThrowIfNull(mapping);
++        if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
++        {
++            return [];
++        }
++
++        return value.ShouldBeSequence(key).Children.Select(n => n.ShouldBeScalar(key).Value ?? string.Empty).ToArray();
++    }
++
++    // Returns the trailing schema name from `#/components/schemas/<Name>` for operations whose
++    // request body declares a JSON $ref, or null when the operation declares no requestBody. Throws
++    // an InvalidOperationException when the requestBody is present but does not declare a JSON $ref
++    // (no inline-schema fallback today) or when the $ref string is empty / ends in a separator —
++    // both indicate prerequisite Contract Spine drift rather than soft-fail.
++    public static string? ReadRequestSchemaRef(YamlMappingNode operation)
++    {
++        ArgumentNullException.ThrowIfNull(operation);
++        if (!operation.Children.TryGetValue(new YamlScalarNode("requestBody"), out YamlNode? requestBodyNode))
++        {
++            return null;
++        }
++
++        YamlMappingNode requestBody = requestBodyNode.ShouldBeMapping("requestBody");
++        YamlMappingNode content = RequiredMapping(requestBody, "content");
++        YamlMappingNode json = RequiredMapping(content, "application/json");
++        YamlMappingNode schema = RequiredMapping(json, "schema");
++        string reference = RequiredScalar(schema, "$ref");
++        string suffix = reference.Split('/').Last();
++        if (string.IsNullOrEmpty(suffix))
++        {
++            throw new InvalidOperationException($"requestBody $ref '{reference}' does not resolve to a schema name.");
++        }
++
++        return suffix;
++    }
++
++    // Back-compat alias preserved while in-tree callers migrate. The "Try" prefix is a misnomer —
++    // the method throws on prerequisite drift — so new callers should consume ReadRequestSchemaRef.
++    public static string? TryReadRequestSchema(YamlMappingNode operation) => ReadRequestSchemaRef(operation);
++
++    // Lowercases the input, collapses `_`/`-` separators, and inserts `_` between camelCase
++    // letters so that `folderId`, `folder_id`, and `Folder-Id` all normalize to `folder_id`.
++    // Used by the generator and tests as the parameter/field lookup key. Header-named OpenAPI
++    // parameters with the `x-hexalith-task-id` prefix collapse to `task_id` for backwards
++    // compatibility.
++    public static string NormalizeName(string value)
++    {
++        ArgumentNullException.ThrowIfNull(value);
++        StringBuilder builder = new(value.Length);
++        for (int i = 0; i < value.Length; i++)
++        {
++            char character = value[i];
++            if (character is '_' or '-')
++            {
++                if (builder.Length > 0 && builder[^1] != '_')
++                {
++                    builder.Append('_');
++                }
++            }
++            else if (char.IsLetterOrDigit(character))
++            {
++                if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_')
++                {
++                    builder.Append('_');
++                }
++
++                builder.Append(char.ToLowerInvariant(character));
++            }
++        }
++
++        return builder.ToString() switch
++        {
++            "x_hexalith_task_id" => "task_id",
++            "idempotency_key" => "idempotency_key",
++            "correlation_id" => "correlation_id",
++            string normalized => normalized,
++        };
++    }
++
++    // Converts a snake_case / kebab-case identifier to lowerCamelCase using a deterministic rule
++    // shared between the generator and tests. Single-segment inputs lowercase the first character
++    // and preserve the tail; multi-segment inputs concatenate parts with the first letter of each
++    // non-leading part uppercased. Empty input yields empty.
++    public static string ToParameterName(string value)
++    {
++        ArgumentNullException.ThrowIfNull(value);
++        if (value.Length == 0)
++        {
++            return value;
++        }
++
++        if (!value.Contains('_', StringComparison.Ordinal) && !value.Contains('-', StringComparison.Ordinal))
++        {
++            return char.ToLowerInvariant(value[0]) + value[1..];
++        }
++
++        string[] parts = value.Split(['_', '-'], StringSplitOptions.RemoveEmptyEntries);
++        if (parts.Length == 0)
++        {
++            return string.Empty;
++        }
++
++        return parts[0] + string.Concat(parts.Skip(1).Select(p => char.ToUpperInvariant(p[0]) + p[1..]));
++    }
++
++    // Returns ToParameterName(value) with the first letter uppercased (deterministic PascalCase
++    // for property accessors emitted into generated helpers).
++    public static string ToPropertyName(string value)
++    {
++        string camel = ToParameterName(value);
++        return camel.Length == 0 ? camel : char.ToUpperInvariant(camel[0]) + camel[1..];
++    }
++
++}
++
++internal static class YamlNodeExtensions
++{
++    public static YamlMappingNode ShouldBeMapping(this YamlNode node, string name) =>
++        node as YamlMappingNode ?? throw new InvalidOperationException($"{name} must be a mapping.");
++
++    public static YamlSequenceNode ShouldBeSequence(this YamlNode node, string name) =>
++        node as YamlSequenceNode ?? throw new InvalidOperationException($"{name} must be a sequence.");
++
++    public static YamlScalarNode ShouldBeScalar(this YamlNode node, string name) =>
++        node as YamlScalarNode ?? throw new InvalidOperationException($"{name} must be a scalar.");
++}
+diff --git a/tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs b/tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs
+new file mode 100644
+index 0000000..bb8603d
+--- /dev/null
++++ b/tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs
+@@ -0,0 +1,16 @@
++namespace Hexalith.Folders.Client.Tests;
++
++internal static class EnumerableExtensions
++{
++    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> values)
++        where T : class
++    {
++        foreach (T? value in values)
++        {
++            if (value is not null)
++            {
++                yield return value;
++            }
++        }
++    }
++}

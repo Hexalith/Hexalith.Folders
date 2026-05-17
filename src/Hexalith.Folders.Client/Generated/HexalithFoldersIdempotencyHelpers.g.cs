@@ -7,21 +7,21 @@ using Newtonsoft.Json;
 
 namespace Hexalith.Folders.Client.Generated;
 
-/// <summary>
-/// NSwag duplicate-name compatibility shim for ChangedPathEvidence references in AuditRecord and WorkspaceDiagnostic.
-/// Remove when the Contract Spine or NSwag configuration emits one stable ChangedPathEvidence type.
-/// </summary>
-public partial class ChangedPathEvidence2 : ChangedPathEvidence
-{
-}
-
 public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurrent, string Diagnostic);
 
 public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2";
     public const string GenerationConfigurationSha256 = "313de39da4e8a84e00f0c66e23f4e5240e4df8779f007e566807810219a9ae61";
-    public const string GeneratedHelpersSha256 = "421e0da8481e68e1c122af39707815b5c4c89a96a58d332186e8f94f3e74b2ca";
+    public const string GeneratedHelpersSha256 = "111270f2fad82b0ad05d71424845bffa226d08a8f2e35f684299cda2c0555480";
+
+    // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
+    // shape (schema names, parameter names in declared order, idempotency field paths per
+    // variant). It changes whenever helper parameter shapes change, and only then. Downstream
+    // consumers can branch on it to detect positional-parameter renames. Not included in the
+    // canonical hash. Round 4 review (P4) replaced the hardcoded date literal with this
+    // signature-derived constant so a stable spine produces a stable version.
+    public const string HelperSchemaVersion = "8105106fa84a075e";
 
     public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;
 
@@ -32,19 +32,64 @@ public static class HexalithFoldersGeneratedArtifacts
             return new(false, "repositoryRoot must be a fully qualified path");
         }
 
+        string spinePath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+        string configurationPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
+        string helpersPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
         try
         {
-            string spine = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
-            string configuration = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json"));
-            string helpers = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"));
+            string spine = File.ReadAllText(spinePath);
+            string configuration = File.ReadAllText(configurationPath);
+            string helpers = File.ReadAllText(helpersPath);
+            string? malformed = DetectMalformedHelperConstant(helpers);
+            if (malformed is not null)
+            {
+                return new(false, malformed);
+            }
+
             return IsCurrent(spine, configuration, helpers)
                 ? new(true, "generated artifacts match Contract Spine inputs")
                 : new(false, "generated artifact content hashes do not match Contract Spine inputs");
         }
+        catch (FileNotFoundException notFound)
+        {
+            return new(false, $"{nameof(FileNotFoundException)}: {Relativize(repositoryRoot, notFound.FileName ?? notFound.Message)}");
+        }
+        catch (DirectoryNotFoundException directoryMissing)
+        {
+            return new(false, $"{nameof(DirectoryNotFoundException)}: {Relativize(repositoryRoot, directoryMissing.Message)}");
+        }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)
         {
-            return new(false, exception.GetType().Name);
+            return new(false, $"{exception.GetType().Name}: {Relativize(repositoryRoot, exception.Message)}");
         }
+    }
+
+    // Strips repositoryRoot+separator from diagnostic strings so the emitted message
+    // does not leak machine-local absolute paths. AC 16 / Round 4 P11 / Round 4 (external) P2.
+    // Case comparison follows the host filesystem (case-insensitive on Windows, case-sensitive
+    // elsewhere). Only the root-plus-separator forms are stripped to avoid corrupting unrelated
+    // substrings that happen to share the bare root prefix (e.g. "C:\\Work" inside "C:\\Workspace\\").
+    private static string Relativize(string repositoryRoot, string message)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            return message;
+        }
+
+        StringComparison comparison = OperatingSystem.IsWindows()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
+        string trimmedRoot = repositoryRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        string primaryPrefix = trimmedRoot + Path.DirectorySeparatorChar;
+        string altPrefix = trimmedRoot + Path.AltDirectorySeparatorChar;
+
+        string result = message.Replace(primaryPrefix, string.Empty, comparison);
+        if (!string.Equals(primaryPrefix, altPrefix, StringComparison.Ordinal))
+        {
+            result = result.Replace(altPrefix, string.Empty, comparison);
+        }
+
+        return result;
     }
 
     public static bool IsCurrent(string contractSpine, string generationConfiguration, string generatedHelpers)
@@ -58,7 +103,34 @@ public static class HexalithFoldersGeneratedArtifacts
     }
 
     private static string NormalizeGeneratedHelperHash(string value) =>
-        Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+        Regex.Replace(NormalizeText(value), "^(?<indent>[ \\t]*)public const string GeneratedHelpersSha256 = \"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\";[ \\t]*$", "${indent}public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+
+    // Detects a malformed `public const string GeneratedHelpersSha256 = "...";` constant so
+    // VerifyCurrentDetailed can emit a distinct "corrupted local file" diagnostic instead of
+    // the generic "content hashes do not match" message that misdirects operators to spine
+    // drift. Returns null when the constant is well-formed (64 hex chars or the placeholder).
+    // Round 4 (external) P8.
+    private static string? DetectMalformedHelperConstant(string helpers)
+    {
+        Match permissive = Regex.Match(NormalizeText(helpers), "^[ \\t]*public const string GeneratedHelpersSha256 = \"(?<value>[^\"]*)\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+        if (!permissive.Success)
+        {
+            return "generated helpers file is missing the GeneratedHelpersSha256 constant declaration (regenerate via dotnet msbuild /t:GenerateHexalithFoldersClient)";
+        }
+
+        string captured = permissive.Groups["value"].Value;
+        if (captured == "__GENERATED_HELPERS_SHA256__")
+        {
+            return null;
+        }
+
+        if (captured.Length != 64 || !captured.All(static c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
+        {
+            return $"generated helpers file has a malformed GeneratedHelpersSha256 constant (expected 64 hex characters, got {captured.Length}); regenerate via dotnet msbuild /t:GenerateHexalithFoldersClient";
+        }
+
+        return null;
+    }
 
     private static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
 
@@ -68,26 +140,56 @@ public static class HexalithFoldersGeneratedArtifacts
 
 public partial class HexalithFoldersApiException
 {
-    public ProblemDetails? ProblemDetails => TryGetProblemDetails();
+    // Thread-safe lazy cache for the parsed Problem Details. Reference-typed wrapper plus
+    // Interlocked.CompareExchange gives lock-free single-VISIBLE-value across concurrent readers.
+    // Note (Round 4 external P11): the actual ParseProblemDetails call may run more than once
+    // under contention — two threads can each enter ParseProblemDetails, both produce a fresh
+    // ParsedProblemDetailsCache, and the loser's value is discarded by CompareExchange. Both
+    // readers then observe the winner's cache, so the visible value is single-init even though
+    // the parse work is not strictly de-duplicated. This is acceptable because parsing is pure;
+    // if parse cost or side-effect concerns surface, switch to LazyInitializer.EnsureInitialized
+    // or System.Threading.Lazy<T> for a true single-parse guarantee.
+    private sealed class ParsedProblemDetailsCache
+    {
+        public ParsedProblemDetailsCache(ProblemDetails? problem, string? diagnostic)
+        {
+            Problem = problem;
+            Diagnostic = diagnostic;
+        }
 
-    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);
+        public ProblemDetails? Problem { get; }
+        public string? Diagnostic { get; }
+    }
 
-    private ProblemDetails? TryGetProblemDetails()
+    private ParsedProblemDetailsCache? _parsedProblemDetails;
+
+    public ProblemDetails? ProblemDetails => GetParsedProblemDetails().Problem;
+
+    public string? ProblemDetailsParseDiagnostic => GetParsedProblemDetails().Diagnostic;
+
+    private ParsedProblemDetailsCache GetParsedProblemDetails()
+    {
+        ParsedProblemDetailsCache? cached = _parsedProblemDetails;
+        if (cached is not null)
+        {
+            return cached;
+        }
+
+        (ProblemDetails? Problem, string? Diagnostic) parsed = ParseProblemDetails();
+        ParsedProblemDetailsCache fresh = new(parsed.Problem, parsed.Diagnostic);
+        return System.Threading.Interlocked.CompareExchange(ref _parsedProblemDetails, fresh, null) ?? fresh;
+    }
+
+    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()
     {
         if (this is HexalithFoldersApiException<ProblemDetails> typed)
         {
-            return typed.Result;
+            return (typed.Result, null);
         }
 
-        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;
-    }
-
-    private string? TryReadProblemDetails(out ProblemDetails? problem)
-    {
-        problem = null;
         if (string.IsNullOrWhiteSpace(Response))
         {
-            return null;
+            return (null, null);
         }
 
         try
@@ -102,12 +204,11 @@ public partial class HexalithFoldersApiException
             {
                 Culture = System.Globalization.CultureInfo.InvariantCulture,
             });
-            problem = serializer.Deserialize<ProblemDetails>(jsonReader);
-            return null;
+            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);
         }
-        catch (JsonException exception)
+        catch (Exception exception) when (exception is JsonException or JsonSerializationException)
         {
-            return exception.GetType().Name;
+            return (null, exception.GetType().Name);
         }
     }
 }
@@ -237,7 +338,23 @@ public partial class FileMutationRequest
     [JsonProperty("contentHashReference", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
     public string? ContentHashReference { get; set; }
 
+    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's
+    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value
+    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;
+    // the static constructor below verifies at type-init time that no named member collides with
+    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.
     private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;
+
+    static FileMutationRequest()
+    {
+        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())
+        {
+            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, "Remove", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("FileMutationRequestFileOperationKind member '" + memberName + "' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.");
+            }
+        }
+    }
 
     public string ComputeIdempotencyHash(string workspaceId, string taskId)
     {

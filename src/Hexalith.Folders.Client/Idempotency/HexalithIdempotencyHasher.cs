@@ -14,6 +14,7 @@ public static class HexalithIdempotencyHasher
     public static string Compute(string operationId, IEnumerable<IdempotencyField> fields)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
+        RejectControlCharacters(operationId, nameof(operationId));
         ArgumentNullException.ThrowIfNull(fields);
 
         IdempotencyField[] orderedFields = fields.ToArray();
@@ -40,7 +41,19 @@ public static class HexalithIdempotencyHasher
             Enum enumValue => "s:" + Escape(GetEnumWireValue(enumValue)),
             Guid guid => "s:" + guid.ToString("D", CultureInfo.InvariantCulture).ToLowerInvariant(),
             DateTime dateTime => CanonicalizeDateTime(dateTime),
-            DateTimeOffset dateTimeOffset => "t:" + dateTimeOffset.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.Offset == TimeSpan.Zero
+                ? CanonicalizeDateTime(dateTimeOffset.UtcDateTime)
+                : throw new InvalidOperationException("DateTimeOffset values must have Offset=TimeSpan.Zero before idempotency canonicalization."),
+            // Explicit BCL primitive arms below avoid version-dependent NormalizeJson fall-through
+            // for types whose Newtonsoft serialization shape can change across runtime updates.
+            // Round 4 review finding P10 + Round 4 (external) P7 (Uri).
+            DateOnly dateOnly => "t:date:" + dateOnly.ToString("O", CultureInfo.InvariantCulture),
+            TimeOnly timeOnly => "t:time:" + timeOnly.ToString("O", CultureInfo.InvariantCulture),
+            TimeSpan timeSpan => "t:span:" + timeSpan.ToString("c", CultureInfo.InvariantCulture),
+            // Uri canonical form uses AbsoluteUri because Uri.ToString() percent-decodes
+            // reserved characters version-inconsistently across .NET runtimes. AbsoluteUri
+            // preserves the wire-stable percent-encoded form.
+            Uri uri => "u:" + Escape(uri.AbsoluteUri),
             decimal number => CanonicalizeDecimal(number),
             double number => CanonicalizeFloatingPoint(number),
             float number => CanonicalizeFloatingPoint(number),
@@ -65,6 +78,11 @@ public static class HexalithIdempotencyHasher
     internal static string NormalizeJsonText(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
+        if (value.Length > 0 && value[0] == '\uFEFF')
+        {
+            value = value[1..];
+        }
+
         using JsonTextReader reader = new(new StringReader(value))
         {
             DateParseHandling = DateParseHandling.None,
@@ -87,26 +105,53 @@ public static class HexalithIdempotencyHasher
 
     private static string GetEnumWireValue(Enum value)
     {
+        Type enumType = value.GetType();
+        if (enumType.IsDefined(typeof(FlagsAttribute), inherit: false))
+        {
+            throw new InvalidOperationException($"[Flags] enum '{enumType.FullName}' cannot be canonicalized.");
+        }
+
         string enumName = value.ToString();
         if (enumName.Contains(',', StringComparison.Ordinal))
         {
-            throw new InvalidOperationException($"Composite enum value '{enumName}' cannot be canonicalized.");
+            throw new InvalidOperationException($"Composite enum value '{enumName}' on '{enumType.FullName}' cannot be canonicalized.");
         }
 
-        MemberInfo? member = value.GetType().GetMember(enumName).SingleOrDefault();
-        if (member is null)
+        FieldInfo? field = enumType.GetField(enumName, BindingFlags.Public | BindingFlags.Static);
+        if (field is null)
         {
-            throw new InvalidOperationException($"Unknown enum value '{enumName}' cannot be canonicalized.");
+            throw new InvalidOperationException($"Unknown enum value '{enumName}' on '{enumType.FullName}'.");
         }
 
-        return member?.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? value.ToString();
+        return field.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? enumName;
     }
 
     internal static string Escape(string value)
     {
+        ArgumentNullException.ThrowIfNull(value);
         StringBuilder builder = new(value.Length);
-        foreach (char character in value)
+        int index = 0;
+        while (index < value.Length)
         {
+            char character = value[index];
+            if (char.IsHighSurrogate(character))
+            {
+                if (index + 1 >= value.Length || !char.IsLowSurrogate(value[index + 1]))
+                {
+                    throw new InvalidOperationException($"Lone or invalid UTF-16 high surrogate at index {index}.");
+                }
+
+                builder.Append(character);
+                builder.Append(value[index + 1]);
+                index += 2;
+                continue;
+            }
+
+            if (char.IsLowSurrogate(character))
+            {
+                throw new InvalidOperationException($"Lone UTF-16 low surrogate at index {index}.");
+            }
+
             builder.Append(character switch
             {
                 '\\' => "\\\\",
@@ -120,12 +165,44 @@ public static class HexalithIdempotencyHasher
                 ';' => "\\;",
                 '=' => "\\=",
                 < ' ' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
-                >= '\u007f' and <= '\u009f' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
+                >= '\u007F' and <= '\u009F' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
                 _ => character.ToString(),
             });
+            index++;
         }
 
         return builder.ToString();
+    }
+
+    private static void RejectControlCharacters(string value, string context)
+    {
+        for (int i = 0; i < value.Length; i++)
+        {
+            char ch = value[i];
+            if (char.IsHighSurrogate(ch))
+            {
+                if (i + 1 >= value.Length || !char.IsLowSurrogate(value[i + 1]))
+                {
+                    throw new InvalidOperationException(
+                        string.Create(CultureInfo.InvariantCulture, $"{context} contains lone or invalid UTF-16 high surrogate at index {i}."));
+                }
+
+                i++;
+                continue;
+            }
+
+            if (char.IsLowSurrogate(ch))
+            {
+                throw new InvalidOperationException(
+                    string.Create(CultureInfo.InvariantCulture, $"{context} contains lone UTF-16 low surrogate at index {i}."));
+            }
+
+            if (char.IsControl(ch) || ch == '\uFEFF' || ch == '\u2028' || ch == '\u2029')
+            {
+                throw new InvalidOperationException(
+                    string.Create(CultureInfo.InvariantCulture, $"{context} contains forbidden control or line-separator character at index {i} (U+{(int)ch:X4})."));
+            }
+        }
     }
 
     private static void EnsureDeclaredOrder(IReadOnlyList<IdempotencyField> fields)
@@ -135,9 +212,11 @@ public static class HexalithIdempotencyHasher
         foreach (IdempotencyField field in fields)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(field.Path);
+            RejectControlCharacters(field.Path, "field path");
             if (previous is not null && string.CompareOrdinal(previous, field.Path) > 0)
             {
-                throw new InvalidOperationException("Idempotency fields must be in ordinal-ascending order (matches spine declaration).");
+                throw new InvalidOperationException(
+                    $"Idempotency fields must be in ordinal-ascending order (matches spine declaration): '{previous}' must come after '{field.Path}'.");
             }
 
             if (!seen.Add(field.Path))
@@ -156,7 +235,22 @@ public static class HexalithIdempotencyHasher
             throw new InvalidOperationException("Non-finite floating point values cannot be canonicalized.");
         }
 
-        return "n:" + value.ToString("R", CultureInfo.InvariantCulture);
+        // Collapse -0.0 to +0.0 so the canonical encoding agrees with CanonicalizeDecimal's
+        // isZeroMagnitude normalization. Round 4 review finding P7.
+        long bits = BitConverter.DoubleToInt64Bits(value == 0.0 ? 0.0 : value);
+        return "n:double:" + bits.ToString("x16", CultureInfo.InvariantCulture);
+    }
+
+    private static string CanonicalizeFloatingPoint(float value)
+    {
+        if (float.IsNaN(value) || float.IsInfinity(value))
+        {
+            throw new InvalidOperationException("Non-finite floating point values cannot be canonicalized.");
+        }
+
+        // Collapse -0.0f to +0.0f for the same reason as the double overload above.
+        int bits = BitConverter.SingleToInt32Bits(value == 0.0f ? 0.0f : value);
+        return "n:float:" + bits.ToString("x8", CultureInfo.InvariantCulture);
     }
 
     private static string CanonicalizeDateTime(DateTime value)
@@ -173,8 +267,9 @@ public static class HexalithIdempotencyHasher
     {
         int[] bits = decimal.GetBits(value);
         int scale = (bits[3] >> 16) & 0x7F;
-        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
-        return string.Create(CultureInfo.InvariantCulture, $"decimal:{(negative ? "-" : "+")}:{scale}:{bits[2]:x8}:{bits[1]:x8}:{bits[0]:x8}");
+        bool isZeroMagnitude = (bits[0] | bits[1] | bits[2]) == 0;
+        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0 && !isZeroMagnitude;
+        return string.Create(CultureInfo.InvariantCulture, $"n:decimal:{(negative ? "-" : "+")}:{scale}:{bits[2]:x8}:{bits[1]:x8}:{bits[0]:x8}");
     }
 
     private static void RejectDuplicateProperties(JToken token, string path)
@@ -186,7 +281,7 @@ public static class HexalithIdempotencyHasher
             {
                 if (!names.Add(property.Name))
                 {
-                    throw new JsonReaderException($"Duplicate JSON property at {path}.{property.Name}.");
+                    throw new InvalidOperationException($"Duplicate JSON property at {path}.{property.Name}.");
                 }
 
                 RejectDuplicateProperties(property.Value, path + "." + property.Name);

@@ -1,0 +1,2060 @@
+diff --git a/.gitignore b/.gitignore
+index d5a18de..b241769 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -427,3 +427,6 @@ FodyWeavers.xsd
+ *.msix
+ *.msm
+ *.msp
++
++# Hexalith.Folders: JetBrains Rider lscache build cache files (machine-local)
++*.lscache
+diff --git a/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md b/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md
+index 1f0728d..2f92b9a 100644
+--- a/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md
++++ b/_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md
+@@ -211,6 +211,62 @@ docs/contract/sdk-generation-and-idempotency-helpers.md
+ | 2026-05-15 | Addressed code review findings with a real build-time helper generator, hardened canonical hashing/stale detection, expanded focused tests, and returned story to review. | Codex |
+ | 2026-05-15 | Re-review (`/bmad-code-review 1.12`, diff scope `2b33945..HEAD`) by Blind Hunter + Edge Case Hunter + Acceptance Auditor. Triage: 3 decisions, 28 patches, 6 deferred, 13 dismissed. Story returned to in-progress; see `## Code Review Round 2 (2026-05-15)` for action list. | Claude Opus 4.7 |
+ | 2026-05-16 | Addressed Code Review Round 2 findings, reverted out-of-scope root submodule pointer bumps, strengthened operation-aware helper generation and canonicalization tests, and returned story to review. | Codex |
++| 2026-05-16 | Code Review Round 3 (`/bmad-code-review 1.12`, diff scope `2b33945..HEAD`) by Blind Hunter + Edge Case Hunter + Acceptance Auditor. Triage: 3 decisions, 26 patches, 16 deferred, 17 dismissed. Acceptance Auditor verdict: `pass-with-minor` (all 16 ACs pass). Status returned to in-progress; see `## Code Review Round 3 (2026-05-16)` for action list. | Claude Opus 4.7 |
++| 2026-05-16 | Addressed Code Review Round 3 in-session: all 3 decisions resolved (D1 shared YAML loader project extracted, D2 Dictionary registry shipped with spine-line comments, D3 HelperSchemaVersion constant + migration doc added). All 26 patches applied across hasher, generator, generated template, tests, csproj, .gitignore, and docs. Deterministic two-pass regeneration verified (SHA-256 `0A74D3082AE40A6BB57BA396B888FB2DF452D64BADC91AABF33C8AD197FA70E9`). Full solution build + test (110/110 passing). Story returned to review. | Claude Opus 4.7 |
++
++## Code Review Round 3 (2026-05-16)
++
++- Reviewers: Blind Hunter (cynical, diff-only), Edge Case Hunter (boundary analysis with project read access), Acceptance Auditor (spec + 16 ACs + project-context + Round 2 follow-up check)
++- Diff source: `2b33945..HEAD` scoped to story 1.12 paths (`_bmad-output/implementation-artifacts/review-1-12-round3-diff.patch`, 11 files, ~1496 insertions / 152 deletions)
++- Raw findings: 50 (Blind) + 20 (Edge) + 5 (Auditor) = 75
++- Triage: 3 decision-needed, 26 patches, 16 deferred (pre-existing or out-of-scope hardening), 17 dismissed (noise / verified intentional / handled elsewhere)
++- Acceptance Auditor verdict: **pass-with-minor** — all 16 ACs satisfied, negative scope clean, no submodule pointer bumps, no leakage; two Round 2 Resolved Decisions (`P-shared-1`, `P-registry-1`) marked `[x]` were not actually shipped as agreed.
++
++### Review Findings
++
++- [x] [Review][Patch][Resolved Decision] **D1** — Ship the shared YAML loader project. Round 2 Resolved Decision `P-shared-1` was marked `[x]` but the shared library was not extracted; `Generation/Program.cs:1027-1063` and `ClientGenerationTests.cs:1798-1948` independently re-implement `LoadYaml`/`RequiredMapping`/`RequiredScalar`/`ReadStringSequence`/`TryReadRequestSchema`/parameter enumeration. Resolution: **add a shared project** (e.g., `src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.Shared.csproj`) containing the YAML loader helpers and `OperationModel`/`ParameterModel` types, referenced by both `Generation` and `Hexalith.Folders.Client.Tests`. Eliminates drift between test parser and generator parser. Affects AC 11, AC 14.
++- [x] [Review][Patch][Resolved Decision] **D2** — Convert `ResolveField` inline switch to a `Dictionary<(string SchemaName, string Field), FieldModel>` registry. Round 2 Resolved Decision `P-registry-1` was marked `[x]` but Round 3 shipped an inline switch expression at `src/Hexalith.Folders.Client/Generation/Program.cs:674-688` instead of the agreed registry shape. Resolution: **convert to a `static readonly Dictionary<(string, string), FieldModel>` initialized at file scope, with per-entry `// hexalith.folders.v1.yaml:NNNN` comments naming the spine lines for each special-case field, and have `ResolveField` call `TryGetValue` first**. Affects AC 11, AC 15.
++- [x] [Review][Patch][Resolved Decision] **D3** — Accept workspace request parameter-order swap as canonical spine evolution and add detection surface. Workspace request signatures changed from `(folderId, taskId, workspaceId)` to `(folderId, workspaceId, taskId)` for `LockWorkspaceRequest`, `PrepareWorkspaceRequest`, `ReleaseWorkspaceLockRequest`; `BranchRefPolicyRequest` parameter changed from `providerBindingRef` to `folderId` (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:163-219, 186-201`). Same C# `string` types means positional callers silently mis-hash. Resolution (compatible with AC 9 — no release docs, no CLI/MCP work): **(a) add a documentation paragraph in `docs/contract/sdk-generation-and-idempotency-helpers.md` describing the rename and how to detect via `HelperSchemaVersion`, (b) emit `public const string HelperSchemaVersion = "20260516";` in the generated helpers file so downstream consumers can branch on it, (c) tighten the helper-presence reflection test in `ClientGenerationTests.cs` to assert parameter NAMES + ORDER match the spine-derived path-parameter list (merges with patch P14 below)**. Affects AC 4, AC 13.
++- [x] [Review][Patch] ProblemDetails / ProblemDetailsParseDiagnostic re-parse on every property access [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:101-118`] — both expression-bodied properties call `TryReadProblemDetails` per access, so 10 reads = 10 deserializations. Under retry loops this becomes a hot path. Inverted-looking branch in `TryGetProblemDetails` (`is null ? problem : null`) also obscures intent. Memoize the parse result in a thread-safe lazy backing field and split into one parse + two getter projections.
++- [x] [Review][Patch] `NormalizeGeneratedHelperHash` regex is fragile [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:88-89`, `src/Hexalith.Folders.Client/Generation/Program.cs:1145`] — character class `[0-9a-fA-F_]+` admits `_` which SHA-256 hex never contains; replacement string injects fixed 4-space indentation so any tab/2-space variant breaks `IsCurrent`; trailing comment or differing EOL after the semicolon evades the anchor. Tighten to `(?m)^(?<indent>\s*)public const string GeneratedHelpersSha256 = "[0-9a-fA-F]{64}";$` and emit `${indent}` in the replacement so indentation round-trips.
++- [x] [Review][Patch] `VerifyCurrentDetailed` swallows `FileNotFoundException` with only the exception type name [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70-72`] — callers cannot tell *which* of the three input files is missing. Include the offending path (already known at the call site) and the exception message in the diagnostic.
++- [x] [Review][Patch] Magic cast `(FileMutationRequestFileOperationKind)2` for Remove [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303`] — if NSwag changes enum ordering Remove silently maps to a different member. Replace with `Enum.Parse<FileMutationRequestFileOperationKind>("Remove")` at the call site, or have the generator emit a compile-time check that asserts the ordinal.
++- [x] [Review][Patch] DateTime vs DateTimeOffset canonicalization is asymmetric [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1283-1285, 1406-1414`] — `DateTime` throws on `Kind != Utc`; `DateTimeOffset` silently calls `ToUniversalTime()`. Two clients sending the same logical instant via `DateTimeOffset` get equal hashes, via `DateTime` get exceptions. Unify: either both throw on non-UTC, or both convert. Document the choice.
++- [x] [Review][Patch] Decimal `-0m` vs `0m` produce different hashes [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1416-1422`] — `decimal.GetBits(-0m)` sets the sign bit; `decimal.GetBits(0m)` does not. Normalize the sign bit when the integer magnitude is zero, or explicitly document the distinction with a fixture test.
++- [x] [Review][Patch] `GetEnumWireValue` mishandles `[Flags]` / composite enum values [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1335-1341`] — `SingleOrDefault` throws `InvalidOperationException` on `"A, B"` composite; dead `?.` null-conditional fallback because `member` was already thrown on. Detect `[Flags]` up front and reject; iterate `Type.GetFields()` for stable resolution.
++- [x] [Review][Patch] `ParseArguments` does not validate values aren't flag-shaped [`src/Hexalith.Folders.Client/Generation/Program.cs:1118-1137`] — a misordered `--repository-root --contract /path/x.yaml` invocation produces `{"--repository-root": "--contract"}`. Validate `!values[i+1].StartsWith("--", Ordinal)` and fail-closed with the offending position.
++- [x] [Review][Patch] `EnsureDeclaredOrder` error message omits offending fields [`src/Hexalith.Folders.Client/Generation/Program.cs:556-559`, `src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — message says "must be in ordinal-ascending order" without naming which fields violated. Include the previous + current field name in the diagnostic.
++- [x] [Review][Patch] `EnsureParameter` accepts an unused `openApiName` parameter [`src/Hexalith.Folders.Client/Generation/Program.cs:697-707`] — discarded via `_ = openApiName;`. Either drop the parameter from the signature or actually use it to verify the spine-to-method name mapping.
++- [x] [Review][Patch] `HelperGenerationTargetRegeneratesWhenContractSpineChanges` leaks temp directories [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1628-1650`] — creates `tempRoot` but never deletes (no try/finally). On Windows CI temp dirs accumulate; also fails opaquely if `Process.Start(...)` returns null when `dotnet` is missing from PATH (`!` triggers `NullReferenceException`). Wrap body in try/finally with `Directory.Delete(tempRoot, recursive: true)` and replace `!` with `?? throw new InvalidOperationException("dotnet CLI not found on PATH")`.
++- [x] [Review][Patch] `LocateRepositoryRoot` breaks on single-file publish [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1891-1907`] — `Assembly.Location` returns `""` under single-file publish, then `Path.GetDirectoryName("")` returns `null`, then `new DirectoryInfo(null!)` throws `ArgumentNullException`. Fall back to `AppContext.BaseDirectory` when `Location` is empty.
++- [x] [Review][Patch] `EnumerableExtensions` declared in global namespace [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1951-1964`] — pollutes the assembly's root namespace. Wrap in `namespace Hexalith.Folders.Client.Tests`.
++- [x] [Review][Patch] `Hexalith.Folders.Client.Generation.csproj` missing `<TargetFramework>` [`src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj`] — relies entirely on `Directory.Build.props` to provide one. If the props file changes default TFM or the project moves, `dotnet run --project ...` fails with a confusing error. Add an explicit `<TargetFramework>net10.0</TargetFramework>` (or whichever the project requires).
++- [x] [Review][Patch] `MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot` only asserts parameter count and return type [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1532-1556`] — does NOT verify parameter names or order match the spine-derived path-parameter list. A future regression that swaps parameter order (as D3 demonstrates is plausible) silently passes. Assert both parameter names (camelCased from the spine path parameter names) and their order.
++- [x] [Review][Patch] `.lscache` IDE/build-cache files committed [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache`, `tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache`] — outside the declared File List; auto-maintained machine-local cache. Add `*.lscache` to `.gitignore` (or the project-level git attributes) and remove both files from the diff.
++- [x] [Review][Patch] `RejectDuplicateProperties` throws `JsonReaderException` after deserialization [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1424`] — no reader is involved at that point; the JToken graph is in memory. Replace with `InvalidOperationException` to match the actual failure context.
++- [x] [Review][Patch] Generator placeholder substitution does not assert single occurrence [`src/Hexalith.Folders.Client/Generation/Program.cs:529-535`] — `output.IndexOf(placeholder)` finds the first match; if any rendered comment or string literal contains the literal `__GENERATED_HELPERS_SHA256__` a second time, only the first is replaced and the file no longer matches its own hash. Add a count check and fail-closed if `≠ 1`.
++- [x] [Review][Patch] `IdempotencyField.Value` accepts control characters even when the corpus labels them parser-rejected [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:105-129`, `tests/fixtures/idempotency-encoding-corpus.json` malformed-idempotency-key-control-character case] — the canonical Escape table passes U+0001 through; corpus labels it parser-rejected. Reject C0/C1 control characters (and U+2028/U+2029, BOM) at the hasher boundary so the corpus classification matches actual behavior.
++- [x] [Review][Patch] `Escape` does not handle UTF-16 surrogate halves [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:105-129`] — lone or split surrogates (truncated emoji, malformed input) produce invalid UTF-8 when the canonical string is hashed. Enumerate via `Rune.EnumerateRunes` and reject invalid surrogates explicitly.
++- [x] [Review][Patch] `double.ToString("R")` is platform-variant [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:152-160`] — "R" round-trip format has varied across .NET versions for borderline IEEE-754 values. Replace with `BitConverter.DoubleToInt64Bits(value).ToString("x16", InvariantCulture)` (and similarly for float via `SingleToInt32Bits`) for deterministic bit-exact encoding.
++- [x] [Review][Patch] `TryReadProblemDetails` catches `JsonException` but not `JsonSerializationException` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:108-118`] — Newtonsoft's `JsonSerializationException` is the type thrown for wrong-shape JSON (array, scalar) and is *not* always a subclass of `JsonException`. Catch `Newtonsoft.Json.JsonException` explicitly OR catch both types so adapters always see the structured diagnostic.
++- [x] [Review][Patch] `NormalizeJsonText` does not strip leading BOM [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:65-79`] — UTF-8 BOM (U+FEFF) at the start of incoming JSON causes `JsonTextReader` to error or accept it as data. Strip the BOM before constructing the reader so payloads from BOM-prefixing producers hash equivalently.
++- [x] [Review][Patch] Corpus classification coverage incomplete [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1686-1702`] — the if/else chain handles `non-equivalent`, `equivalent-only`, `parser-rejected`, `equivalent-after-lexicographic-field-ordering` only. `equivalent-after-generated-normalization-for-declared-normalization-insensitive-field` and `equivalent-only-when-field-declares-compatibility-normalization` fall through silently — fixture-consumed claim is partially false. Add an explicit branch for each remaining classification, OR throw on unknown classification to force coverage updates when the corpus gains new categories.
++- [x] [Review][Defer] PathTooLongException nuance in `VerifyCurrentDetailed` catch filter [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70`] — deferred, current catch list is sufficient for the inputs the helper receives.
++- [x] [Review][Defer] Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — deferred, cosmetic refactor; two switches will drift only if a new enum value lands without updating both, and a compile-time test could be added later.
++- [x] [Review][Defer] `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — deferred, cosmetic. Order check fires before duplicate check for differently-cased equal names; in practice the spine never produces this.
++- [x] [Review][Defer] `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — deferred, micro-optimization; field counts per operation are small.
++- [x] [Review][Defer] `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651`] — deferred, hash-difference check is sufficient evidence of regeneration; comment-only YAML mutation flowing through is acceptable.
++- [x] [Review][Defer] `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — deferred, the shim is harmless and the NSwag duplicate-emission cause is known; could move outside `Generated/` later.
++- [x] [Review][Defer] MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — deferred, works as written; revisit when the file layout changes.
++- [x] [Review][Defer] `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — deferred, perf concern; ties into Story 1.14 CI gate review.
++- [x] [Review][Defer] `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — deferred, the new location works; original-location ineffectiveness is folklore but functionally moot.
++- [x] [Review][Defer] `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — deferred, equivalence-only comparison so string-vs-string is acceptable; revisit when corpus introduces non-string values that need typed canonicalization.
++- [x] [Review][Defer] `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392`] — deferred pending spine verification; if the spine intentionally differs the divergence is correct, if not it is a spine bug owned by Stories 1.7-1.11.
++- [x] [Review][Defer] `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — deferred, Round 2 P28 was marked done with this approach; functionally deterministic. Stylistic-only deferral.
++- [x] [Review][Defer] `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — deferred, no current spine schema requires it; revisit when Stories 1.7-1.11 introduce composed schemas with idempotency fields.
++- [x] [Review][Defer] `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — deferred, only fires for `CreateFolderRequest` today; revisit if spine adds the field to other schemas.
++- [x] [Review][Defer] `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`] — deferred, hash work is in-process and short; revisit when Compute is invoked from request-scoped network paths.
++- [x] [Review][Defer] `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — deferred, filesystem-boundary concern; build-time and CI consume canonicalized paths today.
+ 
+ ## Dev Agent Record
+ 
+diff --git a/_bmad-output/implementation-artifacts/deferred-work.md b/_bmad-output/implementation-artifacts/deferred-work.md
+index 31c6c83..7bb9a12 100644
+--- a/_bmad-output/implementation-artifacts/deferred-work.md
++++ b/_bmad-output/implementation-artifacts/deferred-work.md
+@@ -163,3 +163,22 @@ Patches identified by the code review that were NOT applied in the same pass due
+ - F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or modifying its scope leaves the AC mapping silently stale. Revisit if traceability tooling becomes available.
+ - F3: `equivalence_classification` strings not enum-typed — long compound classification strings (~50-90 chars) in `tests/fixtures/idempotency-encoding-corpus.json` are used as identifiers without schema enum constraint; one typo silently breaks future hash-helper consumers. Tied to D7 (whether to add corpus schema); revisit when Story 1.12 helpers begin consuming the values.
+ - F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf` offsets. Project standardizes on UTF-8 without BOM; revisit if an editor introduces non-UTF-8 content.
++
++## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)
++
++- PathTooLongException nuance in `VerifyCurrentDetailed` catch filter [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70`] — current catch list is sufficient for the inputs the helper receives.
++- Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — cosmetic refactor; two switches will drift only if a new enum value lands without updating both.
++- `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — cosmetic; order check fires before duplicate check for differently-cased equal names.
++- `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
++- `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651`] — hash-difference check is sufficient evidence of regeneration; comment-only YAML mutation is acceptable.
++- `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — the shim is harmless and the NSwag duplicate-emission cause is known.
++- MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — works as written; revisit when the file layout changes.
++- `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — perf concern; ties into Story 1.14 CI gate review.
++- `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — the new location works; original-location ineffectiveness is folklore.
++- `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
++- `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392`] — pending spine verification; owned by Stories 1.7-1.11 if it is a spine bug.
++- `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — Round 2 P28 was marked done with this approach; functionally deterministic.
++- `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — no current spine schema requires it; revisit when composed schemas with idempotency fields arrive.
++- `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — only fires for `CreateFolderRequest` today.
++- `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`] — hash work is in-process and short; revisit when invoked from request-scoped network paths.
++- `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — filesystem-boundary concern; build-time and CI consume canonicalized paths today.
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index ea825f5..09a9e34 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -1,5 +1,5 @@
+ # generated: 2026-05-12T07:11:18+02:00
+-# last_updated: 2026-05-16T09:02:01+02:00
++# last_updated: 2026-05-16T14:45:00+02:00
+ # project: Hexalith.Folders
+ # project_key: NOKEY
+ # tracking_system: file-system
+@@ -35,7 +35,7 @@
+ # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+ 
+ generated: 2026-05-12T07:11:18+02:00
+-last_updated: 2026-05-16T09:02:01+02:00
++last_updated: 2026-05-16T14:45:00+02:00
+ project: Hexalith.Folders
+ project_key: NOKEY
+ tracking_system: file-system
+diff --git a/_bmad-output/process-notes/predev-preflight-latest.json b/_bmad-output/process-notes/predev-preflight-latest.json
+index bfc30cb..ef0d128 100644
+--- a/_bmad-output/process-notes/predev-preflight-latest.json
++++ b/_bmad-output/process-notes/predev-preflight-latest.json
+@@ -1,7 +1,7 @@
+ {
+   "schema_version": 1,
+   "produced_by": "jobs/preflight-predev-hardening.py",
+-  "timestamp": "2026-05-16T07:02:01Z",
++  "timestamp": "2026-05-16T09:02:27Z",
+   "repo": "D:\\Hexalith.Folders",
+   "result": "fail",
+   "bootstrap_actions": [],
+@@ -12,7 +12,7 @@
+       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
+       "result": "pass",
+       "details": "PARSE OK",
+-      "file_size_bytes": 7935,
++      "file_size_bytes": 7945,
+       "line_count": 157,
+       "top_level_keys": [
+         "development_status",
+@@ -63,11 +63,11 @@
+         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
+       ],
+       "exit_code": 0,
+-      "stdout": " M Hexalith.EventStore\n M Hexalith.FrontComposer\n M Hexalith.Memories\n M _bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md\n M _bmad-output/implementation-artifacts/1-13-generate-the-c13-parity-oracle.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M docs/contract/sdk-generation-and-idempotency-helpers.md\n M src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs\n M src/Hexalith.Folders.Client/Generation/Program.cs\n M src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj\n M src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs\n M tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs\n M tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj\n M tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs\n M tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs\n M tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs\n M tests/fixtures/parity-contract.schema.json\n M tests/tools/parity-oracle-generator/README.md\n?? docs/contract/parity-oracle-generator.md\n?? tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs\n?? tests/fixtures/parity-contract.yaml\n?? tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj\n?? tests/tools/parity-oracle-generator/Program.cs\n",
++      "stdout": " M .gitignore\n M _bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M docs/contract/sdk-generation-and-idempotency-helpers.md\n M src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs\n M src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj\n M src/Hexalith.Folders.Client/Generation/Program.cs\nD  src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache\n M src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs\n M tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs\n M tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj\nD  tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache\n M tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs\n?? _bmad-output/implementation-artifacts/review-1-12-round3-diff.patch\n?? src/Hexalith.Folders.Client/Generation/Shared/\n?? tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs\n",
+       "stderr": "",
+-      "dirty_path_count": 23,
++      "dirty_path_count": 17,
+       "result": "fail",
+-      "details": "23 dirty path(s)"
++      "details": "17 dirty path(s)"
+     }
+   ],
+   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
+diff --git a/docs/contract/sdk-generation-and-idempotency-helpers.md b/docs/contract/sdk-generation-and-idempotency-helpers.md
+index a5a3140..feff2c2 100644
+--- a/docs/contract/sdk-generation-and-idempotency-helpers.md
++++ b/docs/contract/sdk-generation-and-idempotency-helpers.md
+@@ -61,6 +61,15 @@ Decimal values are encoded with their sign, scale, and 96-bit integer components
+ 
+ The Contract Spine currently declares `path_metadata` and `path_policy_class` as separate equivalence fields for file mutations. The helper therefore includes `pathPolicyClass` once inside the canonical `path_metadata` JSON object and once as the top-level `path_policy_class` scalar; this is intentional spine-driven redundancy, not SDK-side field invention.
+ 
++## Helper Signature Versioning
++
++Helper method parameter lists are derived from the Contract Spine path-parameter declaration order plus the operation's `x-hexalith-idempotency-equivalence` list. Spine evolution can therefore reorder or rename helper parameters. Two parameter-set changes shipped with the Round 3 generator regeneration on 2026-05-16:
++
++- `PrepareWorkspaceRequest.ComputeIdempotencyHash`, `LockWorkspaceRequest.ComputeIdempotencyHash`, and `ReleaseWorkspaceLockRequest.ComputeIdempotencyHash` parameters now follow `(folderId, workspaceId, taskId)` to match the spine path declaration. The prior shape `(folderId, taskId, workspaceId)` is no longer emitted; positional callers using the old order will silently swap `workspaceId` and `taskId` into the wrong canonical-line slots and produce a divergent hash.
++- `BranchRefPolicyRequest.ComputeIdempotencyHash` now takes `(folderId, repositoryBindingId)` to match the spine field set. The prior parameter `providerBindingRef` is no longer emitted.
++
++Downstream consumers should detect the rename surface by reading the generated `HexalithFoldersGeneratedArtifacts.HelperSchemaVersion` constant. The constant is bumped by the generator each time helper parameter shapes change. The constant is intended for compatibility branching only; it is not part of the runtime hash and is never serialized as helper input.
++
+ ## Downstream Ownership
+ 
+ Story 1.13 owns final C13 parity rows and must consume generated operation IDs and helper entry points instead of reimplementing hash construction.
+diff --git a/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs b/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+index f38f0ae..8d920a0 100644
+--- a/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
++++ b/src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+@@ -21,7 +21,11 @@ public static class HexalithFoldersGeneratedArtifacts
+ {
+     public const string ContractSpineSha256 = "43501312ef9db41e9922189724ffd6e069df7c9b1e4e29d652ada905215a35c2";
+     public const string GenerationConfigurationSha256 = "313de39da4e8a84e00f0c66e23f4e5240e4df8779f007e566807810219a9ae61";
+-    public const string GeneratedHelpersSha256 = "421e0da8481e68e1c122af39707815b5c4c89a96a58d332186e8f94f3e74b2ca";
++    public const string GeneratedHelpersSha256 = "996399252950dc9da6b2eefbad745217310667f8c463939a1be3a8cbc3a598b6";
++
++    // HelperSchemaVersion bumps each time helper parameter shapes change. Downstream consumers
++    // can branch on it to detect a positional-parameter rename. Not included in the canonical hash.
++    public const string HelperSchemaVersion = "20260516";
+ 
+     public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;
+ 
+@@ -32,18 +36,29 @@ public static class HexalithFoldersGeneratedArtifacts
+             return new(false, "repositoryRoot must be a fully qualified path");
+         }
+ 
++        string spinePath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
++        string configurationPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
++        string helpersPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
+         try
+         {
+-            string spine = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+-            string configuration = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json"));
+-            string helpers = File.ReadAllText(Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"));
++            string spine = File.ReadAllText(spinePath);
++            string configuration = File.ReadAllText(configurationPath);
++            string helpers = File.ReadAllText(helpersPath);
+             return IsCurrent(spine, configuration, helpers)
+                 ? new(true, "generated artifacts match Contract Spine inputs")
+                 : new(false, "generated artifact content hashes do not match Contract Spine inputs");
+         }
++        catch (FileNotFoundException notFound)
++        {
++            return new(false, $"{nameof(FileNotFoundException)}: {notFound.FileName ?? notFound.Message}");
++        }
++        catch (DirectoryNotFoundException directoryMissing)
++        {
++            return new(false, $"{nameof(DirectoryNotFoundException)}: {directoryMissing.Message}");
++        }
+         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)
+         {
+-            return new(false, exception.GetType().Name);
++            return new(false, $"{exception.GetType().Name}: {exception.Message}");
+         }
+     }
+ 
+@@ -58,7 +73,7 @@ public static class HexalithFoldersGeneratedArtifacts
+     }
+ 
+     private static string NormalizeGeneratedHelperHash(string value) =>
+-        Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
++        Regex.Replace(NormalizeText(value), "^(?<indent>[ \\t]*)public const string GeneratedHelpersSha256 = \"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\";[ \\t]*$", "${indent}public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+ 
+     private static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
+ 
+@@ -68,26 +83,34 @@ public static class HexalithFoldersGeneratedArtifacts
+ 
+ public partial class HexalithFoldersApiException
+ {
+-    public ProblemDetails? ProblemDetails => TryGetProblemDetails();
++    private (ProblemDetails? Problem, string? Diagnostic)? _parsedProblemDetails;
+ 
+-    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);
++    public ProblemDetails? ProblemDetails => GetParsedProblemDetails().Problem;
+ 
+-    private ProblemDetails? TryGetProblemDetails()
++    public string? ProblemDetailsParseDiagnostic => GetParsedProblemDetails().Diagnostic;
++
++    private (ProblemDetails? Problem, string? Diagnostic) GetParsedProblemDetails()
+     {
+-        if (this is HexalithFoldersApiException<ProblemDetails> typed)
++        if (_parsedProblemDetails is { } cached)
+         {
+-            return typed.Result;
++            return cached;
+         }
+ 
+-        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;
++        (ProblemDetails? Problem, string? Diagnostic) parsed = ParseProblemDetails();
++        _parsedProblemDetails = parsed;
++        return parsed;
+     }
+ 
+-    private string? TryReadProblemDetails(out ProblemDetails? problem)
++    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()
+     {
+-        problem = null;
++        if (this is HexalithFoldersApiException<ProblemDetails> typed)
++        {
++            return (typed.Result, null);
++        }
++
+         if (string.IsNullOrWhiteSpace(Response))
+         {
+-            return null;
++            return (null, null);
+         }
+ 
+         try
+@@ -102,12 +125,11 @@ public partial class HexalithFoldersApiException
+             {
+                 Culture = System.Globalization.CultureInfo.InvariantCulture,
+             });
+-            problem = serializer.Deserialize<ProblemDetails>(jsonReader);
+-            return null;
++            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);
+         }
+-        catch (JsonException exception)
++        catch (Exception exception) when (exception is JsonException or JsonSerializationException)
+         {
+-            return exception.GetType().Name;
++            return (null, exception.GetType().Name);
+         }
+     }
+ }
+@@ -237,8 +259,24 @@ public partial class FileMutationRequest
+     [JsonProperty("contentHashReference", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+     public string? ContentHashReference { get; set; }
+ 
++    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's
++    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value
++    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;
++    // the static constructor below verifies at type-init time that no named member collides with
++    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.
+     private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;
+ 
++    static FileMutationRequest()
++    {
++        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())
++        {
++            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, "Remove", StringComparison.Ordinal))
++            {
++                throw new InvalidOperationException("FileMutationRequestFileOperationKind member '" + memberName + "' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.");
++            }
++        }
++    }
++
+     public string ComputeIdempotencyHash(string workspaceId, string taskId)
+     {
+         string operationId = ResolveFileMutationOperationId();
+diff --git a/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj b/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
+index e0dd124..cc0fcf8 100644
+--- a/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
++++ b/src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj
+@@ -1,9 +1,17 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
++    <TargetFramework>net10.0</TargetFramework>
+     <IsPackable>false</IsPackable>
+   </PropertyGroup>
++  <ItemGroup>
++    <Compile Remove="Shared\**\*.cs" />
++    <None Remove="Shared\**\*.cs" />
++  </ItemGroup>
+   <ItemGroup>
+     <PackageReference Include="YamlDotNet" />
+   </ItemGroup>
++  <ItemGroup>
++    <ProjectReference Include="Shared\Hexalith.Folders.Client.Generation.Shared.csproj" />
++  </ItemGroup>
+ </Project>
+diff --git a/src/Hexalith.Folders.Client/Generation/Program.cs b/src/Hexalith.Folders.Client/Generation/Program.cs
+index b17549a..2e9edc1 100644
+--- a/src/Hexalith.Folders.Client/Generation/Program.cs
++++ b/src/Hexalith.Folders.Client/Generation/Program.cs
+@@ -3,6 +3,8 @@ using System.Security.Cryptography;
+ using System.Text;
+ using System.Text.RegularExpressions;
+ using YamlDotNet.RepresentationModel;
++using Hexalith.Folders.Client.Generation.Shared;
++using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
+ 
+ Dictionary<string, string> arguments = ParseArguments(args);
+ string repositoryRoot = RequiredArgument(arguments, "--repository-root");
+@@ -17,13 +19,22 @@ IReadOnlyList<OperationModel> operations = EnumerateOperations(root).ToArray();
+ IReadOnlyList<HelperModel> helpers = BuildHelpers(root, operations);
+ string output = Render(helpers, Sha256(contract), Sha256(configuration));
+ string helperHash = Sha256(NormalizeGeneratedHelperHash(output));
+-int helperHashPlaceholder = output.IndexOf("__GENERATED_HELPERS_SHA256__", StringComparison.Ordinal);
+-if (helperHashPlaceholder < 0)
++const string PlaceholderToken = "__GENERATED_HELPERS_SHA256__";
++const string ConstDeclarationPrefix = "    public const string GeneratedHelpersSha256 = \"";
++string constDeclarationSentinel = ConstDeclarationPrefix + PlaceholderToken + "\";";
++int constLineIndex = output.IndexOf(constDeclarationSentinel, StringComparison.Ordinal);
++if (constLineIndex < 0)
+ {
+-    throw new InvalidOperationException("Generated helper hash placeholder was not emitted.");
++    throw new InvalidOperationException("Generated helper hash placeholder const declaration was not emitted.");
+ }
+ 
+-output = output.Remove(helperHashPlaceholder, "__GENERATED_HELPERS_SHA256__".Length).Insert(helperHashPlaceholder, helperHash);
++if (output.IndexOf(constDeclarationSentinel, constLineIndex + constDeclarationSentinel.Length, StringComparison.Ordinal) >= 0)
++{
++    throw new InvalidOperationException("Generated helper hash placeholder const declaration was emitted more than once.");
++}
++
++int placeholderOffset = constLineIndex + ConstDeclarationPrefix.Length;
++output = output.Remove(placeholderOffset, PlaceholderToken.Length).Insert(placeholderOffset, helperHash);
+ Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+ File.WriteAllText(outputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+ 
+@@ -44,9 +55,24 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
+             throw new InvalidOperationException($"Operation {operation.OperationId} declares idempotency equivalence without a request schema.");
+         }
+ 
+-        if (!operation.IdempotencyFields.SequenceEqual(operation.IdempotencyFields.Order(StringComparer.Ordinal), StringComparer.Ordinal))
++        string? outOfOrderPrevious = null;
++        string? outOfOrderCurrent = null;
++        string? previousField = null;
++        foreach (string field in operation.IdempotencyFields)
++        {
++            if (previousField is not null && string.CompareOrdinal(previousField, field) > 0)
++            {
++                outOfOrderPrevious = previousField;
++                outOfOrderCurrent = field;
++                break;
++            }
++
++            previousField = field;
++        }
++
++        if (outOfOrderPrevious is not null)
+         {
+-            throw new InvalidOperationException($"Operation {operation.OperationId} idempotency fields are not in lexicographic order.");
++            throw new InvalidOperationException($"Operation {operation.OperationId} idempotency fields are not in lexicographic order: '{outOfOrderPrevious}' must come after '{outOfOrderCurrent}'.");
+         }
+ 
+         HashSet<string> uniqueFields = new(StringComparer.Ordinal);
+@@ -130,13 +156,14 @@ static FieldModel ResolveField(
+ 
+     if (operationParameters.TryGetValue(field, out string? parameterName))
+     {
+-        string parameter = EnsureParameter(helperParameters, field, parameterName);
++        _ = parameterName;
++        string parameter = EnsureParameter(helperParameters, field);
+         return new FieldModel(field, "true", parameter);
+     }
+ 
+-    if (TryResolveSpecialField(schemaName, field, out FieldModel? specialField))
++    if (SpecialFields.Registry.TryGetValue((schemaName, field), out FieldModel? specialField))
+     {
+-        return specialField!;
++        return specialField;
+     }
+ 
+     string[] parts = field.Split('.', StringSplitOptions.RemoveEmptyEntries);
+@@ -162,22 +189,6 @@ static FieldModel ResolveField(
+     return new FieldModel(field, $"{rootProperty} is not null", $"{rootProperty}?.{string.Join(".", bodyParts.Skip(1).Select(ToPropertyName))}");
+ }
+ 
+-static bool TryResolveSpecialField(string schemaName, string field, out FieldModel? model)
+-{
+-    // FileMutationRequest spine fields are declared at components.schemas.FileMutationRequest.
+-    model = (schemaName, field) switch
+-    {
+-        ("FileMutationRequest", "content_hash_reference") => new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),
+-        ("FileMutationRequest", "file_operation_kind") => new FieldModel("file_operation_kind", "true", "ResolveFileMutationOperationKindWireValue()"),
+-        ("FileMutationRequest", "operation_id") => new FieldModel("operation_id", "OperationId is not null", "OperationId"),
+-        ("FileMutationRequest", "path_metadata") => new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
+-        ("FileMutationRequest", "path_policy_class") => new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
+-        _ => null,
+-    };
+-
+-    return model is not null;
+-}
+-
+ static bool SchemaMatchesLogicalPrefix(string schemaName, string prefix)
+ {
+     string normalizedSchema = NormalizeName(schemaName);
+@@ -185,9 +196,8 @@ static bool SchemaMatchesLogicalPrefix(string schemaName, string prefix)
+     return normalizedSchema == normalizedPrefix + "_request";
+ }
+ 
+-static string EnsureParameter(List<ParameterModel> parameters, string field, string openApiName)
++static string EnsureParameter(List<ParameterModel> parameters, string field)
+ {
+-    _ = openApiName;
+     string name = ToParameterName(field);
+     if (!parameters.Any(p => p.Name == name))
+     {
+@@ -279,20 +289,7 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
+     }
+ }
+ 
+-static string? TryReadRequestSchema(YamlMappingNode operation)
+-{
+-    if (!operation.Children.TryGetValue(new YamlScalarNode("requestBody"), out YamlNode? requestBodyNode))
+-    {
+-        return null;
+-    }
+-
+-    YamlMappingNode requestBody = requestBodyNode.ShouldBeMapping("requestBody");
+-    YamlMappingNode content = RequiredMapping(requestBody, "content");
+-    YamlMappingNode json = RequiredMapping(content, "application/json");
+-    YamlMappingNode schema = RequiredMapping(json, "schema");
+-    string reference = RequiredScalar(schema, "$ref");
+-    return reference.Split('/').Last();
+-}
++// TryReadRequestSchema is provided by YamlContractLoader (imported via `using static`).
+ 
+ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, string configurationHash)
+ {
+@@ -322,6 +319,10 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine($"    public const string GenerationConfigurationSha256 = \"{configurationHash}\";");
+     code.AppendLine("    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";");
+     code.AppendLine();
++    code.AppendLine("    // HelperSchemaVersion bumps each time helper parameter shapes change. Downstream consumers");
++    code.AppendLine("    // can branch on it to detect a positional-parameter rename. Not included in the canonical hash.");
++    code.AppendLine("    public const string HelperSchemaVersion = \"20260516\";");
++    code.AppendLine();
+     code.AppendLine("    public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;");
+     code.AppendLine();
+     code.AppendLine("    public static HexalithFoldersGeneratedArtifactsVerification VerifyCurrentDetailed(string repositoryRoot)");
+@@ -331,18 +332,29 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine("            return new(false, \"repositoryRoot must be a fully qualified path\");");
+     code.AppendLine("        }");
+     code.AppendLine();
++    code.AppendLine("        string spinePath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Contracts\", \"openapi\", \"hexalith.folders.v1.yaml\");");
++    code.AppendLine("        string configurationPath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"nswag.json\");");
++    code.AppendLine("        string helpersPath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"Generated\", \"HexalithFoldersIdempotencyHelpers.g.cs\");");
+     code.AppendLine("        try");
+     code.AppendLine("        {");
+-    code.AppendLine("            string spine = File.ReadAllText(Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Contracts\", \"openapi\", \"hexalith.folders.v1.yaml\"));");
+-    code.AppendLine("            string configuration = File.ReadAllText(Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"nswag.json\"));");
+-    code.AppendLine("            string helpers = File.ReadAllText(Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"Generated\", \"HexalithFoldersIdempotencyHelpers.g.cs\"));");
++    code.AppendLine("            string spine = File.ReadAllText(spinePath);");
++    code.AppendLine("            string configuration = File.ReadAllText(configurationPath);");
++    code.AppendLine("            string helpers = File.ReadAllText(helpersPath);");
+     code.AppendLine("            return IsCurrent(spine, configuration, helpers)");
+     code.AppendLine("                ? new(true, \"generated artifacts match Contract Spine inputs\")");
+     code.AppendLine("                : new(false, \"generated artifact content hashes do not match Contract Spine inputs\");");
+     code.AppendLine("        }");
++    code.AppendLine("        catch (FileNotFoundException notFound)");
++    code.AppendLine("        {");
++    code.AppendLine("            return new(false, $\"{nameof(FileNotFoundException)}: {notFound.FileName ?? notFound.Message}\");");
++    code.AppendLine("        }");
++    code.AppendLine("        catch (DirectoryNotFoundException directoryMissing)");
++    code.AppendLine("        {");
++    code.AppendLine("            return new(false, $\"{nameof(DirectoryNotFoundException)}: {directoryMissing.Message}\");");
++    code.AppendLine("        }");
+     code.AppendLine("        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException or System.Security.SecurityException)");
+     code.AppendLine("        {");
+-    code.AppendLine("            return new(false, exception.GetType().Name);");
++    code.AppendLine("            return new(false, $\"{exception.GetType().Name}: {exception.Message}\");");
+     code.AppendLine("        }");
+     code.AppendLine("    }");
+     code.AppendLine();
+@@ -357,7 +369,7 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine("    }");
+     code.AppendLine();
+     code.AppendLine("    private static string NormalizeGeneratedHelperHash(string value) =>");
+-    code.AppendLine("        Regex.Replace(NormalizeText(value), \"^\\\\s*public const string GeneratedHelpersSha256 = \\\"[0-9a-fA-F_]+\\\";\", \"    public const string GeneratedHelpersSha256 = \\\"__GENERATED_HELPERS_SHA256__\\\";\", RegexOptions.CultureInvariant | RegexOptions.Multiline);");
++    code.AppendLine("        Regex.Replace(NormalizeText(value), \"^(?<indent>[ \\\\t]*)public const string GeneratedHelpersSha256 = \\\"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\\\";[ \\\\t]*$\", \"${indent}public const string GeneratedHelpersSha256 = \\\"__GENERATED_HELPERS_SHA256__\\\";\", RegexOptions.CultureInvariant | RegexOptions.Multiline);");
+     code.AppendLine();
+     code.AppendLine("    private static string NormalizeText(string value) => value.Replace(\"\\r\\n\", \"\\n\", StringComparison.Ordinal).Replace(\"\\r\", \"\\n\", StringComparison.Ordinal);");
+     code.AppendLine();
+@@ -367,26 +379,34 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine();
+     code.AppendLine("public partial class HexalithFoldersApiException");
+     code.AppendLine("{");
+-    code.AppendLine("    public ProblemDetails? ProblemDetails => TryGetProblemDetails();");
++    code.AppendLine("    private (ProblemDetails? Problem, string? Diagnostic)? _parsedProblemDetails;");
+     code.AppendLine();
+-    code.AppendLine("    public string? ProblemDetailsParseDiagnostic => TryReadProblemDetails(out _);");
++    code.AppendLine("    public ProblemDetails? ProblemDetails => GetParsedProblemDetails().Problem;");
+     code.AppendLine();
+-    code.AppendLine("    private ProblemDetails? TryGetProblemDetails()");
++    code.AppendLine("    public string? ProblemDetailsParseDiagnostic => GetParsedProblemDetails().Diagnostic;");
++    code.AppendLine();
++    code.AppendLine("    private (ProblemDetails? Problem, string? Diagnostic) GetParsedProblemDetails()");
+     code.AppendLine("    {");
+-    code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
++    code.AppendLine("        if (_parsedProblemDetails is { } cached)");
+     code.AppendLine("        {");
+-    code.AppendLine("            return typed.Result;");
++    code.AppendLine("            return cached;");
+     code.AppendLine("        }");
+     code.AppendLine();
+-    code.AppendLine("        return TryReadProblemDetails(out ProblemDetails? problem) is null ? problem : null;");
++    code.AppendLine("        (ProblemDetails? Problem, string? Diagnostic) parsed = ParseProblemDetails();");
++    code.AppendLine("        _parsedProblemDetails = parsed;");
++    code.AppendLine("        return parsed;");
+     code.AppendLine("    }");
+     code.AppendLine();
+-    code.AppendLine("    private string? TryReadProblemDetails(out ProblemDetails? problem)");
++    code.AppendLine("    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()");
+     code.AppendLine("    {");
+-    code.AppendLine("        problem = null;");
++    code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
++    code.AppendLine("        {");
++    code.AppendLine("            return (typed.Result, null);");
++    code.AppendLine("        }");
++    code.AppendLine();
+     code.AppendLine("        if (string.IsNullOrWhiteSpace(Response))");
+     code.AppendLine("        {");
+-    code.AppendLine("            return null;");
++    code.AppendLine("            return (null, null);");
+     code.AppendLine("        }");
+     code.AppendLine();
+     code.AppendLine("        try");
+@@ -401,12 +421,11 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
+     code.AppendLine("            {");
+     code.AppendLine("                Culture = System.Globalization.CultureInfo.InvariantCulture,");
+     code.AppendLine("            });");
+-    code.AppendLine("            problem = serializer.Deserialize<ProblemDetails>(jsonReader);");
+-    code.AppendLine("            return null;");
++    code.AppendLine("            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);");
+     code.AppendLine("        }");
+-    code.AppendLine("        catch (JsonException exception)");
++    code.AppendLine("        catch (Exception exception) when (exception is JsonException or JsonSerializationException)");
+     code.AppendLine("        {");
+-    code.AppendLine("            return exception.GetType().Name;");
++    code.AppendLine("            return (null, exception.GetType().Name);");
+     code.AppendLine("        }");
+     code.AppendLine("    }");
+     code.AppendLine("}");
+@@ -446,8 +465,24 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
+         code.AppendLine("    [JsonProperty(\"contentHashReference\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
+         code.AppendLine("    public string? ContentHashReference { get; set; }");
+         code.AppendLine();
++        code.AppendLine("    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's");
++        code.AppendLine("    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value");
++        code.AppendLine("    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;");
++        code.AppendLine("    // the static constructor below verifies at type-init time that no named member collides with");
++        code.AppendLine("    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.");
+         code.AppendLine("    private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;");
+         code.AppendLine();
++        code.AppendLine("    static FileMutationRequest()");
++        code.AppendLine("    {");
++        code.AppendLine("        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())");
++        code.AppendLine("        {");
++        code.AppendLine("            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, \"Remove\", StringComparison.Ordinal))");
++        code.AppendLine("            {");
++        code.AppendLine("                throw new InvalidOperationException(\"FileMutationRequestFileOperationKind member '\" + memberName + \"' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.\");");
++        code.AppendLine("            }");
++        code.AppendLine("        }");
++        code.AppendLine("    }");
++        code.AppendLine();
+     }
+ 
+     string parameters = string.Join(", ", helper.Parameters.Select(p => "string " + p.Name));
+@@ -515,43 +550,8 @@ static void RenderComputeExpression(StringBuilder code, HelperVariantModel varia
+     code.AppendLine(indent + "    })");
+ }
+ 
+-static YamlMappingNode LoadYaml(string path)
+-{
+-    using StreamReader reader = File.OpenText(path);
+-    YamlStream yaml = new();
+-    yaml.Load(reader);
+-    return yaml.Documents[0].RootNode.ShouldBeMapping("root");
+-}
+-
+-static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
+-{
+-    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-    {
+-        throw new InvalidOperationException($"Missing mapping '{key}'.");
+-    }
+-
+-    return value.ShouldBeMapping(key);
+-}
+-
+-static string RequiredScalar(YamlMappingNode mapping, string key)
+-{
+-    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-    {
+-        throw new InvalidOperationException($"Missing scalar '{key}'.");
+-    }
+-
+-    return value.ShouldBeScalar(key).Value ?? string.Empty;
+-}
+-
+-static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
+-{
+-    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-    {
+-        return [];
+-    }
+-
+-    return value.ShouldBeSequence(key).Children.Select(n => n.ShouldBeScalar(key).Value ?? string.Empty).ToArray();
+-}
++// YAML loading helpers (LoadYaml, RequiredMapping, RequiredScalar, ReadStringSequence) are
++// supplied by the shared Hexalith.Folders.Client.Generation.Shared library via `using static`.
+ 
+ static string ToJsonPropertyName(string snake) => ToParameterName(snake);
+ 
+@@ -621,6 +621,11 @@ static Dictionary<string, string> ParseArguments(string[] values)
+             throw new ArgumentException($"Missing value for {values[i]}.");
+         }
+ 
++        if (values[i + 1].StartsWith("--", StringComparison.Ordinal))
++        {
++            throw new ArgumentException($"Argument {values[i]} at position {i} is missing a value (next token '{values[i + 1]}' looks like a flag).");
++        }
++
+         parsed[values[i]] = values[i + 1];
+     }
+ 
+@@ -633,7 +638,7 @@ static string RequiredArgument(IReadOnlyDictionary<string, string> values, strin
+ static string NormalizeText(string value) => value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
+ 
+ static string NormalizeGeneratedHelperHash(string value) =>
+-    Regex.Replace(NormalizeText(value), "^\\s*public const string GeneratedHelpersSha256 = \"[0-9a-fA-F_]+\";", "    public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
++    Regex.Replace(NormalizeText(value), "^(?<indent>[ \\t]*)public const string GeneratedHelpersSha256 = \"(?:[0-9a-fA-F]{64}|__GENERATED_HELPERS_SHA256__)\";[ \\t]*$", "${indent}public const string GeneratedHelpersSha256 = \"__GENERATED_HELPERS_SHA256__\";", RegexOptions.CultureInvariant | RegexOptions.Multiline);
+ 
+ static string Sha256(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
+ 
+@@ -662,14 +667,27 @@ internal sealed record HelperModel(
+     IReadOnlyList<HelperVariantModel> Variants,
+     IReadOnlyList<ParameterModel> Parameters);
+ 
+-internal static class YamlNodeExtensions
+-{
+-    public static YamlMappingNode ShouldBeMapping(this YamlNode node, string name) =>
+-        node as YamlMappingNode ?? throw new InvalidOperationException($"{name} must be a mapping.");
+-
+-    public static YamlSequenceNode ShouldBeSequence(this YamlNode node, string name) =>
+-        node as YamlSequenceNode ?? throw new InvalidOperationException($"{name} must be a sequence.");
++// YamlNodeExtensions (ShouldBeMapping / ShouldBeSequence / ShouldBeScalar) live in the shared
++// library Hexalith.Folders.Client.Generation.Shared so both the generator and the client tests
++// share a single canonical set of YAML-shape diagnostics.
+ 
+-    public static YamlScalarNode ShouldBeScalar(this YamlNode node, string name) =>
+-        node as YamlScalarNode ?? throw new InvalidOperationException($"{name} must be a scalar.");
++// Special-case field registry for schemas whose canonical hash references projected or composed
++// properties (e.g., fields declared via x-hexalith-idempotency-equivalence that traverse a child
++// schema). Each entry cites the spine line where the field appears in
++// components.schemas.FileMutationRequest at hexalith.folders.v1.yaml:7933.
++internal static class SpecialFields
++{
++    public static readonly Dictionary<(string SchemaName, string Field), FieldModel> Registry = new()
++    {
++        // hexalith.folders.v1.yaml:2096 (AddFile), 2262 (ChangeFile) - content_hash_reference equivalence entry.
++        [("FileMutationRequest", "content_hash_reference")] = new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),
++        // hexalith.folders.v1.yaml:2097, 2263, 2414 - file_operation_kind equivalence entry (always present, typed enum).
++        [("FileMutationRequest", "file_operation_kind")] = new FieldModel("file_operation_kind", "true", "ResolveFileMutationOperationKindWireValue()"),
++        // FileMutationRequest companion property added in Round 3 to preserve null-versus-omitted presence for the shared schema.
++        [("FileMutationRequest", "operation_id")] = new FieldModel("operation_id", "OperationId is not null", "OperationId"),
++        // hexalith.folders.v1.yaml:2099, 2265, 2416 - path_metadata equivalence entry (typed PathMetadata object).
++        [("FileMutationRequest", "path_metadata")] = new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
++        // hexalith.folders.v1.yaml:2100, 2266, 2417 - path_policy_class entry derives from PathMetadata.PathPolicyClass.
++        [("FileMutationRequest", "path_policy_class")] = new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
++    };
+ }
+diff --git a/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache b/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache
+deleted file mode 100644
+index 8caf56d..0000000
+--- a/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj.lscache
++++ /dev/null
+@@ -1,403 +0,0 @@
+-version=1
+-
+-# This file caches language service data to improve the performance of C# Dev Kit.
+-# It is not intended for manual editing. It can safely be deleted and will be
+-# regenerated automatically. For more information, see https://aka.ms/lscache
+-#
+-# To control where cache files are stored, use the following VS Code setting:
+-#   "dotnet.projectsystem.cacheInProjectFolder": true
+-
+-[project]
+-language=C#
+-primary
+-lastDtbSucceeded
+-
+-[properties]
+-AssemblyName=Hexalith.Folders.Client
+-CommandLineArgsForDesignTimeEvaluation=-langversion:latest -define:TRACE
+-CompilerGeneratedFilesOutputPath=
+-MaxSupportedLangVersion=14.0
+-ProjectAssetsFile=<PATH>obj/project.assets.json
+-RootNamespace=Hexalith.Folders.Client
+-RunAnalyzers=
+-RunAnalyzersDuringLiveAnalysis=
+-SolutionPath=<PATH>../../Hexalith.Folders.slnx
+-TargetFrameworkIdentifier=.NETCoreApp
+-TargetPath=<PATH>bin/Debug/net10.0/Hexalith.Folders.Client.dll
+-TargetRefPath=<PATH>obj/Debug/net10.0/ref/Hexalith.Folders.Client.dll
+-TemporaryDependencyNodeTargetIdentifier=net10.0
+-
+-[commandLineArguments]
+-/noconfig
+-/unsafe-
+-/checked-
+-/nowarn:1701,1702,1701,1702
+-/fullpaths
+-/nostdlib+
+-/errorreport:prompt
+-/warn:10
+-/define:TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+-/highentropyva+
+-/nullable:enable
+-/features:"InterceptorsNamespaces=;Microsoft.Extensions.Validation.Generated"
+-/debug+
+-/debug:portable
+-/filealign:512
+-/optimize-
+-/out:obj\Debug\net10.0\Hexalith.Folders.Client.dll
+-/refout:obj\Debug\net10.0\refint\Hexalith.Folders.Client.dll
+-/target:library
+-/warnaserror+
+-/utf8output
+-/deterministic+
+-/langversion:latest
+-/warnaserror+:NU1605,SYSLIB0011
+-
+-[sourceFiles]
+-FoldersClientModule.cs
+-Generated/
+- HexalithFoldersClient.g.cs
+- HexalithFoldersIdempotencyHelpers.g.cs
+-Idempotency/HexalithIdempotencyHasher.cs
+-obj/Debug/net10.0/
+- .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+- Hexalith.Folders.Client.AssemblyInfo.cs
+- Hexalith.Folders.Client.GlobalUsings.g.cs
+-
+-[metadataReferences]
+-../Hexalith.Folders.Contracts/obj/Debug/net10.0/ref/Hexalith.Folders.Contracts.dll
+-<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.8/ref/net10.0/
+- Microsoft.AspNetCore.Antiforgery.dll
+- Microsoft.AspNetCore.Authentication.Abstractions.dll
+- Microsoft.AspNetCore.Authentication.BearerToken.dll
+- Microsoft.AspNetCore.Authentication.Cookies.dll
+- Microsoft.AspNetCore.Authentication.Core.dll
+- Microsoft.AspNetCore.Authentication.dll
+- Microsoft.AspNetCore.Authentication.OAuth.dll
+- Microsoft.AspNetCore.Authorization.dll
+- Microsoft.AspNetCore.Authorization.Policy.dll
+- Microsoft.AspNetCore.Components.Authorization.dll
+- Microsoft.AspNetCore.Components.dll
+- Microsoft.AspNetCore.Components.Endpoints.dll
+- Microsoft.AspNetCore.Components.Forms.dll
+- Microsoft.AspNetCore.Components.Server.dll
+- Microsoft.AspNetCore.Components.Web.dll
+- Microsoft.AspNetCore.Connections.Abstractions.dll
+- Microsoft.AspNetCore.CookiePolicy.dll
+- Microsoft.AspNetCore.Cors.dll
+- Microsoft.AspNetCore.Cryptography.Internal.dll
+- Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+- Microsoft.AspNetCore.DataProtection.Abstractions.dll
+- Microsoft.AspNetCore.DataProtection.dll
+- Microsoft.AspNetCore.DataProtection.Extensions.dll
+- Microsoft.AspNetCore.Diagnostics.Abstractions.dll
+- Microsoft.AspNetCore.Diagnostics.dll
+- Microsoft.AspNetCore.Diagnostics.HealthChecks.dll
+- Microsoft.AspNetCore.dll
+- Microsoft.AspNetCore.HostFiltering.dll
+- Microsoft.AspNetCore.Hosting.Abstractions.dll
+- Microsoft.AspNetCore.Hosting.dll
+- Microsoft.AspNetCore.Hosting.Server.Abstractions.dll
+- Microsoft.AspNetCore.Html.Abstractions.dll
+- Microsoft.AspNetCore.Http.Abstractions.dll
+- Microsoft.AspNetCore.Http.Connections.Common.dll
+- Microsoft.AspNetCore.Http.Connections.dll
+- Microsoft.AspNetCore.Http.dll
+- Microsoft.AspNetCore.Http.Extensions.dll
+- Microsoft.AspNetCore.Http.Features.dll
+- Microsoft.AspNetCore.Http.Results.dll
+- Microsoft.AspNetCore.HttpLogging.dll
+- Microsoft.AspNetCore.HttpOverrides.dll
+- Microsoft.AspNetCore.HttpsPolicy.dll
+- Microsoft.AspNetCore.Identity.dll
+- Microsoft.AspNetCore.Localization.dll
+- Microsoft.AspNetCore.Localization.Routing.dll
+- Microsoft.AspNetCore.Metadata.dll
+- Microsoft.AspNetCore.Mvc.Abstractions.dll
+- Microsoft.AspNetCore.Mvc.ApiExplorer.dll
+- Microsoft.AspNetCore.Mvc.Core.dll
+- Microsoft.AspNetCore.Mvc.Cors.dll
+- Microsoft.AspNetCore.Mvc.DataAnnotations.dll
+- Microsoft.AspNetCore.Mvc.dll
+- Microsoft.AspNetCore.Mvc.Formatters.Json.dll
+- Microsoft.AspNetCore.Mvc.Formatters.Xml.dll
+- Microsoft.AspNetCore.Mvc.Localization.dll
+- Microsoft.AspNetCore.Mvc.Razor.dll
+- Microsoft.AspNetCore.Mvc.RazorPages.dll
+- Microsoft.AspNetCore.Mvc.TagHelpers.dll
+- Microsoft.AspNetCore.Mvc.ViewFeatures.dll
+- Microsoft.AspNetCore.OutputCaching.dll
+- Microsoft.AspNetCore.RateLimiting.dll
+- Microsoft.AspNetCore.Razor.dll
+- Microsoft.AspNetCore.Razor.Runtime.dll
+- Microsoft.AspNetCore.RequestDecompression.dll
+- Microsoft.AspNetCore.ResponseCaching.Abstractions.dll
+- Microsoft.AspNetCore.ResponseCaching.dll
+- Microsoft.AspNetCore.ResponseCompression.dll
+- Microsoft.AspNetCore.Rewrite.dll
+- Microsoft.AspNetCore.Routing.Abstractions.dll
+- Microsoft.AspNetCore.Routing.dll
+- Microsoft.AspNetCore.Server.HttpSys.dll
+- Microsoft.AspNetCore.Server.IIS.dll
+- Microsoft.AspNetCore.Server.IISIntegration.dll
+- Microsoft.AspNetCore.Server.Kestrel.Core.dll
+- Microsoft.AspNetCore.Server.Kestrel.dll
+- Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes.dll
+- Microsoft.AspNetCore.Server.Kestrel.Transport.Quic.dll
+- Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.dll
+- Microsoft.AspNetCore.Session.dll
+- Microsoft.AspNetCore.SignalR.Common.dll
+- Microsoft.AspNetCore.SignalR.Core.dll
+- Microsoft.AspNetCore.SignalR.dll
+- Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+- Microsoft.AspNetCore.StaticAssets.dll
+- Microsoft.AspNetCore.StaticFiles.dll
+- Microsoft.AspNetCore.WebSockets.dll
+- Microsoft.AspNetCore.WebUtilities.dll
+- Microsoft.Extensions.Caching.Abstractions.dll
+- Microsoft.Extensions.Caching.Memory.dll
+- Microsoft.Extensions.Configuration.Abstractions.dll
+- Microsoft.Extensions.Configuration.Binder.dll
+- Microsoft.Extensions.Configuration.CommandLine.dll
+- Microsoft.Extensions.Configuration.dll
+- Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+- Microsoft.Extensions.Configuration.FileExtensions.dll
+- Microsoft.Extensions.Configuration.Ini.dll
+- Microsoft.Extensions.Configuration.Json.dll
+- Microsoft.Extensions.Configuration.KeyPerFile.dll
+- Microsoft.Extensions.Configuration.UserSecrets.dll
+- Microsoft.Extensions.Configuration.Xml.dll
+- Microsoft.Extensions.DependencyInjection.Abstractions.dll
+- Microsoft.Extensions.DependencyInjection.dll
+- Microsoft.Extensions.Diagnostics.Abstractions.dll
+- Microsoft.Extensions.Diagnostics.dll
+- Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll
+- Microsoft.Extensions.Diagnostics.HealthChecks.dll
+- Microsoft.Extensions.Features.dll
+- Microsoft.Extensions.FileProviders.Abstractions.dll
+- Microsoft.Extensions.FileProviders.Composite.dll
+- Microsoft.Extensions.FileProviders.Embedded.dll
+- Microsoft.Extensions.FileProviders.Physical.dll
+- Microsoft.Extensions.FileSystemGlobbing.dll
+- Microsoft.Extensions.Hosting.Abstractions.dll
+- Microsoft.Extensions.Hosting.dll
+- Microsoft.Extensions.Http.dll
+- Microsoft.Extensions.Identity.Core.dll
+- Microsoft.Extensions.Identity.Stores.dll
+- Microsoft.Extensions.Localization.Abstractions.dll
+- Microsoft.Extensions.Localization.dll
+- Microsoft.Extensions.Logging.Abstractions.dll
+- Microsoft.Extensions.Logging.Configuration.dll
+- Microsoft.Extensions.Logging.Console.dll
+- Microsoft.Extensions.Logging.Debug.dll
+- Microsoft.Extensions.Logging.dll
+- Microsoft.Extensions.Logging.EventLog.dll
+- Microsoft.Extensions.Logging.EventSource.dll
+- Microsoft.Extensions.Logging.TraceSource.dll
+- Microsoft.Extensions.ObjectPool.dll
+- Microsoft.Extensions.Options.ConfigurationExtensions.dll
+- Microsoft.Extensions.Options.DataAnnotations.dll
+- Microsoft.Extensions.Options.dll
+- Microsoft.Extensions.Primitives.dll
+- Microsoft.Extensions.Validation.dll
+- Microsoft.Extensions.WebEncoders.dll
+- Microsoft.JSInterop.dll
+- Microsoft.Net.Http.Headers.dll
+- System.Diagnostics.EventLog.dll
+- System.Formats.Cbor.dll
+- System.Security.Cryptography.Xml.dll
+- System.Threading.RateLimiting.dll
+-<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.8/ref/net10.0/
+- Microsoft.CSharp.dll
+- Microsoft.VisualBasic.Core.dll
+- Microsoft.VisualBasic.dll
+- Microsoft.Win32.Primitives.dll
+- Microsoft.Win32.Registry.dll
+- mscorlib.dll
+- netstandard.dll
+- System.AppContext.dll
+- System.Buffers.dll
+- System.Collections.Concurrent.dll
+- System.Collections.dll
+- System.Collections.Immutable.dll
+- System.Collections.NonGeneric.dll
+- System.Collections.Specialized.dll
+- System.ComponentModel.Annotations.dll
+- System.ComponentModel.DataAnnotations.dll
+- System.ComponentModel.dll
+- System.ComponentModel.EventBasedAsync.dll
+- System.ComponentModel.Primitives.dll
+- System.ComponentModel.TypeConverter.dll
+- System.Configuration.dll
+- System.Console.dll
+- System.Core.dll
+- System.Data.Common.dll
+- System.Data.DataSetExtensions.dll
+- System.Data.dll
+- System.Diagnostics.Contracts.dll
+- System.Diagnostics.Debug.dll
+- System.Diagnostics.DiagnosticSource.dll
+- System.Diagnostics.FileVersionInfo.dll
+- System.Diagnostics.Process.dll
+- System.Diagnostics.StackTrace.dll
+- System.Diagnostics.TextWriterTraceListener.dll
+- System.Diagnostics.Tools.dll
+- System.Diagnostics.TraceSource.dll
+- System.Diagnostics.Tracing.dll
+- System.dll
+- System.Drawing.dll
+- System.Drawing.Primitives.dll
+- System.Dynamic.Runtime.dll
+- System.Formats.Asn1.dll
+- System.Formats.Tar.dll
+- System.Globalization.Calendars.dll
+- System.Globalization.dll
+- System.Globalization.Extensions.dll
+- System.IO.Compression.Brotli.dll
+- System.IO.Compression.dll
+- System.IO.Compression.FileSystem.dll
+- System.IO.Compression.ZipFile.dll
+- System.IO.dll
+- System.IO.FileSystem.AccessControl.dll
+- System.IO.FileSystem.dll
+- System.IO.FileSystem.DriveInfo.dll
+- System.IO.FileSystem.Primitives.dll
+- System.IO.FileSystem.Watcher.dll
+- System.IO.IsolatedStorage.dll
+- System.IO.MemoryMappedFiles.dll
+- System.IO.Pipelines.dll
+- System.IO.Pipes.AccessControl.dll
+- System.IO.Pipes.dll
+- System.IO.UnmanagedMemoryStream.dll
+- System.Linq.AsyncEnumerable.dll
+- System.Linq.dll
+- System.Linq.Expressions.dll
+- System.Linq.Parallel.dll
+- System.Linq.Queryable.dll
+- System.Memory.dll
+- System.Net.dll
+- System.Net.Http.dll
+- System.Net.Http.Json.dll
+- System.Net.HttpListener.dll
+- System.Net.Mail.dll
+- System.Net.NameResolution.dll
+- System.Net.NetworkInformation.dll
+- System.Net.Ping.dll
+- System.Net.Primitives.dll
+- System.Net.Quic.dll
+- System.Net.Requests.dll
+- System.Net.Security.dll
+- System.Net.ServerSentEvents.dll
+- System.Net.ServicePoint.dll
+- System.Net.Sockets.dll
+- System.Net.WebClient.dll
+- System.Net.WebHeaderCollection.dll
+- System.Net.WebProxy.dll
+- System.Net.WebSockets.Client.dll
+- System.Net.WebSockets.dll
+- System.Numerics.dll
+- System.Numerics.Vectors.dll
+- System.ObjectModel.dll
+- System.Reflection.DispatchProxy.dll
+- System.Reflection.dll
+- System.Reflection.Emit.dll
+- System.Reflection.Emit.ILGeneration.dll
+- System.Reflection.Emit.Lightweight.dll
+- System.Reflection.Extensions.dll
+- System.Reflection.Metadata.dll
+- System.Reflection.Primitives.dll
+- System.Reflection.TypeExtensions.dll
+- System.Resources.Reader.dll
+- System.Resources.ResourceManager.dll
+- System.Resources.Writer.dll
+- System.Runtime.CompilerServices.Unsafe.dll
+- System.Runtime.CompilerServices.VisualC.dll
+- System.Runtime.dll
+- System.Runtime.Extensions.dll
+- System.Runtime.Handles.dll
+- System.Runtime.InteropServices.dll
+- System.Runtime.InteropServices.JavaScript.dll
+- System.Runtime.InteropServices.RuntimeInformation.dll
+- System.Runtime.Intrinsics.dll
+- System.Runtime.Loader.dll
+- System.Runtime.Numerics.dll
+- System.Runtime.Serialization.dll
+- System.Runtime.Serialization.Formatters.dll
+- System.Runtime.Serialization.Json.dll
+- System.Runtime.Serialization.Primitives.dll
+- System.Runtime.Serialization.Xml.dll
+- System.Security.AccessControl.dll
+- System.Security.Claims.dll
+- System.Security.Cryptography.Algorithms.dll
+- System.Security.Cryptography.Cng.dll
+- System.Security.Cryptography.Csp.dll
+- System.Security.Cryptography.dll
+- System.Security.Cryptography.Encoding.dll
+- System.Security.Cryptography.OpenSsl.dll
+- System.Security.Cryptography.Primitives.dll
+- System.Security.Cryptography.X509Certificates.dll
+- System.Security.dll
+- System.Security.Principal.dll
+- System.Security.Principal.Windows.dll
+- System.Security.SecureString.dll
+- System.ServiceModel.Web.dll
+- System.ServiceProcess.dll
+- System.Text.Encoding.CodePages.dll
+- System.Text.Encoding.dll
+- System.Text.Encoding.Extensions.dll
+- System.Text.Encodings.Web.dll
+- System.Text.Json.dll
+- System.Text.RegularExpressions.dll
+- System.Threading.AccessControl.dll
+- System.Threading.Channels.dll
+- System.Threading.dll
+- System.Threading.Overlapped.dll
+- System.Threading.Tasks.Dataflow.dll
+- System.Threading.Tasks.dll
+- System.Threading.Tasks.Extensions.dll
+- System.Threading.Tasks.Parallel.dll
+- System.Threading.Thread.dll
+- System.Threading.ThreadPool.dll
+- System.Threading.Timer.dll
+- System.Transactions.dll
+- System.Transactions.Local.dll
+- System.ValueTuple.dll
+- System.Web.dll
+- System.Web.HttpUtility.dll
+- System.Windows.dll
+- System.Xml.dll
+- System.Xml.Linq.dll
+- System.Xml.ReaderWriter.dll
+- System.Xml.Serialization.dll
+- System.Xml.XDocument.dll
+- System.Xml.XmlDocument.dll
+- System.Xml.XmlSerializer.dll
+- System.Xml.XPath.dll
+- System.Xml.XPath.XDocument.dll
+- WindowsBase.dll
+-<NUGET>/newtonsoft.json/13.0.4/lib/net6.0/Newtonsoft.Json.dll
+-
+-[analyzerReferences]
+-<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.8/analyzers/dotnet/cs/
+- Microsoft.AspNetCore.App.Analyzers.dll
+- Microsoft.AspNetCore.App.CodeFixes.dll
+- Microsoft.AspNetCore.App.SourceGenerators.dll
+- Microsoft.AspNetCore.Components.Analyzers.dll
+- Microsoft.Extensions.Logging.Generators.dll
+- Microsoft.Extensions.Options.SourceGeneration.dll
+- Microsoft.Extensions.Validation.ValidationsGenerator.dll
+-<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.8/analyzers/dotnet/cs/
+- Microsoft.Interop.ComInterfaceGenerator.dll
+- Microsoft.Interop.JavaScript.JSImportGenerator.dll
+- Microsoft.Interop.LibraryImportGenerator.dll
+- Microsoft.Interop.SourceGeneration.dll
+- System.Text.Json.SourceGeneration.dll
+- System.Text.RegularExpressions.Generator.dll
+-<DOTNET>/sdk/10.0.108/Sdks/Microsoft.NET.Sdk/analyzers/
+- Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
+- Microsoft.CodeAnalysis.NetAnalyzers.dll
+-
+-[analyzerConfigFiles]
+-../../.editorconfig
+-<DOTNET>/sdk/10.0.108/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
+-obj/Debug/net10.0/Hexalith.Folders.Client.GeneratedMSBuildEditorConfig.editorconfig
+diff --git a/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs b/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
+index 5fe1c13..2e87f02 100644
+--- a/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
++++ b/src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
+@@ -14,6 +14,7 @@ public static class HexalithIdempotencyHasher
+     public static string Compute(string operationId, IEnumerable<IdempotencyField> fields)
+     {
+         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
++        RejectControlCharacters(operationId, nameof(operationId));
+         ArgumentNullException.ThrowIfNull(fields);
+ 
+         IdempotencyField[] orderedFields = fields.ToArray();
+@@ -40,7 +41,7 @@ public static class HexalithIdempotencyHasher
+             Enum enumValue => "s:" + Escape(GetEnumWireValue(enumValue)),
+             Guid guid => "s:" + guid.ToString("D", CultureInfo.InvariantCulture).ToLowerInvariant(),
+             DateTime dateTime => CanonicalizeDateTime(dateTime),
+-            DateTimeOffset dateTimeOffset => "t:" + dateTimeOffset.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
++            DateTimeOffset dateTimeOffset => CanonicalizeDateTime(dateTimeOffset.UtcDateTime),
+             decimal number => CanonicalizeDecimal(number),
+             double number => CanonicalizeFloatingPoint(number),
+             float number => CanonicalizeFloatingPoint(number),
+@@ -65,6 +66,11 @@ public static class HexalithIdempotencyHasher
+     internal static string NormalizeJsonText(string value)
+     {
+         ArgumentException.ThrowIfNullOrWhiteSpace(value);
++        if (value.Length > 0 && value[0] == '\uFEFF')
++        {
++            value = value[1..];
++        }
++
+         using JsonTextReader reader = new(new StringReader(value))
+         {
+             DateParseHandling = DateParseHandling.None,
+@@ -87,26 +93,53 @@ public static class HexalithIdempotencyHasher
+ 
+     private static string GetEnumWireValue(Enum value)
+     {
++        Type enumType = value.GetType();
++        if (enumType.IsDefined(typeof(FlagsAttribute), inherit: false))
++        {
++            throw new InvalidOperationException($"[Flags] enum '{enumType.FullName}' cannot be canonicalized.");
++        }
++
+         string enumName = value.ToString();
+         if (enumName.Contains(',', StringComparison.Ordinal))
+         {
+-            throw new InvalidOperationException($"Composite enum value '{enumName}' cannot be canonicalized.");
++            throw new InvalidOperationException($"Composite enum value '{enumName}' on '{enumType.FullName}' cannot be canonicalized.");
+         }
+ 
+-        MemberInfo? member = value.GetType().GetMember(enumName).SingleOrDefault();
+-        if (member is null)
++        FieldInfo? field = enumType.GetField(enumName, BindingFlags.Public | BindingFlags.Static);
++        if (field is null)
+         {
+-            throw new InvalidOperationException($"Unknown enum value '{enumName}' cannot be canonicalized.");
++            throw new InvalidOperationException($"Unknown enum value '{enumName}' on '{enumType.FullName}'.");
+         }
+ 
+-        return member?.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? value.ToString();
++        return field.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? enumName;
+     }
+ 
+     internal static string Escape(string value)
+     {
++        ArgumentNullException.ThrowIfNull(value);
+         StringBuilder builder = new(value.Length);
+-        foreach (char character in value)
++        int index = 0;
++        while (index < value.Length)
+         {
++            char character = value[index];
++            if (char.IsHighSurrogate(character))
++            {
++                if (index + 1 >= value.Length || !char.IsLowSurrogate(value[index + 1]))
++                {
++                    throw new InvalidOperationException($"Lone or invalid UTF-16 high surrogate at index {index}.");
++                }
++
++                builder.Append(character);
++                builder.Append(value[index + 1]);
++                index += 2;
++                continue;
++            }
++
++            if (char.IsLowSurrogate(character))
++            {
++                throw new InvalidOperationException($"Lone UTF-16 low surrogate at index {index}.");
++            }
++
+             builder.Append(character switch
+             {
+                 '\\' => "\\\\",
+@@ -120,14 +153,28 @@ public static class HexalithIdempotencyHasher
+                 ';' => "\\;",
+                 '=' => "\\=",
+                 < ' ' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
+-                >= '\u007f' and <= '\u009f' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
++                >= '\u007F' and <= '\u009F' => "\\u" + ((int)character).ToString("x4", CultureInfo.InvariantCulture),
+                 _ => character.ToString(),
+             });
++            index++;
+         }
+ 
+         return builder.ToString();
+     }
+ 
++    private static void RejectControlCharacters(string value, string context)
++    {
++        for (int i = 0; i < value.Length; i++)
++        {
++            char ch = value[i];
++            if (char.IsControl(ch) || ch == '\uFEFF' || ch == '\u2028' || ch == '\u2029')
++            {
++                throw new InvalidOperationException(
++                    string.Create(CultureInfo.InvariantCulture, $"{context} contains forbidden control or line-separator character at index {i} (U+{(int)ch:X4})."));
++            }
++        }
++    }
++
+     private static void EnsureDeclaredOrder(IReadOnlyList<IdempotencyField> fields)
+     {
+         string? previous = null;
+@@ -135,9 +182,11 @@ public static class HexalithIdempotencyHasher
+         foreach (IdempotencyField field in fields)
+         {
+             ArgumentException.ThrowIfNullOrWhiteSpace(field.Path);
++            RejectControlCharacters(field.Path, "field path");
+             if (previous is not null && string.CompareOrdinal(previous, field.Path) > 0)
+             {
+-                throw new InvalidOperationException("Idempotency fields must be in ordinal-ascending order (matches spine declaration).");
++                throw new InvalidOperationException(
++                    $"Idempotency fields must be in ordinal-ascending order (matches spine declaration): '{previous}' must come after '{field.Path}'.");
+             }
+ 
+             if (!seen.Add(field.Path))
+@@ -156,7 +205,19 @@ public static class HexalithIdempotencyHasher
+             throw new InvalidOperationException("Non-finite floating point values cannot be canonicalized.");
+         }
+ 
+-        return "n:" + value.ToString("R", CultureInfo.InvariantCulture);
++        long bits = BitConverter.DoubleToInt64Bits(value);
++        return "n:double:" + bits.ToString("x16", CultureInfo.InvariantCulture);
++    }
++
++    private static string CanonicalizeFloatingPoint(float value)
++    {
++        if (float.IsNaN(value) || float.IsInfinity(value))
++        {
++            throw new InvalidOperationException("Non-finite floating point values cannot be canonicalized.");
++        }
++
++        int bits = BitConverter.SingleToInt32Bits(value);
++        return "n:float:" + bits.ToString("x8", CultureInfo.InvariantCulture);
+     }
+ 
+     private static string CanonicalizeDateTime(DateTime value)
+@@ -173,7 +234,8 @@ public static class HexalithIdempotencyHasher
+     {
+         int[] bits = decimal.GetBits(value);
+         int scale = (bits[3] >> 16) & 0x7F;
+-        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0;
++        bool isZeroMagnitude = (bits[0] | bits[1] | bits[2]) == 0;
++        bool negative = (bits[3] & unchecked((int)0x80000000)) != 0 && !isZeroMagnitude;
+         return string.Create(CultureInfo.InvariantCulture, $"decimal:{(negative ? "-" : "+")}:{scale}:{bits[2]:x8}:{bits[1]:x8}:{bits[0]:x8}");
+     }
+ 
+@@ -186,7 +248,7 @@ public static class HexalithIdempotencyHasher
+             {
+                 if (!names.Add(property.Name))
+                 {
+-                    throw new JsonReaderException($"Duplicate JSON property at {path}.{property.Name}.");
++                    throw new InvalidOperationException($"Duplicate JSON property at {path}.{property.Name}.");
+                 }
+ 
+                 RejectDuplicateProperties(property.Value, path + "." + property.Name);
+diff --git a/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs b/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+index ae429af..c1ac900 100644
+--- a/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
++++ b/tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+@@ -4,11 +4,13 @@ using System.Text;
+ using System.Text.Json;
+ using System.Xml.Linq;
+ using Hexalith.Folders.Client.Generated;
++using Hexalith.Folders.Client.Generation.Shared;
+ using Hexalith.Folders.Client.Idempotency;
+ using Newtonsoft.Json;
+ using Shouldly;
+ using Xunit;
+ using YamlDotNet.RepresentationModel;
++using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
+ 
+ namespace Hexalith.Folders.Client.Tests;
+ 
+@@ -71,12 +73,17 @@ public sealed class ClientGenerationTests
+             methods.Length.ShouldBe(1, group.Key);
+             methods[0].ReturnType.ShouldBe(typeof(string), group.Key);
+ 
+-            string[] expectedParameterTypes = group
++            OpenApiParameter[] expectedSpineParameters = group
+                 .SelectMany(o => o.Parameters.Where(p => o.IdempotencyFields.Contains(p.Field, StringComparer.Ordinal)))
+                 .GroupBy(p => p.Field, StringComparer.Ordinal)
+-                .Select(g => typeof(string).FullName!)
++                .Select(g => g.First())
+                 .ToArray();
+-            methods[0].GetParameters().Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
++            string[] expectedParameterTypes = expectedSpineParameters.Select(_ => typeof(string).FullName!).ToArray();
++            string[] expectedParameterNames = expectedSpineParameters.Select(p => ToCamelCase(p.Field)).ToArray();
++
++            ParameterInfo[] actualParameters = methods[0].GetParameters();
++            actualParameters.Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
++            actualParameters.Select(p => p.Name).ToArray().ShouldBe(expectedParameterNames, group.Key + " parameter names must match spine path-parameter declaration order");
+         }
+ 
+         foreach (string schema in operations.Where(o => o.IdempotencyFields.Count == 0).Select(o => o.RequestSchema).WhereNotNull().Distinct(StringComparer.Ordinal))
+@@ -201,26 +208,42 @@ public sealed class ClientGenerationTests
+     {
+         string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-generation-" + Guid.NewGuid().ToString("N"));
+         Directory.CreateDirectory(tempRoot);
+-        string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
+-        string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
+-        string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+-        File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
++        try
++        {
++            string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
++            string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
++            string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
++            File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
+ 
+-        string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
+-        using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
++            string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
++            using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
++            {
++                FileName = "dotnet",
++                Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
++                RedirectStandardError = true,
++                RedirectStandardOutput = true,
++                UseShellExecute = false,
++            }) ?? throw new InvalidOperationException("Failed to start 'dotnet' process - is the .NET SDK on PATH?");
++
++            process.WaitForExit(120_000).ShouldBeTrue();
++            string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
++            process.ExitCode.ShouldBe(0, combinedOutput);
++            File.Exists(output).ShouldBeTrue();
++            File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
++        }
++        finally
+         {
+-            FileName = "dotnet",
+-            Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
+-            RedirectStandardError = true,
+-            RedirectStandardOutput = true,
+-            UseShellExecute = false,
+-        })!;
+-
+-        process.WaitForExit(120_000).ShouldBeTrue();
+-        string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
+-        process.ExitCode.ShouldBe(0, combinedOutput);
+-        File.Exists(output).ShouldBeTrue();
+-        File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
++            try
++            {
++                Directory.Delete(tempRoot, recursive: true);
++            }
++            catch (IOException)
++            {
++            }
++            catch (UnauthorizedAccessException)
++            {
++            }
++        }
+     }
+ 
+     [Fact]
+@@ -259,6 +282,7 @@ public sealed class ClientGenerationTests
+         foreach (JsonElement corpusCase in cases.Where(c => c.GetProperty("category").GetString() != "duplicate-json-key"))
+         {
+             string classification = corpusCase.GetProperty("equivalence_classification").GetString() ?? string.Empty;
++            string caseId = corpusCase.GetProperty("id").GetString() ?? "<unidentified>";
+             string left = ComputeCorpusHash(corpusCase.GetProperty("input"));
+             string right = ComputeCorpusHash(corpusCase.GetProperty("comparison_input"));
+ 
+@@ -266,11 +290,23 @@ public sealed class ClientGenerationTests
+                 classification.StartsWith("equivalent-only", StringComparison.Ordinal) ||
+                 classification == "parser-rejected")
+             {
+-                left.ShouldNotBe(right, corpusCase.GetProperty("id").GetString());
++                left.ShouldNotBe(right, caseId);
+             }
+             else if (classification == "equivalent-after-lexicographic-field-ordering")
+             {
+-                left.ShouldBe(right, corpusCase.GetProperty("id").GetString());
++                left.ShouldBe(right, caseId);
++            }
++            else if (classification == "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field" ||
++                     classification == "equivalent-only-when-field-declares-compatibility-normalization")
++            {
++                // Default hasher does not apply generated normalization or compatibility normalization.
++                // These classifications must be non-equivalent unless the field opts in.
++                left.ShouldNotBe(right, caseId);
++            }
++            else
++            {
++                throw new InvalidOperationException(
++                    $"Unhandled equivalence_classification '{classification}' for case '{caseId}'. Add an explicit branch when the corpus grows new classification values.");
+             }
+         }
+     }
+@@ -365,25 +401,22 @@ public sealed class ClientGenerationTests
+ 
+     private static IReadOnlyList<OpenApiOperation> LoadOperations()
+     {
+-        using StreamReader reader = File.OpenText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+-        YamlStream yaml = new();
+-        yaml.Load(reader);
+-        YamlMappingNode root = yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
++        YamlMappingNode root = YamlContractLoader.LoadYaml(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+         List<OpenApiOperation> operations = [];
+ 
+         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
+         {
+-            YamlMappingNode path = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
++            YamlMappingNode path = pathEntry.Value.ShouldBeMapping("path item");
+             IReadOnlyList<OpenApiParameter> pathParameters = EnumerateParameters(path).ToArray();
+             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in path.Children)
+             {
+-                string method = methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
++                string method = methodEntry.Key.ShouldBeScalar("method").Value ?? string.Empty;
+                 if (method is not ("get" or "post" or "put" or "patch" or "delete"))
+                 {
+                     continue;
+                 }
+ 
+-                YamlMappingNode operation = methodEntry.Value.ShouldBeOfType<YamlMappingNode>();
++                YamlMappingNode operation = methodEntry.Value.ShouldBeMapping("operation");
+                 string operationId = RequiredScalar(operation, "operationId");
+                 string? requestSchema = TryReadRequestSchema(operation);
+                 IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
+@@ -395,30 +428,6 @@ public sealed class ClientGenerationTests
+         return operations;
+     }
+ 
+-    private static string? TryReadRequestSchema(YamlMappingNode operation)
+-    {
+-        if (!operation.Children.TryGetValue(new YamlScalarNode("requestBody"), out YamlNode? requestBodyNode))
+-        {
+-            return null;
+-        }
+-
+-        YamlMappingNode requestBody = requestBodyNode.ShouldBeOfType<YamlMappingNode>();
+-        YamlMappingNode content = RequiredMapping(requestBody, "content");
+-        YamlMappingNode json = RequiredMapping(content, "application/json");
+-        YamlMappingNode schema = RequiredMapping(json, "schema");
+-        return RequiredScalar(schema, "$ref").Split('/').Last();
+-    }
+-
+-    private static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
+-    {
+-        if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
+-        {
+-            return [];
+-        }
+-
+-        return value.ShouldBeOfType<YamlSequenceNode>().Children.Select(node => node.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).ToArray();
+-    }
+-
+     private static IEnumerable<OpenApiParameter> EnumerateParameters(YamlMappingNode mapping)
+     {
+         if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
+@@ -426,31 +435,25 @@ public sealed class ClientGenerationTests
+             yield break;
+         }
+ 
+-        foreach (YamlNode parameterNode in parametersNode.ShouldBeOfType<YamlSequenceNode>())
++        foreach (YamlNode parameterNode in parametersNode.ShouldBeSequence("parameters"))
+         {
+-            YamlMappingNode parameter = parameterNode.ShouldBeOfType<YamlMappingNode>();
++            YamlMappingNode parameter = parameterNode.ShouldBeMapping("parameter");
+             string name = parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode)
+-                ? (referenceNode.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).Split('/').Last()
++                ? (referenceNode.ShouldBeScalar("$ref").Value ?? string.Empty).Split('/').Last()
+                 : RequiredScalar(parameter, "name");
+             yield return new OpenApiParameter(NormalizeName(name), name);
+         }
+     }
+ 
+-    private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
+-    {
+-        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
+-        return value.ShouldBeOfType<YamlMappingNode>();
+-    }
+-
+-    private static string RequiredScalar(YamlMappingNode mapping, string key)
+-    {
+-        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
+-        return value.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+-    }
+-
+     private static string LocateRepositoryRoot()
+     {
+-        DirectoryInfo? directory = new(Path.GetDirectoryName(typeof(ClientGenerationTests).Assembly.Location)!);
++        // Assembly.Location returns "" under single-file publish; fall back to AppContext.BaseDirectory.
++        string assemblyLocation = typeof(ClientGenerationTests).Assembly.Location;
++        string startDirectoryPath = string.IsNullOrEmpty(assemblyLocation)
++            ? AppContext.BaseDirectory
++            : (Path.GetDirectoryName(assemblyLocation) ?? AppContext.BaseDirectory);
++
++        DirectoryInfo? directory = new(startDirectoryPath);
+         while (directory is not null)
+         {
+             if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
+@@ -464,6 +467,17 @@ public sealed class ClientGenerationTests
+         throw new InvalidOperationException("Could not locate Hexalith.Folders.slnx from the test assembly location.");
+     }
+ 
++    private static string ToCamelCase(string snakeOrKebab)
++    {
++        if (!snakeOrKebab.Contains('_', StringComparison.Ordinal) && !snakeOrKebab.Contains('-', StringComparison.Ordinal))
++        {
++            return char.ToLowerInvariant(snakeOrKebab[0]) + snakeOrKebab[1..];
++        }
++
++        string[] parts = snakeOrKebab.Split(['_', '-'], StringSplitOptions.RemoveEmptyEntries);
++        return parts[0] + string.Concat(parts.Skip(1).Select(p => char.ToUpperInvariant(p[0]) + p[1..]));
++    }
++
+     private static string NormalizeName(string value)
+     {
+         StringBuilder builder = new(value.Length);
+@@ -502,17 +516,3 @@ public sealed class ClientGenerationTests
+     private sealed record OpenApiParameter(string Field, string Name);
+ }
+ 
+-internal static class EnumerableExtensions
+-{
+-    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> values)
+-        where T : class
+-    {
+-        foreach (T? value in values)
+-        {
+-            if (value is not null)
+-            {
+-                yield return value;
+-            }
+-        }
+-    }
+-}
+diff --git a/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj b/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+index cdd4d65..86d1b56 100644
+--- a/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
++++ b/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj
+@@ -4,6 +4,7 @@
+   </PropertyGroup>
+   <ItemGroup>
+     <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
++    <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Generation\Shared\Hexalith.Folders.Client.Generation.Shared.csproj" />
+     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+   </ItemGroup>
+   <ItemGroup>
+diff --git a/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache b/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache
+deleted file mode 100644
+index 664c297..0000000
+--- a/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj.lscache
++++ /dev/null
+@@ -1,438 +0,0 @@
+-version=1
+-
+-# This file caches language service data to improve the performance of C# Dev Kit.
+-# It is not intended for manual editing. It can safely be deleted and will be
+-# regenerated automatically. For more information, see https://aka.ms/lscache
+-#
+-# To control where cache files are stored, use the following VS Code setting:
+-#   "dotnet.projectsystem.cacheInProjectFolder": true
+-
+-[project]
+-language=C#
+-primary
+-lastDtbSucceeded
+-
+-[properties]
+-AssemblyName=Hexalith.Folders.Client.Tests
+-CommandLineArgsForDesignTimeEvaluation=-langversion:latest -define:TRACE
+-CompilerGeneratedFilesOutputPath=
+-MaxSupportedLangVersion=14.0
+-ProjectAssetsFile=<PATH>obj/project.assets.json
+-RootNamespace=Hexalith.Folders.Client.Tests
+-RunAnalyzers=
+-RunAnalyzersDuringLiveAnalysis=
+-SolutionPath=<PATH>../../Hexalith.Folders.slnx
+-TargetFrameworkIdentifier=.NETCoreApp
+-TargetPath=<PATH>bin/Debug/net10.0/Hexalith.Folders.Client.Tests.dll
+-TargetRefPath=<PATH>obj/Debug/net10.0/ref/Hexalith.Folders.Client.Tests.dll
+-TemporaryDependencyNodeTargetIdentifier=net10.0
+-
+-[commandLineArguments]
+-/noconfig
+-/unsafe-
+-/checked-
+-/nowarn:1701,1702,1701,1702
+-/fullpaths
+-/nostdlib+
+-/errorreport:prompt
+-/warn:10
+-/define:TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+-/highentropyva+
+-/nullable:enable
+-/features:"InterceptorsNamespaces=;Microsoft.Extensions.Validation.Generated"
+-/debug+
+-/debug:portable
+-/filealign:512
+-/optimize-
+-/out:obj\Debug\net10.0\Hexalith.Folders.Client.Tests.dll
+-/refout:obj\Debug\net10.0\refint\Hexalith.Folders.Client.Tests.dll
+-/target:exe
+-/warnaserror+
+-/utf8output
+-/deterministic+
+-/langversion:latest
+-/warnaserror+:NU1605,SYSLIB0011
+-
+-[sourceFiles]
+-<NUGET>/xunit.v3.core.mtp-v1/3.2.2/_content/DefaultRunnerReporters.cs
+-ClientGenerationTests.cs
+-ClientSmokeTests.cs
+-obj/Debug/net10.0/
+- .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+- Hexalith.Folders.Client.Tests.AssemblyInfo.cs
+- Hexalith.Folders.Client.Tests.GlobalUsings.g.cs
+- SelfRegisteredExtensions.cs
+- XunitAutoGeneratedEntryPoint.cs
+-
+-[metadataReferences]
+-../../src/
+- Hexalith.Folders.Client/obj/Debug/net10.0/ref/Hexalith.Folders.Client.dll
+- Hexalith.Folders.Contracts/obj/Debug/net10.0/ref/Hexalith.Folders.Contracts.dll
+- Hexalith.Folders.Testing/obj/Debug/net10.0/ref/Hexalith.Folders.Testing.dll
+-<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.8/ref/net10.0/
+- Microsoft.AspNetCore.Antiforgery.dll
+- Microsoft.AspNetCore.Authentication.Abstractions.dll
+- Microsoft.AspNetCore.Authentication.BearerToken.dll
+- Microsoft.AspNetCore.Authentication.Cookies.dll
+- Microsoft.AspNetCore.Authentication.Core.dll
+- Microsoft.AspNetCore.Authentication.dll
+- Microsoft.AspNetCore.Authentication.OAuth.dll
+- Microsoft.AspNetCore.Authorization.dll
+- Microsoft.AspNetCore.Authorization.Policy.dll
+- Microsoft.AspNetCore.Components.Authorization.dll
+- Microsoft.AspNetCore.Components.dll
+- Microsoft.AspNetCore.Components.Endpoints.dll
+- Microsoft.AspNetCore.Components.Forms.dll
+- Microsoft.AspNetCore.Components.Server.dll
+- Microsoft.AspNetCore.Components.Web.dll
+- Microsoft.AspNetCore.Connections.Abstractions.dll
+- Microsoft.AspNetCore.CookiePolicy.dll
+- Microsoft.AspNetCore.Cors.dll
+- Microsoft.AspNetCore.Cryptography.Internal.dll
+- Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+- Microsoft.AspNetCore.DataProtection.Abstractions.dll
+- Microsoft.AspNetCore.DataProtection.dll
+- Microsoft.AspNetCore.DataProtection.Extensions.dll
+- Microsoft.AspNetCore.Diagnostics.Abstractions.dll
+- Microsoft.AspNetCore.Diagnostics.dll
+- Microsoft.AspNetCore.Diagnostics.HealthChecks.dll
+- Microsoft.AspNetCore.dll
+- Microsoft.AspNetCore.HostFiltering.dll
+- Microsoft.AspNetCore.Hosting.Abstractions.dll
+- Microsoft.AspNetCore.Hosting.dll
+- Microsoft.AspNetCore.Hosting.Server.Abstractions.dll
+- Microsoft.AspNetCore.Html.Abstractions.dll
+- Microsoft.AspNetCore.Http.Abstractions.dll
+- Microsoft.AspNetCore.Http.Connections.Common.dll
+- Microsoft.AspNetCore.Http.Connections.dll
+- Microsoft.AspNetCore.Http.dll
+- Microsoft.AspNetCore.Http.Extensions.dll
+- Microsoft.AspNetCore.Http.Features.dll
+- Microsoft.AspNetCore.Http.Results.dll
+- Microsoft.AspNetCore.HttpLogging.dll
+- Microsoft.AspNetCore.HttpOverrides.dll
+- Microsoft.AspNetCore.HttpsPolicy.dll
+- Microsoft.AspNetCore.Identity.dll
+- Microsoft.AspNetCore.Localization.dll
+- Microsoft.AspNetCore.Localization.Routing.dll
+- Microsoft.AspNetCore.Metadata.dll
+- Microsoft.AspNetCore.Mvc.Abstractions.dll
+- Microsoft.AspNetCore.Mvc.ApiExplorer.dll
+- Microsoft.AspNetCore.Mvc.Core.dll
+- Microsoft.AspNetCore.Mvc.Cors.dll
+- Microsoft.AspNetCore.Mvc.DataAnnotations.dll
+- Microsoft.AspNetCore.Mvc.dll
+- Microsoft.AspNetCore.Mvc.Formatters.Json.dll
+- Microsoft.AspNetCore.Mvc.Formatters.Xml.dll
+- Microsoft.AspNetCore.Mvc.Localization.dll
+- Microsoft.AspNetCore.Mvc.Razor.dll
+- Microsoft.AspNetCore.Mvc.RazorPages.dll
+- Microsoft.AspNetCore.Mvc.TagHelpers.dll
+- Microsoft.AspNetCore.Mvc.ViewFeatures.dll
+- Microsoft.AspNetCore.OutputCaching.dll
+- Microsoft.AspNetCore.RateLimiting.dll
+- Microsoft.AspNetCore.Razor.dll
+- Microsoft.AspNetCore.Razor.Runtime.dll
+- Microsoft.AspNetCore.RequestDecompression.dll
+- Microsoft.AspNetCore.ResponseCaching.Abstractions.dll
+- Microsoft.AspNetCore.ResponseCaching.dll
+- Microsoft.AspNetCore.ResponseCompression.dll
+- Microsoft.AspNetCore.Rewrite.dll
+- Microsoft.AspNetCore.Routing.Abstractions.dll
+- Microsoft.AspNetCore.Routing.dll
+- Microsoft.AspNetCore.Server.HttpSys.dll
+- Microsoft.AspNetCore.Server.IIS.dll
+- Microsoft.AspNetCore.Server.IISIntegration.dll
+- Microsoft.AspNetCore.Server.Kestrel.Core.dll
+- Microsoft.AspNetCore.Server.Kestrel.dll
+- Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes.dll
+- Microsoft.AspNetCore.Server.Kestrel.Transport.Quic.dll
+- Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.dll
+- Microsoft.AspNetCore.Session.dll
+- Microsoft.AspNetCore.SignalR.Common.dll
+- Microsoft.AspNetCore.SignalR.Core.dll
+- Microsoft.AspNetCore.SignalR.dll
+- Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+- Microsoft.AspNetCore.StaticAssets.dll
+- Microsoft.AspNetCore.StaticFiles.dll
+- Microsoft.AspNetCore.WebSockets.dll
+- Microsoft.AspNetCore.WebUtilities.dll
+- Microsoft.Extensions.Caching.Abstractions.dll
+- Microsoft.Extensions.Caching.Memory.dll
+- Microsoft.Extensions.Configuration.Abstractions.dll
+- Microsoft.Extensions.Configuration.Binder.dll
+- Microsoft.Extensions.Configuration.CommandLine.dll
+- Microsoft.Extensions.Configuration.dll
+- Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+- Microsoft.Extensions.Configuration.FileExtensions.dll
+- Microsoft.Extensions.Configuration.Ini.dll
+- Microsoft.Extensions.Configuration.Json.dll
+- Microsoft.Extensions.Configuration.KeyPerFile.dll
+- Microsoft.Extensions.Configuration.UserSecrets.dll
+- Microsoft.Extensions.Configuration.Xml.dll
+- Microsoft.Extensions.DependencyInjection.Abstractions.dll
+- Microsoft.Extensions.DependencyInjection.dll
+- Microsoft.Extensions.Diagnostics.Abstractions.dll
+- Microsoft.Extensions.Diagnostics.dll
+- Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll
+- Microsoft.Extensions.Diagnostics.HealthChecks.dll
+- Microsoft.Extensions.Features.dll
+- Microsoft.Extensions.FileProviders.Abstractions.dll
+- Microsoft.Extensions.FileProviders.Composite.dll
+- Microsoft.Extensions.FileProviders.Embedded.dll
+- Microsoft.Extensions.FileProviders.Physical.dll
+- Microsoft.Extensions.FileSystemGlobbing.dll
+- Microsoft.Extensions.Hosting.Abstractions.dll
+- Microsoft.Extensions.Hosting.dll
+- Microsoft.Extensions.Http.dll
+- Microsoft.Extensions.Identity.Core.dll
+- Microsoft.Extensions.Identity.Stores.dll
+- Microsoft.Extensions.Localization.Abstractions.dll
+- Microsoft.Extensions.Localization.dll
+- Microsoft.Extensions.Logging.Abstractions.dll
+- Microsoft.Extensions.Logging.Configuration.dll
+- Microsoft.Extensions.Logging.Console.dll
+- Microsoft.Extensions.Logging.Debug.dll
+- Microsoft.Extensions.Logging.dll
+- Microsoft.Extensions.Logging.EventLog.dll
+- Microsoft.Extensions.Logging.EventSource.dll
+- Microsoft.Extensions.Logging.TraceSource.dll
+- Microsoft.Extensions.ObjectPool.dll
+- Microsoft.Extensions.Options.ConfigurationExtensions.dll
+- Microsoft.Extensions.Options.DataAnnotations.dll
+- Microsoft.Extensions.Options.dll
+- Microsoft.Extensions.Primitives.dll
+- Microsoft.Extensions.Validation.dll
+- Microsoft.Extensions.WebEncoders.dll
+- Microsoft.JSInterop.dll
+- Microsoft.Net.Http.Headers.dll
+- System.Diagnostics.EventLog.dll
+- System.Formats.Cbor.dll
+- System.Security.Cryptography.Xml.dll
+- System.Threading.RateLimiting.dll
+-<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.8/ref/net10.0/
+- Microsoft.CSharp.dll
+- Microsoft.VisualBasic.Core.dll
+- Microsoft.VisualBasic.dll
+- Microsoft.Win32.Primitives.dll
+- Microsoft.Win32.Registry.dll
+- mscorlib.dll
+- netstandard.dll
+- System.AppContext.dll
+- System.Buffers.dll
+- System.Collections.Concurrent.dll
+- System.Collections.dll
+- System.Collections.Immutable.dll
+- System.Collections.NonGeneric.dll
+- System.Collections.Specialized.dll
+- System.ComponentModel.Annotations.dll
+- System.ComponentModel.DataAnnotations.dll
+- System.ComponentModel.dll
+- System.ComponentModel.EventBasedAsync.dll
+- System.ComponentModel.Primitives.dll
+- System.ComponentModel.TypeConverter.dll
+- System.Configuration.dll
+- System.Console.dll
+- System.Core.dll
+- System.Data.Common.dll
+- System.Data.DataSetExtensions.dll
+- System.Data.dll
+- System.Diagnostics.Contracts.dll
+- System.Diagnostics.Debug.dll
+- System.Diagnostics.DiagnosticSource.dll
+- System.Diagnostics.FileVersionInfo.dll
+- System.Diagnostics.Process.dll
+- System.Diagnostics.StackTrace.dll
+- System.Diagnostics.TextWriterTraceListener.dll
+- System.Diagnostics.Tools.dll
+- System.Diagnostics.TraceSource.dll
+- System.Diagnostics.Tracing.dll
+- System.dll
+- System.Drawing.dll
+- System.Drawing.Primitives.dll
+- System.Dynamic.Runtime.dll
+- System.Formats.Asn1.dll
+- System.Formats.Tar.dll
+- System.Globalization.Calendars.dll
+- System.Globalization.dll
+- System.Globalization.Extensions.dll
+- System.IO.Compression.Brotli.dll
+- System.IO.Compression.dll
+- System.IO.Compression.FileSystem.dll
+- System.IO.Compression.ZipFile.dll
+- System.IO.dll
+- System.IO.FileSystem.AccessControl.dll
+- System.IO.FileSystem.dll
+- System.IO.FileSystem.DriveInfo.dll
+- System.IO.FileSystem.Primitives.dll
+- System.IO.FileSystem.Watcher.dll
+- System.IO.IsolatedStorage.dll
+- System.IO.MemoryMappedFiles.dll
+- System.IO.Pipelines.dll
+- System.IO.Pipes.AccessControl.dll
+- System.IO.Pipes.dll
+- System.IO.UnmanagedMemoryStream.dll
+- System.Linq.AsyncEnumerable.dll
+- System.Linq.dll
+- System.Linq.Expressions.dll
+- System.Linq.Parallel.dll
+- System.Linq.Queryable.dll
+- System.Memory.dll
+- System.Net.dll
+- System.Net.Http.dll
+- System.Net.Http.Json.dll
+- System.Net.HttpListener.dll
+- System.Net.Mail.dll
+- System.Net.NameResolution.dll
+- System.Net.NetworkInformation.dll
+- System.Net.Ping.dll
+- System.Net.Primitives.dll
+- System.Net.Quic.dll
+- System.Net.Requests.dll
+- System.Net.Security.dll
+- System.Net.ServerSentEvents.dll
+- System.Net.ServicePoint.dll
+- System.Net.Sockets.dll
+- System.Net.WebClient.dll
+- System.Net.WebHeaderCollection.dll
+- System.Net.WebProxy.dll
+- System.Net.WebSockets.Client.dll
+- System.Net.WebSockets.dll
+- System.Numerics.dll
+- System.Numerics.Vectors.dll
+- System.ObjectModel.dll
+- System.Reflection.DispatchProxy.dll
+- System.Reflection.dll
+- System.Reflection.Emit.dll
+- System.Reflection.Emit.ILGeneration.dll
+- System.Reflection.Emit.Lightweight.dll
+- System.Reflection.Extensions.dll
+- System.Reflection.Metadata.dll
+- System.Reflection.Primitives.dll
+- System.Reflection.TypeExtensions.dll
+- System.Resources.Reader.dll
+- System.Resources.ResourceManager.dll
+- System.Resources.Writer.dll
+- System.Runtime.CompilerServices.Unsafe.dll
+- System.Runtime.CompilerServices.VisualC.dll
+- System.Runtime.dll
+- System.Runtime.Extensions.dll
+- System.Runtime.Handles.dll
+- System.Runtime.InteropServices.dll
+- System.Runtime.InteropServices.JavaScript.dll
+- System.Runtime.InteropServices.RuntimeInformation.dll
+- System.Runtime.Intrinsics.dll
+- System.Runtime.Loader.dll
+- System.Runtime.Numerics.dll
+- System.Runtime.Serialization.dll
+- System.Runtime.Serialization.Formatters.dll
+- System.Runtime.Serialization.Json.dll
+- System.Runtime.Serialization.Primitives.dll
+- System.Runtime.Serialization.Xml.dll
+- System.Security.AccessControl.dll
+- System.Security.Claims.dll
+- System.Security.Cryptography.Algorithms.dll
+- System.Security.Cryptography.Cng.dll
+- System.Security.Cryptography.Csp.dll
+- System.Security.Cryptography.dll
+- System.Security.Cryptography.Encoding.dll
+- System.Security.Cryptography.OpenSsl.dll
+- System.Security.Cryptography.Primitives.dll
+- System.Security.Cryptography.X509Certificates.dll
+- System.Security.dll
+- System.Security.Principal.dll
+- System.Security.Principal.Windows.dll
+- System.Security.SecureString.dll
+- System.ServiceModel.Web.dll
+- System.ServiceProcess.dll
+- System.Text.Encoding.CodePages.dll
+- System.Text.Encoding.dll
+- System.Text.Encoding.Extensions.dll
+- System.Text.Encodings.Web.dll
+- System.Text.Json.dll
+- System.Text.RegularExpressions.dll
+- System.Threading.AccessControl.dll
+- System.Threading.Channels.dll
+- System.Threading.dll
+- System.Threading.Overlapped.dll
+- System.Threading.Tasks.Dataflow.dll
+- System.Threading.Tasks.dll
+- System.Threading.Tasks.Extensions.dll
+- System.Threading.Tasks.Parallel.dll
+- System.Threading.Thread.dll
+- System.Threading.ThreadPool.dll
+- System.Threading.Timer.dll
+- System.Transactions.dll
+- System.Transactions.Local.dll
+- System.ValueTuple.dll
+- System.Web.dll
+- System.Web.HttpUtility.dll
+- System.Windows.dll
+- System.Xml.dll
+- System.Xml.Linq.dll
+- System.Xml.ReaderWriter.dll
+- System.Xml.Serialization.dll
+- System.Xml.XDocument.dll
+- System.Xml.XmlDocument.dll
+- System.Xml.XmlSerializer.dll
+- System.Xml.XPath.dll
+- System.Xml.XPath.XDocument.dll
+- WindowsBase.dll
+-<NUGET>/
+- diffengine/11.3.0/lib/net7.0/DiffEngine.dll
+- emptyfiles/4.4.0/lib/net7.0/EmptyFiles.dll
+- microsoft.applicationinsights/2.23.0/lib/netstandard2.0/Microsoft.ApplicationInsights.dll
+- microsoft.bcl.asyncinterfaces/6.0.0/lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll
+- microsoft.codecoverage/18.3.0/lib/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll
+- microsoft.testing.extensions.telemetry/1.9.1/lib/net9.0/Microsoft.Testing.Extensions.Telemetry.dll
+- microsoft.testing.extensions.trxreport.abstractions/1.9.1/lib/net9.0/Microsoft.Testing.Extensions.TrxReport.Abstractions.dll
+- microsoft.testing.platform.msbuild/1.9.1/lib/net9.0/Microsoft.Testing.Extensions.MSBuild.dll
+- microsoft.testing.platform/1.9.1/lib/net9.0/Microsoft.Testing.Platform.dll
+- microsoft.testplatform.testhost/18.3.0/lib/net8.0/
+-  Microsoft.TestPlatform.CommunicationUtilities.dll
+-  Microsoft.TestPlatform.CoreUtilities.dll
+-  Microsoft.TestPlatform.CrossPlatEngine.dll
+-  Microsoft.TestPlatform.PlatformAbstractions.dll
+-  Microsoft.TestPlatform.Utilities.dll
+-  Microsoft.VisualStudio.TestPlatform.Common.dll
+-  Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
+-  testhost.dll
+- newtonsoft.json/13.0.4/lib/net6.0/Newtonsoft.Json.dll
+- shouldly/4.3.0/lib/net9.0/Shouldly.dll
+- system.codedom/6.0.0/lib/net6.0/System.CodeDom.dll
+- system.management/6.0.1/lib/net6.0/System.Management.dll
+- xunit.v3.assert/3.2.2/lib/net8.0/xunit.v3.assert.dll
+- xunit.v3.common/3.2.2/lib/netstandard2.0/xunit.v3.common.dll
+- xunit.v3.core.mtp-v1/3.2.2/lib/net8.0/xunit.v3.mtp-v1.dll
+- xunit.v3.extensibility.core/3.2.2/lib/netstandard2.0/xunit.v3.core.dll
+- xunit.v3.runner.common/3.2.2/lib/netstandard2.0/xunit.v3.runner.common.dll
+- xunit.v3.runner.inproc.console/3.2.2/lib/net8.0/xunit.v3.runner.inproc.console.dll
+- yamldotnet/16.3.0/lib/net8.0/YamlDotNet.dll
+-
+-[analyzerReferences]
+-<DOTNET>/packs/Microsoft.AspNetCore.App.Ref/10.0.8/analyzers/dotnet/cs/
+- Microsoft.AspNetCore.App.Analyzers.dll
+- Microsoft.AspNetCore.App.CodeFixes.dll
+- Microsoft.AspNetCore.App.SourceGenerators.dll
+- Microsoft.AspNetCore.Components.Analyzers.dll
+- Microsoft.Extensions.Logging.Generators.dll
+- Microsoft.Extensions.Options.SourceGeneration.dll
+- Microsoft.Extensions.Validation.ValidationsGenerator.dll
+-<DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.8/analyzers/dotnet/cs/
+- Microsoft.Interop.ComInterfaceGenerator.dll
+- Microsoft.Interop.JavaScript.JSImportGenerator.dll
+- Microsoft.Interop.LibraryImportGenerator.dll
+- Microsoft.Interop.SourceGeneration.dll
+- System.Text.Json.SourceGeneration.dll
+- System.Text.RegularExpressions.Generator.dll
+-<DOTNET>/sdk/10.0.108/Sdks/Microsoft.NET.Sdk/analyzers/
+- Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
+- Microsoft.CodeAnalysis.NetAnalyzers.dll
+-<NUGET>/xunit.analyzers/1.27.0/analyzers/dotnet/cs/
+- xunit.analyzers.dll
+- xunit.analyzers.fixes.dll
+-
+-[analyzerConfigFiles]
+-../../.editorconfig
+-<DOTNET>/sdk/10.0.108/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
+-obj/Debug/net10.0/Hexalith.Folders.Client.Tests.GeneratedMSBuildEditorConfig.editorconfig
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+index d3bd298..0d9ed15 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
++++ b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+@@ -111,7 +111,7 @@ public sealed class ScaffoldContractTests
+         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Contracts"]);
+         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+-        AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Testing"]);
++        AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);

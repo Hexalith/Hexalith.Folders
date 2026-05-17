@@ -4,11 +4,13 @@ using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Generation.Shared;
 using Hexalith.Folders.Client.Idempotency;
 using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
 using YamlDotNet.RepresentationModel;
+using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
 
 namespace Hexalith.Folders.Client.Tests;
 
@@ -71,12 +73,17 @@ public sealed class ClientGenerationTests
             methods.Length.ShouldBe(1, group.Key);
             methods[0].ReturnType.ShouldBe(typeof(string), group.Key);
 
-            string[] expectedParameterTypes = group
+            OpenApiParameter[] expectedSpineParameters = group
                 .SelectMany(o => o.Parameters.Where(p => o.IdempotencyFields.Contains(p.Field, StringComparer.Ordinal)))
                 .GroupBy(p => p.Field, StringComparer.Ordinal)
-                .Select(g => typeof(string).FullName!)
+                .Select(g => g.OrderBy(p => p.Name, StringComparer.Ordinal).First())
                 .ToArray();
-            methods[0].GetParameters().Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
+            string[] expectedParameterTypes = expectedSpineParameters.Select(_ => typeof(string).FullName!).ToArray();
+            string[] expectedParameterNames = expectedSpineParameters.Select(p => ToCamelCase(p.Field)).ToArray();
+
+            ParameterInfo[] actualParameters = methods[0].GetParameters();
+            actualParameters.Select(p => p.ParameterType.FullName).ToArray().ShouldBe(expectedParameterTypes, group.Key);
+            actualParameters.Select(p => p.Name).ToArray().ShouldBe(expectedParameterNames, group.Key + " parameter names must match spine path-parameter declaration order");
         }
 
         foreach (string schema in operations.Where(o => o.IdempotencyFields.Count == 0).Select(o => o.RequestSchema).WhereNotNull().Distinct(StringComparer.Ordinal))
@@ -201,26 +208,58 @@ public sealed class ClientGenerationTests
     {
         string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-generation-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempRoot);
-        string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
-        string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
-        string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
-        File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
-
-        string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-        using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        try
         {
-            FileName = "dotnet",
-            Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-        })!;
+            string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
+            string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
+            string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+            File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
 
-        process.WaitForExit(120_000).ShouldBeTrue();
-        string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
-        process.ExitCode.ShouldBe(0, combinedOutput);
-        File.Exists(output).ShouldBeTrue();
-        File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
+            string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
+            using System.Diagnostics.Process process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:HexalithFoldersContractSpine=\"{mutatedSpine}\" /p:HexalithFoldersGeneratedHelpers=\"{output}\"",
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+            }) ?? throw new InvalidOperationException("Failed to start 'dotnet' process - is the .NET SDK on PATH?");
+
+            bool exited = process.WaitForExit(120_000);
+            if (!exited)
+            {
+                // Round 4 review (P13): kill the orphan process tree before the assertion fails so
+                // tempdir cleanup is not racing a still-running dotnet that holds file handles.
+                // Round 4 external (P9): fail loud on kill failure and assert the second WaitForExit
+                // actually drained the child, otherwise the subsequent Directory.Delete races a live
+                // handle.
+                bool killSucceeded = true;
+                string? killFailureMessage = null;
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch (InvalidOperationException invalid)
+                {
+                    killSucceeded = false;
+                    killFailureMessage = invalid.Message;
+                }
+
+                bool drained = process.WaitForExit(10_000);
+                killSucceeded.ShouldBeTrue($"process.Kill threw InvalidOperationException: {killFailureMessage}; the original 120s timeout cannot be diagnosed because the child was already gone or in an unexpected state.");
+                drained.ShouldBeTrue("process.Kill(entireProcessTree: true) did not finish draining the child within 10s; tempdir cleanup would race a live handle.");
+                exited.ShouldBeTrue("dotnet msbuild GenerateHexalithFoldersIdempotencyHelpers did not exit within 120s; orphan process killed.");
+            }
+
+            string combinedOutput = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
+            process.ExitCode.ShouldBe(0, combinedOutput);
+            File.Exists(output).ShouldBeTrue();
+            File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
+        }
+        finally
+        {
+            Directory.Delete(tempRoot, recursive: true);
+        }
     }
 
     [Fact]
@@ -259,18 +298,43 @@ public sealed class ClientGenerationTests
         foreach (JsonElement corpusCase in cases.Where(c => c.GetProperty("category").GetString() != "duplicate-json-key"))
         {
             string classification = corpusCase.GetProperty("equivalence_classification").GetString() ?? string.Empty;
+            string caseId = corpusCase.GetProperty("id").GetString() ?? "<unidentified>";
             string left = ComputeCorpusHash(corpusCase.GetProperty("input"));
             string right = ComputeCorpusHash(corpusCase.GetProperty("comparison_input"));
 
             if (classification.StartsWith("non-equivalent", StringComparison.Ordinal) ||
-                classification.StartsWith("equivalent-only", StringComparison.Ordinal) ||
-                classification == "parser-rejected")
+                classification.StartsWith("equivalent-only", StringComparison.Ordinal))
             {
-                left.ShouldNotBe(right, corpusCase.GetProperty("id").GetString());
+                left.ShouldNotBe(right, caseId);
+            }
+            else if (classification == "parser-rejected")
+            {
+                // The corpus's parser-rejected classification describes behavior at the HTTP
+                // idempotency-key parser boundary (Idempotency-Key header validation) — the input
+                // is rejected before any hash computation. The canonical-hasher boundary here is
+                // downstream of that validation; for hash purposes the two corpus inputs simply
+                // produce non-equivalent escaped hashes. The HTTP parser-rejection contract is
+                // enforced by the input validators in Hexalith.Folders.Server (Epic 4).
+                // Round 4 review (P12) made this layering explicit.
+                left.ShouldNotBe(right, caseId);
             }
             else if (classification == "equivalent-after-lexicographic-field-ordering")
             {
-                left.ShouldBe(right, corpusCase.GetProperty("id").GetString());
+                left.ShouldBe(right, caseId);
+            }
+            else if (classification == "equivalent-after-generated-normalization-for-declared-normalization-insensitive-field" ||
+                     classification == "equivalent-only-when-field-declares-compatibility-normalization")
+            {
+                // Default hasher does not apply generated normalization or compatibility normalization;
+                // AC 6 reads "Unicode normalization where declared" and no current spine field declares
+                // normalization-eligibility. When a field declares opt-in, a normalization-enabled
+                // helper variant will flip this assertion. Tracked in deferred-work.md (Round 4).
+                left.ShouldNotBe(right, caseId);
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    $"Unhandled equivalence_classification '{classification}' for case '{caseId}'. Add an explicit branch when the corpus grows new classification values.");
             }
         }
     }
@@ -365,25 +429,22 @@ public sealed class ClientGenerationTests
 
     private static IReadOnlyList<OpenApiOperation> LoadOperations()
     {
-        using StreamReader reader = File.OpenText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
-        YamlStream yaml = new();
-        yaml.Load(reader);
-        YamlMappingNode root = yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
+        YamlMappingNode root = YamlContractLoader.LoadYaml(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
         List<OpenApiOperation> operations = [];
 
         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
         {
-            YamlMappingNode path = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
+            YamlMappingNode path = pathEntry.Value.ShouldBeMapping("path item");
             IReadOnlyList<OpenApiParameter> pathParameters = EnumerateParameters(path).ToArray();
             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in path.Children)
             {
-                string method = methodEntry.Key.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+                string method = methodEntry.Key.ShouldBeScalar("method").Value ?? string.Empty;
                 if (method is not ("get" or "post" or "put" or "patch" or "delete"))
                 {
                     continue;
                 }
 
-                YamlMappingNode operation = methodEntry.Value.ShouldBeOfType<YamlMappingNode>();
+                YamlMappingNode operation = methodEntry.Value.ShouldBeMapping("operation");
                 string operationId = RequiredScalar(operation, "operationId");
                 string? requestSchema = TryReadRequestSchema(operation);
                 IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
@@ -395,30 +456,6 @@ public sealed class ClientGenerationTests
         return operations;
     }
 
-    private static string? TryReadRequestSchema(YamlMappingNode operation)
-    {
-        if (!operation.Children.TryGetValue(new YamlScalarNode("requestBody"), out YamlNode? requestBodyNode))
-        {
-            return null;
-        }
-
-        YamlMappingNode requestBody = requestBodyNode.ShouldBeOfType<YamlMappingNode>();
-        YamlMappingNode content = RequiredMapping(requestBody, "content");
-        YamlMappingNode json = RequiredMapping(content, "application/json");
-        YamlMappingNode schema = RequiredMapping(json, "schema");
-        return RequiredScalar(schema, "$ref").Split('/').Last();
-    }
-
-    private static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string key)
-    {
-        if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value))
-        {
-            return [];
-        }
-
-        return value.ShouldBeOfType<YamlSequenceNode>().Children.Select(node => node.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).ToArray();
-    }
-
     private static IEnumerable<OpenApiParameter> EnumerateParameters(YamlMappingNode mapping)
     {
         if (!mapping.Children.TryGetValue(new YamlScalarNode("parameters"), out YamlNode? parametersNode))
@@ -426,31 +463,25 @@ public sealed class ClientGenerationTests
             yield break;
         }
 
-        foreach (YamlNode parameterNode in parametersNode.ShouldBeOfType<YamlSequenceNode>())
+        foreach (YamlNode parameterNode in parametersNode.ShouldBeSequence("parameters"))
         {
-            YamlMappingNode parameter = parameterNode.ShouldBeOfType<YamlMappingNode>();
+            YamlMappingNode parameter = parameterNode.ShouldBeMapping("parameter");
             string name = parameter.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode)
-                ? (referenceNode.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty).Split('/').Last()
+                ? (referenceNode.ShouldBeScalar("$ref").Value ?? string.Empty).Split('/').Last()
                 : RequiredScalar(parameter, "name");
             yield return new OpenApiParameter(NormalizeName(name), name);
         }
     }
 
-    private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
-    {
-        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
-        return value.ShouldBeOfType<YamlMappingNode>();
-    }
-
-    private static string RequiredScalar(YamlMappingNode mapping, string key)
-    {
-        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
-        return value.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
-    }
-
     private static string LocateRepositoryRoot()
     {
-        DirectoryInfo? directory = new(Path.GetDirectoryName(typeof(ClientGenerationTests).Assembly.Location)!);
+        // Assembly.Location returns "" under single-file publish; fall back to AppContext.BaseDirectory.
+        string assemblyLocation = typeof(ClientGenerationTests).Assembly.Location;
+        string startDirectoryPath = string.IsNullOrEmpty(assemblyLocation)
+            ? AppContext.BaseDirectory
+            : (Path.GetDirectoryName(assemblyLocation) ?? AppContext.BaseDirectory);
+
+        DirectoryInfo? directory = new(startDirectoryPath);
         while (directory is not null)
         {
             if (File.Exists(Path.Combine(directory.FullName, "Hexalith.Folders.slnx")))
@@ -464,55 +495,12 @@ public sealed class ClientGenerationTests
         throw new InvalidOperationException("Could not locate Hexalith.Folders.slnx from the test assembly location.");
     }
 
-    private static string NormalizeName(string value)
-    {
-        StringBuilder builder = new(value.Length);
-        for (int i = 0; i < value.Length; i++)
-        {
-            char character = value[i];
-            if (character is '_' or '-')
-            {
-                if (builder.Length > 0 && builder[^1] != '_')
-                {
-                    builder.Append('_');
-                }
-            }
-            else if (char.IsLetterOrDigit(character))
-            {
-                if (char.IsUpper(character) && i > 0 && builder.Length > 0 && builder[^1] != '_')
-                {
-                    builder.Append('_');
-                }
-
-                builder.Append(char.ToLowerInvariant(character));
-            }
-        }
-
-        return builder.ToString() switch
-        {
-            "x_hexalith_task_id" => "task_id",
-            "idempotency_key" => "idempotency_key",
-            "correlation_id" => "correlation_id",
-            string normalized => normalized,
-        };
-    }
+    // ToCamelCase and NormalizeName now live in YamlContractLoader (Hexalith.Folders.Client.Generation.Shared)
+    // so the generator and tests share one canonical implementation. Round 4 review (P8).
+    private static string ToCamelCase(string snakeOrKebab) => YamlContractLoader.ToParameterName(snakeOrKebab);
 
     private sealed record OpenApiOperation(string OperationId, string? RequestSchema, IReadOnlyList<string> IdempotencyFields, IReadOnlyList<OpenApiParameter> Parameters);
 
     private sealed record OpenApiParameter(string Field, string Name);
 }
 
-internal static class EnumerableExtensions
-{
-    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> values)
-        where T : class
-    {
-        foreach (T? value in values)
-        {
-            if (value is not null)
-            {
-                yield return value;
-            }
-        }
-    }
-}

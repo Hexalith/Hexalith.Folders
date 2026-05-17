@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Generation\Shared\Hexalith.Folders.Client.Generation.Shared.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
   </ItemGroup>
   <ItemGroup>

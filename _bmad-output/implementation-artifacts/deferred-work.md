@@ -2,6 +2,31 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)
+
+Items deferred from the Round 4 external review against the post-Round-3-hardening working tree. The Acceptance Auditor verdict was `pass-with-minor` — all 16 ACs satisfied — so these are non-blocking hardening opportunities.
+
+- Control-character / BOM / surrogate handling asymmetric between `Escape` (value path) and `RejectControlCharacters` (operation-id + field-path) (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:125-162` vs `171-200`). Team chose to reframe via corpus reclassification; HTTP request-parser boundary owns rejection (Epic 4 server input validation).
+- `Half`, `BigInteger`, `Int128`, `UInt128`, `Version`, `nint`, `nuint` fall through to `NormalizeJson` (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:37-56`). No current spine field has these types; Newtonsoft serialization is version-dependent.
+- Cross-type numeric zero encoding asymmetry (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-260`). Same logical zero produces different canonical bytes via `double`, `float`, `decimal`, integer. Spec does not require cross-type equivalence.
+- Static constructor failure mode is opaque (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`). Trade-off: fail-fast at type init vs. fail-on-first-call.
+- `YamlNodeExtensions` mixed-visibility surface — public loader, internal extensions (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167`).
+- Test `GetRawText` doesn't distinguish JSON value types in corpus comparison helper (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`). Pre-existing Round 3 deferral.
+- Empty-parameter-name corner case slips through `EnsureParameter` (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:148-154`). Fail-closed-at-compile is acceptable for impossible-from-current-spine input.
+- `NormalizeName` acronym handling produces non-obvious fail-closed diagnostics (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:98-128`). No current spine uses acronym-suffix parameters.
+- Subnormal `double`s from FMA-fused arithmetic may diverge across hardware classes (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:230-240`). No current arithmetic-derived idempotency field.
+- `Process.WaitForExit(10_000)` after `Kill(entireProcessTree)` return value ignored; Windows handle-release race on `Directory.Delete` (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:241-256`). Resolves together with the Round-3 deferred tempdir-cleanup race.
+- `LocateRepositoryRoot` fallback if `AppContext.BaseDirectory` is also empty (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485`). Single-file-publish edge case.
+- `EnumerableExtensions.WhereNotNull<T>` constrained to reference types only (`tests/Hexalith.Folders.Client.Tests/EnumerableExtensions.cs:5`).
+- `ScaffoldContractTests` hardcoded expected-reference list (`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:114`). Pre-existing pattern.
+- Generator csproj relies on MSBuild item-ordering to exclude `Shared/**/*.cs` (`src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj:5-7`).
+- `ParsedProblemDetailsCache` is a nested `private sealed class` visible to Newtonsoft reflection (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118`).
+- `--repository-root` argument not validated for absolute-path-ness inside the generator (`src/Hexalith.Folders.Client/Generation/Program.cs:9-13`).
+- Generator test `HelperGenerationTargetRegeneratesWhenContractSpineChanges` writes mutated spine via `Encoding.UTF8` with BOM preamble (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-218`).
+- Test corpus classification polarity is forward-fragile (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322`). Flips when AC 6 normalization implemented.
+- `FileMutationRequestFileOperationKind` enum drift detection only checks ordinal collisions, not `EnumMember` wire-value drift (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`).
+- `IdempotencyField.ToCanonicalLine()` bypasses `RejectControlCharacters` (`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:308-312`). Direct callers (e.g. Story 1.13 oracle) skip validation.
+
 ## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)
 
 Items deferred from the round-2 adversarial review against follow-up commits `0ed5673` + `15d6598` over baseline `2b33945`. Defensive validation and CI-bootstrap concerns out of story scope.
@@ -163,3 +188,29 @@ Patches identified by the code review that were NOT applied in the same pass due
 - F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or modifying its scope leaves the AC mapping silently stale. Revisit if traceability tooling becomes available.
 - F3: `equivalence_classification` strings not enum-typed — long compound classification strings (~50-90 chars) in `tests/fixtures/idempotency-encoding-corpus.json` are used as identifiers without schema enum constraint; one typo silently breaks future hash-helper consumers. Tied to D7 (whether to add corpus schema); revisit when Story 1.12 helpers begin consuming the values.
 - F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf` offsets. Project standardizes on UTF-8 without BOM; revisit if an editor introduces non-UTF-8 content.
+
+## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)
+
+- PathTooLongException nuance in `VerifyCurrentDetailed` catch filter [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70`] — current catch list is sufficient for the inputs the helper receives.
+- Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId` [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:354-368`] — cosmetic refactor; two switches will drift only if a new enum value lands without updating both.
+- `EnsureDeclaredOrder` duplicate-after-sort message wording [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:1375-1394`] — cosmetic; order check fires before duplicate check for differently-cased equal names.
+- `ResolveField` perf nit — rebuilds `operationParameters` per field [`src/Hexalith.Folders.Client/Generation/Program.cs:616-638`] — micro-optimization; field counts per operation are small.
+- `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651`] — hash-difference check is sufficient evidence of regeneration; comment-only YAML mutation is acceptable.
+- `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — the shim is harmless and the NSwag duplicate-emission cause is known.
+- MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1193-1199`] — works as written; revisit when the file layout changes.
+- `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — perf concern; ties into Story 1.14 CI gate review.
+- `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — the new location works; original-location ineffectiveness is folklore.
+- `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
+- `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392`] — pending spine verification; owned by Stories 1.7-1.11 if it is a spine bug.
+- `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — Round 2 P28 was marked done with this approach; functionally deterministic.
+- `ReadProperties` does not follow `allOf` / `$ref` composition [`src/Hexalith.Folders.Client/Generation/Program.cs:709-722`] — no current spine schema requires it; revisit when composed schemas with idempotency fields arrive.
+- `parent_folder_id` `Specified` hardcode coupling [`src/Hexalith.Folders.Client/Generation/Program.cs:1020`] — only fires for `CreateFolderRequest` today.
+- `Compute` does not accept `CancellationToken` [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs:14-27`] — hash work is in-process and short; revisit when invoked from request-scoped network paths.
+- `repositoryRoot` symlink / casing handling [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:50-73`] — filesystem-boundary concern; build-time and CI consume canonicalized paths today.
+
+## Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)
+
+- General-case null-vs-omitted presence tracking [`src/Hexalith.Folders.Client/Generation/Program.cs:546`] — only `parent_folder_id` has a presence companion via `ParentFolderIdSpecified`. Revisit when a second nullable single-property idempotency field surfaces in the spine.
+- `oneOf` traversal without explicit OpenAPI `discriminator` [`src/Hexalith.Folders.Client/Generation/Program.cs:215-221`] — `FileMutationRequest` is the only schema needing this today and is handled via `SpecialFields.Registry` projection. Story 1.13 owns generic discriminator-driven `oneOf` resolution.
+- NFC/NFD/NFKC normalization not implemented in hasher [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`] — AC 6 reads "Unicode normalization where declared" and no current spine field declares normalization-eligibility. Revisit when a field declares it.
+- Tempdir cleanup catches that swallow `IOException`/`UnauthorizedAccessException` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1640-1653`] — overlaps with the WaitForExit-orphan patch shipped in the same round; resolving the orphan process also resolves the cleanup races.

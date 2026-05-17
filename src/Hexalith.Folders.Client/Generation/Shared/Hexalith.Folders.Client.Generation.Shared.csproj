@@ -1,17 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Shared\**\*.cs" />
-    <None Remove="Shared\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="YamlDotNet" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Shared\Hexalith.Folders.Client.Generation.Shared.csproj" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Client.Generation" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Client.Tests" />
   </ItemGroup>
 </Project>

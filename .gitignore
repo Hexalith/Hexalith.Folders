@@ -427,3 +427,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Hexalith.Folders: JetBrains Rider lscache build cache files (machine-local)
+*.lscache
