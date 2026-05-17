@@ -2,6 +2,14 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)
+
+Items deferred from the `/bmad-code-review 1.15` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `3d75bbb`.
+
+- Encoding/BOM handling in `File.ReadAllText` calls inside `SafetyInvariantGateTests` — deferred, low likelihood any scanned file in the safety scope is non-UTF-8 today; revisit when scan inputs broaden beyond JSON/YAML/Markdown sources we author.
+- JSON duplicate-keys detection in corpus / inventory / quarantine fixtures — deferred; relying on `JsonDocument` default behavior is acceptable for fixtures we own and write by hand. Revisit if multiple authors begin merging the corpus concurrently.
+- `AssertMetadataOnly` blacklist missing Linux absolute-path roots (`/var/`, `/tmp/`, `/home/`, `/Users/`) — deferred. The gate runs primarily on Windows today, and the inventory `structured_exclusions` does not yet target Linux runner paths. Revisit when CI matrix expands to Linux/macOS or when a contributor reports a Linux-specific leak class.
+
 ## Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)
 
 Items deferred from the `/bmad-code-review 1.14` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `1efdb19`.

@@ -91,7 +91,53 @@ so that implementation cannot leak secrets, file contents, or tenant data throug
   - [x] Confirm no nested submodules were initialized.
   - [x] Confirm no unrelated active Story 1.10 through Story 1.14 files were modified.
 
-## Dev Notes
+### Review Findings
+
+Code review run: 2026-05-17 against commit `3d75bbb` ("Add safety invariant CI gates and related tests"). Reviewers: Blind Hunter, Edge Case Hunter, Acceptance Auditor.
+
+#### Decision-needed (commit-scope governance)
+
+- [ ] [Review][Decision] Scope creep — Story 2.4 file committed in this commit — `_bmad-output/implementation-artifacts/2-4-grant-and-revoke-folder-access.md` (new, 196 lines) was added alongside the 1.15 changes. Preflight `_bmad-output/process-notes/predev-preflight-latest.json` already flagged this with `result: fail`, `dirty_path_count: 12`, and `expected: absent`. Decision: revert + recommit cleanly, or amend story 1.15 File List to acknowledge.
+- [ ] [Review][Decision] Scope creep — submodule pointer bumps for `Hexalith.EventStore` and `Hexalith.Tenants` are part of this commit. Story 1.15 AC 14 and File List do not authorize submodule changes; project-context pins both to `3.15.1`. Decision: revert pointer changes here and isolate to a dedicated submodule update, or document the rationale and amend AC 14.
+- [ ] [Review][Decision] Scope creep — 3 preflight snapshot JSONs were committed under `_bmad-output/process-notes/predev-preflight-2026-05-17T*.json` plus the `predev-preflight-latest.json` mutation. None are in the story File List. Decision: gitignore these process notes, revert from commit, or amend story scope.
+
+#### Patch — Acceptance Criteria violations
+
+- [ ] [Review][Patch] AC 9 — authorization order check uses `Take(3)`, missing the "then execution" tail [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:281]. AC 9 names a four-element ordered tuple; current code lets `query_execution` appear at position 1 and pass.
+- [ ] [Review][Patch] AC 2 — synthetic token `ghp_SYNTHETIC_SENTINEL_TOKEN_000000000000` uses real GitHub PAT prefix [tests/fixtures/audit-leakage-corpus.json:76]. Will trip GitHub Push Protection and external secret scanners on push. Rename without the `ghp_` prefix while keeping the synthetic shape obvious.
+- [ ] [Review][Patch] AC 17 — telemetry surfaces incomplete [tests/fixtures/audit-leakage-corpus.json + safety-channel-inventory.json]. AC 17 requires scanning span names, metric names, event names, counters, exception metadata, and baggage; neither the surface vocabulary, channel inventory entries, nor scan code distinguishes these from flat `traces`/`metric-labels`/`events` buckets.
+- [ ] [Review][Patch] AC 11 — stock `Shouldly.ShouldNotContain` echoes both operands on assertion failure, so a future leak would surface the forbidden value in CI logs [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs throughout]. Task line 58 mandates "custom safe assertion helpers or sanitized assertion messages" — not implemented.
+- [ ] [Review][Patch] AC 1 / AC 3 — 9 of 18 inventory channels are blanket `reference-pending` with no per-channel justification [tests/fixtures/safety-channel-inventory.json:1166-1245]. AC 3 requires coverage of channels "present in the repository". At minimum `audit-records` (Story 1.11 is done), `events`, `projections`, and `console-payloads` should be re-evaluated against existing OpenAPI / fixtures rather than deferred.
+- [ ] [Review][Patch] AC 8 — wrong-tenant/unauthorized/hidden/redacted/missing/unknown/stale/projection-unavailable distinction never tested. No assertion walks status text, counts, ordering, cursor values, stack traces, or schema examples for safe-denial shape parity.
+- [ ] [Review][Patch] AC 4 — prerequisite-drift / reference-pending diagnostics live only as static JSON in the inventory; nothing emits them as runtime diagnostics. Test asserts the shape but never proves the emission contract.
+- [ ] [Review][Patch] AC 15 — `owning_story` uses wildcards (`2-x-runtime-observability`, `3-x-provider-adapters`, `6-x-read-only-operations-console`, `2-x-domain-events`, `2-x-runtime-projections`) instead of concrete story IDs [tests/fixtures/safety-channel-inventory.json:1167,1174,1181,1188,1195,1202,1221,1229,1238]. AC 15 names "owning story" not "story pattern". `audit-records` claims `1-11-…` (done) but is still `prerequisite-drift`.
+- [ ] [Review][Patch] AC 21 — `structured_exclusions` missing categories: `.vs/`, `.idea/`, `TestResults/`, `artifacts/`, `.binlog`, NuGet HTTP cache (`$HOME/.nuget/`), per-user MSBuild output [tests/fixtures/safety-channel-inventory.json:1070-1082].
+- [ ] [Review][Patch] AC 18 — `ScanManifestCoveredArtifacts` uses `text.Contains(sample.Value)` without word-boundary protection [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:362-376]. A future regenerated client whose identifier coincidentally contains a sentinel substring would fail this gate as a "leak", overstepping into "client-generation correctness" (Story 1.14 scope).
+- [ ] [Review][Patch] AC 12 — three documented commands (restore + build + script) rather than the single offline command Task line 73 requires [docs/contract/safety-invariant-ci-gates.md:40-43]. The script also implicitly restores from NuGet.org when `-NoRestore` is omitted, breaking the "offline" promise.
+
+#### Patch — Test, fixture, workflow, and script hardening
+
+- [ ] [Review][Patch] Inventory fields `include_roots` and `safe_absence_diagnostic` are declared but never read by tests [tests/fixtures/safety-channel-inventory.json:1066, 1091+]. Decorative fields drift undetected.
+- [ ] [Review][Patch] Asymmetric leak detection — `ScanText` uses `StringComparison.Ordinal` (case-sensitive) while `AssertMetadataOnly` uses `Case.Insensitive` [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:254-268 vs 459-490]. A capitalized variant of a sentinel value escapes detection.
+- [ ] [Review][Patch] `assertion-messages` channel has `scan_forbidden_values: false` [tests/fixtures/safety-channel-inventory.json:1162]. The channel exists precisely to prove assertion messages do not leak values; the flag disables the only check that proves it.
+- [ ] [Review][Patch] `negative-control-quarantine.scan_forbidden_values: false` is decorative — `ScanNegativeControls` reads the quarantine file unconditionally regardless of the flag [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:348-360]. Either honor the flag or remove it.
+- [ ] [Review][Patch] `Take(3)` on `order.Children` lacks an explicit `Count` precondition; on a shorter array Shouldly emits a cryptic shape diff that does not name the missing positions [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:281].
+- [ ] [Review][Patch] `IsBinaryFile` does extension match case-sensitively (misses `.DLL`, `.EXE`) and omits common binary extensions (`.so`, `.dylib`, `.pdf`, `.bin`, `.lib`, `.tar`, `.gz`, `.7z`) [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:439-443].
+- [ ] [Review][Patch] `EnumerateSourceFiles` uses `*.*` which excludes extensionless files like `Dockerfile`, `LICENSE`, `Makefile` [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:406]. Use `*` and filter explicitly.
+- [ ] [Review][Patch] `FindRepositoryRoot` throws `TypeInitializationException` if no `.slnx` is found upward — no fallback for shadow-copied test hosts [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:591-604]. Use `GITHUB_WORKSPACE` env or `AppContext.BaseDirectory` ancestry as fallback.
+- [ ] [Review][Patch] Drift between corpus and quarantine — 11 samples in the corpus declare `participates_in: ["positive","negative-control"]` but the quarantine fixture only contains 5 negative controls [tests/fixtures/audit-leakage-corpus.json vs tests/fixtures/quarantine/safety-negative-controls.json:1009-1047].
+- [ ] [Review][Patch] `FixtureContractTests.cs` modification weakens classification enforcement — previously non-secret samples were strictly `metadata-placeholder`; now any classification in the corpus vocabulary passes [tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:634-651]. Restore the strict check or add a test pinning the intentional loosening.
+- [ ] [Review][Patch] `Path.GetRelativePath` returning a `..`-prefixed path is not guarded — manifest entries like `../etc/passwd` would pass `AssertRepositoryRelativePath` [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:343-349, 478-479].
+- [ ] [Review][Patch] Directory enumeration does not skip reparse points; a workspace with a symlink loop hangs or stack-overflows. Pass `EnumerationOptions { RecurseSubdirectories = true, AttributesToSkip = FileAttributes.ReparsePoint }` [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:298-305].
+- [ ] [Review][Patch] Workflow step "Run safety invariant gates" lacks `if: always()` (so it never runs when contract-spine gates fail, hiding parallel breakage) and lacks `timeout-minutes` [.github/workflows/contract-spine.yml].
+- [ ] [Review][Patch] PowerShell script `tests/tools/run-safety-invariant-gates.ps1` lacks `Set-StrictMode -Version Latest` (typos silently no-op), does not verify `dotnet` is on PATH before invocation, and `Resolve-Path`/`Join-Path` three-arg form requires PowerShell 6+ — Windows PowerShell 5.1 will not parse it (impacts local Windows devs even though CI uses pwsh).
+- [ ] [Review][Patch] `-NoRestore` switch name vs default behavior — the script restores by default unless the switch is passed; doc, workflow, and script use it inconsistently. AC 12's "offline" promise is broken whenever the switch is omitted.
+
+#### Defer (low-likelihood / pre-existing)
+
+- [x] [Review][Defer] Encoding/BOM handling in `File.ReadAllText` — deferred, low likelihood any scanned file is non-UTF-8.
+- [x] [Review][Defer] JSON duplicate-keys detection — deferred, .NET `JsonDocument` default behavior is acceptable for fixtures we control.
+- [x] [Review][Defer] AssertMetadataOnly blacklist missing Linux absolute-path roots (`/home/`, `/Users/`, `/var/`, `/tmp/`) — deferred, the current gate runs primarily on Windows.
 
 ### Scope Boundaries
 
