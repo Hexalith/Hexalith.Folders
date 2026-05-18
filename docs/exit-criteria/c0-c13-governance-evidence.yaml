@@ -1,0 +1,164 @@
+schema_version: '1.0.0'
+gate: governance-completeness
+source_authority:
+  - _bmad-output/planning-artifacts/architecture.md
+  - docs/exit-criteria/
+  - tests/fixtures/
+diagnostic_policy:
+  safe_fields:
+    - gate
+    - criterion_id
+    - artifact_path
+    - owner
+    - status
+    - bounded_category
+    - safe_hash
+  forbidden_fields:
+    - raw_payload
+    - file_content
+    - diff
+    - provider_token
+    - credential_material
+    - tenant_data
+    - local_absolute_path
+criteria:
+  - criterion_id: C0
+    title: Contract Spine source of truth
+    owner: Architecture
+    status: approved
+    artifact_path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+    verification_command: .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
+    result_summary: OpenAPI Contract Spine exists and is consumed by contract, client, and parity gates.
+    open_policy_placeholders: []
+  - criterion_id: C1
+    title: Capacity target evidence
+    owner: Release Readiness
+    status: reference_pending
+    artifact_path: tests/load/README.md
+    verification_command: dotnet build Hexalith.Folders.slnx --no-restore
+    result_summary: Load-test harness placeholder exists; release target calibration is deferred to Epic 7.
+    open_policy_placeholders:
+      - id: C1-capacity-calibration
+        owner: Release Readiness
+        reason: Capacity thresholds are calibrated after lifecycle implementation exists.
+        consuming_story: 7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets
+  - criterion_id: C2
+    title: Projection freshness target evidence
+    owner: Release Readiness
+    status: reference_pending
+    artifact_path: _bmad-output/planning-artifacts/architecture.md
+    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
+    result_summary: Architecture records the freshness target; implementation evidence is deferred until projections exist.
+    open_policy_placeholders:
+      - id: C2-projection-freshness
+        owner: Release Readiness
+        reason: Projection runtime and freshness metrics are implemented after aggregate and worker stories.
+        consuming_story: 7-12-wire-production-observability-and-alerts
+  - criterion_id: C3
+    title: Retention policy evidence
+    owner: Tech Lead
+    status: reference_pending
+    artifact_path: docs/exit-criteria/c3-retention.md
+    verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
+    result_summary: Proposed retention values are documented with Legal and PM approval still pending.
+    open_policy_placeholders:
+      - id: C3-legal-pm-approval
+        owner: Legal + PM
+        reason: Retention durations must be approved before production enforcement.
+        consuming_story: 7-11-enforce-c3-retention-and-tenant-deletion-behavior
+  - criterion_id: C4
+    title: Input limit evidence
+    owner: Architect
+    status: reference_pending
+    artifact_path: docs/exit-criteria/c4-input-limits.md
+    verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
+    result_summary: Proposed query and payload limits are documented with PM approval still pending.
+    open_policy_placeholders:
+      - id: C4-pm-approval
+        owner: PM
+        reason: MVP input bounds must be approved before production contract enforcement.
+        consuming_story: 4-8-query-file-context-with-policy-boundaries
+  - criterion_id: C5
+    title: Release capacity smoke evidence
+    owner: Release Readiness
+    status: reference_pending
+    artifact_path: tests/load/README.md
+    verification_command: dotnet build Hexalith.Folders.slnx --no-restore
+    result_summary: Capacity smoke lane is documented; executable release evidence is deferred to Epic 7.
+    open_policy_placeholders:
+      - id: C5-capacity-smoke
+        owner: Release Readiness
+        reason: Smoke targets require implemented lifecycle endpoints and load fixtures.
+        consuming_story: 7-7-add-capacity-smoke-ci-gate
+  - criterion_id: C6
+    title: Workspace transition matrix evidence
+    owner: Architect
+    status: approved
+    artifact_path: docs/exit-criteria/c6-transition-matrix-mapping.md
+    verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
+    result_summary: Architecture transition mapping and default rejection semantics are documented.
+    open_policy_placeholders: []
+  - criterion_id: C7
+    title: Lock revalidation budget evidence
+    owner: Architecture
+    status: reference_pending
+    artifact_path: _bmad-output/planning-artifacts/architecture.md
+    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
+    result_summary: Architecture records lock revalidation intent; executable lock evidence is deferred to Epic 4.
+    open_policy_placeholders:
+      - id: C7-lock-revalidation
+        owner: Architecture
+        reason: Lock implementation and revocation tests do not exist until workspace lifecycle stories.
+        consuming_story: 4-3-acquire-task-scoped-workspace-lock
+  - criterion_id: C8
+    title: Context-query authorization evidence
+    owner: Contracts
+    status: approved
+    artifact_path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+    verification_command: .\tests\tools\run-safety-invariant-gates.ps1 -SkipRestoreBuild
+    result_summary: OpenAPI context queries declare authorization-before-observation metadata.
+    open_policy_placeholders: []
+  - criterion_id: C9
+    title: Sensitive metadata classification evidence
+    owner: Safety Invariants
+    status: approved
+    artifact_path: tests/fixtures/audit-leakage-corpus.json
+    verification_command: .\tests\tools\run-safety-invariant-gates.ps1 -SkipRestoreBuild
+    result_summary: Synthetic leakage corpus and safety channel inventory are wired to the safety gate.
+    open_policy_placeholders: []
+  - criterion_id: C10
+    title: Tenant-prefixed cache-key evidence
+    owner: Governance Gates
+    status: approved
+    artifact_path: tests/fixtures/cache-key-exceptions.yaml
+    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
+    result_summary: Cache-key lint has explicit non-tenant exception metadata and current repository scan coverage.
+    open_policy_placeholders: []
+  - criterion_id: C11
+    title: File transport boundary evidence
+    owner: Contracts
+    status: approved
+    artifact_path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+    verification_command: .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
+    result_summary: OpenAPI declares inline and streamed file mutation contract metadata.
+    open_policy_placeholders: []
+  - criterion_id: C12
+    title: Provider drift evidence
+    owner: Provider Readiness
+    status: reference_pending
+    artifact_path: _bmad-output/planning-artifacts/architecture.md
+    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
+    result_summary: Architecture records provider drift posture; live provider gates are deferred to Epic 7.
+    open_policy_placeholders:
+      - id: C12-provider-live-drift
+        owner: Provider Readiness
+        reason: Live provider drift checks require provider adapters and credentials not present in this story.
+        consuming_story: 7-8-wire-scheduled-drift-and-policy-conformance-workflows
+  - criterion_id: C13
+    title: Cross-surface parity oracle evidence
+    owner: C13 Parity Oracle Generation
+    status: approved
+    artifact_path: tests/fixtures/parity-contract.yaml
+    verification_command: .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
+    result_summary: Generated parity oracle covers current OpenAPI operations with bounded row metadata.
+    open_policy_placeholders: []

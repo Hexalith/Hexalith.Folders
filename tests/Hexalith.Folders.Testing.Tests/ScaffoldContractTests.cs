@@ -34,7 +34,8 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
-        "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj"
+        "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
+        "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj"
     ];
 
     private static readonly string[] RequiredCanonicalSubmodules =
@@ -119,6 +120,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.PatternExamples", []);
     }
 
     [Fact]

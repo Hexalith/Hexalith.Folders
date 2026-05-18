@@ -43,3 +43,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 15
         run: ./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild
+
+      - name: Run governance completeness gates
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild

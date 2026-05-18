@@ -1,0 +1,24 @@
+schema_version: '1.0.0'
+gate: pattern-example-compilation
+marker_format: '<!-- hexalith-example: compile-csharp -->'
+included_document_globs:
+  - _bmad-output/planning-artifacts/architecture.md
+  - docs/contract/*.md
+excluded_document_globs:
+  - docs/_site/**
+  - src/**/Generated/**
+target_framework: net10.0
+compilable_examples_project: tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj
+examples:
+  - example_id: governance-completeness-criterion-record
+    source_path: tests/tools/pattern-examples/GovernanceCompletenessExample.cs
+    classification: compilable-csharp
+    marker: '<!-- hexalith-example: compile-csharp -->'
+    owner: Governance Gates
+    synthetic_data_only: true
+  - example_id: workflow-yaml-documentation
+    source_path: docs/contract/governance-and-completeness-ci-gates.md
+    classification: documentation-only
+    marker: '<!-- hexalith-example: documentation-only -->'
+    owner: Governance Gates
+    synthetic_data_only: true

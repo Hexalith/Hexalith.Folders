@@ -1,0 +1,57 @@
+schema_version: '1.0.0'
+gate: idempotency-encoding-coverage
+source_corpus: tests/fixtures/idempotency-encoding-corpus.json
+diagnostic_policy: metadata-only
+samples:
+  - sample_id: nfc-composed-e-acute
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: equivalent-after-generated-normalization-for-declared-normalization-insensitive-field
+  - sample_id: nfd-decomposed-e-acute
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: equivalent-after-generated-normalization-for-declared-normalization-insensitive-field
+  - sample_id: nfkc-fullwidth-a
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: equivalent-only-when-field-declares-compatibility-normalization
+  - sample_id: nfkd-roman-numeral-four
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: equivalent-only-when-field-declares-compatibility-normalization
+  - sample_id: zero-width-joiner
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: non-equivalent-unless-generated-helper-declares-invisible-character-normalization
+  - sample_id: case-folding-folder-name
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: non-equivalent-by-default-for-casing-sensitive-string-field
+  - sample_id: ulid-casing
+    coverage_kind: generated-helper-contract-test
+    consumer_path: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+    equivalence_classification: equivalent-only-for-fields-declared-ulid-typed
+  - sample_id: lexicographic-field-order
+    coverage_kind: generated-helper-contract-test
+    consumer_path: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+    equivalence_classification: equivalent-after-lexicographic-field-ordering
+  - sample_id: whitespace-around-metadata
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: non-equivalent-unless-schema-declares-trimmed-field
+  - sample_id: null-versus-omitted-parent
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: non-equivalent-unless-schema-declares-default-equivalence
+  - sample_id: percent-encoded-path-separator
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: equivalent-only-after-single-safe-decode-and-path-policy-validation
+  - sample_id: malformed-idempotency-key-control-character
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: parser-rejected
+  - sample_id: duplicate-json-key-operation-id
+    coverage_kind: parser-policy-test
+    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    equivalence_classification: parser-rejected

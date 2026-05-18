@@ -101,6 +101,14 @@ Run the focused safety invariant gate locally:
 
 This gate validates the synthetic sentinel corpus, channel inventory, quarantined negative controls, OpenAPI and Problem Details examples, generated artifact leakage scope, safe diagnostics, and CI wiring without requiring sidecars, provider credentials, production secrets, network calls, or nested submodule initialization.
 
+Run the focused governance and completeness gate locally:
+
+```powershell
+.\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
+```
+
+This gate validates C0-C13 evidence presence, idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exception metadata, parity completeness, and metadata-only diagnostics through the same command used by CI.
+
 ## Knowledge References
 
 - BMAD TEA fragments: fixture architecture, data factories, test levels, test quality, Playwright configuration, API request, polling, logging, and contract testing.

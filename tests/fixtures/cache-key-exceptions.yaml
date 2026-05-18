@@ -1,0 +1,21 @@
+schema_version: '1.0.0'
+gate: tenant-prefixed-cache-key-lint
+exceptions:
+  - rule_id: CACHE-NON-TENANT-NUGET
+    owner: Build Infrastructure
+    reason: NuGet package restoration cache contains public package artifacts and no tenant data.
+    scope: workflow-tool-cache
+    review_status: approved
+    evidence_link: docs/contract/governance-and-completeness-ci-gates.md
+  - rule_id: CACHE-NON-TENANT-GENERATED-OUTPUT
+    owner: Contract Spine
+    reason: Generated-output cache classification is limited to deterministic Contract Spine artifacts.
+    scope: generated-artifact-cache
+    review_status: approved
+    evidence_link: docs/contract/governance-and-completeness-ci-gates.md
+  - rule_id: CACHE-SYNTHETIC-TEST-EXAMPLE
+    owner: Governance Gates
+    reason: Synthetic lint controls are metadata-only examples and are not durable tenant data.
+    scope: synthetic-test-fixture
+    review_status: approved
+    evidence_link: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs

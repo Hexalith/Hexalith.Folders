@@ -1,6 +1,6 @@
 # Story 1.16: Wire exit-criteria and parity completeness gates
 
-Status: ready-for-dev
+Status: review
 
 Created: 2026-05-14
 
@@ -29,58 +29,58 @@ so that missing release evidence, unstable idempotency encoding, stale examples,
 
 ## Tasks / Subtasks
 
-- [ ] Confirm governance-gate prerequisites and current ownership. (AC: 1, 2, 8, 10, 12, 13, 14)
-  - [ ] Inspect `.github/workflows/`; if Story 1.14 has not created a workflow yet, create only a focused governance/completeness workflow or job that can be composed later.
-  - [ ] Inspect `docs/exit-criteria/`, `_bmad-output/planning-artifacts/architecture.md`, `_bmad-output/project-context.md`, and `tests/README.md` for C0-C13 evidence, gate names, and local verification expectations.
-  - [ ] Inspect Story 1.12 through Story 1.15 artifacts before assuming generated SDK helpers, parity-oracle output, workflow lanes, or safety gate ownership.
-  - [ ] Map each gate to its canonical input owner before adding checks; if two checked-in sources disagree on ownership, status, command, or artifact path, fail with `prerequisite_drift` instead of choosing one silently.
-  - [ ] Treat missing generated helper commands, missing `parity-contract.yaml`, missing workflow files, placeholder-only exit evidence, or absent pattern-example extraction tooling as prerequisite drift unless the implemented gate can fail closed with a targeted diagnostic.
-  - [ ] Do not initialize or update nested submodules. If submodules are needed for validation, initialize only the root-level modules listed in `AGENTS.md`.
-- [ ] Add or wire exit-criteria presence checks. (AC: 1, 2, 10, 11, 12)
-  - [ ] Validate every C0-C13 criterion from architecture has an evidence row or artifact in `docs/exit-criteria/` or another approved repository path.
-  - [ ] Require each evidence record to declare criterion ID, owner, status, artifact path, verification command, result summary, and open policy placeholders.
-  - [ ] Allow bounded `reference_pending` only for explicitly named unresolved decisions and owning criteria; reject generic `PLACEHOLDER` values once a gate claims readiness.
-  - [ ] Add explicit negative coverage for unknown criteria, duplicate criteria, artifact paths outside approved repository-relative locations, missing owners, missing commands, unreadable artifacts, and unresolved placeholder rows.
-  - [ ] Keep diagnostics metadata-only and repository-relative.
-- [ ] Wire idempotency-encoding equivalence coverage. (AC: 3, 4, 10, 11, 12)
-  - [ ] Validate `tests/fixtures/idempotency-encoding-corpus.json` against `tests/fixtures/idempotency-encoding-corpus.schema.json`.
-  - [ ] Add coverage checks proving each corpus case is consumed by a helper, parser-policy, or prerequisite-drift test rather than merely existing as fixture data.
-  - [ ] Maintain or derive a corpus-consumption map by stable sample ID; missing, duplicate, or stale sample mappings fail closed and must not be inferred from test names alone.
-  - [ ] Verify generated helper tests preserve the declared equivalence classifications without hashing whole payloads or treating null, omitted, duplicated, malformed, or normalization-sensitive values as defaults.
-  - [ ] Reuse Story 1.12 commands and generated-helper provenance; do not implement new helper generation logic.
-- [ ] Add pattern-example compilation checks. (AC: 5, 10, 11, 12)
-  - [ ] Identify pattern examples in architecture and contract docs that are intended to compile, and mark non-code prose examples explicitly as documentation-only.
-  - [ ] Require an explicit compilable-example marker before compiling fenced C# blocks; unmarked prose, JSON, YAML, workflow, and pseudocode examples must be classified without broad compilation guesses.
-  - [ ] Compile extracted C# snippets against pinned project references and central package versions, or fail closed with exact prerequisite drift when the required project surface is not present.
-  - [ ] Keep snippets synthetic and metadata-only; never add real tenant names, repository URLs, branch names, provider payloads, file contents, diffs, secrets, or production endpoints.
-- [ ] Add tenant-prefixed cache-key lint. (AC: 6, 9, 11, 12)
-  - [ ] Scan repository code, tests, fixtures, scripts, and workflow cache declarations for cache-key construction patterns.
-  - [ ] Require tenant-scoped cache keys for in-process, Dapr state, Redis, distributed cache, provider-operation, generated-helper, and test-fixture keys that can represent tenant data.
-  - [ ] Permit only explicitly documented non-tenant keys such as tool cache, NuGet package cache, generated-output cache, or synthetic test examples, and require those exceptions to be safe and repository-relative.
-  - [ ] Require cache-key exceptions to carry a rule ID, owner, reason, scope, review status or expiry, and evidence link; pattern-only allowlist entries are not sufficient.
-  - [ ] Do not echo full cache key values in diagnostics; report only the file path, line or schema pointer, category, and bounded reason.
-- [ ] Wire parity completeness checks. (AC: 7, 8, 10, 11, 12)
-  - [ ] Derive the current operation set from `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` with structured YAML parsing.
-  - [ ] Validate that generated parity rows cover every current operation exactly once and that no row references a missing or stale operation ID.
-  - [ ] Detect duplicate OpenAPI operation IDs, duplicate parity rows, intentionally excluded operations without an approved reason, and operation-family mismatches as distinct failure categories.
-  - [ ] Verify row completeness for adapter expectations, operation family, read-consistency class, idempotency key rule, canonical error categories, and bounded ownership metadata.
-  - [ ] Do not hand-author parity rows or implement the parity-oracle generator; Story 1.13 owns generation and Story 1.14 owns schema/drift gate wiring.
-- [ ] Wire CI/local commands without scope bleed. (AC: 8, 10, 11, 12, 14)
-  - [ ] Prefer focused test projects or `tests/tools/` commands that CI and local developers can run identically from the repository root.
-  - [ ] Ensure the shared command performs discovery before validation, returns non-zero for prerequisite drift, and writes only sanitized machine-readable reports with repository-relative paths.
-  - [ ] If a workflow is created or extended, use checked-in `global.json`, central package management, repository-root commands, and explicit steps that mirror local commands.
-  - [ ] Keep restore/build/test steps composed with Story 1.14 where possible; do not create a parallel full release workflow.
-  - [ ] Keep all gates offline and deterministic.
-- [ ] Document developer and reviewer usage. (AC: 1, 2, 5, 6, 7, 10, 11, 12)
-  - [ ] Add or update focused documentation such as `docs/contract/governance-and-completeness-ci-gates.md`.
-  - [ ] Document local commands, CI job names, owned inputs, prerequisite-drift categories, safe diagnostic format, and which prior stories own missing artifacts.
-  - [ ] Document how to add a new C0-C13 evidence artifact, corpus case, pattern example, cache-key exception, or parity row shape without bypassing ownership.
-- [ ] Run verification. (AC: 1, 3, 5, 6, 7, 11, 12, 14)
-  - [ ] Run the focused governance/completeness gate tests.
-  - [ ] Run the workflow-equivalent local commands from the repository root.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if active contract work and prerequisite drift allow it; if blocked, record the exact blocker.
-  - [ ] Confirm no nested submodules were initialized.
-  - [ ] Confirm no unrelated active Story 1.11 through Story 1.15 files were modified.
+- [x] Confirm governance-gate prerequisites and current ownership. (AC: 1, 2, 8, 10, 12, 13, 14)
+  - [x] Inspect `.github/workflows/`; if Story 1.14 has not created a workflow yet, create only a focused governance/completeness workflow or job that can be composed later.
+  - [x] Inspect `docs/exit-criteria/`, `_bmad-output/planning-artifacts/architecture.md`, `_bmad-output/project-context.md`, and `tests/README.md` for C0-C13 evidence, gate names, and local verification expectations.
+  - [x] Inspect Story 1.12 through Story 1.15 artifacts before assuming generated SDK helpers, parity-oracle output, workflow lanes, or safety gate ownership.
+  - [x] Map each gate to its canonical input owner before adding checks; if two checked-in sources disagree on ownership, status, command, or artifact path, fail with `prerequisite_drift` instead of choosing one silently.
+  - [x] Treat missing generated helper commands, missing `parity-contract.yaml`, missing workflow files, placeholder-only exit evidence, or absent pattern-example extraction tooling as prerequisite drift unless the implemented gate can fail closed with a targeted diagnostic.
+  - [x] Do not initialize or update nested submodules. If submodules are needed for validation, initialize only the root-level modules listed in `AGENTS.md`.
+- [x] Add or wire exit-criteria presence checks. (AC: 1, 2, 10, 11, 12)
+  - [x] Validate every C0-C13 criterion from architecture has an evidence row or artifact in `docs/exit-criteria/` or another approved repository path.
+  - [x] Require each evidence record to declare criterion ID, owner, status, artifact path, verification command, result summary, and open policy placeholders.
+  - [x] Allow bounded `reference_pending` only for explicitly named unresolved decisions and owning criteria; reject generic `PLACEHOLDER` values once a gate claims readiness.
+  - [x] Add explicit negative coverage for unknown criteria, duplicate criteria, artifact paths outside approved repository-relative locations, missing owners, missing commands, unreadable artifacts, and unresolved placeholder rows.
+  - [x] Keep diagnostics metadata-only and repository-relative.
+- [x] Wire idempotency-encoding equivalence coverage. (AC: 3, 4, 10, 11, 12)
+  - [x] Validate `tests/fixtures/idempotency-encoding-corpus.json` against `tests/fixtures/idempotency-encoding-corpus.schema.json`.
+  - [x] Add coverage checks proving each corpus case is consumed by a helper, parser-policy, or prerequisite-drift test rather than merely existing as fixture data.
+  - [x] Maintain or derive a corpus-consumption map by stable sample ID; missing, duplicate, or stale sample mappings fail closed and must not be inferred from test names alone.
+  - [x] Verify generated helper tests preserve the declared equivalence classifications without hashing whole payloads or treating null, omitted, duplicated, malformed, or normalization-sensitive values as defaults.
+  - [x] Reuse Story 1.12 commands and generated-helper provenance; do not implement new helper generation logic.
+- [x] Add pattern-example compilation checks. (AC: 5, 10, 11, 12)
+  - [x] Identify pattern examples in architecture and contract docs that are intended to compile, and mark non-code prose examples explicitly as documentation-only.
+  - [x] Require an explicit compilable-example marker before compiling fenced C# blocks; unmarked prose, JSON, YAML, workflow, and pseudocode examples must be classified without broad compilation guesses.
+  - [x] Compile extracted C# snippets against pinned project references and central package versions, or fail closed with exact prerequisite drift when the required project surface is not present.
+  - [x] Keep snippets synthetic and metadata-only; never add real tenant names, repository URLs, branch names, provider payloads, file contents, diffs, secrets, or production endpoints.
+- [x] Add tenant-prefixed cache-key lint. (AC: 6, 9, 11, 12)
+  - [x] Scan repository code, tests, fixtures, scripts, and workflow cache declarations for cache-key construction patterns.
+  - [x] Require tenant-scoped cache keys for in-process, Dapr state, Redis, distributed cache, provider-operation, generated-helper, and test-fixture keys that can represent tenant data.
+  - [x] Permit only explicitly documented non-tenant keys such as tool cache, NuGet package cache, generated-output cache, or synthetic test examples, and require those exceptions to be safe and repository-relative.
+  - [x] Require cache-key exceptions to carry a rule ID, owner, reason, scope, review status or expiry, and evidence link; pattern-only allowlist entries are not sufficient.
+  - [x] Do not echo full cache key values in diagnostics; report only the file path, line or schema pointer, category, and bounded reason.
+- [x] Wire parity completeness checks. (AC: 7, 8, 10, 11, 12)
+  - [x] Derive the current operation set from `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` with structured YAML parsing.
+  - [x] Validate that generated parity rows cover every current operation exactly once and that no row references a missing or stale operation ID.
+  - [x] Detect duplicate OpenAPI operation IDs, duplicate parity rows, intentionally excluded operations without an approved reason, and operation-family mismatches as distinct failure categories.
+  - [x] Verify row completeness for adapter expectations, operation family, read-consistency class, idempotency key rule, canonical error categories, and bounded ownership metadata.
+  - [x] Do not hand-author parity rows or implement the parity-oracle generator; Story 1.13 owns generation and Story 1.14 owns schema/drift gate wiring.
+- [x] Wire CI/local commands without scope bleed. (AC: 8, 10, 11, 12, 14)
+  - [x] Prefer focused test projects or `tests/tools/` commands that CI and local developers can run identically from the repository root.
+  - [x] Ensure the shared command performs discovery before validation, returns non-zero for prerequisite drift, and writes only sanitized machine-readable reports with repository-relative paths.
+  - [x] If a workflow is created or extended, use checked-in `global.json`, central package management, repository-root commands, and explicit steps that mirror local commands.
+  - [x] Keep restore/build/test steps composed with Story 1.14 where possible; do not create a parallel full release workflow.
+  - [x] Keep all gates offline and deterministic.
+- [x] Document developer and reviewer usage. (AC: 1, 2, 5, 6, 7, 10, 11, 12)
+  - [x] Add or update focused documentation such as `docs/contract/governance-and-completeness-ci-gates.md`.
+  - [x] Document local commands, CI job names, owned inputs, prerequisite-drift categories, safe diagnostic format, and which prior stories own missing artifacts.
+  - [x] Document how to add a new C0-C13 evidence artifact, corpus case, pattern example, cache-key exception, or parity row shape without bypassing ownership.
+- [x] Run verification. (AC: 1, 3, 5, 6, 7, 11, 12, 14)
+  - [x] Run the focused governance/completeness gate tests.
+  - [x] Run the workflow-equivalent local commands from the repository root.
+  - [x] Run `dotnet build Hexalith.Folders.slnx` if active contract work and prerequisite drift allow it; if blocked, record the exact blocker.
+  - [x] Confirm no nested submodules were initialized.
+  - [x] Confirm no unrelated active Story 1.11 through Story 1.15 files were modified.
 
 ## Dev Notes
 
@@ -228,6 +228,7 @@ tests/tools/
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-18 | Implemented governance/completeness gate wiring, evidence manifests, focused tests, CI command, and reviewer documentation. | Codex |
 | 2026-05-17 | Applied advanced-elicitation hardening for discovery authority, negative fixtures, sample-consumption mapping, opt-in examples, cache-key exceptions, parity duplicate handling, and safe reports. | Codex |
 | 2026-05-15 | Applied party-mode review hardening for command contracts, artifact authority, status semantics, diagnostics, and reviewer workflow. | Codex |
 | 2026-05-14 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
@@ -236,13 +237,41 @@ tests/tools/
 
 ### Agent Model Used
 
-TBD by dev-story agent
+GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-18: Loaded BMad workflow customization, project context, sprint status, and Story 1.16.
+- 2026-05-18: Inspected `.github/workflows/`, `docs/exit-criteria/`, architecture, tests README, idempotency fixtures, parity fixtures, prior Story 1.12-1.15 artifacts, and current OpenAPI state.
+- 2026-05-18: Ran focused governance tests, governance gate command, contract spine gate command, scaffold tests, full solution tests, and submodule status check.
+
 ### Completion Notes List
 
+- Added a single repository-root governance/completeness command reused by CI: `tests/tools/run-governance-completeness-gates.ps1`.
+- Added C0-C13 governance evidence with bounded `reference_pending` rows, explicit artifact paths, owners, commands, and safe diagnostic policy.
+- Added idempotency corpus consumption mapping by stable sample ID, opt-in pattern-example manifest and compilable examples project, reviewed cache-key exception manifest, and parity completeness checks.
+- Extended the Story 1.14 contract-spine workflow instead of creating a parallel release workflow.
+- Added focused positive and negative tests for exit criteria, idempotency sample mapping, pattern examples, cache-key lint diagnostics, parity completeness, and safe metadata-only output.
+- Verification passed: `.\tests\tools\run-governance-completeness-gates.ps1`, `.\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild`, `.\tests\tools\run-contract-spine-gates.ps1 -NoRestore`, `dotnet test Hexalith.Folders.slnx --no-build`, and targeted scaffold/governance test runs.
+- Confirmed root-level submodule status only; no recursive or nested submodule initialization was run.
+
 ### File List
+
+- `.github/workflows/contract-spine.yml`
+- `Hexalith.Folders.slnx`
+- `_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `docs/contract/governance-and-completeness-ci-gates.md`
+- `docs/exit-criteria/c0-c13-governance-evidence.yaml`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/README.md`
+- `tests/fixtures/cache-key-exceptions.yaml`
+- `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
+- `tests/fixtures/pattern-example-manifest.yaml`
+- `tests/tools/pattern-examples/GovernanceCompletenessExample.cs`
+- `tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj`
+- `tests/tools/run-governance-completeness-gates.ps1`
 
 ## Party-Mode Review
 
