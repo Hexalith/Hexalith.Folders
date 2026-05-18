@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Shouldly;
 using Xunit;
 using YamlDotNet.RepresentationModel;
@@ -84,8 +85,9 @@ public sealed class SafetyInvariantGateTests
             .ShouldBe(AllowedSurfaces.Order(StringComparer.Ordinal));
 
         JsonElement samples = RequiredArray(root, "sentinel_samples");
-        samples.GetArrayLength().ShouldBeGreaterThanOrEqualTo(14);
+        samples.GetArrayLength().ShouldBe(18, "Story 1.15 pins the current corpus size so removing safety categories is reviewer-visible.");
         HashSet<string> ids = new(StringComparer.Ordinal);
+        HashSet<string> categories = new(StringComparer.Ordinal);
         foreach (JsonElement sample in samples.EnumerateArray())
         {
             string id = RequiredString(sample, "id");
@@ -95,11 +97,33 @@ public sealed class SafetyInvariantGateTests
             RequiredString(sample, "value").ShouldNotBeNullOrWhiteSpace(id);
             RequiredString(sample, "safe_notes").ShouldContain("synthetic", Case.Insensitive, id);
             AllowedClassifications.ShouldContain(RequiredString(sample, "classification"), id);
-            RequiredString(sample, "category").ShouldNotBeNullOrWhiteSpace(id);
+            categories.Add(RequiredString(sample, "category")).ShouldBeTrue(id);
             RequiredArray(sample, "forbidden_output_surfaces").SelectText().ShouldNotBeEmpty(id);
             RequiredArray(sample, "allowed_provenance_representations").SelectText().ShouldNotBeEmpty(id);
             RequiredArray(sample, "participates_in").SelectText().ShouldContain("positive", id);
         }
+
+        categories.Order(StringComparer.Ordinal).ShouldBe(new[]
+        {
+            "actor-metadata",
+            "branch-name",
+            "commit-message",
+            "correlation-id",
+            "credential-shaped-value",
+            "diagnostic-echo",
+            "diff",
+            "file-content",
+            "generated-context",
+            "local-absolute-path",
+            "path-metadata",
+            "production-url",
+            "provider-payload",
+            "repository-name",
+            "safe-provenance",
+            "secret-shaped-string",
+            "tenant-data",
+            "unauthorized-resource",
+        }.Order(StringComparer.Ordinal));
     }
 
     [Fact]
@@ -148,7 +172,8 @@ public sealed class SafetyInvariantGateTests
             RequiredString(control, "contaminated_payload").ShouldNotBeNullOrWhiteSpace();
         }
 
-        string[] negativeParticipants = RequiredArray(JsonDocument.Parse(corpus).RootElement, "sentinel_samples")
+        using JsonDocument corpusDocument = JsonDocument.Parse(corpus);
+        string[] negativeParticipants = RequiredArray(corpusDocument.RootElement, "sentinel_samples")
             .EnumerateArray()
             .Where(sample => RequiredArray(sample, "participates_in").SelectText().Contains("negative-control", StringComparer.Ordinal))
             .Select(sample => RequiredString(sample, "id"))
@@ -192,7 +217,6 @@ public sealed class SafetyInvariantGateTests
             string diagnostic = RequiredString(channel, "diagnostic");
             string safeAbsence = RequiredString(channel, "safe_absence_diagnostic");
             string coverageNotes = RequiredString(channel, "coverage_notes");
-
             owner.ShouldNotBeNullOrWhiteSpace(name);
             owner.ShouldNotContain("-x-", Case.Sensitive, $"{name} owning_story must not use wildcard placeholders like '2-x-...' (AC 15).");
             owner.ShouldNotEndWith("-x", $"{name} owning_story must be a concrete story ID, not a wildcard (AC 15).");
@@ -202,6 +226,11 @@ public sealed class SafetyInvariantGateTests
             AssertMetadataOnly(safeAbsence);
             coverageNotes.ShouldNotBeNullOrWhiteSpace(name);
             AssertMetadataOnly(coverageNotes);
+            if (channel.TryGetProperty("last_evaluated_at", out JsonElement lastEvaluatedAt))
+            {
+                lastEvaluatedAt.ValueKind.ShouldBe(JsonValueKind.String, name);
+                (lastEvaluatedAt.GetString() ?? string.Empty).ShouldBe("2026-05-18", $"{name} structured manifest freshness evidence.");
+            }
 
             JsonElement sources = RequiredArray(channel, "artifact_sources");
             if (status == "covered")
@@ -210,6 +239,7 @@ public sealed class SafetyInvariantGateTests
                 foreach (string source in sources.SelectText())
                 {
                     AssertRepositoryRelativePath(source, name);
+                    IsWithinIncludeRoots(source, includeRoots).ShouldBeTrue($"{name} source must be constrained by include_roots.");
                     PathExists(source).ShouldBeTrue($"{name} points to stale source '{source}'.");
                 }
             }
@@ -238,11 +268,12 @@ public sealed class SafetyInvariantGateTests
             JsonElement channel = channels[channelName];
             RequiredString(channel, "prerequisite_status").ShouldBe("covered", $"{channelName} has current OpenAPI/generated-client artifacts and must not remain blanket pending.");
             RequiredArray(channel, "artifact_sources").SelectText().ShouldContain(OpenApiRelativePath, $"{channelName} must scan the contract artifact that currently owns its examples.");
-            RequiredString(channel, "coverage_notes").ShouldContain("re-evaluated", Case.Insensitive, channelName);
+            RequiredString(channel, "last_evaluated_at").ShouldBe("2026-05-18", channelName);
         }
 
         JsonElement events = channels["events"];
-        RequiredString(events, "absence_reason").ShouldContain("re-evaluated", Case.Insensitive, "events must document why no current artifact is claimable.");
+        RequiredString(events, "last_evaluated_at").ShouldBe("2026-05-18", "events must carry structured freshness evidence.");
+        RequiredString(events, "safe_absence_diagnostic").ShouldBe("SAFETY-PREREQUISITE-DRIFT");
     }
 
     [Fact]
@@ -274,7 +305,9 @@ public sealed class SafetyInvariantGateTests
             diagnostic.Gate.ShouldBe(GateName);
             diagnostic.RuleId.ShouldBe("SAFETY-FORBIDDEN-VALUE");
             diagnostic.RepositoryPath.ShouldBe("tests/fixtures/quarantine/safety-negative-controls.json");
-            AssertDoesNotContainForbiddenValue(diagnostic.ToString(), samples.Single(s => s.Id == diagnostic.SampleId), diagnostic.OutputChannel, diagnostic.RepositoryPath);
+            SentinelSample sample = samples.SingleOrDefault(s => s.Id == diagnostic.SampleId)
+                ?? throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", "negative-control-quarantine", "negative control sample reference is not declared in the corpus");
+            AssertDoesNotContainForbiddenValue(diagnostic.ToString(), sample, diagnostic.OutputChannel, diagnostic.RepositoryPath);
             AssertMetadataOnly(diagnostic.ToString());
         }
 
@@ -292,7 +325,14 @@ public sealed class SafetyInvariantGateTests
         }
 
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
-        foreach (Operation operation in EnumerateOperations(root).Where(o => o.OperationId is "SearchFolderFiles" or "GlobFolderFiles" or "ReadFileRange" or "GetFolderFileMetadata"))
+        string[] requiredOperationIds = ["SearchFolderFiles", "GlobFolderFiles", "ReadFileRange", "GetFolderFileMetadata"];
+        Operation[] contextOperations = EnumerateOperations(root)
+            .Where(operation => requiredOperationIds.Contains(operation.OperationId, StringComparer.OrdinalIgnoreCase))
+            .ToArray();
+        contextOperations.Select(operation => operation.OperationId).Order(StringComparer.OrdinalIgnoreCase)
+            .ShouldBe(requiredOperationIds.Order(StringComparer.OrdinalIgnoreCase), "Context-query operations must be present so AC 9 cannot pass vacuously.");
+
+        foreach (Operation operation in contextOperations)
         {
             YamlSequenceNode order = RequiredSequence(RequiredMapping(operation.Node, "x-hexalith-authorization"), "order");
             string[] orderSteps = order.Children
@@ -303,9 +343,9 @@ public sealed class SafetyInvariantGateTests
             orderSteps[^1].ShouldBe("query_execution", $"{operation.OperationId}: AC 9 requires execution to be the final authorization step.");
 
             string serialized = SerializeYaml(operation.Node);
-            serialized.ShouldContain("authorization", Case.Insensitive, operation.OperationId);
-            serialized.ShouldNotContain("search-first", Case.Insensitive, operation.OperationId);
-            serialized.ShouldNotContain("filter-later", Case.Insensitive, operation.OperationId);
+            AssertContainsText(serialized, "authorization", operation.OperationId);
+            AssertDoesNotContainText(serialized, "search-first", operation.OperationId);
+            AssertDoesNotContainText(serialized, "filter-later", operation.OperationId);
         }
     }
 
@@ -315,10 +355,10 @@ public sealed class SafetyInvariantGateTests
         string openApi = ReadRequiredFile(OpenApiPath);
         foreach (string stateName in new[] { "wrong-tenant", "unauthorized", "hidden", "redacted", "missing", "unknown", "stale" })
         {
-            openApi.ShouldContain(stateName, Case.Insensitive, $"AC 8 requires explicit safe-state coverage for {stateName}.");
+            AssertContainsText(openApi, stateName, $"safe-state:{stateName}");
         }
 
-        openApi.ShouldContain("projection_unavailable", Case.Insensitive, "AC 8 requires projection-unavailable safe-state coverage.");
+        AssertContainsText(openApi, "projection_unavailable", "safe-state:projection_unavailable");
 
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
@@ -327,19 +367,16 @@ public sealed class SafetyInvariantGateTests
             string serialized = SerializeYaml(RequiredMapping(examples, exampleName));
             (serialized.Contains("resource_unavailable", StringComparison.OrdinalIgnoreCase) || serialized.Contains("safe_denial", StringComparison.OrdinalIgnoreCase)).ShouldBeTrue(exampleName);
             (serialized.Contains("redacted", StringComparison.OrdinalIgnoreCase) || serialized.Contains("metadata_only", StringComparison.OrdinalIgnoreCase)).ShouldBeTrue(exampleName);
-            serialized.ShouldNotContain("count", Case.Insensitive, exampleName);
-            serialized.ShouldNotContain("cursor", Case.Insensitive, exampleName);
-            serialized.ShouldNotContain("stack", Case.Insensitive, exampleName);
+            AssertDoesNotContainWholeToken(serialized, "count", exampleName);
+            AssertDoesNotContainWholeToken(serialized, "cursor", exampleName);
+            AssertDoesNotContainWholeToken(serialized, "stack", exampleName);
         }
 
         string[] projectionAvailability = RequiredSequence(RequiredMapping(RequiredMapping(RequiredMapping(root, "components"), "schemas"), "ProjectionAvailability"), "enum")
             .Children
             .Select(node => RequiredScalar(node, "ProjectionAvailability"))
             .ToArray();
-        foreach (string stateName in new[] { "available", "stale", "unavailable", "redacted", "unknown" })
-        {
-            projectionAvailability.ShouldContain(stateName);
-        }
+        projectionAvailability.Order(StringComparer.Ordinal).ShouldBe(new[] { "available", "redacted", "stale", "unknown", "unavailable" }.Order(StringComparer.Ordinal));
     }
 
     [Fact]
@@ -350,6 +387,7 @@ public sealed class SafetyInvariantGateTests
         string documentation = ReadRequiredFile(GateDocumentationPath);
 
         workflow.ShouldContain("./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild");
+        workflow.ShouldNotContain("if: always()", Case.Insensitive);
         workflow.ShouldContain("dotnet restore Hexalith.Folders.slnx");
         workflow.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
         workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
@@ -360,6 +398,8 @@ public sealed class SafetyInvariantGateTests
         script.ShouldContain("dotnet restore Hexalith.Folders.slnx");
         script.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
         script.ShouldContain("[Alias('NoRestore')]");
+        script.ShouldContain("SAFETY-PREREQUISITE-DRIFT");
+        script.ShouldContain("Hexalith.Folders.Contracts.Tests.dll");
         script.ShouldContain("$LASTEXITCODE");
         script.ShouldNotContain("--recursive", Case.Insensitive);
 
@@ -368,13 +408,14 @@ public sealed class SafetyInvariantGateTests
         documentation.ShouldContain("SAFETY-PREREQUISITE-DRIFT");
         documentation.ShouldContain("reference-pending");
         documentation.ShouldContain("Story 1.16");
-        AssertMetadataOnly(documentation);
+        AssertMetadataOnly(documentation, allowPatternDocumentation: true);
     }
 
     private static SafetyScanDiagnostic[] ScanManifestCoveredArtifacts(IReadOnlyList<SentinelSample> samples)
     {
         using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
-        List<SafetyScanDiagnostic> diagnostics = [];
+        HashSet<SafetyScanDiagnostic> diagnostics = [];
+        string[] includeRoots = RequiredArray(inventory.RootElement, "include_roots").SelectText();
 
         foreach (JsonElement channel in RequiredArray(inventory.RootElement, "channels").EnumerateArray())
         {
@@ -386,6 +427,11 @@ public sealed class SafetyInvariantGateTests
             string channelName = RequiredString(channel, "channel");
             foreach (string source in RequiredArray(channel, "artifact_sources").SelectText())
             {
+                if (!IsWithinIncludeRoots(source, includeRoots))
+                {
+                    throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", channelName, "artifact source is outside declared include roots");
+                }
+
                 foreach (string file in EnumerateSourceFiles(source))
                 {
                     if (IsExcludedByInventory(file))
@@ -394,7 +440,7 @@ public sealed class SafetyInvariantGateTests
                     }
 
                     string text = File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(file)));
-                    diagnostics.AddRange(ScanText(file, channelName, text, samples));
+                    diagnostics.UnionWith(ScanText(file, channelName, text, samples));
                 }
             }
         }
@@ -413,6 +459,8 @@ public sealed class SafetyInvariantGateTests
         {
             string payload = RequiredString(control, "contaminated_payload");
             string channel = RequiredString(control, "output_channel");
+            string sampleId = RequiredString(control, "sample_id");
+            samples.Any(sample => sample.Id == sampleId).ShouldBeTrue($"SAFETY-PREREQUISITE-DRIFT: channel=negative-control-quarantine; sample_id={sampleId}; remediation=Declare sample before quarantine use.");
             diagnostics.AddRange(ScanText("tests/fixtures/quarantine/safety-negative-controls.json", channel, payload, samples));
         }
 
@@ -497,7 +545,12 @@ public sealed class SafetyInvariantGateTests
         string absolute = Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath));
         if (File.Exists(absolute))
         {
-            yield return repositoryPath.Replace("\\", "/", StringComparison.Ordinal);
+            string normalized = repositoryPath.Replace("\\", "/", StringComparison.Ordinal);
+            if (!IsExcludedByInventory(normalized) && !IsBinaryFile(normalized))
+            {
+                yield return normalized;
+            }
+
             yield break;
         }
 
@@ -525,24 +578,10 @@ public sealed class SafetyInvariantGateTests
     private static bool IsExcludedByInventory(string repositoryPath)
     {
         string normalized = repositoryPath.Replace("\\", "/", StringComparison.Ordinal);
-        string[] excludedPrefixes =
-        [
-            ".git/",
-            "bin/",
-            "obj/",
-            "node_modules/",
-            "tests/fixtures/quarantine/",
-        ];
-
-        string[] excludedSegments =
-        [
-            "/bin/",
-            "/obj/",
-            "/node_modules/",
-        ];
-
-        return excludedPrefixes.Any(prefix => normalized.StartsWith(prefix, StringComparison.Ordinal))
-            || excludedSegments.Any(segment => normalized.Contains(segment, StringComparison.Ordinal));
+        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
+        return RequiredArray(inventory.RootElement, "structured_exclusions")
+            .SelectText()
+            .Any(pattern => GlobMatches(normalized, pattern));
     }
 
     private static bool IsBinaryFile(string repositoryPath)
@@ -564,15 +603,26 @@ public sealed class SafetyInvariantGateTests
     {
         repositoryPath.ShouldNotBeNullOrWhiteSpace(because);
         Path.IsPathFullyQualified(repositoryPath).ShouldBeFalse(because);
+        Regex.IsMatch(repositoryPath, "^[A-Za-z]:[\\\\/]").ShouldBeFalse(because);
+        repositoryPath.StartsWith("/", StringComparison.Ordinal).ShouldBeFalse(because);
         repositoryPath.ShouldNotContain("\\", Case.Sensitive, because);
         repositoryPath.StartsWith("../", StringComparison.Ordinal).ShouldBeFalse(because);
         repositoryPath.Split('/').ShouldNotContain("..", because);
     }
 
-    private static void AssertMetadataOnly(string value)
+    private static void AssertMetadataOnly(string value, bool allowPatternDocumentation = false)
     {
-        string[] forbidden =
+        string[] repositoryMarkers =
         [
+            RepositoryRoot,
+            RepositoryRoot.Replace("\\", "/", StringComparison.Ordinal),
+            RepositoryRoot.Replace("\\", "\\\\", StringComparison.Ordinal),
+        ];
+
+        string[] forbidden = allowPatternDocumentation
+            ? repositoryMarkers
+            : repositoryMarkers.Concat(new[]
+        {
             "diff --git",
             "-----BEGIN",
             "DefaultEndpointsProtocol=",
@@ -587,14 +637,9 @@ public sealed class SafetyInvariantGateTests
             "https://github.com/",
             "https://api.github.com",
             "https://prod.",
-            RepositoryRoot,
-            RepositoryRoot.Replace("\\", "/", StringComparison.Ordinal),
-            RepositoryRoot.Replace("\\", "\\\\", StringComparison.Ordinal),
             "C:\\",
             "D:\\",
-            "/home/",
-            "/Users/",
-        ];
+        }).Concat(GenericAbsolutePathMarkersExceptRepositoryRoot(repositoryMarkers)).ToArray();
 
         foreach (string forbiddenValue in forbidden)
         {
@@ -623,30 +668,7 @@ public sealed class SafetyInvariantGateTests
 
     private static bool ContainsForbiddenValue(string text, string forbiddenValue)
     {
-        int index = text.IndexOf(forbiddenValue, StringComparison.OrdinalIgnoreCase);
-        while (index >= 0)
-        {
-            int end = index + forbiddenValue.Length;
-            if (HasTokenBoundary(text, index - 1) && HasTokenBoundary(text, end))
-            {
-                return true;
-            }
-
-            index = text.IndexOf(forbiddenValue, end, StringComparison.OrdinalIgnoreCase);
-        }
-
-        return false;
-    }
-
-    private static bool HasTokenBoundary(string text, int index)
-    {
-        if (index < 0 || index >= text.Length)
-        {
-            return true;
-        }
-
-        char value = text[index];
-        return !char.IsLetterOrDigit(value) && value is not '_' and not '-' and not '/' and not '.';
+        return text.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase);
     }
 
     private static YamlMappingNode LoadYamlMapping(string path)
@@ -751,10 +773,14 @@ public sealed class SafetyInvariantGateTests
     private static string FindRepositoryRoot()
     {
         string? githubWorkspace = Environment.GetEnvironmentVariable("GITHUB_WORKSPACE");
-        if (!string.IsNullOrEmpty(githubWorkspace)
-            && File.Exists(Path.Combine(githubWorkspace, "Hexalith.Folders.slnx")))
+        if (!string.IsNullOrEmpty(githubWorkspace))
         {
-            return githubWorkspace;
+            if (File.Exists(Path.Combine(githubWorkspace, "Hexalith.Folders.slnx")))
+            {
+                return githubWorkspace;
+            }
+
+            throw new InvalidOperationException("SAFETY-PREREQUISITE-DRIFT: repository-root-unresolved; remediation=Set GITHUB_WORKSPACE to the Hexalith.Folders checkout root.");
         }
 
         foreach (string seed in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
@@ -774,6 +800,64 @@ public sealed class SafetyInvariantGateTests
         throw new InvalidOperationException("SAFETY-PREREQUISITE-DRIFT: Could not locate Hexalith.Folders.slnx from AppContext.BaseDirectory, current directory, or GITHUB_WORKSPACE.");
     }
 
+    private static bool IsWithinIncludeRoots(string source, IEnumerable<string> includeRoots)
+    {
+        string normalized = source.Replace("\\", "/", StringComparison.Ordinal).TrimEnd('/');
+        return includeRoots
+            .Select(root => root.Replace("\\", "/", StringComparison.Ordinal).TrimEnd('/'))
+            .Any(root => normalized.Equals(root, StringComparison.Ordinal) || normalized.StartsWith(root + "/", StringComparison.Ordinal));
+    }
+
+    private static bool GlobMatches(string repositoryPath, string pattern)
+    {
+        string normalizedPattern = pattern.Replace("\\", "/", StringComparison.Ordinal);
+        string regex = "^" + Regex.Escape(normalizedPattern)
+            .Replace("\\*\\*/", "(?:.*/)?", StringComparison.Ordinal)
+            .Replace("/\\*\\*", "(?:/.*)?", StringComparison.Ordinal)
+            .Replace("\\*\\*", ".*", StringComparison.Ordinal)
+            .Replace("\\*", "[^/]*", StringComparison.Ordinal) + "$";
+
+        return Regex.IsMatch(repositoryPath, regex, RegexOptions.CultureInvariant);
+    }
+
+    private static IEnumerable<string> GenericAbsolutePathMarkersExceptRepositoryRoot(IEnumerable<string> repositoryMarkers)
+    {
+        foreach (string marker in new[] { "/home/", "/Users/" })
+        {
+            if (!repositoryMarkers.Any(repositoryMarker => repositoryMarker.Contains(marker, StringComparison.OrdinalIgnoreCase)))
+            {
+                yield return marker;
+            }
+        }
+    }
+
+    private static void AssertContainsText(string text, string expected, string context)
+    {
+        if (!text.Contains(expected, StringComparison.OrdinalIgnoreCase))
+        {
+            throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", context, "required metadata-only marker is absent");
+        }
+    }
+
+    private static void AssertDoesNotContainText(string text, string forbidden, string context)
+    {
+        if (text.Contains(forbidden, StringComparison.OrdinalIgnoreCase))
+        {
+            throw BoundedDiagnosticException("SAFETY-FORBIDDEN-DIAGNOSTIC", context, "forbidden metadata-only marker was present");
+        }
+    }
+
+    private static void AssertDoesNotContainWholeToken(string text, string forbidden, string context)
+    {
+        if (Regex.IsMatch(text, $@"\b{Regex.Escape(forbidden)}\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            throw BoundedDiagnosticException("SAFETY-FORBIDDEN-DIAGNOSTIC", context, "forbidden resource-existence token was present");
+        }
+    }
+
+    private static InvalidOperationException BoundedDiagnosticException(string ruleId, string channel, string remediation) =>
+        new($"{GateName}:{ruleId}: channel={channel}; remediation={remediation}.");
+
     private sealed record Operation(string OperationId, YamlMappingNode Node);
 
     private sealed record SentinelSample(string Id, string Value, string Classification, string Category, string[] ForbiddenOutputSurfaces);
@@ -789,7 +873,7 @@ public sealed class SafetyInvariantGateTests
         public override string ToString()
         {
             string pathHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(RepositoryPath))).ToLowerInvariant()[..12];
-            return $"{Gate}:{RuleId}: path={RepositoryPath}; path_hash={pathHash}; channel={OutputChannel}; sample_id={SampleId}; classification={Classification}; category={Category}; remediation={Remediation}";
+            return $"{Gate}:{RuleId}: path_hash={pathHash}; channel={OutputChannel}; sample_id={SampleId}; classification={Classification}; category={Category}; remediation={Remediation}";
         }
     }
 }

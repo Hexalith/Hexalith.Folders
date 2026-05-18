@@ -96,7 +96,7 @@ Future CI gates should add focused jobs for the parity contract schema, C6 state
 Run the focused safety invariant gate locally:
 
 ```powershell
-.\tests\tools\run-safety-invariant-gates.ps1 -NoRestore
+.\tests\tools\run-safety-invariant-gates.ps1 -SkipRestoreBuild
 ```
 
 This gate validates the synthetic sentinel corpus, channel inventory, quarantined negative controls, OpenAPI and Problem Details examples, generated artifact leakage scope, safe diagnostics, and CI wiring without requiring sidecars, provider credentials, production secrets, network calls, or nested submodule initialization.

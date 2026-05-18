@@ -3,13 +3,16 @@
   "schema_version": "1.0.0",
   "gate": "safety-invariant",
   "include_roots": [
+    "tests/fixtures/audit-leakage-corpus.json",
+    "tests/fixtures/quarantine/safety-negative-controls.json",
     "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
     "src/Hexalith.Folders.Client/Generated",
     "tests/fixtures/parity-contract.yaml",
     "docs/contract",
     ".github/workflows/contract-spine.yml",
     "tests/tools/run-contract-spine-gates.ps1",
-    "tests/tools/run-safety-invariant-gates.ps1"
+    "tests/tools/run-safety-invariant-gates.ps1",
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"
   ],
   "structured_exclusions": [
     ".git/**",
@@ -149,10 +152,10 @@
       "channel": "logs",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in source exists for this output channel until the owning story lands."
     },
@@ -160,10 +163,10 @@
       "channel": "traces",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in source exists for this output channel until the owning story lands."
     },
@@ -171,10 +174,10 @@
       "channel": "span-names",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -182,10 +185,10 @@
       "channel": "metric-names",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -193,10 +196,10 @@
       "channel": "event-names",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -204,10 +207,10 @@
       "channel": "counters",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -215,10 +218,10 @@
       "channel": "exception-metadata",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -226,10 +229,10 @@
       "channel": "baggage",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -237,10 +240,10 @@
       "channel": "metric-labels",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -248,10 +251,10 @@
       "channel": "telemetry-attributes",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
       "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
@@ -259,11 +262,12 @@
       "channel": "events",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "prerequisite_status": "prerequisite-drift",
+      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
+      "last_evaluated_at": "2026-05-18",
       "absence_reason": "Re-evaluated current OpenAPI, fixtures, and generated artifacts; runtime event emission examples are not checked in until Story 4-14 owns observability evidence."
     },
     {
@@ -277,7 +281,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
+      "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
+      "last_evaluated_at": "2026-05-18"
     },
     {
       "channel": "projections",
@@ -290,7 +295,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
+      "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
+      "last_evaluated_at": "2026-05-18"
     },
     {
       "channel": "provider-diagnostics",
@@ -303,7 +309,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
+      "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
+      "last_evaluated_at": "2026-05-18"
     },
     {
       "channel": "console-payloads",
@@ -316,7 +323,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
+      "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
+      "last_evaluated_at": "2026-05-18"
     }
   ]
 }

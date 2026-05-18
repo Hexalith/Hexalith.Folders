@@ -90,7 +90,7 @@
       "output_channel": "traces",
       "synthetic_data_only": true,
       "normative_example": false,
-      "contaminated_payload": "trace emitted PRODUCTION_URL_SYNTHETIC_INVALID_HOST"
+      "contaminated_payload": "trace emitted https://synthetic.invalid/safety/url-sentinel"
     },
     {
       "id": "negative-control-assertion-diagnostic-echo",

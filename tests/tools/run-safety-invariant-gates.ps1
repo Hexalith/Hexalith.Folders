@@ -30,6 +30,16 @@ try {
             exit $LASTEXITCODE
         }
     }
+    else {
+        $testAssembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin') -Recurse -Filter 'Hexalith.Folders.Contracts.Tests.dll' -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match '[\\/]net10\.0[\\/]' } |
+            Select-Object -First 1
+
+        if ($null -eq $testAssembly) {
+            Write-Error 'SAFETY-PREREQUISITE-DRIFT: safety test assembly is missing. Run the safety gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'
+            exit 1
+        }
+    }
 
     dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests
     if ($LASTEXITCODE -ne 0) {

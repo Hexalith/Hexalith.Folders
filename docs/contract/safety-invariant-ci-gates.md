@@ -29,7 +29,7 @@ The existing `contract-spine-gates` workflow invokes `./tests/tools/run-safety-i
 
 ## Diagnostics
 
-Allowed fields are gate name, repository-relative path, output channel, rule ID, synthetic sample ID, category, classification, owner story, content hash, and remediation hint. The gate must not echo forbidden values, raw payloads, file contents, patch bodies, credential material, generated context payloads, local absolute paths, production URLs, tenant data, provider responses, cursor values, counts, ordering hints, stack traces, or unauthorized-resource hints.
+Allowed fields are gate name, hashed repository-relative path, output channel, rule ID, synthetic sample ID, category, classification, owner story, content hash, and remediation hint. The gate must not echo forbidden values, raw payloads, file contents, patch bodies, credential material, generated context payloads, local absolute paths, production URLs, tenant data, provider responses, cursor values, counts, ordering hints, stack traces, raw repository paths, or unauthorized-resource hints.
 
 Bounded missing-channel diagnostics:
 
@@ -38,7 +38,7 @@ Bounded missing-channel diagnostics:
 
 `reference-pending` is acceptable only when the channel has no runtime artifact in the current repository state, the owner story is explicit, and the manifest records a bounded absence reason. Claimed `covered` entries fail closed when their repository-relative source is stale.
 
-The inventory currently treats audit records, projections, provider diagnostics, and console payload contract examples as covered by the checked-in OpenAPI and generated client artifacts. Runtime logs, traces, telemetry names, metric counters, exception metadata, baggage, and event emission examples remain owner-scoped `reference-pending` channels until Story 4.14 lands deterministic observability artifacts.
+The inventory currently treats audit records, projections, provider diagnostics, and console payload contract examples as covered by the checked-in OpenAPI and generated client artifacts. Runtime logs, traces, telemetry names, metric counters, exception metadata, baggage, and event emission examples remain owner-scoped `prerequisite-drift` channels until Story 4.14 lands deterministic observability artifacts.
 
 ## Classification Rules
 

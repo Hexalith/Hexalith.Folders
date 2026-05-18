@@ -349,7 +349,7 @@
     {
       "id": "production-url-marker",
       "category": "production-url",
-      "value": "PRODUCTION_URL_SYNTHETIC_INVALID_HOST",
+      "value": "https://synthetic.invalid/safety/url-sentinel",
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
@@ -375,7 +375,7 @@
         "positive",
         "negative-control"
       ],
-      "safe_notes": "Synthetic production-URL sentinel without a real URL."
+      "safe_notes": "Synthetic invalid-domain production-URL-shaped sentinel without a real service endpoint."
     },
     {
       "id": "path-metadata",
@@ -627,7 +627,7 @@
     {
       "id": "safe-provenance-operation-id",
       "category": "safe-provenance",
-      "value": "CreateFolder",
+      "value": "SYNTHETIC_SAFE_PROVENANCE_OPERATION_ID",
       "classification": "safe-provenance",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
