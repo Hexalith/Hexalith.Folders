@@ -173,3 +173,4 @@
 2026-05-18T07:07:28Z	failed	-	failed	_bmad-output/process-notes/predev-preflight-latest.json timestamp 2026-05-18T07:07:28Z failed checks: status-artifact consistency details "1 status-artifact drift(s) found" drifts [{"key":"2-4-grant-and-revoke-folder-access","status":"ready-for-dev","artifact":"absent","expected":"present"}]
 2026-05-18T10:03:59+02:00	create-story	2-4-grant-and-revoke-folder-access	ok	created Story 2.4 folder access grant revoke story and marked ready-for-dev
 2026-05-18T09:03:44Z	create-story	2-5-inspect-effective-permissions	ok	created ready-for-dev story to restore ready buffer toward target
+2026-05-18T12:05:55+02:00	party-mode-review	2-4-grant-and-revoke-folder-access	ok	soft working-tree warning from _bmad-output/process-notes/predev-preflight-latest.json timestamp 2026-05-18T10:01:43Z; recorded party-mode trace and hardening updates
