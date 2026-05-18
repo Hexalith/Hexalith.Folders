@@ -1,6 +1,6 @@
 # Story 1.15: Wire safety invariant CI gates
 
-Status: review
+Status: in-progress
 
 Created: 2026-05-13
 
@@ -139,6 +139,60 @@ Code review run: 2026-05-17 against commit `3d75bbb` ("Add safety invariant CI g
 - [x] [Review][Defer] JSON duplicate-keys detection — deferred, .NET `JsonDocument` default behavior is acceptable for fixtures we control.
 - [x] [Review][Defer] AssertMetadataOnly blacklist missing Linux absolute-path roots (`/home/`, `/Users/`, `/var/`, `/tmp/`) — deferred, the current gate runs primarily on Windows.
 
+### Round 3 Review Findings
+
+Code review run: 2026-05-18 against scope `3d75bbb~1..HEAD` constrained to the 1.15 file allowlist (9 files, +2012/−32 lines). Reviewers: Blind Hunter, Edge Case Hunter, Acceptance Auditor.
+
+#### Decision-needed (Round 3) — RESOLVED 2026-05-18
+
+- [x] [Review][Decision→Dismiss] Cross-story scope of commit `e6d9de5` — **Resolution:** dismissed for 1.15 review. Commit `e6d9de5` is authored by Story 1.16 ("Add governance completeness evidence and associated tests"); the workflow step and `tests/README.md` governance block belong to 1.16's review scope. Not 1.15 scope creep.
+- [x] [Review][Decision→Dismiss] Channel manifest `covered` claim for Story-1.11-owned channels — **Resolution:** keep `covered` as-is. Contract-only coverage is consistent with AC 1/3's "re-evaluated against existing OpenAPI" direction, and `docs/contract/safety-invariant-ci-gates.md` already names the runtime-channel limit explicitly. No change.
+- [x] [Review][Decision→Patch] Telemetry channels declared with `scan_forbidden_values: false` — **Resolution:** converted to patch (P24 below). Channels `logs`, `traces`, `span-names`, `metric-names`, `event-names`, `counters`, `exception-metadata`, `baggage`, `metric-labels`, `telemetry-attributes` flip from `covered` + `scan_forbidden_values: false` to `prerequisite-drift` so manifest internally distinguishes vocabulary-declared from actually-scanned.
+- [x] [Review][Decision→Defer] `safe-provenance` classification short-circuits `ScanText` entirely — **Resolution:** deferred. Only one `safe-provenance` sample exists today (`safe-provenance-operation-id`); per-sample `allowed_in_channels` design can wait until a second safe-provenance entry is needed.
+
+#### Patch — Acceptance Criteria gaps (Round 3)
+
+- [ ] [Review][Patch] AC 11 — raw `Shouldly.ShouldNotContain` / `ShouldContain` echoes operands on failure [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `OpenApiExamplesAndContextQueriesRemainMetadataOnly`, `SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence`]. Custom safe assertion helper required per AC 11 / Task line 58 — partial implementation remains in YAML-scan assertions.
+- [ ] [Review][Patch] AC 1 / AC 3 — `OpenApiExamplesAndContextQueriesRemainMetadataOnly` hard-codes operationIds `SearchFolderFiles`/`GlobFolderFiles`/`ReadFileRange`/`GetFolderFileMetadata` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]. If any operation is renamed in the OpenAPI yaml the `.Where(...)` collapses to empty and the test passes vacuously — the exact anti-pattern the gate is meant to prevent.
+- [ ] [Review][Patch] AC 21 — `IsExcludedByInventory` ignores manifest `structured_exclusions` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `IsExcludedByInventory`]. Hardcoded 5 prefixes/3 segments; manifest declares 17 entries. `.vs/`, `.idea/`, `TestResults/`, `artifacts/`, `**/.nuget/**`, `packages/**`, `*.binlog` are not honored at runtime.
+- [ ] [Review][Patch] AC 15 / AC 21 — `include_roots` field declared in manifest and existence-checked, but `ScanManifestCoveredArtifacts` ignores it [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanManifestCoveredArtifacts`]. Declared field has no runtime effect; either iterate it or drop it.
+- [ ] [Review][Patch] AC 2 — `SentinelCorpusDeclaresAuthoritativeSyntheticVocabulary` asserts `samples.GetArrayLength().ShouldBeGreaterThanOrEqualTo(14)` while corpus has 18 samples [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]. Lax floor allows silent removal of 4 samples including `safe-provenance` and negative-control participants. Pin to exact expected count or per-category floors.
+- [ ] [Review][Patch] AC 19 — `production-url-marker` sentinel value is the literal `PRODUCTION_URL_SYNTHETIC_INVALID_HOST` (not URL-shaped) [`tests/fixtures/audit-leakage-corpus.json`]. Negative control cannot prove URL-shape detection. Use synthetic URL form such as `https://synthetic.invalid/safe/sample`.
+- [ ] [Review][Patch] AC 8 — `projectionAvailability` enum check uses `ShouldContain` per state rather than set-equality [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence`]. Future enum additions (`"leaked"`, `"public"`) pass without flagging contradiction with safe-state semantics.
+- [ ] [Review][Patch] AC 8 / AC 11 — substring matches on `"count"`, `"cursor"`, `"stack"` against serialized YAML will false-positive on `account`, `recount`, `discount`, `precursor`, `cursoryNotes` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence`]. Use whole-token regex `\bcount\b` / `\bcursor\b` / `\bstack\b`.
+- [ ] [Review][Patch] AC 5 — `Run safety invariant gates` step has `if: always()`; `Run governance completeness gates` step does not [`.github/workflows/contract-spine.yml:41-50`]. Partial-failure signaling diverges between the two safety-domain gates. Either both run on failure or neither.
+- [ ] [Review][Patch] AC 12 — `tests/README.md` documents `-NoRestore` for the safety gate; `docs/contract/safety-invariant-ci-gates.md` flags `-NoRestore` as legacy alias and prefers `-SkipRestoreBuild`. README example should use `-SkipRestoreBuild` to match its own guidance.
+
+#### Patch — Test, fixture, workflow, and script hardening (Round 3)
+
+- [ ] [Review][Patch] `ContainsForbiddenValue` token-boundary set treats `_`, `-`, `/`, `.` and alphanumerics as in-word [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `HasTokenBoundary`/`ContainsForbiddenValue`]. Sentinels embedded inside path-like or identifier-like strings won't match. Restrict boundary set to whitespace + structural punctuation, or fall back to plain `Contains` for hits inside larger tokens.
+- [ ] [Review][Patch] `AssertMetadataOnly` forbidden-array contains literal markers `"diff --git"`, `"AccountKey="`, `"clientSecret"`, `"D:\\"`, `"C:\\"` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertMetadataOnly`]. These literals cause false positives when applied to documentation strings that legitimately describe the forbidden patterns. Scope these markers to runtime/test-output surfaces only, or quote/escape them before the check.
+- [ ] [Review][Patch] `AssertMetadataOnly` includes `RepositoryRoot` and its slash-variants alongside generic `/home/` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertMetadataOnly`]. On Linux CI where `RepositoryRoot` may itself begin with `/home/`, diagnostics trigger double-detection or false positives. Compare `RepositoryRoot` first and skip overlapping generic markers.
+- [ ] [Review][Patch] `SafetyScanDiagnostic.ToString()` exposes plain `RepositoryPath` alongside `path_hash` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `SafetyScanDiagnostic.ToString`]. Pick one provenance representation — emit hash-only to align with the doc's "no ordering hints / no raw paths" guidance, or document the dual emission intent.
+- [ ] [Review][Patch] `FindRepositoryRoot` fallback walks ancestors from `AppContext.BaseDirectory` and `Directory.GetCurrentDirectory` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `FindRepositoryRoot`]. In monorepo nested checkouts it may select a wrong slnx-bearing ancestor silently. If `GITHUB_WORKSPACE` is set without a slnx, emit `SAFETY-PREREQUISITE-DRIFT` rather than falling back.
+- [ ] [Review][Patch] `EnumerateSourceFiles` file-branch yields the path without applying `IsBinaryFile` / `IsExcludedByInventory` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `EnumerateSourceFiles`]. An inventory entry pointing at a binary or excluded file bypasses both filters.
+- [ ] [Review][Patch] `StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts` asserts `coverage_notes` contains literal `"re-evaluated"` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]. Editorial wording is fragile; switch to a structured field like `last_evaluated_at` or `evidence_link`.
+- [ ] [Review][Patch] `ScanText` does not deduplicate findings across `(artifact × channel)` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanText` / `ScanManifestCoveredArtifacts`]. A file shared by multiple channels produces N identical diagnostics; triage will be noisy. De-duplicate by `(repository_path, sample_id, channel)` or emit one diagnostic with a channel list.
+- [ ] [Review][Patch] `run-safety-invariant-gates.ps1` uses `dotnet test --no-build` unconditionally [`tests/tools/run-safety-invariant-gates.ps1`]. If `-SkipRestoreBuild` is passed without a prior matching build, `--no-build` fails opaquely with raw runner error. Probe for the test dll under `bin/` and emit `SAFETY-PREREQUISITE-DRIFT` instead.
+- [ ] [Review][Patch] `samples.Single(s => s.SampleId == sampleId)` raises raw `InvalidOperationException` when corpus rename drifts [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` negative-control scan]. Sequence-no-matching-element message is not metadata-only. Use `SingleOrDefault` and emit bounded diagnostic.
+- [ ] [Review][Patch] `AssertRepositoryRelativePath` rejects `Path.IsPathFullyQualified` and `..` segments but not Linux absolute paths (`/etc/x`) or cross-OS drive-letter patterns [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertRepositoryRelativePath`]. Add explicit `^[A-Za-z]:[\\/]` and leading `/` rejection.
+- [ ] [Review][Patch] `EnumerateOperations` operationId comparison `o.OperationId is "..."` is case-sensitive [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]. A YAML casing drift skips the assertion silently; switch to `StringComparison.OrdinalIgnoreCase`.
+- [ ] [Review][Patch] `safe-provenance-operation-id` sample value is `CreateFolder` [`tests/fixtures/audit-leakage-corpus.json`]. If a future scan reaches it through `AssertDoesNotContainForbiddenValue`, the legitimate OperationId would false-positive. Move to a synthetic non-collision value or document the bypass explicitly.
+- [ ] [Review][Patch] `SentinelCorpusAvoidsRealDataAndKeepsNegativeControlsQuarantined` parses corpus twice; the second `JsonDocument.Parse(...)` is not disposed [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs`]. Minor leak; wrap in `using`.
+- [ ] [Review][Patch] AC 17 — telemetry channels marked `covered` + `scan_forbidden_values: false` should flip to `prerequisite-drift` [`tests/fixtures/safety-channel-inventory.json` channels `logs`, `traces`, `span-names`, `metric-names`, `event-names`, `counters`, `exception-metadata`, `baggage`, `metric-labels`, `telemetry-attributes`]. The current state contradicts the manifest's freshness contract because `covered` should mean "scanned" but no scan path exists. Flipping to `prerequisite-drift` makes the vocabulary-only stance internally honest and the gate emits bounded missing-channel diagnostics until Stories 4.14 / 4.15 land runtime emission artifacts.
+
+#### Defer (Round 3 — low-likelihood / pre-existing / overlaps prior defers)
+
+- [x] [Review][Defer] YamlDotNet duplicate-keys detection — deferred, overlaps prior JSON-duplicate-keys defer; fixtures are gate-owned and deterministic.
+- [x] [Review][Defer] File encoding fallback (UTF-16/Latin-1/no-BOM) — deferred, overlaps prior BOM defer.
+- [x] [Review][Defer] AssertMetadataOnly Linux absolute-path roots expansion (`/home/`, `/Users/`, `/var/`, `/tmp/`) — deferred, overlaps prior defer; primary CI is Windows.
+- [x] [Review][Defer] `InventoryChannel.Clone()` use-after-dispose latent risk — deferred, current code is correct per .NET docs; revisit if `InventoryChannel` is refactored to return raw `JsonElement`.
+- [x] [Review][Defer] `schema_version "1.0.0"` hard-coded coupling — deferred, intentional schema-version gating; lift only when schema iterates.
+- [x] [Review][Defer] File-locking races on Windows runners under parallel xUnit — deferred, rare on current runner topology.
+- [x] [Review][Defer] Case-collision normalization across OS in `EnumerateSourceFiles` — deferred, cross-OS naming collision is rare in generated SDK and contract directories.
+- [x] [Review][Defer] Workflow doc claim `checkout with submodules: false` not visibly enforced in this diff — deferred, the workflow file's existing checkout step is not modified by this story; verify when 1.14 ownership consolidates.
+- [x] [Review][Defer] `safe-provenance` classification global allowlist behavior — deferred, only one safe-provenance sample (`safe-provenance-operation-id`) exists today; per-sample `allowed_in_channels` design can wait until a second safe-provenance entry is needed.
+
 ### Scope Boundaries
 
 - This story wires CI and local gate entry points for safety invariant enforcement: sentinel redaction, forbidden leakage scanning, metadata-only diagnostics, and safe example validation.
@@ -244,6 +298,7 @@ docs/contract/safety-invariant-ci-gates.md
 | 2026-05-16 | Advanced elicitation applied negative-control quarantine, manifest freshness, explicit scan-scope, and sanitized assertion/artifact hardening. | Codex |
 | 2026-05-17 | Implemented safety invariant corpus, manifest, quarantined negative controls, focused tests, local gate script, workflow wiring, and reviewer documentation. Story ready for review. | Codex |
 | 2026-05-17 | Addressed remaining code review findings for telemetry surfaces, safe assertions, inventory diagnostics, negative-control drift, and single-command local gate usage. Story ready for review. | Codex |
+| 2026-05-18 | Round 3 code review (Blind Hunter + Edge Case Hunter + Acceptance Auditor) raised 4 decision-needed (1 dismissed, 1 kept, 1 converted to patch, 1 deferred) and 24 patch findings (including telemetry channel status flip). Status moved back to in-progress; patches left as action items. | Claude |
 
 ## Party-Mode Review
 
