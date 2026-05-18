@@ -120,7 +120,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
-        AssertReferences(references, "Hexalith.Folders.PatternExamples", []);
+        AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Contracts"]);
     }
 
     [Fact]

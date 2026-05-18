@@ -1,0 +1,1390 @@
+commit e6d9de5e042407c7261beb6a677d1b7d0e0cca78
+Author: Jérôme Piquot <jpiquot@itaneo.com>
+Date:   Mon May 18 09:06:28 2026 +0200
+
+    Add governance completeness evidence and associated tests
+    
+    - Introduced `c0-c13-governance-evidence.yaml` to define governance criteria and their statuses.
+    - Created `GovernanceCompletenessGateTests.cs` to validate governance completeness against defined criteria.
+    - Added various fixture files including `cache-key-exceptions.yaml`, `idempotency-encoding-corpus-consumption.yaml`, and `pattern-example-manifest.yaml` for testing purposes.
+    - Implemented `GovernanceCompletenessExample.cs` to represent governance completeness examples.
+    - Developed `run-governance-completeness-gates.ps1` script to automate the governance completeness checks.
+    - Updated project files to include new test projects and ensure compatibility with the governance framework.
+
+diff --git a/.github/workflows/contract-spine.yml b/.github/workflows/contract-spine.yml
+index f1d1568..1131b71 100644
+--- a/.github/workflows/contract-spine.yml
++++ b/.github/workflows/contract-spine.yml
+@@ -43,3 +43,8 @@ jobs:
+         shell: pwsh
+         timeout-minutes: 15
+         run: ./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild
++
++      - name: Run governance completeness gates
++        shell: pwsh
++        timeout-minutes: 15
++        run: ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild
+diff --git a/Hexalith.Folders.slnx b/Hexalith.Folders.slnx
+index 0ceb96f..33b9e61 100644
+--- a/Hexalith.Folders.slnx
++++ b/Hexalith.Folders.slnx
+@@ -41,5 +41,6 @@
+     <Project Path="tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj" />
+     <Project Path="tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj" />
+     <Project Path="tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj" />
++    <Project Path="tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj" />
+   </Folder>
+ </Solution>
+diff --git a/_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md b/_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md
+index 0f50a7d..84a3c34 100644
+--- a/_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md
++++ b/_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md
+@@ -1,6 +1,6 @@
+ # Story 1.16: Wire exit-criteria and parity completeness gates
+ 
+-Status: ready-for-dev
++Status: review
+ 
+ Created: 2026-05-14
+ 
+@@ -29,58 +29,58 @@ so that missing release evidence, unstable idempotency encoding, stale examples,
+ 
+ ## Tasks / Subtasks
+ 
+-- [ ] Confirm governance-gate prerequisites and current ownership. (AC: 1, 2, 8, 10, 12, 13, 14)
+-  - [ ] Inspect `.github/workflows/`; if Story 1.14 has not created a workflow yet, create only a focused governance/completeness workflow or job that can be composed later.
+-  - [ ] Inspect `docs/exit-criteria/`, `_bmad-output/planning-artifacts/architecture.md`, `_bmad-output/project-context.md`, and `tests/README.md` for C0-C13 evidence, gate names, and local verification expectations.
+-  - [ ] Inspect Story 1.12 through Story 1.15 artifacts before assuming generated SDK helpers, parity-oracle output, workflow lanes, or safety gate ownership.
+-  - [ ] Map each gate to its canonical input owner before adding checks; if two checked-in sources disagree on ownership, status, command, or artifact path, fail with `prerequisite_drift` instead of choosing one silently.
+-  - [ ] Treat missing generated helper commands, missing `parity-contract.yaml`, missing workflow files, placeholder-only exit evidence, or absent pattern-example extraction tooling as prerequisite drift unless the implemented gate can fail closed with a targeted diagnostic.
+-  - [ ] Do not initialize or update nested submodules. If submodules are needed for validation, initialize only the root-level modules listed in `AGENTS.md`.
+-- [ ] Add or wire exit-criteria presence checks. (AC: 1, 2, 10, 11, 12)
+-  - [ ] Validate every C0-C13 criterion from architecture has an evidence row or artifact in `docs/exit-criteria/` or another approved repository path.
+-  - [ ] Require each evidence record to declare criterion ID, owner, status, artifact path, verification command, result summary, and open policy placeholders.
+-  - [ ] Allow bounded `reference_pending` only for explicitly named unresolved decisions and owning criteria; reject generic `PLACEHOLDER` values once a gate claims readiness.
+-  - [ ] Add explicit negative coverage for unknown criteria, duplicate criteria, artifact paths outside approved repository-relative locations, missing owners, missing commands, unreadable artifacts, and unresolved placeholder rows.
+-  - [ ] Keep diagnostics metadata-only and repository-relative.
+-- [ ] Wire idempotency-encoding equivalence coverage. (AC: 3, 4, 10, 11, 12)
+-  - [ ] Validate `tests/fixtures/idempotency-encoding-corpus.json` against `tests/fixtures/idempotency-encoding-corpus.schema.json`.
+-  - [ ] Add coverage checks proving each corpus case is consumed by a helper, parser-policy, or prerequisite-drift test rather than merely existing as fixture data.
+-  - [ ] Maintain or derive a corpus-consumption map by stable sample ID; missing, duplicate, or stale sample mappings fail closed and must not be inferred from test names alone.
+-  - [ ] Verify generated helper tests preserve the declared equivalence classifications without hashing whole payloads or treating null, omitted, duplicated, malformed, or normalization-sensitive values as defaults.
+-  - [ ] Reuse Story 1.12 commands and generated-helper provenance; do not implement new helper generation logic.
+-- [ ] Add pattern-example compilation checks. (AC: 5, 10, 11, 12)
+-  - [ ] Identify pattern examples in architecture and contract docs that are intended to compile, and mark non-code prose examples explicitly as documentation-only.
+-  - [ ] Require an explicit compilable-example marker before compiling fenced C# blocks; unmarked prose, JSON, YAML, workflow, and pseudocode examples must be classified without broad compilation guesses.
+-  - [ ] Compile extracted C# snippets against pinned project references and central package versions, or fail closed with exact prerequisite drift when the required project surface is not present.
+-  - [ ] Keep snippets synthetic and metadata-only; never add real tenant names, repository URLs, branch names, provider payloads, file contents, diffs, secrets, or production endpoints.
+-- [ ] Add tenant-prefixed cache-key lint. (AC: 6, 9, 11, 12)
+-  - [ ] Scan repository code, tests, fixtures, scripts, and workflow cache declarations for cache-key construction patterns.
+-  - [ ] Require tenant-scoped cache keys for in-process, Dapr state, Redis, distributed cache, provider-operation, generated-helper, and test-fixture keys that can represent tenant data.
+-  - [ ] Permit only explicitly documented non-tenant keys such as tool cache, NuGet package cache, generated-output cache, or synthetic test examples, and require those exceptions to be safe and repository-relative.
+-  - [ ] Require cache-key exceptions to carry a rule ID, owner, reason, scope, review status or expiry, and evidence link; pattern-only allowlist entries are not sufficient.
+-  - [ ] Do not echo full cache key values in diagnostics; report only the file path, line or schema pointer, category, and bounded reason.
+-- [ ] Wire parity completeness checks. (AC: 7, 8, 10, 11, 12)
+-  - [ ] Derive the current operation set from `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` with structured YAML parsing.
+-  - [ ] Validate that generated parity rows cover every current operation exactly once and that no row references a missing or stale operation ID.
+-  - [ ] Detect duplicate OpenAPI operation IDs, duplicate parity rows, intentionally excluded operations without an approved reason, and operation-family mismatches as distinct failure categories.
+-  - [ ] Verify row completeness for adapter expectations, operation family, read-consistency class, idempotency key rule, canonical error categories, and bounded ownership metadata.
+-  - [ ] Do not hand-author parity rows or implement the parity-oracle generator; Story 1.13 owns generation and Story 1.14 owns schema/drift gate wiring.
+-- [ ] Wire CI/local commands without scope bleed. (AC: 8, 10, 11, 12, 14)
+-  - [ ] Prefer focused test projects or `tests/tools/` commands that CI and local developers can run identically from the repository root.
+-  - [ ] Ensure the shared command performs discovery before validation, returns non-zero for prerequisite drift, and writes only sanitized machine-readable reports with repository-relative paths.
+-  - [ ] If a workflow is created or extended, use checked-in `global.json`, central package management, repository-root commands, and explicit steps that mirror local commands.
+-  - [ ] Keep restore/build/test steps composed with Story 1.14 where possible; do not create a parallel full release workflow.
+-  - [ ] Keep all gates offline and deterministic.
+-- [ ] Document developer and reviewer usage. (AC: 1, 2, 5, 6, 7, 10, 11, 12)
+-  - [ ] Add or update focused documentation such as `docs/contract/governance-and-completeness-ci-gates.md`.
+-  - [ ] Document local commands, CI job names, owned inputs, prerequisite-drift categories, safe diagnostic format, and which prior stories own missing artifacts.
+-  - [ ] Document how to add a new C0-C13 evidence artifact, corpus case, pattern example, cache-key exception, or parity row shape without bypassing ownership.
+-- [ ] Run verification. (AC: 1, 3, 5, 6, 7, 11, 12, 14)
+-  - [ ] Run the focused governance/completeness gate tests.
+-  - [ ] Run the workflow-equivalent local commands from the repository root.
+-  - [ ] Run `dotnet build Hexalith.Folders.slnx` if active contract work and prerequisite drift allow it; if blocked, record the exact blocker.
+-  - [ ] Confirm no nested submodules were initialized.
+-  - [ ] Confirm no unrelated active Story 1.11 through Story 1.15 files were modified.
++- [x] Confirm governance-gate prerequisites and current ownership. (AC: 1, 2, 8, 10, 12, 13, 14)
++  - [x] Inspect `.github/workflows/`; if Story 1.14 has not created a workflow yet, create only a focused governance/completeness workflow or job that can be composed later.
++  - [x] Inspect `docs/exit-criteria/`, `_bmad-output/planning-artifacts/architecture.md`, `_bmad-output/project-context.md`, and `tests/README.md` for C0-C13 evidence, gate names, and local verification expectations.
++  - [x] Inspect Story 1.12 through Story 1.15 artifacts before assuming generated SDK helpers, parity-oracle output, workflow lanes, or safety gate ownership.
++  - [x] Map each gate to its canonical input owner before adding checks; if two checked-in sources disagree on ownership, status, command, or artifact path, fail with `prerequisite_drift` instead of choosing one silently.
++  - [x] Treat missing generated helper commands, missing `parity-contract.yaml`, missing workflow files, placeholder-only exit evidence, or absent pattern-example extraction tooling as prerequisite drift unless the implemented gate can fail closed with a targeted diagnostic.
++  - [x] Do not initialize or update nested submodules. If submodules are needed for validation, initialize only the root-level modules listed in `AGENTS.md`.
++- [x] Add or wire exit-criteria presence checks. (AC: 1, 2, 10, 11, 12)
++  - [x] Validate every C0-C13 criterion from architecture has an evidence row or artifact in `docs/exit-criteria/` or another approved repository path.
++  - [x] Require each evidence record to declare criterion ID, owner, status, artifact path, verification command, result summary, and open policy placeholders.
++  - [x] Allow bounded `reference_pending` only for explicitly named unresolved decisions and owning criteria; reject generic `PLACEHOLDER` values once a gate claims readiness.
++  - [x] Add explicit negative coverage for unknown criteria, duplicate criteria, artifact paths outside approved repository-relative locations, missing owners, missing commands, unreadable artifacts, and unresolved placeholder rows.
++  - [x] Keep diagnostics metadata-only and repository-relative.
++- [x] Wire idempotency-encoding equivalence coverage. (AC: 3, 4, 10, 11, 12)
++  - [x] Validate `tests/fixtures/idempotency-encoding-corpus.json` against `tests/fixtures/idempotency-encoding-corpus.schema.json`.
++  - [x] Add coverage checks proving each corpus case is consumed by a helper, parser-policy, or prerequisite-drift test rather than merely existing as fixture data.
++  - [x] Maintain or derive a corpus-consumption map by stable sample ID; missing, duplicate, or stale sample mappings fail closed and must not be inferred from test names alone.
++  - [x] Verify generated helper tests preserve the declared equivalence classifications without hashing whole payloads or treating null, omitted, duplicated, malformed, or normalization-sensitive values as defaults.
++  - [x] Reuse Story 1.12 commands and generated-helper provenance; do not implement new helper generation logic.
++- [x] Add pattern-example compilation checks. (AC: 5, 10, 11, 12)
++  - [x] Identify pattern examples in architecture and contract docs that are intended to compile, and mark non-code prose examples explicitly as documentation-only.
++  - [x] Require an explicit compilable-example marker before compiling fenced C# blocks; unmarked prose, JSON, YAML, workflow, and pseudocode examples must be classified without broad compilation guesses.
++  - [x] Compile extracted C# snippets against pinned project references and central package versions, or fail closed with exact prerequisite drift when the required project surface is not present.
++  - [x] Keep snippets synthetic and metadata-only; never add real tenant names, repository URLs, branch names, provider payloads, file contents, diffs, secrets, or production endpoints.
++- [x] Add tenant-prefixed cache-key lint. (AC: 6, 9, 11, 12)
++  - [x] Scan repository code, tests, fixtures, scripts, and workflow cache declarations for cache-key construction patterns.
++  - [x] Require tenant-scoped cache keys for in-process, Dapr state, Redis, distributed cache, provider-operation, generated-helper, and test-fixture keys that can represent tenant data.
++  - [x] Permit only explicitly documented non-tenant keys such as tool cache, NuGet package cache, generated-output cache, or synthetic test examples, and require those exceptions to be safe and repository-relative.
++  - [x] Require cache-key exceptions to carry a rule ID, owner, reason, scope, review status or expiry, and evidence link; pattern-only allowlist entries are not sufficient.
++  - [x] Do not echo full cache key values in diagnostics; report only the file path, line or schema pointer, category, and bounded reason.
++- [x] Wire parity completeness checks. (AC: 7, 8, 10, 11, 12)
++  - [x] Derive the current operation set from `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` with structured YAML parsing.
++  - [x] Validate that generated parity rows cover every current operation exactly once and that no row references a missing or stale operation ID.
++  - [x] Detect duplicate OpenAPI operation IDs, duplicate parity rows, intentionally excluded operations without an approved reason, and operation-family mismatches as distinct failure categories.
++  - [x] Verify row completeness for adapter expectations, operation family, read-consistency class, idempotency key rule, canonical error categories, and bounded ownership metadata.
++  - [x] Do not hand-author parity rows or implement the parity-oracle generator; Story 1.13 owns generation and Story 1.14 owns schema/drift gate wiring.
++- [x] Wire CI/local commands without scope bleed. (AC: 8, 10, 11, 12, 14)
++  - [x] Prefer focused test projects or `tests/tools/` commands that CI and local developers can run identically from the repository root.
++  - [x] Ensure the shared command performs discovery before validation, returns non-zero for prerequisite drift, and writes only sanitized machine-readable reports with repository-relative paths.
++  - [x] If a workflow is created or extended, use checked-in `global.json`, central package management, repository-root commands, and explicit steps that mirror local commands.
++  - [x] Keep restore/build/test steps composed with Story 1.14 where possible; do not create a parallel full release workflow.
++  - [x] Keep all gates offline and deterministic.
++- [x] Document developer and reviewer usage. (AC: 1, 2, 5, 6, 7, 10, 11, 12)
++  - [x] Add or update focused documentation such as `docs/contract/governance-and-completeness-ci-gates.md`.
++  - [x] Document local commands, CI job names, owned inputs, prerequisite-drift categories, safe diagnostic format, and which prior stories own missing artifacts.
++  - [x] Document how to add a new C0-C13 evidence artifact, corpus case, pattern example, cache-key exception, or parity row shape without bypassing ownership.
++- [x] Run verification. (AC: 1, 3, 5, 6, 7, 11, 12, 14)
++  - [x] Run the focused governance/completeness gate tests.
++  - [x] Run the workflow-equivalent local commands from the repository root.
++  - [x] Run `dotnet build Hexalith.Folders.slnx` if active contract work and prerequisite drift allow it; if blocked, record the exact blocker.
++  - [x] Confirm no nested submodules were initialized.
++  - [x] Confirm no unrelated active Story 1.11 through Story 1.15 files were modified.
+ 
+ ## Dev Notes
+ 
+@@ -228,6 +228,7 @@ tests/tools/
+ 
+ | Date | Change | Author |
+ |---|---|---|
++| 2026-05-18 | Implemented governance/completeness gate wiring, evidence manifests, focused tests, CI command, and reviewer documentation. | Codex |
+ | 2026-05-17 | Applied advanced-elicitation hardening for discovery authority, negative fixtures, sample-consumption mapping, opt-in examples, cache-key exceptions, parity duplicate handling, and safe reports. | Codex |
+ | 2026-05-15 | Applied party-mode review hardening for command contracts, artifact authority, status semantics, diagnostics, and reviewer workflow. | Codex |
+ | 2026-05-14 | Created ready-for-dev story through `bmad-create-story` workflow. | Codex |
+@@ -236,14 +237,42 @@ tests/tools/
+ 
+ ### Agent Model Used
+ 
+-TBD by dev-story agent
++GPT-5 Codex
+ 
+ ### Debug Log References
+ 
++- 2026-05-18: Loaded BMad workflow customization, project context, sprint status, and Story 1.16.
++- 2026-05-18: Inspected `.github/workflows/`, `docs/exit-criteria/`, architecture, tests README, idempotency fixtures, parity fixtures, prior Story 1.12-1.15 artifacts, and current OpenAPI state.
++- 2026-05-18: Ran focused governance tests, governance gate command, contract spine gate command, scaffold tests, full solution tests, and submodule status check.
++
+ ### Completion Notes List
+ 
++- Added a single repository-root governance/completeness command reused by CI: `tests/tools/run-governance-completeness-gates.ps1`.
++- Added C0-C13 governance evidence with bounded `reference_pending` rows, explicit artifact paths, owners, commands, and safe diagnostic policy.
++- Added idempotency corpus consumption mapping by stable sample ID, opt-in pattern-example manifest and compilable examples project, reviewed cache-key exception manifest, and parity completeness checks.
++- Extended the Story 1.14 contract-spine workflow instead of creating a parallel release workflow.
++- Added focused positive and negative tests for exit criteria, idempotency sample mapping, pattern examples, cache-key lint diagnostics, parity completeness, and safe metadata-only output.
++- Verification passed: `.\tests\tools\run-governance-completeness-gates.ps1`, `.\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild`, `.\tests\tools\run-contract-spine-gates.ps1 -NoRestore`, `dotnet test Hexalith.Folders.slnx --no-build`, and targeted scaffold/governance test runs.
++- Confirmed root-level submodule status only; no recursive or nested submodule initialization was run.
++
+ ### File List
+ 
++- `.github/workflows/contract-spine.yml`
++- `Hexalith.Folders.slnx`
++- `_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md`
++- `_bmad-output/implementation-artifacts/sprint-status.yaml`
++- `docs/contract/governance-and-completeness-ci-gates.md`
++- `docs/exit-criteria/c0-c13-governance-evidence.yaml`
++- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs`
++- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
++- `tests/README.md`
++- `tests/fixtures/cache-key-exceptions.yaml`
++- `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
++- `tests/fixtures/pattern-example-manifest.yaml`
++- `tests/tools/pattern-examples/GovernanceCompletenessExample.cs`
++- `tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj`
++- `tests/tools/run-governance-completeness-gates.ps1`
++
+ ## Party-Mode Review
+ 
+ - Date/time: 2026-05-15T12:57:13Z
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index 986eef2..810179c 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -35,7 +35,7 @@
+ # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+ 
+ generated: 2026-05-12T07:11:18+02:00
+-last_updated: 2026-05-17T15:18:06+02:00
++last_updated: 2026-05-18T08:44:44+02:00
+ project: Hexalith.Folders
+ project_key: NOKEY
+ tracking_system: file-system
+@@ -59,7 +59,7 @@ development_status:
+   1-13-generate-the-c13-parity-oracle: done
+   1-14-wire-contract-spine-drift-and-generated-client-ci-gates: done
+   1-15-wire-safety-invariant-ci-gates: review
+-  1-16-wire-exit-criteria-and-parity-completeness-gates: ready-for-dev
++  1-16-wire-exit-criteria-and-parity-completeness-gates: review
+   epic-1-retrospective: optional
+ 
+   # Epic 2: Tenant-Scoped Folder Access And Lifecycle
+diff --git a/docs/contract/governance-and-completeness-ci-gates.md b/docs/contract/governance-and-completeness-ci-gates.md
+new file mode 100644
+index 0000000..b989510
+--- /dev/null
++++ b/docs/contract/governance-and-completeness-ci-gates.md
+@@ -0,0 +1,63 @@
++# Governance And Completeness CI Gates
++
++The governance/completeness gate is the local and CI entry point for Story 1.16 checks. It validates exit-criteria evidence, idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exceptions, and parity completeness without Aspire, Dapr sidecars, provider credentials, network calls, or nested submodule initialization.
++
++## Local Command
++
++```powershell
++.\tests\tools\run-governance-completeness-gates.ps1
++.\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++```
++
++The command must be run from the repository root or from the script location. It writes a sanitized discovery report to `_bmad-output/gates/governance-completeness/latest.json`. The report includes gate names, repository-relative canonical inputs, report path, and diagnostic policy only.
++
++## CI Job
++
++The `contract-spine-gates` workflow invokes the same command after restore and build:
++
++```powershell
++.\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++```
++
++Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests and fixtures rather than workflow-only shell logic.
++
++## Owned Inputs
++
++- `docs/exit-criteria/c0-c13-governance-evidence.yaml`
++- `tests/fixtures/idempotency-encoding-corpus.json`
++- `tests/fixtures/idempotency-encoding-corpus.schema.json`
++- `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
++- `tests/fixtures/pattern-example-manifest.yaml`
++- `tests/fixtures/cache-key-exceptions.yaml`
++- `tests/fixtures/parity-contract.yaml`
++- `tests/fixtures/parity-contract.schema.json`
++- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
++
++## Diagnostic Categories
++
++- `prerequisite_drift`: a required input, owner, path, command, report, or source authority is missing or inconsistent.
++- `exit_criteria_missing`: a C0-C13 row is absent.
++- `exit_criteria_duplicate`: a criterion appears more than once.
++- `exit_criteria_malformed`: required evidence metadata is missing or contains an invalid placeholder.
++- `artifact_path_invalid`: an evidence path is absolute, escapes the repository, or points to an unreadable artifact.
++- `idempotency_sample_unmapped`: a corpus sample lacks exactly one stable consumption map entry.
++- `pattern_example_invalid`: a C# example is unmarked, stale, or not part of the compilable examples project.
++- `cache_key_unscoped`: a tenant-data cache key candidate lacks tenant scope and no reviewed exception applies.
++- `parity_completeness_mismatch`: OpenAPI operations and generated parity rows differ, duplicate, or omit required metadata.
++
++Diagnostics may include gate names, rule IDs, criterion IDs, sample IDs, operation IDs, schema pointers, repository-relative paths, bounded categories, counts, and safe hashes. Diagnostics must not include raw payloads, file contents, diffs, provider tokens, credentials, tenant data, local absolute paths, production URLs, cache key values, provider responses, or unauthorized-resource hints.
++
++## Contribution Checklist
++
++When adding evidence, corpus cases, pattern examples, cache-key exceptions, or parity row shapes:
++
++1. Add the repository-relative artifact and ownership metadata first.
++2. Add or update the stable fixture row that names the owner, status, command, and evidence link.
++3. Add positive and negative coverage in `GovernanceCompletenessGateTests`.
++4. Keep reference-pending decisions bounded with owner, criterion ID, reason, and consuming story.
++5. Regenerate parity rows only through `tests/tools/parity-oracle-generator`; never hand-edit generated rows.
++6. Keep all examples synthetic and metadata-only.
++
++## Story Ownership
++
++Story 1.12 owns generated `ComputeIdempotencyHash()` helper behavior. Story 1.13 owns parity-oracle generation. Story 1.14 owns Contract Spine drift and generated-client consistency gates. Story 1.15 owns sentinel redaction and output-channel leakage checks. Story 1.16 only wires governance/completeness checks and cache-key diagnostic metadata needed by these gates.
+diff --git a/docs/exit-criteria/c0-c13-governance-evidence.yaml b/docs/exit-criteria/c0-c13-governance-evidence.yaml
+new file mode 100644
+index 0000000..338f83b
+--- /dev/null
++++ b/docs/exit-criteria/c0-c13-governance-evidence.yaml
+@@ -0,0 +1,164 @@
++schema_version: '1.0.0'
++gate: governance-completeness
++source_authority:
++  - _bmad-output/planning-artifacts/architecture.md
++  - docs/exit-criteria/
++  - tests/fixtures/
++diagnostic_policy:
++  safe_fields:
++    - gate
++    - criterion_id
++    - artifact_path
++    - owner
++    - status
++    - bounded_category
++    - safe_hash
++  forbidden_fields:
++    - raw_payload
++    - file_content
++    - diff
++    - provider_token
++    - credential_material
++    - tenant_data
++    - local_absolute_path
++criteria:
++  - criterion_id: C0
++    title: Contract Spine source of truth
++    owner: Architecture
++    status: approved
++    artifact_path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
++    verification_command: .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
++    result_summary: OpenAPI Contract Spine exists and is consumed by contract, client, and parity gates.
++    open_policy_placeholders: []
++  - criterion_id: C1
++    title: Capacity target evidence
++    owner: Release Readiness
++    status: reference_pending
++    artifact_path: tests/load/README.md
++    verification_command: dotnet build Hexalith.Folders.slnx --no-restore
++    result_summary: Load-test harness placeholder exists; release target calibration is deferred to Epic 7.
++    open_policy_placeholders:
++      - id: C1-capacity-calibration
++        owner: Release Readiness
++        reason: Capacity thresholds are calibrated after lifecycle implementation exists.
++        consuming_story: 7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets
++  - criterion_id: C2
++    title: Projection freshness target evidence
++    owner: Release Readiness
++    status: reference_pending
++    artifact_path: _bmad-output/planning-artifacts/architecture.md
++    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++    result_summary: Architecture records the freshness target; implementation evidence is deferred until projections exist.
++    open_policy_placeholders:
++      - id: C2-projection-freshness
++        owner: Release Readiness
++        reason: Projection runtime and freshness metrics are implemented after aggregate and worker stories.
++        consuming_story: 7-12-wire-production-observability-and-alerts
++  - criterion_id: C3
++    title: Retention policy evidence
++    owner: Tech Lead
++    status: reference_pending
++    artifact_path: docs/exit-criteria/c3-retention.md
++    verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
++    result_summary: Proposed retention values are documented with Legal and PM approval still pending.
++    open_policy_placeholders:
++      - id: C3-legal-pm-approval
++        owner: Legal + PM
++        reason: Retention durations must be approved before production enforcement.
++        consuming_story: 7-11-enforce-c3-retention-and-tenant-deletion-behavior
++  - criterion_id: C4
++    title: Input limit evidence
++    owner: Architect
++    status: reference_pending
++    artifact_path: docs/exit-criteria/c4-input-limits.md
++    verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
++    result_summary: Proposed query and payload limits are documented with PM approval still pending.
++    open_policy_placeholders:
++      - id: C4-pm-approval
++        owner: PM
++        reason: MVP input bounds must be approved before production contract enforcement.
++        consuming_story: 4-8-query-file-context-with-policy-boundaries
++  - criterion_id: C5
++    title: Release capacity smoke evidence
++    owner: Release Readiness
++    status: reference_pending
++    artifact_path: tests/load/README.md
++    verification_command: dotnet build Hexalith.Folders.slnx --no-restore
++    result_summary: Capacity smoke lane is documented; executable release evidence is deferred to Epic 7.
++    open_policy_placeholders:
++      - id: C5-capacity-smoke
++        owner: Release Readiness
++        reason: Smoke targets require implemented lifecycle endpoints and load fixtures.
++        consuming_story: 7-7-add-capacity-smoke-ci-gate
++  - criterion_id: C6
++    title: Workspace transition matrix evidence
++    owner: Architect
++    status: approved
++    artifact_path: docs/exit-criteria/c6-transition-matrix-mapping.md
++    verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
++    result_summary: Architecture transition mapping and default rejection semantics are documented.
++    open_policy_placeholders: []
++  - criterion_id: C7
++    title: Lock revalidation budget evidence
++    owner: Architecture
++    status: reference_pending
++    artifact_path: _bmad-output/planning-artifacts/architecture.md
++    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++    result_summary: Architecture records lock revalidation intent; executable lock evidence is deferred to Epic 4.
++    open_policy_placeholders:
++      - id: C7-lock-revalidation
++        owner: Architecture
++        reason: Lock implementation and revocation tests do not exist until workspace lifecycle stories.
++        consuming_story: 4-3-acquire-task-scoped-workspace-lock
++  - criterion_id: C8
++    title: Context-query authorization evidence
++    owner: Contracts
++    status: approved
++    artifact_path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
++    verification_command: .\tests\tools\run-safety-invariant-gates.ps1 -SkipRestoreBuild
++    result_summary: OpenAPI context queries declare authorization-before-observation metadata.
++    open_policy_placeholders: []
++  - criterion_id: C9
++    title: Sensitive metadata classification evidence
++    owner: Safety Invariants
++    status: approved
++    artifact_path: tests/fixtures/audit-leakage-corpus.json
++    verification_command: .\tests\tools\run-safety-invariant-gates.ps1 -SkipRestoreBuild
++    result_summary: Synthetic leakage corpus and safety channel inventory are wired to the safety gate.
++    open_policy_placeholders: []
++  - criterion_id: C10
++    title: Tenant-prefixed cache-key evidence
++    owner: Governance Gates
++    status: approved
++    artifact_path: tests/fixtures/cache-key-exceptions.yaml
++    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++    result_summary: Cache-key lint has explicit non-tenant exception metadata and current repository scan coverage.
++    open_policy_placeholders: []
++  - criterion_id: C11
++    title: File transport boundary evidence
++    owner: Contracts
++    status: approved
++    artifact_path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
++    verification_command: .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
++    result_summary: OpenAPI declares inline and streamed file mutation contract metadata.
++    open_policy_placeholders: []
++  - criterion_id: C12
++    title: Provider drift evidence
++    owner: Provider Readiness
++    status: reference_pending
++    artifact_path: _bmad-output/planning-artifacts/architecture.md
++    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++    result_summary: Architecture records provider drift posture; live provider gates are deferred to Epic 7.
++    open_policy_placeholders:
++      - id: C12-provider-live-drift
++        owner: Provider Readiness
++        reason: Live provider drift checks require provider adapters and credentials not present in this story.
++        consuming_story: 7-8-wire-scheduled-drift-and-policy-conformance-workflows
++  - criterion_id: C13
++    title: Cross-surface parity oracle evidence
++    owner: C13 Parity Oracle Generation
++    status: approved
++    artifact_path: tests/fixtures/parity-contract.yaml
++    verification_command: .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
++    result_summary: Generated parity oracle covers current OpenAPI operations with bounded row metadata.
++    open_policy_placeholders: []
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+new file mode 100644
+index 0000000..cf8a3ce
+--- /dev/null
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+@@ -0,0 +1,646 @@
++using System.Text.Json;
++using Shouldly;
++using Xunit;
++using YamlDotNet.RepresentationModel;
++
++namespace Hexalith.Folders.Contracts.Tests.OpenApi;
++
++public sealed class GovernanceCompletenessGateTests
++{
++    private static readonly string RepositoryRoot = FindRepositoryRoot();
++    private static readonly string EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "c0-c13-governance-evidence.yaml");
++    private static readonly string CorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.json");
++    private static readonly string CorpusSchemaPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.schema.json");
++    private static readonly string CorpusConsumptionPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus-consumption.yaml");
++    private static readonly string PatternManifestPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "pattern-example-manifest.yaml");
++    private static readonly string CacheKeyExceptionsPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "cache-key-exceptions.yaml");
++    private static readonly string ParityContractPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml");
++    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
++    private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
++    private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-governance-completeness-gates.ps1");
++    private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "governance-and-completeness-ci-gates.md");
++    private static readonly string SolutionPath = Path.Combine(RepositoryRoot, "Hexalith.Folders.slnx");
++
++    private static readonly string[] Criteria =
++    [
++        "C0",
++        "C1",
++        "C2",
++        "C3",
++        "C4",
++        "C5",
++        "C6",
++        "C7",
++        "C8",
++        "C9",
++        "C10",
++        "C11",
++        "C12",
++        "C13",
++    ];
++
++    [Fact]
++    public void WorkflowAndScriptExposeOneOfflineGovernanceCompletenessCommand()
++    {
++        string workflow = File.ReadAllText(WorkflowPath);
++        string script = File.ReadAllText(GateScriptPath);
++        string documentation = File.ReadAllText(GateDocumentationPath);
++
++        workflow.ShouldContain("./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild");
++        workflow.ShouldContain("actions/checkout@v6");
++        workflow.ShouldContain("submodules: false");
++        workflow.ShouldContain("actions/setup-dotnet@v5");
++        workflow.ShouldContain("global-json-file: global.json");
++        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
++
++        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
++        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests");
++        script.ShouldContain("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
++        script.ShouldContain("_bmad-output/gates/governance-completeness/latest.json");
++        script.ShouldContain("$LASTEXITCODE");
++        script.ShouldNotContain("--recursive", Case.Insensitive);
++
++        documentation.ShouldContain(".\\tests\\tools\\run-governance-completeness-gates.ps1");
++        documentation.ShouldContain("prerequisite_drift");
++        documentation.ShouldContain("idempotency_sample_unmapped");
++        documentation.ShouldContain("cache_key_unscoped");
++        documentation.ShouldContain("parity_completeness_mismatch");
++        AssertMetadataOnly(documentation);
++    }
++
++    [Fact]
++    public void ExitCriteriaEvidenceMapsEveryC0ThroughC13WithBoundedReferencePendingRows()
++    {
++        YamlMappingNode root = LoadYamlMapping(EvidencePath);
++        YamlMappingNode[] rows = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>().ToArray();
++        GateDiagnostic[] diagnostics = EvaluateExitCriteriaRows(rows);
++
++        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
++        rows.Select(row => RequiredScalar(row, "criterion_id")).ToArray().ShouldBe(Criteria, ignoreOrder: true);
++
++        foreach (YamlMappingNode row in rows)
++        {
++            string status = RequiredScalar(row, "status");
++            string artifact = RequiredScalar(row, "artifact_path");
++            string command = RequiredScalar(row, "verification_command");
++            string summary = RequiredScalar(row, "result_summary");
++
++            status.ShouldBeOneOf("approved", "reference_pending");
++            PathExists(artifact).ShouldBeTrue(artifact);
++            command.ShouldNotBeNullOrWhiteSpace();
++            summary.ShouldNotBeNullOrWhiteSpace();
++            AssertMetadataOnly(command);
++            AssertMetadataOnly(summary);
++
++            if (status == "reference_pending")
++            {
++                RequiredSequence(row, "open_policy_placeholders").Children.Count.ShouldBeGreaterThan(0, RequiredScalar(row, "criterion_id"));
++            }
++        }
++    }
++
++    [Fact]
++    public void ExitCriteriaNegativeControlsFailClosedWithBoundedDiagnostics()
++    {
++        YamlMappingNode[] rows = LoadCriteriaRows(EvidencePath);
++        List<YamlMappingNode> missing = rows.Where(row => RequiredScalar(row, "criterion_id") != "C13").ToList();
++        List<YamlMappingNode> duplicate = rows.Concat([rows[0]]).ToList();
++        YamlMappingNode invalidPlaceholder = CloneRow(rows[0]);
++        SetScalar(invalidPlaceholder, "owner", "PLACEHOLDER");
++        YamlMappingNode invalidPath = CloneRow(rows[1]);
++        SetScalar(invalidPath, "artifact_path", "D:/not/repository/local.md");
++
++        EvaluateExitCriteriaRows(missing).ShouldContain(d => d.Category == "exit_criteria_missing" && d.Identifier == "C13");
++        EvaluateExitCriteriaRows(duplicate).ShouldContain(d => d.Category == "exit_criteria_duplicate" && d.Identifier == "C0");
++        EvaluateExitCriteriaRows([invalidPlaceholder]).ShouldContain(d => d.Category == "exit_criteria_malformed");
++        EvaluateExitCriteriaRows([invalidPath]).ShouldContain(d => d.Category == "artifact_path_invalid");
++
++        foreach (GateDiagnostic diagnostic in EvaluateExitCriteriaRows([invalidPlaceholder, invalidPath]))
++        {
++            AssertMetadataOnly(diagnostic.ToString());
++        }
++    }
++
++    [Fact]
++    public void IdempotencyCorpusSchemaAndStableConsumptionMapCoverEverySample()
++    {
++        using JsonDocument corpus = JsonDocument.Parse(File.ReadAllText(CorpusPath));
++        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(CorpusSchemaPath));
++        string[] requiredCaseFields = RequiredArray(schema.RootElement.GetProperty("$defs").GetProperty("case"), "required").SelectText();
++
++        JsonElement[] cases = RequiredArray(corpus.RootElement, "cases").EnumerateArray().ToArray();
++        cases.ShouldNotBeEmpty();
++        foreach (JsonElement item in cases)
++        {
++            foreach (string requiredField in requiredCaseFields)
++            {
++                item.TryGetProperty(requiredField, out _).ShouldBeTrue(requiredField);
++            }
++        }
++
++        YamlMappingNode[] consumption = RequiredSequence(LoadYamlMapping(CorpusConsumptionPath), "samples").Children.Cast<YamlMappingNode>().ToArray();
++        Dictionary<string, string> classifications = cases.ToDictionary(
++            item => RequiredString(item, "id"),
++            item => RequiredString(item, "equivalence_classification"),
++            StringComparer.Ordinal);
++
++        consumption.Select(row => RequiredScalar(row, "sample_id")).Order(StringComparer.Ordinal).ToArray()
++            .ShouldBe(classifications.Keys.Order(StringComparer.Ordinal).ToArray());
++        consumption.Select(row => RequiredScalar(row, "sample_id")).Distinct(StringComparer.Ordinal).Count().ShouldBe(consumption.Length);
++
++        foreach (YamlMappingNode row in consumption)
++        {
++            string sampleId = RequiredScalar(row, "sample_id");
++            RequiredScalar(row, "equivalence_classification").ShouldBe(classifications[sampleId], sampleId);
++            RequiredScalar(row, "coverage_kind").ShouldBeOneOf("generated-helper-contract-test", "parser-policy-test", "prerequisite-drift-test");
++            PathExists(RequiredScalar(row, "consumer_path")).ShouldBeTrue(sampleId);
++        }
++    }
++
++    [Fact]
++    public void IdempotencyConsumptionNegativeControlsCatchMissingDuplicateAndStaleMappings()
++    {
++        YamlMappingNode[] rows = RequiredSequence(LoadYamlMapping(CorpusConsumptionPath), "samples").Children.Cast<YamlMappingNode>().ToArray();
++        string[] sampleIds = ReadCorpusSampleIds();
++
++        EvaluateSampleConsumption(rows.Where(row => RequiredScalar(row, "sample_id") != sampleIds[0]), sampleIds).ShouldContain(d => d.Category == "idempotency_sample_unmapped");
++        EvaluateSampleConsumption(rows.Concat([rows[0]]), sampleIds).ShouldContain(d => d.Category == "idempotency_sample_duplicate");
++
++        YamlMappingNode stale = CloneRow(rows[0]);
++        SetScalar(stale, "sample_id", "deleted-synthetic-sample");
++        EvaluateSampleConsumption([stale], sampleIds).ShouldContain(d => d.Category == "idempotency_sample_stale");
++    }
++
++    [Fact]
++    public void PatternExampleManifestIsOptInAndCompilableProjectIsInSolution()
++    {
++        YamlMappingNode manifest = LoadYamlMapping(PatternManifestPath);
++        string project = RequiredScalar(manifest, "compilable_examples_project");
++        string solution = File.ReadAllText(SolutionPath);
++
++        project.ShouldBe("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
++        PathExists(project).ShouldBeTrue(project);
++        solution.ShouldContain(project);
++
++        YamlMappingNode[] examples = RequiredSequence(manifest, "examples").Children.Cast<YamlMappingNode>().ToArray();
++        examples.ShouldContain(row => RequiredScalar(row, "classification") == "compilable-csharp");
++        examples.ShouldContain(row => RequiredScalar(row, "classification") == "documentation-only");
++
++        foreach (YamlMappingNode example in examples)
++        {
++            RequiredScalar(example, "marker").ShouldStartWith("<!-- hexalith-example:");
++            RequiredScalar(example, "synthetic_data_only").ShouldBe("true");
++            PathExists(RequiredScalar(example, "source_path")).ShouldBeTrue(RequiredScalar(example, "example_id"));
++        }
++    }
++
++    [Fact]
++    public void CacheKeyExceptionManifestIsReviewedAndCurrentRepositoryHasNoTenantDataCacheKeysWithoutScope()
++    {
++        YamlMappingNode[] exceptions = RequiredSequence(LoadYamlMapping(CacheKeyExceptionsPath), "exceptions").Children.Cast<YamlMappingNode>().ToArray();
++        exceptions.ShouldNotBeEmpty();
++        foreach (YamlMappingNode exception in exceptions)
++        {
++            RequiredScalar(exception, "rule_id").ShouldStartWith("CACHE-");
++            RequiredScalar(exception, "owner").ShouldNotBeNullOrWhiteSpace();
++            RequiredScalar(exception, "reason").ShouldNotBeNullOrWhiteSpace();
++            RequiredScalar(exception, "scope").ShouldNotBeNullOrWhiteSpace();
++            RequiredScalar(exception, "review_status").ShouldBeOneOf("approved", "expires_on");
++            PathExists(RequiredScalar(exception, "evidence_link")).ShouldBeTrue();
++        }
++
++        GateDiagnostic[] diagnostics = ScanRepositoryForTenantCacheKeyCandidates();
++        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
++    }
++
++    [Fact]
++    public void CacheKeyLintNegativeControlsClassifyTenantScopeAndExceptionsWithoutEchoingKeyValues()
++    {
++        CacheKeyCandidate scoped = new("src/Synthetic.cs", 10, "tenant-data", HasTenantScope: true, ExceptionRuleId: null);
++        CacheKeyCandidate unscoped = new("src/Synthetic.cs", 11, "tenant-data", HasTenantScope: false, ExceptionRuleId: null);
++        CacheKeyCandidate exception = new("tests/Synthetic.cs", 12, "tool-cache", HasTenantScope: false, ExceptionRuleId: "CACHE-NON-TENANT-NUGET");
++
++        EvaluateCacheKeyCandidate(scoped).ShouldBeNull();
++        EvaluateCacheKeyCandidate(unscoped)!.Category.ShouldBe("cache_key_unscoped");
++        EvaluateCacheKeyCandidate(exception).ShouldBeNull();
++        AssertMetadataOnly(EvaluateCacheKeyCandidate(unscoped)!.ToString());
++    }
++
++    [Fact]
++    public void ParityCompletenessComparesStructuredOpenApiOperationsToGeneratedRows()
++    {
++        string[] operations = LoadOpenApiOperationIds(OpenApiPath);
++        YamlMappingNode[] rows = LoadParityRows(ParityContractPath);
++        GateDiagnostic[] diagnostics = EvaluateParityCompleteness(operations, rows);
++
++        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
++        rows.Select(row => RequiredScalar(row, "operation_id")).Order(StringComparer.Ordinal).ToArray().ShouldBe(operations);
++
++        foreach (YamlMappingNode row in rows)
++        {
++            RequiredScalar(row, "operation_family").ShouldNotBeNullOrWhiteSpace();
++            RequiredScalar(row, "read_consistency_class").ShouldNotBeNullOrWhiteSpace();
++            RequiredSequence(row, "adapter_expectations").Children.Count.ShouldBeGreaterThan(0);
++            RequiredMapping(row, "transport_parity").Children.ContainsKey(new YamlScalarNode("idempotency_key_rule")).ShouldBeTrue();
++            RequiredMapping(row, "transport_parity").Children.ContainsKey(new YamlScalarNode("error_code_set")).ShouldBeTrue();
++            RequiredMapping(row, "behavioral_parity").Children.ContainsKey(new YamlScalarNode("mcp_failure_kind")).ShouldBeTrue();
++        }
++    }
++
++    [Fact]
++    public void ParityCompletenessNegativeControlsSeparateMissingStaleAndDuplicateRows()
++    {
++        string[] operations = ["CreateFolder", "GetWorkspaceStatus"];
++        YamlMappingNode create = SyntheticParityRow("CreateFolder");
++        YamlMappingNode stale = SyntheticParityRow("RemovedOperation");
++
++        EvaluateParityCompleteness(operations, [create]).ShouldContain(d => d.Category == "parity_missing_row" && d.Identifier == "GetWorkspaceStatus");
++        EvaluateParityCompleteness(operations, [create, stale]).ShouldContain(d => d.Category == "parity_stale_row" && d.Identifier == "RemovedOperation");
++        EvaluateParityCompleteness(operations, [create, create]).ShouldContain(d => d.Category == "parity_duplicate_row" && d.Identifier == "CreateFolder");
++        EvaluateDuplicateOpenApiOperationIds(["CreateFolder", "CreateFolder"]).ShouldContain(d => d.Category == "openapi_duplicate_operation_id");
++    }
++
++    private static GateDiagnostic[] EvaluateExitCriteriaRows(IEnumerable<YamlMappingNode> rows)
++    {
++        List<GateDiagnostic> diagnostics = [];
++        Dictionary<string, int> counts = rows
++            .Select(row => RequiredScalar(row, "criterion_id"))
++            .GroupBy(id => id, StringComparer.Ordinal)
++            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
++
++        foreach (string criterion in Criteria)
++        {
++            if (!counts.ContainsKey(criterion))
++            {
++                diagnostics.Add(new("exit-criteria", "exit_criteria_missing", criterion, "docs/exit-criteria/c0-c13-governance-evidence.yaml"));
++            }
++            else if (counts[criterion] > 1)
++            {
++                diagnostics.Add(new("exit-criteria", "exit_criteria_duplicate", criterion, "docs/exit-criteria/c0-c13-governance-evidence.yaml"));
++            }
++        }
++
++        foreach (YamlMappingNode row in rows)
++        {
++            string criterion = RequiredScalar(row, "criterion_id");
++            string owner = RequiredScalar(row, "owner");
++            string status = RequiredScalar(row, "status");
++            string artifact = RequiredScalar(row, "artifact_path");
++            string command = RequiredScalar(row, "verification_command");
++            string summary = RequiredScalar(row, "result_summary");
++
++            if (new[] { owner, status, command, summary }.Any(IsInvalidPlaceholder)
++                || !status.Equals("approved", StringComparison.Ordinal)
++                    && !status.Equals("reference_pending", StringComparison.Ordinal))
++            {
++                diagnostics.Add(new("exit-criteria", "exit_criteria_malformed", criterion, "docs/exit-criteria/c0-c13-governance-evidence.yaml"));
++            }
++
++            if (!IsRepositoryRelativePath(artifact) || !PathExists(artifact))
++            {
++                diagnostics.Add(new("exit-criteria", "artifact_path_invalid", criterion, artifact));
++            }
++
++            if (status == "reference_pending" && RequiredSequence(row, "open_policy_placeholders").Children.Count == 0)
++            {
++                diagnostics.Add(new("exit-criteria", "exit_criteria_malformed", criterion, "docs/exit-criteria/c0-c13-governance-evidence.yaml"));
++            }
++        }
++
++        return diagnostics.ToArray();
++    }
++
++    private static GateDiagnostic[] EvaluateSampleConsumption(IEnumerable<YamlMappingNode> rows, string[] sampleIds)
++    {
++        List<GateDiagnostic> diagnostics = [];
++        HashSet<string> corpus = sampleIds.ToHashSet(StringComparer.Ordinal);
++        Dictionary<string, int> counts = rows
++            .Select(row => RequiredScalar(row, "sample_id"))
++            .GroupBy(id => id, StringComparer.Ordinal)
++            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
++
++        foreach (string id in corpus)
++        {
++            if (!counts.ContainsKey(id))
++            {
++                diagnostics.Add(new("idempotency-encoding", "idempotency_sample_unmapped", id, "tests/fixtures/idempotency-encoding-corpus-consumption.yaml"));
++            }
++        }
++
++        foreach (KeyValuePair<string, int> entry in counts)
++        {
++            if (!corpus.Contains(entry.Key))
++            {
++                diagnostics.Add(new("idempotency-encoding", "idempotency_sample_stale", entry.Key, "tests/fixtures/idempotency-encoding-corpus-consumption.yaml"));
++            }
++            else if (entry.Value > 1)
++            {
++                diagnostics.Add(new("idempotency-encoding", "idempotency_sample_duplicate", entry.Key, "tests/fixtures/idempotency-encoding-corpus-consumption.yaml"));
++            }
++        }
++
++        return diagnostics.ToArray();
++    }
++
++    private static GateDiagnostic[] EvaluateParityCompleteness(string[] operationIds, IEnumerable<YamlMappingNode> rows)
++    {
++        List<GateDiagnostic> diagnostics = [];
++        HashSet<string> operations = operationIds.ToHashSet(StringComparer.Ordinal);
++        Dictionary<string, int> rowCounts = rows
++            .Select(row => RequiredScalar(row, "operation_id"))
++            .GroupBy(id => id, StringComparer.Ordinal)
++            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
++
++        foreach (string operation in operations)
++        {
++            if (!rowCounts.ContainsKey(operation))
++            {
++                diagnostics.Add(new("parity-completeness", "parity_missing_row", operation, "tests/fixtures/parity-contract.yaml"));
++            }
++        }
++
++        foreach (KeyValuePair<string, int> row in rowCounts)
++        {
++            if (!operations.Contains(row.Key))
++            {
++                diagnostics.Add(new("parity-completeness", "parity_stale_row", row.Key, "tests/fixtures/parity-contract.yaml"));
++            }
++            else if (row.Value > 1)
++            {
++                diagnostics.Add(new("parity-completeness", "parity_duplicate_row", row.Key, "tests/fixtures/parity-contract.yaml"));
++            }
++        }
++
++        diagnostics.AddRange(EvaluateDuplicateOpenApiOperationIds(operationIds));
++        return diagnostics.ToArray();
++    }
++
++    private static GateDiagnostic[] EvaluateDuplicateOpenApiOperationIds(string[] operationIds) =>
++        operationIds
++            .GroupBy(id => id, StringComparer.Ordinal)
++            .Where(group => group.Count() > 1)
++            .Select(group => new GateDiagnostic("parity-completeness", "openapi_duplicate_operation_id", group.Key, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"))
++            .ToArray();
++
++    private static GateDiagnostic? EvaluateCacheKeyCandidate(CacheKeyCandidate candidate)
++    {
++        if (candidate.HasTenantScope || !string.Equals(candidate.DataScope, "tenant-data", StringComparison.Ordinal))
++        {
++            return null;
++        }
++
++        if (!string.IsNullOrWhiteSpace(candidate.ExceptionRuleId))
++        {
++            return null;
++        }
++
++        return new("cache-key-lint", "cache_key_unscoped", $"line-{candidate.Line}", candidate.RepositoryPath);
++    }
++
++    private static GateDiagnostic[] ScanRepositoryForTenantCacheKeyCandidates()
++    {
++        string[] includeRoots = ["src", "tests", ".github", "docs"];
++        string[] patterns = ["IMemoryCache", "IDistributedCache", "GetStateAsync", "SaveStateAsync", "StringSetAsync"];
++        List<GateDiagnostic> diagnostics = [];
++
++        foreach (string root in includeRoots)
++        {
++            string absoluteRoot = Path.Combine(RepositoryRoot, root);
++            if (!Directory.Exists(absoluteRoot))
++            {
++                continue;
++            }
++
++            foreach (string file in Directory.EnumerateFiles(absoluteRoot, "*.*", SearchOption.AllDirectories).Where(IsTextFile).Where(path => !IsGeneratedOrBuildOutput(path)))
++            {
++                string text = File.ReadAllText(file);
++                if (!patterns.Any(pattern => text.Contains(pattern, StringComparison.Ordinal)))
++                {
++                    continue;
++                }
++
++                string repositoryPath = ToRepositoryPath(file);
++                if (!text.Contains("tenant", StringComparison.OrdinalIgnoreCase)
++                    && !text.Contains("CACHE-NON-TENANT", StringComparison.Ordinal))
++                {
++                    diagnostics.Add(new("cache-key-lint", "cache_key_unscoped", "candidate", repositoryPath));
++                }
++            }
++        }
++
++        return diagnostics.ToArray();
++    }
++
++    private static bool IsTextFile(string path)
++    {
++        string extension = Path.GetExtension(path).ToLowerInvariant();
++        return extension is ".cs" or ".csproj" or ".props" or ".targets" or ".json" or ".yaml" or ".yml" or ".md" or ".ps1";
++    }
++
++    private static bool IsGeneratedOrBuildOutput(string path)
++    {
++        string normalized = path.Replace('\\', '/');
++        return normalized.Contains("/bin/", StringComparison.Ordinal)
++            || normalized.Contains("/obj/", StringComparison.Ordinal)
++            || normalized.Contains("/Generated/", StringComparison.Ordinal)
++            || normalized.Contains("/quarantine/", StringComparison.Ordinal);
++    }
++
++    private static string[] ReadCorpusSampleIds()
++    {
++        using JsonDocument corpus = JsonDocument.Parse(File.ReadAllText(CorpusPath));
++        return RequiredArray(corpus.RootElement, "cases")
++            .EnumerateArray()
++            .Select(item => RequiredString(item, "id"))
++            .Order(StringComparer.Ordinal)
++            .ToArray();
++    }
++
++    private static string[] LoadOpenApiOperationIds(string path)
++    {
++        YamlMappingNode root = LoadYamlMapping(path);
++        List<string> operations = [];
++        foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
++        {
++            YamlMappingNode pathItem = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
++            foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
++            {
++                string method = RequiredScalar(methodEntry.Key, "method").ToLowerInvariant();
++                if (method is "get" or "post" or "put" or "patch" or "delete")
++                {
++                    operations.Add(RequiredScalar(methodEntry.Value.ShouldBeOfType<YamlMappingNode>(), "operationId"));
++                }
++            }
++        }
++
++        return operations.Order(StringComparer.Ordinal).ToArray();
++    }
++
++    private static YamlMappingNode[] LoadParityRows(string path)
++    {
++        using StreamReader reader = File.OpenText(path);
++        YamlStream yaml = new();
++        yaml.Load(reader);
++        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlSequenceNode>().Children.Cast<YamlMappingNode>().ToArray();
++    }
++
++    private static YamlMappingNode[] LoadCriteriaRows(string path) =>
++        RequiredSequence(LoadYamlMapping(path), "criteria").Children.Cast<YamlMappingNode>().ToArray();
++
++    private static YamlMappingNode SyntheticParityRow(string operationId)
++    {
++        YamlMappingNode row = new(
++            new YamlScalarNode("operation_id"),
++            new YamlScalarNode(operationId),
++            new YamlScalarNode("operation_family"),
++            new YamlScalarNode("mutating_command"),
++            new YamlScalarNode("read_consistency_class"),
++            new YamlScalarNode("not_applicable"),
++            new YamlScalarNode("adapter_expectations"),
++            new YamlSequenceNode(new YamlScalarNode("rest")),
++            new YamlScalarNode("transport_parity"),
++            new YamlMappingNode(
++                new YamlScalarNode("idempotency_key_rule"),
++                new YamlScalarNode("required_for_mutating_command"),
++                new YamlScalarNode("error_code_set"),
++                new YamlSequenceNode(new YamlScalarNode("validation_error"))),
++            new YamlScalarNode("behavioral_parity"),
++            new YamlMappingNode(new YamlScalarNode("mcp_failure_kind"), new YamlScalarNode("none")));
++        return row;
++    }
++
++    private static YamlMappingNode CloneRow(YamlMappingNode row)
++    {
++        YamlStream stream = new(new YamlDocument(row));
++        using StringWriter writer = new();
++        stream.Save(writer, false);
++        using StringReader reader = new(writer.ToString());
++        YamlStream copy = new();
++        copy.Load(reader);
++        return copy.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
++    }
++
++    private static void SetScalar(YamlMappingNode row, string key, string value) =>
++        row.Children[new YamlScalarNode(key)] = new YamlScalarNode(value);
++
++    private static bool IsInvalidPlaceholder(string value) =>
++        string.IsNullOrWhiteSpace(value) || string.Equals(value, "PLACEHOLDER", StringComparison.OrdinalIgnoreCase);
++
++    private static bool PathExists(string repositoryPath) =>
++        File.Exists(Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath)))
++        || Directory.Exists(Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath)));
++
++    private static bool IsRepositoryRelativePath(string repositoryPath) =>
++        !string.IsNullOrWhiteSpace(repositoryPath)
++        && !Path.IsPathFullyQualified(repositoryPath)
++        && !repositoryPath.Contains('\\', StringComparison.Ordinal)
++        && !repositoryPath.StartsWith("../", StringComparison.Ordinal)
++        && !repositoryPath.Split('/').Contains("..", StringComparer.Ordinal);
++
++    private static void AssertMetadataOnly(string value)
++    {
++        string[] forbidden =
++        [
++            "diff --git",
++            "provider_token",
++            "credential_material",
++            "raw_payload",
++            "file_content",
++            "cache-key-value=",
++            "https://github.com/",
++            "https://api.github.com",
++            "https://prod.",
++            RepositoryRoot,
++            RepositoryRoot.Replace("\\", "/", StringComparison.Ordinal),
++            RepositoryRoot.Replace("\\", "\\\\", StringComparison.Ordinal),
++            "C:\\",
++            "D:\\",
++            "/home/",
++            "/Users/",
++        ];
++
++        foreach (string forbiddenValue in forbidden)
++        {
++            value.ShouldNotContain(forbiddenValue, Case.Insensitive);
++        }
++    }
++
++    private static YamlMappingNode LoadYamlMapping(string path)
++    {
++        using StreamReader reader = File.OpenText(path);
++        YamlStream yaml = new();
++        yaml.Load(reader);
++        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
++    }
++
++    private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
++    {
++        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
++        return value.ShouldBeOfType<YamlMappingNode>();
++    }
++
++    private static YamlSequenceNode RequiredSequence(YamlMappingNode mapping, string key)
++    {
++        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
++        return value.ShouldBeOfType<YamlSequenceNode>();
++    }
++
++    private static JsonElement RequiredArray(JsonElement element, string property)
++    {
++        element.TryGetProperty(property, out JsonElement value).ShouldBeTrue(property);
++        value.ValueKind.ShouldBe(JsonValueKind.Array, property);
++        return value;
++    }
++
++    private static string RequiredString(JsonElement element, string property)
++    {
++        element.TryGetProperty(property, out JsonElement value).ShouldBeTrue(property);
++        value.ValueKind.ShouldBe(JsonValueKind.String, property);
++        return value.GetString() ?? string.Empty;
++    }
++
++    private static string RequiredScalar(YamlMappingNode mapping, string key)
++    {
++        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue(key);
++        return RequiredScalar(value, key);
++    }
++
++    private static string RequiredScalar(YamlNode node, string name)
++    {
++        string? value = node.ShouldBeOfType<YamlScalarNode>().Value;
++        value.ShouldNotBeNullOrWhiteSpace(name);
++        return value!;
++    }
++
++    private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);
++
++    private static string ToRepositoryPath(string path) =>
++        Path.GetRelativePath(RepositoryRoot, path).Replace("\\", "/", StringComparison.Ordinal);
++
++    private static string FindRepositoryRoot()
++    {
++        foreach (string seed in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
++        {
++            DirectoryInfo? current = new(seed);
++            while (current is not null)
++            {
++                if (File.Exists(Path.Combine(current.FullName, "Hexalith.Folders.slnx")))
++                {
++                    return current.FullName;
++                }
++
++                current = current.Parent;
++            }
++        }
++
++        throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: repository root was not found.");
++    }
++
++    private sealed record CacheKeyCandidate(string RepositoryPath, int Line, string DataScope, bool HasTenantScope, string? ExceptionRuleId);
++
++    private sealed record GateDiagnostic(string Gate, string Category, string Identifier, string RepositoryPath)
++    {
++        public override string ToString() =>
++            $"{Gate}:{Category}: id={Identifier}; path={RepositoryPath}";
++    }
++}
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+index fc876f4..ab6467c 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
++++ b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+@@ -34,7 +34,8 @@ public sealed class ScaffoldContractTests
+         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+-        "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj"
++        "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
++        "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj"
+     ];
+ 
+     private static readonly string[] RequiredCanonicalSubmodules =
+@@ -119,6 +120,7 @@ public sealed class ScaffoldContractTests
+         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
++        AssertReferences(references, "Hexalith.Folders.PatternExamples", []);
+     }
+ 
+     [Fact]
+diff --git a/tests/README.md b/tests/README.md
+index 266c0d1..5968690 100644
+--- a/tests/README.md
++++ b/tests/README.md
+@@ -101,6 +101,14 @@ Run the focused safety invariant gate locally:
+ 
+ This gate validates the synthetic sentinel corpus, channel inventory, quarantined negative controls, OpenAPI and Problem Details examples, generated artifact leakage scope, safe diagnostics, and CI wiring without requiring sidecars, provider credentials, production secrets, network calls, or nested submodule initialization.
+ 
++Run the focused governance and completeness gate locally:
++
++```powershell
++.\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
++```
++
++This gate validates C0-C13 evidence presence, idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exception metadata, parity completeness, and metadata-only diagnostics through the same command used by CI.
++
+ ## Knowledge References
+ 
+ - BMAD TEA fragments: fixture architecture, data factories, test levels, test quality, Playwright configuration, API request, polling, logging, and contract testing.
+diff --git a/tests/fixtures/cache-key-exceptions.yaml b/tests/fixtures/cache-key-exceptions.yaml
+new file mode 100644
+index 0000000..140cf72
+--- /dev/null
++++ b/tests/fixtures/cache-key-exceptions.yaml
+@@ -0,0 +1,21 @@
++schema_version: '1.0.0'
++gate: tenant-prefixed-cache-key-lint
++exceptions:
++  - rule_id: CACHE-NON-TENANT-NUGET
++    owner: Build Infrastructure
++    reason: NuGet package restoration cache contains public package artifacts and no tenant data.
++    scope: workflow-tool-cache
++    review_status: approved
++    evidence_link: docs/contract/governance-and-completeness-ci-gates.md
++  - rule_id: CACHE-NON-TENANT-GENERATED-OUTPUT
++    owner: Contract Spine
++    reason: Generated-output cache classification is limited to deterministic Contract Spine artifacts.
++    scope: generated-artifact-cache
++    review_status: approved
++    evidence_link: docs/contract/governance-and-completeness-ci-gates.md
++  - rule_id: CACHE-SYNTHETIC-TEST-EXAMPLE
++    owner: Governance Gates
++    reason: Synthetic lint controls are metadata-only examples and are not durable tenant data.
++    scope: synthetic-test-fixture
++    review_status: approved
++    evidence_link: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+diff --git a/tests/fixtures/idempotency-encoding-corpus-consumption.yaml b/tests/fixtures/idempotency-encoding-corpus-consumption.yaml
+new file mode 100644
+index 0000000..bee6b49
+--- /dev/null
++++ b/tests/fixtures/idempotency-encoding-corpus-consumption.yaml
+@@ -0,0 +1,57 @@
++schema_version: '1.0.0'
++gate: idempotency-encoding-coverage
++source_corpus: tests/fixtures/idempotency-encoding-corpus.json
++diagnostic_policy: metadata-only
++samples:
++  - sample_id: nfc-composed-e-acute
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: equivalent-after-generated-normalization-for-declared-normalization-insensitive-field
++  - sample_id: nfd-decomposed-e-acute
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: equivalent-after-generated-normalization-for-declared-normalization-insensitive-field
++  - sample_id: nfkc-fullwidth-a
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: equivalent-only-when-field-declares-compatibility-normalization
++  - sample_id: nfkd-roman-numeral-four
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: equivalent-only-when-field-declares-compatibility-normalization
++  - sample_id: zero-width-joiner
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: non-equivalent-unless-generated-helper-declares-invisible-character-normalization
++  - sample_id: case-folding-folder-name
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: non-equivalent-by-default-for-casing-sensitive-string-field
++  - sample_id: ulid-casing
++    coverage_kind: generated-helper-contract-test
++    consumer_path: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
++    equivalence_classification: equivalent-only-for-fields-declared-ulid-typed
++  - sample_id: lexicographic-field-order
++    coverage_kind: generated-helper-contract-test
++    consumer_path: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
++    equivalence_classification: equivalent-after-lexicographic-field-ordering
++  - sample_id: whitespace-around-metadata
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: non-equivalent-unless-schema-declares-trimmed-field
++  - sample_id: null-versus-omitted-parent
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: non-equivalent-unless-schema-declares-default-equivalence
++  - sample_id: percent-encoded-path-separator
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: equivalent-only-after-single-safe-decode-and-path-policy-validation
++  - sample_id: malformed-idempotency-key-control-character
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: parser-rejected
++  - sample_id: duplicate-json-key-operation-id
++    coverage_kind: parser-policy-test
++    consumer_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
++    equivalence_classification: parser-rejected
+diff --git a/tests/fixtures/pattern-example-manifest.yaml b/tests/fixtures/pattern-example-manifest.yaml
+new file mode 100644
+index 0000000..3b1fb77
+--- /dev/null
++++ b/tests/fixtures/pattern-example-manifest.yaml
+@@ -0,0 +1,24 @@
++schema_version: '1.0.0'
++gate: pattern-example-compilation
++marker_format: '<!-- hexalith-example: compile-csharp -->'
++included_document_globs:
++  - _bmad-output/planning-artifacts/architecture.md
++  - docs/contract/*.md
++excluded_document_globs:
++  - docs/_site/**
++  - src/**/Generated/**
++target_framework: net10.0
++compilable_examples_project: tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj
++examples:
++  - example_id: governance-completeness-criterion-record
++    source_path: tests/tools/pattern-examples/GovernanceCompletenessExample.cs
++    classification: compilable-csharp
++    marker: '<!-- hexalith-example: compile-csharp -->'
++    owner: Governance Gates
++    synthetic_data_only: true
++  - example_id: workflow-yaml-documentation
++    source_path: docs/contract/governance-and-completeness-ci-gates.md
++    classification: documentation-only
++    marker: '<!-- hexalith-example: documentation-only -->'
++    owner: Governance Gates
++    synthetic_data_only: true
+diff --git a/tests/tools/pattern-examples/GovernanceCompletenessExample.cs b/tests/tools/pattern-examples/GovernanceCompletenessExample.cs
+new file mode 100644
+index 0000000..7831924
+--- /dev/null
++++ b/tests/tools/pattern-examples/GovernanceCompletenessExample.cs
+@@ -0,0 +1,13 @@
++namespace Hexalith.Folders.PatternExamples;
++
++public sealed record GovernanceCompletenessExample(
++    string CriterionId,
++    string Owner,
++    string Status,
++    string ArtifactPath)
++{
++    public bool IsBoundedReferencePending =>
++        Status == "reference_pending"
++        && !string.IsNullOrWhiteSpace(Owner)
++        && !string.IsNullOrWhiteSpace(ArtifactPath);
++}
+diff --git a/tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj b/tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj
+new file mode 100644
+index 0000000..8a9b105
+--- /dev/null
++++ b/tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj
+@@ -0,0 +1,5 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup>
++    <IsPackable>false</IsPackable>
++  </PropertyGroup>
++</Project>
+diff --git a/tests/tools/run-governance-completeness-gates.ps1 b/tests/tools/run-governance-completeness-gates.ps1
+new file mode 100644
+index 0000000..5e2146f
+--- /dev/null
++++ b/tests/tools/run-governance-completeness-gates.ps1
+@@ -0,0 +1,68 @@
++param(
++    [Alias('NoRestore')]
++    [switch]$SkipRestoreBuild
++)
++
++Set-StrictMode -Version Latest
++$ErrorActionPreference = 'Stop'
++
++if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
++    Write-Error 'GOVERNANCE-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the governance completeness gate.'
++    exit 1
++}
++
++$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
++$toolsParent = Join-Path $scriptRoot '..'
++$repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
++$reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/governance-completeness'
++$reportPath = Join-Path $reportDirectory 'latest.json'
++$pushed = $false
++
++try {
++    Push-Location $repositoryRoot
++    $pushed = $true
++
++    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
++    [ordered]@{
++        gate = 'governance-completeness'
++        status = 'discovered'
++        canonical_inputs = @(
++            'docs/exit-criteria/c0-c13-governance-evidence.yaml',
++            'tests/fixtures/idempotency-encoding-corpus.json',
++            'tests/fixtures/idempotency-encoding-corpus-consumption.yaml',
++            'tests/fixtures/pattern-example-manifest.yaml',
++            'tests/fixtures/cache-key-exceptions.yaml',
++            'tests/fixtures/parity-contract.yaml',
++            'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml'
++        )
++        report_path = '_bmad-output/gates/governance-completeness/latest.json'
++        diagnostic_policy = 'metadata-only'
++    } | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding utf8
++
++    if (-not $SkipRestoreBuild) {
++        dotnet restore Hexalith.Folders.slnx
++        if ($LASTEXITCODE -ne 0) {
++            exit $LASTEXITCODE
++        }
++
++        dotnet build Hexalith.Folders.slnx --no-restore
++        if ($LASTEXITCODE -ne 0) {
++            exit $LASTEXITCODE
++        }
++    }
++
++    dotnet build tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj --no-restore
++    if ($LASTEXITCODE -ne 0) {
++        exit $LASTEXITCODE
++    }
++
++    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests
++    if ($LASTEXITCODE -ne 0) {
++        exit $LASTEXITCODE
++    }
++}
++finally {
++    if ($pushed) {
++        Pop-Location
++    }
++}

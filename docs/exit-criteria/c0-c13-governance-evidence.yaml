@@ -41,6 +41,7 @@ criteria:
       - id: C1-capacity-calibration
         owner: Release Readiness
         reason: Capacity thresholds are calibrated after lifecycle implementation exists.
+        verification_gap: Hardware profile pin and target throughput assertions are not yet emitted by tests/load harness.
         consuming_story: 7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets
   - criterion_id: C2
     title: Projection freshness target evidence
@@ -53,6 +54,7 @@ criteria:
       - id: C2-projection-freshness
         owner: Release Readiness
         reason: Projection runtime and freshness metrics are implemented after aggregate and worker stories.
+        verification_gap: OpenTelemetry projection-lag metric emission and SLA threshold assertions are absent.
         consuming_story: 7-12-wire-production-observability-and-alerts
   - criterion_id: C3
     title: Retention policy evidence
@@ -65,6 +67,7 @@ criteria:
       - id: C3-legal-pm-approval
         owner: Legal + PM
         reason: Retention durations must be approved before production enforcement.
+        verification_gap: Recorded approval signatures from Legal and PM on per-data-class retention values are missing.
         consuming_story: 7-11-enforce-c3-retention-and-tenant-deletion-behavior
   - criterion_id: C4
     title: Input limit evidence
@@ -77,6 +80,7 @@ criteria:
       - id: C4-pm-approval
         owner: PM
         reason: MVP input bounds must be approved before production contract enforcement.
+        verification_gap: PM sign-off on OpenAPI maxItems, maxLength, maxBytes, and maxResultCount values is not recorded.
         consuming_story: 4-8-query-file-context-with-policy-boundaries
   - criterion_id: C5
     title: Release capacity smoke evidence
@@ -89,6 +93,7 @@ criteria:
       - id: C5-capacity-smoke
         owner: Release Readiness
         reason: Smoke targets require implemented lifecycle endpoints and load fixtures.
+        verification_gap: Capacity smoke CI job and target threshold assertions are not yet wired.
         consuming_story: 7-7-add-capacity-smoke-ci-gate
   - criterion_id: C6
     title: Workspace transition matrix evidence
@@ -109,6 +114,7 @@ criteria:
       - id: C7-lock-revalidation
         owner: Architecture
         reason: Lock implementation and revocation tests do not exist until workspace lifecycle stories.
+        verification_gap: Lock revalidation budget tests and mid-task revocation coverage are absent.
         consuming_story: 4-3-acquire-task-scoped-workspace-lock
   - criterion_id: C8
     title: Context-query authorization evidence
@@ -153,6 +159,7 @@ criteria:
       - id: C12-provider-live-drift
         owner: Provider Readiness
         reason: Live provider drift checks require provider adapters and credentials not present in this story.
+        verification_gap: Scheduled provider drift workflow and provider adapter contract tests are not yet implemented.
         consuming_story: 7-8-wire-scheduled-drift-and-policy-conformance-workflows
   - criterion_id: C13
     title: Cross-surface parity oracle evidence

@@ -1,3 +1,5 @@
+#Requires -Version 7
+
 param(
     [Alias('NoRestore')]
     [switch]$SkipRestoreBuild
@@ -18,14 +20,16 @@ $reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/governance-comp
 $reportPath = Join-Path $reportDirectory 'latest.json'
 $pushed = $false
 
-try {
-    Push-Location $repositoryRoot
-    $pushed = $true
+function Write-GovernanceReport {
+    param(
+        [Parameter(Mandatory = $true)][string]$Status,
+        [int]$ExitCode = 0
+    )
 
-    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
     [ordered]@{
         gate = 'governance-completeness'
-        status = 'discovered'
+        status = $Status
+        exit_code = $ExitCode
         canonical_inputs = @(
             'docs/exit-criteria/c0-c13-governance-evidence.yaml',
             'tests/fixtures/idempotency-encoding-corpus.json',
@@ -37,29 +41,43 @@ try {
         )
         report_path = '_bmad-output/gates/governance-completeness/latest.json'
         diagnostic_policy = 'metadata-only'
-    } | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding utf8
+    } | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding utf8NoBOM
+}
+
+try {
+    Push-Location $repositoryRoot
+    $pushed = $true
+
+    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
+    Write-GovernanceReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
         dotnet restore Hexalith.Folders.slnx
         if ($LASTEXITCODE -ne 0) {
+            Write-GovernanceReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
 
         dotnet build Hexalith.Folders.slnx --no-restore
         if ($LASTEXITCODE -ne 0) {
+            Write-GovernanceReport -Status 'failed' -ExitCode $LASTEXITCODE
+            exit $LASTEXITCODE
+        }
+
+        dotnet build tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj --no-restore
+        if ($LASTEXITCODE -ne 0) {
+            Write-GovernanceReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
     }
 
-    dotnet build tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj --no-restore
+    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests
     if ($LASTEXITCODE -ne 0) {
+        Write-GovernanceReport -Status 'failed' -ExitCode $LASTEXITCODE
         exit $LASTEXITCODE
     }
 
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests
-    if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
-    }
+    Write-GovernanceReport -Status 'passed'
 }
 finally {
     if ($pushed) {

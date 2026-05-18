@@ -15,6 +15,8 @@ The command must be run from the repository root or from the script location. It
 
 The `contract-spine-gates` workflow invokes the same command after restore and build:
 
+<!-- hexalith-example: documentation-only -->
+
 ```powershell
 .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
 ```

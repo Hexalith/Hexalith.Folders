@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Shouldly;
 using Xunit;
 using YamlDotNet.RepresentationModel;
@@ -20,6 +22,16 @@ public sealed class GovernanceCompletenessGateTests
     private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-governance-completeness-gates.ps1");
     private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "governance-and-completeness-ci-gates.md");
     private static readonly string SolutionPath = Path.Combine(RepositoryRoot, "Hexalith.Folders.slnx");
+
+    private static readonly Regex MarkerPattern = new(
+        @"^<!-- hexalith-example: [a-z][a-z0-9-]* -->$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly Regex AbsoluteWindowsDrivePathPattern = new(
+        @"[A-Za-z]:\\",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly Lazy<CorpusSchemaConstraints> CorpusConstraints = new(LoadCorpusSchemaConstraints);
 
     private static readonly string[] Criteria =
     [
@@ -58,6 +70,8 @@ public sealed class GovernanceCompletenessGateTests
         script.ShouldContain("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
         script.ShouldContain("_bmad-output/gates/governance-completeness/latest.json");
         script.ShouldContain("$LASTEXITCODE");
+        script.ShouldContain("#Requires -Version 7");
+        script.ShouldContain("utf8NoBOM");
         script.ShouldNotContain("--recursive", Case.Insensitive);
 
         documentation.ShouldContain(".\\tests\\tools\\run-governance-completeness-gates.ps1");
@@ -80,6 +94,7 @@ public sealed class GovernanceCompletenessGateTests
 
         foreach (YamlMappingNode row in rows)
         {
+            string criterion = RequiredScalar(row, "criterion_id");
             string status = RequiredScalar(row, "status");
             string artifact = RequiredScalar(row, "artifact_path");
             string command = RequiredScalar(row, "verification_command");
@@ -94,7 +109,20 @@ public sealed class GovernanceCompletenessGateTests
 
             if (status == "reference_pending")
             {
-                RequiredSequence(row, "open_policy_placeholders").Children.Count.ShouldBeGreaterThan(0, RequiredScalar(row, "criterion_id"));
+                YamlMappingNode[] placeholders = RequiredSequence(row, "open_policy_placeholders")
+                    .Children.Cast<YamlMappingNode>()
+                    .ToArray();
+                placeholders.Length.ShouldBeGreaterThan(0, criterion);
+
+                foreach (YamlMappingNode placeholder in placeholders)
+                {
+                    RequiredScalar(placeholder, "id").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "owner").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "reason").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "verification_gap").ShouldNotBeNullOrWhiteSpace();
+                    RequiredScalar(placeholder, "consuming_story").ShouldNotBeNullOrWhiteSpace();
+                    AssertMetadataOnly(RequiredScalar(placeholder, "verification_gap"));
+                }
             }
         }
     }
@@ -103,15 +131,16 @@ public sealed class GovernanceCompletenessGateTests
     public void ExitCriteriaNegativeControlsFailClosedWithBoundedDiagnostics()
     {
         YamlMappingNode[] rows = LoadCriteriaRows(EvidencePath);
-        List<YamlMappingNode> missing = rows.Where(row => RequiredScalar(row, "criterion_id") != "C13").ToList();
-        List<YamlMappingNode> duplicate = rows.Concat([rows[0]]).ToList();
+        YamlMappingNode[] missing = rows.Where(row => RequiredScalar(row, "criterion_id") != "C13").ToArray();
+        string clonedCriterionId = RequiredScalar(rows[0], "criterion_id");
+        YamlMappingNode[] duplicate = rows.Concat([CloneRow(rows[0])]).ToArray();
         YamlMappingNode invalidPlaceholder = CloneRow(rows[0]);
         SetScalar(invalidPlaceholder, "owner", "PLACEHOLDER");
         YamlMappingNode invalidPath = CloneRow(rows[1]);
         SetScalar(invalidPath, "artifact_path", "D:/not/repository/local.md");
 
         EvaluateExitCriteriaRows(missing).ShouldContain(d => d.Category == "exit_criteria_missing" && d.Identifier == "C13");
-        EvaluateExitCriteriaRows(duplicate).ShouldContain(d => d.Category == "exit_criteria_duplicate" && d.Identifier == "C0");
+        EvaluateExitCriteriaRows(duplicate).ShouldContain(d => d.Category == "exit_criteria_duplicate" && d.Identifier == clonedCriterionId);
         EvaluateExitCriteriaRows([invalidPlaceholder]).ShouldContain(d => d.Category == "exit_criteria_malformed");
         EvaluateExitCriteriaRows([invalidPath]).ShouldContain(d => d.Category == "artifact_path_invalid");
 
@@ -126,27 +155,20 @@ public sealed class GovernanceCompletenessGateTests
     {
         using JsonDocument corpus = JsonDocument.Parse(File.ReadAllText(CorpusPath));
         using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(CorpusSchemaPath));
-        string[] requiredCaseFields = RequiredArray(schema.RootElement.GetProperty("$defs").GetProperty("case"), "required").SelectText();
 
-        JsonElement[] cases = RequiredArray(corpus.RootElement, "cases").EnumerateArray().ToArray();
-        cases.ShouldNotBeEmpty();
-        foreach (JsonElement item in cases)
-        {
-            foreach (string requiredField in requiredCaseFields)
-            {
-                item.TryGetProperty(requiredField, out _).ShouldBeTrue(requiredField);
-            }
-        }
+        GateDiagnostic[] schemaDiagnostics = ValidateCorpusAgainstSchema(corpus, schema);
+        schemaDiagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, schemaDiagnostics.Select(d => d.ToString())));
 
-        YamlMappingNode[] consumption = RequiredSequence(LoadYamlMapping(CorpusConsumptionPath), "samples").Children.Cast<YamlMappingNode>().ToArray();
-        Dictionary<string, string> classifications = cases.ToDictionary(
+        Dictionary<string, string> classifications = corpus.RootElement.GetProperty("cases").EnumerateArray().ToDictionary(
             item => RequiredString(item, "id"),
             item => RequiredString(item, "equivalence_classification"),
             StringComparer.Ordinal);
 
-        consumption.Select(row => RequiredScalar(row, "sample_id")).Order(StringComparer.Ordinal).ToArray()
-            .ShouldBe(classifications.Keys.Order(StringComparer.Ordinal).ToArray());
-        consumption.Select(row => RequiredScalar(row, "sample_id")).Distinct(StringComparer.Ordinal).Count().ShouldBe(consumption.Length);
+        YamlMappingNode[] consumption = RequiredSequence(LoadYamlMapping(CorpusConsumptionPath), "samples").Children.Cast<YamlMappingNode>().ToArray();
+        string[] corpusSampleIds = classifications.Keys.Order(StringComparer.Ordinal).ToArray();
+
+        GateDiagnostic[] consumptionDiagnostics = EvaluateSampleConsumption(consumption, corpusSampleIds);
+        consumptionDiagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, consumptionDiagnostics.Select(d => d.ToString())));
 
         foreach (YamlMappingNode row in consumption)
         {
@@ -163,12 +185,25 @@ public sealed class GovernanceCompletenessGateTests
         YamlMappingNode[] rows = RequiredSequence(LoadYamlMapping(CorpusConsumptionPath), "samples").Children.Cast<YamlMappingNode>().ToArray();
         string[] sampleIds = ReadCorpusSampleIds();
 
-        EvaluateSampleConsumption(rows.Where(row => RequiredScalar(row, "sample_id") != sampleIds[0]), sampleIds).ShouldContain(d => d.Category == "idempotency_sample_unmapped");
-        EvaluateSampleConsumption(rows.Concat([rows[0]]), sampleIds).ShouldContain(d => d.Category == "idempotency_sample_duplicate");
+        GateDiagnostic[] missingDiagnostics = EvaluateSampleConsumption(rows.Where(row => RequiredScalar(row, "sample_id") != sampleIds[0]).ToArray(), sampleIds);
+        missingDiagnostics.ShouldContain(d => d.Category == "idempotency_sample_unmapped");
+
+        GateDiagnostic[] duplicateDiagnostics = EvaluateSampleConsumption(rows.Concat([CloneRow(rows[0])]).ToArray(), sampleIds);
+        duplicateDiagnostics.ShouldContain(d => d.Category == "idempotency_sample_duplicate");
 
         YamlMappingNode stale = CloneRow(rows[0]);
         SetScalar(stale, "sample_id", "deleted-synthetic-sample");
-        EvaluateSampleConsumption([stale], sampleIds).ShouldContain(d => d.Category == "idempotency_sample_stale");
+        GateDiagnostic[] staleDiagnostics = EvaluateSampleConsumption([stale], sampleIds);
+        staleDiagnostics.ShouldContain(d => d.Category == "idempotency_sample_stale");
+
+        GateDiagnostic[] staleAndDuplicateDiagnostics = EvaluateSampleConsumption([stale, CloneRow(stale)], sampleIds);
+        staleAndDuplicateDiagnostics.ShouldContain(d => d.Category == "idempotency_sample_stale" && d.Identifier == "deleted-synthetic-sample");
+        staleAndDuplicateDiagnostics.ShouldContain(d => d.Category == "idempotency_sample_duplicate" && d.Identifier == "deleted-synthetic-sample");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics.Concat(duplicateDiagnostics).Concat(staleDiagnostics).Concat(staleAndDuplicateDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
     }
 
     [Fact]
@@ -181,6 +216,7 @@ public sealed class GovernanceCompletenessGateTests
         project.ShouldBe("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
         PathExists(project).ShouldBeTrue(project);
         solution.ShouldContain(project);
+        RequiredScalar(manifest, "target_framework").ShouldBe(ReadRootTargetFramework());
 
         YamlMappingNode[] examples = RequiredSequence(manifest, "examples").Children.Cast<YamlMappingNode>().ToArray();
         examples.ShouldContain(row => RequiredScalar(row, "classification") == "compilable-csharp");
@@ -188,9 +224,18 @@ public sealed class GovernanceCompletenessGateTests
 
         foreach (YamlMappingNode example in examples)
         {
-            RequiredScalar(example, "marker").ShouldStartWith("<!-- hexalith-example:");
-            RequiredScalar(example, "synthetic_data_only").ShouldBe("true");
-            PathExists(RequiredScalar(example, "source_path")).ShouldBeTrue(RequiredScalar(example, "example_id"));
+            string marker = RequiredScalar(example, "marker");
+            MarkerPattern.IsMatch(marker).ShouldBeTrue(marker);
+            ParseRequiredBoolean(example, "synthetic_data_only").ShouldBeTrue(RequiredScalar(example, "example_id"));
+
+            string sourcePath = RequiredScalar(example, "source_path");
+            PathExists(sourcePath).ShouldBeTrue(RequiredScalar(example, "example_id"));
+
+            if (RequiredScalar(example, "classification") == "documentation-only")
+            {
+                string sourceText = File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(sourcePath)));
+                sourceText.Contains(marker, StringComparison.Ordinal).ShouldBeTrue($"{RequiredScalar(example, "example_id")} marker must appear in source doc");
+            }
         }
     }
 
@@ -199,18 +244,69 @@ public sealed class GovernanceCompletenessGateTests
     {
         YamlMappingNode[] exceptions = RequiredSequence(LoadYamlMapping(CacheKeyExceptionsPath), "exceptions").Children.Cast<YamlMappingNode>().ToArray();
         exceptions.ShouldNotBeEmpty();
+
+        DateOnly latestAllowedReviewDate = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(1);
+        DateOnly currentUtcDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
         foreach (YamlMappingNode exception in exceptions)
         {
-            RequiredScalar(exception, "rule_id").ShouldStartWith("CACHE-");
+            string ruleId = RequiredScalar(exception, "rule_id");
+            ruleId.ShouldStartWith("CACHE-");
             RequiredScalar(exception, "owner").ShouldNotBeNullOrWhiteSpace();
             RequiredScalar(exception, "reason").ShouldNotBeNullOrWhiteSpace();
             RequiredScalar(exception, "scope").ShouldNotBeNullOrWhiteSpace();
-            RequiredScalar(exception, "review_status").ShouldBeOneOf("approved", "expires_on");
+
+            string reviewStatus = RequiredScalar(exception, "review_status");
+            reviewStatus.ShouldBe("approved", ruleId);
+
+            DateOnly lastReviewedOn = ParseRequiredDate(exception, "last_reviewed_on");
+            lastReviewedOn.ShouldBeLessThan(latestAllowedReviewDate, ruleId);
+
+            if (exception.Children.TryGetValue(new YamlScalarNode("expiry_date"), out YamlNode? expiryNode))
+            {
+                if (expiryNode is not YamlScalarNode { Value: { Length: > 0 } } expiryScalar)
+                {
+                    throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: expiry-date-empty: {ruleId}");
+                }
+
+                DateOnly expiry = ParseDate(expiryScalar.Value!, "expiry_date");
+                expiry.ShouldBeGreaterThan(lastReviewedOn, ruleId);
+                expiry.ShouldBeGreaterThan(currentUtcDate, ruleId);
+            }
+
             PathExists(RequiredScalar(exception, "evidence_link")).ShouldBeTrue();
         }
 
+        EvaluateCacheKeyExceptionApprovalStates(exceptions).ShouldBeEmpty();
+
         GateDiagnostic[] diagnostics = ScanRepositoryForTenantCacheKeyCandidates();
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
         diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
+    }
+
+    [Fact]
+    public void CacheKeyExceptionApprovalStateFailsClosedForExpiredOrUnknownStatus()
+    {
+        YamlMappingNode expired = SyntheticCacheKeyException("CACHE-SYNTHETIC-EXPIRED", "expired");
+        YamlMappingNode pending = SyntheticCacheKeyException("CACHE-SYNTHETIC-PENDING", "pending-review");
+        YamlMappingNode approved = SyntheticCacheKeyException("CACHE-SYNTHETIC-APPROVED", "approved");
+
+        GateDiagnostic[] expiredDiagnostics = EvaluateCacheKeyExceptionApprovalStates([expired]);
+        expiredDiagnostics.ShouldContain(d => d.Category == "cache_key_exception_not_approved" && d.Identifier == "CACHE-SYNTHETIC-EXPIRED");
+
+        GateDiagnostic[] pendingDiagnostics = EvaluateCacheKeyExceptionApprovalStates([pending]);
+        pendingDiagnostics.ShouldContain(d => d.Category == "cache_key_exception_not_approved" && d.Identifier == "CACHE-SYNTHETIC-PENDING");
+
+        EvaluateCacheKeyExceptionApprovalStates([approved]).ShouldBeEmpty();
+
+        foreach (GateDiagnostic diagnostic in expiredDiagnostics.Concat(pendingDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
     }
 
     [Fact]
@@ -251,16 +347,33 @@ public sealed class GovernanceCompletenessGateTests
     public void ParityCompletenessNegativeControlsSeparateMissingStaleAndDuplicateRows()
     {
         string[] operations = ["CreateFolder", "GetWorkspaceStatus"];
-        YamlMappingNode create = SyntheticParityRow("CreateFolder");
-        YamlMappingNode stale = SyntheticParityRow("RemovedOperation");
+        YamlMappingNode createA = SyntheticParityRow("CreateFolder");
+        YamlMappingNode createB = SyntheticParityRow("CreateFolder");
+        YamlMappingNode staleA = SyntheticParityRow("RemovedOperation");
+        YamlMappingNode staleB = SyntheticParityRow("RemovedOperation");
 
-        EvaluateParityCompleteness(operations, [create]).ShouldContain(d => d.Category == "parity_missing_row" && d.Identifier == "GetWorkspaceStatus");
-        EvaluateParityCompleteness(operations, [create, stale]).ShouldContain(d => d.Category == "parity_stale_row" && d.Identifier == "RemovedOperation");
-        EvaluateParityCompleteness(operations, [create, create]).ShouldContain(d => d.Category == "parity_duplicate_row" && d.Identifier == "CreateFolder");
+        GateDiagnostic[] missingDiagnostics = EvaluateParityCompleteness(operations, [createA]);
+        missingDiagnostics.ShouldContain(d => d.Category == "parity_missing_row" && d.Identifier == "GetWorkspaceStatus");
+
+        GateDiagnostic[] staleDiagnostics = EvaluateParityCompleteness(operations, [createA, staleA]);
+        staleDiagnostics.ShouldContain(d => d.Category == "parity_stale_row" && d.Identifier == "RemovedOperation");
+
+        GateDiagnostic[] duplicateDiagnostics = EvaluateParityCompleteness(operations, [createA, createB]);
+        duplicateDiagnostics.ShouldContain(d => d.Category == "parity_duplicate_row" && d.Identifier == "CreateFolder");
+
+        GateDiagnostic[] staleAndDuplicateDiagnostics = EvaluateParityCompleteness(operations, [createA, staleA, staleB]);
+        staleAndDuplicateDiagnostics.ShouldContain(d => d.Category == "parity_stale_row" && d.Identifier == "RemovedOperation");
+        staleAndDuplicateDiagnostics.ShouldContain(d => d.Category == "parity_duplicate_row" && d.Identifier == "RemovedOperation");
+
         EvaluateDuplicateOpenApiOperationIds(["CreateFolder", "CreateFolder"]).ShouldContain(d => d.Category == "openapi_duplicate_operation_id");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics.Concat(staleDiagnostics).Concat(duplicateDiagnostics).Concat(staleAndDuplicateDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
     }
 
-    private static GateDiagnostic[] EvaluateExitCriteriaRows(IEnumerable<YamlMappingNode> rows)
+    private static GateDiagnostic[] EvaluateExitCriteriaRows(IReadOnlyList<YamlMappingNode> rows)
     {
         List<GateDiagnostic> diagnostics = [];
         Dictionary<string, int> counts = rows
@@ -310,7 +423,7 @@ public sealed class GovernanceCompletenessGateTests
         return diagnostics.ToArray();
     }
 
-    private static GateDiagnostic[] EvaluateSampleConsumption(IEnumerable<YamlMappingNode> rows, string[] sampleIds)
+    private static GateDiagnostic[] EvaluateSampleConsumption(IReadOnlyList<YamlMappingNode> rows, IReadOnlyList<string> sampleIds)
     {
         List<GateDiagnostic> diagnostics = [];
         HashSet<string> corpus = sampleIds.ToHashSet(StringComparer.Ordinal);
@@ -333,7 +446,8 @@ public sealed class GovernanceCompletenessGateTests
             {
                 diagnostics.Add(new("idempotency-encoding", "idempotency_sample_stale", entry.Key, "tests/fixtures/idempotency-encoding-corpus-consumption.yaml"));
             }
-            else if (entry.Value > 1)
+
+            if (entry.Value > 1)
             {
                 diagnostics.Add(new("idempotency-encoding", "idempotency_sample_duplicate", entry.Key, "tests/fixtures/idempotency-encoding-corpus-consumption.yaml"));
             }
@@ -342,7 +456,7 @@ public sealed class GovernanceCompletenessGateTests
         return diagnostics.ToArray();
     }
 
-    private static GateDiagnostic[] EvaluateParityCompleteness(string[] operationIds, IEnumerable<YamlMappingNode> rows)
+    private static GateDiagnostic[] EvaluateParityCompleteness(IReadOnlyList<string> operationIds, IReadOnlyList<YamlMappingNode> rows)
     {
         List<GateDiagnostic> diagnostics = [];
         HashSet<string> operations = operationIds.ToHashSet(StringComparer.Ordinal);
@@ -365,7 +479,8 @@ public sealed class GovernanceCompletenessGateTests
             {
                 diagnostics.Add(new("parity-completeness", "parity_stale_row", row.Key, "tests/fixtures/parity-contract.yaml"));
             }
-            else if (row.Value > 1)
+
+            if (row.Value > 1)
             {
                 diagnostics.Add(new("parity-completeness", "parity_duplicate_row", row.Key, "tests/fixtures/parity-contract.yaml"));
             }
@@ -375,7 +490,7 @@ public sealed class GovernanceCompletenessGateTests
         return diagnostics.ToArray();
     }
 
-    private static GateDiagnostic[] EvaluateDuplicateOpenApiOperationIds(string[] operationIds) =>
+    private static GateDiagnostic[] EvaluateDuplicateOpenApiOperationIds(IReadOnlyList<string> operationIds) =>
         operationIds
             .GroupBy(id => id, StringComparer.Ordinal)
             .Where(group => group.Count() > 1)
@@ -399,7 +514,7 @@ public sealed class GovernanceCompletenessGateTests
 
     private static GateDiagnostic[] ScanRepositoryForTenantCacheKeyCandidates()
     {
-        string[] includeRoots = ["src", "tests", ".github", "docs"];
+        string[] includeRoots = ["src", "tests"];
         string[] patterns = ["IMemoryCache", "IDistributedCache", "GetStateAsync", "SaveStateAsync", "StringSetAsync"];
         List<GateDiagnostic> diagnostics = [];
 
@@ -411,7 +526,8 @@ public sealed class GovernanceCompletenessGateTests
                 continue;
             }
 
-            foreach (string file in Directory.EnumerateFiles(absoluteRoot, "*.*", SearchOption.AllDirectories).Where(IsTextFile).Where(path => !IsGeneratedOrBuildOutput(path)))
+            foreach (string file in Directory.EnumerateFiles(absoluteRoot, "*.cs", SearchOption.AllDirectories)
+                .Where(path => !IsGeneratedOrBuildOutput(path)))
             {
                 string text = File.ReadAllText(file);
                 if (!patterns.Any(pattern => text.Contains(pattern, StringComparison.Ordinal)))
@@ -419,22 +535,38 @@ public sealed class GovernanceCompletenessGateTests
                     continue;
                 }
 
-                string repositoryPath = ToRepositoryPath(file);
-                if (!text.Contains("tenant", StringComparison.OrdinalIgnoreCase)
-                    && !text.Contains("CACHE-NON-TENANT", StringComparison.Ordinal))
+                if (text.Contains("CACHE-NON-TENANT", StringComparison.Ordinal))
                 {
-                    diagnostics.Add(new("cache-key-lint", "cache_key_unscoped", "candidate", repositoryPath));
+                    continue;
                 }
+
+                string repositoryPath = ToRepositoryPath(file);
+                diagnostics.Add(new("cache-key-lint", "cache_key_unscoped", "candidate", repositoryPath));
+            }
+        }
+
+        string workflowsRoot = Path.Combine(RepositoryRoot, ".github", "workflows");
+        if (Directory.Exists(workflowsRoot))
+        {
+            foreach (string file in Directory.EnumerateFiles(workflowsRoot, "*.yml", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles(workflowsRoot, "*.yaml", SearchOption.AllDirectories)))
+            {
+                string text = File.ReadAllText(file);
+                if (!text.Contains("actions/cache", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (text.Contains("CACHE-NON-TENANT", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                diagnostics.Add(new("cache-key-lint", "cache_key_unscoped", "workflow-cache", ToRepositoryPath(file)));
             }
         }
 
         return diagnostics.ToArray();
-    }
-
-    private static bool IsTextFile(string path)
-    {
-        string extension = Path.GetExtension(path).ToLowerInvariant();
-        return extension is ".cs" or ".csproj" or ".props" or ".targets" or ".json" or ".yaml" or ".yml" or ".md" or ".ps1";
     }
 
     private static bool IsGeneratedOrBuildOutput(string path)
@@ -456,20 +588,137 @@ public sealed class GovernanceCompletenessGateTests
             .ToArray();
     }
 
+    private static GateDiagnostic[] ValidateCorpusAgainstSchema(JsonDocument corpus, JsonDocument schema)
+    {
+        List<GateDiagnostic> diagnostics = [];
+        const string corpusPath = "tests/fixtures/idempotency-encoding-corpus.json";
+
+        string[] rootRequired = RequiredArray(schema.RootElement, "required").EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToArray();
+        foreach (string field in rootRequired)
+        {
+            if (!corpus.RootElement.TryGetProperty(field, out JsonElement value) || value.ValueKind == JsonValueKind.Null)
+            {
+                diagnostics.Add(new("idempotency-encoding", "corpus_required_field_missing", field, corpusPath));
+            }
+        }
+
+        if (corpus.RootElement.TryGetProperty("schema_version", out JsonElement schemaVersionElement))
+        {
+            bool versionAccepted = schemaVersionElement.ValueKind == JsonValueKind.String
+                && CorpusConstraints.Value.SchemaVersionPattern.IsMatch(schemaVersionElement.GetString() ?? string.Empty);
+            if (!versionAccepted)
+            {
+                diagnostics.Add(new("idempotency-encoding", "corpus_schema_version_invalid", "schema_version", corpusPath));
+            }
+        }
+
+        if (!corpus.RootElement.TryGetProperty("cases", out JsonElement casesElement) || casesElement.ValueKind != JsonValueKind.Array)
+        {
+            diagnostics.Add(new("idempotency-encoding", "corpus_cases_invalid", "cases", corpusPath));
+            return diagnostics.ToArray();
+        }
+
+        JsonElement caseSchema = schema.RootElement.GetProperty("$defs").GetProperty("case");
+        string[] caseRequired = RequiredArray(caseSchema, "required").EnumerateArray().Select(e => e.GetString() ?? string.Empty).ToArray();
+
+        HashSet<string> seenIds = new(StringComparer.Ordinal);
+        foreach (JsonElement caseElement in casesElement.EnumerateArray())
+        {
+            string identifier = caseElement.TryGetProperty("id", out JsonElement idElement) && idElement.ValueKind == JsonValueKind.String
+                ? idElement.GetString() ?? string.Empty
+                : "<missing-id>";
+
+            foreach (string field in caseRequired)
+            {
+                if (!caseElement.TryGetProperty(field, out JsonElement value) || value.ValueKind == JsonValueKind.Null)
+                {
+                    diagnostics.Add(new("idempotency-encoding", "corpus_case_required_field_missing", $"{identifier}.{field}", corpusPath));
+                }
+            }
+
+            if (caseElement.TryGetProperty("id", out JsonElement idValue))
+            {
+                if (idValue.ValueKind != JsonValueKind.String)
+                {
+                    diagnostics.Add(new("idempotency-encoding", "corpus_case_id_invalid", identifier, corpusPath));
+                }
+                else
+                {
+                    string idText = idValue.GetString() ?? string.Empty;
+                    if (!CorpusConstraints.Value.IdPattern.IsMatch(idText))
+                    {
+                        diagnostics.Add(new("idempotency-encoding", "corpus_case_id_invalid", identifier, corpusPath));
+                    }
+                    else if (!seenIds.Add(idText))
+                    {
+                        diagnostics.Add(new("idempotency-encoding", "corpus_case_id_duplicate", identifier, corpusPath));
+                    }
+                }
+            }
+
+            if (caseElement.TryGetProperty("category", out JsonElement categoryElement))
+            {
+                bool categoryAccepted = categoryElement.ValueKind == JsonValueKind.String
+                    && CorpusConstraints.Value.CategoryEnum.Contains(categoryElement.GetString() ?? string.Empty);
+                if (!categoryAccepted)
+                {
+                    diagnostics.Add(new("idempotency-encoding", "corpus_case_category_invalid", identifier, corpusPath));
+                }
+            }
+
+            if (caseElement.TryGetProperty("equivalence_classification", out JsonElement classElement))
+            {
+                bool classificationAccepted = classElement.ValueKind == JsonValueKind.String
+                    && CorpusConstraints.Value.EquivalenceEnum.Contains(classElement.GetString() ?? string.Empty);
+                if (!classificationAccepted)
+                {
+                    diagnostics.Add(new("idempotency-encoding", "corpus_case_equivalence_invalid", identifier, corpusPath));
+                }
+            }
+
+            if (caseElement.TryGetProperty("synthetic_data_only", out JsonElement syntheticElement)
+                && (syntheticElement.ValueKind != JsonValueKind.True))
+            {
+                diagnostics.Add(new("idempotency-encoding", "corpus_case_synthetic_data_only_invalid", identifier, corpusPath));
+            }
+
+            if (caseElement.TryGetProperty("contains_payload_material", out JsonElement payloadElement)
+                && (payloadElement.ValueKind != JsonValueKind.False))
+            {
+                diagnostics.Add(new("idempotency-encoding", "corpus_case_payload_material_invalid", identifier, corpusPath));
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
     private static string[] LoadOpenApiOperationIds(string path)
     {
         YamlMappingNode root = LoadYamlMapping(path);
+        HashSet<string> methodKeys = new(StringComparer.OrdinalIgnoreCase) { "get", "post", "put", "patch", "delete", "head", "options", "trace" };
         List<string> operations = [];
+
         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)
         {
             YamlMappingNode pathItem = pathEntry.Value.ShouldBeOfType<YamlMappingNode>();
             foreach (KeyValuePair<YamlNode, YamlNode> methodEntry in pathItem.Children)
             {
-                string method = RequiredScalar(methodEntry.Key, "method").ToLowerInvariant();
-                if (method is "get" or "post" or "put" or "patch" or "delete")
+                if (methodEntry.Key is not YamlScalarNode keyScalar || string.IsNullOrWhiteSpace(keyScalar.Value))
                 {
-                    operations.Add(RequiredScalar(methodEntry.Value.ShouldBeOfType<YamlMappingNode>(), "operationId"));
+                    continue;
                 }
+
+                if (!methodKeys.Contains(keyScalar.Value!))
+                {
+                    continue;
+                }
+
+                if (methodEntry.Value is not YamlMappingNode operationMapping)
+                {
+                    continue;
+                }
+
+                operations.Add(RequiredScalar(operationMapping, "operationId"));
             }
         }
 
@@ -478,10 +727,19 @@ public sealed class GovernanceCompletenessGateTests
 
     private static YamlMappingNode[] LoadParityRows(string path)
     {
-        using StreamReader reader = File.OpenText(path);
-        YamlStream yaml = new();
-        yaml.Load(reader);
-        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlSequenceNode>().Children.Cast<YamlMappingNode>().ToArray();
+        YamlStream yaml = LoadYamlStream(path);
+        if (yaml.Documents.Count == 0)
+        {
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: parity-rows-empty: {path}");
+        }
+
+        YamlNode rootNode = yaml.Documents[0].RootNode;
+        if (rootNode is not YamlSequenceNode sequence)
+        {
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: parity-rows-not-sequence: {path}");
+        }
+
+        return sequence.Children.Cast<YamlMappingNode>().ToArray();
     }
 
     private static YamlMappingNode[] LoadCriteriaRows(string path) =>
@@ -527,15 +785,20 @@ public sealed class GovernanceCompletenessGateTests
         string.IsNullOrWhiteSpace(value) || string.Equals(value, "PLACEHOLDER", StringComparison.OrdinalIgnoreCase);
 
     private static bool PathExists(string repositoryPath) =>
-        File.Exists(Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath)))
-        || Directory.Exists(Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath)));
+        File.Exists(Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath)));
 
-    private static bool IsRepositoryRelativePath(string repositoryPath) =>
-        !string.IsNullOrWhiteSpace(repositoryPath)
-        && !Path.IsPathFullyQualified(repositoryPath)
-        && !repositoryPath.Contains('\\', StringComparison.Ordinal)
-        && !repositoryPath.StartsWith("../", StringComparison.Ordinal)
-        && !repositoryPath.Split('/').Contains("..", StringComparer.Ordinal);
+    private static bool IsRepositoryRelativePath(string repositoryPath)
+    {
+        if (string.IsNullOrWhiteSpace(repositoryPath))
+        {
+            return false;
+        }
+
+        string normalized = repositoryPath.Replace('\\', '/');
+        return !Path.IsPathFullyQualified(normalized)
+            && !normalized.StartsWith("../", StringComparison.Ordinal)
+            && !normalized.Split('/').Contains("..", StringComparer.Ordinal);
+    }
 
     private static void AssertMetadataOnly(string value)
     {
@@ -546,15 +809,12 @@ public sealed class GovernanceCompletenessGateTests
             "credential_material",
             "raw_payload",
             "file_content",
-            "cache-key-value=",
+            "cache-key-value",
             "https://github.com/",
             "https://api.github.com",
             "https://prod.",
             RepositoryRoot,
             RepositoryRoot.Replace("\\", "/", StringComparison.Ordinal),
-            RepositoryRoot.Replace("\\", "\\\\", StringComparison.Ordinal),
-            "C:\\",
-            "D:\\",
             "/home/",
             "/Users/",
         ];
@@ -563,14 +823,45 @@ public sealed class GovernanceCompletenessGateTests
         {
             value.ShouldNotContain(forbiddenValue, Case.Insensitive);
         }
+
+        AbsoluteWindowsDrivePathPattern.IsMatch(value).ShouldBeFalse(value);
+    }
+
+    private static YamlStream LoadYamlStream(string path)
+    {
+        if (!File.Exists(path))
+        {
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-not-found: {ToRepositoryPath(path)}");
+        }
+
+        try
+        {
+            using StreamReader reader = File.OpenText(path);
+            YamlStream yaml = new();
+            yaml.Load(reader);
+            return yaml;
+        }
+        catch (YamlDotNet.Core.YamlException ex)
+        {
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-malformed: {ToRepositoryPath(path)}", ex);
+        }
     }
 
     private static YamlMappingNode LoadYamlMapping(string path)
     {
-        using StreamReader reader = File.OpenText(path);
-        YamlStream yaml = new();
-        yaml.Load(reader);
-        return yaml.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
+        YamlStream yaml = LoadYamlStream(path);
+        if (yaml.Documents.Count == 0)
+        {
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-empty: {ToRepositoryPath(path)}");
+        }
+
+        YamlNode rootNode = yaml.Documents[0].RootNode;
+        if (rootNode is not YamlMappingNode mapping)
+        {
+            throw new InvalidOperationException($"GOVERNANCE-PREREQUISITE-DRIFT: yaml-not-mapping: {ToRepositoryPath(path)}");
+        }
+
+        return mapping;
     }
 
     private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)
@@ -596,7 +887,9 @@ public sealed class GovernanceCompletenessGateTests
     {
         element.TryGetProperty(property, out JsonElement value).ShouldBeTrue(property);
         value.ValueKind.ShouldBe(JsonValueKind.String, property);
-        return value.GetString() ?? string.Empty;
+        string? text = value.GetString();
+        text.ShouldNotBeNullOrWhiteSpace(property);
+        return text!;
     }
 
     private static string RequiredScalar(YamlMappingNode mapping, string key)
@@ -612,10 +905,43 @@ public sealed class GovernanceCompletenessGateTests
         return value!;
     }
 
-    private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar);
+    private static bool ParseRequiredBoolean(YamlMappingNode mapping, string key)
+    {
+        string raw = RequiredScalar(mapping, key);
+        return raw.ToLowerInvariant() switch
+        {
+            "true" or "yes" or "on" or "y" => true,
+            "false" or "no" or "off" or "n" => false,
+            _ => throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: boolean-invalid: {key}={raw}"),
+        };
+    }
+
+    private static DateOnly ParseRequiredDate(YamlMappingNode mapping, string key) =>
+        ParseDate(RequiredScalar(mapping, key), key);
+
+    private static DateOnly ParseDate(string raw, string name)
+    {
+        if (!DateOnly.TryParseExact(raw, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly value))
+        {
+            throw new FormatException($"GOVERNANCE-PREREQUISITE-DRIFT: date-invalid: {name}={raw}");
+        }
+
+        return value;
+    }
+
+    private static string NormalizeForFileSystem(string path) => path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
     private static string ToRepositoryPath(string path) =>
         Path.GetRelativePath(RepositoryRoot, path).Replace("\\", "/", StringComparison.Ordinal);
+
+    private static string ReadRootTargetFramework()
+    {
+        string buildPropsPath = Path.Combine(RepositoryRoot, "Directory.Build.props");
+        string content = File.ReadAllText(buildPropsPath);
+        Match match = Regex.Match(content, "<TargetFramework>(?<tfm>[^<]+)</TargetFramework>");
+        match.Success.ShouldBeTrue("Directory.Build.props missing TargetFramework element");
+        return match.Groups["tfm"].Value.Trim();
+    }
 
     private static string FindRepositoryRoot()
     {
@@ -636,7 +962,74 @@ public sealed class GovernanceCompletenessGateTests
         throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: repository root was not found.");
     }
 
+    private static CorpusSchemaConstraints LoadCorpusSchemaConstraints()
+    {
+        using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(CorpusSchemaPath));
+        JsonElement properties = schema.RootElement.GetProperty("properties");
+        JsonElement defs = schema.RootElement.GetProperty("$defs");
+
+        string versionPattern = properties.GetProperty("schema_version").GetProperty("pattern").GetString()
+            ?? throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: corpus-schema-malformed: schema_version.pattern missing");
+        string idPattern = defs.GetProperty("case").GetProperty("properties").GetProperty("id").GetProperty("pattern").GetString()
+            ?? throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: corpus-schema-malformed: case.id.pattern missing");
+
+        HashSet<string> categoryEnum = defs.GetProperty("category").GetProperty("enum").EnumerateArray()
+            .Select(element => element.GetString() ?? throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: corpus-schema-malformed: category enum value not string"))
+            .ToHashSet(StringComparer.Ordinal);
+        HashSet<string> equivalenceEnum = defs.GetProperty("equivalence_classification").GetProperty("enum").EnumerateArray()
+            .Select(element => element.GetString() ?? throw new InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: corpus-schema-malformed: equivalence_classification enum value not string"))
+            .ToHashSet(StringComparer.Ordinal);
+
+        return new CorpusSchemaConstraints(
+            new Regex(versionPattern, RegexOptions.Compiled | RegexOptions.CultureInvariant),
+            new Regex(idPattern, RegexOptions.Compiled | RegexOptions.CultureInvariant),
+            categoryEnum,
+            equivalenceEnum);
+    }
+
+    private static GateDiagnostic[] EvaluateCacheKeyExceptionApprovalStates(IReadOnlyList<YamlMappingNode> exceptions)
+    {
+        const string ManifestPath = "tests/fixtures/cache-key-exceptions.yaml";
+        List<GateDiagnostic> diagnostics = [];
+
+        foreach (YamlMappingNode exception in exceptions)
+        {
+            string ruleId = exception.Children.TryGetValue(new YamlScalarNode("rule_id"), out YamlNode? ruleNode)
+                && ruleNode is YamlScalarNode { Value: { Length: > 0 } } ruleScalar
+                    ? ruleScalar.Value!
+                    : "<missing-rule-id>";
+
+            string status = exception.Children.TryGetValue(new YamlScalarNode("review_status"), out YamlNode? statusNode)
+                && statusNode is YamlScalarNode { Value: { Length: > 0 } } statusScalar
+                    ? statusScalar.Value!
+                    : string.Empty;
+
+            if (!string.Equals(status, "approved", StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("cache-key-lint", "cache_key_exception_not_approved", ruleId, ManifestPath));
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
+    private static YamlMappingNode SyntheticCacheKeyException(string ruleId, string reviewStatus, string? lastReviewedOn = null) =>
+        new(
+            new YamlScalarNode("rule_id"), new YamlScalarNode(ruleId),
+            new YamlScalarNode("owner"), new YamlScalarNode("Governance Gates"),
+            new YamlScalarNode("reason"), new YamlScalarNode("Synthetic review-status test fixture; not durable tenant data."),
+            new YamlScalarNode("scope"), new YamlScalarNode("synthetic-test-fixture"),
+            new YamlScalarNode("review_status"), new YamlScalarNode(reviewStatus),
+            new YamlScalarNode("last_reviewed_on"), new YamlScalarNode(lastReviewedOn ?? DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+            new YamlScalarNode("evidence_link"), new YamlScalarNode("tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs"));
+
     private sealed record CacheKeyCandidate(string RepositoryPath, int Line, string DataScope, bool HasTenantScope, string? ExceptionRuleId);
+
+    private sealed record CorpusSchemaConstraints(
+        Regex SchemaVersionPattern,
+        Regex IdPattern,
+        HashSet<string> CategoryEnum,
+        HashSet<string> EquivalenceEnum);
 
     private sealed record GateDiagnostic(string Gate, string Category, string Identifier, string RepositoryPath)
     {

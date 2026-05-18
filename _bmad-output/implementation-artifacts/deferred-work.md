@@ -2,6 +2,15 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)
+
+Items deferred from the `/bmad-code-review 1.16` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `e6d9de5`.
+
+- `Resolve-Path (Join-Path $toolsParent '..')` resolves symlink targets in `tests/tools/run-governance-completeness-gates.ps1:16` — deferred, sibling scripts use the same pattern; revisit when a sibling tool persists absolute paths.
+- `CloneRow` round-trips YAML through serialize/parse and drops anchors, tags, and comments [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:991-1000`] — deferred, only used by negative-control tests; revisit if production validators start caring about tag/anchor metadata.
+- `EvaluateExitCriteriaRows` can emit both `exit_criteria_duplicate` and `exit_criteria_malformed` for the same Cx when duplicates exist [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:742-790`] — deferred, noise rather than correctness.
+- `FindRepositoryRoot` throws `InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: ...")` — exception terminology hints at a categorized exit but the throw is uncaught and surfaces as a Shouldly/xUnit crash [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115`] — deferred, will be resolved by the decision on `prerequisite_drift` script semantics.
+
 ## Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-17)
 
 Items deferred from the `/bmad-code-review 1.15` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `3d75bbb`.
@@ -277,3 +286,11 @@ Patches identified by the code review that were NOT applied in the same pass due
 - `BoundedDiagnosticException` does not validate `ruleId` against an allowed set nor assert `remediation` through `AssertMetadataOnly` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `BoundedDiagnosticException`] — tighten if a third caller is added with non-constant inputs.
 - `AssertRepositoryRelativePath` does not reject UNC paths (`//server/share/...`) or extended-length prefixes (`\?\D:\...`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertRepositoryRelativePath`] — no current callers can produce these path shapes; tighten when a new include_root source is introduced.
 - `SerializeYaml` constructs `StringWriter` without `CultureInfo.InvariantCulture` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `SerializeYaml`] — YamlDotNet writes strings literally for the fields the gate scans; revisit if numeric YAML enters the corpus.
+
+## Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18, Round 2)
+
+- `LoadOpenApiOperationIds` crashes on `$ref`-only method operations and on a method-mapping missing `operationId` [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `LoadOpenApiOperationIds`] — current OpenAPI spec has no `$ref` operations and every operation carries an `operationId`; overlaps Round 2 prerequisite-drift work (Decision #5).
+- `ParseRequiredBoolean` rejects YAML 1.1 numeric booleans (`1` / `0`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `ParseRequiredBoolean`] — corpus fixtures only use lowercase literals; tighten when an authored fixture introduces numeric truth values.
+- `Write-GovernanceReport` lacks `try/catch` around the JSON write — a partial write leaves `latest.json` stale while the shell exit code still reflects the original failure [`tests/tools/run-governance-completeness-gates.ps1` `Write-GovernanceReport`] — rare race; harden when a CI consumer reports stale-report incidents.
+- `ReadRootTargetFramework` regex matches the first uncommented `<TargetFramework>` and does not strip XML comments or handle conditioned elements [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `ReadRootTargetFramework`] — current `Directory.Build.props` is clean; revisit when conditional TFM authoring lands.
+- `IsGeneratedOrBuildOutput` path-segment check is case-sensitive (`/Generated/`, `/bin/`, `/obj/`, `/quarantine/`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs` `IsGeneratedOrBuildOutput`] — switch to `OrdinalIgnoreCase` if a generator with non-standard casing is introduced.

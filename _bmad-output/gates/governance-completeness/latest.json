@@ -1,0 +1,16 @@
+{
+  "gate": "governance-completeness",
+  "status": "passed",
+  "exit_code": 0,
+  "canonical_inputs": [
+    "docs/exit-criteria/c0-c13-governance-evidence.yaml",
+    "tests/fixtures/idempotency-encoding-corpus.json",
+    "tests/fixtures/idempotency-encoding-corpus-consumption.yaml",
+    "tests/fixtures/pattern-example-manifest.yaml",
+    "tests/fixtures/cache-key-exceptions.yaml",
+    "tests/fixtures/parity-contract.yaml",
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+  ],
+  "report_path": "_bmad-output/gates/governance-completeness/latest.json",
+  "diagnostic_policy": "metadata-only"
+}
