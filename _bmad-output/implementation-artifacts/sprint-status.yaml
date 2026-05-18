@@ -70,7 +70,7 @@ development_status:
   2-4-grant-and-revoke-folder-access: ready-for-dev
   2-5-inspect-effective-permissions: ready-for-dev
   2-6-enforce-layered-authorization-with-safe-denials: ready-for-dev
-  2-7-inspect-folder-lifecycle-and-binding-status: backlog
+  2-7-inspect-folder-lifecycle-and-binding-status: ready-for-dev
   2-8-archive-folders-with-audit-preservation: backlog
   2-9-react-to-tenants-events-through-worker-handlers: backlog
   epic-2-retrospective: optional
