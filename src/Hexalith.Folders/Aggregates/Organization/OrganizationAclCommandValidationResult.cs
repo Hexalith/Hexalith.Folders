@@ -3,7 +3,8 @@ namespace Hexalith.Folders.Aggregates.Organization;
 public sealed record OrganizationAclCommandValidationResult(
     OrganizationAclResultCode Code,
     IReadOnlyList<OrganizationAclOperation> Operations,
-    string IdempotencyFingerprint)
+    string IdempotencyFingerprint,
+    OrganizationAclOperation? FailingOperation = null)
 {
     public bool IsAccepted => Code == OrganizationAclResultCode.Accepted;
 
@@ -14,4 +15,9 @@ public sealed record OrganizationAclCommandValidationResult(
 
     public static OrganizationAclCommandValidationResult Rejected(OrganizationAclResultCode code)
         => new(code, [], string.Empty);
+
+    public static OrganizationAclCommandValidationResult Rejected(
+        OrganizationAclResultCode code,
+        OrganizationAclOperation failingOperation)
+        => new(code, [], string.Empty, failingOperation);
 }

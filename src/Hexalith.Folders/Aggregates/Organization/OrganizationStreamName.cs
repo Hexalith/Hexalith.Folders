@@ -1,7 +1,11 @@
+using System.Text.RegularExpressions;
+
 namespace Hexalith.Folders.Aggregates.Organization;
 
-public sealed record OrganizationStreamName(string Value)
+public sealed partial record OrganizationStreamName(string Value)
 {
+    internal const int MaxSegmentLength = 256;
+
     public static OrganizationStreamName Create(string managedTenantId, string organizationId)
     {
         if (!TryCreate(managedTenantId, organizationId, out OrganizationStreamName? streamName, out OrganizationAclResultCode code))
@@ -49,7 +53,9 @@ public sealed record OrganizationStreamName(string Value)
 
     internal static bool IsValidSegment(string? value)
         => !string.IsNullOrWhiteSpace(value)
-            && string.Equals(value, value.Trim(), StringComparison.Ordinal)
-            && string.Equals(value, value.ToLowerInvariant(), StringComparison.Ordinal)
-            && !value.Any(static character => character == ':' || char.IsControl(character));
+            && value.Length <= MaxSegmentLength
+            && CanonicalSegmentPattern().IsMatch(value);
+
+    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
+    private static partial Regex CanonicalSegmentPattern();
 }

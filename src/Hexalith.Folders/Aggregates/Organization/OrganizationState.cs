@@ -1,3 +1,5 @@
+using System.Collections.Frozen;
+
 namespace Hexalith.Folders.Aggregates.Organization;
 
 public sealed record OrganizationState(
@@ -7,8 +9,8 @@ public sealed record OrganizationState(
 {
     public static OrganizationState Empty { get; } = new(
         false,
-        new HashSet<OrganizationAclEntryKey>(),
-        new Dictionary<string, string>(StringComparer.Ordinal));
+        FrozenSet<OrganizationAclEntryKey>.Empty,
+        FrozenDictionary<string, string>.Empty);
 
     public OrganizationState Apply(IEnumerable<IOrganizationAclEvent> events)
     {
@@ -17,9 +19,22 @@ public sealed record OrganizationState(
         bool initialized = IsInitialized;
         HashSet<OrganizationAclEntryKey> grants = new(Grants);
         Dictionary<string, string> idempotency = new(IdempotencyFingerprints, StringComparer.Ordinal);
+        string? expectedTenantId = null;
+        string? expectedOrganizationId = null;
 
         foreach (IOrganizationAclEvent aclEvent in events)
         {
+            expectedTenantId ??= aclEvent.ManagedTenantId;
+            expectedOrganizationId ??= aclEvent.OrganizationId;
+
+            if (!string.Equals(expectedTenantId, aclEvent.ManagedTenantId, StringComparison.Ordinal)
+                || !string.Equals(expectedOrganizationId, aclEvent.OrganizationId, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Foreign event tenant/organization in Apply: expected {expectedTenantId}:organizations:{expectedOrganizationId}, " +
+                    $"got {aclEvent.ManagedTenantId}:organizations:{aclEvent.OrganizationId}.");
+            }
+
             if (!string.IsNullOrWhiteSpace(aclEvent.IdempotencyKey))
             {
                 idempotency[aclEvent.IdempotencyKey] = aclEvent.IdempotencyFingerprint;
@@ -41,7 +56,7 @@ public sealed record OrganizationState(
             }
         }
 
-        return new OrganizationState(initialized, grants, idempotency);
+        return new OrganizationState(initialized, grants.ToFrozenSet(), idempotency.ToFrozenDictionary(StringComparer.Ordinal));
     }
 
     public bool HasPermission(

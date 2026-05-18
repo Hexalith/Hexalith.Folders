@@ -34,17 +34,25 @@ internal sealed class RecordingOrganizationAclRepository : IOrganizationAclRepos
         return streamName;
     }
 
-    public void Append(OrganizationStreamName streamName, IReadOnlyList<IOrganizationAclEvent> events)
+    public OrganizationAclAppendOutcome AppendIfFingerprintAbsent(
+        OrganizationStreamName streamName,
+        string idempotencyKey,
+        string fingerprint,
+        IReadOnlyList<IOrganizationAclEvent> events)
     {
+        string ledgerKey = LedgerKey(streamName, idempotencyKey);
+        if (_idempotencyFingerprints.TryGetValue(ledgerKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, fingerprint, StringComparison.Ordinal)
+                ? OrganizationAclAppendOutcome.FingerprintMatched
+                : OrganizationAclAppendOutcome.FingerprintConflict;
+        }
+
         EventsAppended += events.Count;
         LastStreamName = streamName.Value;
         _state = _state.Apply(events);
-
-        foreach (IOrganizationAclEvent aclEvent in events)
-        {
-            _idempotencyFingerprints[LedgerKey(aclEvent.ManagedTenantId, aclEvent.OrganizationId, aclEvent.IdempotencyKey)] =
-                aclEvent.IdempotencyFingerprint;
-        }
+        _idempotencyFingerprints[ledgerKey] = fingerprint;
+        return OrganizationAclAppendOutcome.Appended;
     }
 
     public bool TryGetIdempotencyFingerprint(
@@ -52,11 +60,16 @@ internal sealed class RecordingOrganizationAclRepository : IOrganizationAclRepos
         string organizationId,
         string idempotencyKey,
         out string? fingerprint)
-        => _idempotencyFingerprints.TryGetValue(LedgerKey(managedTenantId, organizationId, idempotencyKey), out fingerprint);
+        => _idempotencyFingerprints.TryGetValue(
+            LedgerKey(managedTenantId, organizationId, idempotencyKey),
+            out fingerprint);
 
     public void RecordIdempotency(string managedTenantId, string organizationId, string idempotencyKey, string fingerprint)
         => _idempotencyFingerprints[LedgerKey(managedTenantId, organizationId, idempotencyKey)] = fingerprint;
 
     private static string LedgerKey(string managedTenantId, string organizationId, string idempotencyKey)
         => $"{managedTenantId}|{organizationId}|{idempotencyKey}";
+
+    private static string LedgerKey(OrganizationStreamName streamName, string idempotencyKey)
+        => $"{streamName.Value}|{idempotencyKey}";
 }

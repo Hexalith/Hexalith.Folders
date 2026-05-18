@@ -23,6 +23,6 @@ public sealed record OrganizationAclEntryKey(
             OrganizationAclPrincipalKind.Group => "group",
             OrganizationAclPrincipalKind.Role => "role",
             OrganizationAclPrincipalKind.DelegatedServiceAgent => "delegated_service_agent",
-            _ => "unknown",
+            _ => throw new InvalidOperationException($"Undefined OrganizationAclPrincipalKind value: {(int)PrincipalKind}."),
         };
 }

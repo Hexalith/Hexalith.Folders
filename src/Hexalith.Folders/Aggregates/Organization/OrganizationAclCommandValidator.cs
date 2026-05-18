@@ -1,7 +1,11 @@
+using System.Text.RegularExpressions;
+
 namespace Hexalith.Folders.Aggregates.Organization;
 
-public static class OrganizationAclCommandValidator
+public static partial class OrganizationAclCommandValidator
 {
+    internal const int MaxIdentifierLength = 256;
+
     public static OrganizationAclCommandValidationResult Validate(IOrganizationAclCommand command)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -21,19 +25,36 @@ public static class OrganizationAclCommandValidator
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidOrganization);
         }
 
+        if (!IsValidIdentifier(command.CorrelationId)
+            || !IsValidIdentifier(command.TaskId)
+            || !IsValidIdentifier(command.IdempotencyKey))
+        {
+            return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.MalformedEvidence);
+        }
+
         Dictionary<string, OrganizationAclOperation> unique = new(StringComparer.Ordinal);
         Dictionary<string, OrganizationAclOperationIntent> tupleIntents = new(StringComparer.Ordinal);
 
         foreach (OrganizationAclOperation operation in command.Operations)
         {
+            if (!Enum.IsDefined(operation.PrincipalKind))
+            {
+                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidPrincipal, operation);
+            }
+
+            if (!Enum.IsDefined(operation.Intent))
+            {
+                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.MalformedEvidence, operation);
+            }
+
             if (!OrganizationAclAction.IsSupported(operation.Action))
             {
-                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.UnsupportedAction);
+                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.UnsupportedAction, operation);
             }
 
             if (!IsValidPrincipalId(operation.PrincipalId))
             {
-                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidPrincipal);
+                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidPrincipal, operation);
             }
 
             OrganizationAclEntryKey key = new(
@@ -46,7 +67,7 @@ public static class OrganizationAclCommandValidator
             if (tupleIntents.TryGetValue(tupleKey, out OrganizationAclOperationIntent priorIntent)
                 && priorIntent != operation.Intent)
             {
-                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReplayConflict);
+                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReplayConflict, operation);
             }
 
             tupleIntents[tupleKey] = operation.Intent;
@@ -77,8 +98,13 @@ public static class OrganizationAclCommandValidator
         return string.Join("|", [command.CommandType, .. operationTokens]);
     }
 
-    private static bool IsValidPrincipalId(string? value)
+    internal static bool IsValidPrincipalId(string? value) => IsValidIdentifier(value);
+
+    internal static bool IsValidIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
-            && string.Equals(value, value.Trim(), StringComparison.Ordinal)
-            && !value.Any(static character => character == ':' || char.IsControl(character));
+            && value.Length <= MaxIdentifierLength
+            && CanonicalIdentifierPattern().IsMatch(value);
+
+    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
+    private static partial Regex CanonicalIdentifierPattern();
 }

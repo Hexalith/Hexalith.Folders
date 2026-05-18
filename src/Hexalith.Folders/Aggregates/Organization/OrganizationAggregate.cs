@@ -10,7 +10,7 @@ public static class OrganizationAggregate
         OrganizationAclCommandValidationResult validation = OrganizationAclCommandValidator.Validate(command);
         if (!validation.IsAccepted)
         {
-            return OrganizationAclResult.Rejected(command, validation.Code);
+            return OrganizationAclResult.Rejected(command, validation.Code, validation.FailingOperation);
         }
 
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
@@ -20,6 +20,22 @@ public static class OrganizationAggregate
                 : OrganizationAclResult.Rejected(command, OrganizationAclResultCode.IdempotencyConflict);
         }
 
+        // Pass 1: detect any operation that must reject the whole batch.
+        foreach (OrganizationAclOperation operation in validation.Operations)
+        {
+            if (operation.Intent != OrganizationAclOperationIntent.Revoke)
+            {
+                continue;
+            }
+
+            OrganizationAclEntryKey key = KeyFor(command, operation);
+            if (!state.HasGrant(key))
+            {
+                return OrganizationAclResult.Rejected(command, OrganizationAclResultCode.MissingEntry, operation);
+            }
+        }
+
+        // Pass 2: build the event batch from the deltas. Already-granted entries become no-op skips.
         List<IOrganizationAclEvent> events = [];
         if (!state.IsInitialized)
         {
@@ -32,22 +48,16 @@ public static class OrganizationAggregate
                 validation.IdempotencyFingerprint));
         }
 
+        bool anyDelta = false;
         foreach (OrganizationAclOperation operation in validation.Operations)
         {
-            OrganizationAclEntryKey key = new(
-                command.ManagedTenantId,
-                command.OrganizationId,
-                operation.PrincipalKind,
-                operation.PrincipalId,
-                operation.Action);
+            OrganizationAclEntryKey key = KeyFor(command, operation);
 
             if (operation.Intent == OrganizationAclOperationIntent.Grant)
             {
                 if (state.HasGrant(key))
                 {
-                    return events.Count == 0
-                        ? OrganizationAclResult.Rejected(command, OrganizationAclResultCode.AlreadyApplied)
-                        : OrganizationAclResult.Accepted(command, events);
+                    continue;
                 }
 
                 events.Add(new OrganizationAclPrincipalGranted(
@@ -60,10 +70,7 @@ public static class OrganizationAggregate
                     command.TaskId,
                     command.IdempotencyKey,
                     validation.IdempotencyFingerprint));
-            }
-            else if (!state.HasGrant(key))
-            {
-                return OrganizationAclResult.Rejected(command, OrganizationAclResultCode.MissingEntry);
+                anyDelta = true;
             }
             else
             {
@@ -77,12 +84,23 @@ public static class OrganizationAggregate
                     command.TaskId,
                     command.IdempotencyKey,
                     validation.IdempotencyFingerprint));
+                anyDelta = true;
             }
         }
 
-        return events.Count == 0
-            ? OrganizationAclResult.Rejected(command, OrganizationAclResultCode.AlreadyApplied)
-            : OrganizationAclResult.Accepted(command, events);
+        if (!anyDelta && state.IsInitialized)
+        {
+            return OrganizationAclResult.Rejected(command, OrganizationAclResultCode.AlreadyApplied);
+        }
+
+        return OrganizationAclResult.Accepted(command, events);
     }
 
+    private static OrganizationAclEntryKey KeyFor(IOrganizationAclCommand command, OrganizationAclOperation operation)
+        => new(
+            command.ManagedTenantId,
+            command.OrganizationId,
+            operation.PrincipalKind,
+            operation.PrincipalId,
+            operation.Action);
 }

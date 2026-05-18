@@ -6,7 +6,11 @@ public interface IOrganizationAclRepository
 
     OrganizationState Load(OrganizationStreamName streamName);
 
-    void Append(OrganizationStreamName streamName, IReadOnlyList<IOrganizationAclEvent> events);
+    OrganizationAclAppendOutcome AppendIfFingerprintAbsent(
+        OrganizationStreamName streamName,
+        string idempotencyKey,
+        string fingerprint,
+        IReadOnlyList<IOrganizationAclEvent> events);
 
     bool TryGetIdempotencyFingerprint(
         string managedTenantId,

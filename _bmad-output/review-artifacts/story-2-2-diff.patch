@@ -1,0 +1,1818 @@
+commit 774bfd5acfa37fbfb70b48d00750721eb47cdcf0
+Author: Jérôme Piquot <jpiquot@itaneo.com>
+Date:   Mon May 18 22:37:13 2026 +0200
+
+    feat: Implement organization ACL management
+    
+    - Added OrganizationAclEntryKey record to represent unique ACL entries.
+    - Introduced OrganizationAclOperation and OrganizationAclOperationIntent for managing ACL operations.
+    - Created OrganizationAclPrincipalGranted and OrganizationAclPrincipalRevoked records for event representation.
+    - Defined OrganizationAclResult and OrganizationAclResultCode for handling command results.
+    - Implemented OrganizationAclTenantGate for processing ACL commands with tenant authorization.
+    - Developed OrganizationAggregate to handle ACL operations and maintain state.
+    - Established OrganizationState to track grants and idempotency fingerprints.
+    - Created OrganizationStreamName for generating stream names based on tenant and organization.
+    - Added commands for granting and revoking ACL principals.
+    - Implemented unit tests for ACL command validation, effective permissions, idempotency, and metadata leakage.
+    - Developed a recording repository for testing purposes to track repository interactions.
+
+diff --git a/_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md b/_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md
+index 8db07b7..9f6f856 100644
+--- a/_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md
++++ b/_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md
+@@ -1,6 +1,6 @@
+ # Story 2.2: Implement Organization aggregate ACL baseline
+ 
+-Status: ready-for-dev
++Status: review
+ 
+ <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
+ 
+@@ -30,47 +30,47 @@ so that folder permissions can be granted consistently to users, groups, roles,
+ 
+ ## Tasks / Subtasks
+ 
+-- [ ] Create the Organization aggregate domain surface. (AC: 1, 2, 4, 8)
+-  - [ ] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`.
+-  - [ ] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`.
+-  - [ ] Add opaque value objects or validated identifiers for managed tenant ID, organization ID, principal ID, and ACL action where existing project types do not already provide them.
+-  - [ ] Keep aggregate stream names in the `{managedTenantId}:organizations:{organizationId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed organization streams.
+-- [ ] Define ACL baseline commands and metadata-only events. (AC: 2, 3, 5, 6)
+-  - [ ] Add commands for initializing the organization ACL baseline and granting/revoking baseline permissions for user, group, role, and delegated service-agent principals.
+-  - [ ] Add accepted events such as `OrganizationAclBaselineInitialized`, `OrganizationAclPrincipalGranted`, and `OrganizationAclPrincipalRevoked`, or equivalent names aligned with local EventStore conventions.
+-  - [ ] Add rejection events or result types with stable codes for unauthorized tenant context, invalid principal, unsupported action, duplicate/conflicting entry, stale tenant projection, unavailable tenant projection, disabled tenant, unknown tenant, tenant mismatch, and idempotency conflict.
+-  - [ ] Ensure event payloads are metadata-only and do not copy request payloads wholesale.
+-  - [ ] Define the initial closed ACL action vocabulary as domain-owned value objects or enum values in `Hexalith.Folders`: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Do not add provider-specific or folder-override action names in this story.
+-  - [ ] Define command/result inventory for `InitializeOrganizationAclBaseline`, `GrantOrganizationAclPrincipal`, and `RevokeOrganizationAclPrincipal` or equivalent local names, with result codes for accepted, already_applied, duplicate_entry, missing_entry, unsupported_action, invalid_principal, invalid_organization, invalid_tenant, reserved_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, replay_conflict, and idempotency_conflict.
+-  - [ ] Treat ACL action values as ordinal, lower-snake-case domain tokens; reject localized labels, display names, aliases, mixed-case variants, provider-specific verbs, and unknown action strings rather than normalizing them into accepted permissions.
+-  - [ ] Ensure stable result evidence is structured around result codes and metadata fields; tests must not infer behavior from event type names, exception text, stack traces, or localized diagnostics.
+-- [ ] Add fail-closed authorization integration points without pulling in later folder policy. (AC: 3, 4, 7)
+-  - [ ] Depend on the tenant-access authorizer/projection from Story 2.1 when available; if Story 2.1 implementation is still in flight, add an interface boundary and tests that model the fail-closed outcomes without duplicating Story 2.1 projection logic.
+-  - [ ] Check tenant projection evidence before organization stream loading or ACL mutation.
+-  - [ ] Treat tenant IDs from route/body/query/header as comparison values only, never as the authority that selects the aggregate stream.
+-  - [ ] Require the authorization seam to receive authoritative managed tenant context from authentication context or EventStore envelopes plus Story 2.1 evidence fields: outcome code, projection watermark, last event timestamp, projection age/freshness status, sequence/version when available, and correlation/task/idempotency metadata. Future-dated evidence must reject through the Story 2.1 stable evidence code instead of creating a permissive fallback.
+-  - [ ] Do not implement folder-level ACL overrides, folder lifecycle, provider readiness, repository binding, workspace, CLI, MCP, UI, or worker behavior in this story.
+-- [ ] Add idempotency and deterministic derivation support. (AC: 6, 8)
+-  - [ ] Reuse the project idempotency equivalence rules established in Epic 1; compare canonical ACL payload shape rather than raw JSON order.
+-  - [ ] Ensure duplicate equivalent commands do not append duplicate ACL events.
+-  - [ ] Provide deterministic state application for grant/revoke ordering and duplicate entries.
+-  - [ ] Add effective-permission derivation helpers only for organization baseline state; Story 2.5 owns public effective-permission inspection.
+-  - [ ] Treat the same idempotency key plus the same canonical payload as the same logical result with no duplicate event; the same idempotency key plus a different canonical payload rejects as `idempotency_conflict`; a different idempotency key plus an already-present grant returns deterministic `already_applied` evidence or equivalent no-op result without appending a duplicate event.
+-  - [ ] Derive organization-baseline permissions by set membership over tenant, organization, principal kind, principal ID, and action. Replaying events in any order that preserves causal version order must produce the same state; role/group inheritance and folder override precedence remain out of scope.
+-  - [ ] Include command type and operation intent in the canonical idempotency payload so a grant and revoke for the same ACL tuple can never share an equivalence class.
+-  - [ ] Canonicalize repeated entries before event creation: exact duplicates reduce to one entry; conflicting same-tuple grant/revoke or action interpretation rejects as `duplicate_entry`, `replay_conflict`, or a locally equivalent stable conflict code before append.
+-- [ ] Add tests and fixtures. (AC: 1-12)
+-  - [ ] Add unit tests under `tests/Hexalith.Folders.Tests` for aggregate initialization, grant/revoke by principal kind, duplicate grants, revoke of missing grant, unsupported action, malformed IDs, and reserved tenant rejection.
+-  - [ ] Add authorization tests for stale/unavailable/disabled/unknown/malformed/replay-conflicting/future tenant projection evidence and tenant mismatch.
+-  - [ ] Add idempotency tests for equivalent replay and conflicting replay.
+-  - [ ] Add leakage tests that scan event/rejection/debug strings for credential, token, file content, repository, branch, and unauthorized-resource sentinel values.
+-  - [ ] Extend `src/Hexalith.Folders.Testing` factories only with reusable organization/ACL builders that delegate to production validation rules.
+-  - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
+-  - [ ] Add focused tests named `OrganizationAclCommandValidationTests`, `OrganizationAclTenantEvidenceGateTests`, `OrganizationAclIdempotencyTests`, `OrganizationAclEffectivePermissionTests`, `OrganizationAclMetadataLeakageTests`, and `OrganizationAclStreamShapeTests` or equivalent locally consistent names.
+-  - [ ] Add negative controls proving rejected tenant evidence does not construct stream names, read streams, append events, mutate aggregate state, or query diagnostic/audit resources.
+-  - [ ] Add intra-command duplicate/conflict tests covering exact duplicate grants, exact duplicate revokes, same idempotency key with reordered entries, same key with grant-vs-revoke intent changes, and mixed principal-kind collision attempts.
+-  - [ ] Add structured-result tests proving accepted, already-applied, missing-entry, unsupported-action, tenant-evidence, replay-conflict, and idempotency-conflict outcomes can be asserted from stable codes and safe metadata without parsing diagnostic text.
+-  - [ ] Use pure in-memory fakes only for EventStore seams, tenant evidence, clock/time, validators, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
++- [x] Create the Organization aggregate domain surface. (AC: 1, 2, 4, 8)
++  - [x] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`.
++  - [x] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`.
++  - [x] Add opaque value objects or validated identifiers for managed tenant ID, organization ID, principal ID, and ACL action where existing project types do not already provide them.
++  - [x] Keep aggregate stream names in the `{managedTenantId}:organizations:{organizationId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed organization streams.
++- [x] Define ACL baseline commands and metadata-only events. (AC: 2, 3, 5, 6)
++  - [x] Add commands for initializing the organization ACL baseline and granting/revoking baseline permissions for user, group, role, and delegated service-agent principals.
++  - [x] Add accepted events such as `OrganizationAclBaselineInitialized`, `OrganizationAclPrincipalGranted`, and `OrganizationAclPrincipalRevoked`, or equivalent names aligned with local EventStore conventions.
++  - [x] Add rejection events or result types with stable codes for unauthorized tenant context, invalid principal, unsupported action, duplicate/conflicting entry, stale tenant projection, unavailable tenant projection, disabled tenant, unknown tenant, tenant mismatch, and idempotency conflict.
++  - [x] Ensure event payloads are metadata-only and do not copy request payloads wholesale.
++  - [x] Define the initial closed ACL action vocabulary as domain-owned value objects or enum values in `Hexalith.Folders`: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Do not add provider-specific or folder-override action names in this story.
++  - [x] Define command/result inventory for `InitializeOrganizationAclBaseline`, `GrantOrganizationAclPrincipal`, and `RevokeOrganizationAclPrincipal` or equivalent local names, with result codes for accepted, already_applied, duplicate_entry, missing_entry, unsupported_action, invalid_principal, invalid_organization, invalid_tenant, reserved_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, replay_conflict, and idempotency_conflict.
++  - [x] Treat ACL action values as ordinal, lower-snake-case domain tokens; reject localized labels, display names, aliases, mixed-case variants, provider-specific verbs, and unknown action strings rather than normalizing them into accepted permissions.
++  - [x] Ensure stable result evidence is structured around result codes and metadata fields; tests must not infer behavior from event type names, exception text, stack traces, or localized diagnostics.
++- [x] Add fail-closed authorization integration points without pulling in later folder policy. (AC: 3, 4, 7)
++  - [x] Depend on the tenant-access authorizer/projection from Story 2.1 when available; if Story 2.1 implementation is still in flight, add an interface boundary and tests that model the fail-closed outcomes without duplicating Story 2.1 projection logic.
++  - [x] Check tenant projection evidence before organization stream loading or ACL mutation.
++  - [x] Treat tenant IDs from route/body/query/header as comparison values only, never as the authority that selects the aggregate stream.
++  - [x] Require the authorization seam to receive authoritative managed tenant context from authentication context or EventStore envelopes plus Story 2.1 evidence fields: outcome code, projection watermark, last event timestamp, projection age/freshness status, sequence/version when available, and correlation/task/idempotency metadata. Future-dated evidence must reject through the Story 2.1 stable evidence code instead of creating a permissive fallback.
++  - [x] Do not implement folder-level ACL overrides, folder lifecycle, provider readiness, repository binding, workspace, CLI, MCP, UI, or worker behavior in this story.
++- [x] Add idempotency and deterministic derivation support. (AC: 6, 8)
++  - [x] Reuse the project idempotency equivalence rules established in Epic 1; compare canonical ACL payload shape rather than raw JSON order.
++  - [x] Ensure duplicate equivalent commands do not append duplicate ACL events.
++  - [x] Provide deterministic state application for grant/revoke ordering and duplicate entries.
++  - [x] Add effective-permission derivation helpers only for organization baseline state; Story 2.5 owns public effective-permission inspection.
++  - [x] Treat the same idempotency key plus the same canonical payload as the same logical result with no duplicate event; the same idempotency key plus a different canonical payload rejects as `idempotency_conflict`; a different idempotency key plus an already-present grant returns deterministic `already_applied` evidence or equivalent no-op result without appending a duplicate event.
++  - [x] Derive organization-baseline permissions by set membership over tenant, organization, principal kind, principal ID, and action. Replaying events in any order that preserves causal version order must produce the same state; role/group inheritance and folder override precedence remain out of scope.
++  - [x] Include command type and operation intent in the canonical idempotency payload so a grant and revoke for the same ACL tuple can never share an equivalence class.
++  - [x] Canonicalize repeated entries before event creation: exact duplicates reduce to one entry; conflicting same-tuple grant/revoke or action interpretation rejects as `duplicate_entry`, `replay_conflict`, or a locally equivalent stable conflict code before append.
++- [x] Add tests and fixtures. (AC: 1-12)
++  - [x] Add unit tests under `tests/Hexalith.Folders.Tests` for aggregate initialization, grant/revoke by principal kind, duplicate grants, revoke of missing grant, unsupported action, malformed IDs, and reserved tenant rejection.
++  - [x] Add authorization tests for stale/unavailable/disabled/unknown/malformed/replay-conflicting/future tenant projection evidence and tenant mismatch.
++  - [x] Add idempotency tests for equivalent replay and conflicting replay.
++  - [x] Add leakage tests that scan event/rejection/debug strings for credential, token, file content, repository, branch, and unauthorized-resource sentinel values.
++  - [x] Extend `src/Hexalith.Folders.Testing` factories only with reusable organization/ACL builders that delegate to production validation rules.
++  - [x] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
++  - [x] Add focused tests named `OrganizationAclCommandValidationTests`, `OrganizationAclTenantEvidenceGateTests`, `OrganizationAclIdempotencyTests`, `OrganizationAclEffectivePermissionTests`, `OrganizationAclMetadataLeakageTests`, and `OrganizationAclStreamShapeTests` or equivalent locally consistent names.
++  - [x] Add negative controls proving rejected tenant evidence does not construct stream names, read streams, append events, mutate aggregate state, or query diagnostic/audit resources.
++  - [x] Add intra-command duplicate/conflict tests covering exact duplicate grants, exact duplicate revokes, same idempotency key with reordered entries, same key with grant-vs-revoke intent changes, and mixed principal-kind collision attempts.
++  - [x] Add structured-result tests proving accepted, already-applied, missing-entry, unsupported-action, tenant-evidence, replay-conflict, and idempotency-conflict outcomes can be asserted from stable codes and safe metadata without parsing diagnostic text.
++  - [x] Use pure in-memory fakes only for EventStore seams, tenant evidence, clock/time, validators, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
+ 
+ ## Dev Notes
+ 
+@@ -181,6 +181,7 @@ so that folder permissions can be granted consistently to users, groups, roles,
+ 
+ | Date | Change | Author |
+ |---|---|---|
++| 2026-05-18 | Implemented Organization ACL aggregate baseline, tenant-evidence gate, idempotency/canonicalization support, reusable testing factory, and focused guardrail tests; story moved to review. | Codex |
+ | 2026-05-17 | Applied advanced-elicitation hardening for ACL canonicalization, strict action parsing, duplicate/conflict handling, structured result evidence, and side-effect negative controls. | Codex |
+ | 2026-05-17 | Applied party-mode review hardening for ACL vocabulary, principal identity, tenant evidence gating, idempotency semantics, metadata-only events, and offline test controls. | Codex |
+ | 2026-05-16 | Created story with aggregate, ACL, tenant-authority, idempotency, and metadata-only guardrails. | Codex |
+@@ -230,9 +231,60 @@ GPT-5 Codex
+ 
+ ### Debug Log References
+ 
++- 2026-05-18: Red phase confirmed with `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` failing on missing `Hexalith.Folders.Aggregates.Organization` types.
++- 2026-05-18: Focused domain validation passed with `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` (64 tests).
++- 2026-05-18: Testing-helper validation passed with `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore` (40 tests).
++- 2026-05-18: Contract guardrails passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` (81 tests).
++- 2026-05-18: Full regression passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
++
+ ### Completion Notes List
+ 
+ - Story created by `/bmad-create-story 2-2-implement-organization-aggregate-acl-baseline` equivalent workflow on 2026-05-16.
+ - Project context, Epic 2, architecture domain layout, Story 2.1, testing factories, and story-creation lessons were reviewed.
++- Added pure Organization ACL aggregate/state handling for baseline initialization, grant, revoke, stream naming, metadata-only events, stable result codes, strict action/principal validation, and deterministic permission derivation.
++- Added command canonicalization and idempotency fingerprints so exact duplicate entries collapse, grant/revoke conflicts reject, equivalent command replays avoid duplicate events, and conflicting idempotency replays fail closed.
++- Added `OrganizationAclTenantGate` over Story 2.1 tenant-access evidence so non-allowed evidence, payload-tenant mismatch, duplicate/conflicting command entries, and idempotency conflicts reject before organization stream construction/loading/append.
++- Added reusable `OrganizationAclTestDataFactory` in `Hexalith.Folders.Testing`, updated the scaffold dependency policy for its intentional core-domain reference, and narrowed older contract-story negative-scope guards to allow the Story 2.2-owned `Aggregates/Organization` domain folder.
++- Did not implement folder inheritance, folder ACL overrides, public effective-permission endpoints, provider binding/adapters, repository/workspace behavior, CLI/MCP/UI/workers, or production Dapr policy.
+ 
+ ### File List
++
++- `_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md`
++- `_bmad-output/implementation-artifacts/sprint-status.yaml`
++- `src/Hexalith.Folders/Aggregates/Organization/GrantOrganizationAclPrincipal.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclCommand.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclEvent.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclRepository.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/InitializeOrganizationAclBaseline.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclAction.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclBaselineInitialized.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidationResult.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperation.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperationIntent.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalGranted.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalKind.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalRevoked.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResult.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResultCode.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs`
++- `src/Hexalith.Folders/Aggregates/Organization/RevokeOrganizationAclPrincipal.cs`
++- `src/Hexalith.Folders.Testing/Factories/OrganizationAclTestDataFactory.cs`
++- `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj`
++- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
++- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs`
++- `tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`
++- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
++- `tests/Hexalith.Folders.Testing.Tests/Unit/OrganizationAclTestDataFactoryTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/AclCommandFactory.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclIdempotencyTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Organization/RecordingOrganizationAclRepository.cs`
+diff --git a/src/Hexalith.Folders.Testing/Factories/OrganizationAclTestDataFactory.cs b/src/Hexalith.Folders.Testing/Factories/OrganizationAclTestDataFactory.cs
+new file mode 100644
+index 0000000..ae1b023
+--- /dev/null
++++ b/src/Hexalith.Folders.Testing/Factories/OrganizationAclTestDataFactory.cs
+@@ -0,0 +1,72 @@
++using Hexalith.Folders.Aggregates.Organization;
++
++namespace Hexalith.Folders.Testing.Factories;
++
++public static class OrganizationAclTestDataFactory
++{
++    public static GrantOrganizationAclPrincipal Grant(
++        string managedTenantId = "tenant-a",
++        string organizationId = "organization-a",
++        OrganizationAclPrincipalKind principalKind = OrganizationAclPrincipalKind.User,
++        string principalId = "principal-a",
++        string action = "read_metadata",
++        string correlationId = "correlation-a",
++        string taskId = "task-a",
++        string idempotencyKey = "idempotency-a",
++        string? payloadTenantId = null)
++    {
++        GrantOrganizationAclPrincipal command = new(
++            managedTenantId,
++            organizationId,
++            principalKind,
++            principalId,
++            action,
++            correlationId,
++            taskId,
++            idempotencyKey,
++            payloadTenantId);
++
++        EnsureAccepted(command);
++        return command;
++    }
++
++    public static RevokeOrganizationAclPrincipal Revoke(
++        string managedTenantId = "tenant-a",
++        string organizationId = "organization-a",
++        OrganizationAclPrincipalKind principalKind = OrganizationAclPrincipalKind.User,
++        string principalId = "principal-a",
++        string action = "read_metadata",
++        string correlationId = "correlation-a",
++        string taskId = "task-a",
++        string idempotencyKey = "idempotency-a",
++        string? payloadTenantId = null)
++    {
++        RevokeOrganizationAclPrincipal command = new(
++            managedTenantId,
++            organizationId,
++            principalKind,
++            principalId,
++            action,
++            correlationId,
++            taskId,
++            idempotencyKey,
++            payloadTenantId);
++
++        EnsureAccepted(command);
++        return command;
++    }
++
++    public static OrganizationStreamName OrganizationStreamName(
++        string managedTenantId = "tenant-a",
++        string organizationId = "organization-a")
++        => Aggregates.Organization.OrganizationStreamName.Create(managedTenantId, organizationId);
++
++    private static void EnsureAccepted(IOrganizationAclCommand command)
++    {
++        OrganizationAclCommandValidationResult result = OrganizationAclCommandValidator.Validate(command);
++        if (!result.IsAccepted)
++        {
++            throw new ArgumentException($"Invalid organization ACL test command: {result.Code}.", nameof(command));
++        }
++    }
++}
+diff --git a/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj b/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj
+index 1ad5931..4e912a5 100644
+--- a/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj
++++ b/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj
+@@ -6,6 +6,7 @@
+     <InternalsVisibleTo Include="Hexalith.Folders.Testing.Tests" />
+   </ItemGroup>
+   <ItemGroup>
++    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
+     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+   </ItemGroup>
+ </Project>
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/GrantOrganizationAclPrincipal.cs b/src/Hexalith.Folders/Aggregates/Organization/GrantOrganizationAclPrincipal.cs
+new file mode 100644
+index 0000000..799cc74
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/GrantOrganizationAclPrincipal.cs
+@@ -0,0 +1,22 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record GrantOrganizationAclPrincipal(
++    string ManagedTenantId,
++    string OrganizationId,
++    OrganizationAclPrincipalKind PrincipalKind,
++    string PrincipalId,
++    string Action,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string? PayloadTenantId) : IOrganizationAclCommand
++{
++    public string CommandType => nameof(GrantOrganizationAclPrincipal);
++
++    public IReadOnlyList<OrganizationAclOperation> Operations =>
++    [
++        new OrganizationAclOperation(OrganizationAclOperationIntent.Grant, PrincipalKind, PrincipalId, Action),
++    ];
++
++    public IOrganizationAclCommand WithManagedTenantId(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclCommand.cs b/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclCommand.cs
+new file mode 100644
+index 0000000..cf60277
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclCommand.cs
+@@ -0,0 +1,22 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public interface IOrganizationAclCommand
++{
++    string ManagedTenantId { get; }
++
++    string OrganizationId { get; }
++
++    string CorrelationId { get; }
++
++    string TaskId { get; }
++
++    string IdempotencyKey { get; }
++
++    string? PayloadTenantId { get; }
++
++    string CommandType { get; }
++
++    IOrganizationAclCommand WithManagedTenantId(string managedTenantId);
++
++    IReadOnlyList<OrganizationAclOperation> Operations { get; }
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclEvent.cs b/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclEvent.cs
+new file mode 100644
+index 0000000..6be4f17
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclEvent.cs
+@@ -0,0 +1,16 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public interface IOrganizationAclEvent
++{
++    string ManagedTenantId { get; }
++
++    string OrganizationId { get; }
++
++    string CorrelationId { get; }
++
++    string TaskId { get; }
++
++    string IdempotencyKey { get; }
++
++    string IdempotencyFingerprint { get; }
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclRepository.cs b/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclRepository.cs
+new file mode 100644
+index 0000000..7f0b9fe
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclRepository.cs
+@@ -0,0 +1,16 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public interface IOrganizationAclRepository
++{
++    OrganizationStreamName CreateStreamName(string managedTenantId, string organizationId);
++
++    OrganizationState Load(OrganizationStreamName streamName);
++
++    void Append(OrganizationStreamName streamName, IReadOnlyList<IOrganizationAclEvent> events);
++
++    bool TryGetIdempotencyFingerprint(
++        string managedTenantId,
++        string organizationId,
++        string idempotencyKey,
++        out string? fingerprint);
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/InitializeOrganizationAclBaseline.cs b/src/Hexalith.Folders/Aggregates/Organization/InitializeOrganizationAclBaseline.cs
+new file mode 100644
+index 0000000..f7ae19c
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/InitializeOrganizationAclBaseline.cs
+@@ -0,0 +1,15 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record InitializeOrganizationAclBaseline(
++    string ManagedTenantId,
++    string OrganizationId,
++    IReadOnlyList<OrganizationAclOperation> Operations,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string? PayloadTenantId) : IOrganizationAclCommand
++{
++    public string CommandType => nameof(InitializeOrganizationAclBaseline);
++
++    public IOrganizationAclCommand WithManagedTenantId(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclAction.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclAction.cs
+new file mode 100644
+index 0000000..d4c98e4
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclAction.cs
+@@ -0,0 +1,24 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public static class OrganizationAclAction
++{
++    private static readonly HashSet<string> SupportedValues = new(StringComparer.Ordinal)
++    {
++        "create_folder",
++        "configure_provider_binding",
++        "prepare_workspace",
++        "lock_workspace",
++        "read_metadata",
++        "read_file_content",
++        "mutate_files",
++        "commit",
++        "query_status",
++        "query_audit",
++        "view_operations_console",
++    };
++
++    public static bool IsSupported(string? value)
++        => !string.IsNullOrWhiteSpace(value)
++            && string.Equals(value, value.Trim(), StringComparison.Ordinal)
++            && SupportedValues.Contains(value);
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclBaselineInitialized.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclBaselineInitialized.cs
+new file mode 100644
+index 0000000..360660e
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclBaselineInitialized.cs
+@@ -0,0 +1,9 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclBaselineInitialized(
++    string ManagedTenantId,
++    string OrganizationId,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string IdempotencyFingerprint) : IOrganizationAclEvent;
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidationResult.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidationResult.cs
+new file mode 100644
+index 0000000..d00f53b
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidationResult.cs
+@@ -0,0 +1,17 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclCommandValidationResult(
++    OrganizationAclResultCode Code,
++    IReadOnlyList<OrganizationAclOperation> Operations,
++    string IdempotencyFingerprint)
++{
++    public bool IsAccepted => Code == OrganizationAclResultCode.Accepted;
++
++    public static OrganizationAclCommandValidationResult Accepted(
++        IReadOnlyList<OrganizationAclOperation> operations,
++        string fingerprint)
++        => new(OrganizationAclResultCode.Accepted, operations, fingerprint);
++
++    public static OrganizationAclCommandValidationResult Rejected(OrganizationAclResultCode code)
++        => new(code, [], string.Empty);
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs
+new file mode 100644
+index 0000000..3e882ae
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs
+@@ -0,0 +1,84 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public static class OrganizationAclCommandValidator
++{
++    public static OrganizationAclCommandValidationResult Validate(IOrganizationAclCommand command)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++
++        if (OrganizationStreamName.IsReservedSystemTenant(command.ManagedTenantId))
++        {
++            return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReservedTenant);
++        }
++
++        if (!OrganizationStreamName.IsValidSegment(command.ManagedTenantId))
++        {
++            return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidTenant);
++        }
++
++        if (!OrganizationStreamName.IsValidSegment(command.OrganizationId))
++        {
++            return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidOrganization);
++        }
++
++        Dictionary<string, OrganizationAclOperation> unique = new(StringComparer.Ordinal);
++        Dictionary<string, OrganizationAclOperationIntent> tupleIntents = new(StringComparer.Ordinal);
++
++        foreach (OrganizationAclOperation operation in command.Operations)
++        {
++            if (!OrganizationAclAction.IsSupported(operation.Action))
++            {
++                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.UnsupportedAction);
++            }
++
++            if (!IsValidPrincipalId(operation.PrincipalId))
++            {
++                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidPrincipal);
++            }
++
++            OrganizationAclEntryKey key = new(
++                command.ManagedTenantId,
++                command.OrganizationId,
++                operation.PrincipalKind,
++                operation.PrincipalId,
++                operation.Action);
++            string tupleKey = key.CanonicalValue;
++            if (tupleIntents.TryGetValue(tupleKey, out OrganizationAclOperationIntent priorIntent)
++                && priorIntent != operation.Intent)
++            {
++                return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReplayConflict);
++            }
++
++            tupleIntents[tupleKey] = operation.Intent;
++            unique[$"{operation.Intent}|{tupleKey}"] = operation;
++        }
++
++        OrganizationAclOperation[] ordered = unique
++            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
++            .Select(static pair => pair.Value)
++            .ToArray();
++
++        return OrganizationAclCommandValidationResult.Accepted(ordered, Fingerprint(command, ordered));
++    }
++
++    private static string Fingerprint(IOrganizationAclCommand command, IReadOnlyList<OrganizationAclOperation> operations)
++    {
++        IEnumerable<string> operationTokens = operations.Select(operation =>
++        {
++            OrganizationAclEntryKey key = new(
++                command.ManagedTenantId,
++                command.OrganizationId,
++                operation.PrincipalKind,
++                operation.PrincipalId,
++                operation.Action);
++            return $"{operation.Intent}|{key.CanonicalValue}";
++        });
++
++        return string.Join("|", [command.CommandType, .. operationTokens]);
++    }
++
++    private static bool IsValidPrincipalId(string? value)
++        => !string.IsNullOrWhiteSpace(value)
++            && string.Equals(value, value.Trim(), StringComparison.Ordinal)
++            && !value.Any(static character => character == ':' || char.IsControl(character));
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs
+new file mode 100644
+index 0000000..8d4bb75
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs
+@@ -0,0 +1,28 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclEntryKey(
++    string ManagedTenantId,
++    string OrganizationId,
++    OrganizationAclPrincipalKind PrincipalKind,
++    string PrincipalId,
++    string Action)
++{
++    public string CanonicalValue
++        => string.Join(
++            "|",
++            ManagedTenantId,
++            OrganizationId,
++            PrincipalKindToken,
++            PrincipalId,
++            Action);
++
++    public string PrincipalKindToken
++        => PrincipalKind switch
++        {
++            OrganizationAclPrincipalKind.User => "user",
++            OrganizationAclPrincipalKind.Group => "group",
++            OrganizationAclPrincipalKind.Role => "role",
++            OrganizationAclPrincipalKind.DelegatedServiceAgent => "delegated_service_agent",
++            _ => "unknown",
++        };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperation.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperation.cs
+new file mode 100644
+index 0000000..fbe1f4d
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperation.cs
+@@ -0,0 +1,7 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclOperation(
++    OrganizationAclOperationIntent Intent,
++    OrganizationAclPrincipalKind PrincipalKind,
++    string PrincipalId,
++    string Action);
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperationIntent.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperationIntent.cs
+new file mode 100644
+index 0000000..3cc8f13
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperationIntent.cs
+@@ -0,0 +1,7 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public enum OrganizationAclOperationIntent
++{
++    Grant,
++    Revoke,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalGranted.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalGranted.cs
+new file mode 100644
+index 0000000..4ec7ad4
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalGranted.cs
+@@ -0,0 +1,12 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclPrincipalGranted(
++    string ManagedTenantId,
++    string OrganizationId,
++    OrganizationAclPrincipalKind PrincipalKind,
++    string PrincipalId,
++    string Action,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string IdempotencyFingerprint) : IOrganizationAclEvent;
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalKind.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalKind.cs
+new file mode 100644
+index 0000000..36eb732
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalKind.cs
+@@ -0,0 +1,9 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public enum OrganizationAclPrincipalKind
++{
++    User,
++    Group,
++    Role,
++    DelegatedServiceAgent,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalRevoked.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalRevoked.cs
+new file mode 100644
+index 0000000..6622a5b
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalRevoked.cs
+@@ -0,0 +1,12 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclPrincipalRevoked(
++    string ManagedTenantId,
++    string OrganizationId,
++    OrganizationAclPrincipalKind PrincipalKind,
++    string PrincipalId,
++    string Action,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string IdempotencyFingerprint) : IOrganizationAclEvent;
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResult.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResult.cs
+new file mode 100644
+index 0000000..d83e57a
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResult.cs
+@@ -0,0 +1,57 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationAclResult(
++    OrganizationAclResultCode Code,
++    string? ManagedTenantId,
++    string? OrganizationId,
++    string? PrincipalId,
++    OrganizationAclPrincipalKind? PrincipalKind,
++    string? Action,
++    string? CorrelationId,
++    string? TaskId,
++    string? IdempotencyKey,
++    IReadOnlyList<IOrganizationAclEvent> Events)
++{
++    public static OrganizationAclResult Accepted(IOrganizationAclCommand command, IReadOnlyList<IOrganizationAclEvent> events)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++        ArgumentNullException.ThrowIfNull(events);
++
++        return From(command, OrganizationAclResultCode.Accepted, events);
++    }
++
++    public static OrganizationAclResult Rejected(IOrganizationAclCommand command, OrganizationAclResultCode code)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++
++        return From(command, code, []);
++    }
++
++    public static OrganizationAclResult Rejected(
++        OrganizationAclResultCode code,
++        string? managedTenantId,
++        string? organizationId,
++        string? correlationId,
++        string? taskId,
++        string? idempotencyKey)
++        => new(code, managedTenantId, organizationId, null, null, null, correlationId, taskId, idempotencyKey, []);
++
++    private static OrganizationAclResult From(
++        IOrganizationAclCommand command,
++        OrganizationAclResultCode code,
++        IReadOnlyList<IOrganizationAclEvent> events)
++    {
++        OrganizationAclOperation? operation = command.Operations.Count == 1 ? command.Operations[0] : null;
++        return new(
++            code,
++            command.ManagedTenantId,
++            command.OrganizationId,
++            operation?.PrincipalId,
++            operation?.PrincipalKind,
++            operation?.Action,
++            command.CorrelationId,
++            command.TaskId,
++            command.IdempotencyKey,
++            events);
++    }
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResultCode.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResultCode.cs
+new file mode 100644
+index 0000000..e189ce5
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResultCode.cs
+@@ -0,0 +1,24 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public enum OrganizationAclResultCode
++{
++    Accepted,
++    AlreadyApplied,
++    DuplicateEntry,
++    MissingEntry,
++    UnsupportedAction,
++    InvalidPrincipal,
++    InvalidOrganization,
++    InvalidTenant,
++    ReservedTenant,
++    TenantAccessDenied,
++    StaleProjection,
++    UnavailableProjection,
++    UnknownTenant,
++    DisabledTenant,
++    MalformedEvidence,
++    TenantMismatch,
++    MissingAuthoritativeTenant,
++    ReplayConflict,
++    IdempotencyConflict,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs
+new file mode 100644
+index 0000000..3d1808b
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs
+@@ -0,0 +1,85 @@
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed class OrganizationAclTenantGate(IOrganizationAclRepository repository)
++{
++    public OrganizationAclResult Handle(
++        IOrganizationAclCommand command,
++        TenantAccessAuthorizationResult tenantAccess)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++        ArgumentNullException.ThrowIfNull(tenantAccess);
++
++        if (!tenantAccess.IsAllowed)
++        {
++            return OrganizationAclResult.Rejected(
++                Map(tenantAccess.Outcome),
++                tenantAccess.TenantId,
++                command.OrganizationId,
++                command.CorrelationId,
++                command.TaskId,
++                command.IdempotencyKey);
++        }
++
++        if (string.IsNullOrWhiteSpace(tenantAccess.TenantId))
++        {
++            return OrganizationAclResult.Rejected(command, OrganizationAclResultCode.MissingAuthoritativeTenant);
++        }
++
++        if (!string.IsNullOrWhiteSpace(command.PayloadTenantId)
++            && !string.Equals(command.PayloadTenantId, tenantAccess.TenantId, StringComparison.Ordinal))
++        {
++            return OrganizationAclResult.Rejected(
++                OrganizationAclResultCode.TenantMismatch,
++                tenantAccess.TenantId,
++                command.OrganizationId,
++                command.CorrelationId,
++                command.TaskId,
++                command.IdempotencyKey);
++        }
++
++        IOrganizationAclCommand authoritativeCommand = command.WithManagedTenantId(tenantAccess.TenantId);
++        OrganizationAclCommandValidationResult validation = OrganizationAclCommandValidator.Validate(authoritativeCommand);
++        if (!validation.IsAccepted)
++        {
++            return OrganizationAclResult.Rejected(authoritativeCommand, validation.Code);
++        }
++
++        if (repository.TryGetIdempotencyFingerprint(
++            authoritativeCommand.ManagedTenantId,
++            authoritativeCommand.OrganizationId,
++            authoritativeCommand.IdempotencyKey,
++            out string? priorFingerprint))
++        {
++            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
++                ? OrganizationAclResult.Rejected(authoritativeCommand, OrganizationAclResultCode.AlreadyApplied)
++                : OrganizationAclResult.Rejected(authoritativeCommand, OrganizationAclResultCode.IdempotencyConflict);
++        }
++
++        OrganizationStreamName streamName = repository.CreateStreamName(authoritativeCommand.ManagedTenantId, authoritativeCommand.OrganizationId);
++        OrganizationState state = repository.Load(streamName);
++        OrganizationAclResult result = OrganizationAggregate.Handle(state, authoritativeCommand);
++        if (result.Events.Count > 0)
++        {
++            repository.Append(streamName, result.Events);
++        }
++
++        return result;
++    }
++
++    private static OrganizationAclResultCode Map(TenantAccessOutcome outcome)
++        => outcome switch
++        {
++            TenantAccessOutcome.Denied => OrganizationAclResultCode.TenantAccessDenied,
++            TenantAccessOutcome.StaleProjection => OrganizationAclResultCode.StaleProjection,
++            TenantAccessOutcome.UnavailableProjection => OrganizationAclResultCode.UnavailableProjection,
++            TenantAccessOutcome.UnknownTenant => OrganizationAclResultCode.UnknownTenant,
++            TenantAccessOutcome.DisabledTenant => OrganizationAclResultCode.DisabledTenant,
++            TenantAccessOutcome.MalformedEvidence => OrganizationAclResultCode.MalformedEvidence,
++            TenantAccessOutcome.TenantMismatch => OrganizationAclResultCode.TenantMismatch,
++            TenantAccessOutcome.MissingAuthoritativeTenant => OrganizationAclResultCode.MissingAuthoritativeTenant,
++            TenantAccessOutcome.ReplayConflict => OrganizationAclResultCode.ReplayConflict,
++            _ => OrganizationAclResultCode.TenantAccessDenied,
++        };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs
+new file mode 100644
+index 0000000..874408d
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs
+@@ -0,0 +1,88 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public static class OrganizationAggregate
++{
++    public static OrganizationAclResult Handle(OrganizationState state, IOrganizationAclCommand command)
++    {
++        ArgumentNullException.ThrowIfNull(state);
++        ArgumentNullException.ThrowIfNull(command);
++
++        OrganizationAclCommandValidationResult validation = OrganizationAclCommandValidator.Validate(command);
++        if (!validation.IsAccepted)
++        {
++            return OrganizationAclResult.Rejected(command, validation.Code);
++        }
++
++        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
++        {
++            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
++                ? OrganizationAclResult.Rejected(command, OrganizationAclResultCode.AlreadyApplied)
++                : OrganizationAclResult.Rejected(command, OrganizationAclResultCode.IdempotencyConflict);
++        }
++
++        List<IOrganizationAclEvent> events = [];
++        if (!state.IsInitialized)
++        {
++            events.Add(new OrganizationAclBaselineInitialized(
++                command.ManagedTenantId,
++                command.OrganizationId,
++                command.CorrelationId,
++                command.TaskId,
++                command.IdempotencyKey,
++                validation.IdempotencyFingerprint));
++        }
++
++        foreach (OrganizationAclOperation operation in validation.Operations)
++        {
++            OrganizationAclEntryKey key = new(
++                command.ManagedTenantId,
++                command.OrganizationId,
++                operation.PrincipalKind,
++                operation.PrincipalId,
++                operation.Action);
++
++            if (operation.Intent == OrganizationAclOperationIntent.Grant)
++            {
++                if (state.HasGrant(key))
++                {
++                    return events.Count == 0
++                        ? OrganizationAclResult.Rejected(command, OrganizationAclResultCode.AlreadyApplied)
++                        : OrganizationAclResult.Accepted(command, events);
++                }
++
++                events.Add(new OrganizationAclPrincipalGranted(
++                    command.ManagedTenantId,
++                    command.OrganizationId,
++                    operation.PrincipalKind,
++                    operation.PrincipalId,
++                    operation.Action,
++                    command.CorrelationId,
++                    command.TaskId,
++                    command.IdempotencyKey,
++                    validation.IdempotencyFingerprint));
++            }
++            else if (!state.HasGrant(key))
++            {
++                return OrganizationAclResult.Rejected(command, OrganizationAclResultCode.MissingEntry);
++            }
++            else
++            {
++                events.Add(new OrganizationAclPrincipalRevoked(
++                    command.ManagedTenantId,
++                    command.OrganizationId,
++                    operation.PrincipalKind,
++                    operation.PrincipalId,
++                    operation.Action,
++                    command.CorrelationId,
++                    command.TaskId,
++                    command.IdempotencyKey,
++                    validation.IdempotencyFingerprint));
++            }
++        }
++
++        return events.Count == 0
++            ? OrganizationAclResult.Rejected(command, OrganizationAclResultCode.AlreadyApplied)
++            : OrganizationAclResult.Accepted(command, events);
++    }
++
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs
+new file mode 100644
+index 0000000..d598687
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs
+@@ -0,0 +1,64 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationState(
++    bool IsInitialized,
++    IReadOnlySet<OrganizationAclEntryKey> Grants,
++    IReadOnlyDictionary<string, string> IdempotencyFingerprints)
++{
++    public static OrganizationState Empty { get; } = new(
++        false,
++        new HashSet<OrganizationAclEntryKey>(),
++        new Dictionary<string, string>(StringComparer.Ordinal));
++
++    public OrganizationState Apply(IEnumerable<IOrganizationAclEvent> events)
++    {
++        ArgumentNullException.ThrowIfNull(events);
++
++        bool initialized = IsInitialized;
++        HashSet<OrganizationAclEntryKey> grants = new(Grants);
++        Dictionary<string, string> idempotency = new(IdempotencyFingerprints, StringComparer.Ordinal);
++
++        foreach (IOrganizationAclEvent aclEvent in events)
++        {
++            if (!string.IsNullOrWhiteSpace(aclEvent.IdempotencyKey))
++            {
++                idempotency[aclEvent.IdempotencyKey] = aclEvent.IdempotencyFingerprint;
++            }
++
++            switch (aclEvent)
++            {
++                case OrganizationAclBaselineInitialized:
++                    initialized = true;
++                    break;
++                case OrganizationAclPrincipalGranted granted:
++                    grants.Add(Key(granted.ManagedTenantId, granted.OrganizationId, granted.PrincipalKind, granted.PrincipalId, granted.Action));
++                    initialized = true;
++                    break;
++                case OrganizationAclPrincipalRevoked revoked:
++                    grants.Remove(Key(revoked.ManagedTenantId, revoked.OrganizationId, revoked.PrincipalKind, revoked.PrincipalId, revoked.Action));
++                    initialized = true;
++                    break;
++            }
++        }
++
++        return new OrganizationState(initialized, grants, idempotency);
++    }
++
++    public bool HasPermission(
++        string managedTenantId,
++        string organizationId,
++        OrganizationAclPrincipalKind principalKind,
++        string principalId,
++        string action)
++        => Grants.Contains(Key(managedTenantId, organizationId, principalKind, principalId, action));
++
++    internal bool HasGrant(OrganizationAclEntryKey key) => Grants.Contains(key);
++
++    private static OrganizationAclEntryKey Key(
++        string managedTenantId,
++        string organizationId,
++        OrganizationAclPrincipalKind principalKind,
++        string principalId,
++        string action)
++        => new(managedTenantId, organizationId, principalKind, principalId, action);
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs b/src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs
+new file mode 100644
+index 0000000..bf7ab6e
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs
+@@ -0,0 +1,55 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record OrganizationStreamName(string Value)
++{
++    public static OrganizationStreamName Create(string managedTenantId, string organizationId)
++    {
++        if (!TryCreate(managedTenantId, organizationId, out OrganizationStreamName? streamName, out OrganizationAclResultCode code))
++        {
++            throw new ArgumentException($"Invalid organization stream name: {code}.", nameof(managedTenantId));
++        }
++
++        return streamName!;
++    }
++
++    public static bool TryCreate(
++        string? managedTenantId,
++        string? organizationId,
++        out OrganizationStreamName? streamName,
++        out OrganizationAclResultCode code)
++    {
++        streamName = null;
++
++        if (IsReservedSystemTenant(managedTenantId))
++        {
++            code = OrganizationAclResultCode.ReservedTenant;
++            return false;
++        }
++
++        if (!IsValidSegment(managedTenantId))
++        {
++            code = OrganizationAclResultCode.InvalidTenant;
++            return false;
++        }
++
++        if (!IsValidSegment(organizationId))
++        {
++            code = OrganizationAclResultCode.InvalidOrganization;
++            return false;
++        }
++
++        streamName = new OrganizationStreamName($"{managedTenantId}:organizations:{organizationId}");
++        code = OrganizationAclResultCode.Accepted;
++        return true;
++    }
++
++    internal static bool IsReservedSystemTenant(string? managedTenantId)
++        => !string.IsNullOrWhiteSpace(managedTenantId)
++            && string.Equals(managedTenantId.Trim(), "system", StringComparison.OrdinalIgnoreCase);
++
++    internal static bool IsValidSegment(string? value)
++        => !string.IsNullOrWhiteSpace(value)
++            && string.Equals(value, value.Trim(), StringComparison.Ordinal)
++            && string.Equals(value, value.ToLowerInvariant(), StringComparison.Ordinal)
++            && !value.Any(static character => character == ':' || char.IsControl(character));
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Organization/RevokeOrganizationAclPrincipal.cs b/src/Hexalith.Folders/Aggregates/Organization/RevokeOrganizationAclPrincipal.cs
+new file mode 100644
+index 0000000..b89998c
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Organization/RevokeOrganizationAclPrincipal.cs
+@@ -0,0 +1,22 @@
++namespace Hexalith.Folders.Aggregates.Organization;
++
++public sealed record RevokeOrganizationAclPrincipal(
++    string ManagedTenantId,
++    string OrganizationId,
++    OrganizationAclPrincipalKind PrincipalKind,
++    string PrincipalId,
++    string Action,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string? PayloadTenantId) : IOrganizationAclCommand
++{
++    public string CommandType => nameof(RevokeOrganizationAclPrincipal);
++
++    public IReadOnlyList<OrganizationAclOperation> Operations =>
++    [
++        new OrganizationAclOperation(OrganizationAclOperationIntent.Revoke, PrincipalKind, PrincipalId, Action),
++    ];
++
++    public IOrganizationAclCommand WithManagedTenantId(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
++}
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
+index 7ebcb55..924805e 100644
+--- a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs
+@@ -521,6 +521,7 @@ public sealed class AuditOpsConsoleContractGroupTests
+                     string relative = Path.GetRelativePath(projectRoot, file).Replace('\\', '/');
+                     return !relative.StartsWith("obj/", StringComparison.Ordinal)
+                         && !relative.StartsWith("bin/", StringComparison.Ordinal)
++                        && !relative.StartsWith("Aggregates/Organization/", StringComparison.Ordinal)
+                         && MatchesGlob(relative, pattern);
+                 })
+                 .ToArray();
+diff --git a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs
+index 67285fc..3e8dba0 100644
+--- a/tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs
++++ b/tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs
+@@ -322,6 +322,7 @@ public sealed class CommitStatusContractGroupTests
+                     string relative = Path.GetRelativePath(projectRoot, file).Replace('\\', '/');
+                     return !relative.StartsWith("obj/", StringComparison.Ordinal)
+                         && !relative.StartsWith("bin/", StringComparison.Ordinal)
++                        && !relative.StartsWith("Aggregates/Organization/", StringComparison.Ordinal)
+                         && MatchesGlob(relative, pattern);
+                 })
+                 .ToArray();
+diff --git a/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj b/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj
+index 2c88fe0..6b9ce6c 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj
++++ b/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj
+@@ -3,6 +3,7 @@
+     <IsPackable>false</IsPackable>
+   </PropertyGroup>
+   <ItemGroup>
++    <ProjectReference Include="..\..\src\Hexalith.Folders\Hexalith.Folders.csproj" />
+     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+   </ItemGroup>
+   <ItemGroup>
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+index 7fe77b5..905ff3e 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
++++ b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+@@ -107,7 +107,7 @@ public sealed class ScaffoldContractTests
+         AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Tenants"]);
+         AssertReferences(references, "Hexalith.Folders.Aspire", []);
+         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
+-        AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders.Contracts"]);
++        AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders", "Hexalith.Folders.Contracts"]);
+         AssertReferences(references, "Hexalith.Folders.Sample", ["Hexalith.Folders.Client"]);
+         AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
+         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Contracts"]);
+@@ -118,7 +118,7 @@ public sealed class ScaffoldContractTests
+         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
+-        AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders.Testing"]);
++        AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Contracts"]);
+     }
+diff --git a/tests/Hexalith.Folders.Testing.Tests/Unit/OrganizationAclTestDataFactoryTests.cs b/tests/Hexalith.Folders.Testing.Tests/Unit/OrganizationAclTestDataFactoryTests.cs
+new file mode 100644
+index 0000000..6ddd2f1
+--- /dev/null
++++ b/tests/Hexalith.Folders.Testing.Tests/Unit/OrganizationAclTestDataFactoryTests.cs
+@@ -0,0 +1,32 @@
++using Hexalith.Folders.Aggregates.Organization;
++using Hexalith.Folders.Testing.Factories;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Testing.Tests.Unit;
++
++public sealed class OrganizationAclTestDataFactoryTests
++{
++    [Fact]
++    public void GrantShouldUseProductionAclValidation()
++    {
++        GrantOrganizationAclPrincipal command = OrganizationAclTestDataFactory.Grant(action: "read_metadata");
++
++        OrganizationAclCommandValidator.Validate(command).Code.ShouldBe(OrganizationAclResultCode.Accepted);
++    }
++
++    [Fact]
++    public void OrganizationStreamNameShouldUseProductionStreamShape()
++    {
++        OrganizationStreamName streamName = OrganizationAclTestDataFactory.OrganizationStreamName();
++
++        streamName.Value.ShouldBe("tenant-a:organizations:organization-a");
++    }
++
++    [Fact]
++    public void GrantShouldRejectInvalidInputsThroughProductionAclValidation()
++    {
++        Should.Throw<ArgumentException>(() => OrganizationAclTestDataFactory.Grant(action: "Read_Metadata"))
++            .Message.ShouldContain(nameof(OrganizationAclResultCode.UnsupportedAction));
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/AclCommandFactory.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/AclCommandFactory.cs
+new file mode 100644
+index 0000000..26cf71b
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/AclCommandFactory.cs
+@@ -0,0 +1,68 @@
++using Hexalith.Folders.Aggregates.Organization;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++internal static class AclCommandFactory
++{
++    public static GrantOrganizationAclPrincipal Grant(
++        string managedTenantId = "tenant-a",
++        string organizationId = "organization-a",
++        OrganizationAclPrincipalKind principalKind = OrganizationAclPrincipalKind.User,
++        string principalId = "principal-a",
++        string action = "read_metadata",
++        string correlationId = "correlation-a",
++        string taskId = "task-a",
++        string idempotencyKey = "idempotency-a",
++        string? payloadTenantId = null)
++        => new(
++            managedTenantId,
++            organizationId,
++            principalKind,
++            principalId,
++            action,
++            correlationId,
++            taskId,
++            idempotencyKey,
++            payloadTenantId);
++
++    public static RevokeOrganizationAclPrincipal Revoke(
++        string managedTenantId = "tenant-a",
++        string organizationId = "organization-a",
++        OrganizationAclPrincipalKind principalKind = OrganizationAclPrincipalKind.User,
++        string principalId = "principal-a",
++        string action = "read_metadata",
++        string correlationId = "correlation-a",
++        string taskId = "task-a",
++        string idempotencyKey = "idempotency-a",
++        string? payloadTenantId = null)
++        => new(
++            managedTenantId,
++            organizationId,
++            principalKind,
++            principalId,
++            action,
++            correlationId,
++            taskId,
++            idempotencyKey,
++            payloadTenantId);
++
++    public static InitializeOrganizationAclBaseline Initialize(params OrganizationAclOperation[] operations)
++        => Initialize("idempotency-a", operations);
++
++    public static InitializeOrganizationAclBaseline Initialize(string idempotencyKey, params OrganizationAclOperation[] operations)
++        => new(
++            "tenant-a",
++            "organization-a",
++            operations,
++            "correlation-a",
++            "task-a",
++            idempotencyKey,
++            null);
++
++    public static OrganizationAclOperation Operation(
++        OrganizationAclOperationIntent intent,
++        OrganizationAclPrincipalKind principalKind = OrganizationAclPrincipalKind.User,
++        string principalId = "principal-a",
++        string action = "read_metadata")
++        => new(intent, principalKind, principalId, action);
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs
+new file mode 100644
+index 0000000..78faf44
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs
+@@ -0,0 +1,108 @@
++using Hexalith.Folders.Aggregates.Organization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++public sealed class OrganizationAclCommandValidationTests
++{
++    [Theory]
++    [InlineData(OrganizationAclPrincipalKind.User)]
++    [InlineData(OrganizationAclPrincipalKind.Group)]
++    [InlineData(OrganizationAclPrincipalKind.Role)]
++    [InlineData(OrganizationAclPrincipalKind.DelegatedServiceAgent)]
++    public void GrantShouldAppendMetadataOnlyPrincipalGrantForEveryPrincipalKind(OrganizationAclPrincipalKind principalKind)
++    {
++        OrganizationState state = OrganizationState.Empty;
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(principalKind: principalKind);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(state, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.Accepted);
++        result.Events.Count.ShouldBe(2);
++        result.Events[0].ShouldBeOfType<OrganizationAclBaselineInitialized>();
++        OrganizationAclPrincipalGranted grant = result.Events[1].ShouldBeOfType<OrganizationAclPrincipalGranted>();
++        grant.ManagedTenantId.ShouldBe(command.ManagedTenantId);
++        grant.OrganizationId.ShouldBe(command.OrganizationId);
++        grant.PrincipalKind.ShouldBe(principalKind);
++        grant.PrincipalId.ShouldBe(command.PrincipalId);
++        grant.Action.ShouldBe(command.Action);
++    }
++
++    [Theory]
++    [InlineData("read file content")]
++    [InlineData("Read_File_Content")]
++    [InlineData("read-file-content")]
++    [InlineData("delete_repository")]
++    public void GrantShouldRejectUnsupportedOrNonCanonicalActions(string action)
++    {
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(action: action);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.UnsupportedAction);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Theory]
++    [InlineData("")]
++    [InlineData(" ")]
++    [InlineData("principal:with-colon")]
++    [InlineData("principal\u0001with-control")]
++    public void GrantShouldRejectMalformedPrincipalIds(string principalId)
++    {
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(principalId: principalId);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.InvalidPrincipal);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void GrantShouldRejectReservedManagedTenantBeforeEvents()
++    {
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(managedTenantId: " system ");
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.ReservedTenant);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void RevokeMissingEntryShouldReturnStableMissingEntryCode()
++    {
++        RevokeOrganizationAclPrincipal command = AclCommandFactory.Revoke();
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.MissingEntry);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void InitializeShouldCollapseExactDuplicateOperationsBeforeEvents()
++    {
++        OrganizationAclOperation operation = AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant);
++        InitializeOrganizationAclBaseline command = AclCommandFactory.Initialize(operation, operation);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.Accepted);
++        result.Events.OfType<OrganizationAclPrincipalGranted>().Count().ShouldBe(1);
++    }
++
++    [Fact]
++    public void InitializeShouldRejectConflictingSameTupleOperationsBeforeEvents()
++    {
++        OrganizationAclOperation grant = AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant);
++        OrganizationAclOperation revoke = grant with { Intent = OrganizationAclOperationIntent.Revoke };
++        InitializeOrganizationAclBaseline command = AclCommandFactory.Initialize(grant, revoke);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.ReplayConflict);
++        result.Events.ShouldBeEmpty();
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs
+new file mode 100644
+index 0000000..e472f73
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs
+@@ -0,0 +1,56 @@
++using Hexalith.Folders.Aggregates.Organization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++public sealed class OrganizationAclEffectivePermissionTests
++{
++    [Fact]
++    public void StateShouldDerivePermissionsByTenantOrganizationKindPrincipalAndAction()
++    {
++        OrganizationState state = OrganizationState.Empty;
++        OrganizationAclResult grantUser = OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Grant(principalKind: OrganizationAclPrincipalKind.User, principalId: "subject-a"));
++        state = state.Apply(grantUser.Events);
++
++        OrganizationAclResult grantGroup = OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Grant(
++                principalKind: OrganizationAclPrincipalKind.Group,
++                principalId: "subject-a",
++                idempotencyKey: "idempotency-b"));
++        state = state.Apply(grantGroup.Events);
++
++        state.HasPermission("tenant-a", "organization-a", OrganizationAclPrincipalKind.User, "subject-a", "read_metadata").ShouldBeTrue();
++        state.HasPermission("tenant-a", "organization-a", OrganizationAclPrincipalKind.Group, "subject-a", "read_metadata").ShouldBeTrue();
++        state.HasPermission("tenant-a", "organization-a", OrganizationAclPrincipalKind.Role, "subject-a", "read_metadata").ShouldBeFalse();
++    }
++
++    [Fact]
++    public void RevokeShouldRemoveOnlyMatchingPrincipalKindTuple()
++    {
++        OrganizationState state = OrganizationState.Empty
++            .Apply(OrganizationAggregate.Handle(
++                OrganizationState.Empty,
++                AclCommandFactory.Grant(principalKind: OrganizationAclPrincipalKind.User, principalId: "same-id")).Events);
++        state = state.Apply(OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Grant(
++                principalKind: OrganizationAclPrincipalKind.Group,
++                principalId: "same-id",
++                idempotencyKey: "idempotency-b")).Events);
++
++        OrganizationAclResult revokeUser = OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Revoke(
++                principalKind: OrganizationAclPrincipalKind.User,
++                principalId: "same-id",
++                idempotencyKey: "idempotency-c"));
++        state = state.Apply(revokeUser.Events);
++
++        state.HasPermission("tenant-a", "organization-a", OrganizationAclPrincipalKind.User, "same-id", "read_metadata").ShouldBeFalse();
++        state.HasPermission("tenant-a", "organization-a", OrganizationAclPrincipalKind.Group, "same-id", "read_metadata").ShouldBeTrue();
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclIdempotencyTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclIdempotencyTests.cs
+new file mode 100644
+index 0000000..99becc9
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclIdempotencyTests.cs
+@@ -0,0 +1,79 @@
++using Hexalith.Folders.Aggregates.Organization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++public sealed class OrganizationAclIdempotencyTests
++{
++    [Fact]
++    public void SameIdempotencyKeyAndEquivalentPayloadShouldNotAppendDuplicateEvents()
++    {
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(idempotencyKey: "idem-a");
++        OrganizationAclResult first = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++        OrganizationState state = OrganizationState.Empty.Apply(first.Events);
++
++        OrganizationAclResult replay = OrganizationAggregate.Handle(state, command);
++
++        replay.Code.ShouldBe(OrganizationAclResultCode.AlreadyApplied);
++        replay.Events.ShouldBeEmpty();
++        replay.IdempotencyKey.ShouldBe("idem-a");
++    }
++
++    [Fact]
++    public void SameIdempotencyKeyAndDifferentPayloadShouldRejectAsConflict()
++    {
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(idempotencyKey: "idem-a", principalId: "principal-a");
++        OrganizationState state = OrganizationState.Empty.Apply(OrganizationAggregate.Handle(OrganizationState.Empty, command).Events);
++
++        OrganizationAclResult conflict = OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Grant(idempotencyKey: "idem-a", principalId: "principal-b"));
++
++        conflict.Code.ShouldBe(OrganizationAclResultCode.IdempotencyConflict);
++        conflict.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void DifferentIdempotencyKeyForAlreadyPresentGrantShouldReturnNoOpEvidence()
++    {
++        OrganizationState state = OrganizationState.Empty.Apply(
++            OrganizationAggregate.Handle(OrganizationState.Empty, AclCommandFactory.Grant(idempotencyKey: "idem-a")).Events);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Grant(idempotencyKey: "idem-b"));
++
++        result.Code.ShouldBe(OrganizationAclResultCode.AlreadyApplied);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void GrantAndRevokeWithSameKeyShouldNeverShareEquivalenceClass()
++    {
++        OrganizationState state = OrganizationState.Empty.Apply(
++            OrganizationAggregate.Handle(OrganizationState.Empty, AclCommandFactory.Grant(idempotencyKey: "idem-a")).Events);
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(
++            state,
++            AclCommandFactory.Revoke(idempotencyKey: "idem-a"));
++
++        result.Code.ShouldBe(OrganizationAclResultCode.IdempotencyConflict);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void ReorderedExactDuplicateEntriesShouldBeIdempotencyEquivalent()
++    {
++        OrganizationAclOperation first = AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant, principalId: "principal-a");
++        OrganizationAclOperation second = AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant, principalId: "principal-b");
++        InitializeOrganizationAclBaseline command = AclCommandFactory.Initialize("idem-a", first, first, second);
++        OrganizationState state = OrganizationState.Empty.Apply(OrganizationAggregate.Handle(OrganizationState.Empty, command).Events);
++
++        InitializeOrganizationAclBaseline replay = AclCommandFactory.Initialize("idem-a", second, first);
++        OrganizationAclResult result = OrganizationAggregate.Handle(state, replay);
++
++        result.Code.ShouldBe(OrganizationAclResultCode.AlreadyApplied);
++        result.Events.ShouldBeEmpty();
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs
+new file mode 100644
+index 0000000..817ffb0
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs
+@@ -0,0 +1,37 @@
++using System.Text.Json;
++using Hexalith.Folders.Aggregates.Organization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++public sealed class OrganizationAclMetadataLeakageTests
++{
++    [Theory]
++    [InlineData("credential-secret-value")]
++    [InlineData("provider-token-value")]
++    [InlineData("repository-name-value")]
++    [InlineData("branch-name-value")]
++    [InlineData("file content sentinel")]
++    [InlineData("diff --git a/secret b/secret")]
++    [InlineData("generated-context-payload")]
++    [InlineData("unauthorized-resource-name")]
++    [InlineData("user@example.test")]
++    public void EventsAndResultsShouldNotContainForbiddenSentinelValues(string forbidden)
++    {
++        GrantOrganizationAclPrincipal command = AclCommandFactory.Grant(
++            principalId: "principal-a",
++            correlationId: "correlation-a",
++            taskId: "task-a",
++            idempotencyKey: "idempotency-a");
++
++        OrganizationAclResult result = OrganizationAggregate.Handle(OrganizationState.Empty, command);
++
++        string serialized = JsonSerializer.Serialize(result);
++        serialized.ShouldNotContain(forbidden, Case.Insensitive);
++        serialized.ShouldContain("tenant-a");
++        serialized.ShouldContain("organization-a");
++        serialized.ShouldContain("principal-a");
++        serialized.ShouldContain("read_metadata");
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs
+new file mode 100644
+index 0000000..3f07fcf
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs
+@@ -0,0 +1,43 @@
++using Hexalith.Folders.Aggregates.Organization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++public sealed class OrganizationAclStreamShapeTests
++{
++    [Fact]
++    public void StreamNameShouldUseManagedTenantOrganizationShape()
++    {
++        OrganizationStreamName streamName = OrganizationStreamName.Create("tenant-a", "organization-a");
++
++        streamName.Value.ShouldBe("tenant-a:organizations:organization-a");
++    }
++
++    [Theory]
++    [InlineData("")]
++    [InlineData(" ")]
++    [InlineData("tenant:a")]
++    [InlineData("tenant\u0001a")]
++    [InlineData("Tenant-A")]
++    public void StreamNameShouldRejectInvalidManagedTenantSegments(string tenantId)
++    {
++        ArgumentNullException.ThrowIfNull(tenantId);
++
++        OrganizationStreamName.TryCreate(tenantId, "organization-a", out _, out OrganizationAclResultCode code).ShouldBeFalse();
++
++        code.ShouldBe(tenantId.Trim().Equals("system", StringComparison.OrdinalIgnoreCase)
++            ? OrganizationAclResultCode.ReservedTenant
++            : OrganizationAclResultCode.InvalidTenant);
++    }
++
++    [Theory]
++    [InlineData("system")]
++    [InlineData(" System ")]
++    public void StreamNameShouldRejectReservedSystemTenant(string tenantId)
++    {
++        OrganizationStreamName.TryCreate(tenantId, "organization-a", out _, out OrganizationAclResultCode code).ShouldBeFalse();
++
++        code.ShouldBe(OrganizationAclResultCode.ReservedTenant);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs
+new file mode 100644
+index 0000000..fde00a6
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs
+@@ -0,0 +1,116 @@
++using Hexalith.Folders.Aggregates.Organization;
++using Hexalith.Folders.Authorization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++public sealed class OrganizationAclTenantEvidenceGateTests
++{
++    [Theory]
++    [InlineData(TenantAccessOutcome.Denied, OrganizationAclResultCode.TenantAccessDenied)]
++    [InlineData(TenantAccessOutcome.StaleProjection, OrganizationAclResultCode.StaleProjection)]
++    [InlineData(TenantAccessOutcome.UnavailableProjection, OrganizationAclResultCode.UnavailableProjection)]
++    [InlineData(TenantAccessOutcome.UnknownTenant, OrganizationAclResultCode.UnknownTenant)]
++    [InlineData(TenantAccessOutcome.DisabledTenant, OrganizationAclResultCode.DisabledTenant)]
++    [InlineData(TenantAccessOutcome.MalformedEvidence, OrganizationAclResultCode.MalformedEvidence)]
++    [InlineData(TenantAccessOutcome.TenantMismatch, OrganizationAclResultCode.TenantMismatch)]
++    [InlineData(TenantAccessOutcome.MissingAuthoritativeTenant, OrganizationAclResultCode.MissingAuthoritativeTenant)]
++    [InlineData(TenantAccessOutcome.ReplayConflict, OrganizationAclResultCode.ReplayConflict)]
++    public void RejectedTenantEvidenceShouldPreventAllStreamSideEffects(
++        TenantAccessOutcome outcome,
++        OrganizationAclResultCode expectedCode)
++    {
++        RecordingOrganizationAclRepository repository = new();
++        OrganizationAclTenantGate gate = new(repository);
++
++        OrganizationAclResult result = gate.Handle(
++            AclCommandFactory.Grant(),
++            Evidence(outcome));
++
++        result.Code.ShouldBe(expectedCode);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++        repository.DiagnosticsQueried.ShouldBe(0);
++        repository.AuditResourcesQueried.ShouldBe(0);
++    }
++
++    [Fact]
++    public void AllowedTenantEvidenceShouldUseAuthoritativeTenantInsteadOfPayloadTenant()
++    {
++        RecordingOrganizationAclRepository repository = new();
++        OrganizationAclTenantGate gate = new(repository);
++
++        OrganizationAclResult result = gate.Handle(
++            AclCommandFactory.Grant(payloadTenantId: "tenant-a"),
++            Evidence(TenantAccessOutcome.Allowed, tenantId: "tenant-a"));
++
++        result.Code.ShouldBe(OrganizationAclResultCode.Accepted);
++        repository.LastStreamName.ShouldBe("tenant-a:organizations:organization-a");
++    }
++
++    [Fact]
++    public void PayloadTenantMismatchShouldRejectBeforeStreamConstruction()
++    {
++        RecordingOrganizationAclRepository repository = new();
++        OrganizationAclTenantGate gate = new(repository);
++
++        OrganizationAclResult result = gate.Handle(
++            AclCommandFactory.Grant(payloadTenantId: "tenant-from-payload"),
++            Evidence(TenantAccessOutcome.Allowed, tenantId: "tenant-a"));
++
++        result.Code.ShouldBe(OrganizationAclResultCode.TenantMismatch);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++    }
++
++    [Fact]
++    public void ConflictingCommandEntriesShouldRejectBeforeStreamConstruction()
++    {
++        RecordingOrganizationAclRepository repository = new();
++        OrganizationAclTenantGate gate = new(repository);
++        OrganizationAclOperation grant = AclCommandFactory.Operation(OrganizationAclOperationIntent.Grant);
++        OrganizationAclOperation revoke = grant with { Intent = OrganizationAclOperationIntent.Revoke };
++
++        OrganizationAclResult result = gate.Handle(
++            AclCommandFactory.Initialize(grant, revoke),
++            Evidence(TenantAccessOutcome.Allowed));
++
++        result.Code.ShouldBe(OrganizationAclResultCode.ReplayConflict);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++    }
++
++    [Fact]
++    public void IdempotencyConflictShouldRejectBeforeStreamConstruction()
++    {
++        RecordingOrganizationAclRepository repository = new();
++        OrganizationAclTenantGate gate = new(repository);
++        GrantOrganizationAclPrincipal original = AclCommandFactory.Grant(idempotencyKey: "idem-a", principalId: "principal-a");
++        string fingerprint = OrganizationAclCommandValidator.Validate(original).IdempotencyFingerprint;
++        repository.RecordIdempotency("tenant-a", "organization-a", "idem-a", fingerprint);
++
++        OrganizationAclResult result = gate.Handle(
++            AclCommandFactory.Grant(idempotencyKey: "idem-a", principalId: "principal-b"),
++            Evidence(TenantAccessOutcome.Allowed));
++
++        result.Code.ShouldBe(OrganizationAclResultCode.IdempotencyConflict);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++    }
++
++    private static TenantAccessAuthorizationResult Evidence(TenantAccessOutcome outcome, string? tenantId = "tenant-a")
++        => new(
++            outcome,
++            outcome == TenantAccessOutcome.Allowed ? "allowed" : "denied",
++            tenantId,
++            "tenant-a:7",
++            new DateTimeOffset(2026, 5, 18, 12, 0, 0, TimeSpan.Zero),
++            TimeSpan.FromMinutes(1),
++            TenantProjectionFreshnessStatus.Fresh,
++            "local-projection");
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Organization/RecordingOrganizationAclRepository.cs b/tests/Hexalith.Folders.Tests/Aggregates/Organization/RecordingOrganizationAclRepository.cs
+new file mode 100644
+index 0000000..3d0b161
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Organization/RecordingOrganizationAclRepository.cs
+@@ -0,0 +1,62 @@
++using Hexalith.Folders.Aggregates.Organization;
++
++namespace Hexalith.Folders.Tests.Aggregates.Organization;
++
++internal sealed class RecordingOrganizationAclRepository : IOrganizationAclRepository
++{
++    private readonly Dictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
++    private OrganizationState _state = OrganizationState.Empty;
++
++    public int AuditResourcesQueried { get; private set; }
++
++    public int DiagnosticsQueried { get; private set; }
++
++    public int EventsAppended { get; private set; }
++
++    public int StreamsLoaded { get; private set; }
++
++    public int StreamNamesConstructed { get; private set; }
++
++    public string? LastStreamName { get; private set; }
++
++    public OrganizationState Load(OrganizationStreamName streamName)
++    {
++        StreamsLoaded++;
++        LastStreamName = streamName.Value;
++        return _state;
++    }
++
++    public OrganizationStreamName CreateStreamName(string managedTenantId, string organizationId)
++    {
++        StreamNamesConstructed++;
++        OrganizationStreamName streamName = OrganizationStreamName.Create(managedTenantId, organizationId);
++        LastStreamName = streamName.Value;
++        return streamName;
++    }
++
++    public void Append(OrganizationStreamName streamName, IReadOnlyList<IOrganizationAclEvent> events)
++    {
++        EventsAppended += events.Count;
++        LastStreamName = streamName.Value;
++        _state = _state.Apply(events);
++
++        foreach (IOrganizationAclEvent aclEvent in events)
++        {
++            _idempotencyFingerprints[LedgerKey(aclEvent.ManagedTenantId, aclEvent.OrganizationId, aclEvent.IdempotencyKey)] =
++                aclEvent.IdempotencyFingerprint;
++        }
++    }
++
++    public bool TryGetIdempotencyFingerprint(
++        string managedTenantId,
++        string organizationId,
++        string idempotencyKey,
++        out string? fingerprint)
++        => _idempotencyFingerprints.TryGetValue(LedgerKey(managedTenantId, organizationId, idempotencyKey), out fingerprint);
++
++    public void RecordIdempotency(string managedTenantId, string organizationId, string idempotencyKey, string fingerprint)
++        => _idempotencyFingerprints[LedgerKey(managedTenantId, organizationId, idempotencyKey)] = fingerprint;
++
++    private static string LedgerKey(string managedTenantId, string organizationId, string idempotencyKey)
++        => $"{managedTenantId}|{organizationId}|{idempotencyKey}";
++}
