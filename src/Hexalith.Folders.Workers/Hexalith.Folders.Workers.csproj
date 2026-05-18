@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
@@ -8,5 +9,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>
 </Project>

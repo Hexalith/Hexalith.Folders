@@ -13,5 +13,8 @@
     <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.ServiceDefaults\Hexalith.Folders.ServiceDefaults.csproj" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Client\Hexalith.EventStore.Client.csproj" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Contracts\Hexalith.EventStore.Contracts.csproj" />
+    <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants.Client\Hexalith.Tenants.Client.csproj" />
   </ItemGroup>
 </Project>

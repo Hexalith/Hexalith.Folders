@@ -1,6 +1,6 @@
 # Story 2.1: Stand up domain service host with Tenants integration
 
-Status: in-progress
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -25,40 +25,40 @@ so that every folder operation has tenant identity and availability semantics be
 
 ## Tasks / Subtasks
 
-- [ ] Extend the server host composition without replacing existing scaffold modules. (AC: 1, 7)
-  - [ ] Update `src/Hexalith.Folders.Server/Program.cs` to add service defaults, Folders domain services, Tenants client integration, CloudEvents, Dapr subscribe handler, and the Tenants event subscription endpoint.
-  - [ ] Ensure the route and subscription shape matches the sibling Tenants client pattern: `/tenants/events`, `pubsub`, `system.tenants.events`, `UseCloudEvents()`, `MapSubscribeHandler()`, and `WithTopic(options.PubSubName, options.TopicName)`.
-  - [ ] Keep `src/Hexalith.Folders.Server/FoldersServerModule.cs` as the module registration surface; do not move runtime wiring into generated client or Contracts code.
-  - [ ] Preserve root scaffold smoke behavior until a real health/readiness endpoint supersedes it.
-- [ ] Add Folders-owned Tenants projection types. (AC: 2, 3, 4, 5)
-  - [ ] Create `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessProjection.cs` for tenant status, membership/role evidence, relevant `folders.*` configuration, projection watermark, and freshness metadata.
-  - [ ] Create `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs` or equivalent handlers that consume Tenants client events and update the projection idempotently.
-  - [ ] Handle only `TenantCreated`, `TenantUpdated`, `TenantDisabled`, `TenantEnabled`, `UserAddedToTenant`, `UserRemovedFromTenant`, `UserRoleChanged`, `TenantConfigurationSet`, and `TenantConfigurationRemoved`; unknown event types must not grant access.
-  - [ ] Deduplicate by `TenantEventEnvelope.MessageId`, apply per-tenant `SequenceNumber` monotonically, and treat replay conflicts, malformed payloads, missing tenant IDs, or future timestamps as fail-closed projection evidence.
-  - [ ] Persist deduplication keys, sequence evidence, replay-conflict markers, and projection watermarks through a projection-store abstraction; if that store is unavailable, authorizer calls must return `unavailable_projection` rather than falling back to in-memory success.
-  - [ ] Store metadata only: tenant id, principal id, role/group/service-agent ids, event sequence/watermark, timestamps, and non-secret `folders.*` configuration keys.
-  - [ ] Reject or ignore non-`folders.*` Tenants configuration keys; do not copy arbitrary Tenants configuration into Folders state.
-  - [ ] Apply `TenantConfigurationRemoved` as an explicit remove/tombstone operation for previously projected `folders.*` configuration keys so stale configuration cannot continue to authorize access.
-- [ ] Add tenant authorization and freshness services. (AC: 4, 5, 7)
-  - [ ] Create `src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs` with explicit outcomes for allowed, denied, stale projection, unavailable projection, unknown tenant, disabled tenant, and malformed evidence.
-  - [ ] Include explicit outcomes for tenant mismatch, missing authoritative tenant, replay conflict, and future projection timestamps.
-  - [ ] Define a configurable projection freshness budget with a test default of five minutes, using an injectable UTC clock; missing, future, expired, malformed, or unavailable projection timestamps fail closed for mutations.
-  - [ ] Ensure mutation checks fail closed on stale, missing, malformed, replay-conflicting, future-dated, or unavailable projection data.
-  - [ ] Ensure read-only diagnostic checks can use bounded stale data only when the response includes projection freshness evidence and the caller is otherwise authorized.
-  - [ ] Keep diagnostic responses metadata-only: expose stable result codes and freshness fields, but not raw Tenants payloads, membership inventories, role lists, configuration values, or whether an unauthorized folder/resource exists.
-  - [ ] Do not create a new public diagnostic route outside the Contract Spine; if no read-only diagnostic operation exists at implementation time, test the authorizer response shape instead.
-  - [ ] Do not trust tenant ids supplied by request body, route, query, or client-controlled headers; compare them only against authentication or EventStore envelope tenant context.
-- [ ] Wire Dapr/Aspire topology using sibling-module patterns. (AC: 2, 6)
-  - [ ] Extend `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs` or add an Aspire extension that wires `folders` and `folders-workers` with Dapr sidecars and references the shared Tenants/EventStore state store and pub/sub components.
-  - [ ] Update `src/Hexalith.Folders.AppHost/Program.cs` to compose EventStore, Tenants, Folders.Server, Folders.Workers, Folders.UI, Keycloak, Redis/Dapr components, and stable app IDs.
-  - [ ] Resolve Dapr access-control files from the AppHost directory, following the Tenants AppHost fallback pattern.
-- [ ] Add tests and fixtures for fail-closed behavior. (AC: 2, 3, 4, 5, 6, 8)
-  - [ ] Add unit tests under `tests/Hexalith.Folders.Tests` for projection event handling, idempotent replay, ignored non-`folders.*` config, disabled tenant, removed principal, stale projection, and unavailable projection.
-  - [ ] Add unit tests for malformed events, missing authoritative tenant context, future timestamps, replay conflicts, duplicate message IDs with divergent metadata, tenant mismatches between request and authoritative context, configuration removals, and bounded stale diagnostic reads.
-  - [ ] Add server tests under `tests/Hexalith.Folders.Server.Tests` proving CloudEvents, subscribe handler, Tenants event endpoint registration, topic/pubsub names, and unknown-event behavior are present without starting external Dapr.
-  - [ ] Assert endpoint registration through route metadata, endpoint data sources, or equivalent structural surfaces rather than live Dapr discovery calls.
-  - [ ] Add AppHost/Aspire structural tests under `tests/Hexalith.Folders.IntegrationTests` or a focused Aspire test project for stable app IDs and component references without requiring live provider credentials.
-  - [ ] Add negative tests proving a request-supplied tenant id cannot authorize a mutation when the authenticated/EventStore tenant differs.
+- [x] Extend the server host composition without replacing existing scaffold modules. (AC: 1, 7)
+  - [x] Update `src/Hexalith.Folders.Server/Program.cs` to add service defaults, Folders domain services, Tenants client integration, CloudEvents, Dapr subscribe handler, and the Tenants event subscription endpoint.
+  - [x] Ensure the route and subscription shape matches the sibling Tenants client pattern: `/tenants/events`, `pubsub`, `system.tenants.events`, `UseCloudEvents()`, `MapSubscribeHandler()`, and `WithTopic(options.PubSubName, options.TopicName)`.
+  - [x] Keep `src/Hexalith.Folders.Server/FoldersServerModule.cs` as the module registration surface; do not move runtime wiring into generated client or Contracts code.
+  - [x] Preserve root scaffold smoke behavior until a real health/readiness endpoint supersedes it.
+- [x] Add Folders-owned Tenants projection types. (AC: 2, 3, 4, 5)
+  - [x] Create `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessProjection.cs` for tenant status, membership/role evidence, relevant `folders.*` configuration, projection watermark, and freshness metadata.
+  - [x] Create `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs` or equivalent handlers that consume Tenants client events and update the projection idempotently.
+  - [x] Handle only `TenantCreated`, `TenantUpdated`, `TenantDisabled`, `TenantEnabled`, `UserAddedToTenant`, `UserRemovedFromTenant`, `UserRoleChanged`, `TenantConfigurationSet`, and `TenantConfigurationRemoved`; unknown event types must not grant access.
+  - [x] Deduplicate by `TenantEventEnvelope.MessageId`, apply per-tenant `SequenceNumber` monotonically, and treat replay conflicts, malformed payloads, missing tenant IDs, or future timestamps as fail-closed projection evidence.
+  - [x] Persist deduplication keys, sequence evidence, replay-conflict markers, and projection watermarks through a projection-store abstraction; if that store is unavailable, authorizer calls must return `unavailable_projection` rather than falling back to in-memory success.
+  - [x] Store metadata only: tenant id, principal id, role/group/service-agent ids, event sequence/watermark, timestamps, and non-secret `folders.*` configuration keys.
+  - [x] Reject or ignore non-`folders.*` Tenants configuration keys; do not copy arbitrary Tenants configuration into Folders state.
+  - [x] Apply `TenantConfigurationRemoved` as an explicit remove/tombstone operation for previously projected `folders.*` configuration keys so stale configuration cannot continue to authorize access.
+- [x] Add tenant authorization and freshness services. (AC: 4, 5, 7)
+  - [x] Create `src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs` with explicit outcomes for allowed, denied, stale projection, unavailable projection, unknown tenant, disabled tenant, and malformed evidence.
+  - [x] Include explicit outcomes for tenant mismatch, missing authoritative tenant, replay conflict, and future projection timestamps.
+  - [x] Define a configurable projection freshness budget with a test default of five minutes, using an injectable UTC clock; missing, future, expired, malformed, or unavailable projection timestamps fail closed for mutations.
+  - [x] Ensure mutation checks fail closed on stale, missing, malformed, replay-conflicting, future-dated, or unavailable projection data.
+  - [x] Ensure read-only diagnostic checks can use bounded stale data only when the response includes projection freshness evidence and the caller is otherwise authorized.
+  - [x] Keep diagnostic responses metadata-only: expose stable result codes and freshness fields, but not raw Tenants payloads, membership inventories, role lists, configuration values, or whether an unauthorized folder/resource exists.
+  - [x] Do not create a new public diagnostic route outside the Contract Spine; if no read-only diagnostic operation exists at implementation time, test the authorizer response shape instead.
+  - [x] Do not trust tenant ids supplied by request body, route, query, or client-controlled headers; compare them only against authentication or EventStore envelope tenant context.
+- [x] Wire Dapr/Aspire topology using sibling-module patterns. (AC: 2, 6)
+  - [x] Extend `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs` or add an Aspire extension that wires `folders` and `folders-workers` with Dapr sidecars and references the shared Tenants/EventStore state store and pub/sub components.
+  - [x] Update `src/Hexalith.Folders.AppHost/Program.cs` to compose EventStore, Tenants, Folders.Server, Folders.Workers, Folders.UI, Keycloak, Redis/Dapr components, and stable app IDs.
+  - [x] Resolve Dapr access-control files from the AppHost directory, following the Tenants AppHost fallback pattern.
+- [x] Add tests and fixtures for fail-closed behavior. (AC: 2, 3, 4, 5, 6, 8)
+  - [x] Add unit tests under `tests/Hexalith.Folders.Tests` for projection event handling, idempotent replay, ignored non-`folders.*` config, disabled tenant, removed principal, stale projection, and unavailable projection.
+  - [x] Add unit tests for malformed events, missing authoritative tenant context, future timestamps, replay conflicts, duplicate message IDs with divergent metadata, tenant mismatches between request and authoritative context, configuration removals, and bounded stale diagnostic reads.
+  - [x] Add server tests under `tests/Hexalith.Folders.Server.Tests` proving CloudEvents, subscribe handler, Tenants event endpoint registration, topic/pubsub names, and unknown-event behavior are present without starting external Dapr.
+  - [x] Assert endpoint registration through route metadata, endpoint data sources, or equivalent structural surfaces rather than live Dapr discovery calls.
+  - [x] Add AppHost/Aspire structural tests under `tests/Hexalith.Folders.IntegrationTests` or a focused Aspire test project for stable app IDs and component references without requiring live provider credentials.
+  - [x] Add negative tests proving a request-supplied tenant id cannot authorize a mutation when the authenticated/EventStore tenant differs.
 
 ## Dev Notes
 
@@ -160,6 +160,7 @@ so that every folder operation has tenant identity and availability semantics be
 |---|---|---|
 | 2026-05-17 | Applied advanced-elicitation hardening for replay conflicts, projection-store failure semantics, diagnostic leakage boundaries, configuration removals, and structural endpoint tests. | Codex |
 | 2026-05-15 | Applied party-mode review hardening for freshness semantics, Tenants event mapping, Dapr subscription shape, tenant authority, fail-closed outcomes, and offline tests. | Codex |
+| 2026-05-18 | Implemented domain-service host composition, Tenants projection pipeline, fail-closed authorizer, Aspire topology, worker host, and structural/unit coverage. | Codex |
 
 ## Party-Mode Review
 
@@ -210,9 +211,70 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj`
+- `dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj`
+- `dotnet test tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj`
+- `dotnet test Hexalith.Folders.slnx`
+- `dotnet build src\Hexalith.Folders.AppHost\Hexalith.Folders.AppHost.csproj`
+
+### Implementation Plan
+
+- Kept core tenant-access logic in `Hexalith.Folders` without Tenants/EventStore project references so the scaffold dependency boundary remains intact.
+- Added a server-owned Tenants event adapter that maps the Tenants client event registry into Folders-owned projection events.
+- Registered `/process`, `/project`, Dapr CloudEvents, `/dapr/subscribe`, and `/tenants/events` through the server module surface.
+- Added fail-closed mutation authorization and bounded-stale diagnostic authorization with stable result codes and metadata-only freshness evidence.
+- Added Aspire resource wiring for stable `eventstore`, `tenants`, `folders`, `folders-workers`, and `folders-ui` app IDs sharing Dapr state/pubsub components.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-1-stand-up-domain-service-host-with-tenants-integration` equivalent workflow on 2026-05-15.
 - Project-context, epics, PRD, architecture, current scaffold files, sibling Tenants implementation patterns, Dapr docs, and Aspire integration catalog were reviewed.
+- Implemented Folders-owned tenant-access projection state, event evidence, idempotent handling, replay-conflict detection, `folders.*` configuration boundaries, and removed-configuration tombstones.
+- Implemented tenant access authorization outcomes for allowed, denied, stale/unavailable/unknown/disabled/malformed evidence, tenant mismatch, missing authoritative tenant, and replay conflict.
+- Wired the server host with service defaults, EventStore domain-service surfaces, Tenants client integration, CloudEvents, Dapr subscribe handler, and `/tenants/events` subscription endpoint.
+- Wired Aspire/AppHost topology with stable app IDs, shared Dapr state/pubsub components, AppHost access-control resolution, Keycloak environment wiring, and an executable workers host.
+- Added offline unit/structural tests for projection replay, configuration filtering/removal, fail-closed authorizer outcomes, route registration, app ID constants, and scaffold reference governance.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-1-stand-up-domain-service-host-with-tenants-integration.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders.AppHost/DaprComponents/accesscontrol.yaml`
+- `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj`
+- `src/Hexalith.Folders.AppHost/Program.cs`
+- `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`
+- `src/Hexalith.Folders.Aspire/HexalithFoldersResources.cs`
+- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`
+- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs`
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs`
+- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`
+- `src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs`
+- `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`
+- `src/Hexalith.Folders.Server/Program.cs`
+- `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`
+- `src/Hexalith.Folders.Workers/Program.cs`
+- `src/Hexalith.Folders/Authorization/TenantAccessAuthorizationContext.cs`
+- `src/Hexalith.Folders/Authorization/TenantAccessAuthorizationResult.cs`
+- `src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs`
+- `src/Hexalith.Folders/Authorization/TenantAccessOptions.cs`
+- `src/Hexalith.Folders/Authorization/TenantAccessOutcome.cs`
+- `src/Hexalith.Folders/Authorization/TenantProjectionFreshnessStatus.cs`
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`
+- `src/Hexalith.Folders/Hexalith.Folders.csproj`
+- `src/Hexalith.Folders/Projections/TenantAccess/FixedUtcClock.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessEvent.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessEventKind.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessProjection.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantEventEvidence.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantPrincipalEvidence.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/IFolderTenantAccessProjectionStore.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/InMemoryFolderTenantAccessProjectionStore.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/IUtcClock.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/SystemUtcClock.cs`
+- `tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs`
+- `tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj`
+- `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs`
+- `tests/Hexalith.Folders.Tests/Projections/TenantAccess/FolderTenantAccessHandlerTests.cs`

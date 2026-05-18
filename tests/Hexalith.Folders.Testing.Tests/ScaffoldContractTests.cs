@@ -98,13 +98,13 @@ public sealed class ScaffoldContractTests
 
         AssertReferences(references, "Hexalith.Folders.Contracts", []);
         AssertReferences(references, "Hexalith.Folders", ["Hexalith.Folders.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults"]);
+        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client"]);
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.Folders", "Hexalith.Folders.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Tenants"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
         AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders.Contracts"]);
@@ -119,7 +119,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders.Testing"]);
-        AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Contracts"]);
     }
 

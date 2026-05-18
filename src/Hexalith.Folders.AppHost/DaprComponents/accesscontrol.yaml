@@ -1,0 +1,27 @@
+# WARNING: Local development only.
+# Production must use deny-by-default Dapr access control with mTLS.
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: accesscontrol
+spec:
+  accessControl:
+    defaultAction: allow
+    trustDomain: "public"
+    policies:
+      - appId: eventstore
+        defaultAction: allow
+        trustDomain: "public"
+        namespace: "default"
+      - appId: tenants
+        defaultAction: allow
+        trustDomain: "public"
+        namespace: "default"
+      - appId: folders
+        defaultAction: allow
+        trustDomain: "public"
+        namespace: "default"
+      - appId: folders-workers
+        defaultAction: allow
+        trustDomain: "public"
+        namespace: "default"
