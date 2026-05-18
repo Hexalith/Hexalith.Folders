@@ -30,18 +30,24 @@
   "forbidden_output_surfaces": [
     "assertion-messages",
     "audit-records",
+    "baggage",
     "ci-logs",
     "console-payloads",
+    "counters",
     "developer-diagnostics",
+    "event-names",
     "events",
+    "exception-metadata",
     "generated-sdk",
     "logs",
     "metric-labels",
+    "metric-names",
     "openapi-examples",
     "parity-artifacts",
     "problem-details-examples",
     "projections",
     "provider-diagnostics",
+    "span-names",
     "telemetry-attributes",
     "traces"
   ],
@@ -65,9 +71,38 @@
       "classification": "synthetic-sentinel",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "metric-labels", "telemetry-attributes", "events", "audit-records", "projections", "provider-diagnostics", "console-payloads", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "metric-labels",
+        "telemetry-attributes",
+        "events",
+        "audit-records",
+        "projections",
+        "provider-diagnostics",
+        "console-payloads",
+        "openapi-examples",
+        "problem-details-examples",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "metric-names",
+        "counters",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic access-key-shaped sentinel for proving redaction without credential material."
     },
     {
@@ -77,9 +112,28 @@
       "classification": "synthetic-sentinel",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "provider-diagnostics", "console-payloads", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "provider-diagnostics",
+        "console-payloads",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic provider-token-shaped sentinel; never a usable credential."
     },
     {
@@ -89,9 +143,33 @@
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "console-payloads", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "projections",
+        "console-payloads",
+        "openapi-examples",
+        "problem-details-examples",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic file-content sentinel used only to prove raw content is never echoed."
     },
     {
@@ -101,9 +179,33 @@
       "classification": "generated-context-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "console-payloads", "generated-sdk", "parity-artifacts", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "projections",
+        "console-payloads",
+        "generated-sdk",
+        "parity-artifacts",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic generated-context sentinel for scanner coverage."
     },
     {
@@ -113,9 +215,31 @@
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "provider-diagnostics", "events", "audit-records", "projections", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "provider-diagnostics",
+        "events",
+        "audit-records",
+        "projections",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic provider payload sentinel; not a provider response."
     },
     {
@@ -125,9 +249,35 @@
       "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "metric-labels", "telemetry-attributes", "events", "audit-records", "projections", "console-payloads", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "metric-labels",
+        "telemetry-attributes",
+        "events",
+        "audit-records",
+        "projections",
+        "console-payloads",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "metric-names",
+        "counters",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic tenant-data sentinel with no real tenant identity."
     },
     {
@@ -137,9 +287,32 @@
       "classification": "unauthorized-resource-hint",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "console-payloads", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "projections",
+        "console-payloads",
+        "openapi-examples",
+        "problem-details-examples",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic unauthorized-resource sentinel for safe-denial checks."
     },
     {
@@ -149,9 +322,28 @@
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "developer-diagnostics", "ci-logs", "assertion-messages", "generated-sdk", "parity-artifacts"],
-      "allowed_provenance_representations": ["repository_relative_path", "sample_id", "bounded_classification", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "generated-sdk",
+        "parity-artifacts",
+        "span-names",
+        "exception-metadata",
+        "baggage"
+      ],
+      "allowed_provenance_representations": [
+        "repository_relative_path",
+        "sample_id",
+        "bounded_classification",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic local-path sentinel that is not a real absolute path."
     },
     {
@@ -161,9 +353,28 @@
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "provider-diagnostics", "openapi-examples", "problem-details-examples", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "provider-diagnostics",
+        "openapi-examples",
+        "problem-details-examples",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic production-URL sentinel without a real URL."
     },
     {
@@ -173,9 +384,35 @@
       "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "metric-labels", "telemetry-attributes", "events", "audit-records", "projections", "console-payloads", "provider-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["repository_relative_path", "sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "metric-labels",
+        "telemetry-attributes",
+        "events",
+        "audit-records",
+        "projections",
+        "console-payloads",
+        "provider-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "metric-names",
+        "counters",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "repository_relative_path",
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic path metadata sample for classification handling."
     },
     {
@@ -185,9 +422,29 @@
       "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "provider-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "projections",
+        "provider-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic branch metadata sample."
     },
     {
@@ -197,9 +454,29 @@
       "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "provider-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "projections",
+        "provider-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic repository metadata sample."
     },
     {
@@ -209,9 +486,29 @@
       "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "projections", "provider-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "projections",
+        "provider-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic commit metadata sample with no author, diff, or file content."
     },
     {
@@ -221,9 +518,30 @@
       "classification": "tenant-sensitive",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "telemetry-attributes", "events", "audit-records", "projections", "console-payloads", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "telemetry-attributes",
+        "events",
+        "audit-records",
+        "projections",
+        "console-payloads",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic actor reference sample."
     },
     {
@@ -233,9 +551,20 @@
       "classification": "metadata-placeholder",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["provider-diagnostics", "console-payloads", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "content_hash"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "provider-diagnostics",
+        "console-payloads",
+        "ci-logs",
+        "assertion-messages"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic correlation marker; production policies decide where correlation can remain visible."
     },
     {
@@ -245,9 +574,30 @@
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["logs", "traces", "events", "audit-records", "provider-diagnostics", "developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "redaction_marker", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "logs",
+        "traces",
+        "events",
+        "audit-records",
+        "provider-diagnostics",
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages",
+        "span-names",
+        "exception-metadata",
+        "baggage",
+        "event-names"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "redaction_marker",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic diff sentinel that is not a real patch."
     },
     {
@@ -257,9 +607,21 @@
       "classification": "confidential",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["developer-diagnostics", "ci-logs", "assertion-messages"],
-      "allowed_provenance_representations": ["sample_id", "bounded_classification", "rule_id", "content_hash"],
-      "participates_in": ["positive", "negative-control"],
+      "forbidden_output_surfaces": [
+        "developer-diagnostics",
+        "ci-logs",
+        "assertion-messages"
+      ],
+      "allowed_provenance_representations": [
+        "sample_id",
+        "bounded_classification",
+        "rule_id",
+        "content_hash"
+      ],
+      "participates_in": [
+        "positive",
+        "negative-control"
+      ],
       "safe_notes": "Synthetic diagnostic-echo sentinel for safe assertion messages."
     },
     {
@@ -269,9 +631,18 @@
       "classification": "safe-provenance",
       "synthetic_sentinel": true,
       "synthetic_data_only": true,
-      "forbidden_output_surfaces": ["provider-diagnostics"],
-      "allowed_provenance_representations": ["operation_id", "schema_pointer", "gate_name", "rule_id"],
-      "participates_in": ["positive"],
+      "forbidden_output_surfaces": [
+        "provider-diagnostics"
+      ],
+      "allowed_provenance_representations": [
+        "operation_id",
+        "schema_pointer",
+        "gate_name",
+        "rule_id"
+      ],
+      "participates_in": [
+        "positive"
+      ],
       "safe_notes": "Synthetic safe-provenance sample showing that operation IDs can be allowed only in declared contexts."
     }
   ]

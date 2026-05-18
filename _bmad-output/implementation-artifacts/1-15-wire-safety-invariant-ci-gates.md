@@ -1,6 +1,6 @@
 # Story 1.15: Wire safety invariant CI gates
 
-Status: in-progress
+Status: review
 
 Created: 2026-05-13
 
@@ -105,33 +105,33 @@ Code review run: 2026-05-17 against commit `3d75bbb` ("Add safety invariant CI g
 
 - [x] [Review][Patch] AC 9 — authorization order check uses `Take(3)`, missing the "then execution" tail. **Applied in `87bce31`** — now asserts full ordered prefix `tenant_access/folder_acl/path_policy` AND `query_execution` as the terminal step, with an explicit count guard ≥ 4.
 - [x] [Review][Patch] AC 2 — synthetic token used real GitHub PAT prefix `ghp_`. **Applied in `87bce31`** — renamed to `synthetic_pat_SENTINEL_NEVER_USABLE_*` (no real-provider prefix); quarantine fixture updated to match.
-- [ ] [Review][Patch] AC 17 — telemetry surfaces incomplete [tests/fixtures/audit-leakage-corpus.json + safety-channel-inventory.json]. AC 17 requires scanning span names, metric names, event names, counters, exception metadata, and baggage; neither the surface vocabulary, channel inventory entries, nor scan code distinguishes these from flat `traces`/`metric-labels`/`events` buckets. **Not applied — requires coordinated corpus + inventory + test changes (6 new surfaces, 18+ sample updates).**
-- [ ] [Review][Patch] AC 11 — stock `Shouldly.ShouldNotContain` echoes both operands on assertion failure, so a future leak would surface the forbidden value in CI logs [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs throughout]. Task line 58 mandates "custom safe assertion helpers or sanitized assertion messages" — not implemented. **Not applied — touches every assertion in the file; needs a dedicated helper layer.**
-- [ ] [Review][Patch] AC 1 / AC 3 — 9 of 18 inventory channels are blanket `reference-pending` with no per-channel justification. At minimum `audit-records` (Story 1.11 is done), `events`, `projections`, and `console-payloads` should be re-evaluated against existing OpenAPI / fixtures. **Not applied — owner story IDs were corrected (AC 15) but per-channel artifact re-evaluation requires research into Story 1.11/4-14/6-2 surfaces.**
-- [ ] [Review][Patch] AC 8 — wrong-tenant/unauthorized/hidden/redacted/missing/unknown/stale/projection-unavailable distinction never tested. **Not applied — requires new test infrastructure walking OpenAPI safe-denial response examples.**
-- [ ] [Review][Patch] AC 4 — prerequisite-drift / reference-pending diagnostics live only as static JSON in the inventory; nothing emits them as runtime diagnostics. **Not applied — DESIGN-NEEDED. The current model is "inventory documents what the gate sees"; emitting at runtime would require either (a) a `[Fact]` per channel that emits via test failure output, or (b) a separate diagnostic-emission test that loops the manifest. Both need design input.**
+- [x] [Review][Patch] AC 17 — telemetry surfaces incomplete [tests/fixtures/audit-leakage-corpus.json + safety-channel-inventory.json]. AC 17 requires scanning span names, metric names, event names, counters, exception metadata, and baggage; neither the surface vocabulary, channel inventory entries, nor scan code distinguishes these from flat `traces`/`metric-labels`/`events` buckets. **Applied in this follow-up** — added distinct telemetry surfaces to the corpus, inventory, tests, and negative controls.
+- [x] [Review][Patch] AC 11 — stock `Shouldly.ShouldNotContain` echoes both operands on assertion failure, so a future leak would surface the forbidden value in CI logs [tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs throughout]. Task line 58 mandates "custom safe assertion helpers or sanitized assertion messages" — not implemented. **Applied in this follow-up** — added sanitized forbidden-value assertions and metadata-only failure helpers.
+- [x] [Review][Patch] AC 1 / AC 3 — 9 of 18 inventory channels are blanket `reference-pending` with no per-channel justification. At minimum `audit-records` (Story 1.11 is done), `events`, `projections`, and `console-payloads` should be re-evaluated against existing OpenAPI / fixtures. **Applied in this follow-up** — re-evaluated current OpenAPI/generated-client diagnostic surfaces, marked current contract artifacts covered where present, and added bounded absence reasons where runtime channels remain pending.
+- [x] [Review][Patch] AC 8 — wrong-tenant/unauthorized/hidden/redacted/missing/unknown/stale/projection-unavailable distinction never tested. **Applied in this follow-up** — added OpenAPI safe-denial and diagnostic-state coverage tests.
+- [x] [Review][Patch] AC 4 — prerequisite-drift / reference-pending diagnostics live only as static JSON in the inventory; nothing emits them as runtime diagnostics. **Applied in this follow-up** — added a bounded diagnostic-emission test over non-covered manifest entries.
 - [x] [Review][Patch] AC 15 — `owning_story` used wildcards (`2-x-runtime-observability`, etc.). **Applied in `87bce31`** — replaced with concrete story IDs (4-14, 4-15, 3-5, 6-2, 1-6, 1-11, 1-14). Test now rejects `-x-` segments as a regression guard.
 - [x] [Review][Patch] AC 21 — `structured_exclusions` missing categories. **Applied in `87bce31`** — added `.vs/`, `.idea/`, `TestResults/`, `artifacts/`, `**/.nuget/**`, `*.binlog`. Test now requires `.git/**`, `**/bin/**`, `**/obj/**` baseline.
-- [ ] [Review][Patch] AC 18 — `ScanManifestCoveredArtifacts` uses `text.Contains(sample.Value)` without word-boundary protection. **Not applied — depends on AC 17 vocabulary expansion; low immediate risk because no current sample value coincides with an OpenAPI/SDK identifier.**
-- [ ] [Review][Patch] AC 12 — three documented commands (restore + build + script) rather than the single offline command. **Not applied — script + doc rewrite needed; the simplest fix is a top-level wrapper that runs restore + build + script in one invocation, but that conflicts with the existing CI lane that wants to share build output with contract gates.**
+- [x] [Review][Patch] AC 18 — `ScanManifestCoveredArtifacts` uses `text.Contains(sample.Value)` without word-boundary protection. **Applied in this follow-up** — scan matching now requires token boundaries and treats declared safe-provenance values as allowed provenance.
+- [x] [Review][Patch] AC 12 — three documented commands (restore + build + script) rather than the single offline command. **Applied in this follow-up** — the safety script now restores, builds, and runs tests by default; CI uses `-SkipRestoreBuild` after the shared build lane.
 
 #### Patch — Test, fixture, workflow, and script hardening
 
 - [x] [Review][Patch] Inventory fields `include_roots` and `safe_absence_diagnostic` declared but never read by tests. **Applied in `87bce31`** — `include_roots` entries are now path-resolved and the `safe_absence_diagnostic` enum is validated against the bounded vocabulary.
 - [x] [Review][Patch] Asymmetric leak detection — `ScanText` was `StringComparison.Ordinal`. **Applied in `87bce31`** — switched to `OrdinalIgnoreCase`. `AssertMetadataOnly` already used `Case.Insensitive`.
 - [x] [Review][Patch] `assertion-messages` channel had `scan_forbidden_values: false`. **Applied in `87bce31`** — flipped to `true`; channel now actually scans `SafetyInvariantGateTests.cs` for forbidden sample values.
-- [ ] [Review][Patch] `negative-control-quarantine.scan_forbidden_values: false` is decorative — `ScanNegativeControls` ignores the flag. **Not applied — design decision: either remove the field from this channel (it's intrinsically opt-in) or wire the flag into `ScanNegativeControls`. Both are valid.**
+- [x] [Review][Patch] `negative-control-quarantine.scan_forbidden_values: false` is decorative — `ScanNegativeControls` ignores the flag. **Applied in this follow-up** — quarantine now declares explicit `opt_in_scan_forbidden_values: true`, and the opt-in scanner validates it.
 - [x] [Review][Patch] `Take(3)` cryptic-failure mode. **Resolved by AC 9 fix in `87bce31`** — explicit `orderSteps.Length.ShouldBeGreaterThanOrEqualTo(4)` guard now reports the missing-positions case clearly.
 - [x] [Review][Patch] `IsBinaryFile` case-sensitive + incomplete. **Applied in `87bce31`** — extension match now case-insensitive (`ToLowerInvariant()`); added `.so`, `.dylib`, `.lib`, `.bin`, `.tar`, `.gz`, `.7z`, `.rar`, `.ico`, `.bmp`, `.tiff`, `.mp4`, `.mov`, `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.binlog`.
 - [x] [Review][Patch] `EnumerateSourceFiles` used `*.*`. **Applied in `87bce31`** — uses `*` glob; extensionless files like `Dockerfile`, `LICENSE`, `Makefile` are now scanned.
 - [x] [Review][Patch] `FindRepositoryRoot` no fallback. **Applied in `87bce31`** — tries `GITHUB_WORKSPACE`, then `AppContext.BaseDirectory`, then `Directory.GetCurrentDirectory` ancestries before failing with a bounded `SAFETY-PREREQUISITE-DRIFT` diagnostic.
-- [ ] [Review][Patch] Drift between corpus (11 negative-control participants) and quarantine fixture (5 controls). **Not applied — design choice: either expand quarantine to cover all 11 sample categories, or narrow corpus `participates_in` to match the 5 implemented controls. Needs reviewer decision on coverage target.**
-- [ ] [Review][Patch] `FixtureContractTests.cs` modification weakens classification enforcement. **Not applied — needs research into Story 1.3 original intent before deciding whether to restore strict `metadata-placeholder` requirement or pin the relaxation with an explanatory test.**
+- [x] [Review][Patch] Drift between corpus (11 negative-control participants) and quarantine fixture (5 controls). **Applied in this follow-up** — quarantine now covers every corpus sample that participates in negative controls.
+- [x] [Review][Patch] `FixtureContractTests.cs` modification weakens classification enforcement. **Applied in this follow-up** — added an explanatory vocabulary-authority test that pins the Story 1.15 relaxation while still enforcing reviewer-visible classifications.
 - [x] [Review][Patch] `Path.GetRelativePath` `..`-prefix path not guarded. **Applied in `87bce31`** — `AssertRepositoryRelativePath` now splits on `/` and rejects any `..` segment.
 - [x] [Review][Patch] Directory enumeration could follow symlink loops. **Applied in `87bce31`** — `EnumerationOptions { RecurseSubdirectories = true, AttributesToSkip = FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System }`.
 - [x] [Review][Patch] Workflow safety step lacked `if: always()` and `timeout-minutes`. **Applied in `6033eb1`** — both added (timeout-minutes: 15).
 - [x] [Review][Patch] PowerShell script missing `Set-StrictMode`, `dotnet` PATH check, and PS 5.1-compatible `Join-Path`. **Applied in `6033eb1`** — Set-StrictMode -Version Latest, dotnet PATH probe emitting bounded SAFETY-PREREQUISITE-DRIFT, two-arg Join-Path calls, and Push-Location/$pushed guard.
-- [ ] [Review][Patch] `-NoRestore` flag inversion / doc inconsistency. **Not applied — doc nit; needs coordinated doc + script rename. AC 12 single-command rewrite is the cleaner target.**
+- [x] [Review][Patch] `-NoRestore` flag inversion / doc inconsistency. **Applied in this follow-up** — renamed the documented CI flag to `-SkipRestoreBuild` and kept `-NoRestore` as a compatibility alias.
 
 #### Defer (low-likelihood / pre-existing)
 
@@ -243,6 +243,7 @@ docs/contract/safety-invariant-ci-gates.md
 | 2026-05-15 | Party-mode review applied channel inventory, bounded diagnostic, vocabulary authority, negative-control, telemetry, generated-artifact scope, and reviewer checklist hardening. | Codex |
 | 2026-05-16 | Advanced elicitation applied negative-control quarantine, manifest freshness, explicit scan-scope, and sanitized assertion/artifact hardening. | Codex |
 | 2026-05-17 | Implemented safety invariant corpus, manifest, quarantined negative controls, focused tests, local gate script, workflow wiring, and reviewer documentation. Story ready for review. | Codex |
+| 2026-05-17 | Addressed remaining code review findings for telemetry surfaces, safe assertions, inventory diagnostics, negative-control drift, and single-command local gate usage. Story ready for review. | Codex |
 
 ## Party-Mode Review
 
@@ -299,6 +300,8 @@ Codex (GPT-5)
 - 2026-05-17: Added failing RED safety gate tests first; initial focused run failed on missing manifest/quarantine/script/docs and unhardened corpus fields.
 - 2026-05-17: Hardened the corpus contract, added channel inventory, added quarantined negative controls, wired the local gate script into the existing workflow, and documented reviewer usage.
 - 2026-05-17: Validation passed: focused safety tests, fixture-contract tests, local safety gate script, contract-spine gate script, solution build, and full solution test suite.
+- 2026-05-17: Added RED review-follow-up tests for AC 17, AC 11, AC 1/3, AC 8, AC 4, AC 18, AC 12, quarantine opt-in, negative-control parity, and fixture classification vocabulary; confirmed the expected failures before patching.
+- 2026-05-17: Validation passed after review follow-up: `./tests/tools/run-safety-invariant-gates.ps1`, focused `FixtureContractTests`, and `dotnet test Hexalith.Folders.slnx --no-build`.
 
 ### Completion Notes List
 
@@ -308,6 +311,7 @@ Codex (GPT-5)
 - Added quarantined synthetic negative controls under `tests/fixtures/quarantine/` and verified the gate detects them without echoing forbidden values in assertion output.
 - Reused the existing Story 1.14 workflow lane by adding a focused safety step after restore/build and contract gates; no duplicate release/security/provider/cache/exit-criteria jobs were added.
 - Updated existing fixture-contract tests so the audit corpus is treated as a normative vocabulary rather than a placeholder fixture.
+- Resolved all remaining review patch findings by expanding distinct telemetry scan surfaces, adding sanitized assertion helpers, emitting bounded missing-channel diagnostics from manifest entries, re-evaluating current diagnostic channels against OpenAPI/generated-client artifacts, expanding quarantine coverage to all negative-control participants, and making the local safety script a single offline command by default.
 - Full validation passed without initializing or updating nested submodules.
 
 ### File List

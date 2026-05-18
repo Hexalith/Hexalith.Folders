@@ -184,6 +184,35 @@ public sealed class FixtureContractTests
     }
 
     [Fact]
+    public void AuditLeakageCorpusUsesReviewerVisibleClassificationVocabulary()
+    {
+        string root = RepositoryRoot();
+        string auditCorpusPath = Path.Combine(root, "tests", "fixtures", "audit-leakage-corpus.json");
+        using JsonDocument document = JsonDocument.Parse(ReadFixtureFile(auditCorpusPath));
+
+        string[] vocabulary = document.RootElement.GetProperty("classification_vocabulary")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+
+        vocabulary.ShouldNotBeEmpty("Story 1.15 promotes the audit corpus from placeholder-only metadata to the authoritative safety vocabulary.");
+
+        JsonElement samples = document.RootElement.GetProperty("sentinel_samples");
+        foreach (JsonElement sample in samples.EnumerateArray())
+        {
+            string sampleId = sample.GetProperty("id").GetString() ?? "unknown";
+            string classification = sample.GetProperty("classification").GetString() ?? string.Empty;
+            string[] surfaces = sample.GetProperty("forbidden_output_surfaces")
+                .EnumerateArray()
+                .Select(item => item.GetString() ?? string.Empty)
+                .ToArray();
+
+            vocabulary.ShouldContain(classification, $"Sample '{sampleId}' must use the reviewer-visible corpus vocabulary.");
+            surfaces.ShouldNotBeEmpty($"Sample '{sampleId}' must declare at least one forbidden output surface.");
+        }
+    }
+
+    [Fact]
     public void SecretShapedValueRegexCoversOAuthClientSecretMarkers()
     {
         SecretShapedValue.IsMatch("client_secret=SYNTHETIC-VALUE").ShouldBeTrue();

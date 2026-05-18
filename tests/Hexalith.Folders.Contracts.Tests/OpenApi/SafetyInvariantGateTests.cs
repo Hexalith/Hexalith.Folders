@@ -10,6 +10,7 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 public sealed class SafetyInvariantGateTests
 {
     private const string GateName = "safety-invariant";
+    private const string OpenApiRelativePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string CorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "audit-leakage-corpus.json");
     private static readonly string InventoryPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "safety-channel-inventory.json");
@@ -34,8 +35,14 @@ public sealed class SafetyInvariantGateTests
     [
         "logs",
         "traces",
+        "span-names",
         "metric-labels",
+        "metric-names",
+        "event-names",
+        "counters",
         "telemetry-attributes",
+        "exception-metadata",
+        "baggage",
         "events",
         "audit-records",
         "projections",
@@ -48,6 +55,19 @@ public sealed class SafetyInvariantGateTests
         "developer-diagnostics",
         "ci-logs",
         "assertion-messages",
+    ];
+
+    private static readonly string[] RequiredTelemetrySurfaces =
+    [
+        "traces",
+        "span-names",
+        "metric-labels",
+        "metric-names",
+        "event-names",
+        "counters",
+        "telemetry-attributes",
+        "exception-metadata",
+        "baggage",
     ];
 
     [Fact]
@@ -83,6 +103,35 @@ public sealed class SafetyInvariantGateTests
     }
 
     [Fact]
+    public void TelemetrySurfaceVocabularyIsExplicitAndInventoryAddressable()
+    {
+        using JsonDocument corpus = JsonDocument.Parse(ReadRequiredFile(CorpusPath));
+        string[] surfaces = RequiredArray(corpus.RootElement, "forbidden_output_surfaces").SelectText();
+        foreach (string surface in RequiredTelemetrySurfaces)
+        {
+            surfaces.ShouldContain(surface, $"AC 17 requires telemetry surface '{surface}' to be a first-class scan channel.");
+        }
+
+        SentinelSample[] samples = LoadSentinelSamples();
+        foreach (string surface in RequiredTelemetrySurfaces)
+        {
+            samples.ShouldContain(
+                sample => sample.ForbiddenOutputSurfaces.Contains(surface, StringComparer.Ordinal),
+                $"AC 17 requires at least one synthetic sentinel to exercise telemetry surface '{surface}'.");
+        }
+
+        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
+        string[] channels = RequiredArray(inventory.RootElement, "channels")
+            .EnumerateArray()
+            .Select(channel => RequiredString(channel, "channel"))
+            .ToArray();
+        foreach (string surface in RequiredTelemetrySurfaces)
+        {
+            channels.ShouldContain(surface, $"AC 17 requires inventory entry for telemetry surface '{surface}'.");
+        }
+    }
+
+    [Fact]
     public void SentinelCorpusAvoidsRealDataAndKeepsNegativeControlsQuarantined()
     {
         string corpus = ReadRequiredFile(CorpusPath);
@@ -98,6 +147,19 @@ public sealed class SafetyInvariantGateTests
             RequiredBoolean(control, "normative_example").ShouldBeFalse();
             RequiredString(control, "contaminated_payload").ShouldNotBeNullOrWhiteSpace();
         }
+
+        string[] negativeParticipants = RequiredArray(JsonDocument.Parse(corpus).RootElement, "sentinel_samples")
+            .EnumerateArray()
+            .Where(sample => RequiredArray(sample, "participates_in").SelectText().Contains("negative-control", StringComparer.Ordinal))
+            .Select(sample => RequiredString(sample, "id"))
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        string[] quarantinedSamples = RequiredArray(quarantine.RootElement, "negative_controls")
+            .EnumerateArray()
+            .Select(control => RequiredString(control, "sample_id"))
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        quarantinedSamples.ShouldBe(negativeParticipants, "Every corpus sample marked negative-control must have an opt-in quarantined control.");
     }
 
     [Fact]
@@ -129,6 +191,7 @@ public sealed class SafetyInvariantGateTests
             string owner = RequiredString(channel, "owning_story");
             string diagnostic = RequiredString(channel, "diagnostic");
             string safeAbsence = RequiredString(channel, "safe_absence_diagnostic");
+            string coverageNotes = RequiredString(channel, "coverage_notes");
 
             owner.ShouldNotBeNullOrWhiteSpace(name);
             owner.ShouldNotContain("-x-", Case.Sensitive, $"{name} owning_story must not use wildcard placeholders like '2-x-...' (AC 15).");
@@ -137,6 +200,8 @@ public sealed class SafetyInvariantGateTests
             safeAbsence.ShouldBeOneOf("covered", "SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
             AssertMetadataOnly(diagnostic);
             AssertMetadataOnly(safeAbsence);
+            coverageNotes.ShouldNotBeNullOrWhiteSpace(name);
+            AssertMetadataOnly(coverageNotes);
 
             JsonElement sources = RequiredArray(channel, "artifact_sources");
             if (status == "covered")
@@ -153,7 +218,47 @@ public sealed class SafetyInvariantGateTests
                 status.ShouldBeOneOf("reference-pending", "prerequisite-drift");
                 sources.GetArrayLength().ShouldBe(0, $"{name} is {status} and must not claim artifact coverage.");
                 safeAbsence.ShouldNotBe("covered", $"{name} is {status}; safe_absence_diagnostic must not be 'covered'.");
+                string absenceReason = RequiredString(channel, "absence_reason");
+                absenceReason.ShouldNotBeNullOrWhiteSpace(name);
+                AssertMetadataOnly(absenceReason);
             }
+        }
+    }
+
+    [Fact]
+    public void StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts()
+    {
+        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
+        Dictionary<string, JsonElement> channels = RequiredArray(inventory.RootElement, "channels")
+            .EnumerateArray()
+            .ToDictionary(channel => RequiredString(channel, "channel"), StringComparer.Ordinal);
+
+        foreach (string channelName in new[] { "audit-records", "projections", "console-payloads" })
+        {
+            JsonElement channel = channels[channelName];
+            RequiredString(channel, "prerequisite_status").ShouldBe("covered", $"{channelName} has current OpenAPI/generated-client artifacts and must not remain blanket pending.");
+            RequiredArray(channel, "artifact_sources").SelectText().ShouldContain(OpenApiRelativePath, $"{channelName} must scan the contract artifact that currently owns its examples.");
+            RequiredString(channel, "coverage_notes").ShouldContain("re-evaluated", Case.Insensitive, channelName);
+        }
+
+        JsonElement events = channels["events"];
+        RequiredString(events, "absence_reason").ShouldContain("re-evaluated", Case.Insensitive, "events must document why no current artifact is claimable.");
+    }
+
+    [Fact]
+    public void MissingChannelDiagnosticsAreEmittedAsBoundedRuntimeEvidence()
+    {
+        SafetyManifestDiagnostic[] diagnostics = BuildMissingChannelDiagnostics();
+        diagnostics.ShouldNotBeEmpty();
+
+        foreach (SafetyManifestDiagnostic diagnostic in diagnostics)
+        {
+            diagnostic.Gate.ShouldBe(GateName);
+            diagnostic.RuleId.ShouldBeOneOf("SAFETY-CHANNEL-MISSING", "SAFETY-PREREQUISITE-DRIFT");
+            diagnostic.OutputChannel.ShouldNotBeNullOrWhiteSpace();
+            diagnostic.OwnerStory.ShouldNotBeNullOrWhiteSpace();
+            diagnostic.Remediation.ShouldNotBeNullOrWhiteSpace();
+            AssertMetadataOnly(diagnostic.ToString());
         }
     }
 
@@ -169,7 +274,7 @@ public sealed class SafetyInvariantGateTests
             diagnostic.Gate.ShouldBe(GateName);
             diagnostic.RuleId.ShouldBe("SAFETY-FORBIDDEN-VALUE");
             diagnostic.RepositoryPath.ShouldBe("tests/fixtures/quarantine/safety-negative-controls.json");
-            diagnostic.ToString().ShouldNotContain(samples.Single(s => s.Id == diagnostic.SampleId).Value, Case.Sensitive);
+            AssertDoesNotContainForbiddenValue(diagnostic.ToString(), samples.Single(s => s.Id == diagnostic.SampleId), diagnostic.OutputChannel, diagnostic.RepositoryPath);
             AssertMetadataOnly(diagnostic.ToString());
         }
 
@@ -183,7 +288,7 @@ public sealed class SafetyInvariantGateTests
         string openApi = ReadRequiredFile(OpenApiPath);
         foreach (SentinelSample sample in LoadSentinelSamples().Where(sample => sample.ForbiddenOutputSurfaces.Contains("openapi-examples", StringComparer.Ordinal) || sample.ForbiddenOutputSurfaces.Contains("problem-details-examples", StringComparer.Ordinal)))
         {
-            openApi.ShouldNotContain(sample.Value, Case.Sensitive, sample.Id);
+            AssertDoesNotContainForbiddenValue(openApi, sample, "openapi-examples", OpenApiRelativePath);
         }
 
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
@@ -205,13 +310,46 @@ public sealed class SafetyInvariantGateTests
     }
 
     [Fact]
+    public void SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence()
+    {
+        string openApi = ReadRequiredFile(OpenApiPath);
+        foreach (string stateName in new[] { "wrong-tenant", "unauthorized", "hidden", "redacted", "missing", "unknown", "stale" })
+        {
+            openApi.ShouldContain(stateName, Case.Insensitive, $"AC 8 requires explicit safe-state coverage for {stateName}.");
+        }
+
+        openApi.ShouldContain("projection_unavailable", Case.Insensitive, "AC 8 requires projection-unavailable safe-state coverage.");
+
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
+        foreach (string exampleName in new[] { "SafeDenial403Forbidden", "SafeDenial404NotFound", "PrincipalMismatchSafeDenialProblem" })
+        {
+            string serialized = SerializeYaml(RequiredMapping(examples, exampleName));
+            (serialized.Contains("resource_unavailable", StringComparison.OrdinalIgnoreCase) || serialized.Contains("safe_denial", StringComparison.OrdinalIgnoreCase)).ShouldBeTrue(exampleName);
+            (serialized.Contains("redacted", StringComparison.OrdinalIgnoreCase) || serialized.Contains("metadata_only", StringComparison.OrdinalIgnoreCase)).ShouldBeTrue(exampleName);
+            serialized.ShouldNotContain("count", Case.Insensitive, exampleName);
+            serialized.ShouldNotContain("cursor", Case.Insensitive, exampleName);
+            serialized.ShouldNotContain("stack", Case.Insensitive, exampleName);
+        }
+
+        string[] projectionAvailability = RequiredSequence(RequiredMapping(RequiredMapping(RequiredMapping(root, "components"), "schemas"), "ProjectionAvailability"), "enum")
+            .Children
+            .Select(node => RequiredScalar(node, "ProjectionAvailability"))
+            .ToArray();
+        foreach (string stateName in new[] { "available", "stale", "unavailable", "redacted", "unknown" })
+        {
+            projectionAvailability.ShouldContain(stateName);
+        }
+    }
+
+    [Fact]
     public void WorkflowAndDocumentationExposeSameOfflineSafetyGate()
     {
         string workflow = ReadRequiredFile(WorkflowPath);
         string script = ReadRequiredFile(GateScriptPath);
         string documentation = ReadRequiredFile(GateDocumentationPath);
 
-        workflow.ShouldContain("./tests/tools/run-safety-invariant-gates.ps1 -NoRestore");
+        workflow.ShouldContain("./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild");
         workflow.ShouldContain("dotnet restore Hexalith.Folders.slnx");
         workflow.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
         workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
@@ -219,10 +357,14 @@ public sealed class SafetyInvariantGateTests
 
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
         script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests");
+        script.ShouldContain("dotnet restore Hexalith.Folders.slnx");
+        script.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
+        script.ShouldContain("[Alias('NoRestore')]");
         script.ShouldContain("$LASTEXITCODE");
         script.ShouldNotContain("--recursive", Case.Insensitive);
 
-        documentation.ShouldContain(".\\tests\\tools\\run-safety-invariant-gates.ps1 -NoRestore");
+        documentation.ShouldContain(".\\tests\\tools\\run-safety-invariant-gates.ps1");
+        documentation.ShouldContain("-SkipRestoreBuild");
         documentation.ShouldContain("SAFETY-PREREQUISITE-DRIFT");
         documentation.ShouldContain("reference-pending");
         documentation.ShouldContain("Story 1.16");
@@ -262,6 +404,9 @@ public sealed class SafetyInvariantGateTests
 
     private static SafetyScanDiagnostic[] ScanNegativeControls(IReadOnlyList<SentinelSample> samples)
     {
+        JsonElement quarantineChannel = InventoryChannel("negative-control-quarantine");
+        RequiredBoolean(quarantineChannel, "opt_in_scan_forbidden_values").ShouldBeTrue("Negative controls must be explicitly opt-in and separate from normal artifact scans.");
+
         using JsonDocument document = JsonDocument.Parse(ReadRequiredFile(QuarantinePath));
         List<SafetyScanDiagnostic> diagnostics = [];
         foreach (JsonElement control in RequiredArray(document.RootElement, "negative_controls").EnumerateArray())
@@ -274,20 +419,63 @@ public sealed class SafetyInvariantGateTests
         return diagnostics.ToArray();
     }
 
+    private static JsonElement InventoryChannel(string channelName)
+    {
+        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
+        foreach (JsonElement channel in RequiredArray(inventory.RootElement, "channels").EnumerateArray())
+        {
+            if (RequiredString(channel, "channel") == channelName)
+            {
+                return channel.Clone();
+            }
+        }
+
+        throw new InvalidOperationException($"{GateName}:SAFETY-PREREQUISITE-DRIFT: channel={channelName}; remediation=Declare the channel in safety-channel-inventory.json.");
+    }
+
     private static IEnumerable<SafetyScanDiagnostic> ScanText(string repositoryPath, string channel, string text, IEnumerable<SentinelSample> samples)
     {
         foreach (SentinelSample sample in samples)
         {
+            if (sample.Classification == "safe-provenance")
+            {
+                continue;
+            }
+
             if (!sample.ForbiddenOutputSurfaces.Contains(channel, StringComparer.Ordinal))
             {
                 continue;
             }
 
-            if (text.Contains(sample.Value, StringComparison.OrdinalIgnoreCase))
+            if (ContainsForbiddenValue(text, sample.Value))
             {
                 yield return new(GateName, "SAFETY-FORBIDDEN-VALUE", repositoryPath, channel, sample.Id, sample.Classification, sample.Category, "Replace the raw value with an allowed provenance-safe representation.");
             }
         }
+    }
+
+    private static SafetyManifestDiagnostic[] BuildMissingChannelDiagnostics()
+    {
+        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
+        List<SafetyManifestDiagnostic> diagnostics = [];
+        foreach (JsonElement channel in RequiredArray(inventory.RootElement, "channels").EnumerateArray())
+        {
+            string status = RequiredString(channel, "prerequisite_status");
+            if (status == "covered")
+            {
+                continue;
+            }
+
+            diagnostics.Add(new SafetyManifestDiagnostic(
+                GateName,
+                RequiredString(channel, "safe_absence_diagnostic"),
+                RequiredString(channel, "channel"),
+                RequiredString(channel, "owning_story"),
+                RequiredString(channel, "absence_reason"),
+                "Add a repository-relative artifact source when the owning story lands."));
+        }
+
+        return diagnostics.ToArray();
     }
 
     private static SentinelSample[] LoadSentinelSamples()
@@ -410,8 +598,55 @@ public sealed class SafetyInvariantGateTests
 
         foreach (string forbiddenValue in forbidden)
         {
-            value.ShouldNotContain(forbiddenValue, Case.Insensitive);
+            if (value.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"{GateName}:SAFETY-FORBIDDEN-DIAGNOSTIC: classification=confidential; category=metadata-only-output; remediation=Remove raw sensitive diagnostic material.");
+            }
         }
+    }
+
+    private static void AssertDoesNotContainForbiddenValue(string text, SentinelSample sample, string channel, string repositoryPath)
+    {
+        if (ContainsForbiddenValue(text, sample.Value))
+        {
+            throw new InvalidOperationException(new SafetyScanDiagnostic(
+                GateName,
+                "SAFETY-FORBIDDEN-VALUE",
+                repositoryPath,
+                channel,
+                sample.Id,
+                sample.Classification,
+                sample.Category,
+                "Replace the raw value with an allowed provenance-safe representation.").ToString());
+        }
+    }
+
+    private static bool ContainsForbiddenValue(string text, string forbiddenValue)
+    {
+        int index = text.IndexOf(forbiddenValue, StringComparison.OrdinalIgnoreCase);
+        while (index >= 0)
+        {
+            int end = index + forbiddenValue.Length;
+            if (HasTokenBoundary(text, index - 1) && HasTokenBoundary(text, end))
+            {
+                return true;
+            }
+
+            index = text.IndexOf(forbiddenValue, end, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
+    }
+
+    private static bool HasTokenBoundary(string text, int index)
+    {
+        if (index < 0 || index >= text.Length)
+        {
+            return true;
+        }
+
+        char value = text[index];
+        return !char.IsLetterOrDigit(value) && value is not '_' and not '-' and not '/' and not '.';
     }
 
     private static YamlMappingNode LoadYamlMapping(string path)
@@ -542,6 +777,12 @@ public sealed class SafetyInvariantGateTests
     private sealed record Operation(string OperationId, YamlMappingNode Node);
 
     private sealed record SentinelSample(string Id, string Value, string Classification, string Category, string[] ForbiddenOutputSurfaces);
+
+    private sealed record SafetyManifestDiagnostic(string Gate, string RuleId, string OutputChannel, string OwnerStory, string AbsenceReason, string Remediation)
+    {
+        public override string ToString() =>
+            $"{Gate}:{RuleId}: channel={OutputChannel}; owner={OwnerStory}; reason_hash={Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(AbsenceReason))).ToLowerInvariant()[..12]}; remediation={Remediation}";
+    }
 
     private sealed record SafetyScanDiagnostic(string Gate, string RuleId, string RepositoryPath, string OutputChannel, string SampleId, string Classification, string Category, string Remediation)
     {

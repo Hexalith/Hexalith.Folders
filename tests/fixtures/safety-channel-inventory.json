@@ -35,83 +35,115 @@
     {
       "channel": "sentinel-corpus-contract",
       "owning_story": "1-15-wire-safety-invariant-ci-gates",
-      "artifact_sources": ["tests/fixtures/audit-leakage-corpus.json"],
+      "artifact_sources": [
+        "tests/fixtures/audit-leakage-corpus.json"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "covered"
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "negative-control-quarantine",
       "owning_story": "1-15-wire-safety-invariant-ci-gates",
-      "artifact_sources": ["tests/fixtures/quarantine/safety-negative-controls.json"],
+      "artifact_sources": [
+        "tests/fixtures/quarantine/safety-negative-controls.json"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "covered"
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Quarantine is covered only by opt-in negative-control tests; normal manifest scans exclude this path.",
+      "opt_in_scan_forbidden_values": true
     },
     {
       "channel": "openapi-examples",
       "owning_story": "1-6-author-contract-spine-foundation-and-shared-extension-vocabulary",
-      "artifact_sources": ["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"],
+      "artifact_sources": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "problem-details-examples",
       "owning_story": "1-6-author-contract-spine-foundation-and-shared-extension-vocabulary",
-      "artifact_sources": ["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"],
+      "artifact_sources": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "parity-artifacts",
       "owning_story": "1-13-generate-the-c13-parity-oracle",
-      "artifact_sources": ["tests/fixtures/parity-contract.yaml"],
+      "artifact_sources": [
+        "tests/fixtures/parity-contract.yaml"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "generated-sdk",
       "owning_story": "1-12-wire-nswag-sdk-generation-with-idempotency-helpers",
-      "artifact_sources": ["src/Hexalith.Folders.Client/Generated"],
+      "artifact_sources": [
+        "src/Hexalith.Folders.Client/Generated"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "developer-diagnostics",
       "owning_story": "1-14-wire-contract-spine-drift-and-generated-client-ci-gates",
-      "artifact_sources": ["docs/contract/contract-spine-ci-gates.md", "docs/contract/safety-invariant-ci-gates.md", "tests/tools/run-contract-spine-gates.ps1", "tests/tools/run-safety-invariant-gates.ps1"],
+      "artifact_sources": [
+        "docs/contract/contract-spine-ci-gates.md",
+        "docs/contract/safety-invariant-ci-gates.md",
+        "tests/tools/run-contract-spine-gates.ps1",
+        "tests/tools/run-safety-invariant-gates.ps1"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "ci-logs",
       "owning_story": "1-14-wire-contract-spine-drift-and-generated-client-ci-gates",
-      "artifact_sources": [".github/workflows/contract-spine.yml", "tests/tools/run-safety-invariant-gates.ps1"],
+      "artifact_sources": [
+        ".github/workflows/contract-spine.yml",
+        "tests/tools/run-safety-invariant-gates.ps1"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "assertion-messages",
       "owning_story": "1-15-wire-safety-invariant-ci-gates",
-      "artifact_sources": ["tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"],
+      "artifact_sources": [
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"
+      ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning."
     },
     {
       "channel": "logs",
@@ -120,7 +152,9 @@
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in source exists for this output channel until the owning story lands."
     },
     {
       "channel": "traces",
@@ -129,7 +163,75 @@
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in source exists for this output channel until the owning story lands."
+    },
+    {
+      "channel": "span-names",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+    },
+    {
+      "channel": "metric-names",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+    },
+    {
+      "channel": "event-names",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+    },
+    {
+      "channel": "counters",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+    },
+    {
+      "channel": "exception-metadata",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+    },
+    {
+      "channel": "baggage",
+      "owning_story": "4-14-emit-metadata-only-audit-and-observability",
+      "artifact_sources": [],
+      "prerequisite_status": "reference-pending",
+      "diagnostic": "SAFETY-CHANNEL-MISSING",
+      "scan_forbidden_values": false,
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
     {
       "channel": "metric-labels",
@@ -138,7 +240,9 @@
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
     {
       "channel": "telemetry-attributes",
@@ -147,7 +251,9 @@
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
+      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
     },
     {
       "channel": "events",
@@ -156,43 +262,61 @@
       "prerequisite_status": "reference-pending",
       "diagnostic": "SAFETY-CHANNEL-MISSING",
       "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING",
+      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
+      "absence_reason": "Re-evaluated current OpenAPI, fixtures, and generated artifacts; runtime event emission examples are not checked in until Story 4-14 owns observability evidence."
     },
     {
       "channel": "audit-records",
       "owning_story": "1-11-author-audit-and-ops-console-query-contract-groups",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT"
+      "artifact_sources": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Client/Generated"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
     },
     {
       "channel": "projections",
       "owning_story": "4-15-validate-lifecycle-replay-and-projection-determinism",
-      "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "artifact_sources": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Client/Generated"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
     },
     {
       "channel": "provider-diagnostics",
       "owning_story": "3-5-validate-provider-readiness-with-safe-diagnostics",
-      "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "artifact_sources": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Client/Generated"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
     },
     {
       "channel": "console-payloads",
       "owning_story": "6-2-scaffold-frontcomposer-hosted-read-only-operations-console",
-      "artifact_sources": [],
-      "prerequisite_status": "reference-pending",
-      "diagnostic": "SAFETY-CHANNEL-MISSING",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-CHANNEL-MISSING"
+      "artifact_sources": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Client/Generated"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Re-evaluated current Story 1.11 OpenAPI and generated-client diagnostic artifacts; safety gate scans leakage only."
     }
   ]
 }

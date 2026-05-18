@@ -42,4 +42,4 @@ jobs:
         if: always()
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-safety-invariant-gates.ps1 -NoRestore
+        run: ./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild

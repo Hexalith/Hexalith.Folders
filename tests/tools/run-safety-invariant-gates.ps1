@@ -1,5 +1,6 @@
 param(
-    [switch]$NoRestore
+    [Alias('NoRestore')]
+    [switch]$SkipRestoreBuild
 )
 
 Set-StrictMode -Version Latest
@@ -18,12 +19,19 @@ try {
     Push-Location $repositoryRoot
     $pushed = $true
 
-    $restoreArgs = @()
-    if ($NoRestore) {
-        $restoreArgs += '--no-restore'
+    if (-not $SkipRestoreBuild) {
+        dotnet restore Hexalith.Folders.slnx
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
+
+        dotnet build Hexalith.Folders.slnx --no-restore
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
     }
 
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj @restoreArgs --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests
+    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }

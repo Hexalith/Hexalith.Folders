@@ -7,21 +7,21 @@ Story 1.15 wires the metadata-only safety gate for the Contract Spine, generated
 Run from the repository root:
 
 ```powershell
-dotnet restore Hexalith.Folders.slnx
-dotnet build Hexalith.Folders.slnx --no-restore
-.\tests\tools\run-safety-invariant-gates.ps1 -NoRestore
+.\tests\tools\run-safety-invariant-gates.ps1
 ```
 
-The command is offline and deterministic. It does not require Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant seed data, production secrets, network calls, or nested submodule initialization.
+The command is offline and deterministic. It restores, builds, and runs the same focused safety tests that CI invokes. It does not require Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant seed data, production secrets, network calls, or nested submodule initialization.
+
+CI can pass `-SkipRestoreBuild` after an existing repository-root restore/build lane. `-NoRestore` remains an alias for older local notes, but new documentation should use `-SkipRestoreBuild` so the flag describes what it skips.
 
 ## CI Job
 
-The existing `contract-spine-gates` workflow invokes `./tests/tools/run-safety-invariant-gates.ps1 -NoRestore` after the focused contract/generated-artifact gate. The workflow keeps one restore and one build lane, uses `global.json`, checks out with `submodules: false`, and does not upload scanner inputs, contaminated fixtures, assertion diffs, generated snippets, local paths, or full logs.
+The existing `contract-spine-gates` workflow invokes `./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild` after the focused contract/generated-artifact gate. The workflow keeps one restore and one build lane, uses `global.json`, checks out with `submodules: false`, and does not upload scanner inputs, contaminated fixtures, assertion diffs, generated snippets, local paths, or full logs.
 
 ## Gate Inputs
 
 - `tests/fixtures/audit-leakage-corpus.json`: authoritative sentinel vocabulary, classifications, forbidden surfaces, and allowed provenance-safe representations.
-- `tests/fixtures/safety-channel-inventory.json`: channel manifest with owner, artifact source, prerequisite status, safe absence diagnostic, and scan flag.
+- `tests/fixtures/safety-channel-inventory.json`: channel manifest with owner, artifact source, prerequisite status, safe absence diagnostic, coverage notes, absence reason where applicable, and scan flag.
 - `tests/fixtures/quarantine/safety-negative-controls.json`: opt-in contaminated controls used only to prove detection and sanitized failure output.
 - `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`: OpenAPI and Problem Details examples.
 - `tests/fixtures/parity-contract.yaml` and `src/Hexalith.Folders.Client/Generated`: generated-artifact leakage checks only.
@@ -36,13 +36,17 @@ Bounded missing-channel diagnostics:
 - `SAFETY-CHANNEL-MISSING`: no implementation exists yet for the channel, and the manifest records the owner story.
 - `SAFETY-PREREQUISITE-DRIFT`: the channel should have an artifact or seam, but the expected source is absent or stale.
 
-`reference-pending` is acceptable only when the channel has no runtime artifact in the current repository state and the owner story is explicit. Claimed `covered` entries fail closed when their repository-relative source is stale.
+`reference-pending` is acceptable only when the channel has no runtime artifact in the current repository state, the owner story is explicit, and the manifest records a bounded absence reason. Claimed `covered` entries fail closed when their repository-relative source is stale.
+
+The inventory currently treats audit records, projections, provider diagnostics, and console payload contract examples as covered by the checked-in OpenAPI and generated client artifacts. Runtime logs, traces, telemetry names, metric counters, exception metadata, baggage, and event emission examples remain owner-scoped `reference-pending` channels until Story 4.14 lands deterministic observability artifacts.
 
 ## Classification Rules
 
 The corpus is the only vocabulary source for this gate. Unknown classifications, missing `forbidden_output_surfaces`, missing `allowed_provenance_representations`, absent `synthetic_sentinel`, absent `synthetic_data_only`, or local synonyms fail before artifact scans run.
 
 Paths, branch names, repository names, commit messages, actor metadata, folder/workspace/task identifiers, provider correlation references, and diagnostic metadata are classified, not blanket-deleted. Allowed output uses sample IDs, bounded classifications, redaction markers, content hashes, operation IDs, schema pointers, gate names, rule IDs, and repository-relative paths.
+
+Telemetry is split into distinct scan surfaces: traces, span names, metric labels, metric names, event names, counters, telemetry attributes, exception metadata, and baggage. New telemetry examples must declare the exact surface they exercise instead of relying on a flat traces or metrics bucket.
 
 ## Negative Controls
 

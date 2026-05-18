@@ -51,6 +51,54 @@
       "synthetic_data_only": true,
       "normative_example": false,
       "contaminated_payload": "console payload exposed UNAUTHORIZED_RESOURCE_SYNTHETIC_EXISTS_HINT"
+    },
+    {
+      "id": "negative-control-span-secret",
+      "sample_id": "secret-shaped-access-key",
+      "output_channel": "span-names",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "span name emitted AKIASYNTHETIC0000000"
+    },
+    {
+      "id": "negative-control-event-generated-context",
+      "sample_id": "generated-context-payload",
+      "output_channel": "event-names",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "event name emitted GENERATED_CONTEXT_SYNTHETIC_PAYLOAD"
+    },
+    {
+      "id": "negative-control-exception-provider-payload",
+      "sample_id": "provider-payload-marker",
+      "output_channel": "exception-metadata",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "exception metadata emitted PROVIDER_PAYLOAD_SYNTHETIC_BODY"
+    },
+    {
+      "id": "negative-control-baggage-tenant-data",
+      "sample_id": "tenant-data-marker",
+      "output_channel": "baggage",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "baggage emitted TENANT_DATA_SYNTHETIC_MARKER"
+    },
+    {
+      "id": "negative-control-trace-production-url",
+      "sample_id": "production-url-marker",
+      "output_channel": "traces",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "trace emitted PRODUCTION_URL_SYNTHETIC_INVALID_HOST"
+    },
+    {
+      "id": "negative-control-assertion-diagnostic-echo",
+      "sample_id": "diagnostic-echo-marker",
+      "output_channel": "assertion-messages",
+      "synthetic_data_only": true,
+      "normative_example": false,
+      "contaminated_payload": "assertion emitted DIAGNOSTIC_ECHO_SYNTHETIC_FORBIDDEN"
     }
   ]
 }
