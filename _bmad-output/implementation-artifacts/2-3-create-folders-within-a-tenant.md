@@ -1,6 +1,6 @@
 # Story 2.3: Create folders within a tenant
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -37,53 +37,53 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
 
 ## Tasks / Subtasks
 
-- [ ] Create the Folder aggregate domain surface. (AC: 1, 2, 4, 9)
-  - [ ] Add `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs`.
-  - [ ] Add `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`.
-  - [ ] Add `src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs` or equivalent local event-application surface if sibling EventStore conventions use a separate apply type.
-  - [ ] Add opaque value objects or validated identifiers for managed tenant ID and folder ID where existing project types do not already provide them.
-  - [ ] Keep stream names in the `{managedTenantId}:folders:{folderId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed folder streams.
-  - [ ] Keep any idempotency, duplicate-detection, cache, or operation keys in the same authoritative tenant scope; tests must fail if a durable folder-create key omits tenant ID or uses request-supplied tenant ID as authority.
-  - [ ] Represent the initial lifecycle as active/logical-folder-created while keeping repository binding and workspace state unset or explicitly unbound for later stories.
-- [ ] Define create-folder commands, events, and result evidence. (AC: 2, 5, 8, 10)
-  - [ ] Add `CreateFolder` command and `FolderCreated` event, or equivalent names aligned with local EventStore naming.
-  - [ ] Add result/rejection codes for accepted, already_exists, duplicate_folder, invalid_folder_id, invalid_folder_metadata, reserved_tenant, missing_authoritative_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, replay_conflict, folder_acl_denied, acl_evidence_unavailable, idempotency_conflict, idempotency_unavailable, append_conflict, and state_transition_invalid.
-  - [ ] Keep accepted event payloads metadata-only: tenant ID, folder ID, safe display name, optional safe description/tags, lifecycle state, idempotency/correlation/task IDs, actor/principal safe identifier, version/sequence when available, and reason/result code.
-  - [ ] Do not copy raw command payloads, raw request headers, authentication tokens, provider payloads, repository names, branch names, file paths, file contents, diffs, generated context payloads, arbitrary tenant configuration values, or unauthorized resource identifiers into events, results, logs, traces, metrics, audit, projections, or test failure output.
-  - [ ] Ensure result evidence is structured around stable result codes and safe metadata; tests must not infer behavior from exception text, localized diagnostics, or event type names.
-- [ ] Add tenant and ACL pre-load authorization gates. (AC: 2, 3, 6, 7)
-  - [ ] Consume the Story 2.1 tenant-access authorizer/projection boundary before building the folder stream name.
-  - [ ] Consume Story 2.2 organization ACL baseline evidence for `create_folder`; if the full Story 2.2 implementation is still in flight, define a narrow interface boundary and tests that model allowed, denied, unavailable, malformed, and stale ACL evidence without duplicating ACL aggregate logic.
-  - [ ] Treat tenant IDs from route/body/query/header as comparison values only, never as authority that selects the aggregate stream.
-  - [ ] Ensure every non-allowed tenant or ACL result rejects before stream-name construction, durable/cache key construction, stream load, duplicate lookup, append, mutation, projection update, diagnostics lookup, audit lookup, provider readiness checks, or repository operations.
-  - [ ] Keep authorization evidence metadata-only and stable-code based. Do not expose membership inventories, role display names, group names, user emails, raw projection payloads, or whether unauthorized folders already exist.
-- [ ] Add idempotency and duplicate handling. (AC: 8, 9, 10)
-  - [ ] Reuse the project idempotency equivalence rules established in Epic 1 and the client helper semantics already generated in `src/Hexalith.Folders.Client/Generated/`.
-  - [ ] Canonicalize idempotency inputs using command type, operation intent, tenant, folder ID, safe folder metadata, actor/principal safe ID, and any explicit parent/organization reference if present.
-  - [ ] Treat raw JSON order, casing noise around non-token display metadata, omitted optional metadata, Unicode normalization, culture-specific casing, and exact duplicate tags according to a documented culture-invariant canonicalization rule before comparing payload equivalence.
-  - [ ] Return the same logical result for equivalent replay with the same idempotency key without appending duplicate `FolderCreated` events.
-  - [ ] Reject same-key materially different payloads as `idempotency_conflict`.
-  - [ ] Reject or fail closed with stable `idempotency_unavailable` evidence when an introduced idempotency boundary cannot prove equivalence after tenant and ACL gates pass; do not fall through to append.
-  - [ ] Return deterministic `already_exists` or equivalent evidence when a folder stream already contains a creation event for the same folder ID and the request is not an equivalent replay.
-  - [ ] Treat expected-version or append conflicts for the same tenant/folder stream as duplicate or idempotency evidence after re-reading safe state, never as a second creation event or as leaked infrastructure exception text.
-- [ ] Add folder-list projection and replay support only as needed for creation evidence. (AC: 2, 10, 11)
-  - [ ] Add minimal projection/event-apply coverage that can derive tenant-scoped folder existence, lifecycle state, and safe metadata from creation events.
-  - [ ] Derive projection tenant scope from the stream/envelope tenant evidence, not from mutable event payload tenant fields if both are present.
-  - [ ] Prove replay isolation for two tenants with matching folder names, path labels, and folder-ID-like input values; tenant scope must come from the stream/envelope metadata and cannot collide across tenants.
-  - [ ] Cover empty streams, duplicate creation events, malformed metadata-only events, and replay ordering deterministically without external services.
-  - [ ] Keep projection output metadata-only and tenant-scoped; do not add public listing/query endpoints unless the Contract Spine already exposes the shape and the implementation can stay within this story's logical-folder scope.
-  - [ ] Do not implement hierarchy moves, folder archive, repository binding, provider readiness, workspace state, file context, or effective-permission inspection in this projection.
-- [ ] Add tests and fixtures. (AC: 1-12)
-  - [ ] Add unit tests under `tests/Hexalith.Folders.Tests/Aggregates/Folder/` or an equivalent local path for aggregate creation, event application, duplicate create, invalid folder ID, invalid metadata, reserved `system` tenant, and stream-name shape.
-  - [ ] Add authorization gate tests for allowed tenant plus `create_folder`, stale/unavailable/disabled/unknown/malformed/future/replay-conflicting tenant evidence, tenant mismatch, missing authoritative tenant, denied ACL, unavailable ACL evidence, and malformed ACL evidence.
-  - [ ] Add idempotency tests for equivalent replay, same key plus changed folder metadata, same key plus changed folder ID, and already-existing folder without equivalent replay.
-  - [ ] Add idempotency and duplicate tests for tenant-prefixed durable keys, idempotency evidence unavailable after authorization, concurrent same-folder create races, and the same opaque folder ID safely existing in two different authoritative tenants.
-  - [ ] Add metadata leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file paths, file contents, diffs, generated context payloads, arbitrary tenant configuration values, user emails, group display names, and unauthorized resource names.
-  - [ ] Add sequencing tests named like `RejectsBeforeStreamNameWhenTenantMissing`, `RejectsBeforeLoadWhenTenantNotEvidenced`, and `RejectsBeforeAppendWhenCreateFolderAclMissing`, or equivalent local names that encode the forbidden side-effect boundary.
-  - [ ] Use in-memory spies for EventStore access, tenant evidence, ACL evidence, idempotency store, clock/time, validators, diagnostics sink, and audit sink so rejected paths can prove zero stream naming/loading/appending/projection/diagnostic/audit/provider/repository side effects.
-  - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable folder creation builders that delegate to production validation rules.
-  - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
-  - [ ] Use pure in-memory fakes only for EventStore seams, tenant evidence, ACL evidence, clock/time, validators, idempotency records, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
+- [x] Create the Folder aggregate domain surface. (AC: 1, 2, 4, 9)
+  - [x] Add `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs`.
+  - [x] Add `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`.
+  - [x] Add `src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs` or equivalent local event-application surface if sibling EventStore conventions use a separate apply type.
+  - [x] Add opaque value objects or validated identifiers for managed tenant ID and folder ID where existing project types do not already provide them.
+  - [x] Keep stream names in the `{managedTenantId}:folders:{folderId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed folder streams.
+  - [x] Keep any idempotency, duplicate-detection, cache, or operation keys in the same authoritative tenant scope; tests must fail if a durable folder-create key omits tenant ID or uses request-supplied tenant ID as authority.
+  - [x] Represent the initial lifecycle as active/logical-folder-created while keeping repository binding and workspace state unset or explicitly unbound for later stories.
+- [x] Define create-folder commands, events, and result evidence. (AC: 2, 5, 8, 10)
+  - [x] Add `CreateFolder` command and `FolderCreated` event, or equivalent names aligned with local EventStore naming.
+  - [x] Add result/rejection codes for accepted, already_exists, duplicate_folder, invalid_folder_id, invalid_folder_metadata, reserved_tenant, missing_authoritative_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, replay_conflict, folder_acl_denied, acl_evidence_unavailable, idempotency_conflict, idempotency_unavailable, append_conflict, and state_transition_invalid.
+  - [x] Keep accepted event payloads metadata-only: tenant ID, folder ID, safe display name, optional safe description/tags, lifecycle state, idempotency/correlation/task IDs, actor/principal safe identifier, version/sequence when available, and reason/result code.
+  - [x] Do not copy raw command payloads, raw request headers, authentication tokens, provider payloads, repository names, branch names, file paths, file contents, diffs, generated context payloads, arbitrary tenant configuration values, or unauthorized resource identifiers into events, results, logs, traces, metrics, audit, projections, or test failure output.
+  - [x] Ensure result evidence is structured around stable result codes and safe metadata; tests must not infer behavior from exception text, localized diagnostics, or event type names.
+- [x] Add tenant and ACL pre-load authorization gates. (AC: 2, 3, 6, 7)
+  - [x] Consume the Story 2.1 tenant-access authorizer/projection boundary before building the folder stream name.
+  - [x] Consume Story 2.2 organization ACL baseline evidence for `create_folder`; if the full Story 2.2 implementation is still in flight, define a narrow interface boundary and tests that model allowed, denied, unavailable, malformed, and stale ACL evidence without duplicating ACL aggregate logic.
+  - [x] Treat tenant IDs from route/body/query/header as comparison values only, never as authority that selects the aggregate stream.
+  - [x] Ensure every non-allowed tenant or ACL result rejects before stream-name construction, durable/cache key construction, stream load, duplicate lookup, append, mutation, projection update, diagnostics lookup, audit lookup, provider readiness checks, or repository operations.
+  - [x] Keep authorization evidence metadata-only and stable-code based. Do not expose membership inventories, role display names, group names, user emails, raw projection payloads, or whether unauthorized folders already exist.
+- [x] Add idempotency and duplicate handling. (AC: 8, 9, 10)
+  - [x] Reuse the project idempotency equivalence rules established in Epic 1 and the client helper semantics already generated in `src/Hexalith.Folders.Client/Generated/`.
+  - [x] Canonicalize idempotency inputs using command type, operation intent, tenant, folder ID, safe folder metadata, actor/principal safe ID, and any explicit parent/organization reference if present.
+  - [x] Treat raw JSON order, casing noise around non-token display metadata, omitted optional metadata, Unicode normalization, culture-specific casing, and exact duplicate tags according to a documented culture-invariant canonicalization rule before comparing payload equivalence.
+  - [x] Return the same logical result for equivalent replay with the same idempotency key without appending duplicate `FolderCreated` events.
+  - [x] Reject same-key materially different payloads as `idempotency_conflict`.
+  - [x] Reject or fail closed with stable `idempotency_unavailable` evidence when an introduced idempotency boundary cannot prove equivalence after tenant and ACL gates pass; do not fall through to append.
+  - [x] Return deterministic `already_exists` or equivalent evidence when a folder stream already contains a creation event for the same folder ID and the request is not an equivalent replay.
+  - [x] Treat expected-version or append conflicts for the same tenant/folder stream as duplicate or idempotency evidence after re-reading safe state, never as a second creation event or as leaked infrastructure exception text.
+- [x] Add folder-list projection and replay support only as needed for creation evidence. (AC: 2, 10, 11)
+  - [x] Add minimal projection/event-apply coverage that can derive tenant-scoped folder existence, lifecycle state, and safe metadata from creation events.
+  - [x] Derive projection tenant scope from the stream/envelope tenant evidence, not from mutable event payload tenant fields if both are present.
+  - [x] Prove replay isolation for two tenants with matching folder names, path labels, and folder-ID-like input values; tenant scope must come from the stream/envelope metadata and cannot collide across tenants.
+  - [x] Cover empty streams, duplicate creation events, malformed metadata-only events, and replay ordering deterministically without external services.
+  - [x] Keep projection output metadata-only and tenant-scoped; do not add public listing/query endpoints unless the Contract Spine already exposes the shape and the implementation can stay within this story's logical-folder scope.
+  - [x] Do not implement hierarchy moves, folder archive, repository binding, provider readiness, workspace state, file context, or effective-permission inspection in this projection.
+- [x] Add tests and fixtures. (AC: 1-12)
+  - [x] Add unit tests under `tests/Hexalith.Folders.Tests/Aggregates/Folder/` or an equivalent local path for aggregate creation, event application, duplicate create, invalid folder ID, invalid metadata, reserved `system` tenant, and stream-name shape.
+  - [x] Add authorization gate tests for allowed tenant plus `create_folder`, stale/unavailable/disabled/unknown/malformed/future/replay-conflicting tenant evidence, tenant mismatch, missing authoritative tenant, denied ACL, unavailable ACL evidence, and malformed ACL evidence.
+  - [x] Add idempotency tests for equivalent replay, same key plus changed folder metadata, same key plus changed folder ID, and already-existing folder without equivalent replay.
+  - [x] Add idempotency and duplicate tests for tenant-prefixed durable keys, idempotency evidence unavailable after authorization, concurrent same-folder create races, and the same opaque folder ID safely existing in two different authoritative tenants.
+  - [x] Add metadata leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file paths, file contents, diffs, generated context payloads, arbitrary tenant configuration values, user emails, group display names, and unauthorized resource names.
+  - [x] Add sequencing tests named like `RejectsBeforeStreamNameWhenTenantMissing`, `RejectsBeforeLoadWhenTenantNotEvidenced`, and `RejectsBeforeAppendWhenCreateFolderAclMissing`, or equivalent local names that encode the forbidden side-effect boundary.
+  - [x] Use in-memory spies for EventStore access, tenant evidence, ACL evidence, idempotency store, clock/time, validators, diagnostics sink, and audit sink so rejected paths can prove zero stream naming/loading/appending/projection/diagnostic/audit/provider/repository side effects.
+  - [x] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable folder creation builders that delegate to production validation rules.
+  - [x] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
+  - [x] Use pure in-memory fakes only for EventStore seams, tenant evidence, ACL evidence, clock/time, validators, idempotency records, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
 
 ## Dev Notes
 
@@ -191,6 +191,7 @@ so that repository-backed workspace tasks have a tenant-scoped logical home.
 | 2026-05-17 | Created story with folder aggregate creation, tenant/ACL pre-load gates, idempotency, metadata-only event, projection replay, and offline test guardrails. | Codex |
 | 2026-05-17 | Applied party-mode review hardening for terms, gate ordering, idempotency disclosure, duplicate scope, projection replay isolation, and test spies. | Codex |
 | 2026-05-17 | Applied advanced-elicitation hardening for durable key scoping, metadata validation ordering, idempotency unavailability, concurrent duplicates, and projection authority. | Codex |
+| 2026-05-18 | Implemented folder aggregate creation, tenant/ACL pre-load gate, idempotency and duplicate handling, minimal folder-list replay projection, testing helper, and focused guardrail coverage. Story moved to review. | Codex |
 
 ## Party-Mode Review
 
@@ -225,9 +226,68 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-18: Red phase confirmed with `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` failing on missing `Hexalith.Folders.Aggregates.Folder` and `Hexalith.Folders.Projections.FolderList` types.
+- 2026-05-18: Focused folder aggregate validation passed with `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` (123 tests).
+- 2026-05-18: Testing-helper validation passed with `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore` (43 tests).
+- 2026-05-18: Full regression initially surfaced Story 1.10/1.11 negative-scope guardrails still blocking the Story 2.3-owned `Aggregates/Folder` directory; narrowed those guards to keep all other forbidden categories intact.
+- 2026-05-18: Full regression passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+
+### Implementation Plan
+
+- Mirrored the Story 2.2 aggregate pattern for a pure folder aggregate, stable result evidence, strict stream-name validation, and a repository seam that records stream/idempotency side effects only after authorization and metadata validation pass.
+- Added a narrow folder-create ACL evidence boundary that consumes Story 2.2 `create_folder` evidence without reimplementing organization ACL grant/revoke semantics.
+- Kept folder creation logical only: active lifecycle state, unbound repository state, safe metadata event payloads, idempotency fingerprinting, duplicate handling, and append-conflict evidence.
+- Added a minimal tenant-scoped folder-list projection for replay evidence only, deriving tenant scope from the stream/envelope metadata instead of mutable event payload fields.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-3-create-folders-within-a-tenant` equivalent workflow on 2026-05-17.
 - Project context, Epic 2, PRD, architecture, Story 2.1, Story 2.2, testing factories, recent commits, and story-creation lessons were reviewed.
+- Added `FolderAggregate`, `FolderState`, `FolderStateApply`, `CreateFolder`, `FolderCreated`, stable result codes, stream-name validation, safe metadata validation, and lifecycle/repository binding evidence under `src/Hexalith.Folders/Aggregates/Folder/`.
+- Added `FolderCreateTenantGate`, `FolderCreateAclEvidence`, and `IFolderRepository` so tenant evidence and `create_folder` ACL evidence reject before durable key construction, stream naming, stream loading, appending, projection updates, diagnostics, audit, provider readiness, or repository work.
+- Added folder idempotency fingerprinting, tenant-prefixed durable key tests, equivalent replay handling, idempotency conflict/unavailable evidence, duplicate-folder evidence, and append-conflict handling.
+- Added minimal `FolderListProjection` replay support for creation evidence with envelope-derived tenant scope and cross-tenant isolation.
+- Added focused unit tests for stream shape, aggregate command validation, tenant/ACL gates, idempotency, metadata leakage, replay projection, and reusable folder test-data factory conformance.
+- Narrowed the older contract-story negative-scope guards to allow Story 2.3's `Aggregates/Folder` directory while preserving their remaining forbidden categories.
+- Did not implement provider readiness, repository creation/binding, workspace preparation, locks, file mutation, commits, folder ACL grant/revoke, effective-permission query endpoints, archive behavior, CLI/MCP/UI/workers, production Dapr policy mapping, repair workflows, local-only folder mode, webhooks, brownfield adoption, or multi-organization-per-tenant behavior.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-3-create-folders-within-a-tenant.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders/Aggregates/Folder/CreateFolder.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAppendOutcome.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclEvidence.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclOutcome.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCreated.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCreateTenantGate.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderIdempotencyLookupResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderRepositoryBindingState.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderStreamName.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/IFolderCommand.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/IFolderEvent.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`
+- `src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs`
+- `src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs`
+- `src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs`
+- `src/Hexalith.Folders.Testing/Factories/FolderCreationTestDataFactory.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Unit/FolderCreationTestDataFactoryTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationAclGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationCommandValidationTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationIdempotencyTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationMetadataLeakageTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationProjectionReplayTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationTenantEvidenceGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderStreamShapeTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/RecordingFolderRepository.cs`
