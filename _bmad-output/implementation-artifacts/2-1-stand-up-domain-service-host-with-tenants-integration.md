@@ -1,6 +1,6 @@
 # Story 2.1: Stand up domain service host with Tenants integration
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

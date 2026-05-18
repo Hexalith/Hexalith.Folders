@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-18T23:30:00+02:00
+last_updated: 2026-05-18T23:55:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -43,7 +43,7 @@ story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
 development_status:
   # Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
-  epic-1: in-progress
+  epic-1: done
   1-1-establish-a-consumer-buildable-module-scaffold: done
   1-2-establish-root-configuration-and-submodule-policy: done
   1-3-seed-minimally-valid-normative-fixtures: done
@@ -60,11 +60,11 @@ development_status:
   1-14-wire-contract-spine-drift-and-generated-client-ci-gates: done
   1-15-wire-safety-invariant-ci-gates: done
   1-16-wire-exit-criteria-and-parity-completeness-gates: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   # Epic 2: Tenant-Scoped Folder Access And Lifecycle
   epic-2: in-progress
-  2-1-stand-up-domain-service-host-with-tenants-integration: ready-for-dev
+  2-1-stand-up-domain-service-host-with-tenants-integration: in-progress
   2-2-implement-organization-aggregate-acl-baseline: ready-for-dev
   2-3-create-folders-within-a-tenant: ready-for-dev
   2-4-grant-and-revoke-folder-access: ready-for-dev
