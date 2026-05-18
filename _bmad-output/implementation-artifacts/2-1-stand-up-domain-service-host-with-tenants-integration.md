@@ -1,6 +1,6 @@
 # Story 2.1: Stand up domain service host with Tenants integration
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -59,6 +59,40 @@ so that every folder operation has tenant identity and availability semantics be
   - [x] Assert endpoint registration through route metadata, endpoint data sources, or equivalent structural surfaces rather than live Dapr discovery calls.
   - [x] Add AppHost/Aspire structural tests under `tests/Hexalith.Folders.IntegrationTests` or a focused Aspire test project for stable app IDs and component references without requiring live provider credentials.
   - [x] Add negative tests proving a request-supplied tenant id cannot authorize a mutation when the authenticated/EventStore tenant differs.
+
+### Review Findings
+
+_Code review of commit a2a301e on 2026-05-18 — Blind Hunter + Edge Case Hunter + Acceptance Auditor (parallel adversarial layers)._
+
+_Decisions resolved 2026-05-18 (best-practice defaults):_
+- **D1** → Add `ITenantContextAccessor` reading `HttpContext.User`; bind authoritative tenant from claims in this story.
+- **D2** → Defer JWT middleware to Story 7.2 but add startup guard in `AddFoldersServer` that throws if no auth scheme is registered.
+- **D3** → Drop out-of-order events silently (do not flag `MalformedEvidence` on `SequenceNumber ≤ Watermark`); keep latches only for genuinely malformed payloads and divergent `MessageId` evidence.
+- **D4** → Add `Version` (etag-style) to `FolderTenantAccessProjection`; `IFolderTenantAccessProjectionStore.SaveAsync` rejects on stale version and the handler retries.
+- **D5** → `/project` returns `501 Not Implemented` until real projection handlers arrive (Story 2.3+).
+
+- [x] [Review][Patch] **AC7 — replace `Command.TenantId` with claim-derived authoritative tenant** [src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:20-22] — Introduce `ITenantContextAccessor` (reading `HttpContext.User`'s tenant claim); `FoldersDomainServiceRequestHandler` resolves `AuthoritativeTenantId` from the accessor and `RequestedTenantId` from `request.Command.TenantId`. The two now differ on a forged request and the `TenantMismatch` branch becomes live. Register a default `HttpContext`-backed accessor in `AddFoldersServer`; tests inject a fake.
+- [x] [Review][Patch] **Startup guard for missing auth scheme** [src/Hexalith.Folders.Server/FoldersServerModule.cs] — In `AddFoldersServer`, after registrations, throw `InvalidOperationException` at host build time if `IAuthenticationSchemeProvider` has no schemes and `ASPNETCORE_ENVIRONMENT` is not `Development`. Prevents accidental insecure deployment without taking on Story 7.2 OIDC scope.
+- [x] [Review][Patch] **Stop flagging out-of-order delivery as `MalformedEvidence`** [src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs:38-43] — When `SequenceNumber ≤ Watermark` and `MessageId` is not in `ProcessedMessages`, drop silently (log structured warning with metadata-only fields). Keep `MalformedEvidence` only for genuinely malformed payloads (missing fields, future timestamps).
+- [x] [Review][Patch] **Optimistic concurrency on projection store** [src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessProjection.cs, IFolderTenantAccessProjectionStore.cs, FolderTenantAccessHandler.cs] — Add a `long Version` (or string etag) to the projection. `SaveAsync` accepts an expected version and throws `TenantAccessConcurrencyException` on mismatch. Handler catches and retries the read-modify-write up to N attempts before returning to the dispatcher.
+- [x] [Review][Patch] **`/project` returns 501 Not Implemented** [src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:22-23] — Replace the empty-array stub with `Results.Problem(statusCode: 501, title: "Projection endpoint not implemented")`. Keeps AC1 route shape; removes the public unauthenticated empty-success oracle.
+- [x] [Review][Patch] **403 response body leaks projection metadata to unauthorized callers** [src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:27] — Returns full `TenantAccessAuthorizationResult` (with `TenantId`, `ProjectionWatermark`, `LastEventTimestamp`, `ProjectionAge`) on every deny. Tenant-existence and freshness probe oracle. Fix: return stable `code` only via RFC 9457 Problem Details, no projection metadata.
+- [x] [Review][Patch] **CorrelationId in dedup evidence causes false ReplayConflict on legitimate Dapr retries** [src/Hexalith.Folders/Projections/TenantAccess/FolderTenantEventEvidence.cs:9, Handler:29] — Dapr at-least-once redelivery typically rotates correlation id; structural inequality flips `ReplayConflict` permanently. Remove `CorrelationId` from the evidence record (or from equality comparison).
+- [x] [Review][Patch] **Broad `catch (Exception)` swallows `OperationCanceledException`** [src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs:43-50] — Cancellation surfaces as `unavailable_projection`; real defects (NRE, ArgumentException) masked. Fix: `catch (Exception ex) when (ex is not OperationCanceledException)`.
+- [x] [Review][Patch] **`InMemoryFolderTenantAccessProjectionStore` ignores `CancellationToken`** [src/Hexalith.Folders/Projections/TenantAccess/InMemoryFolderTenantAccessProjectionStore.cs] — Add `cancellationToken.ThrowIfCancellationRequested()` at entry of `GetAsync`/`SaveAsync`.
+- [x] [Review][Patch] **TenantId silently coerced to empty when envelope/event tenant mismatch** [src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs:105-115, Handler:11-14] — Mismatch is silently dropped (no log, no malformed marker). Producer-side smuggling attempts are invisible. Emit structured warning and persist projection evidence (malformed or new envelope-mismatch outcome).
+- [x] [Review][Patch] **PayloadFingerprint includes raw payload values (potential PII)** [src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs:56,68,82,94,106] — `@event.Name`, `@event.Key`, etc. flow into the evidence record. Tenant Name can be PII; "metadata-only" invariant violated. Fix: hash the fingerprint (SHA256) before storing.
+- [x] [Review][Patch] **Loop in handler returns after first processor** [src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:30-34] — `foreach (var processor) { return ... }` silently ignores additional registrations. Use `Single()` (with a clear error when zero or multiple), or define a selection strategy.
+- [x] [Review][Patch] **AC7 negative test bypasses production composition** [tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs] — `MutationShouldRejectInvalidAuthorityOrPrincipal` constructs context directly with distinct tenant ids — a state the production handler can never produce. Add a true server-level test through `/process` driving body tenant ≠ auth tenant (after the AC7 decision lands).
+- [x] [Review][Patch] **Missing server tests for `/process` fail-closed, unknown-event handling, and `.WithTopic` metadata** [tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs] — Task list required these explicitly; only route-presence + string constants are asserted today. Add: (a) `/process` denies when projection evidence is missing; (b) `FoldersTenantEventHandler` does not grant access on unknown event types; (c) the `/tenants/events` endpoint metadata carries the expected Topic attribute.
+- [x] [Review][Patch] **AppHost structural test only asserts app-id constants** [tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs] — Task asked for component-reference assertions. Load `DistributedApplication.CreateBuilder` in-process and assert sidecar / shared state-store / pubsub references on each resource.
+- [x] [Review][Patch] **`TenantAccessOptions` is not bound to `IConfiguration`** [src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs] — Registered as `new TenantAccessOptions()` singleton; story said "configurable projection freshness budget". Bind to `IConfiguration.GetSection("Folders:TenantAccess")` or expose `IOptions<TenantAccessOptions>`.
+- [x] [Review][Patch] **No clock-skew tolerance on future-timestamp check** [src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs:117] — Strict `@event.Timestamp > clock.UtcNow`; 1 ms producer drift bricks the tenant (under the permanent-latch behavior). After the F7 decision, allow a small tolerance (e.g., 5 s) before classifying as malformed.
+- [x] [Review][Defer] **accesscontrol.yaml ships `defaultAction: allow` with no environment guard** [src/Hexalith.Folders.AppHost/DaprComponents/accesscontrol.yaml] — deferred, local-dev scaffold; production deny-by-default belongs to Story 7.1.
+- [x] [Review][Defer] **JWT audience hard-coded to `hexalith-eventstore` for all services; empty `SigningKey`; `RequireHttpsMetadata=false`** [src/Hexalith.Folders.AppHost/Program.cs:51-53] — deferred, local-dev AppHost composition; production OIDC/secret-store integration belongs to Story 7.2. Audience-per-service correctness should be revisited there.
+- [x] [Review][Defer] **`Workers/Program.cs` is an empty host with no `IHostedService`** [src/Hexalith.Folders.Workers/Program.cs] — deferred, workers do nothing in Story 2.1; Story 2.9 ("react to Tenants events through worker handlers") owns the subscription pipeline.
+- [x] [Review][Defer] **`RemovedConfigurationKeys` can grow unboundedly** [src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs:111] — deferred, no AC bounds it; durable projection store choice (later story) will determine retention strategy.
+- [x] [Review][Defer] **Hard-coded `localhost:6379` Redis with no `AddRedis()` resource** [src/Hexalith.Folders.Aspire/FoldersAspireModule.cs] — deferred, distributed deployment wiring is Story 7.x; local dev runs work today.
 
 ## Dev Notes
 
@@ -161,6 +195,7 @@ so that every folder operation has tenant identity and availability semantics be
 | 2026-05-17 | Applied advanced-elicitation hardening for replay conflicts, projection-store failure semantics, diagnostic leakage boundaries, configuration removals, and structural endpoint tests. | Codex |
 | 2026-05-15 | Applied party-mode review hardening for freshness semantics, Tenants event mapping, Dapr subscription shape, tenant authority, fail-closed outcomes, and offline tests. | Codex |
 | 2026-05-18 | Implemented domain-service host composition, Tenants projection pipeline, fail-closed authorizer, Aspire topology, worker host, and structural/unit coverage. | Codex |
+| 2026-05-18 | Applied code-review patches: claim-derived authoritative tenant via `ITenantContextAccessor`, deny responses stripped of projection metadata, `/project` returns 501, startup auth-scheme guard, out-of-order events dropped silently, optimistic concurrency on the projection store, hashed payload fingerprints, clock-skew tolerance, `OperationCanceledException` propagation, cancellation in the in-memory store, envelope-mismatch logging, fail-on-multi/zero-processor semantics, `TenantAccessOptions` bound to `IConfiguration`, server tests for `/process` fail-closed and `.WithTopic` metadata, AppHost structural component-reference test. All 168 tests pass. | Claude |
 
 ## Party-Mode Review
 

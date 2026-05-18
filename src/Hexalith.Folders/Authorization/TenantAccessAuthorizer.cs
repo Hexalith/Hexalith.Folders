@@ -40,7 +40,7 @@ public sealed class TenantAccessAuthorizer(
         {
             projection = await store.GetAsync(context.AuthoritativeTenantId, cancellationToken).ConfigureAwait(false);
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             return Result(
                 TenantAccessOutcome.UnavailableProjection,

@@ -1,3 +1,4 @@
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Shouldly;
 using Xunit;
@@ -8,11 +9,14 @@ public sealed class FolderTenantAccessHandlerTests
 {
     private static readonly DateTimeOffset EventTimestamp = new(2026, 5, 18, 12, 0, 0, TimeSpan.Zero);
 
+    private static FolderTenantAccessHandler CreateHandler(IFolderTenantAccessProjectionStore store, DateTimeOffset now)
+        => new(store, new FixedUtcClock(now), new TenantAccessOptions());
+
     [Fact]
     public async Task UserAddedToTenantShouldProjectMetadataOnlyAccessEvidence()
     {
         InMemoryFolderTenantAccessProjectionStore store = new();
-        FolderTenantAccessHandler handler = new(store, new FixedUtcClock(EventTimestamp.AddMinutes(1)));
+        FolderTenantAccessHandler handler = CreateHandler(store, EventTimestamp.AddMinutes(1));
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
 
         await handler.HandleAsync(
@@ -37,7 +41,7 @@ public sealed class FolderTenantAccessHandlerTests
     public async Task DuplicateMessageWithDivergentMetadataShouldRecordReplayConflictWithoutAdvancingWatermark()
     {
         InMemoryFolderTenantAccessProjectionStore store = new();
-        FolderTenantAccessHandler handler = new(store, new FixedUtcClock(EventTimestamp.AddMinutes(1)));
+        FolderTenantAccessHandler handler = CreateHandler(store, EventTimestamp.AddMinutes(1));
         string messageId = "01J00000000000000000000010";
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
 
@@ -60,7 +64,7 @@ public sealed class FolderTenantAccessHandlerTests
     public async Task NonFoldersConfigurationShouldBeIgnoredAndRemovedFoldersConfigurationShouldBeTombstoned()
     {
         InMemoryFolderTenantAccessProjectionStore store = new();
-        FolderTenantAccessHandler handler = new(store, new FixedUtcClock(EventTimestamp.AddMinutes(1)));
+        FolderTenantAccessHandler handler = CreateHandler(store, EventTimestamp.AddMinutes(1));
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
 
         await handler.HandleAsync(
@@ -89,7 +93,7 @@ public sealed class FolderTenantAccessHandlerTests
     {
         DateTimeOffset now = EventTimestamp;
         InMemoryFolderTenantAccessProjectionStore store = new();
-        FolderTenantAccessHandler handler = new(store, new FixedUtcClock(now));
+        FolderTenantAccessHandler handler = CreateHandler(store, now);
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
 
         await handler.HandleAsync(

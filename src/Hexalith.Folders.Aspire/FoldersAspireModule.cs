@@ -21,6 +21,25 @@ public static class FoldersAspireModule
 
     public const string PubSubComponentName = "pubsub";
 
+    /// <summary>
+    /// Registers the shared Dapr state-store and pub/sub components used by every Folders sidecar.
+    /// Extracted from <see cref="AddHexalithFolders"/> so structural tests can verify component
+    /// registration without needing real <see cref="ProjectResource"/>s.
+    /// </summary>
+    public static (IResourceBuilder<IDaprComponentResource> StateStore, IResourceBuilder<IDaprComponentResource> PubSub)
+        AddFoldersSharedDaprComponents(this IDistributedApplicationBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        IResourceBuilder<IDaprComponentResource> stateStore = builder
+            .AddDaprComponent(StateStoreComponentName, "state.redis")
+            .WithMetadata("actorStateStore", "true")
+            .WithMetadata("redisHost", "localhost:6379")
+            .WithMetadata("keyPrefix", "none");
+        IResourceBuilder<IDaprComponentResource> pubSub = builder.AddDaprPubSub(PubSubComponentName);
+        return (stateStore, pubSub);
+    }
+
     public static HexalithFoldersResources AddHexalithFolders(
         this IDistributedApplicationBuilder builder,
         IResourceBuilder<ProjectResource> eventStore,
@@ -37,12 +56,7 @@ public static class FoldersAspireModule
         ArgumentNullException.ThrowIfNull(foldersWorkers);
         ArgumentNullException.ThrowIfNull(foldersUi);
 
-        IResourceBuilder<IDaprComponentResource> stateStore = builder
-            .AddDaprComponent(StateStoreComponentName, "state.redis")
-            .WithMetadata("actorStateStore", "true")
-            .WithMetadata("redisHost", "localhost:6379")
-            .WithMetadata("keyPrefix", "none");
-        IResourceBuilder<IDaprComponentResource> pubSub = builder.AddDaprPubSub(PubSubComponentName);
+        (IResourceBuilder<IDaprComponentResource> stateStore, IResourceBuilder<IDaprComponentResource> pubSub) = builder.AddFoldersSharedDaprComponents();
 
         _ = eventStore
             .WithDaprSidecar(sidecar => sidecar

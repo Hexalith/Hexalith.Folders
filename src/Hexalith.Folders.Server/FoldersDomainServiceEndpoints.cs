@@ -20,7 +20,15 @@ public static class FoldersDomainServiceEndpoints
             => await handler.ProcessAsync(request, cancellationToken).ConfigureAwait(false));
 
         endpoints.MapPost(FoldersServerModule.ProjectRoute, (ProjectionRequest _) =>
-            Results.Ok(Array.Empty<ProjectionResponse>()));
+            Results.Problem(
+                type: "https://hexalith.dev/errors/folders/projection-not-implemented",
+                title: "Folders projection endpoint is not implemented yet.",
+                statusCode: StatusCodes.Status501NotImplemented,
+                extensions: new Dictionary<string, object?>
+                {
+                    ["category"] = "not_implemented",
+                    ["code"] = "projection_not_implemented",
+                }));
 
         return endpoints;
     }

@@ -1,8 +1,14 @@
+using Hexalith.Folders.Authorization;
+
+using Microsoft.Extensions.Logging;
+
 namespace Hexalith.Folders.Projections.TenantAccess;
 
 public sealed class FolderTenantAccessHandler(
     IFolderTenantAccessProjectionStore store,
-    IUtcClock clock)
+    IUtcClock clock,
+    TenantAccessOptions options,
+    ILogger<FolderTenantAccessHandler>? logger = null)
 {
     public async Task HandleAsync(FolderTenantAccessEvent @event, CancellationToken cancellationToken = default)
     {
@@ -13,6 +19,25 @@ public sealed class FolderTenantAccessHandler(
             return;
         }
 
+        int attempts = Math.Max(1, options.ConcurrencyRetryAttempts);
+        for (int attempt = 0; attempt < attempts; attempt++)
+        {
+            try
+            {
+                await ApplyOnceAsync(@event, cancellationToken).ConfigureAwait(false);
+                return;
+            }
+            catch (TenantAccessConcurrencyException) when (attempt + 1 < attempts)
+            {
+                logger?.LogDebug(
+                    "Optimistic concurrency conflict applying tenant event {EventKind} for tenant {TenantId}; retry {Attempt} of {Attempts}.",
+                    @event.Kind, @event.TenantId, attempt + 2, attempts);
+            }
+        }
+    }
+
+    private async Task ApplyOnceAsync(FolderTenantAccessEvent @event, CancellationToken cancellationToken)
+    {
         FolderTenantAccessProjection projection = await store.GetAsync(@event.TenantId, cancellationToken).ConfigureAwait(false)
             ?? new FolderTenantAccessProjection { TenantId = @event.TenantId };
 
@@ -37,8 +62,12 @@ public sealed class FolderTenantAccessHandler(
 
         if (@event.SequenceNumber <= projection.Watermark)
         {
-            projection.MalformedEvidence = true;
-            await store.SaveAsync(projection, cancellationToken).ConfigureAwait(false);
+            // Legitimate out-of-order at-least-once delivery: a newer-sequence event already advanced the
+            // watermark. Dropping silently (rather than flagging MalformedEvidence) keeps the tenant healthy
+            // through normal pub/sub redelivery patterns.
+            logger?.LogDebug(
+                "Dropping out-of-order tenant event {EventKind} for tenant {TenantId}: sequence {Sequence} <= watermark {Watermark}.",
+                @event.Kind, @event.TenantId, @event.SequenceNumber, projection.Watermark);
             return;
         }
 
@@ -114,7 +143,7 @@ public sealed class FolderTenantAccessHandler(
     private bool IsMalformed(FolderTenantAccessEvent @event)
         => string.IsNullOrWhiteSpace(@event.MessageId)
             || @event.SequenceNumber <= 0
-            || @event.Timestamp > clock.UtcNow
+            || @event.Timestamp - clock.UtcNow > options.ClockSkewTolerance
             || ((@event.Kind is FolderTenantAccessEventKind.UserAddedToTenant
                 or FolderTenantAccessEventKind.UserRemovedFromTenant
                 or FolderTenantAccessEventKind.UserRoleChanged)
@@ -130,6 +159,5 @@ public sealed class FolderTenantAccessHandler(
             @event.Kind.ToString(),
             @event.SequenceNumber,
             @event.Timestamp,
-            @event.CorrelationId,
             @event.PayloadFingerprint);
 }

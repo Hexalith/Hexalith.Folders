@@ -24,6 +24,13 @@ public sealed class FolderTenantAccessProjection
 
     public bool MalformedEvidence { get; set; }
 
+    /// <summary>
+    /// Optimistic concurrency token. <see cref="IFolderTenantAccessProjectionStore.SaveAsync"/> rejects writes
+    /// whose <see cref="Version"/> does not match the currently-stored version and increments the stored version
+    /// on success.
+    /// </summary>
+    public long Version { get; set; }
+
     public FolderTenantAccessProjection Clone()
         => new()
         {
@@ -38,5 +45,6 @@ public sealed class FolderTenantAccessProjection
             LastEventTimestamp = LastEventTimestamp,
             ReplayConflict = ReplayConflict,
             MalformedEvidence = MalformedEvidence,
+            Version = Version,
         };
 }

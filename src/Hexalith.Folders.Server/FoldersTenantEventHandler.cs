@@ -1,10 +1,18 @@
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
+
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Tenants.Client.Handlers;
 using Hexalith.Tenants.Contracts.Events;
 
+using Microsoft.Extensions.Logging;
+
 namespace Hexalith.Folders.Server;
 
-public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler) :
+public sealed class FoldersTenantEventHandler(
+    FolderTenantAccessHandler handler,
+    ILogger<FoldersTenantEventHandler>? logger = null) :
     ITenantEventHandler<TenantCreated>,
     ITenantEventHandler<TenantUpdated>,
     ITenantEventHandler<TenantDisabled>,
@@ -15,18 +23,21 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
     ITenantEventHandler<TenantConfigurationSet>,
     ITenantEventHandler<TenantConfigurationRemoved>
 {
+    private const char FieldSeparator = '';
+    private const string NullMarker = "null";
+
     public Task HandleAsync(TenantCreated @event, TenantEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
-        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantCreated, @event.TenantId, context, payloadFingerprint: @event.Name), cancellationToken);
+        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantCreated, @event.TenantId, context, fingerprintParts: [@event.Name]), cancellationToken);
     }
 
     public Task HandleAsync(TenantUpdated @event, TenantEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
-        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantUpdated, @event.TenantId, context, payloadFingerprint: @event.Name), cancellationToken);
+        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantUpdated, @event.TenantId, context, fingerprintParts: [@event.Name]), cancellationToken);
     }
 
     public Task HandleAsync(TenantDisabled @event, TenantEventContext context, CancellationToken cancellationToken = default)
@@ -53,7 +64,7 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
             context,
             principalId: @event.UserId,
             role: @event.Role.ToString(),
-            payloadFingerprint: string.Join('|', @event.UserId, @event.Role)), cancellationToken);
+            fingerprintParts: [@event.UserId, @event.Role.ToString()]), cancellationToken);
     }
 
     public Task HandleAsync(UserRemovedFromTenant @event, TenantEventContext context, CancellationToken cancellationToken = default)
@@ -65,7 +76,7 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
             @event.TenantId,
             context,
             principalId: @event.UserId,
-            payloadFingerprint: @event.UserId), cancellationToken);
+            fingerprintParts: [@event.UserId]), cancellationToken);
     }
 
     public Task HandleAsync(UserRoleChanged @event, TenantEventContext context, CancellationToken cancellationToken = default)
@@ -79,7 +90,7 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
             principalId: @event.UserId,
             role: @event.NewRole.ToString(),
             previousRole: @event.OldRole.ToString(),
-            payloadFingerprint: string.Join('|', @event.UserId, @event.OldRole, @event.NewRole)), cancellationToken);
+            fingerprintParts: [@event.UserId, @event.OldRole.ToString(), @event.NewRole.ToString()]), cancellationToken);
     }
 
     public Task HandleAsync(TenantConfigurationSet @event, TenantEventContext context, CancellationToken cancellationToken = default)
@@ -91,7 +102,7 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
             @event.TenantId,
             context,
             configurationKey: @event.Key,
-            payloadFingerprint: @event.Key), cancellationToken);
+            fingerprintParts: [@event.Key]), cancellationToken);
     }
 
     public Task HandleAsync(TenantConfigurationRemoved @event, TenantEventContext context, CancellationToken cancellationToken = default)
@@ -103,10 +114,10 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
             @event.TenantId,
             context,
             configurationKey: @event.Key,
-            payloadFingerprint: @event.Key), cancellationToken);
+            fingerprintParts: [@event.Key]), cancellationToken);
     }
 
-    private static FolderTenantAccessEvent ToProjectionEvent(
+    private FolderTenantAccessEvent ToProjectionEvent(
         FolderTenantAccessEventKind kind,
         string eventTenantId,
         TenantEventContext context,
@@ -114,10 +125,20 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
         string? role = null,
         string? previousRole = null,
         string? configurationKey = null,
-        string? payloadFingerprint = null)
-        => new(
+        string?[]? fingerprintParts = null)
+    {
+        string projectionTenantId = eventTenantId;
+        if (!string.Equals(context.TenantId, eventTenantId, StringComparison.Ordinal))
+        {
+            logger?.LogWarning(
+                "Tenant envelope mismatch: envelope TenantId={EnvelopeTenantId} differs from payload TenantId={PayloadTenantId} for event {EventKind} (MessageId={MessageId}); event will be dropped.",
+                context.TenantId, eventTenantId, kind, context.MessageId);
+            projectionTenantId = string.Empty;
+        }
+
+        return new FolderTenantAccessEvent(
             kind,
-            string.Equals(context.TenantId, eventTenantId, StringComparison.Ordinal) ? eventTenantId : string.Empty,
+            projectionTenantId,
             context.MessageId,
             context.SequenceNumber,
             context.Timestamp,
@@ -126,5 +147,28 @@ public sealed class FoldersTenantEventHandler(FolderTenantAccessHandler handler)
             role,
             previousRole,
             configurationKey,
-            payloadFingerprint ?? eventTenantId);
+            FingerprintHash(fingerprintParts));
+    }
+
+    private static string FingerprintHash(string?[]? parts)
+    {
+        if (parts is null || parts.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        StringBuilder canonical = new();
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (i > 0)
+            {
+                _ = canonical.Append(FieldSeparator);
+            }
+
+            _ = canonical.Append(parts[i] is null ? NullMarker : parts[i]);
+        }
+
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(canonical.ToString()));
+        return Convert.ToHexString(hash).ToLowerInvariant();
+    }
 }
