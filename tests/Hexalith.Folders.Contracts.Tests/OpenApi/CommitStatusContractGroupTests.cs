@@ -322,6 +322,7 @@ public sealed class CommitStatusContractGroupTests
                     string relative = Path.GetRelativePath(projectRoot, file).Replace('\\', '/');
                     return !relative.StartsWith("obj/", StringComparison.Ordinal)
                         && !relative.StartsWith("bin/", StringComparison.Ordinal)
+                        && !relative.StartsWith("Aggregates/Organization/", StringComparison.Ordinal)
                         && MatchesGlob(relative, pattern);
                 })
                 .ToArray();

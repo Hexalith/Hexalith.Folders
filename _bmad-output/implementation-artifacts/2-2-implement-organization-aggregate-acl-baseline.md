@@ -1,6 +1,6 @@
 # Story 2.2: Implement Organization aggregate ACL baseline
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -30,47 +30,47 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 
 ## Tasks / Subtasks
 
-- [ ] Create the Organization aggregate domain surface. (AC: 1, 2, 4, 8)
-  - [ ] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`.
-  - [ ] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`.
-  - [ ] Add opaque value objects or validated identifiers for managed tenant ID, organization ID, principal ID, and ACL action where existing project types do not already provide them.
-  - [ ] Keep aggregate stream names in the `{managedTenantId}:organizations:{organizationId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed organization streams.
-- [ ] Define ACL baseline commands and metadata-only events. (AC: 2, 3, 5, 6)
-  - [ ] Add commands for initializing the organization ACL baseline and granting/revoking baseline permissions for user, group, role, and delegated service-agent principals.
-  - [ ] Add accepted events such as `OrganizationAclBaselineInitialized`, `OrganizationAclPrincipalGranted`, and `OrganizationAclPrincipalRevoked`, or equivalent names aligned with local EventStore conventions.
-  - [ ] Add rejection events or result types with stable codes for unauthorized tenant context, invalid principal, unsupported action, duplicate/conflicting entry, stale tenant projection, unavailable tenant projection, disabled tenant, unknown tenant, tenant mismatch, and idempotency conflict.
-  - [ ] Ensure event payloads are metadata-only and do not copy request payloads wholesale.
-  - [ ] Define the initial closed ACL action vocabulary as domain-owned value objects or enum values in `Hexalith.Folders`: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Do not add provider-specific or folder-override action names in this story.
-  - [ ] Define command/result inventory for `InitializeOrganizationAclBaseline`, `GrantOrganizationAclPrincipal`, and `RevokeOrganizationAclPrincipal` or equivalent local names, with result codes for accepted, already_applied, duplicate_entry, missing_entry, unsupported_action, invalid_principal, invalid_organization, invalid_tenant, reserved_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, replay_conflict, and idempotency_conflict.
-  - [ ] Treat ACL action values as ordinal, lower-snake-case domain tokens; reject localized labels, display names, aliases, mixed-case variants, provider-specific verbs, and unknown action strings rather than normalizing them into accepted permissions.
-  - [ ] Ensure stable result evidence is structured around result codes and metadata fields; tests must not infer behavior from event type names, exception text, stack traces, or localized diagnostics.
-- [ ] Add fail-closed authorization integration points without pulling in later folder policy. (AC: 3, 4, 7)
-  - [ ] Depend on the tenant-access authorizer/projection from Story 2.1 when available; if Story 2.1 implementation is still in flight, add an interface boundary and tests that model the fail-closed outcomes without duplicating Story 2.1 projection logic.
-  - [ ] Check tenant projection evidence before organization stream loading or ACL mutation.
-  - [ ] Treat tenant IDs from route/body/query/header as comparison values only, never as the authority that selects the aggregate stream.
-  - [ ] Require the authorization seam to receive authoritative managed tenant context from authentication context or EventStore envelopes plus Story 2.1 evidence fields: outcome code, projection watermark, last event timestamp, projection age/freshness status, sequence/version when available, and correlation/task/idempotency metadata. Future-dated evidence must reject through the Story 2.1 stable evidence code instead of creating a permissive fallback.
-  - [ ] Do not implement folder-level ACL overrides, folder lifecycle, provider readiness, repository binding, workspace, CLI, MCP, UI, or worker behavior in this story.
-- [ ] Add idempotency and deterministic derivation support. (AC: 6, 8)
-  - [ ] Reuse the project idempotency equivalence rules established in Epic 1; compare canonical ACL payload shape rather than raw JSON order.
-  - [ ] Ensure duplicate equivalent commands do not append duplicate ACL events.
-  - [ ] Provide deterministic state application for grant/revoke ordering and duplicate entries.
-  - [ ] Add effective-permission derivation helpers only for organization baseline state; Story 2.5 owns public effective-permission inspection.
-  - [ ] Treat the same idempotency key plus the same canonical payload as the same logical result with no duplicate event; the same idempotency key plus a different canonical payload rejects as `idempotency_conflict`; a different idempotency key plus an already-present grant returns deterministic `already_applied` evidence or equivalent no-op result without appending a duplicate event.
-  - [ ] Derive organization-baseline permissions by set membership over tenant, organization, principal kind, principal ID, and action. Replaying events in any order that preserves causal version order must produce the same state; role/group inheritance and folder override precedence remain out of scope.
-  - [ ] Include command type and operation intent in the canonical idempotency payload so a grant and revoke for the same ACL tuple can never share an equivalence class.
-  - [ ] Canonicalize repeated entries before event creation: exact duplicates reduce to one entry; conflicting same-tuple grant/revoke or action interpretation rejects as `duplicate_entry`, `replay_conflict`, or a locally equivalent stable conflict code before append.
-- [ ] Add tests and fixtures. (AC: 1-12)
-  - [ ] Add unit tests under `tests/Hexalith.Folders.Tests` for aggregate initialization, grant/revoke by principal kind, duplicate grants, revoke of missing grant, unsupported action, malformed IDs, and reserved tenant rejection.
-  - [ ] Add authorization tests for stale/unavailable/disabled/unknown/malformed/replay-conflicting/future tenant projection evidence and tenant mismatch.
-  - [ ] Add idempotency tests for equivalent replay and conflicting replay.
-  - [ ] Add leakage tests that scan event/rejection/debug strings for credential, token, file content, repository, branch, and unauthorized-resource sentinel values.
-  - [ ] Extend `src/Hexalith.Folders.Testing` factories only with reusable organization/ACL builders that delegate to production validation rules.
-  - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
-  - [ ] Add focused tests named `OrganizationAclCommandValidationTests`, `OrganizationAclTenantEvidenceGateTests`, `OrganizationAclIdempotencyTests`, `OrganizationAclEffectivePermissionTests`, `OrganizationAclMetadataLeakageTests`, and `OrganizationAclStreamShapeTests` or equivalent locally consistent names.
-  - [ ] Add negative controls proving rejected tenant evidence does not construct stream names, read streams, append events, mutate aggregate state, or query diagnostic/audit resources.
-  - [ ] Add intra-command duplicate/conflict tests covering exact duplicate grants, exact duplicate revokes, same idempotency key with reordered entries, same key with grant-vs-revoke intent changes, and mixed principal-kind collision attempts.
-  - [ ] Add structured-result tests proving accepted, already-applied, missing-entry, unsupported-action, tenant-evidence, replay-conflict, and idempotency-conflict outcomes can be asserted from stable codes and safe metadata without parsing diagnostic text.
-  - [ ] Use pure in-memory fakes only for EventStore seams, tenant evidence, clock/time, validators, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
+- [x] Create the Organization aggregate domain surface. (AC: 1, 2, 4, 8)
+  - [x] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`.
+  - [x] Add `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`.
+  - [x] Add opaque value objects or validated identifiers for managed tenant ID, organization ID, principal ID, and ACL action where existing project types do not already provide them.
+  - [x] Keep aggregate stream names in the `{managedTenantId}:organizations:{organizationId}` shape and reject empty segments, `:` characters, control characters, non-canonical casing when the project validator requires canonical casing, and the reserved `system` tenant for managed organization streams.
+- [x] Define ACL baseline commands and metadata-only events. (AC: 2, 3, 5, 6)
+  - [x] Add commands for initializing the organization ACL baseline and granting/revoking baseline permissions for user, group, role, and delegated service-agent principals.
+  - [x] Add accepted events such as `OrganizationAclBaselineInitialized`, `OrganizationAclPrincipalGranted`, and `OrganizationAclPrincipalRevoked`, or equivalent names aligned with local EventStore conventions.
+  - [x] Add rejection events or result types with stable codes for unauthorized tenant context, invalid principal, unsupported action, duplicate/conflicting entry, stale tenant projection, unavailable tenant projection, disabled tenant, unknown tenant, tenant mismatch, and idempotency conflict.
+  - [x] Ensure event payloads are metadata-only and do not copy request payloads wholesale.
+  - [x] Define the initial closed ACL action vocabulary as domain-owned value objects or enum values in `Hexalith.Folders`: `create_folder`, `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`. Do not add provider-specific or folder-override action names in this story.
+  - [x] Define command/result inventory for `InitializeOrganizationAclBaseline`, `GrantOrganizationAclPrincipal`, and `RevokeOrganizationAclPrincipal` or equivalent local names, with result codes for accepted, already_applied, duplicate_entry, missing_entry, unsupported_action, invalid_principal, invalid_organization, invalid_tenant, reserved_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, missing_authoritative_tenant, replay_conflict, and idempotency_conflict.
+  - [x] Treat ACL action values as ordinal, lower-snake-case domain tokens; reject localized labels, display names, aliases, mixed-case variants, provider-specific verbs, and unknown action strings rather than normalizing them into accepted permissions.
+  - [x] Ensure stable result evidence is structured around result codes and metadata fields; tests must not infer behavior from event type names, exception text, stack traces, or localized diagnostics.
+- [x] Add fail-closed authorization integration points without pulling in later folder policy. (AC: 3, 4, 7)
+  - [x] Depend on the tenant-access authorizer/projection from Story 2.1 when available; if Story 2.1 implementation is still in flight, add an interface boundary and tests that model the fail-closed outcomes without duplicating Story 2.1 projection logic.
+  - [x] Check tenant projection evidence before organization stream loading or ACL mutation.
+  - [x] Treat tenant IDs from route/body/query/header as comparison values only, never as the authority that selects the aggregate stream.
+  - [x] Require the authorization seam to receive authoritative managed tenant context from authentication context or EventStore envelopes plus Story 2.1 evidence fields: outcome code, projection watermark, last event timestamp, projection age/freshness status, sequence/version when available, and correlation/task/idempotency metadata. Future-dated evidence must reject through the Story 2.1 stable evidence code instead of creating a permissive fallback.
+  - [x] Do not implement folder-level ACL overrides, folder lifecycle, provider readiness, repository binding, workspace, CLI, MCP, UI, or worker behavior in this story.
+- [x] Add idempotency and deterministic derivation support. (AC: 6, 8)
+  - [x] Reuse the project idempotency equivalence rules established in Epic 1; compare canonical ACL payload shape rather than raw JSON order.
+  - [x] Ensure duplicate equivalent commands do not append duplicate ACL events.
+  - [x] Provide deterministic state application for grant/revoke ordering and duplicate entries.
+  - [x] Add effective-permission derivation helpers only for organization baseline state; Story 2.5 owns public effective-permission inspection.
+  - [x] Treat the same idempotency key plus the same canonical payload as the same logical result with no duplicate event; the same idempotency key plus a different canonical payload rejects as `idempotency_conflict`; a different idempotency key plus an already-present grant returns deterministic `already_applied` evidence or equivalent no-op result without appending a duplicate event.
+  - [x] Derive organization-baseline permissions by set membership over tenant, organization, principal kind, principal ID, and action. Replaying events in any order that preserves causal version order must produce the same state; role/group inheritance and folder override precedence remain out of scope.
+  - [x] Include command type and operation intent in the canonical idempotency payload so a grant and revoke for the same ACL tuple can never share an equivalence class.
+  - [x] Canonicalize repeated entries before event creation: exact duplicates reduce to one entry; conflicting same-tuple grant/revoke or action interpretation rejects as `duplicate_entry`, `replay_conflict`, or a locally equivalent stable conflict code before append.
+- [x] Add tests and fixtures. (AC: 1-12)
+  - [x] Add unit tests under `tests/Hexalith.Folders.Tests` for aggregate initialization, grant/revoke by principal kind, duplicate grants, revoke of missing grant, unsupported action, malformed IDs, and reserved tenant rejection.
+  - [x] Add authorization tests for stale/unavailable/disabled/unknown/malformed/replay-conflicting/future tenant projection evidence and tenant mismatch.
+  - [x] Add idempotency tests for equivalent replay and conflicting replay.
+  - [x] Add leakage tests that scan event/rejection/debug strings for credential, token, file content, repository, branch, and unauthorized-resource sentinel values.
+  - [x] Extend `src/Hexalith.Folders.Testing` factories only with reusable organization/ACL builders that delegate to production validation rules.
+  - [x] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
+  - [x] Add focused tests named `OrganizationAclCommandValidationTests`, `OrganizationAclTenantEvidenceGateTests`, `OrganizationAclIdempotencyTests`, `OrganizationAclEffectivePermissionTests`, `OrganizationAclMetadataLeakageTests`, and `OrganizationAclStreamShapeTests` or equivalent locally consistent names.
+  - [x] Add negative controls proving rejected tenant evidence does not construct stream names, read streams, append events, mutate aggregate state, or query diagnostic/audit resources.
+  - [x] Add intra-command duplicate/conflict tests covering exact duplicate grants, exact duplicate revokes, same idempotency key with reordered entries, same key with grant-vs-revoke intent changes, and mixed principal-kind collision attempts.
+  - [x] Add structured-result tests proving accepted, already-applied, missing-entry, unsupported-action, tenant-evidence, replay-conflict, and idempotency-conflict outcomes can be asserted from stable codes and safe metadata without parsing diagnostic text.
+  - [x] Use pure in-memory fakes only for EventStore seams, tenant evidence, clock/time, validators, and diagnostics sinks. These tests must not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
 
 ## Dev Notes
 
@@ -181,6 +181,7 @@ so that folder permissions can be granted consistently to users, groups, roles, 
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-18 | Implemented Organization ACL aggregate baseline, tenant-evidence gate, idempotency/canonicalization support, reusable testing factory, and focused guardrail tests; story moved to review. | Codex |
 | 2026-05-17 | Applied advanced-elicitation hardening for ACL canonicalization, strict action parsing, duplicate/conflict handling, structured result evidence, and side-effect negative controls. | Codex |
 | 2026-05-17 | Applied party-mode review hardening for ACL vocabulary, principal identity, tenant evidence gating, idempotency semantics, metadata-only events, and offline test controls. | Codex |
 | 2026-05-16 | Created story with aggregate, ACL, tenant-authority, idempotency, and metadata-only guardrails. | Codex |
@@ -230,9 +231,60 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-18: Red phase confirmed with `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` failing on missing `Hexalith.Folders.Aggregates.Organization` types.
+- 2026-05-18: Focused domain validation passed with `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` (64 tests).
+- 2026-05-18: Testing-helper validation passed with `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore` (40 tests).
+- 2026-05-18: Contract guardrails passed with `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` (81 tests).
+- 2026-05-18: Full regression passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-2-implement-organization-aggregate-acl-baseline` equivalent workflow on 2026-05-16.
 - Project context, Epic 2, architecture domain layout, Story 2.1, testing factories, and story-creation lessons were reviewed.
+- Added pure Organization ACL aggregate/state handling for baseline initialization, grant, revoke, stream naming, metadata-only events, stable result codes, strict action/principal validation, and deterministic permission derivation.
+- Added command canonicalization and idempotency fingerprints so exact duplicate entries collapse, grant/revoke conflicts reject, equivalent command replays avoid duplicate events, and conflicting idempotency replays fail closed.
+- Added `OrganizationAclTenantGate` over Story 2.1 tenant-access evidence so non-allowed evidence, payload-tenant mismatch, duplicate/conflicting command entries, and idempotency conflicts reject before organization stream construction/loading/append.
+- Added reusable `OrganizationAclTestDataFactory` in `Hexalith.Folders.Testing`, updated the scaffold dependency policy for its intentional core-domain reference, and narrowed older contract-story negative-scope guards to allow the Story 2.2-owned `Aggregates/Organization` domain folder.
+- Did not implement folder inheritance, folder ACL overrides, public effective-permission endpoints, provider binding/adapters, repository/workspace behavior, CLI/MCP/UI/workers, or production Dapr policy.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders/Aggregates/Organization/GrantOrganizationAclPrincipal.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclCommand.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclEvent.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationAclRepository.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/InitializeOrganizationAclBaseline.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclAction.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclBaselineInitialized.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidationResult.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclEntryKey.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperation.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclOperationIntent.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalGranted.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalKind.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclPrincipalRevoked.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResult.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclResultCode.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationAggregate.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationState.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs`
+- `src/Hexalith.Folders/Aggregates/Organization/RevokeOrganizationAclPrincipal.cs`
+- `src/Hexalith.Folders.Testing/Factories/OrganizationAclTestDataFactory.cs`
+- `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/Unit/OrganizationAclTestDataFactoryTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/AclCommandFactory.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclCommandValidationTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclEffectivePermissionTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclIdempotencyTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclMetadataLeakageTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclTenantEvidenceGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Organization/RecordingOrganizationAclRepository.cs`
