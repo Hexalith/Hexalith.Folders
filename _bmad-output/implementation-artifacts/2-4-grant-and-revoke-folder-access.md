@@ -19,21 +19,22 @@ so that access to folders can evolve without changing repository bindings.
 - ACL administrator evidence means tenant-access evidence from Story 2.1 plus Story 2.2 organization ACL evidence proving the actor can manage folder access for the target tenant and folder scope. Story 2.4 records direct folder override grants and revokes only; it does not rewrite organization ACL baseline events, compute inherited/effective access, or decide folder-vs-organization precedence for Story 2.5.
 - Effective ACL metadata means the replayable folder-level grant/revoke state needed by later authorization and Story 2.5 effective-permission inspection. This story may add internal projection helpers but does not add public effective-permission endpoints.
 - C7 freshness budget means the revocation propagation/revalidation window defined by architecture concern C7. This story records revocation metadata and tests the domain/projection signals needed to honor that budget; lock revalidation implementation remains in later workspace-lock stories.
+- Protected resource touch means constructing or loading folder streams, idempotency records, projections, diagnostics, audit resources, provider readiness, repositories, workspaces, files, or cache entries tied to a target folder/principal/action. Rejected tenant and ACL evidence must fail before any protected resource touch, even when the requested folder or principal would otherwise be valid.
 
 ## Acceptance Criteria
 
 1. Given Story 2.3 folder creation exists, when this story is implemented, then folder-level grant and revoke command, event, state-apply, result, and rejection types are added under `src/Hexalith.Folders/Aggregates/Folder/` without changing folder identity or repository binding state.
 2. Given authoritative tenant context, allowed tenant evidence, existing folder state, and ACL administrator evidence are present in that order, when a grant command is accepted, then metadata-only folder ACL grant events are recorded for permitted principals and folder access actions.
-3. Given authoritative tenant context, allowed tenant evidence, existing folder state, and ACL administrator evidence are present in that order, when a revoke command is accepted, then metadata-only folder ACL revoke events are recorded and projected so subsequent authorization evidence can deny revoked access within the C7 freshness budget.
+3. Given authoritative tenant context, allowed tenant evidence, existing folder state, and ACL administrator evidence are present in that order, when a revoke command is accepted, then metadata-only folder ACL revoke events are recorded and projected so subsequent authorization evidence can deny revoked access within the C7 freshness budget. Revocation freshness evidence must include a monotonic event version/sequence or projection watermark; implementations must not fall back to a stale grant view when the revoke event is present but projection freshness cannot be proven.
 4. Given tenant identity appears in command payloads, route values, query parameters, ordinary headers, forwarded headers, metadata bags, or any client-controlled envelope field, when grant or revoke command context is built, then tenant authority comes only from authentication context or EventStore envelopes; mismatched or competing tenant values reject with indistinguishable metadata-only denial evidence before folder stream-name construction, idempotency lookup, stream load, append, projection update, diagnostics, audit lookup, provider readiness, repository access, workspace access, or file access.
 5. Given tenant-access evidence is stale, unavailable, disabled, unknown, malformed, future-dated, replay-conflicting, tenant-mismatched, denied, or missing authoritative tenant context, when grant or revoke is evaluated, then it rejects before stream-name construction, idempotency lookup, folder stream load, append, state mutation, projection update, diagnostics, audit lookup, provider readiness, repository access, workspace access, or file access.
-6. Given ACL administrator evidence is denied, unavailable, malformed, stale, tenant-mismatched, folder-mismatched, lacks `query_status`/`query_audit` where needed for evidence, or lacks the explicit manage-access permission used by the implementation, when grant or revoke is evaluated, then it rejects with stable metadata-only evidence before idempotency lookup, folder stream load, append, state mutation, projection update, diagnostics, audit lookup, provider readiness, repository access, workspace access, or file access. The rejection must not reveal whether the folder exists, whether the principal exists, whether access was already granted, or whether a revoke would be a no-op.
+6. Given ACL administrator evidence is denied, unavailable, malformed, stale, tenant-mismatched, folder-mismatched, lacks `query_status`/`query_audit` where needed for evidence, or lacks the explicit manage-access permission used by the implementation, when grant or revoke is evaluated, then it rejects with stable metadata-only evidence before idempotency lookup, folder stream load, append, state mutation, projection update, diagnostics, audit lookup, provider readiness, repository access, workspace access, or file access. The manage-access proof must come from the Story 2.2 organization ACL evidence model or an existing shared authorization vocabulary; this story must not create an unreviewed folder-level management action token as a shortcut. The rejection must not reveal whether the folder exists, whether the principal exists, whether access was already granted, or whether a revoke would be a no-op.
 7. Given a grant or revoke command includes unsupported action names, localized labels, display names, aliases, mixed-case variants, provider-specific verbs, `create_folder`, duplicate conflicting entries, malformed principal kind or ID, missing folder ID, reserved `system` tenant, or invalid correlation/task/idempotency metadata, when validation runs, then the command rejects with stable result codes and no durable side effects.
 8. Given exact duplicate ACL entries appear in one command, when entries are canonicalized, then exact duplicate grant tuples or exact duplicate revoke tuples collapse deterministically; same-tuple grant/revoke conflicts in the same command reject before idempotency lookup or stream access.
 9. Given the same idempotency key and equivalent canonical grant or revoke payload are retried after tenant and ACL administrator gates pass, when the command is processed, then the same logical result is returned without duplicating events; given the same idempotency key and materially different payload are processed, then the command rejects as `idempotency_conflict` and appends nothing. Equivalence includes operation type, authoritative tenant ID, folder ID, principal kind, principal ID, strict action token, actor safe identifier, and any implementation-owned scope metadata; correlation ID, task ID, timestamps, transport ordering, display metadata, and diagnostic-only fields do not create a new semantic payload.
-10. Given an already-present grant is granted again with a different idempotency key, when state is evaluated, then the command returns deterministic `already_applied` no-op evidence without appending a duplicate grant event; given an absent grant is revoked, then the command returns deterministic `missing_entry` no-op evidence without appending a revoke event or inventing prior access. Replaying a prior revoke is separate from revoking absent access and must preserve the prior revocation event metadata during deterministic replay.
+10. Given an already-present grant is granted again with a different idempotency key, when state is evaluated after all authorization gates pass, then the command returns deterministic `already_applied` no-op evidence without appending a duplicate grant event; given an absent grant is revoked after all authorization gates pass, then the command returns deterministic `missing_entry` no-op evidence without appending a revoke event or inventing prior access. Replaying a prior revoke is separate from revoking absent access and must preserve the prior revocation event metadata during deterministic replay. No-op evidence must be indistinguishable from denial evidence until authorization proves the caller may observe the folder ACL tuple.
 11. Given a revoke races with a grant or another revoke for the same tenant, folder, principal, and action, when expected-version or append-conflict evidence is observed, then the command re-reads safe state after authorization, validation, and idempotency checks and returns stable applied/no-op/conflict evidence without appending duplicate or contradictory ACL events.
-12. Given folder ACL events, results, logs, traces, metrics, projections, audit records, or test failure messages are produced, when metadata is inspected, then only tenant ID, folder ID, principal kind, principal ID, action, operation intent, result code, actor safe identifier, correlation/task/idempotency IDs, version/sequence/watermark, C7 freshness metadata, and timestamps are allowed; names, emails, group display names, provider tokens, credential material, repository names, branch names, file paths, file contents, diffs, generated context payloads, raw command bodies, raw auth headers, arbitrary tenant configuration, and unauthorized resource existence are forbidden.
+12. Given folder ACL events, results, logs, traces, metrics, projections, audit records, or test failure messages are produced, when metadata is inspected, then only tenant ID, folder ID, principal kind, principal ID, action, operation intent, result code, actor safe identifier, correlation/task/idempotency IDs, version/sequence/watermark, C7 freshness metadata, and timestamps are allowed; names, emails, group display names, provider tokens, credential material, repository names, branch names, file paths, file contents, diffs, generated context payloads, raw command bodies, raw auth headers, arbitrary tenant configuration, exception messages containing user input, and unauthorized resource existence are forbidden.
 13. Given folder ACL events are replayed, when the projection or state helper derives effective folder override metadata, then it is deterministic by tenant, folder, principal kind, principal ID, action, operation intent, version/sequence, watermark, revocation timestamp, and revocation correlation/idempotency metadata; it does not depend on localized text, event class names, wall-clock reads inside aggregate logic, or provider/workspace state.
 14. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodules, when unit and smoke tests execute, then grant/revoke validation, tenant and ACL gates, idempotency, duplicate/no-op behavior, revocation projection, metadata leakage boundaries, and side-effect negative controls are covered with in-memory fakes and spies.
 15. Given this story owns folder-level grant/revoke only, when implementation is complete, then it exposes no mutation path outside the domain command/aggregate surface introduced here and does not implement public effective-permission query endpoints, folder archive behavior, provider readiness, repository binding, workspace preparation, locks, file mutation, commits, context query, CLI/MCP/UI commands, workers, production Dapr policy mapping, repair workflows, local-only folder mode, webhooks, brownfield adoption, multi-organization-per-tenant behavior, operations-console mutation paths, or operations-console grant/revoke UI.
@@ -51,6 +52,7 @@ so that access to folders can evolve without changing repository bindings.
   - [ ] Validate supported principal kind separately from opaque principal ID format; reject empty, whitespace, malformed, unsupported, localized, display-name, email-shaped where prohibited, case-variant, or embedded-claim principal values without leaking the raw value.
   - [ ] Define the folder-level action vocabulary as strict lower-snake-case domain tokens and exclude `create_folder` from folder overrides.
   - [ ] Add result/rejection codes for accepted, already_applied, missing_entry, duplicate_entry, conflicting_entry, unsupported_action, invalid_principal, invalid_folder, invalid_tenant, reserved_tenant, missing_authoritative_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, folder_acl_denied, acl_evidence_unavailable, folder_not_found, idempotency_conflict, idempotency_unavailable, append_conflict, and validation_failed.
+  - [ ] Ensure `folder_not_found`, `already_applied`, and `missing_entry` are observable only after tenant and ACL administrator gates pass; before those gates, return the same safe denial family used for unauthorized callers.
   - [ ] Document command/result semantics in code or tests so accepted grants append exactly one grant event, accepted revokes append exactly one revoke event, already-applied grants append no event, missing-entry revokes append no event, idempotent replays append no event, conflicts append no event, and failed gates append no event.
   - [ ] Ensure result evidence exposes stable codes and safe identifiers only; tests must not parse exception text, localized strings, diagnostic messages, or event type names.
   - [ ] Reject unsupported action aliases rather than normalizing them into accepted permissions.
@@ -60,6 +62,7 @@ so that access to folders can evolve without changing repository bindings.
   - [ ] Add explicit negative coverage for tenant IDs supplied through command payload, route values, query parameters, ordinary headers, forwarded headers, metadata bags, and client-controlled envelope fields.
   - [ ] Treat tenant IDs from route/body/query/header as comparison values only.
   - [ ] Ensure non-allowed evidence returns metadata-only stable codes and does not reveal whether the target folder exists or whether a grant was already present.
+  - [ ] Add protected-resource-touch spies for every denied tenant and denied ACL evidence branch so tests prove stream-name, idempotency, stream-load, append, projection, diagnostics, audit, provider, repository, workspace, file, and cache seams were not invoked.
   - [ ] Keep the aggregate pure; application/domain-service seams perform evidence checks and stream access.
 - [ ] Add idempotency, canonicalization, and concurrency behavior. (AC: 8, 9, 10, 11)
   - [ ] Canonicalize command type, operation intent, tenant, folder ID, principal kind, principal ID, action, actor safe identifier, and optional scope metadata using culture-invariant rules before comparing idempotency payloads.
@@ -72,6 +75,7 @@ so that access to folders can evolve without changing repository bindings.
 - [ ] Add folder ACL projection or replay helper only as needed. (AC: 3, 13)
   - [ ] Derive effective folder override metadata from stream/envelope tenant evidence plus event version/sequence, not from mutable payload tenant authority.
   - [ ] Preserve revocation timestamp, event version/sequence/watermark, actor safe identifier, correlation ID, task ID, idempotency key reference, principal kind/ID, action, and operation intent for later C7 freshness enforcement.
+  - [ ] Treat stale or unavailable folder ACL projection freshness as deny/unknown evidence for later authorization consumers rather than falling back to the last known grant.
   - [ ] Prove replay isolation for two tenants with matching folder IDs, principal IDs, and action tokens.
   - [ ] Prove grant -> revoke -> grant and revoke -> grant -> revoke replay sequences produce deterministic final state and historical revocation metadata.
   - [ ] Do not add public effective-permission query endpoints; Story 2.5 owns the public inspection surface.
@@ -86,6 +90,7 @@ so that access to folders can evolve without changing repository bindings.
   - [ ] Add table-driven duplicate/conflict matrix tests for duplicate grant, duplicate revoke, same-command grant/revoke conflict, stale expected version, and append conflict outcomes.
   - [ ] Add leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group display names, raw auth headers, arbitrary tenant configuration, and unauthorized resource names.
   - [ ] Add leakage sentinel values in command metadata, tenant evidence, ACL evidence, principal token-like inputs, and denial reasons; assert denied results expose only allowed metadata fields.
+  - [ ] Add exception-path leakage tests for validation, idempotency, append-conflict, and projection-unavailable paths; test failures must not include raw command bodies, raw auth headers, emails, display names, provider/repository/file values, or arbitrary tenant configuration.
   - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable folder ACL builders that delegate to production validation rules.
   - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
   - [ ] Use pure in-memory fakes and spies only for EventStore seams, tenant evidence, organization ACL evidence, idempotency records, validators, clock/time, diagnostics sinks, and audit sinks. Do not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
@@ -107,6 +112,7 @@ so that access to folders can evolve without changing repository bindings.
 - Story 2.2 defines organization-level ACL baseline grants and revokes for `user`, `group`, `role`, and `delegated_service_agent` principals, strict lower-snake-case action tokens, metadata-only ACL events, culture-invariant canonicalization, and negative controls proving rejected paths do not access streams or diagnostics.
 - Story 2.3 defines `FolderAggregate`, opaque folder identity, `{managedTenantId}:folders:{folderId}` stream names, logical active lifecycle state, tenant and ACL pre-load gates for create-folder, deterministic duplicate/idempotency behavior, and minimal folder replay evidence.
 - Story 2.4 must build on Story 2.3 folder state and Story 2.2 ACL evidence. It must not fold folder ACL overrides back into organization baseline state or implement Story 2.5 public permission inspection.
+- Story 2.4 must keep observable no-op outcomes behind successful authorization. Unauthorized callers get safe denial evidence, not `already_applied`, `missing_entry`, or `folder_not_found`, because those codes disclose folder/principal/ACL state.
 
 ### Existing Implementation State
 
@@ -192,6 +198,7 @@ so that access to folders can evolve without changing repository bindings.
 |---|---|---|
 | 2026-05-18 | Created story with folder ACL grant/revoke commands, fail-closed tenant and ACL administrator gates, idempotency, revocation freshness evidence, metadata-only projection guidance, and offline test guardrails. | Codex |
 | 2026-05-18 | Applied party-mode review hardening for tenant ingress rejection, ACL layering boundaries, command/result semantics, idempotency equivalence, replay/race coverage, and revocation evidence. | Codex |
+| 2026-05-18 | Applied advanced-elicitation hardening for protected-resource-touch boundaries, safe no-op observability, revocation freshness fallback behavior, management-permission proof, and exception-path leakage tests. | Codex |
 
 ## Party-Mode Review
 
@@ -216,6 +223,38 @@ so that access to folders can evolve without changing repository bindings.
   - EventStore concurrency mechanism details remain implementation/architecture choices; this story requires deterministic reread outcomes, not a specific mechanism.
   - Shared action-token allowlist infrastructure is deferred unless an existing local pattern makes it low-cost.
   - API-surface tests for absence of public effective-permission endpoints are optional unless the in-process routing/contract surface makes them cheap and reliable.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- ISO date and time: 2026-05-18T20:45:00+02:00
+- Selected story key: `2-4-grant-and-revoke-folder-access`
+- Command/skill invocation used: `/bmad-advanced-elicitation 2-4-grant-and-revoke-folder-access`
+- Batch 1 method names:
+  - Security Audit Personas
+  - Failure Mode Analysis
+  - Pre-mortem Analysis
+  - Self-Consistency Validation
+  - Critique and Refine
+- Reshuffled Batch 2 method names:
+  - Red Team vs Blue Team
+  - Chaos Monkey Scenarios
+  - First Principles Analysis
+  - 5 Whys Deep Dive
+  - Architecture Decision Records
+- Findings summary:
+  - The story already carried strong fail-closed boundaries, but elicitation found remaining implementation traps around observing no-op states before authorization, using a new manage-access token instead of proven organization ACL evidence, treating stale revoke projections as harmless, and letting exception text or test failures leak raw input.
+  - The risk pass also found that protected-resource-touch assertions needed to cover cache/idempotency/projection/diagnostic/audit seams, not only stream load and append.
+- Changes applied:
+  - Added a protected-resource-touch term to make forbidden side effects explicit.
+  - Tightened revocation freshness behavior so stale or unavailable folder ACL projection evidence cannot fall back to a stale grant.
+  - Clarified that management permission proof must come from Story 2.2 evidence or an existing shared authorization vocabulary, not a new unreviewed folder action token.
+  - Clarified that `folder_not_found`, `already_applied`, and `missing_entry` are observable only after authorization gates pass.
+  - Added protected-resource-touch spy coverage and exception-path leakage tests.
+- Findings deferred:
+  - Exact management permission token naming remains an implementation choice constrained by Story 2.2 or existing shared authorization vocabulary.
+  - Projection freshness storage mechanics remain an implementation choice as long as monotonic version/sequence or watermark evidence is preserved.
+  - Story 2.5 still owns inherited/effective permission precedence and public inspection semantics.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
