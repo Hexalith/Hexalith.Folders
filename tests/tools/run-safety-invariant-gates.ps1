@@ -32,7 +32,7 @@ try {
     }
     else {
         $testAssembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin') -Recurse -Filter 'Hexalith.Folders.Contracts.Tests.dll' -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -match '[\\/]net10\.0[\\/]' } |
+            Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
             Select-Object -First 1
 
         if ($null -eq $testAssembly) {

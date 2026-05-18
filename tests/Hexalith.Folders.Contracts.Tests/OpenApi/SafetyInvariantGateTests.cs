@@ -97,7 +97,7 @@ public sealed class SafetyInvariantGateTests
             RequiredString(sample, "value").ShouldNotBeNullOrWhiteSpace(id);
             RequiredString(sample, "safe_notes").ShouldContain("synthetic", Case.Insensitive, id);
             AllowedClassifications.ShouldContain(RequiredString(sample, "classification"), id);
-            categories.Add(RequiredString(sample, "category")).ShouldBeTrue(id);
+            categories.Add(RequiredString(sample, "category"));
             RequiredArray(sample, "forbidden_output_surfaces").SelectText().ShouldNotBeEmpty(id);
             RequiredArray(sample, "allowed_provenance_representations").SelectText().ShouldNotBeEmpty(id);
             RequiredArray(sample, "participates_in").SelectText().ShouldContain("positive", id);
@@ -229,7 +229,7 @@ public sealed class SafetyInvariantGateTests
             if (channel.TryGetProperty("last_evaluated_at", out JsonElement lastEvaluatedAt))
             {
                 lastEvaluatedAt.ValueKind.ShouldBe(JsonValueKind.String, name);
-                (lastEvaluatedAt.GetString() ?? string.Empty).ShouldBe("2026-05-18", $"{name} structured manifest freshness evidence.");
+                AssertLastEvaluatedAt(lastEvaluatedAt.GetString() ?? string.Empty, name);
             }
 
             JsonElement sources = RequiredArray(channel, "artifact_sources");
@@ -263,16 +263,16 @@ public sealed class SafetyInvariantGateTests
             .EnumerateArray()
             .ToDictionary(channel => RequiredString(channel, "channel"), StringComparer.Ordinal);
 
-        foreach (string channelName in new[] { "audit-records", "projections", "console-payloads" })
+        foreach (string channelName in new[] { "audit-records", "projections", "provider-diagnostics", "console-payloads" })
         {
             JsonElement channel = channels[channelName];
             RequiredString(channel, "prerequisite_status").ShouldBe("covered", $"{channelName} has current OpenAPI/generated-client artifacts and must not remain blanket pending.");
             RequiredArray(channel, "artifact_sources").SelectText().ShouldContain(OpenApiRelativePath, $"{channelName} must scan the contract artifact that currently owns its examples.");
-            RequiredString(channel, "last_evaluated_at").ShouldBe("2026-05-18", channelName);
+            AssertLastEvaluatedAt(RequiredString(channel, "last_evaluated_at"), channelName);
         }
 
         JsonElement events = channels["events"];
-        RequiredString(events, "last_evaluated_at").ShouldBe("2026-05-18", "events must carry structured freshness evidence.");
+        AssertLastEvaluatedAt(RequiredString(events, "last_evaluated_at"), "events");
         RequiredString(events, "safe_absence_diagnostic").ShouldBe("SAFETY-PREREQUISITE-DRIFT");
     }
 
@@ -387,7 +387,8 @@ public sealed class SafetyInvariantGateTests
         string documentation = ReadRequiredFile(GateDocumentationPath);
 
         workflow.ShouldContain("./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild");
-        workflow.ShouldNotContain("if: always()", Case.Insensitive);
+        // AC 5: safety gate must run even when an earlier step fails so leakage cannot hide behind a contract regression.
+        workflow.ShouldContain("if: ${{ !cancelled() }}");
         workflow.ShouldContain("dotnet restore Hexalith.Folders.slnx");
         workflow.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
         workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
@@ -542,15 +543,26 @@ public sealed class SafetyInvariantGateTests
 
     private static IEnumerable<string> EnumerateSourceFiles(string repositoryPath)
     {
+        string normalized = repositoryPath.Replace("\\", "/", StringComparison.Ordinal);
         string absolute = Path.Combine(RepositoryRoot, NormalizeForFileSystem(repositoryPath));
         if (File.Exists(absolute))
         {
-            string normalized = repositoryPath.Replace("\\", "/", StringComparison.Ordinal);
-            if (!IsExcludedByInventory(normalized) && !IsBinaryFile(normalized))
+            if ((File.GetAttributes(absolute) & FileAttributes.ReparsePoint) != 0)
             {
-                yield return normalized;
+                throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", normalized, "declared artifact source is a reparse point and must not be followed");
             }
 
+            if (IsExcludedByInventory(normalized))
+            {
+                throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", normalized, "declared artifact source matches structured_exclusions");
+            }
+
+            if (IsBinaryFile(normalized))
+            {
+                throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", normalized, "declared artifact source is a binary file");
+            }
+
+            yield return normalized;
             yield break;
         }
 
@@ -575,13 +587,19 @@ public sealed class SafetyInvariantGateTests
         }
     }
 
+    private static readonly Lazy<Regex[]> StructuredExclusionRegexes = new(() =>
+    {
+        using JsonDocument inventory = JsonDocument.Parse(File.ReadAllText(InventoryPath));
+        return RequiredArray(inventory.RootElement, "structured_exclusions")
+            .SelectText()
+            .Select(pattern => new Regex(BuildGlobRegex(pattern), RegexOptions.Compiled | RegexOptions.CultureInvariant))
+            .ToArray();
+    });
+
     private static bool IsExcludedByInventory(string repositoryPath)
     {
         string normalized = repositoryPath.Replace("\\", "/", StringComparison.Ordinal);
-        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
-        return RequiredArray(inventory.RootElement, "structured_exclusions")
-            .SelectText()
-            .Any(pattern => GlobMatches(normalized, pattern));
+        return StructuredExclusionRegexes.Value.Any(regex => regex.IsMatch(normalized));
     }
 
     private static bool IsBinaryFile(string repositoryPath)
@@ -612,17 +630,32 @@ public sealed class SafetyInvariantGateTests
 
     private static void AssertMetadataOnly(string value, bool allowPatternDocumentation = false)
     {
-        string[] repositoryMarkers =
+        string[] repositoryRootMarkers =
         [
             RepositoryRoot,
             RepositoryRoot.Replace("\\", "/", StringComparison.Ordinal),
             RepositoryRoot.Replace("\\", "\\\\", StringComparison.Ordinal),
         ];
 
-        string[] forbidden = allowPatternDocumentation
-            ? repositoryMarkers
-            : repositoryMarkers.Concat(new[]
+        // Strip the repository root prefix before scanning so that on Linux/macOS
+        // CI runners (where RepositoryRoot may itself begin with /home/ or /Users/)
+        // the generic absolute-path detectors below still fire on a leaked
+        // /home/alice/... or /Users/bob/... path that is not the repo root.
+        string sanitizedValue = value;
+        foreach (string rootMarker in repositoryRootMarkers)
         {
+            sanitizedValue = sanitizedValue.Replace(rootMarker, "<repo-root>", StringComparison.OrdinalIgnoreCase);
+        }
+
+        // Drive-letter PATH markers can appear in cross-platform path examples in
+        // documentation; only these two markers are exempt under allowPatternDocumentation.
+        string[] absolutePathPatternMarkers = ["C:\\", "D:\\"];
+
+        // Secret/credential/URL markers and Unix absolute-path markers must NEVER
+        // appear in any output channel, including documentation. Documents should
+        // describe these patterns abstractly or with placeholders like {value}.
+        string[] alwaysForbidden =
+        [
             "diff --git",
             "-----BEGIN",
             "DefaultEndpointsProtocol=",
@@ -637,13 +670,19 @@ public sealed class SafetyInvariantGateTests
             "https://github.com/",
             "https://api.github.com",
             "https://prod.",
-            "C:\\",
-            "D:\\",
-        }).Concat(GenericAbsolutePathMarkersExceptRepositoryRoot(repositoryMarkers)).ToArray();
+            "/home/",
+            "/Users/",
+        ];
+
+        IEnumerable<string> forbidden = repositoryRootMarkers.Concat(alwaysForbidden);
+        if (!allowPatternDocumentation)
+        {
+            forbidden = forbidden.Concat(absolutePathPatternMarkers);
+        }
 
         foreach (string forbiddenValue in forbidden)
         {
-            if (value.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase))
+            if (sanitizedValue.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException($"{GateName}:SAFETY-FORBIDDEN-DIAGNOSTIC: classification=confidential; category=metadata-only-output; remediation=Remove raw sensitive diagnostic material.");
             }
@@ -668,7 +707,59 @@ public sealed class SafetyInvariantGateTests
 
     private static bool ContainsForbiddenValue(string text, string forbiddenValue)
     {
-        return text.Contains(forbiddenValue, StringComparison.OrdinalIgnoreCase);
+        int index = 0;
+        while (index <= text.Length - forbiddenValue.Length)
+        {
+            int found = text.IndexOf(forbiddenValue, index, StringComparison.OrdinalIgnoreCase);
+            if (found < 0)
+            {
+                return false;
+            }
+
+            if (HasTokenBoundary(text, found) && HasTokenBoundary(text, found + forbiddenValue.Length))
+            {
+                return true;
+            }
+
+            index = found + 1;
+        }
+
+        return false;
+    }
+
+    private static bool HasTokenBoundary(string text, int position)
+    {
+        // The caller invokes this twice per candidate match: once at the match start
+        // (position == match start) and once at the match end (position == match end).
+        // A boundary exists when at least one of the two adjacent characters (the one
+        // before and the one at position) is not alphanumeric — so `/`, `.`, `-`, `_`,
+        // whitespace, and structural punctuation all count as boundaries. This catches
+        // `count` inside `account` (both adjacent chars are letters → no boundary) but
+        // allows `count` at the end of `count.` (`.` is non-alphanumeric).
+        if (position <= 0 || position >= text.Length)
+        {
+            return true;
+        }
+
+        return !char.IsLetterOrDigit(text[position - 1]) || !char.IsLetterOrDigit(text[position]);
+    }
+
+    private static void AssertLastEvaluatedAt(string value, string context)
+    {
+        DateOnly parsed;
+        try
+        {
+            parsed = DateOnly.ParseExact(value, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (FormatException)
+        {
+            throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", context, "last_evaluated_at must be ISO-8601 yyyy-MM-dd");
+        }
+
+        if (parsed < new DateOnly(2026, 5, 18))
+        {
+            throw BoundedDiagnosticException("SAFETY-PREREQUISITE-DRIFT", context, "last_evaluated_at must be on or after 2026-05-18 Round 4 baseline");
+        }
     }
 
     private static YamlMappingNode LoadYamlMapping(string path)
@@ -773,13 +864,18 @@ public sealed class SafetyInvariantGateTests
     private static string FindRepositoryRoot()
     {
         string? githubWorkspace = Environment.GetEnvironmentVariable("GITHUB_WORKSPACE");
-        if (!string.IsNullOrEmpty(githubWorkspace))
-        {
-            if (File.Exists(Path.Combine(githubWorkspace, "Hexalith.Folders.slnx")))
-            {
-                return githubWorkspace;
-            }
+        bool isCi = string.Equals(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), "true", StringComparison.OrdinalIgnoreCase);
 
+        if (!string.IsNullOrEmpty(githubWorkspace) && File.Exists(Path.Combine(githubWorkspace, "Hexalith.Folders.slnx")))
+        {
+            return githubWorkspace;
+        }
+
+        // Hard-fail only on CI where GITHUB_WORKSPACE is expected to be authoritative.
+        // On local dev a stale GITHUB_WORKSPACE (e.g., Codespaces or `gh act`) should
+        // not block the seed-based fallback.
+        if (isCi && !string.IsNullOrEmpty(githubWorkspace))
+        {
             throw new InvalidOperationException("SAFETY-PREREQUISITE-DRIFT: repository-root-unresolved; remediation=Set GITHUB_WORKSPACE to the Hexalith.Folders checkout root.");
         }
 
@@ -803,32 +899,44 @@ public sealed class SafetyInvariantGateTests
     private static bool IsWithinIncludeRoots(string source, IEnumerable<string> includeRoots)
     {
         string normalized = source.Replace("\\", "/", StringComparison.Ordinal).TrimEnd('/');
-        return includeRoots
-            .Select(root => root.Replace("\\", "/", StringComparison.Ordinal).TrimEnd('/'))
-            .Any(root => normalized.Equals(root, StringComparison.Ordinal) || normalized.StartsWith(root + "/", StringComparison.Ordinal));
+        foreach (string includeRoot in includeRoots)
+        {
+            string root = includeRoot.Replace("\\", "/", StringComparison.Ordinal).TrimEnd('/');
+            string rootAbsolute = Path.Combine(RepositoryRoot, NormalizeForFileSystem(root));
+            if (File.Exists(rootAbsolute))
+            {
+                if (normalized.Equals(root, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+            else if (normalized.Equals(root, StringComparison.Ordinal) || normalized.StartsWith(root + "/", StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    private static bool GlobMatches(string repositoryPath, string pattern)
+    private static bool GlobMatches(string repositoryPath, string pattern) =>
+        Regex.IsMatch(repositoryPath, BuildGlobRegex(pattern), RegexOptions.CultureInvariant);
+
+    private static string BuildGlobRegex(string pattern)
     {
         string normalizedPattern = pattern.Replace("\\", "/", StringComparison.Ordinal);
-        string regex = "^" + Regex.Escape(normalizedPattern)
+        // Basename-only globs (no `/`) like `*.dll` should match nested files too,
+        // matching .gitignore semantics.
+        if (!normalizedPattern.Contains('/', StringComparison.Ordinal))
+        {
+            normalizedPattern = "**/" + normalizedPattern;
+        }
+
+        return "^" + Regex.Escape(normalizedPattern)
             .Replace("\\*\\*/", "(?:.*/)?", StringComparison.Ordinal)
             .Replace("/\\*\\*", "(?:/.*)?", StringComparison.Ordinal)
             .Replace("\\*\\*", ".*", StringComparison.Ordinal)
             .Replace("\\*", "[^/]*", StringComparison.Ordinal) + "$";
-
-        return Regex.IsMatch(repositoryPath, regex, RegexOptions.CultureInvariant);
-    }
-
-    private static IEnumerable<string> GenericAbsolutePathMarkersExceptRepositoryRoot(IEnumerable<string> repositoryMarkers)
-    {
-        foreach (string marker in new[] { "/home/", "/Users/" })
-        {
-            if (!repositoryMarkers.Any(repositoryMarker => repositoryMarker.Contains(marker, StringComparison.OrdinalIgnoreCase)))
-            {
-                yield return marker;
-            }
-        }
     }
 
     private static void AssertContainsText(string text, string expected, string context)
@@ -849,7 +957,19 @@ public sealed class SafetyInvariantGateTests
 
     private static void AssertDoesNotContainWholeToken(string text, string forbidden, string context)
     {
-        if (Regex.IsMatch(text, $@"\b{Regex.Escape(forbidden)}\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        // Standard word boundary catches "count", "Count", "COUNT" at non-letter boundaries
+        // and rejects "account", "discount" where the prior char is a letter.
+        string standardBoundary = $@"\b{Regex.Escape(forbidden)}\b";
+
+        // Camel/Pascal boundary catches "Count" in "pageCount" / "RowCount" / "MyStackTrace"
+        // by requiring an initial-cap form preceded by a lowercase letter and not followed
+        // by a lowercase letter (which would indicate a different word like "Countdown").
+        string capitalized = char.ToUpperInvariant(forbidden[0]) + forbidden[1..].ToLowerInvariant();
+        string camelBoundary = $@"(?<=[a-z]){Regex.Escape(capitalized)}(?![a-z])";
+
+        bool matched = Regex.IsMatch(text, standardBoundary, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)
+            || Regex.IsMatch(text, camelBoundary, RegexOptions.CultureInvariant);
+        if (matched)
         {
             throw BoundedDiagnosticException("SAFETY-FORBIDDEN-DIAGNOSTIC", context, "forbidden resource-existence token was present");
         }

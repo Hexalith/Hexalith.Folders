@@ -1,0 +1,42 @@
+{
+  "subagentType": "backend",
+  "testsGenerated": [
+    {
+      "file": "_bmad-output/test-artifacts/generated-tests/backend-test-candidates.md",
+      "content": "See generated backend test candidate artifact.",
+      "description": "Backend unit, server structural, and contract-alignment candidates for Epic 2",
+      "priority_coverage": {
+        "P0": 25,
+        "P1": 5,
+        "P2": 0,
+        "P3": 0
+      }
+    }
+  ],
+  "coverageSummary": {
+    "totalTests": 30,
+    "testLevels": [
+      "unit",
+      "server-structural",
+      "contract-alignment"
+    ],
+    "fixtureNeeds": [
+      "tenantEvidenceBuilder",
+      "aclEvidenceBuilder",
+      "sideEffectSpyStore",
+      "metadataLeakageSentinelScanner",
+      "canonicalPayloadBuilder"
+    ]
+  },
+  "status": "complete",
+  "success": true,
+  "subagent": "backend-tests",
+  "knowledge_fragments_used": [
+    "test-levels-framework",
+    "test-priorities-matrix",
+    "data-factories",
+    "test-quality",
+    "ci-burn-in"
+  ],
+  "summary": "Generated backend test candidates for Epic 2 without adding executable tests to the scaffold-only implementation."
+}

@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "subagent": "api-tests",
+  "tests": [
+    {
+      "file": "_bmad-output/test-artifacts/generated-tests/api-test-candidates.md",
+      "content": "See generated API test candidate artifact.",
+      "description": "API test candidates for Epic 2 Contract Spine endpoints",
+      "priority_coverage": {
+        "P0": 10,
+        "P1": 5,
+        "P2": 0,
+        "P3": 0
+      }
+    }
+  ],
+  "fixture_needs": [
+    "authorizedHttpContextFactory",
+    "safeDenialAssertions",
+    "contractSpineOperationLoader",
+    "metadataLeakageSentinelScanner"
+  ],
+  "knowledge_fragments_used": [
+    "api-request",
+    "auth-session",
+    "recurse",
+    "contract-testing",
+    "data-factories",
+    "test-quality"
+  ],
+  "provider_scrutiny": "pending-handlers",
+  "provider_files_read": [
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+  ],
+  "test_count": 15,
+  "summary": "Generated non-executable API test candidates for Epic 2 endpoints because provider handlers are not implemented yet."
+}

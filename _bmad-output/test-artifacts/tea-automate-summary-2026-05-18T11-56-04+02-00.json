@@ -1,0 +1,32 @@
+{
+  "detected_stack": "backend",
+  "total_tests": 45,
+  "api_tests": 15,
+  "e2e_tests": 0,
+  "backend_tests": 30,
+  "fixtures_created": 9,
+  "api_test_files": 1,
+  "e2e_test_files": 0,
+  "backend_test_files": 1,
+  "priority_coverage": {
+    "P0": 35,
+    "P1": 10,
+    "P2": 0,
+    "P3": 0
+  },
+  "knowledge_fragments_used": [
+    "api-request",
+    "auth-session",
+    "recurse",
+    "contract-testing",
+    "data-factories",
+    "test-quality",
+    "test-levels-framework",
+    "test-priorities-matrix",
+    "ci-burn-in"
+  ],
+  "subagent_execution": "SEQUENTIAL (API then backend workers)",
+  "performance_gain": "baseline (no parallel speedup)",
+  "artifact_mode": "candidate-pack",
+  "reason_executable_tests_deferred": "Epic 2 production domain and endpoint implementation is scaffold-only; writing executable tests now would add noncompiling or intentionally failing tests outside ATDD mode."
+}
