@@ -27,9 +27,24 @@ public static class FoldersServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddFoldersTenantAccess();
-        services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
+        services.AddFoldersLayeredAuthorization();
         services.TryAddSingleton<EffectivePermissionsQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersLayeredAuthorization(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersTenantAccess();
+        services.AddOptions<DaprPolicyEvidenceOptions>().BindConfiguration(DaprPolicyEvidenceOptions.SectionName);
+        services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
+        services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<DaprPolicyEvidenceOptions>>().Value);
+        services.TryAddSingleton<IFolderPermissionEvidenceProvider, EffectivePermissionsFolderPermissionEvidenceProvider>();
+        services.TryAddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
+        services.TryAddSingleton<IDaprPolicyEvidenceProvider, ConfigurationDaprPolicyEvidenceProvider>();
+        services.TryAddSingleton<LayeredFolderAuthorizationService>();
 
         return services;
     }

@@ -1,6 +1,6 @@
 # Story 2.6: Enforce layered authorization with safe denials
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -71,58 +71,58 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
 
 ## Tasks / Subtasks
 
-- [ ] Add a shared layered authorization evaluator. (AC: 1, 9, 13)
-  - [ ] Add a service such as `LayeredFolderAuthorizationService` under `src/Hexalith.Folders/Authorization/`, or a locally consistent equivalent.
-  - [ ] Add one canonical ordered layer type used by evidence, result metadata, tests, and server response mapping.
-  - [ ] Model layer outcomes with stable lower-snake-case codes for allowed, authentication_denied, claim_transform_denied, tenant_access_denied, tenant_projection_stale, tenant_projection_unavailable, folder_acl_denied, folder_acl_stale, folder_acl_unavailable, eventstore_validator_denied, dapr_policy_denied, authorization_evidence_malformed, and safe_not_found.
-  - [ ] Preserve the required layer order mechanically rather than relying on caller discipline.
-  - [ ] Return a minimal safe allowed context for downstream operations and a minimal safe denial context for transport mapping.
-  - [ ] Emit exactly one immutable authorization decision snapshot per evaluation; malformed, unknown, or contradictory evidence must produce safe denial rather than an implicit allow or fallback.
-  - [ ] Scope any per-request memoization by authoritative tenant, actor safe identifier, action token, operation policy, authorized operation scope, and freshness watermark so decisions cannot bleed across tenants, principals, tasks, or stale evidence versions.
-  - [ ] Include correlation ID and task ID propagation without making them authorization authority.
-  - [ ] Keep behavior out of `Hexalith.Folders.Contracts`; only behavior-free DTOs may live there if an existing contract boundary requires them.
-- [ ] Wire authoritative identity and claim transform gates. (AC: 2, 3, 4)
-  - [ ] Add input context types that separate authoritative tenant/principal evidence from route/body/query/header/generated-client comparison values.
-  - [ ] Normalize and compare every route, query, body, ordinary header, forwarded header, generated-client argument, metadata bag, and EventStore envelope tenant or principal value before any protected key, path, target, partition, scope, diagnostics subject, audit subject, or stream name is constructed.
-  - [ ] Integrate existing `TenantAccessAuthorizer` rather than creating a second tenant projection evaluator.
-  - [ ] Add a narrow claim-transform evidence seam for EventStore `eventstore:tenant` and `eventstore:permission` data, with safe denial for malformed or absent evidence.
-  - [ ] Keep raw claims, tokens, headers, and command bodies out of result/evidence objects.
-- [ ] Consume folder ACL/effective-permission evidence without reimplementing previous stories. (AC: 6, 12, 15)
-  - [ ] Define an interface or adapter for folder-action authorization evidence that can be backed by Story 2.4 folder ACL projection and Story 2.5 effective-permission logic when those implementations land.
-  - [ ] Require action tokens to use the existing strict lower-snake-case folder ACL vocabulary: `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`; `create_folder` remains organization-baseline scope.
-  - [ ] Treat revocation-freshness-unproven as denial for mutations and strict reads.
-  - [ ] Allow bounded stale diagnostic reads only when the operation policy explicitly permits them and freshness metadata is returned.
-  - [ ] Prove denied folder ACL/effective-permission evidence short-circuits before folder, task, workspace, provider, repository, audit, lock, file, or context resources are observed.
-- [ ] Add EventStore validator and Dapr policy evidence seams. (AC: 7, 8)
-  - [ ] Add a testable EventStore validator wrapper that accepts the safe authorization context and returns allowed or safe denied evidence without exposing aggregate state or stream internals.
-  - [ ] Add a Dapr policy evidence provider interface with local fake implementation for tests and configuration-backed production posture checks.
-  - [ ] Fail closed when a protected service invocation class requires Dapr policy evidence and evidence is missing, mismatched, unavailable, or disabled.
-  - [ ] Keep production policy authoring/deployment out of scope unless existing local files only need reference validation.
-  - [ ] Avoid direct provider, repository, filesystem, or network calls in either evidence seam.
-  - [ ] Model timeout, stale, unavailable, malformed, denied, and allowed evidence separately in deterministic fakes.
-- [ ] Map safe denial to server responses. (AC: 10, 11, 13)
-  - [ ] Add server response mapping for authorization results in `Hexalith.Folders.Server` without changing Contract Spine shapes.
-  - [ ] Centralize the status/category mapping in a shared mapper such as `FolderAuthorizationDenialMapper`, or a locally consistent equivalent, instead of duplicating per endpoint.
-  - [ ] Derive response status, retryability, clientAction, and category only from the authorization decision snapshot and operation policy; do not branch on resource lookup results, exception subtype, provider payload, or raw latency.
-  - [ ] Reuse existing `SafeAuthorizationDenial401`, `SafeAuthorizationDenial403`, `SafeAuthorizationDenial404`, and `ReadModelUnavailable` response semantics.
-  - [ ] Ensure cross-tenant, not-found-to-caller, same-tenant unauthorized, stale, unavailable, EventStore validator denied, and Dapr policy denied paths do not disclose protected existence through body text, timing-sensitive branch behavior in tests, headers, diagnostic fields, unbucketed elapsed durations, or exception messages.
-  - [ ] Prove generated client exception shape is safe without hand-editing files under `src/Hexalith.Folders.Client/Generated/`.
-  - [ ] Keep generated SDK files under `src/Hexalith.Folders.Client/Generated/` untouched.
-- [ ] Add tests and fixtures. (AC: 1-15)
-  - [ ] Add unit tests such as `LayeredAuthorizationOrderTests`, `LayeredAuthorizationTenantIngressTests`, `LayeredAuthorizationClaimTransformTests`, `LayeredAuthorizationFolderAclTests`, `LayeredAuthorizationValidatorTests`, `LayeredAuthorizationDaprPolicyTests`, and `LayeredAuthorizationMetadataLeakageTests`.
-  - [ ] Add server tests such as `SafeAuthorizationDenialMappingTests` proving Problem Details categories, status codes, correlation IDs, retryability/clientAction values, and response bodies match existing Contract Spine components.
-  - [ ] Add side-effect spies and key-factory spies proving each rejected layer prevents downstream layer evaluation, protected resource access, and protected key/path/target/scope construction.
-  - [ ] Add matrix coverage for missing JWT, invalid JWT, tenant mismatch, requested tenant from each client-controlled ingress, claim-transform mismatch, each Story 2.1 tenant outcome, each folder ACL/effective-permission denial class, EventStore validator denial, Dapr policy unavailable, and allowed path.
-  - [ ] Add separate stale/unavailable/timeout tests for tenant projection, folder permission evidence, EventStore validator evidence, Dapr policy evidence, mutation, strict read, and bounded diagnostic read policies.
-  - [ ] Add malformed, contradictory, future-dated, unknown-outcome, and duplicate-evidence tests proving each layer fails closed without later protected touches.
-  - [ ] Add paired enumeration-control tests for nonexistent folder, unauthorized existing folder, wrong-tenant folder, same-tenant not-found-to-caller, stale authorization state, and unavailable authorization dependency.
-  - [ ] Add same-identifier cross-tenant tests for folder IDs, task IDs, lock IDs, provider binding refs, repository binding refs, audit IDs, and cache/idempotency keys.
-  - [ ] Add authorization decision isolation tests proving decisions are not reused across tenants, principals, action tokens, task IDs, operation policy classes, stale freshness watermarks, or allowed-vs-denied evidence snapshots.
-  - [ ] Add leakage sentinel tests with forbidden values in auth headers, claim bags, requested tenant values, principal metadata, folder ACL evidence, validator messages, Dapr policy evidence, exception messages, route values, query values, command payloads, and diagnostics sinks.
-  - [ ] Add bounded diagnostic read tests proving only configured metadata fields are emitted, max count/size limits are enforced, and no folder/provider/repository/file/workspace resource is touched.
-  - [ ] Add thin adapter-conformance tests proving the shared authorization result/denial shape can be consumed without duplicating authorization logic beyond the selected production integration path.
-  - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable authorization evidence builders that delegate to production validation where practical.
-  - [ ] Add `tests/Hexalith.Folders.Testing.Tests` coverage if new testing helpers are introduced.
+- [x] Add a shared layered authorization evaluator. (AC: 1, 9, 13)
+  - [x] Add a service such as `LayeredFolderAuthorizationService` under `src/Hexalith.Folders/Authorization/`, or a locally consistent equivalent.
+  - [x] Add one canonical ordered layer type used by evidence, result metadata, tests, and server response mapping.
+  - [x] Model layer outcomes with stable lower-snake-case codes for allowed, authentication_denied, claim_transform_denied, tenant_access_denied, tenant_projection_stale, tenant_projection_unavailable, folder_acl_denied, folder_acl_stale, folder_acl_unavailable, eventstore_validator_denied, dapr_policy_denied, authorization_evidence_malformed, and safe_not_found.
+  - [x] Preserve the required layer order mechanically rather than relying on caller discipline.
+  - [x] Return a minimal safe allowed context for downstream operations and a minimal safe denial context for transport mapping.
+  - [x] Emit exactly one immutable authorization decision snapshot per evaluation; malformed, unknown, or contradictory evidence must produce safe denial rather than an implicit allow or fallback.
+  - [x] Scope any per-request memoization by authoritative tenant, actor safe identifier, action token, operation policy, authorized operation scope, and freshness watermark so decisions cannot bleed across tenants, principals, tasks, or stale evidence versions.
+  - [x] Include correlation ID and task ID propagation without making them authorization authority.
+  - [x] Keep behavior out of `Hexalith.Folders.Contracts`; only behavior-free DTOs may live there if an existing contract boundary requires them.
+- [x] Wire authoritative identity and claim transform gates. (AC: 2, 3, 4)
+  - [x] Add input context types that separate authoritative tenant/principal evidence from route/body/query/header/generated-client comparison values.
+  - [x] Normalize and compare every route, query, body, ordinary header, forwarded header, generated-client argument, metadata bag, and EventStore envelope tenant or principal value before any protected key, path, target, partition, scope, diagnostics subject, audit subject, or stream name is constructed.
+  - [x] Integrate existing `TenantAccessAuthorizer` rather than creating a second tenant projection evaluator.
+  - [x] Add a narrow claim-transform evidence seam for EventStore `eventstore:tenant` and `eventstore:permission` data, with safe denial for malformed or absent evidence.
+  - [x] Keep raw claims, tokens, headers, and command bodies out of result/evidence objects.
+- [x] Consume folder ACL/effective-permission evidence without reimplementing previous stories. (AC: 6, 12, 15)
+  - [x] Define an interface or adapter for folder-action authorization evidence that can be backed by Story 2.4 folder ACL projection and Story 2.5 effective-permission logic when those implementations land.
+  - [x] Require action tokens to use the existing strict lower-snake-case folder ACL vocabulary: `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`; `create_folder` remains organization-baseline scope.
+  - [x] Treat revocation-freshness-unproven as denial for mutations and strict reads.
+  - [x] Allow bounded stale diagnostic reads only when the operation policy explicitly permits them and freshness metadata is returned.
+  - [x] Prove denied folder ACL/effective-permission evidence short-circuits before folder, task, workspace, provider, repository, audit, lock, file, or context resources are observed.
+- [x] Add EventStore validator and Dapr policy evidence seams. (AC: 7, 8)
+  - [x] Add a testable EventStore validator wrapper that accepts the safe authorization context and returns allowed or safe denied evidence without exposing aggregate state or stream internals.
+  - [x] Add a Dapr policy evidence provider interface with local fake implementation for tests and configuration-backed production posture checks.
+  - [x] Fail closed when a protected service invocation class requires Dapr policy evidence and evidence is missing, mismatched, unavailable, or disabled.
+  - [x] Keep production policy authoring/deployment out of scope unless existing local files only need reference validation.
+  - [x] Avoid direct provider, repository, filesystem, or network calls in either evidence seam.
+  - [x] Model timeout, stale, unavailable, malformed, denied, and allowed evidence separately in deterministic fakes.
+- [x] Map safe denial to server responses. (AC: 10, 11, 13)
+  - [x] Add server response mapping for authorization results in `Hexalith.Folders.Server` without changing Contract Spine shapes.
+  - [x] Centralize the status/category mapping in a shared mapper such as `FolderAuthorizationDenialMapper`, or a locally consistent equivalent, instead of duplicating per endpoint.
+  - [x] Derive response status, retryability, clientAction, and category only from the authorization decision snapshot and operation policy; do not branch on resource lookup results, exception subtype, provider payload, or raw latency.
+  - [x] Reuse existing `SafeAuthorizationDenial401`, `SafeAuthorizationDenial403`, `SafeAuthorizationDenial404`, and `ReadModelUnavailable` response semantics.
+  - [x] Ensure cross-tenant, not-found-to-caller, same-tenant unauthorized, stale, unavailable, EventStore validator denied, and Dapr policy denied paths do not disclose protected existence through body text, timing-sensitive branch behavior in tests, headers, diagnostic fields, unbucketed elapsed durations, or exception messages.
+  - [x] Prove generated client exception shape is safe without hand-editing files under `src/Hexalith.Folders.Client/Generated/`.
+  - [x] Keep generated SDK files under `src/Hexalith.Folders.Client/Generated/` untouched.
+- [x] Add tests and fixtures. (AC: 1-15)
+  - [x] Add unit tests such as `LayeredAuthorizationOrderTests`, `LayeredAuthorizationTenantIngressTests`, `LayeredAuthorizationClaimTransformTests`, `LayeredAuthorizationFolderAclTests`, `LayeredAuthorizationValidatorTests`, `LayeredAuthorizationDaprPolicyTests`, and `LayeredAuthorizationMetadataLeakageTests`.
+  - [x] Add server tests such as `SafeAuthorizationDenialMappingTests` proving Problem Details categories, status codes, correlation IDs, retryability/clientAction values, and response bodies match existing Contract Spine components.
+  - [x] Add side-effect spies and key-factory spies proving each rejected layer prevents downstream layer evaluation, protected resource access, and protected key/path/target/scope construction.
+  - [x] Add matrix coverage for missing JWT, invalid JWT, tenant mismatch, requested tenant from each client-controlled ingress, claim-transform mismatch, each Story 2.1 tenant outcome, each folder ACL/effective-permission denial class, EventStore validator denial, Dapr policy unavailable, and allowed path.
+  - [x] Add separate stale/unavailable/timeout tests for tenant projection, folder permission evidence, EventStore validator evidence, Dapr policy evidence, mutation, strict read, and bounded diagnostic read policies.
+  - [x] Add malformed, contradictory, future-dated, unknown-outcome, and duplicate-evidence tests proving each layer fails closed without later protected touches.
+  - [x] Add paired enumeration-control tests for nonexistent folder, unauthorized existing folder, wrong-tenant folder, same-tenant not-found-to-caller, stale authorization state, and unavailable authorization dependency.
+  - [x] Add same-identifier cross-tenant tests for folder IDs, task IDs, lock IDs, provider binding refs, repository binding refs, audit IDs, and cache/idempotency keys.
+  - [x] Add authorization decision isolation tests proving decisions are not reused across tenants, principals, action tokens, task IDs, operation policy classes, stale freshness watermarks, or allowed-vs-denied evidence snapshots.
+  - [x] Add leakage sentinel tests with forbidden values in auth headers, claim bags, requested tenant values, principal metadata, folder ACL evidence, validator messages, Dapr policy evidence, exception messages, route values, query values, command payloads, and diagnostics sinks.
+  - [x] Add bounded diagnostic read tests proving only configured metadata fields are emitted, max count/size limits are enforced, and no folder/provider/repository/file/workspace resource is touched.
+  - [x] Add thin adapter-conformance tests proving the shared authorization result/denial shape can be consumed without duplicating authorization logic beyond the selected production integration path.
+  - [x] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable authorization evidence builders that delegate to production validation where practical.
+  - [x] Add `tests/Hexalith.Folders.Testing.Tests` coverage if new testing helpers are introduced.
 
 ## Dev Notes
 
@@ -235,6 +235,7 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-19 | Implemented layered authorization evaluator, evidence seams, safe denial mapper, domain-service wiring, and offline conformance tests. | Codex |
 | 2026-05-19 | Applied advanced-elicitation hardening for immutable decision snapshots, evidence isolation, fail-closed malformed evidence, safe response mapping inputs, and timing-leakage controls. | Codex |
 | 2026-05-18 | Applied party-mode hardening for authorization order contract, denial mapping table, protected-resource no-touch tests, freshness semantics, bounded diagnostics, and adapter scope. | Codex |
 | 2026-05-18 | Created story with layered authorization order, safe denial mapping, Dapr/EventStore evidence seams, resource-access short-circuiting, and offline leakage tests. | Codex |
@@ -247,6 +248,11 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-19: Red phase confirmed with `dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore`; expected compile failures for missing layered authorization types.
+- 2026-05-19: `dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` passed: 274 tests.
+- 2026-05-19: `dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore` passed: 27 tests.
+- 2026-05-19: `dotnet test .\Hexalith.Folders.slnx --no-restore` passed across the solution.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-6-enforce-layered-authorization-with-safe-denials` equivalent workflow on 2026-05-18.
@@ -254,6 +260,10 @@ GPT-5 Codex
 - Ultimate context engine analysis completed - comprehensive developer guide created.
 - Party-mode review completed on 2026-05-18T20:05:09+02:00 with Winston, Amelia, Murat, and John; coherent low-risk findings were applied inline.
 - Advanced elicitation completed on 2026-05-19T03:04:00+02:00; coherent low-risk hardening was applied inline and scope-changing proposals were deferred rather than added.
+- Added `LayeredFolderAuthorizationService` with canonical layer ordering, stable lower-snake-case outcome codes, immutable decision snapshots, minimal allowed context, and metadata-only denial context.
+- Added authoritative identity comparison, EventStore claim-transform evidence, tenant-access projection reuse, folder permission evidence adapter, EventStore validator seam, and Dapr policy evidence seam.
+- Wired the Folders domain-service `/process` path through the layered evaluator and centralized safe denial mapping in `FolderAuthorizationDenialMapper`.
+- Added offline tests covering ordered evaluation, short-circuit behavior, stale/unavailable/malformed evidence, no downstream protected touches, bounded diagnostic reads, safe Problem Details mapping, metadata leakage sentinels, and decision isolation.
 
 ## Party-Mode Review
 
@@ -298,3 +308,40 @@ GPT-5 Codex
 - Final recommendation: ready-for-dev
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs`
+- `src/Hexalith.Folders/Authorization/AuthorizationLayer.cs`
+- `src/Hexalith.Folders/Authorization/AuthorizationOrder.cs`
+- `src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs`
+- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs`
+- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs`
+- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs`
+- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs`
+- `src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs`
+- `src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs`
+- `src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs`
+- `src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs`
+- `src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs`
+- `src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs`
+- `src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs`
+- `src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs`
+- `src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs`
+- `src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs`
+- `src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs`
+- `src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs`
+- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs`
+- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs`
+- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs`
+- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs`
+- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs`
+- `src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs`
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`
+- `src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs`
+- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs`

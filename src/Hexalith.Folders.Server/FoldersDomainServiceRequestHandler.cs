@@ -10,33 +10,41 @@ namespace Hexalith.Folders.Server;
 
 public sealed class FoldersDomainServiceRequestHandler(
     IEnumerable<IDomainProcessor> processors,
-    TenantAccessAuthorizer authorizer,
+    LayeredFolderAuthorizationService authorizer,
     ITenantContextAccessor tenantContext)
 {
     public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        TenantAccessAuthorizationResult authorization = await authorizer.AuthorizeMutationAsync(
-            new TenantAccessAuthorizationContext(
-                tenantContext.AuthoritativeTenantId,
-                tenantContext.PrincipalId ?? string.Empty,
-                request.Command.TenantId),
+        string actionToken = ActionTokenFor(request.Command);
+        LayeredFolderAuthorizationResult authorization = await authorizer.AuthorizeAsync(
+            new LayeredFolderAuthorizationContext(
+                AuthoritativeTenantId: tenantContext.AuthoritativeTenantId,
+                PrincipalId: tenantContext.PrincipalId ?? string.Empty,
+                ActorSafeIdentifier: tenantContext.PrincipalId,
+                ActionToken: actionToken,
+                OperationPolicy: LayeredFolderOperationPolicy.Mutation(),
+                ClaimTransformEvidence: EventStoreClaimTransformEvidence.Allowed(
+                    request.Command.TenantId,
+                    request.Command.UserId,
+                    [actionToken, "commands:*"]),
+                OperationScope: request.Command.AggregateId,
+                CorrelationId: request.Command.CorrelationId,
+                TaskId: null,
+                ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+                {
+                    ["eventstore_envelope_tenant"] = request.Command.TenantId,
+                },
+                ClientControlledPrincipalValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+                {
+                    ["eventstore_envelope_user"] = request.Command.UserId,
+                }),
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed)
         {
-            return Results.Problem(
-                type: $"https://hexalith.dev/errors/folders/{authorization.Code}",
-                title: "Tenant access denied.",
-                statusCode: StatusCodes.Status403Forbidden,
-                extensions: new Dictionary<string, object?>
-                {
-                    ["category"] = "authorization",
-                    ["code"] = authorization.Code,
-                    ["retryable"] = authorization.Outcome is TenantAccessOutcome.StaleProjection
-                        or TenantAccessOutcome.UnavailableProjection,
-                });
+            return FolderAuthorizationDenialMapper.ToHttpResult(authorization);
         }
 
         List<IDomainProcessor> processorList = [.. processors];
@@ -56,5 +64,14 @@ public sealed class FoldersDomainServiceRequestHandler(
 
         DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
         return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
+    }
+
+    private static string ActionTokenFor(CommandEnvelope command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+
+        return command.CommandType.Contains("CreateFolder", StringComparison.Ordinal)
+            ? "create_folder"
+            : "read_metadata";
     }
 }

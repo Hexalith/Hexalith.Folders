@@ -23,14 +23,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     {
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
-        problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
-        problem.ProblemDetails.Extensions["code"].ShouldBe("unknown_tenant");
+        problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("safe_not_found");
         // Defense in depth: the deny response must not leak tenant or projection metadata.
         problem.ProblemDetails.Extensions.ShouldNotContainKey("tenantId");
         problem.ProblemDetails.Extensions.ShouldNotContainKey("projectionWatermark");
@@ -44,14 +44,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest(commandTenantId: "tenant-b", userId: "user-a"), TestContext.Current.CancellationToken);
 
         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
         problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
-        problem.ProblemDetails.Extensions["code"].ShouldBe("tenant_mismatch");
+        problem.ProblemDetails.Extensions["code"].ShouldBe("claim_transform_denied");
     }
 
     [Fact]
@@ -59,14 +59,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     {
         FakeTenantContextAccessor tenantContext = new(authoritativeTenantId: null, principalId: "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
-        problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
-        problem.ProblemDetails.Extensions["code"].ShouldBe("missing_authoritative_tenant");
+        problem.StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("authentication_denied");
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
@@ -85,12 +85,34 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     }
 
     [Fact]
+    public async Task ProcessShouldNotInvokeDomainProcessorWhenFolderAclEvidenceDenies()
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CountingDomainProcessor processor = new();
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(
+            store,
+            new FixedFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
+                FolderPermissionEvidenceStatus.Denied,
+                "folder_watermark_v1")));
+        FoldersDomainServiceRequestHandler handler = new([processor], authorizer, tenantContext);
+
+        IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+
+        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("folder_acl_denied");
+        processor.ProcessCalls.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ProcessShouldReturn500WhenMultipleDomainProcessorsAreRegistered()
     {
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
         FoldersDomainServiceRequestHandler handler = new(
             [new StubDomainProcessor(), new StubDomainProcessor()],
             authorizer,
@@ -102,8 +124,15 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         problem.StatusCode.ShouldBe(StatusCodes.Status500InternalServerError);
     }
 
-    private static TenantAccessAuthorizer CreateAuthorizer(IFolderTenantAccessProjectionStore store)
-        => new(store, new FixedUtcClock(Now), new TenantAccessOptions());
+    private static LayeredFolderAuthorizationService CreateAuthorizer(
+        IFolderTenantAccessProjectionStore store,
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
+        => new(
+            new TenantAccessAuthorizer(store, new FixedUtcClock(Now), new TenantAccessOptions()),
+            folderPermissionEvidenceProvider ?? new AllowingFolderPermissionEvidenceProvider(),
+            new AllowingEventStoreAuthorizationValidator(),
+            new ConfigurationDaprPolicyEvidenceProvider(new DaprPolicyEvidenceOptions()),
+            new FixedUtcClock(Now));
 
     private static FolderTenantAccessProjection Projection(
         string tenantId,
@@ -153,5 +182,32 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     {
         public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
             => Task.FromResult(DomainResult.NoOp());
+    }
+
+    private sealed class CountingDomainProcessor : IDomainProcessor
+    {
+        public int ProcessCalls { get; private set; }
+
+        public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+        {
+            ProcessCalls++;
+            return Task.FromResult(DomainResult.NoOp());
+        }
+    }
+
+    private sealed class AllowingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
+    }
+
+    private sealed class FixedFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult result) : IFolderPermissionEvidenceProvider
+    {
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(result);
     }
 }

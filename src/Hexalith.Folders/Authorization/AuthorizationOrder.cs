@@ -2,6 +2,16 @@ namespace Hexalith.Folders.Authorization;
 
 public static class AuthorizationOrder
 {
+    public static IReadOnlyList<AuthorizationLayer> LayeredFolderAuthorization { get; } =
+    [
+        AuthorizationLayer.JwtValidation,
+        AuthorizationLayer.EventStoreClaimTransform,
+        AuthorizationLayer.TenantAccessFreshness,
+        AuthorizationLayer.FolderAcl,
+        AuthorizationLayer.EventStoreValidator,
+        AuthorizationLayer.DaprDenyByDefaultPolicy,
+    ];
+
     public static IReadOnlyList<string> EffectivePermissions { get; } =
     [
         "authoritative_tenant_context",
