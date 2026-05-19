@@ -45,6 +45,7 @@ Run through the helper script:
 .\tests\run-tests.ps1 -Mode All
 .\tests\run-tests.ps1 -Mode Coverage
 .\tests\run-tests.ps1 -Mode Integration
+.\tests\run-tests.ps1 -Mode Testing
 ```
 
 ## Debugging Tests
@@ -108,6 +109,14 @@ Run the focused governance and completeness gate locally:
 ```
 
 This gate validates C0-C13 evidence presence, idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exception metadata, parity completeness, and metadata-only diagnostics through the same command used by CI.
+
+Run the contract spine gate locally:
+
+```powershell
+.\tests\tools\run-contract-spine-gates.ps1 -SkipRestoreBuild
+```
+
+This gate validates OpenAPI 3.1 contract-spine alignment between `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and server-generated artifacts, enforcing the parity-oracle outputs as a blocking gate.
 
 ## Knowledge References
 

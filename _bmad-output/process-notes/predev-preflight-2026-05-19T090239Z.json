@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-19T10:01:14Z",
+  "timestamp": "2026-05-19T09:02:39Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -63,7 +63,7 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/test-artifacts/framework-setup-progress.md\n M tests/README.md\n?? _bmad-output/test-artifacts/test-design/\n",
+      "stdout": " M _bmad-output/implementation-artifacts/3-1-configure-provider-binding-and-credential-reference.md\n M _bmad-output/process-notes/predev-hardening-runs.log\n M _bmad-output/test-artifacts/framework-setup-progress.md\n",
       "stderr": "",
       "dirty_path_count": 3,
       "result": "fail",
