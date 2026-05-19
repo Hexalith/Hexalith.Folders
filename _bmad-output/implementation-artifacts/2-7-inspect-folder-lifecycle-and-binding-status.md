@@ -20,6 +20,7 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 - Safe status evidence means response, audit, diagnostic, log, trace, metric, generated-client exception, and test metadata that includes only allowed identifiers, state labels, freshness, correlation/task IDs, result codes, and sanitized reason categories.
 - Freshness metadata means the read-model consistency class, observed timestamp, projection watermark or equivalent version, stale flag, and unavailable/stale reason needed to explain whether the lifecycle and binding answer is current enough for the requested query.
 - Status observation means any lifecycle lookup, binding lookup, projection key construction, cache key construction, stream-name construction, timestamp comparison, provider/repository/filesystem probe, audit subject construction, diagnostic subject construction, or branch whose response could disclose whether the folder or binding exists. Authorization and tenant resolution must complete before status observation.
+- Lifecycle status snapshot means the tenant, folder, lifecycle projection, binding projection, authorization evidence, and freshness evidence used to answer one request. A successful answer must come from one compatible snapshot and must fail closed when evidence is mixed across tenants, folders, principals, actions, tasks, projection versions, or stale/fresh boundaries.
 
 ## Acceptance Criteria
 
@@ -30,11 +31,11 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 5. Given an authorized active folder has no repository binding, when lifecycle status is requested, then the response returns `FolderLifecycleStatus` with the existing Contract Spine fields, `lifecycleState` set to the canonical active/ready equivalent, `archived: false`, no repository binding identifier, no provider binding reference, and freshness metadata proving the read-model version used.
 6. Given an authorized active folder has a repository binding, when lifecycle status is requested, then the response returns only safe opaque binding metadata already present in the read model: `repositoryBindingId`, `providerBindingRef`, binding state where locally modeled, freshness metadata, correlation/task IDs, and sanitized result code. It must not return provider tokens, credential material, external repository URLs, repository names, branch names, owner names, provider payloads, or raw capability diagnostics.
 7. Given an authorized archived folder is inspected before Story 2.8 archive behavior is implemented, when archive state is not yet supported by production state, then tests and code must represent the unsupported or absent archived state deterministically without treating it as active by default; after Story 2.8 lands, archived folders must return `archived: true`, an archived lifecycle state, metadata-only status evidence, and no mutation affordance.
-8. Given lifecycle or binding read models are stale, delayed, missing, unavailable, malformed, replay-conflicting, tenant-mismatched, folder-mismatched, or version-inconsistent, when the query cannot prove a safe answer within policy, then it returns `projection_stale`, `projection_unavailable`, `read_model_unavailable`, `safe_not_found`, or a local equivalent safe outcome rather than falling back to direct aggregate scans, event-stream probing, projection repair, provider calls, repository calls, filesystem reads, audit browsing, or permissive defaults.
-9. Given repository binding evidence reports requested, bound, failed, unknown provider outcome, reconciliation required, or unbound states, when lifecycle status is requested, then each state maps to deterministic metadata-only result fields and safe retry/escalation posture where already modeled; state labels must match the Contract Spine and parity vocabulary rather than UI-only or provider-specific names.
+8. Given lifecycle or binding read models are stale, delayed, missing, unavailable, malformed, replay-conflicting, tenant-mismatched, folder-mismatched, version-inconsistent, or drawn from incompatible projection watermarks, when the query cannot prove a safe answer within policy, then it returns `projection_stale`, `projection_unavailable`, `read_model_unavailable`, `safe_not_found`, or a local equivalent safe outcome rather than falling back to direct aggregate scans, event-stream probing, projection repair, provider calls, repository calls, filesystem reads, audit browsing, or permissive defaults.
+9. Given repository binding evidence reports requested, bound, failed, unknown provider outcome, reconciliation required, unbound, unsupported, or unknown enum/string states, when lifecycle status is requested, then each recognized state maps to deterministic metadata-only result fields and safe retry/escalation posture where already modeled; unrecognized states fail closed with a safe unavailable/unknown outcome, and state labels must match the Contract Spine and parity vocabulary rather than UI-only or provider-specific names.
 10. Given logs, traces, metrics, audit entries, diagnostics, test output, Problem Details, generated client exceptions, or projection evidence are produced by the lifecycle-status query, when metadata is inspected, then raw auth headers, JWTs, claim bags, provider tokens, credential material, external repository URLs, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group names, role labels, membership inventories, tenant configuration payloads, raw request bodies, raw query bodies, unauthorized resource IDs, provider payloads, and raw exception text are absent.
 11. Given SDK, CLI, MCP, and operations-console surfaces later consume lifecycle status, when this story completes, then shared query/result/denial semantics are implemented in domain/server seams and validated through contract-style conformance tests; this story does not implement CLI, MCP, UI screens, provider readiness workflows, or adapter-specific business logic.
-12. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider endpoints, live EventStore servers, or initialized nested submodules, when unit/server/contract tests execute, then authorization-before-observation, safe denial, active/unbound, active/bound, archived-or-unsupported, stale/unavailable, cross-tenant same-identifier, metadata leakage, Contract Spine shape, and generated-client consumption are covered with in-memory fakes and spies.
+12. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider endpoints, live EventStore servers, or initialized nested submodules, when unit/server/contract tests execute, then authorization-before-observation, safe denial, active/unbound, active/bound, archived-or-unsupported, stale/unavailable, cross-tenant same-identifier, incompatible snapshot, cache-isolation, metadata leakage, timing/discovery-leakage, Contract Spine shape, and generated-client consumption are covered with in-memory fakes and spies.
 13. Given this story owns lifecycle and binding status inspection only, when implementation is complete, then it does not implement folder creation, archive mutation, ACL grant/revoke mutation, effective-permissions computation beyond consuming authorization evidence, provider readiness, repository binding mutation, branch/ref policy mutation, workspace preparation, locks, file mutation, commits, context query execution, audit browsing, CLI/MCP/UI commands, workers, production Dapr policy deployment, repair workflows, local-only folder mode, webhooks, brownfield adoption, or multi-organization-per-tenant behavior.
 
 ## Denial And Status Truth Table
@@ -73,9 +74,10 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
   - [ ] Avoid provider-specific or UI-only labels in domain/server result semantics.
 - [ ] Add read-model freshness and unavailable behavior. (AC: 4, 8, 12)
   - [ ] Define local stale, unavailable, malformed, replay-conflicting, tenant-mismatched, and version-inconsistent outcomes if current projection code lacks them.
+  - [ ] Treat lifecycle projection, binding projection, authorization evidence, and freshness metadata as one compatible evidence snapshot; reject mixed tenant, folder, principal, action, task, watermark, or stale/fresh evidence rather than stitching a partial success.
   - [ ] Ensure stale/unavailable lifecycle or binding projections fail closed for allowed answers rather than falling back to aggregate scans, event replay, projection repair, compensating writes, provider calls, repository calls, audit queries, or filesystem reads.
   - [ ] Include freshness metadata in success and authorized stale/unavailable outcomes where the Contract Spine allows it.
-  - [ ] Test active/unbound, active/bound, archived/supported, archived-not-yet-supported, stale lifecycle projection, unavailable lifecycle projection, stale binding projection, unavailable binding projection, malformed projection, and conflicting lifecycle/binding versions.
+  - [ ] Test active/unbound, active/bound, archived/supported, archived-not-yet-supported, stale lifecycle projection, unavailable lifecycle projection, stale binding projection, unavailable binding projection, malformed projection, conflicting lifecycle/binding versions, incompatible projection watermarks, and unknown state labels.
 - [ ] Add contract and generated-client conformance tests. (AC: 1, 9, 11, 12)
   - [ ] Add server or contract tests proving route, status codes, response casing, nullable optional fields, headers, safe denial envelopes, read-model-unavailable response, and example-compatible JSON match the existing OpenAPI operation.
   - [ ] Add generated-client consumption tests proving `GetFolderLifecycleStatusAsync` and the generated `FolderLifecycleStatus` model can carry active/unbound, active/bound, archived, stale/unavailable, and optional binding-field cases without hand-edited generated code.
@@ -85,7 +87,9 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
   - [ ] Add unit tests such as `FolderLifecycleStatusAuthorizationGateTests`, `FolderLifecycleStatusProjectionTests`, `FolderLifecycleStatusBindingMetadataTests`, `FolderLifecycleStatusFreshnessTests`, and `FolderLifecycleStatusMetadataLeakageTests`.
   - [ ] Add negative-control tests named like `RejectsBeforeFolderProjectionWhenTenantDenied`, `RejectsBeforeBindingLookupWhenFolderAclDenied`, `DoesNotFallbackToAggregateWhenLifecycleProjectionUnavailable`, and `DoesNotCallProviderForBindingStatus`, or local equivalents.
   - [ ] Add cross-tenant same-identifier tests for folder IDs, repository binding IDs, provider binding refs, task IDs, operation IDs, audit IDs, cache keys, and projection keys; include tenant A and tenant B sharing folder-ID-like values so only auth/EventStore envelope authority selects observable metadata.
+  - [ ] Add cache-isolation tests proving authorized lifecycle-status responses are scoped by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, and projection watermark; stale denied or authorized answers must not be replayed across callers or freshness windows.
   - [ ] Add stale/unavailable matrix tests for fresh lifecycle metadata, missing lifecycle metadata, missing binding metadata, stale lifecycle metadata, stale binding metadata, unavailable status source, and no provider/repository/filesystem/audit fallback.
+  - [ ] Add timing/discovery negative controls proving denied, not-found-to-caller, and unavailable paths do not branch on actual folder existence, binding existence, provider existence, projection cache hits, or external repository state.
   - [ ] Add leakage sentinels for foreign tenant IDs, unauthorized folder IDs, provider tokens, credential material, external repository URLs, repository names, branch names, file paths, file contents, diffs, generated context payloads, raw claims, membership labels, raw request/query bodies, provider payloads, exception messages, logs, traces, metrics, diagnostics, audit records, Problem Details, and generated client exceptions.
 
 ## Dev Notes
@@ -122,6 +126,7 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 - Keep `Hexalith.Folders.Contracts` behavior-free. Lifecycle-status computation, authorization order, projection freshness policy, and safe-denial logic belong in `Hexalith.Folders`, `Hexalith.Folders.Server`, and tests.
 - Keep the query read-only. It may read authorized projections after authorization, but it must not mutate aggregates, append events, repair projections, acquire locks, call providers, inspect repositories, read files, or browse audit payloads as a fallback.
 - Authorization order is authoritative tenant context, Story 2.1 tenant access, Story 2.6 layered authorization, folder read permission/effective-permission evidence, then protected lifecycle/binding projection lookup.
+- Treat lifecycle, binding, authorization, and freshness inputs as one request-scoped decision snapshot. Do not combine a fresh lifecycle projection with stale binding evidence, a tenant-authorized result with a different principal/action/task, or one folder's binding metadata with another folder's lifecycle state.
 - Folder IDs, repository binding IDs, provider binding refs, task IDs, operation IDs, audit IDs, stream names, cache keys, projection keys, and diagnostic subjects must be tenant scoped and unavailable until authorization permits their construction.
 - Successful responses are metadata-only. Return opaque identifiers and state/freshness evidence only; never return credential material, external repository URLs, repository names, branch names, provider payloads, file paths, or file contents.
 - Use C# file-scoped namespaces, nullable-aware records/classes, one public type per file, PascalCase types/members, camelCase locals/parameters, and async APIs for I/O boundaries.
@@ -165,6 +170,9 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 - Do not return `archived: false` merely because archive support is not implemented yet; explicitly test unsupported or absent archive state behavior until Story 2.8 lands.
 - Do not represent unbound folders as errors when the authorized folder exists and is legitimately unbound.
 - Do not let stale or unavailable lifecycle/binding projections default to active, unbound, or allowed.
+- Do not coerce unknown lifecycle or binding labels into active, unbound, bound, or archived states; treat unknown labels as safe unavailable/unknown evidence until the Contract Spine vocabulary is updated deliberately.
+- Do not reuse cached lifecycle-status answers across tenant, principal, action, task/correlation, authorization-evidence version, folder ID, projection watermark, or freshness-policy boundaries.
+- Do not let denial latency, diagnostics, cache hit/miss behavior, or generated-client exception detail reveal whether a folder, binding, provider, repository, or projection row exists.
 - Do not expose provider identifiers, repository URLs, repository names, branch names, credential references beyond safe opaque identifiers, file paths, raw provider payloads, raw exceptions, or unauthorized resource existence.
 - Do not expand this story into repository binding mutation, provider readiness, workspace lifecycle, archive mutation, or UI/adapter rollout.
 
@@ -195,6 +203,7 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 |---|---|---|
 | 2026-05-18 | Created story with lifecycle-status contract alignment, authorization-before-observation gates, safe binding metadata, freshness handling, and offline leakage tests. | Codex |
 | 2026-05-18 | Applied party-mode review hardening for status-observation boundaries, denial/status truth table, generated-client conformance, cross-tenant same-identifier tests, and stale/unavailable no-fallback coverage. | Codex |
+| 2026-05-19 | Applied advanced-elicitation hardening for compatible evidence snapshots, unknown state fail-closed behavior, cache isolation, and timing/discovery leakage controls. | Codex |
 
 ## Party-Mode Review
 
@@ -215,6 +224,28 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
   - UX copy, dashboard display, CLI/MCP exposure, provider diagnostics, archive mutation behavior, audit enrichment, and remediation workflows remain out of scope for later stories.
   - Broader lifecycle vocabulary cleanup is deferred unless implementation finds the existing Contract Spine vocabulary cannot represent the required metadata-only states.
   - Full provider, Keycloak, Dapr, Redis, GitHub, Forgejo, and live EventStore integration coverage remains deferred because this story requires offline deterministic tests.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- ISO date and time: 2026-05-19T04:01:58+02:00
+- Selected story key: `2-7-inspect-folder-lifecycle-and-binding-status`
+- Command/skill invocation used: `/bmad-advanced-elicitation 2-7-inspect-folder-lifecycle-and-binding-status`
+- Batch 1 method names: Security Audit Personas, Failure Mode Analysis, Pre-mortem Analysis, Self-Consistency Validation, Critique and Refine
+- Reshuffled Batch 2 method names: Red Team vs Blue Team, Chaos Monkey Scenarios, First Principles Analysis, 5 Whys Deep Dive, Architecture Decision Records
+- Findings summary:
+  - Security and failure-mode review found that the story already blocks provider/repository fallback, but needed sharper safeguards against stitching lifecycle, binding, authorization, and freshness evidence from incompatible snapshots.
+  - Pre-mortem and self-consistency review identified unknown lifecycle/binding labels, stale cache reuse, and generated-client exception detail as likely implementation shortcuts that could turn safe status inspection into discovery.
+  - Red-team and chaos review highlighted timing, diagnostics, cache hit/miss, and projection-row existence side channels that must be covered with no-touch and negative-control tests before `bmad-dev-story`.
+- Changes applied:
+  - Added the `Lifecycle status snapshot` term and tightened AC8, AC9, and AC12 for incompatible projection watermarks, unknown state labels, cache isolation, timing/discovery leakage, and generated-client-safe behavior.
+  - Expanded freshness/unavailable tasks to require compatible evidence snapshots and tests for incompatible watermarks and unknown labels.
+  - Expanded metadata-leakage tests to include cache isolation and timing/discovery negative controls.
+  - Added developer guardrails and regression traps for snapshot compatibility, unknown enum fail-closed behavior, cache scoping, denial latency, diagnostics, and generated-client exception detail.
+- Findings deferred:
+  - No product-scope or architecture-policy changes were applied.
+  - Broader lifecycle vocabulary changes remain deferred until implementation proves the existing Contract Spine cannot represent required metadata-only states.
+  - CLI, MCP, UI, provider readiness, repository binding mutation, archive mutation, and remediation workflows remain out of scope for later stories.
 - Final recommendation: ready-for-dev
 
 ## Dev Agent Record
