@@ -17,4 +17,6 @@ public sealed record GrantFolderAccess(
     public IReadOnlyDictionary<string, string?> ClientControlledTenantIds => ClientTenantIds ?? EmptyClientTenantIds.Value;
 
     public IFolderCommand WithManagedTenantId(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
+
+    public IFolderAccessCommand WithAuthoritativeTenant(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
 }

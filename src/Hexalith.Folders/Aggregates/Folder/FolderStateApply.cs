@@ -50,32 +50,14 @@ public static class FolderStateApply
             },
             FolderAccessGranted granted => state with
             {
-                AccessOverrides = RecordAccessOverride(
-                    state.AccessOverrides,
-                    Key(granted.ManagedTenantId, granted.FolderId, granted.PrincipalKind, granted.PrincipalId, granted.Action),
-                    isGranted: true,
-                    granted.AccessSequence,
-                    "grant",
-                    granted.ActorPrincipalId,
-                    granted.CorrelationId,
-                    granted.TaskId,
-                    granted.IdempotencyKey),
-                AccessSequence = Math.Max(state.AccessSequence, granted.AccessSequence),
+                AccessOverrides = RecordGrant(state.AccessOverrides, granted),
+                AccessSequence = AdvanceWatermark(state.AccessSequence, granted.AccessSequence),
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             FolderAccessRevoked revoked => state with
             {
-                AccessOverrides = RecordAccessOverride(
-                    state.AccessOverrides,
-                    Key(revoked.ManagedTenantId, revoked.FolderId, revoked.PrincipalKind, revoked.PrincipalId, revoked.Action),
-                    isGranted: false,
-                    revoked.AccessSequence,
-                    "revoke",
-                    revoked.ActorPrincipalId,
-                    revoked.CorrelationId,
-                    revoked.TaskId,
-                    revoked.IdempotencyKey),
-                AccessSequence = Math.Max(state.AccessSequence, revoked.AccessSequence),
+                AccessOverrides = RecordRevoke(state.AccessOverrides, revoked),
+                AccessSequence = AdvanceWatermark(state.AccessSequence, revoked.AccessSequence),
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
@@ -85,39 +67,108 @@ public static class FolderStateApply
         };
     }
 
-    private static FolderAccessEntryKey Key(
-        string managedTenantId,
-        string folderId,
-        FolderAccessPrincipalKind principalKind,
-        string principalId,
-        string action)
-        => new(managedTenantId, folderId, principalKind, principalId, action);
+    private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> RecordGrant(
+        IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> current,
+        FolderAccessGranted granted)
+    {
+        FolderAccessEntryKey key = new(
+            granted.ManagedTenantId,
+            granted.FolderId,
+            granted.PrincipalKind,
+            granted.PrincipalId,
+            granted.Action);
 
-    private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> RecordAccessOverride(
+        // Replace the override only if the new event is at least as recent as the recorded
+        // sequence. Stale or out-of-order events keep the existing override intact rather
+        // than letting a smaller sequence regress per-override metadata.
+        if (current.TryGetValue(key, out FolderAccessOverride? existing)
+            && granted.AccessSequence < existing.AccessSequence)
+        {
+            return current;
+        }
+
+        // Preserve prior revocation history across a grant→revoke→grant cycle so C7
+        // freshness checks can still see that this tuple was revoked at a known sequence.
+        IReadOnlyList<FolderAccessRevocationRecord> history = existing?.RevocationHistory ?? [];
+
+        return ReplaceOverride(
+            current,
+            key,
+            new FolderAccessOverride(
+                key,
+                IsGranted: true,
+                granted.AccessSequence,
+                granted.OccurredAt,
+                OperationIntent: "grant",
+                granted.ActorPrincipalId,
+                granted.CorrelationId,
+                granted.TaskId,
+                granted.IdempotencyKey,
+                history));
+    }
+
+    private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> RecordRevoke(
+        IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> current,
+        FolderAccessRevoked revoked)
+    {
+        FolderAccessEntryKey key = new(
+            revoked.ManagedTenantId,
+            revoked.FolderId,
+            revoked.PrincipalKind,
+            revoked.PrincipalId,
+            revoked.Action);
+
+        if (current.TryGetValue(key, out FolderAccessOverride? existing)
+            && revoked.AccessSequence < existing.AccessSequence)
+        {
+            return current;
+        }
+
+        FolderAccessRevocationRecord record = new(
+            revoked.AccessSequence,
+            revoked.OccurredAt,
+            revoked.ActorPrincipalId,
+            revoked.CorrelationId,
+            revoked.TaskId,
+            revoked.IdempotencyKey);
+
+        IReadOnlyList<FolderAccessRevocationRecord> history = existing is null
+            ? [record]
+            : [.. existing.RevocationHistory, record];
+
+        return ReplaceOverride(
+            current,
+            key,
+            new FolderAccessOverride(
+                key,
+                IsGranted: false,
+                revoked.AccessSequence,
+                revoked.OccurredAt,
+                OperationIntent: "revoke",
+                revoked.ActorPrincipalId,
+                revoked.CorrelationId,
+                revoked.TaskId,
+                revoked.IdempotencyKey,
+                history));
+    }
+
+    // The state record exposes a frozen dictionary, so each event has to produce a fresh
+    // frozen snapshot. We accept the freeze cost per event because each transition is the
+    // unit of observable consistency; callers replay events one-at-a-time through Apply.
+    private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> ReplaceOverride(
         IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> current,
         FolderAccessEntryKey key,
-        bool isGranted,
-        long accessSequence,
-        string operationIntent,
-        string actorPrincipalId,
-        string correlationId,
-        string taskId,
-        string idempotencyKey)
+        FolderAccessOverride @override)
     {
         Dictionary<FolderAccessEntryKey, FolderAccessOverride> next = new(current)
         {
-            [key] = new FolderAccessOverride(
-                key,
-                isGranted,
-                accessSequence,
-                operationIntent,
-                actorPrincipalId,
-                correlationId,
-                taskId,
-                idempotencyKey),
+            [key] = @override,
         };
         return next.ToFrozenDictionary();
     }
+
+    private static long AdvanceWatermark(long current, long candidate)
+        => candidate > current ? candidate : current;
 
     private static IReadOnlyDictionary<string, string> RecordIdempotency(
         IReadOnlyDictionary<string, string> current,

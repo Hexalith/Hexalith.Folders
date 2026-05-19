@@ -11,7 +11,12 @@ internal sealed class RecordingFolderRepository : IFolderRepository
 
     public int DiagnosticsQueried { get; private set; }
 
+    // Events appended by the gate's own append call. Race-simulation events written via
+    // ConcurrentAppendEvents are tracked under ConcurrentEventsApplied so test assertions
+    // about gate behavior cannot be satisfied by the test harness's simulated traffic.
     public int EventsAppended { get; private set; }
+
+    public int ConcurrentEventsApplied { get; private set; }
 
     public int ProviderReadinessChecked { get; private set; }
 
@@ -75,7 +80,7 @@ internal sealed class RecordingFolderRepository : IFolderRepository
         {
             if (ConcurrentAppendEvents.Count > 0)
             {
-                EventsAppended += ConcurrentAppendEvents.Count;
+                ConcurrentEventsApplied += ConcurrentAppendEvents.Count;
                 _states[streamName.Value] = Load(streamName).Apply(ConcurrentAppendEvents, streamName);
             }
 

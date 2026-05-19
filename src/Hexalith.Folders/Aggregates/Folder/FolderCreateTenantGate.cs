@@ -5,11 +5,19 @@ namespace Hexalith.Folders.Aggregates.Folder;
 public sealed class FolderCreateTenantGate
 {
     private readonly IFolderRepository _repository;
+    private readonly TimeProvider _timeProvider;
 
-    public FolderCreateTenantGate(IFolderRepository repository)
+    public FolderCreateTenantGate(IFolderRepository repository, TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(timeProvider);
         _repository = repository;
+        _timeProvider = timeProvider;
+    }
+
+    public FolderCreateTenantGate(IFolderRepository repository)
+        : this(repository, TimeProvider.System)
+    {
     }
 
     public FolderResult Handle(
@@ -98,7 +106,7 @@ public sealed class FolderCreateTenantGate
         }
 
         FolderState state = _repository.Load(streamName);
-        FolderResult result = FolderAggregate.Handle(state, authoritativeCommand);
+        FolderResult result = FolderAggregate.Handle(state, authoritativeCommand, _timeProvider.GetUtcNow());
         if (result.Events.Count == 0)
         {
             return result;

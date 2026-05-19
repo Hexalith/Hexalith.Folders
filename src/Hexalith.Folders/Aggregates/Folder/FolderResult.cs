@@ -42,6 +42,10 @@ public sealed record FolderResult(
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(events);
 
+        // Accepted commands have already passed FolderCommandValidator, which guarantees the
+        // operation's Action is in the supported vocabulary. Echo it directly rather than
+        // round-tripping through IsSupported, which used to silently null borderline values
+        // in the result payload.
         return new(
             FolderResultCode.Accepted,
             command.ManagedTenantId,
@@ -49,7 +53,7 @@ public sealed record FolderResult(
             command.FolderId,
             displayOperation?.PrincipalKind,
             SafePassthrough(displayOperation?.PrincipalId),
-            displayOperation is not null && FolderAccessAction.IsSupported(displayOperation.Action) ? displayOperation.Action : null,
+            displayOperation?.Action,
             command.ActorPrincipalId,
             command.CorrelationId,
             command.TaskId,
@@ -64,19 +68,18 @@ public sealed record FolderResult(
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        return new(
+        return Rejected(
             code,
-            SafePassthrough(command.ManagedTenantId),
-            SafePassthrough(command.OrganizationId),
-            SafePassthrough(command.FolderId),
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
             null,
             null,
             null,
-            SafePassthrough(command.ActorPrincipalId),
-            SafePassthrough(command.CorrelationId),
-            SafePassthrough(command.TaskId),
-            SafePassthrough(command.IdempotencyKey),
-            []);
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey);
     }
 
     public static FolderResult Rejected(
@@ -120,6 +123,9 @@ public sealed record FolderResult(
             SafePassthrough(folderId),
             principalKind,
             SafePassthrough(principalId),
+            // Echo action only when it is in the supported vocabulary. Rejected paths can
+            // include malformed/unsupported action strings, and we do not want to echo
+            // attacker-controlled payload bytes back to the caller.
             FolderAccessAction.IsSupported(action) ? action : null,
             SafePassthrough(actorPrincipalId),
             SafePassthrough(correlationId),

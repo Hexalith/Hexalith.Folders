@@ -41,6 +41,26 @@ public sealed class FolderAccessTenantEvidenceGateTests
         repository.RepositoriesCreated.ShouldBe(0);
     }
 
+    [Fact]
+    public void TenantDeniedResultShouldNotEchoAuthorizerSuppliedTenantId()
+    {
+        // P6 lock-in: the tenant-denied path must not echo the authorizer-supplied tenant
+        // identity back to the caller. The caller has not proven the right to see whether
+        // the tenant exists, so result.ManagedTenantId must be null.
+        RecordingFolderRepository repository = new();
+        FolderAccessTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            FolderCommandFactory.GrantAccess(),
+            Evidence(TenantAccessOutcome.Denied, "tenant-private-victim"),
+            FolderAccessAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"));
+
+        result.Code.ShouldBe(FolderResultCode.TenantAccessDenied);
+        result.ManagedTenantId.ShouldBeNull();
+        result.FolderId.ShouldBeNull();
+        result.OrganizationId.ShouldBeNull();
+    }
+
     [Theory]
     [InlineData("payload")]
     [InlineData("route")]
@@ -75,13 +95,35 @@ public sealed class FolderAccessTenantEvidenceGateTests
     }
 
     [Fact]
-    public void TenantGateShouldUseAuthoritativeTenantForStreamName()
+    public void CommandManagedTenantIdDifferingFromAuthoritativeShouldRejectBeforeStreamConstruction()
     {
+        // P4 lock-in: the command's own ManagedTenantId field is part of the competing-tenant
+        // ingress matrix. Submitting a victim-tenant ID via ManagedTenantId while the
+        // authorizer resolves a different tenant must fail TenantMismatch instead of silently
+        // being rebound by WithAuthoritativeTenant.
+        RecordingFolderRepository repository = new();
+        FolderAccessTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            FolderCommandFactory.GrantAccess(managedTenantId: "tenant-victim"),
+            Evidence(TenantAccessOutcome.Allowed, "tenant-attacker"),
+            FolderAccessAclEvidence.Allowed("tenant-attacker", "organization-a", "folder-a", "principal-a"));
+
+        result.Code.ShouldBe(FolderResultCode.TenantMismatch);
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+    }
+
+    [Fact]
+    public void CommandManagedTenantIdMatchingAuthoritativeShouldProceed()
+    {
+        // Sanity check: the new ManagedTenantId check does not break the happy path.
         RecordingFolderRepository repository = SeededRepository();
         FolderAccessTenantGate gate = new(repository);
 
         FolderResult result = gate.Handle(
-            FolderCommandFactory.GrantAccess(managedTenantId: "payload-tenant", payloadTenantId: "tenant-a"),
+            FolderCommandFactory.GrantAccess(managedTenantId: "tenant-a"),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
             FolderAccessAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"));
 

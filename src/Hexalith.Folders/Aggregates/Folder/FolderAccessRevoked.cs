@@ -12,4 +12,5 @@ public sealed record FolderAccessRevoked(
     string TaskId,
     string IdempotencyKey,
     string IdempotencyFingerprint,
-    long AccessSequence) : IFolderEvent;
+    long AccessSequence,
+    DateTimeOffset OccurredAt) : IFolderEvent;

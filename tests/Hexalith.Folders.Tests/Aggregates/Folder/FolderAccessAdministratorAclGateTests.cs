@@ -14,7 +14,9 @@ public sealed class FolderAccessAdministratorAclGateTests
     [InlineData(FolderAccessAclOutcome.Stale, FolderResultCode.AclEvidenceUnavailable)]
     [InlineData(FolderAccessAclOutcome.UnsupportedAction, FolderResultCode.AclEvidenceUnavailable)]
     [InlineData(FolderAccessAclOutcome.TenantMismatch, FolderResultCode.TenantMismatch)]
-    [InlineData(FolderAccessAclOutcome.FolderMismatch, FolderResultCode.AclEvidenceMismatch)]
+    // FolderMismatch is now folded into AclEvidenceUnavailable so denial vs scope-mismatch
+    // are indistinguishable to a caller probing folder existence.
+    [InlineData(FolderAccessAclOutcome.FolderMismatch, FolderResultCode.AclEvidenceUnavailable)]
     public void RejectedAclEvidenceShouldPreventStreamAndIdempotencySideEffects(
         FolderAccessAclOutcome outcome,
         FolderResultCode expectedCode)
@@ -35,17 +37,15 @@ public sealed class FolderAccessAdministratorAclGateTests
     }
 
     [Theory]
-    [InlineData("tenant-b", "organization-a", "folder-a", "principal-a", "configure_provider_binding")]
-    [InlineData("tenant-a", "organization-b", "folder-a", "principal-a", "configure_provider_binding")]
-    [InlineData("tenant-a", "organization-a", "folder-b", "principal-a", "configure_provider_binding")]
-    [InlineData("tenant-a", "organization-a", "folder-a", "principal-b", "configure_provider_binding")]
-    [InlineData("tenant-a", "organization-a", "folder-a", "principal-a", "create_folder")]
-    public void AllowedAclWithContextMismatchShouldReturnEvidenceMismatch(
+    [InlineData("tenant-b", "organization-a", "folder-a", "principal-a")]
+    [InlineData("tenant-a", "organization-b", "folder-a", "principal-a")]
+    [InlineData("tenant-a", "organization-a", "folder-b", "principal-a")]
+    [InlineData("tenant-a", "organization-a", "folder-a", "principal-b")]
+    public void AllowedAclWithContextMismatchShouldReturnEvidenceUnavailable(
         string tenantId,
         string organizationId,
         string folderId,
-        string principalId,
-        string action)
+        string principalId)
     {
         RecordingFolderRepository repository = new();
         FolderAccessTenantGate gate = new(repository);
@@ -53,10 +53,41 @@ public sealed class FolderAccessAdministratorAclGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(),
             TenantEvidence(),
-            new FolderAccessAclEvidence(FolderAccessAclOutcome.Allowed, tenantId, organizationId, folderId, principalId, action));
+            FolderAccessAclEvidence.Allowed(tenantId, organizationId, folderId, principalId));
 
-        result.Code.ShouldBe(FolderResultCode.AclEvidenceMismatch);
+        // Allowed-but-mismatched evidence is collapsed into AclEvidenceUnavailable so it is
+        // indistinguishable from denial paths — folder/principal existence is not revealed.
+        result.Code.ShouldBe(FolderResultCode.AclEvidenceUnavailable);
         repository.StreamNamesConstructed.ShouldBe(0);
+    }
+
+    [Fact]
+    public void AllowedAclEvidenceWithWrongActionShouldThrowAtConstruction()
+    {
+        // The ctor pins Allowed evidence to FolderAccessAclEvidence.ManagementAction so a
+        // deserializer or test seam cannot construct foreign-action Allowed evidence and
+        // bypass EvaluateAcl's Action equality check.
+        Should.Throw<ArgumentException>(() =>
+            new FolderAccessAclEvidence(
+                FolderAccessAclOutcome.Allowed,
+                "tenant-a",
+                "organization-a",
+                "folder-a",
+                "principal-a",
+                "create_folder"));
+    }
+
+    [Fact]
+    public void AllowedAclEvidenceWithNullOrWhitespaceActionShouldThrowAtConstruction()
+    {
+        Should.Throw<ArgumentException>(() =>
+            new FolderAccessAclEvidence(
+                FolderAccessAclOutcome.Allowed,
+                "tenant-a",
+                "organization-a",
+                "folder-a",
+                "principal-a",
+                "   "));
     }
 
     [Fact]

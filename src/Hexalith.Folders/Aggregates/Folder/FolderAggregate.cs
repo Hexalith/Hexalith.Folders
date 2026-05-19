@@ -2,7 +2,7 @@ namespace Hexalith.Folders.Aggregates.Folder;
 
 public static class FolderAggregate
 {
-    public static FolderResult Handle(FolderState state, CreateFolder command)
+    public static FolderResult Handle(FolderState state, CreateFolder command, DateTimeOffset occurredAt)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(command);
@@ -39,12 +39,13 @@ public static class FolderAggregate
             command.CorrelationId,
             command.TaskId,
             command.IdempotencyKey,
-            validation.IdempotencyFingerprint!);
+            validation.IdempotencyFingerprint!,
+            occurredAt);
 
         return FolderResult.Accepted(command, [created]);
     }
 
-    public static FolderResult Handle(FolderState state, IFolderAccessCommand command)
+    public static FolderResult Handle(FolderState state, IFolderAccessCommand command, DateTimeOffset occurredAt)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(command);
@@ -69,16 +70,31 @@ public static class FolderAggregate
 
         return command switch
         {
-            GrantFolderAccess => Grant(state, command, validation),
-            RevokeFolderAccess => Revoke(state, command, validation),
+            GrantFolderAccess => Grant(state, command, validation, occurredAt),
+            RevokeFolderAccess => Revoke(state, command, validation, occurredAt),
             _ => FolderResult.Rejected(command, FolderResultCode.ValidationFailed),
         };
     }
 
+    // Convenience overloads for tests that do not care about deterministic timestamps.
+    // Production callers must always supply OccurredAt from the gate's TimeProvider so
+    // events carry real wall-clock evidence rather than DateTimeOffset.MinValue.
+    public static FolderResult Handle(FolderState state, CreateFolder command)
+        => Handle(state, command, DateTimeOffset.MinValue);
+
+    public static FolderResult Handle(FolderState state, IFolderAccessCommand command)
+        => Handle(state, command, DateTimeOffset.MinValue);
+
+    // Grant emits events per operation, skipping tuples that are already granted. Revoke
+    // mirrors this per-op semantics: it emits revoke events for present tuples, skips
+    // already-absent tuples, and only signals `MissingEntry` when every requested tuple
+    // was already absent. Callers can therefore submit batch grants and batch revokes
+    // against partially-stale state and observe the actual delta via the emitted events.
     private static FolderResult Grant(
         FolderState state,
         IFolderAccessCommand command,
-        FolderCommandValidationResult validation)
+        FolderCommandValidationResult validation,
+        DateTimeOffset occurredAt)
     {
         List<IFolderEvent> events = [];
         long nextSequence = state.AccessSequence;
@@ -103,31 +119,31 @@ public static class FolderAggregate
                 command.TaskId,
                 command.IdempotencyKey,
                 validation.IdempotencyFingerprint!,
-                nextSequence));
+                nextSequence,
+                occurredAt));
         }
 
         return events.Count == 0
             ? FolderResult.Rejected(command, FolderResultCode.AlreadyApplied)
-            : FolderResult.Accepted(command, events, validation.AccessOperations.Count == 1 ? validation.AccessOperations[0] : null);
+            : FolderResult.Accepted(command, events, DisplayOperation(validation));
     }
 
     private static FolderResult Revoke(
         FolderState state,
         IFolderAccessCommand command,
-        FolderCommandValidationResult validation)
+        FolderCommandValidationResult validation,
+        DateTimeOffset occurredAt)
     {
-        foreach (FolderAccessOperation operation in validation.AccessOperations)
-        {
-            if (!state.HasFolderAccess(KeyFor(command, operation)))
-            {
-                return FolderResult.Rejected(command, FolderResultCode.MissingEntry);
-            }
-        }
-
         List<IFolderEvent> events = [];
         long nextSequence = state.AccessSequence;
         foreach (FolderAccessOperation operation in validation.AccessOperations)
         {
+            FolderAccessEntryKey key = KeyFor(command, operation);
+            if (!state.HasFolderAccess(key))
+            {
+                continue;
+            }
+
             nextSequence++;
             events.Add(new FolderAccessRevoked(
                 command.ManagedTenantId,
@@ -141,11 +157,17 @@ public static class FolderAggregate
                 command.TaskId,
                 command.IdempotencyKey,
                 validation.IdempotencyFingerprint!,
-                nextSequence));
+                nextSequence,
+                occurredAt));
         }
 
-        return FolderResult.Accepted(command, events, validation.AccessOperations.Count == 1 ? validation.AccessOperations[0] : null);
+        return events.Count == 0
+            ? FolderResult.Rejected(command, FolderResultCode.MissingEntry)
+            : FolderResult.Accepted(command, events, DisplayOperation(validation));
     }
+
+    private static FolderAccessOperation? DisplayOperation(FolderCommandValidationResult validation)
+        => validation.AccessOperations.Count == 1 ? validation.AccessOperations[0] : null;
 
     private static FolderAccessEntryKey KeyFor(IFolderAccessCommand command, FolderAccessOperation operation)
         => new(

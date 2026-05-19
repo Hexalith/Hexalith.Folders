@@ -14,7 +14,13 @@ public static partial class FolderCommandValidator
     private const int MaxDisplayNameLength = 128;
     private const int MaxDescriptionLength = 512;
 
-    private static readonly string[] ForbiddenMetadataTerms =
+    // Two-tier blocklist: substring terms catch payload-shaped leakage (URLs, paths, mail
+    // addresses, diff bodies) inside free-form metadata fields like DisplayName/Description;
+    // word terms catch identifier-shaped tokens (`branch`, `auth`, `display`) that surface
+    // inside opaque identifiers and are matched only at lower-snake-case word boundaries.
+    // Substring matching identifier-shaped terms would silently null valid tenant IDs such
+    // as `tenant-authority` or `acme-display-prod` from result echoes.
+    private static readonly string[] ForbiddenMetadataSubstrings =
     [
         "credential",
         "token",
@@ -22,21 +28,28 @@ public static partial class FolderCommandValidator
         "repository",
         "repo-",
         "repo_",
-        "branch",
         "raw file",
         "file content",
         "diff --git",
         "generated context",
         "provider payload",
         "unauthorized",
-        "email",
-        "auth",
-        "display",
         "@",
         "://",
         "\\",
         "/",
         "|",
+    ];
+
+    // Identifier-only blocklist: matched at whole-word boundaries inside lower-snake-case
+    // canonical identifiers (split on `-`, `_`, `.`). A term is "present" only if it equals
+    // a full segment, not if it appears as part of a larger word.
+    private static readonly string[] ForbiddenMetadataWordTerms =
+    [
+        "branch",
+        "email",
+        "auth",
+        "display",
     ];
 
     public static FolderCommandValidationResult Validate(IFolderCommand command)
@@ -212,14 +225,11 @@ public static partial class FolderCommandValidator
         {
             GrantFolderAccess => FolderAccessOperationIntent.Grant,
             RevokeFolderAccess => FolderAccessOperationIntent.Revoke,
-            _ => (FolderAccessOperationIntent)(-1),
+            // Reaching this arm means a new IFolderAccessCommand implementer was added without
+            // mapping it to a required intent — a contract bug, not a runtime input issue.
+            _ => throw new InvalidOperationException(
+                $"Unmapped IFolderAccessCommand implementation: {command.GetType().Name}."),
         };
-
-        if (!Enum.IsDefined(requiredIntent))
-        {
-            code = FolderResultCode.ValidationFailed;
-            return null;
-        }
 
         Dictionary<string, FolderAccessOperation> unique = new(StringComparer.Ordinal);
         Dictionary<string, FolderAccessOperationIntent> tupleIntents = new(StringComparer.Ordinal);
@@ -240,10 +250,16 @@ public static partial class FolderCommandValidator
                 operation.Action);
 
             string tupleKey = key.CanonicalValue;
+
+            // Defense-in-depth: ValidateOperation already rejects mixed intents within one
+            // command via the `requiredIntent` check, so this branch is normally unreachable.
+            // It survives so that a future loosening of ValidateOperation (allowing multiple
+            // intents per command) cannot silently collapse same-tuple grant/revoke into a
+            // duplicate map entry — the deterministic-conflict signal is preserved here.
             if (tupleIntents.TryGetValue(tupleKey, out FolderAccessOperationIntent priorIntent)
                 && priorIntent != operation.Intent)
             {
-                code = FolderResultCode.ReplayConflict;
+                code = FolderResultCode.ConflictingEntry;
                 return null;
             }
 
@@ -251,6 +267,9 @@ public static partial class FolderCommandValidator
             unique[$"{operation.Intent}|{tupleKey}"] = operation;
         }
 
+        // Fingerprint depends on this post-dedup canonical ordering; FingerprintReflectsPostDedupOperations
+        // locks that contract so a future change to dedup semantics cannot silently break idempotency
+        // equivalence of fingerprints already recorded in the ledger.
         return unique
             .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
             .Select(static pair => pair.Value)
@@ -307,8 +326,28 @@ public static partial class FolderCommandValidator
         }
 
         string canonical = value!.ToLower(CultureInfo.InvariantCulture);
-        return !ForbiddenMetadataTerms.Any(term => canonical.Contains(term, StringComparison.Ordinal));
+
+        // Substring scan catches payload-shaped leakage (path/URL/email markers).
+        if (ForbiddenMetadataSubstrings.Any(term => canonical.Contains(term, StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        // Word-boundary scan blocks identifier-shaped sensitive tokens without nulling
+        // legitimate tenant IDs like `tenant-authority`, `acme-display-prod`, or
+        // `tenant-branch-1` that merely contain those substrings.
+        foreach (string segment in canonical.Split(IdentifierWordSeparators, StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (Array.IndexOf(ForbiddenMetadataWordTerms, segment) >= 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
+
+    private static readonly char[] IdentifierWordSeparators = ['-', '_', '.'];
 
     private static bool IsSafeMetadata(string? value, bool required, int maxLength)
     {
@@ -327,7 +366,16 @@ public static partial class FolderCommandValidator
         }
 
         string canonical = trimmed.ToLower(CultureInfo.InvariantCulture);
-        return !ForbiddenMetadataTerms.Any(term => canonical.Contains(term, StringComparison.Ordinal));
+
+        // Free-form metadata uses both blocklists as substring scans; tenant operators do
+        // not put `branch`/`auth`/`display` into folder display names today and the
+        // conservative stance here protects against PII leaking through DisplayName.
+        if (ForbiddenMetadataSubstrings.Any(term => canonical.Contains(term, StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        return !ForbiddenMetadataWordTerms.Any(term => canonical.Contains(term, StringComparison.Ordinal));
     }
 
     private static bool IsInvisibleFormatChar(char c)

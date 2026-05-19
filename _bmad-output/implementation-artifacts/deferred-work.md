@@ -2,6 +2,14 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-4-grant-and-revoke-folder-access (2026-05-19)
+
+Items deferred from the `/bmad-code-review 2.4` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `0fa8c64`.
+
+- Async port for `FolderAccessTenantGate` [`src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs`] — deferred, pre-existing; `IFolderRepository` is synchronous from Story 2.3. Revisit when EventStore integration replaces the repository with an async port that propagates `CancellationToken`.
+- Idempotency key collision risk when new significant fields are added to `FolderAccessOperation` [`src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:874-907`] — deferred, theoretical; current fingerprint covers all existing fields. Revisit when extending `FolderAccessOperation`.
+- Rename test `AlreadyGrantedAccessShouldReturnAlreadyAppliedWithoutDuplicateEvent` to reflect its `HasFolderAccess` short-circuit (not idempotency-fingerprint) coverage [`tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessCommandValidationTests.cs:~1508`] — deferred, cosmetic; test asserts the right outcome via the right code path, only the name is misleading.
+
 ## Deferred from: code review of 2-3-create-folders-within-a-tenant (2026-05-19)
 
 Items deferred from the `/bmad-code-review 2.3` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `9f14bb7`.

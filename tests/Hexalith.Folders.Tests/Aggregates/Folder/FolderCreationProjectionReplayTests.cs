@@ -27,7 +27,8 @@ public sealed class FolderCreationProjectionReplayTests
             "correlation-a",
             "task-a",
             "idempotency-a",
-            "fingerprint-a");
+            "fingerprint-a",
+            new DateTimeOffset(2026, 5, 19, 8, 0, 0, TimeSpan.Zero));
 
         FolderListProjection projection = FolderListProjection.Empty.Apply(
             [new FolderProjectionEnvelope("envelope-tenant", 1, eventWithMismatchedPayload)]);
@@ -127,5 +128,6 @@ public sealed class FolderCreationProjectionReplayTests
             "correlation-a",
             "task-a",
             idempotencyKey,
-            $"fingerprint-{tenantId}-{folderId}-{idempotencyKey}");
+            $"fingerprint-{tenantId}-{folderId}-{idempotencyKey}",
+            new DateTimeOffset(2026, 5, 19, 8, 0, 0, TimeSpan.Zero));
 }

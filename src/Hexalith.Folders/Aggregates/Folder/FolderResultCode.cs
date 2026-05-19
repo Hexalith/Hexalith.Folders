@@ -8,6 +8,7 @@ public enum FolderResultCode
     AlreadyApplied,
     MissingEntry,
     DuplicateEntry,
+    ConflictingEntry,
     IdempotencyConflict,
     IdempotencyUnavailable,
     DuplicateFolder,

@@ -14,4 +14,5 @@ public sealed record FolderCreated(
     string CorrelationId,
     string TaskId,
     string IdempotencyKey,
-    string IdempotencyFingerprint) : IFolderEvent;
+    string IdempotencyFingerprint,
+    DateTimeOffset OccurredAt) : IFolderEvent;
