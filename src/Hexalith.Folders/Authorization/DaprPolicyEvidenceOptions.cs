@@ -6,7 +6,7 @@ public sealed class DaprPolicyEvidenceOptions
 
     public bool RequirePolicyEvidence { get; set; }
 
-    public bool Enabled { get; set; }
+    public bool Enabled { get; set; } = true;
 
     public string[] AllowedTargetAppIds { get; set; } = ["folders"];
 

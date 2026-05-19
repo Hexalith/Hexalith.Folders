@@ -1,0 +1,2460 @@
+diff --git a/_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md b/_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md
+index 635597e..6c3fcb5 100644
+--- a/_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md
++++ b/_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md
+@@ -1,6 +1,6 @@
+ # Story 2.6: Enforce layered authorization with safe denials
+ 
+-Status: ready-for-dev
++Status: review
+ 
+ <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
+ 
+@@ -71,58 +71,58 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
+ 
+ ## Tasks / Subtasks
+ 
+-- [ ] Add a shared layered authorization evaluator. (AC: 1, 9, 13)
+-  - [ ] Add a service such as `LayeredFolderAuthorizationService` under `src/Hexalith.Folders/Authorization/`, or a locally consistent equivalent.
+-  - [ ] Add one canonical ordered layer type used by evidence, result metadata, tests, and server response mapping.
+-  - [ ] Model layer outcomes with stable lower-snake-case codes for allowed, authentication_denied, claim_transform_denied, tenant_access_denied, tenant_projection_stale, tenant_projection_unavailable, folder_acl_denied, folder_acl_stale, folder_acl_unavailable, eventstore_validator_denied, dapr_policy_denied, authorization_evidence_malformed, and safe_not_found.
+-  - [ ] Preserve the required layer order mechanically rather than relying on caller discipline.
+-  - [ ] Return a minimal safe allowed context for downstream operations and a minimal safe denial context for transport mapping.
+-  - [ ] Emit exactly one immutable authorization decision snapshot per evaluation; malformed, unknown, or contradictory evidence must produce safe denial rather than an implicit allow or fallback.
+-  - [ ] Scope any per-request memoization by authoritative tenant, actor safe identifier, action token, operation policy, authorized operation scope, and freshness watermark so decisions cannot bleed across tenants, principals, tasks, or stale evidence versions.
+-  - [ ] Include correlation ID and task ID propagation without making them authorization authority.
+-  - [ ] Keep behavior out of `Hexalith.Folders.Contracts`; only behavior-free DTOs may live there if an existing contract boundary requires them.
+-- [ ] Wire authoritative identity and claim transform gates. (AC: 2, 3, 4)
+-  - [ ] Add input context types that separate authoritative tenant/principal evidence from route/body/query/header/generated-client comparison values.
+-  - [ ] Normalize and compare every route, query, body, ordinary header, forwarded header, generated-client argument, metadata bag, and EventStore envelope tenant or principal value before any protected key, path, target, partition, scope, diagnostics subject, audit subject, or stream name is constructed.
+-  - [ ] Integrate existing `TenantAccessAuthorizer` rather than creating a second tenant projection evaluator.
+-  - [ ] Add a narrow claim-transform evidence seam for EventStore `eventstore:tenant` and `eventstore:permission` data, with safe denial for malformed or absent evidence.
+-  - [ ] Keep raw claims, tokens, headers, and command bodies out of result/evidence objects.
+-- [ ] Consume folder ACL/effective-permission evidence without reimplementing previous stories. (AC: 6, 12, 15)
+-  - [ ] Define an interface or adapter for folder-action authorization evidence that can be backed by Story 2.4 folder ACL projection and Story 2.5 effective-permission logic when those implementations land.
+-  - [ ] Require action tokens to use the existing strict lower-snake-case folder ACL vocabulary: `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`; `create_folder` remains organization-baseline scope.
+-  - [ ] Treat revocation-freshness-unproven as denial for mutations and strict reads.
+-  - [ ] Allow bounded stale diagnostic reads only when the operation policy explicitly permits them and freshness metadata is returned.
+-  - [ ] Prove denied folder ACL/effective-permission evidence short-circuits before folder, task, workspace, provider, repository, audit, lock, file, or context resources are observed.
+-- [ ] Add EventStore validator and Dapr policy evidence seams. (AC: 7, 8)
+-  - [ ] Add a testable EventStore validator wrapper that accepts the safe authorization context and returns allowed or safe denied evidence without exposing aggregate state or stream internals.
+-  - [ ] Add a Dapr policy evidence provider interface with local fake implementation for tests and configuration-backed production posture checks.
+-  - [ ] Fail closed when a protected service invocation class requires Dapr policy evidence and evidence is missing, mismatched, unavailable, or disabled.
+-  - [ ] Keep production policy authoring/deployment out of scope unless existing local files only need reference validation.
+-  - [ ] Avoid direct provider, repository, filesystem, or network calls in either evidence seam.
+-  - [ ] Model timeout, stale, unavailable, malformed, denied, and allowed evidence separately in deterministic fakes.
+-- [ ] Map safe denial to server responses. (AC: 10, 11, 13)
+-  - [ ] Add server response mapping for authorization results in `Hexalith.Folders.Server` without changing Contract Spine shapes.
+-  - [ ] Centralize the status/category mapping in a shared mapper such as `FolderAuthorizationDenialMapper`, or a locally consistent equivalent, instead of duplicating per endpoint.
+-  - [ ] Derive response status, retryability, clientAction, and category only from the authorization decision snapshot and operation policy; do not branch on resource lookup results, exception subtype, provider payload, or raw latency.
+-  - [ ] Reuse existing `SafeAuthorizationDenial401`, `SafeAuthorizationDenial403`, `SafeAuthorizationDenial404`, and `ReadModelUnavailable` response semantics.
+-  - [ ] Ensure cross-tenant, not-found-to-caller, same-tenant unauthorized, stale, unavailable, EventStore validator denied, and Dapr policy denied paths do not disclose protected existence through body text, timing-sensitive branch behavior in tests, headers, diagnostic fields, unbucketed elapsed durations, or exception messages.
+-  - [ ] Prove generated client exception shape is safe without hand-editing files under `src/Hexalith.Folders.Client/Generated/`.
+-  - [ ] Keep generated SDK files under `src/Hexalith.Folders.Client/Generated/` untouched.
+-- [ ] Add tests and fixtures. (AC: 1-15)
+-  - [ ] Add unit tests such as `LayeredAuthorizationOrderTests`, `LayeredAuthorizationTenantIngressTests`, `LayeredAuthorizationClaimTransformTests`, `LayeredAuthorizationFolderAclTests`, `LayeredAuthorizationValidatorTests`, `LayeredAuthorizationDaprPolicyTests`, and `LayeredAuthorizationMetadataLeakageTests`.
+-  - [ ] Add server tests such as `SafeAuthorizationDenialMappingTests` proving Problem Details categories, status codes, correlation IDs, retryability/clientAction values, and response bodies match existing Contract Spine components.
+-  - [ ] Add side-effect spies and key-factory spies proving each rejected layer prevents downstream layer evaluation, protected resource access, and protected key/path/target/scope construction.
+-  - [ ] Add matrix coverage for missing JWT, invalid JWT, tenant mismatch, requested tenant from each client-controlled ingress, claim-transform mismatch, each Story 2.1 tenant outcome, each folder ACL/effective-permission denial class, EventStore validator denial, Dapr policy unavailable, and allowed path.
+-  - [ ] Add separate stale/unavailable/timeout tests for tenant projection, folder permission evidence, EventStore validator evidence, Dapr policy evidence, mutation, strict read, and bounded diagnostic read policies.
+-  - [ ] Add malformed, contradictory, future-dated, unknown-outcome, and duplicate-evidence tests proving each layer fails closed without later protected touches.
+-  - [ ] Add paired enumeration-control tests for nonexistent folder, unauthorized existing folder, wrong-tenant folder, same-tenant not-found-to-caller, stale authorization state, and unavailable authorization dependency.
+-  - [ ] Add same-identifier cross-tenant tests for folder IDs, task IDs, lock IDs, provider binding refs, repository binding refs, audit IDs, and cache/idempotency keys.
+-  - [ ] Add authorization decision isolation tests proving decisions are not reused across tenants, principals, action tokens, task IDs, operation policy classes, stale freshness watermarks, or allowed-vs-denied evidence snapshots.
+-  - [ ] Add leakage sentinel tests with forbidden values in auth headers, claim bags, requested tenant values, principal metadata, folder ACL evidence, validator messages, Dapr policy evidence, exception messages, route values, query values, command payloads, and diagnostics sinks.
+-  - [ ] Add bounded diagnostic read tests proving only configured metadata fields are emitted, max count/size limits are enforced, and no folder/provider/repository/file/workspace resource is touched.
+-  - [ ] Add thin adapter-conformance tests proving the shared authorization result/denial shape can be consumed without duplicating authorization logic beyond the selected production integration path.
+-  - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable authorization evidence builders that delegate to production validation where practical.
+-  - [ ] Add `tests/Hexalith.Folders.Testing.Tests` coverage if new testing helpers are introduced.
++- [x] Add a shared layered authorization evaluator. (AC: 1, 9, 13)
++  - [x] Add a service such as `LayeredFolderAuthorizationService` under `src/Hexalith.Folders/Authorization/`, or a locally consistent equivalent.
++  - [x] Add one canonical ordered layer type used by evidence, result metadata, tests, and server response mapping.
++  - [x] Model layer outcomes with stable lower-snake-case codes for allowed, authentication_denied, claim_transform_denied, tenant_access_denied, tenant_projection_stale, tenant_projection_unavailable, folder_acl_denied, folder_acl_stale, folder_acl_unavailable, eventstore_validator_denied, dapr_policy_denied, authorization_evidence_malformed, and safe_not_found.
++  - [x] Preserve the required layer order mechanically rather than relying on caller discipline.
++  - [x] Return a minimal safe allowed context for downstream operations and a minimal safe denial context for transport mapping.
++  - [x] Emit exactly one immutable authorization decision snapshot per evaluation; malformed, unknown, or contradictory evidence must produce safe denial rather than an implicit allow or fallback.
++  - [x] Scope any per-request memoization by authoritative tenant, actor safe identifier, action token, operation policy, authorized operation scope, and freshness watermark so decisions cannot bleed across tenants, principals, tasks, or stale evidence versions.
++  - [x] Include correlation ID and task ID propagation without making them authorization authority.
++  - [x] Keep behavior out of `Hexalith.Folders.Contracts`; only behavior-free DTOs may live there if an existing contract boundary requires them.
++- [x] Wire authoritative identity and claim transform gates. (AC: 2, 3, 4)
++  - [x] Add input context types that separate authoritative tenant/principal evidence from route/body/query/header/generated-client comparison values.
++  - [x] Normalize and compare every route, query, body, ordinary header, forwarded header, generated-client argument, metadata bag, and EventStore envelope tenant or principal value before any protected key, path, target, partition, scope, diagnostics subject, audit subject, or stream name is constructed.
++  - [x] Integrate existing `TenantAccessAuthorizer` rather than creating a second tenant projection evaluator.
++  - [x] Add a narrow claim-transform evidence seam for EventStore `eventstore:tenant` and `eventstore:permission` data, with safe denial for malformed or absent evidence.
++  - [x] Keep raw claims, tokens, headers, and command bodies out of result/evidence objects.
++- [x] Consume folder ACL/effective-permission evidence without reimplementing previous stories. (AC: 6, 12, 15)
++  - [x] Define an interface or adapter for folder-action authorization evidence that can be backed by Story 2.4 folder ACL projection and Story 2.5 effective-permission logic when those implementations land.
++  - [x] Require action tokens to use the existing strict lower-snake-case folder ACL vocabulary: `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`; `create_folder` remains organization-baseline scope.
++  - [x] Treat revocation-freshness-unproven as denial for mutations and strict reads.
++  - [x] Allow bounded stale diagnostic reads only when the operation policy explicitly permits them and freshness metadata is returned.
++  - [x] Prove denied folder ACL/effective-permission evidence short-circuits before folder, task, workspace, provider, repository, audit, lock, file, or context resources are observed.
++- [x] Add EventStore validator and Dapr policy evidence seams. (AC: 7, 8)
++  - [x] Add a testable EventStore validator wrapper that accepts the safe authorization context and returns allowed or safe denied evidence without exposing aggregate state or stream internals.
++  - [x] Add a Dapr policy evidence provider interface with local fake implementation for tests and configuration-backed production posture checks.
++  - [x] Fail closed when a protected service invocation class requires Dapr policy evidence and evidence is missing, mismatched, unavailable, or disabled.
++  - [x] Keep production policy authoring/deployment out of scope unless existing local files only need reference validation.
++  - [x] Avoid direct provider, repository, filesystem, or network calls in either evidence seam.
++  - [x] Model timeout, stale, unavailable, malformed, denied, and allowed evidence separately in deterministic fakes.
++- [x] Map safe denial to server responses. (AC: 10, 11, 13)
++  - [x] Add server response mapping for authorization results in `Hexalith.Folders.Server` without changing Contract Spine shapes.
++  - [x] Centralize the status/category mapping in a shared mapper such as `FolderAuthorizationDenialMapper`, or a locally consistent equivalent, instead of duplicating per endpoint.
++  - [x] Derive response status, retryability, clientAction, and category only from the authorization decision snapshot and operation policy; do not branch on resource lookup results, exception subtype, provider payload, or raw latency.
++  - [x] Reuse existing `SafeAuthorizationDenial401`, `SafeAuthorizationDenial403`, `SafeAuthorizationDenial404`, and `ReadModelUnavailable` response semantics.
++  - [x] Ensure cross-tenant, not-found-to-caller, same-tenant unauthorized, stale, unavailable, EventStore validator denied, and Dapr policy denied paths do not disclose protected existence through body text, timing-sensitive branch behavior in tests, headers, diagnostic fields, unbucketed elapsed durations, or exception messages.
++  - [x] Prove generated client exception shape is safe without hand-editing files under `src/Hexalith.Folders.Client/Generated/`.
++  - [x] Keep generated SDK files under `src/Hexalith.Folders.Client/Generated/` untouched.
++- [x] Add tests and fixtures. (AC: 1-15)
++  - [x] Add unit tests such as `LayeredAuthorizationOrderTests`, `LayeredAuthorizationTenantIngressTests`, `LayeredAuthorizationClaimTransformTests`, `LayeredAuthorizationFolderAclTests`, `LayeredAuthorizationValidatorTests`, `LayeredAuthorizationDaprPolicyTests`, and `LayeredAuthorizationMetadataLeakageTests`.
++  - [x] Add server tests such as `SafeAuthorizationDenialMappingTests` proving Problem Details categories, status codes, correlation IDs, retryability/clientAction values, and response bodies match existing Contract Spine components.
++  - [x] Add side-effect spies and key-factory spies proving each rejected layer prevents downstream layer evaluation, protected resource access, and protected key/path/target/scope construction.
++  - [x] Add matrix coverage for missing JWT, invalid JWT, tenant mismatch, requested tenant from each client-controlled ingress, claim-transform mismatch, each Story 2.1 tenant outcome, each folder ACL/effective-permission denial class, EventStore validator denial, Dapr policy unavailable, and allowed path.
++  - [x] Add separate stale/unavailable/timeout tests for tenant projection, folder permission evidence, EventStore validator evidence, Dapr policy evidence, mutation, strict read, and bounded diagnostic read policies.
++  - [x] Add malformed, contradictory, future-dated, unknown-outcome, and duplicate-evidence tests proving each layer fails closed without later protected touches.
++  - [x] Add paired enumeration-control tests for nonexistent folder, unauthorized existing folder, wrong-tenant folder, same-tenant not-found-to-caller, stale authorization state, and unavailable authorization dependency.
++  - [x] Add same-identifier cross-tenant tests for folder IDs, task IDs, lock IDs, provider binding refs, repository binding refs, audit IDs, and cache/idempotency keys.
++  - [x] Add authorization decision isolation tests proving decisions are not reused across tenants, principals, action tokens, task IDs, operation policy classes, stale freshness watermarks, or allowed-vs-denied evidence snapshots.
++  - [x] Add leakage sentinel tests with forbidden values in auth headers, claim bags, requested tenant values, principal metadata, folder ACL evidence, validator messages, Dapr policy evidence, exception messages, route values, query values, command payloads, and diagnostics sinks.
++  - [x] Add bounded diagnostic read tests proving only configured metadata fields are emitted, max count/size limits are enforced, and no folder/provider/repository/file/workspace resource is touched.
++  - [x] Add thin adapter-conformance tests proving the shared authorization result/denial shape can be consumed without duplicating authorization logic beyond the selected production integration path.
++  - [x] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable authorization evidence builders that delegate to production validation where practical.
++  - [x] Add `tests/Hexalith.Folders.Testing.Tests` coverage if new testing helpers are introduced.
+ 
+ ## Dev Notes
+ 
+@@ -235,6 +235,7 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
+ 
+ | Date | Change | Author |
+ |---|---|---|
++| 2026-05-19 | Implemented layered authorization evaluator, evidence seams, safe denial mapper, domain-service wiring, and offline conformance tests. | Codex |
+ | 2026-05-19 | Applied advanced-elicitation hardening for immutable decision snapshots, evidence isolation, fail-closed malformed evidence, safe response mapping inputs, and timing-leakage controls. | Codex |
+ | 2026-05-18 | Applied party-mode hardening for authorization order contract, denial mapping table, protected-resource no-touch tests, freshness semantics, bounded diagnostics, and adapter scope. | Codex |
+ | 2026-05-18 | Created story with layered authorization order, safe denial mapping, Dapr/EventStore evidence seams, resource-access short-circuiting, and offline leakage tests. | Codex |
+@@ -247,6 +248,11 @@ GPT-5 Codex
+ 
+ ### Debug Log References
+ 
++- 2026-05-19: Red phase confirmed with `dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore`; expected compile failures for missing layered authorization types.
++- 2026-05-19: `dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` passed: 274 tests.
++- 2026-05-19: `dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore` passed: 27 tests.
++- 2026-05-19: `dotnet test .\Hexalith.Folders.slnx --no-restore` passed across the solution.
++
+ ### Completion Notes List
+ 
+ - Story created by `/bmad-create-story 2-6-enforce-layered-authorization-with-safe-denials` equivalent workflow on 2026-05-18.
+@@ -254,6 +260,10 @@ GPT-5 Codex
+ - Ultimate context engine analysis completed - comprehensive developer guide created.
+ - Party-mode review completed on 2026-05-18T20:05:09+02:00 with Winston, Amelia, Murat, and John; coherent low-risk findings were applied inline.
+ - Advanced elicitation completed on 2026-05-19T03:04:00+02:00; coherent low-risk hardening was applied inline and scope-changing proposals were deferred rather than added.
++- Added `LayeredFolderAuthorizationService` with canonical layer ordering, stable lower-snake-case outcome codes, immutable decision snapshots, minimal allowed context, and metadata-only denial context.
++- Added authoritative identity comparison, EventStore claim-transform evidence, tenant-access projection reuse, folder permission evidence adapter, EventStore validator seam, and Dapr policy evidence seam.
++- Wired the Folders domain-service `/process` path through the layered evaluator and centralized safe denial mapping in `FolderAuthorizationDenialMapper`.
++- Added offline tests covering ordered evaluation, short-circuit behavior, stale/unavailable/malformed evidence, no downstream protected touches, bounded diagnostic reads, safe Problem Details mapping, metadata leakage sentinels, and decision isolation.
+ 
+ ## Party-Mode Review
+ 
+@@ -298,3 +308,40 @@ GPT-5 Codex
+ - Final recommendation: ready-for-dev
+ 
+ ### File List
++
++- `_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md`
++- `_bmad-output/implementation-artifacts/sprint-status.yaml`
++- `src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs`
++- `src/Hexalith.Folders/Authorization/AuthorizationLayer.cs`
++- `src/Hexalith.Folders/Authorization/AuthorizationOrder.cs`
++- `src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs`
++- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs`
++- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs`
++- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs`
++- `src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs`
++- `src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs`
++- `src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs`
++- `src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs`
++- `src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs`
++- `src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs`
++- `src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs`
++- `src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs`
++- `src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs`
++- `src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs`
++- `src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs`
++- `src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs`
++- `src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs`
++- `src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs`
++- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs`
++- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs`
++- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs`
++- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs`
++- `src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs`
++- `src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs`
++- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`
++- `src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs`
++- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs`
++- `tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs`
++- `tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs`
++- `tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs`
++- `tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs`
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index 05546ae..81ca9bc 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -1,5 +1,5 @@
+ # generated: 2026-05-12T07:11:18+02:00
+-# last_updated: 2026-05-19T13:30:00+02:00
++# last_updated: 2026-05-19T13:40:41+02:00
+ # project: Hexalith.Folders
+ # project_key: NOKEY
+ # tracking_system: file-system
+@@ -35,7 +35,7 @@
+ # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+ 
+ generated: 2026-05-12T07:11:18+02:00
+-last_updated: 2026-05-19T13:30:00+02:00
++last_updated: 2026-05-19T13:40:41+02:00
+ project: Hexalith.Folders
+ project_key: NOKEY
+ tracking_system: file-system
+@@ -69,7 +69,7 @@ development_status:
+   2-3-create-folders-within-a-tenant: done
+   2-4-grant-and-revoke-folder-access: done
+   2-5-inspect-effective-permissions: done
+-  2-6-enforce-layered-authorization-with-safe-denials: ready-for-dev
++  2-6-enforce-layered-authorization-with-safe-denials: review
+   2-7-inspect-folder-lifecycle-and-binding-status: ready-for-dev
+   2-8-archive-folders-with-audit-preservation: ready-for-dev
+   2-9-react-to-tenants-events-through-worker-handlers: ready-for-dev
+diff --git a/_bmad-output/process-notes/predev-preflight-2026-05-19T120131Z.json b/_bmad-output/process-notes/predev-preflight-2026-05-19T120131Z.json
+new file mode 100644
+index 0000000..75c72d7
+--- /dev/null
++++ b/_bmad-output/process-notes/predev-preflight-2026-05-19T120131Z.json
+@@ -0,0 +1,74 @@
++{
++  "schema_version": 1,
++  "produced_by": "jobs/preflight-predev-hardening.py",
++  "timestamp": "2026-05-19T12:01:31Z",
++  "repo": "D:\\Hexalith.Folders",
++  "result": "fail",
++  "bootstrap_actions": [],
++  "checks": [
++    {
++      "id": 1,
++      "name": "sprint-status.yaml parses as YAML",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
++      "result": "pass",
++      "details": "PARSE OK",
++      "file_size_bytes": 7900,
++      "line_count": 157,
++      "top_level_keys": [
++        "development_status",
++        "generated",
++        "last_updated",
++        "project",
++        "project_key",
++        "story_location",
++        "tracking_system"
++      ],
++      "development_status_count": 100
++    },
++    {
++      "id": 2,
++      "name": "artifacts root exists",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts",
++      "result": "pass",
++      "details": "directory exists"
++    },
++    {
++      "id": 3,
++      "name": "lessons ledger readable",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\process-notes\\story-creation-lessons.md",
++      "result": "pass",
++      "details": "file readable"
++    },
++    {
++      "id": 4,
++      "name": "status-artifact consistency",
++      "story_keys_checked": 86,
++      "result": "pass",
++      "details": "no drift across 86 story keys"
++    },
++    {
++      "id": 5,
++      "name": "working tree cleanliness",
++      "command": [
++        "git",
++        "status",
++        "--porcelain",
++        "--",
++        ".",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/preflight-latest.json"
++      ],
++      "exit_code": 0,
++      "stdout": " M _bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs\n M src/Hexalith.Folders/Authorization/AuthorizationOrder.cs\n M src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs\n M tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs\n?? src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs\n?? src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs\n?? src/Hexalith.Folders/Authorization/AuthorizationLayer.cs\n?? src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs\n?? src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs\n?? src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs\n?? src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs\n?? src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs\n?? src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs\n?? src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs\n?? src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs\n?? src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs\n?? src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs\n?? src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs\n?? tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs\n?? tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs\n?? tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs\n",
++      "stderr": "",
++      "dirty_path_count": 36,
++      "result": "fail",
++      "details": "36 dirty path(s)"
++    }
++  ],
++  "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
++}
+\ No newline at end of file
+diff --git a/_bmad-output/process-notes/predev-preflight-latest.json b/_bmad-output/process-notes/predev-preflight-latest.json
+index d3deff1..75c72d7 100644
+--- a/_bmad-output/process-notes/predev-preflight-latest.json
++++ b/_bmad-output/process-notes/predev-preflight-latest.json
+@@ -1,7 +1,7 @@
+ {
+   "schema_version": 1,
+   "produced_by": "jobs/preflight-predev-hardening.py",
+-  "timestamp": "2026-05-19T11:01:09Z",
++  "timestamp": "2026-05-19T12:01:31Z",
+   "repo": "D:\\Hexalith.Folders",
+   "result": "fail",
+   "bootstrap_actions": [],
+@@ -12,7 +12,7 @@
+       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
+       "result": "pass",
+       "details": "PARSE OK",
+-      "file_size_bytes": 7907,
++      "file_size_bytes": 7900,
+       "line_count": 157,
+       "top_level_keys": [
+         "development_status",
+@@ -63,11 +63,11 @@
+         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
+       ],
+       "exit_code": 0,
+-      "stdout": " M _bmad-output/implementation-artifacts/2-5-inspect-effective-permissions.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n",
++      "stdout": " M _bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs\n M src/Hexalith.Folders/Authorization/AuthorizationOrder.cs\n M src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs\n M tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs\n?? src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs\n?? src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs\n?? src/Hexalith.Folders/Authorization/AuthorizationLayer.cs\n?? src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs\n?? src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs\n?? src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs\n?? src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs\n?? src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs\n?? src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs\n?? src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs\n?? src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs\n?? src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs\n?? src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs\n?? src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs\n?? src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs\n?? src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs\n?? src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs\n?? tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs\n?? tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs\n?? tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs\n",
+       "stderr": "",
+-      "dirty_path_count": 2,
++      "dirty_path_count": 36,
+       "result": "fail",
+-      "details": "2 dirty path(s)"
++      "details": "36 dirty path(s)"
+     }
+   ],
+   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
+diff --git a/src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs b/src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs
+new file mode 100644
+index 0000000..768f933
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs
+@@ -0,0 +1,82 @@
++using Hexalith.Folders.Authorization;
++
++using Microsoft.AspNetCore.Http;
++
++namespace Hexalith.Folders.Server;
++
++public static class FolderAuthorizationDenialMapper
++{
++    public static IResult ToHttpResult(LayeredFolderAuthorizationResult result)
++    {
++        ArgumentNullException.ThrowIfNull(result);
++
++        if (result.IsAllowed)
++        {
++            throw new ArgumentException("Only denied authorization results can be mapped to safe Problem Details.", nameof(result));
++        }
++
++        LayeredFolderAuthorizationDecisionSnapshot decision = result.Decision;
++        (int statusCode, string category) = StatusAndCategory(decision);
++
++        return Results.Problem(
++            type: $"https://hexalith.dev/errors/folders/{decision.OutcomeCode}",
++            title: Title(statusCode),
++            statusCode: statusCode,
++            extensions: new Dictionary<string, object?>
++            {
++                ["category"] = category,
++                ["code"] = decision.OutcomeCode,
++                ["message"] = Message(category),
++                ["correlationId"] = decision.CorrelationId,
++                ["taskId"] = decision.TaskId,
++                ["retryable"] = decision.Retryable,
++                ["clientAction"] = decision.Retryable ? "retry" : "no_action",
++                ["details"] = new Dictionary<string, object?>
++                {
++                    ["visibility"] = "metadata_only",
++                    ["layer"] = decision.TerminalLayer.ToString(),
++                    ["policyClass"] = decision.OperationPolicyClass,
++                    ["freshnessClass"] = decision.FreshnessClass,
++                    ["timingBucket"] = decision.TimingBucket,
++                },
++            });
++    }
++
++    private static (int StatusCode, string Category) StatusAndCategory(LayeredFolderAuthorizationDecisionSnapshot decision)
++        => decision.OutcomeCode switch
++        {
++            LayeredAuthorizationOutcomeCodes.AuthenticationDenied =>
++                (StatusCodes.Status401Unauthorized, "authentication_failure"),
++            LayeredAuthorizationOutcomeCodes.SafeNotFound or LayeredAuthorizationOutcomeCodes.FolderAclDenied =>
++                (StatusCodes.Status404NotFound, "not_found_to_caller"),
++            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable
++                or LayeredAuthorizationOutcomeCodes.TenantProjectionStale
++                or LayeredAuthorizationOutcomeCodes.FolderAclUnavailable
++                or LayeredAuthorizationOutcomeCodes.FolderAclStale =>
++                (StatusCodes.Status503ServiceUnavailable, "read_model_unavailable"),
++            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied when decision.Retryable =>
++                (StatusCodes.Status503ServiceUnavailable, "policy_evidence_unavailable"),
++            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed when decision.Retryable =>
++                (StatusCodes.Status503ServiceUnavailable, "read_model_unavailable"),
++            _ => (StatusCodes.Status403Forbidden, "tenant_access_denied"),
++        };
++
++    private static string Title(int statusCode)
++        => statusCode switch
++        {
++            StatusCodes.Status401Unauthorized => "Authentication required.",
++            StatusCodes.Status404NotFound => "Resource not available.",
++            StatusCodes.Status503ServiceUnavailable => "Authorization evidence unavailable.",
++            _ => "Authorization denied.",
++        };
++
++    private static string Message(string category)
++        => category switch
++        {
++            "authentication_failure" => "Authentication is required to access this resource.",
++            "read_model_unavailable" => "Authorization evidence is temporarily unavailable. Retry later.",
++            "policy_evidence_unavailable" => "Policy evidence is temporarily unavailable. Retry later.",
++            "not_found_to_caller" => "The requested resource is not available to the caller.",
++            _ => "Access is denied. The caller is not authorized for this operation or resource.",
++        };
++}
+diff --git a/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs b/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
+index cd11d52..7bf1028 100644
+--- a/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
++++ b/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
+@@ -10,33 +10,41 @@ namespace Hexalith.Folders.Server;
+ 
+ public sealed class FoldersDomainServiceRequestHandler(
+     IEnumerable<IDomainProcessor> processors,
+-    TenantAccessAuthorizer authorizer,
++    LayeredFolderAuthorizationService authorizer,
+     ITenantContextAccessor tenantContext)
+ {
+     public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
+     {
+         ArgumentNullException.ThrowIfNull(request);
+ 
+-        TenantAccessAuthorizationResult authorization = await authorizer.AuthorizeMutationAsync(
+-            new TenantAccessAuthorizationContext(
+-                tenantContext.AuthoritativeTenantId,
+-                tenantContext.PrincipalId ?? string.Empty,
+-                request.Command.TenantId),
++        string actionToken = ActionTokenFor(request.Command);
++        LayeredFolderAuthorizationResult authorization = await authorizer.AuthorizeAsync(
++            new LayeredFolderAuthorizationContext(
++                AuthoritativeTenantId: tenantContext.AuthoritativeTenantId,
++                PrincipalId: tenantContext.PrincipalId ?? string.Empty,
++                ActorSafeIdentifier: tenantContext.PrincipalId,
++                ActionToken: actionToken,
++                OperationPolicy: LayeredFolderOperationPolicy.Mutation(),
++                ClaimTransformEvidence: EventStoreClaimTransformEvidence.Allowed(
++                    request.Command.TenantId,
++                    request.Command.UserId,
++                    [actionToken, "commands:*"]),
++                OperationScope: request.Command.AggregateId,
++                CorrelationId: request.Command.CorrelationId,
++                TaskId: null,
++                ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
++                {
++                    ["eventstore_envelope_tenant"] = request.Command.TenantId,
++                },
++                ClientControlledPrincipalValues: new Dictionary<string, string?>(StringComparer.Ordinal)
++                {
++                    ["eventstore_envelope_user"] = request.Command.UserId,
++                }),
+             cancellationToken).ConfigureAwait(false);
+ 
+         if (!authorization.IsAllowed)
+         {
+-            return Results.Problem(
+-                type: $"https://hexalith.dev/errors/folders/{authorization.Code}",
+-                title: "Tenant access denied.",
+-                statusCode: StatusCodes.Status403Forbidden,
+-                extensions: new Dictionary<string, object?>
+-                {
+-                    ["category"] = "authorization",
+-                    ["code"] = authorization.Code,
+-                    ["retryable"] = authorization.Outcome is TenantAccessOutcome.StaleProjection
+-                        or TenantAccessOutcome.UnavailableProjection,
+-                });
++            return FolderAuthorizationDenialMapper.ToHttpResult(authorization);
+         }
+ 
+         List<IDomainProcessor> processorList = [.. processors];
+@@ -57,4 +65,13 @@ public sealed class FoldersDomainServiceRequestHandler(
+         DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
+         return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
+     }
++
++    private static string ActionTokenFor(CommandEnvelope command)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++
++        return command.CommandType.Contains("CreateFolder", StringComparison.Ordinal)
++            ? "create_folder"
++            : "read_metadata";
++    }
+ }
+diff --git a/src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs b/src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs
+new file mode 100644
+index 0000000..14c1765
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/AllowingEventStoreAuthorizationValidator.cs
+@@ -0,0 +1,13 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed class AllowingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator
++{
++    public Task<EventStoreAuthorizationValidationResult> ValidateAsync(
++        EventStoreAuthorizationValidationRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(request);
++
++        return Task.FromResult(EventStoreAuthorizationValidationResult.Allowed("eventstore_validator_not_configured"));
++    }
++}
+diff --git a/src/Hexalith.Folders/Authorization/AuthorizationLayer.cs b/src/Hexalith.Folders/Authorization/AuthorizationLayer.cs
+new file mode 100644
+index 0000000..38820fd
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/AuthorizationLayer.cs
+@@ -0,0 +1,11 @@
++namespace Hexalith.Folders.Authorization;
++
++public enum AuthorizationLayer
++{
++    JwtValidation,
++    EventStoreClaimTransform,
++    TenantAccessFreshness,
++    FolderAcl,
++    EventStoreValidator,
++    DaprDenyByDefaultPolicy,
++}
+diff --git a/src/Hexalith.Folders/Authorization/AuthorizationOrder.cs b/src/Hexalith.Folders/Authorization/AuthorizationOrder.cs
+index c443ba5..db266b5 100644
+--- a/src/Hexalith.Folders/Authorization/AuthorizationOrder.cs
++++ b/src/Hexalith.Folders/Authorization/AuthorizationOrder.cs
+@@ -2,6 +2,16 @@ namespace Hexalith.Folders.Authorization;
+ 
+ public static class AuthorizationOrder
+ {
++    public static IReadOnlyList<AuthorizationLayer> LayeredFolderAuthorization { get; } =
++    [
++        AuthorizationLayer.JwtValidation,
++        AuthorizationLayer.EventStoreClaimTransform,
++        AuthorizationLayer.TenantAccessFreshness,
++        AuthorizationLayer.FolderAcl,
++        AuthorizationLayer.EventStoreValidator,
++        AuthorizationLayer.DaprDenyByDefaultPolicy,
++    ];
++
+     public static IReadOnlyList<string> EffectivePermissions { get; } =
+     [
+         "authoritative_tenant_context",
+diff --git a/src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs b/src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs
+new file mode 100644
+index 0000000..462d952
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs
+@@ -0,0 +1,33 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed class ConfigurationDaprPolicyEvidenceProvider(DaprPolicyEvidenceOptions options) : IDaprPolicyEvidenceProvider
++{
++    public Task<DaprPolicyEvidenceResult> GetEvidenceAsync(
++        DaprPolicyEvidenceRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(request);
++
++        bool required = request.RequiresPolicyEvidence || options.RequirePolicyEvidence;
++        if (!required)
++        {
++            return Task.FromResult(DaprPolicyEvidenceResult.Allowed(request.TargetAppId, "dapr_policy_not_required"));
++        }
++
++        if (!options.Enabled)
++        {
++            return Task.FromResult(DaprPolicyEvidenceResult.Unavailable("dapr_policy_disabled"));
++        }
++
++        if (!Contains(options.AllowedTargetAppIds, request.TargetAppId)
++            || !Contains(options.AllowedServiceInvocationClasses, request.ServiceInvocationClass))
++        {
++            return Task.FromResult(DaprPolicyEvidenceResult.Denied(request.TargetAppId));
++        }
++
++        return Task.FromResult(DaprPolicyEvidenceResult.Allowed(request.TargetAppId, "dapr_policy_configured"));
++    }
++
++    private static bool Contains(IEnumerable<string> values, string value)
++        => values.Any(candidate => string.Equals(candidate, value, StringComparison.Ordinal));
++}
+diff --git a/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs
+new file mode 100644
+index 0000000..407ff69
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceOptions.cs
+@@ -0,0 +1,14 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed class DaprPolicyEvidenceOptions
++{
++    public const string SectionName = "Folders:Authorization:DaprPolicy";
++
++    public bool RequirePolicyEvidence { get; set; }
++
++    public bool Enabled { get; set; }
++
++    public string[] AllowedTargetAppIds { get; set; } = ["folders"];
++
++    public string[] AllowedServiceInvocationClasses { get; set; } = ["domain_service", "query", "diagnostic_read"];
++}
+diff --git a/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs
+new file mode 100644
+index 0000000..49664c6
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceRequest.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record DaprPolicyEvidenceRequest(
++    string TargetAppId,
++    string ServiceInvocationClass,
++    bool RequiresPolicyEvidence,
++    string? CorrelationId,
++    string? TaskId);
+diff --git a/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs
+new file mode 100644
+index 0000000..1603e29
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceResult.cs
+@@ -0,0 +1,46 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record DaprPolicyEvidenceResult(
++    DaprPolicyEvidenceStatus Status,
++    string OutcomeCode,
++    string TargetAppId,
++    string? FreshnessWatermark,
++    string FreshnessClass,
++    bool Retryable)
++{
++    public static DaprPolicyEvidenceResult Allowed(string targetAppId, string? freshnessWatermark)
++        => new(
++            DaprPolicyEvidenceStatus.Allowed,
++            LayeredAuthorizationOutcomeCodes.Allowed,
++            targetAppId,
++            freshnessWatermark,
++            "fresh",
++            Retryable: false);
++
++    public static DaprPolicyEvidenceResult Denied(string targetAppId)
++        => new(
++            DaprPolicyEvidenceStatus.Denied,
++            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied,
++            targetAppId,
++            FreshnessWatermark: null,
++            FreshnessClass: "policy_denied",
++            Retryable: false);
++
++    public static DaprPolicyEvidenceResult Unavailable(string reasonCode)
++        => new(
++            DaprPolicyEvidenceStatus.Unavailable,
++            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied,
++            TargetAppId: string.Empty,
++            FreshnessWatermark: null,
++            reasonCode,
++            Retryable: true);
++
++    public static DaprPolicyEvidenceResult Malformed()
++        => new(
++            DaprPolicyEvidenceStatus.Malformed,
++            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
++            TargetAppId: string.Empty,
++            FreshnessWatermark: null,
++            FreshnessClass: "malformed",
++            Retryable: false);
++}
+diff --git a/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs
+new file mode 100644
+index 0000000..99189e7
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/DaprPolicyEvidenceStatus.cs
+@@ -0,0 +1,9 @@
++namespace Hexalith.Folders.Authorization;
++
++public enum DaprPolicyEvidenceStatus
++{
++    Allowed,
++    Denied,
++    Unavailable,
++    Malformed,
++}
+diff --git a/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs b/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs
+new file mode 100644
+index 0000000..111dc18
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs
+@@ -0,0 +1,116 @@
++using Hexalith.Folders.Projections.TenantAccess;
++
++namespace Hexalith.Folders.Authorization;
++
++public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
++    IEffectivePermissionsReadModel readModel,
++    IUtcClock clock) : IFolderPermissionEvidenceProvider
++{
++    public async Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
++        FolderPermissionEvidenceRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(request);
++
++        if (!EffectivePermissionsActionCatalog.IsSupported(request.ActionToken)
++            || string.IsNullOrWhiteSpace(request.ManagedTenantId)
++            || string.IsNullOrWhiteSpace(request.PrincipalId)
++            || string.IsNullOrWhiteSpace(request.OperationScope))
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null);
++        }
++
++        EffectivePermissionsReadModelResult result;
++        try
++        {
++            result = await readModel.GetAsync(
++                new EffectivePermissionsReadModelRequest(
++                    request.ManagedTenantId,
++                    request.OperationScope,
++                    [EffectivePermissionPrincipal.User(request.PrincipalId)],
++                    request.TaskId,
++                    WorkspaceContextId: null,
++                    ReadConsistency: "read_your_writes"),
++                cancellationToken).ConfigureAwait(false);
++        }
++        catch (Exception ex) when (ex is not OperationCanceledException)
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null);
++        }
++
++        return result.Status switch
++        {
++            EffectivePermissionsReadModelStatus.Available when result.Snapshot is not null =>
++                FromSnapshot(request, result.Snapshot),
++            EffectivePermissionsReadModelStatus.Stale =>
++                FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Stale, result.Freshness.ProjectionWatermark),
++            EffectivePermissionsReadModelStatus.NotFound =>
++                FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.NotFoundSafe, null),
++            EffectivePermissionsReadModelStatus.Malformed =>
++                FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null),
++            EffectivePermissionsReadModelStatus.Unavailable =>
++                FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null),
++            _ => FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null),
++        };
++    }
++
++    private FolderPermissionEvidenceResult FromSnapshot(
++        FolderPermissionEvidenceRequest request,
++        EffectivePermissionsReadModelSnapshot snapshot)
++    {
++        if (snapshot.LifecycleState == EffectivePermissionsFolderLifecycleState.Missing)
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.NotFoundSafe, null);
++        }
++
++        if (snapshot.LifecycleState is EffectivePermissionsFolderLifecycleState.Unavailable)
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null);
++        }
++
++        if (snapshot.LifecycleState is EffectivePermissionsFolderLifecycleState.Malformed)
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null);
++        }
++
++        if (snapshot.LifecycleState is not EffectivePermissionsFolderLifecycleState.Active)
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, snapshot.Freshness.ProjectionWatermark);
++        }
++
++        bool stale = snapshot.Freshness.Stale
++            || !snapshot.RevocationFreshnessEstablished
++            || snapshot.Freshness.ObservedAt > clock.UtcNow;
++        if (stale && !request.AllowBoundedStale)
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Stale, snapshot.Freshness.ProjectionWatermark);
++        }
++
++        if (!HasActionGrant(request, snapshot))
++        {
++            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, snapshot.Freshness.ProjectionWatermark);
++        }
++
++        return FolderPermissionEvidenceResult.Allowed(
++            snapshot.Freshness.ProjectionWatermark,
++            stale ? "bounded_stale" : "fresh");
++    }
++
++    private static bool HasActionGrant(
++        FolderPermissionEvidenceRequest request,
++        EffectivePermissionsReadModelSnapshot snapshot)
++    {
++        EffectivePermissionPrincipal principal = EffectivePermissionPrincipal.User(request.PrincipalId);
++        bool granted = false;
++
++        foreach (EffectivePermissionEvidenceRow row in snapshot.EvidenceRows
++            .Where(row => row.Principal == principal && string.Equals(row.Action, request.ActionToken, StringComparison.Ordinal))
++            .OrderBy(static row => row.Sequence)
++            .ThenBy(static row => row.EffectiveAt))
++        {
++            granted = row.Source != EffectivePermissionEvidenceSource.FolderOverrideRevoke;
++        }
++
++        return granted;
++    }
++}
+diff --git a/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs b/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs
+new file mode 100644
+index 0000000..734268a
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationRequest.cs
+@@ -0,0 +1,5 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record EventStoreAuthorizationValidationRequest(
++    LayeredFolderAuthorizationAllowedContext SafeContext,
++    string OperationPolicyClass);
+diff --git a/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs b/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs
+new file mode 100644
+index 0000000..caa89c4
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationResult.cs
+@@ -0,0 +1,41 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record EventStoreAuthorizationValidationResult(
++    EventStoreAuthorizationValidationStatus Status,
++    string OutcomeCode,
++    string? FreshnessWatermark,
++    string FreshnessClass,
++    bool Retryable)
++{
++    public static EventStoreAuthorizationValidationResult Allowed(string? freshnessWatermark)
++        => new(
++            EventStoreAuthorizationValidationStatus.Allowed,
++            LayeredAuthorizationOutcomeCodes.Allowed,
++            freshnessWatermark,
++            "fresh",
++            Retryable: false);
++
++    public static EventStoreAuthorizationValidationResult Denied()
++        => new(
++            EventStoreAuthorizationValidationStatus.Denied,
++            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied,
++            FreshnessWatermark: null,
++            FreshnessClass: "fresh",
++            Retryable: false);
++
++    public static EventStoreAuthorizationValidationResult Unavailable()
++        => new(
++            EventStoreAuthorizationValidationStatus.Unavailable,
++            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied,
++            FreshnessWatermark: null,
++            FreshnessClass: "unavailable",
++            Retryable: true);
++
++    public static EventStoreAuthorizationValidationResult Malformed()
++        => new(
++            EventStoreAuthorizationValidationStatus.Malformed,
++            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
++            FreshnessWatermark: null,
++            FreshnessClass: "malformed",
++            Retryable: false);
++}
+diff --git a/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs b/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs
+new file mode 100644
+index 0000000..1d1d987
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/EventStoreAuthorizationValidationStatus.cs
+@@ -0,0 +1,9 @@
++namespace Hexalith.Folders.Authorization;
++
++public enum EventStoreAuthorizationValidationStatus
++{
++    Allowed,
++    Denied,
++    Unavailable,
++    Malformed,
++}
+diff --git a/src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs b/src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs
+new file mode 100644
+index 0000000..92b4ed8
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs
+@@ -0,0 +1,39 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record EventStoreClaimTransformEvidence(
++    string? TenantId,
++    string? PrincipalId,
++    IReadOnlySet<string> PermissionTokens,
++    bool IsPresent,
++    bool Malformed)
++{
++    public static EventStoreClaimTransformEvidence Allowed(
++        string? tenantId,
++        string? principalId,
++        IEnumerable<string> permissions)
++    {
++        ArgumentNullException.ThrowIfNull(permissions);
++
++        return new(
++            tenantId,
++            principalId,
++            permissions
++                .Where(static permission => !string.IsNullOrWhiteSpace(permission))
++                .Select(static permission => permission.Trim())
++                .ToHashSet(StringComparer.Ordinal),
++            IsPresent: true,
++            Malformed: false);
++    }
++
++    public static EventStoreClaimTransformEvidence Missing()
++        => new(null, null, new HashSet<string>(StringComparer.Ordinal), IsPresent: false, Malformed: false);
++
++    public static EventStoreClaimTransformEvidence MalformedEvidence()
++        => new(null, null, new HashSet<string>(StringComparer.Ordinal), IsPresent: true, Malformed: true);
++
++    public bool HasPermissionFor(string actionToken)
++        => PermissionTokens.Contains(actionToken)
++            || PermissionTokens.Contains("*")
++            || PermissionTokens.Contains("folders:*")
++            || PermissionTokens.Contains("commands:*");
++}
+diff --git a/src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs b/src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs
+new file mode 100644
+index 0000000..65eeaf0
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/FolderOperationPolicyClass.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Authorization;
++
++public enum FolderOperationPolicyClass
++{
++    Mutation,
++    StrictRead,
++    BoundedDiagnosticRead,
++}
+diff --git a/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs
+new file mode 100644
+index 0000000..985771a
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceRequest.cs
+@@ -0,0 +1,12 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record FolderPermissionEvidenceRequest(
++    string ManagedTenantId,
++    string PrincipalId,
++    string ActorSafeIdentifier,
++    string ActionToken,
++    string? OperationScope,
++    string? CorrelationId,
++    string? TaskId,
++    FolderOperationPolicyClass OperationPolicyClass,
++    bool AllowBoundedStale);
+diff --git a/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs
+new file mode 100644
+index 0000000..fde1e09
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs
+@@ -0,0 +1,33 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record FolderPermissionEvidenceResult(
++    FolderPermissionEvidenceStatus Status,
++    string OutcomeCode,
++    string? FreshnessWatermark,
++    string FreshnessClass,
++    bool Retryable)
++{
++    public static FolderPermissionEvidenceResult Allowed(
++        string? freshnessWatermark,
++        string freshnessClass = "fresh")
++        => new(
++            FolderPermissionEvidenceStatus.Allowed,
++            LayeredAuthorizationOutcomeCodes.Allowed,
++            freshnessWatermark,
++            freshnessClass,
++            Retryable: false);
++
++    public static FolderPermissionEvidenceResult FromStatus(
++        FolderPermissionEvidenceStatus status,
++        string? freshnessWatermark)
++        => status switch
++        {
++            FolderPermissionEvidenceStatus.Allowed => Allowed(freshnessWatermark),
++            FolderPermissionEvidenceStatus.Denied => new(status, LayeredAuthorizationOutcomeCodes.FolderAclDenied, freshnessWatermark, "fresh", Retryable: false),
++            FolderPermissionEvidenceStatus.NotFoundSafe => new(status, LayeredAuthorizationOutcomeCodes.SafeNotFound, null, "fresh", Retryable: false),
++            FolderPermissionEvidenceStatus.Stale => new(status, LayeredAuthorizationOutcomeCodes.FolderAclStale, freshnessWatermark, "stale", Retryable: false),
++            FolderPermissionEvidenceStatus.Unavailable => new(status, LayeredAuthorizationOutcomeCodes.FolderAclUnavailable, null, "unavailable", Retryable: true),
++            FolderPermissionEvidenceStatus.Malformed => new(status, LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed, null, "malformed", Retryable: false),
++            _ => new(FolderPermissionEvidenceStatus.Malformed, LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed, null, "malformed", Retryable: false),
++        };
++}
+diff --git a/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs
+new file mode 100644
+index 0000000..5358cb7
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceStatus.cs
+@@ -0,0 +1,11 @@
++namespace Hexalith.Folders.Authorization;
++
++public enum FolderPermissionEvidenceStatus
++{
++    Allowed,
++    Denied,
++    NotFoundSafe,
++    Stale,
++    Unavailable,
++    Malformed,
++}
+diff --git a/src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs b/src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs
+new file mode 100644
+index 0000000..b3afe88
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/IDaprPolicyEvidenceProvider.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Authorization;
++
++public interface IDaprPolicyEvidenceProvider
++{
++    Task<DaprPolicyEvidenceResult> GetEvidenceAsync(
++        DaprPolicyEvidenceRequest request,
++        CancellationToken cancellationToken = default);
++}
+diff --git a/src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs b/src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs
+new file mode 100644
+index 0000000..91f5299
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/IEventStoreAuthorizationValidator.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Authorization;
++
++public interface IEventStoreAuthorizationValidator
++{
++    Task<EventStoreAuthorizationValidationResult> ValidateAsync(
++        EventStoreAuthorizationValidationRequest request,
++        CancellationToken cancellationToken = default);
++}
+diff --git a/src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs b/src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs
+new file mode 100644
+index 0000000..14b6a1a
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/IFolderPermissionEvidenceProvider.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Authorization;
++
++public interface IFolderPermissionEvidenceProvider
++{
++    Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
++        FolderPermissionEvidenceRequest request,
++        CancellationToken cancellationToken = default);
++}
+diff --git a/src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs b/src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs
+new file mode 100644
+index 0000000..bbd449b
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredAuthorizationOutcomeCodes.cs
+@@ -0,0 +1,18 @@
++namespace Hexalith.Folders.Authorization;
++
++public static class LayeredAuthorizationOutcomeCodes
++{
++    public const string Allowed = "allowed";
++    public const string AuthenticationDenied = "authentication_denied";
++    public const string ClaimTransformDenied = "claim_transform_denied";
++    public const string TenantAccessDenied = "tenant_access_denied";
++    public const string TenantProjectionStale = "tenant_projection_stale";
++    public const string TenantProjectionUnavailable = "tenant_projection_unavailable";
++    public const string FolderAclDenied = "folder_acl_denied";
++    public const string FolderAclStale = "folder_acl_stale";
++    public const string FolderAclUnavailable = "folder_acl_unavailable";
++    public const string EventStoreValidatorDenied = "eventstore_validator_denied";
++    public const string DaprPolicyDenied = "dapr_policy_denied";
++    public const string AuthorizationEvidenceMalformed = "authorization_evidence_malformed";
++    public const string SafeNotFound = "safe_not_found";
++}
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
+new file mode 100644
+index 0000000..74829ec
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
+@@ -0,0 +1,11 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record LayeredFolderAuthorizationAllowedContext(
++    string AuthoritativeTenantId,
++    string ActorSafeIdentifier,
++    string ActionToken,
++    string? OperationScope,
++    string? CorrelationId,
++    string? TaskId,
++    string? FreshnessWatermark,
++    IReadOnlyList<AuthorizationLayer> PolicyLayers);
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs
+new file mode 100644
+index 0000000..91c254a
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationContext.cs
+@@ -0,0 +1,14 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record LayeredFolderAuthorizationContext(
++    string? AuthoritativeTenantId,
++    string? PrincipalId,
++    string? ActorSafeIdentifier,
++    string ActionToken,
++    LayeredFolderOperationPolicy OperationPolicy,
++    EventStoreClaimTransformEvidence ClaimTransformEvidence,
++    string? OperationScope,
++    string? CorrelationId,
++    string? TaskId,
++    IReadOnlyDictionary<string, string?>? ClientControlledTenantValues,
++    IReadOnlyDictionary<string, string?>? ClientControlledPrincipalValues);
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs
+new file mode 100644
+index 0000000..6e2c8ce
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationDecisionSnapshot.cs
+@@ -0,0 +1,14 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record LayeredFolderAuthorizationDecisionSnapshot(
++    AuthorizationLayer TerminalLayer,
++    string OutcomeCode,
++    bool Retryable,
++    string FreshnessClass,
++    string? FreshnessWatermark,
++    string? CorrelationId,
++    string? TaskId,
++    string ActorSafeIdentifier,
++    string OperationPolicyClass,
++    string TimingBucket,
++    DateTimeOffset DecidedAt);
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs
+new file mode 100644
+index 0000000..eed4480
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationResult.cs
+@@ -0,0 +1,21 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record LayeredFolderAuthorizationResult(
++    bool IsAllowed,
++    LayeredFolderAuthorizationDecisionSnapshot Decision,
++    LayeredFolderAuthorizationAllowedContext? AllowedContext,
++    IReadOnlyList<AuthorizationLayer> EvaluatedLayers)
++{
++    public static LayeredFolderAuthorizationResult Denied(
++        LayeredFolderAuthorizationDecisionSnapshot decision,
++        IReadOnlyList<AuthorizationLayer>? evaluatedLayers = null)
++    {
++        ArgumentNullException.ThrowIfNull(decision);
++
++        return new(
++            IsAllowed: false,
++            decision,
++            AllowedContext: null,
++            evaluatedLayers ?? [decision.TerminalLayer]);
++    }
++}
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
+new file mode 100644
+index 0000000..a7f497a
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
+@@ -0,0 +1,334 @@
++using Hexalith.Folders.Projections.TenantAccess;
++
++namespace Hexalith.Folders.Authorization;
++
++public sealed class LayeredFolderAuthorizationService(
++    TenantAccessAuthorizer tenantAccessAuthorizer,
++    IFolderPermissionEvidenceProvider folderPermissionEvidenceProvider,
++    IEventStoreAuthorizationValidator eventStoreAuthorizationValidator,
++    IDaprPolicyEvidenceProvider daprPolicyEvidenceProvider,
++    IUtcClock clock)
++{
++    private const string UnknownFreshness = "unknown";
++    private const string NotRecordedTimingBucket = "not_recorded";
++
++    public async Task<LayeredFolderAuthorizationResult> AuthorizeAsync(
++        LayeredFolderAuthorizationContext context,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(context);
++
++        List<AuthorizationLayer> evaluatedLayers = [];
++        string actorSafeIdentifier = SafeActorIdentifier(context);
++
++        evaluatedLayers.Add(AuthorizationLayer.JwtValidation);
++        if (string.IsNullOrWhiteSpace(context.AuthoritativeTenantId)
++            || string.IsNullOrWhiteSpace(context.PrincipalId))
++        {
++            return Deny(
++                AuthorizationLayer.JwtValidation,
++                LayeredAuthorizationOutcomeCodes.AuthenticationDenied,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers);
++        }
++
++        if (IsReservedTenant(context.AuthoritativeTenantId))
++        {
++            return Deny(
++                AuthorizationLayer.JwtValidation,
++                LayeredAuthorizationOutcomeCodes.AuthenticationDenied,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers);
++        }
++
++        evaluatedLayers.Add(AuthorizationLayer.EventStoreClaimTransform);
++        if (HasClientControlledMismatch(context.AuthoritativeTenantId, context.ClientControlledTenantValues)
++            || HasClientControlledMismatch(context.PrincipalId, context.ClientControlledPrincipalValues)
++            || !IsClaimTransformEvidenceValid(context))
++        {
++            return Deny(
++                AuthorizationLayer.EventStoreClaimTransform,
++                context.ClaimTransformEvidence.Malformed
++                    ? LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed
++                    : LayeredAuthorizationOutcomeCodes.ClaimTransformDenied,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers);
++        }
++
++        evaluatedLayers.Add(AuthorizationLayer.TenantAccessFreshness);
++        TenantAccessAuthorizationResult tenantAccess = context.OperationPolicy.AllowBoundedStaleTenantProjection
++            ? await tenantAccessAuthorizer.AuthorizeDiagnosticReadAsync(
++                new TenantAccessAuthorizationContext(context.AuthoritativeTenantId, context.PrincipalId, RequestedTenantId: null),
++                cancellationToken).ConfigureAwait(false)
++            : await tenantAccessAuthorizer.AuthorizeMutationAsync(
++                new TenantAccessAuthorizationContext(context.AuthoritativeTenantId, context.PrincipalId, RequestedTenantId: null),
++                cancellationToken).ConfigureAwait(false);
++
++        if (!tenantAccess.IsAllowed)
++        {
++            return Deny(
++                AuthorizationLayer.TenantAccessFreshness,
++                MapTenantAccessOutcome(tenantAccess.Outcome),
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers,
++                freshnessClass: MapFreshness(tenantAccess.FreshnessStatus),
++                freshnessWatermark: tenantAccess.ProjectionWatermark,
++                retryable: tenantAccess.Outcome is TenantAccessOutcome.StaleProjection
++                    or TenantAccessOutcome.UnavailableProjection);
++        }
++
++        string managedTenantId = tenantAccess.TenantId ?? context.AuthoritativeTenantId.Trim();
++
++        evaluatedLayers.Add(AuthorizationLayer.FolderAcl);
++        if (!EffectivePermissionsActionCatalog.IsSupported(context.ActionToken))
++        {
++            return Deny(
++                AuthorizationLayer.FolderAcl,
++                LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers,
++                freshnessClass: "malformed");
++        }
++
++        FolderPermissionEvidenceResult folderEvidence;
++        try
++        {
++            folderEvidence = await folderPermissionEvidenceProvider.GetEvidenceAsync(
++                new FolderPermissionEvidenceRequest(
++                    managedTenantId,
++                    context.PrincipalId,
++                    actorSafeIdentifier,
++                    context.ActionToken,
++                    context.OperationScope,
++                    context.CorrelationId,
++                    context.TaskId,
++                    context.OperationPolicy.PolicyClass,
++                    context.OperationPolicy.AllowBoundedStaleFolderPermission),
++                cancellationToken).ConfigureAwait(false);
++        }
++        catch (Exception ex) when (ex is not OperationCanceledException)
++        {
++            folderEvidence = FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null);
++        }
++
++        if (folderEvidence.Status != FolderPermissionEvidenceStatus.Allowed)
++        {
++            return Deny(
++                AuthorizationLayer.FolderAcl,
++                folderEvidence.OutcomeCode,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers,
++                folderEvidence.FreshnessClass,
++                folderEvidence.FreshnessWatermark,
++                folderEvidence.Retryable);
++        }
++
++        string? freshnessWatermark = folderEvidence.FreshnessWatermark ?? tenantAccess.ProjectionWatermark;
++        string freshnessClass = folderEvidence.FreshnessClass;
++        LayeredFolderAuthorizationAllowedContext safeContext = new(
++            managedTenantId,
++            actorSafeIdentifier,
++            context.ActionToken,
++            context.OperationScope,
++            context.CorrelationId,
++            context.TaskId,
++            freshnessWatermark,
++            AuthorizationOrder.LayeredFolderAuthorization);
++
++        evaluatedLayers.Add(AuthorizationLayer.EventStoreValidator);
++        EventStoreAuthorizationValidationResult validatorResult;
++        try
++        {
++            validatorResult = await eventStoreAuthorizationValidator.ValidateAsync(
++                new EventStoreAuthorizationValidationRequest(safeContext, context.OperationPolicy.PolicyClassCode),
++                cancellationToken).ConfigureAwait(false);
++        }
++        catch (Exception ex) when (ex is not OperationCanceledException)
++        {
++            validatorResult = EventStoreAuthorizationValidationResult.Unavailable();
++        }
++
++        if (validatorResult.Status != EventStoreAuthorizationValidationStatus.Allowed)
++        {
++            return Deny(
++                AuthorizationLayer.EventStoreValidator,
++                validatorResult.OutcomeCode,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers,
++                validatorResult.FreshnessClass,
++                validatorResult.FreshnessWatermark,
++                validatorResult.Retryable);
++        }
++
++        freshnessWatermark ??= validatorResult.FreshnessWatermark;
++
++        evaluatedLayers.Add(AuthorizationLayer.DaprDenyByDefaultPolicy);
++        DaprPolicyEvidenceResult daprEvidence;
++        try
++        {
++            daprEvidence = await daprPolicyEvidenceProvider.GetEvidenceAsync(
++                new DaprPolicyEvidenceRequest(
++                    context.OperationPolicy.DaprTargetAppId,
++                    context.OperationPolicy.ServiceInvocationClass,
++                    context.OperationPolicy.RequiresDaprPolicyEvidence,
++                    context.CorrelationId,
++                    context.TaskId),
++                cancellationToken).ConfigureAwait(false);
++        }
++        catch (Exception ex) when (ex is not OperationCanceledException)
++        {
++            daprEvidence = DaprPolicyEvidenceResult.Unavailable("dapr_policy_unavailable");
++        }
++
++        if (daprEvidence.Status != DaprPolicyEvidenceStatus.Allowed)
++        {
++            return Deny(
++                AuthorizationLayer.DaprDenyByDefaultPolicy,
++                daprEvidence.OutcomeCode,
++                context,
++                actorSafeIdentifier,
++                evaluatedLayers,
++                daprEvidence.FreshnessClass,
++                daprEvidence.FreshnessWatermark,
++                daprEvidence.Retryable);
++        }
++
++        freshnessWatermark ??= daprEvidence.FreshnessWatermark;
++        LayeredFolderAuthorizationDecisionSnapshot decision = Snapshot(
++            AuthorizationLayer.DaprDenyByDefaultPolicy,
++            LayeredAuthorizationOutcomeCodes.Allowed,
++            retryable: false,
++            freshnessClass,
++            freshnessWatermark,
++            context,
++            actorSafeIdentifier);
++
++        return new LayeredFolderAuthorizationResult(
++            IsAllowed: true,
++            decision,
++            safeContext with { FreshnessWatermark = freshnessWatermark },
++            evaluatedLayers.ToArray());
++    }
++
++    private LayeredFolderAuthorizationResult Deny(
++        AuthorizationLayer terminalLayer,
++        string outcomeCode,
++        LayeredFolderAuthorizationContext context,
++        string actorSafeIdentifier,
++        IReadOnlyList<AuthorizationLayer> evaluatedLayers,
++        string freshnessClass = UnknownFreshness,
++        string? freshnessWatermark = null,
++        bool retryable = false)
++        => LayeredFolderAuthorizationResult.Denied(
++            Snapshot(
++                terminalLayer,
++                outcomeCode,
++                retryable,
++                freshnessClass,
++                freshnessWatermark,
++                context,
++                actorSafeIdentifier),
++            evaluatedLayers.ToArray());
++
++    private LayeredFolderAuthorizationDecisionSnapshot Snapshot(
++        AuthorizationLayer terminalLayer,
++        string outcomeCode,
++        bool retryable,
++        string freshnessClass,
++        string? freshnessWatermark,
++        LayeredFolderAuthorizationContext context,
++        string actorSafeIdentifier)
++        => new(
++            terminalLayer,
++            outcomeCode,
++            retryable,
++            freshnessClass,
++            freshnessWatermark,
++            context.CorrelationId,
++            context.TaskId,
++            actorSafeIdentifier,
++            context.OperationPolicy.PolicyClassCode,
++            NotRecordedTimingBucket,
++            clock.UtcNow);
++
++    private static bool IsClaimTransformEvidenceValid(LayeredFolderAuthorizationContext context)
++    {
++        EventStoreClaimTransformEvidence evidence = context.ClaimTransformEvidence;
++        return evidence.IsPresent
++            && !evidence.Malformed
++            && string.Equals(evidence.TenantId?.Trim(), context.AuthoritativeTenantId?.Trim(), StringComparison.Ordinal)
++            && string.Equals(evidence.PrincipalId?.Trim(), context.PrincipalId?.Trim(), StringComparison.Ordinal)
++            && evidence.HasPermissionFor(context.ActionToken);
++    }
++
++    private static bool HasClientControlledMismatch(
++        string? authoritativeValue,
++        IReadOnlyDictionary<string, string?>? comparisonValues)
++    {
++        if (comparisonValues is null || comparisonValues.Count == 0)
++        {
++            return false;
++        }
++
++        string authoritative = (authoritativeValue ?? string.Empty).Trim();
++        string? firstNonEmpty = null;
++        foreach (string? raw in comparisonValues.Values)
++        {
++            string value = (raw ?? string.Empty).Trim();
++            if (value.Length == 0)
++            {
++                continue;
++            }
++
++            if (!string.Equals(value, authoritative, StringComparison.Ordinal))
++            {
++                return true;
++            }
++
++            if (firstNonEmpty is not null && !string.Equals(value, firstNonEmpty, StringComparison.Ordinal))
++            {
++                return true;
++            }
++
++            firstNonEmpty ??= value;
++        }
++
++        return false;
++    }
++
++    private static string SafeActorIdentifier(LayeredFolderAuthorizationContext context)
++        => string.IsNullOrWhiteSpace(context.ActorSafeIdentifier)
++            ? "actor_present"
++            : context.ActorSafeIdentifier.Trim();
++
++    private static bool IsReservedTenant(string? tenantId)
++        => string.Equals(tenantId?.Trim(), "system", StringComparison.Ordinal);
++
++    private static string MapTenantAccessOutcome(TenantAccessOutcome outcome)
++        => outcome switch
++        {
++            TenantAccessOutcome.Allowed => LayeredAuthorizationOutcomeCodes.Allowed,
++            TenantAccessOutcome.StaleProjection => LayeredAuthorizationOutcomeCodes.TenantProjectionStale,
++            TenantAccessOutcome.UnavailableProjection => LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable,
++            TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict => LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
++            TenantAccessOutcome.UnknownTenant => LayeredAuthorizationOutcomeCodes.SafeNotFound,
++            _ => LayeredAuthorizationOutcomeCodes.TenantAccessDenied,
++        };
++
++    private static string MapFreshness(TenantProjectionFreshnessStatus freshnessStatus)
++        => freshnessStatus switch
++        {
++            TenantProjectionFreshnessStatus.Fresh => "fresh",
++            TenantProjectionFreshnessStatus.Stale => "stale",
++            TenantProjectionFreshnessStatus.Unavailable => "unavailable",
++            TenantProjectionFreshnessStatus.Future => "malformed",
++            _ => UnknownFreshness,
++        };
++}
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs b/src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs
+new file mode 100644
+index 0000000..242e312
+--- /dev/null
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs
+@@ -0,0 +1,54 @@
++namespace Hexalith.Folders.Authorization;
++
++public sealed record LayeredFolderOperationPolicy(
++    FolderOperationPolicyClass PolicyClass,
++    bool RequiresDaprPolicyEvidence,
++    bool AllowBoundedStaleTenantProjection,
++    bool AllowBoundedStaleFolderPermission,
++    string DaprTargetAppId,
++    string ServiceInvocationClass)
++{
++    public string PolicyClassCode => PolicyClass switch
++    {
++        FolderOperationPolicyClass.Mutation => "mutation",
++        FolderOperationPolicyClass.StrictRead => "strict_read",
++        FolderOperationPolicyClass.BoundedDiagnosticRead => "bounded_diagnostic_read",
++        _ => "mutation",
++    };
++
++    public static LayeredFolderOperationPolicy Mutation(
++        bool requiresDaprPolicyEvidence = false,
++        string daprTargetAppId = "folders",
++        string serviceInvocationClass = "domain_service")
++        => new(
++            FolderOperationPolicyClass.Mutation,
++            requiresDaprPolicyEvidence,
++            AllowBoundedStaleTenantProjection: false,
++            AllowBoundedStaleFolderPermission: false,
++            daprTargetAppId,
++            serviceInvocationClass);
++
++    public static LayeredFolderOperationPolicy StrictRead(
++        bool requiresDaprPolicyEvidence = false,
++        string daprTargetAppId = "folders",
++        string serviceInvocationClass = "query")
++        => new(
++            FolderOperationPolicyClass.StrictRead,
++            requiresDaprPolicyEvidence,
++            AllowBoundedStaleTenantProjection: false,
++            AllowBoundedStaleFolderPermission: false,
++            daprTargetAppId,
++            serviceInvocationClass);
++
++    public static LayeredFolderOperationPolicy BoundedDiagnosticRead(
++        bool requiresDaprPolicyEvidence = false,
++        string daprTargetAppId = "folders",
++        string serviceInvocationClass = "diagnostic_read")
++        => new(
++            FolderOperationPolicyClass.BoundedDiagnosticRead,
++            requiresDaprPolicyEvidence,
++            AllowBoundedStaleTenantProjection: true,
++            AllowBoundedStaleFolderPermission: true,
++            daprTargetAppId,
++            serviceInvocationClass);
++}
+diff --git a/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs b/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
+index a3f3bf9..78bdf99 100644
+--- a/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
++++ b/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
+@@ -27,9 +27,24 @@ public static class FoldersServiceCollectionExtensions
+     {
+         ArgumentNullException.ThrowIfNull(services);
+ 
++        services.AddFoldersLayeredAuthorization();
++        services.TryAddSingleton<EffectivePermissionsQueryHandler>();
++
++        return services;
++    }
++
++    public static IServiceCollection AddFoldersLayeredAuthorization(this IServiceCollection services)
++    {
++        ArgumentNullException.ThrowIfNull(services);
++
+         services.AddFoldersTenantAccess();
++        services.AddOptions<DaprPolicyEvidenceOptions>().BindConfiguration(DaprPolicyEvidenceOptions.SectionName);
+         services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
+-        services.TryAddSingleton<EffectivePermissionsQueryHandler>();
++        services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<DaprPolicyEvidenceOptions>>().Value);
++        services.TryAddSingleton<IFolderPermissionEvidenceProvider, EffectivePermissionsFolderPermissionEvidenceProvider>();
++        services.TryAddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
++        services.TryAddSingleton<IDaprPolicyEvidenceProvider, ConfigurationDaprPolicyEvidenceProvider>();
++        services.TryAddSingleton<LayeredFolderAuthorizationService>();
+ 
+         return services;
+     }
+diff --git a/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs b/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
+index ab36355..4c4d4f8 100644
+--- a/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
+@@ -23,14 +23,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+     {
+         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+         InMemoryFolderTenantAccessProjectionStore store = new();
+-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
++        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+ 
+         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+ 
+         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+-        problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
+-        problem.ProblemDetails.Extensions["code"].ShouldBe("unknown_tenant");
++        problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
++        problem.ProblemDetails.Extensions["code"].ShouldBe("safe_not_found");
+         // Defense in depth: the deny response must not leak tenant or projection metadata.
+         problem.ProblemDetails.Extensions.ShouldNotContainKey("tenantId");
+         problem.ProblemDetails.Extensions.ShouldNotContainKey("projectionWatermark");
+@@ -44,14 +44,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+         InMemoryFolderTenantAccessProjectionStore store = new();
+         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
++        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+ 
+         IResult result = await handler.ProcessAsync(CreateRequest(commandTenantId: "tenant-b", userId: "user-a"), TestContext.Current.CancellationToken);
+ 
+         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+         problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
+-        problem.ProblemDetails.Extensions["code"].ShouldBe("tenant_mismatch");
++        problem.ProblemDetails.Extensions["code"].ShouldBe("claim_transform_denied");
+     }
+ 
+     [Fact]
+@@ -59,14 +59,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+     {
+         FakeTenantContextAccessor tenantContext = new(authoritativeTenantId: null, principalId: "user-a");
+         InMemoryFolderTenantAccessProjectionStore store = new();
+-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
++        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+ 
+         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+ 
+         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+-        problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
+-        problem.ProblemDetails.Extensions["code"].ShouldBe("missing_authoritative_tenant");
++        problem.StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
++        problem.ProblemDetails.Extensions["code"].ShouldBe("authentication_denied");
+     }
+ 
+     [Fact]
+@@ -75,7 +75,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+         InMemoryFolderTenantAccessProjectionStore store = new();
+         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
++        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+         FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+ 
+         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+@@ -84,13 +84,35 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+         problem.StatusCode.ShouldBe(StatusCodes.Status501NotImplemented);
+     }
+ 
++    [Fact]
++    public async Task ProcessShouldNotInvokeDomainProcessorWhenFolderAclEvidenceDenies()
++    {
++        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
++        InMemoryFolderTenantAccessProjectionStore store = new();
++        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
++        CountingDomainProcessor processor = new();
++        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(
++            store,
++            new FixedFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
++                FolderPermissionEvidenceStatus.Denied,
++                "folder_watermark_v1")));
++        FoldersDomainServiceRequestHandler handler = new([processor], authorizer, tenantContext);
++
++        IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
++
++        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
++        problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
++        problem.ProblemDetails.Extensions["code"].ShouldBe("folder_acl_denied");
++        processor.ProcessCalls.ShouldBe(0);
++    }
++
+     [Fact]
+     public async Task ProcessShouldReturn500WhenMultipleDomainProcessorsAreRegistered()
+     {
+         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+         InMemoryFolderTenantAccessProjectionStore store = new();
+         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+-        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
++        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+         FoldersDomainServiceRequestHandler handler = new(
+             [new StubDomainProcessor(), new StubDomainProcessor()],
+             authorizer,
+@@ -102,8 +124,15 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+         problem.StatusCode.ShouldBe(StatusCodes.Status500InternalServerError);
+     }
+ 
+-    private static TenantAccessAuthorizer CreateAuthorizer(IFolderTenantAccessProjectionStore store)
+-        => new(store, new FixedUtcClock(Now), new TenantAccessOptions());
++    private static LayeredFolderAuthorizationService CreateAuthorizer(
++        IFolderTenantAccessProjectionStore store,
++        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
++        => new(
++            new TenantAccessAuthorizer(store, new FixedUtcClock(Now), new TenantAccessOptions()),
++            folderPermissionEvidenceProvider ?? new AllowingFolderPermissionEvidenceProvider(),
++            new AllowingEventStoreAuthorizationValidator(),
++            new ConfigurationDaprPolicyEvidenceProvider(new DaprPolicyEvidenceOptions()),
++            new FixedUtcClock(Now));
+ 
+     private static FolderTenantAccessProjection Projection(
+         string tenantId,
+@@ -154,4 +183,31 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+         public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+             => Task.FromResult(DomainResult.NoOp());
+     }
++
++    private sealed class CountingDomainProcessor : IDomainProcessor
++    {
++        public int ProcessCalls { get; private set; }
++
++        public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
++        {
++            ProcessCalls++;
++            return Task.FromResult(DomainResult.NoOp());
++        }
++    }
++
++    private sealed class AllowingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
++    {
++        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
++            FolderPermissionEvidenceRequest request,
++            CancellationToken cancellationToken = default)
++            => Task.FromResult(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++    }
++
++    private sealed class FixedFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult result) : IFolderPermissionEvidenceProvider
++    {
++        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
++            FolderPermissionEvidenceRequest request,
++            CancellationToken cancellationToken = default)
++            => Task.FromResult(result);
++    }
+ }
+diff --git a/tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs b/tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs
+new file mode 100644
+index 0000000..82d2ce6
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs
+@@ -0,0 +1,81 @@
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Server;
++using Microsoft.AspNetCore.Http;
++using Microsoft.AspNetCore.Http.HttpResults;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++public sealed class SafeAuthorizationDenialMappingTests
++{
++    private static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
++
++    [Theory]
++    [InlineData("authentication_denied", 401, "authentication_failure", "no_action", false)]
++    [InlineData("claim_transform_denied", 403, "tenant_access_denied", "no_action", false)]
++    [InlineData("tenant_access_denied", 403, "tenant_access_denied", "no_action", false)]
++    [InlineData("safe_not_found", 404, "not_found_to_caller", "no_action", false)]
++    [InlineData("folder_acl_denied", 404, "not_found_to_caller", "no_action", false)]
++    [InlineData("folder_acl_unavailable", 503, "read_model_unavailable", "retry", true)]
++    [InlineData("tenant_projection_unavailable", 503, "read_model_unavailable", "retry", true)]
++    [InlineData("dapr_policy_denied", 503, "policy_evidence_unavailable", "retry", true)]
++    public void MapperShouldReturnSafeProblemDetailsFromDecisionSnapshot(
++        string outcomeCode,
++        int expectedStatusCode,
++        string expectedCategory,
++        string expectedClientAction,
++        bool retryable)
++    {
++        LayeredFolderAuthorizationResult result = LayeredFolderAuthorizationResult.Denied(new LayeredFolderAuthorizationDecisionSnapshot(
++            TerminalLayer: AuthorizationLayer.FolderAcl,
++            OutcomeCode: outcomeCode,
++            Retryable: retryable,
++            FreshnessClass: "unknown",
++            FreshnessWatermark: null,
++            CorrelationId: "corr-safe",
++            TaskId: "task-safe",
++            ActorSafeIdentifier: "actor-safe",
++            OperationPolicyClass: "mutation",
++            TimingBucket: "not_recorded",
++            DecidedAt: Now));
++
++        IResult mapped = FolderAuthorizationDenialMapper.ToHttpResult(result);
++
++        ProblemHttpResult problem = mapped.ShouldBeOfType<ProblemHttpResult>();
++        problem.StatusCode.ShouldBe(expectedStatusCode);
++        problem.ProblemDetails.Extensions["category"].ShouldBe(expectedCategory);
++        problem.ProblemDetails.Extensions["code"].ShouldBe(outcomeCode);
++        problem.ProblemDetails.Extensions["clientAction"].ShouldBe(expectedClientAction);
++        problem.ProblemDetails.Extensions["retryable"].ShouldBe(retryable);
++        problem.ProblemDetails.Extensions["correlationId"].ShouldBe("corr-safe");
++        problem.ProblemDetails.Extensions["taskId"].ShouldBe("task-safe");
++        problem.ProblemDetails.Extensions.ShouldNotContainKey("tenantId");
++        problem.ProblemDetails.Extensions.ShouldNotContainKey("folderId");
++        problem.ProblemDetails.Extensions.ShouldNotContainKey("exception");
++    }
++
++    [Fact]
++    public void MapperShouldNotLeakProtectedIdentifiersInBodyExtensions()
++    {
++        LayeredFolderAuthorizationResult result = LayeredFolderAuthorizationResult.Denied(new LayeredFolderAuthorizationDecisionSnapshot(
++            TerminalLayer: AuthorizationLayer.FolderAcl,
++            OutcomeCode: LayeredAuthorizationOutcomeCodes.FolderAclDenied,
++            Retryable: false,
++            FreshnessClass: "fresh",
++            FreshnessWatermark: "folder-secret-watermark",
++            CorrelationId: "corr-safe",
++            TaskId: "task-safe",
++            ActorSafeIdentifier: "actor-safe",
++            OperationPolicyClass: "mutation",
++            TimingBucket: "not_recorded",
++            DecidedAt: Now));
++
++        ProblemHttpResult problem = FolderAuthorizationDenialMapper.ToHttpResult(result).ShouldBeOfType<ProblemHttpResult>();
++        string body = string.Join("|", problem.ProblemDetails.Extensions.Select(static pair => $"{pair.Key}:{pair.Value}"));
++
++        body.ShouldNotContain("folder-secret-watermark", Case.Sensitive);
++        body.ShouldNotContain("tenant-secret", Case.Sensitive);
++        body.ShouldNotContain("folder-secret", Case.Sensitive);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs b/tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs
+new file mode 100644
+index 0000000..66a5a9c
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Authorization/FolderPermissionEvidenceProviderTests.cs
+@@ -0,0 +1,120 @@
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Authorization;
++
++public sealed class FolderPermissionEvidenceProviderTests
++{
++    private static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
++
++    [Fact]
++    public async Task ProviderShouldAllowSupportedActionFromEffectivePermissionEvidence()
++    {
++        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
++            ReadModel(Snapshot(
++                revocationFreshnessEstablished: true,
++                stale: false,
++                EffectivePermissionsTestSupport.FolderGrant("read_metadata"))),
++            new FixedUtcClock(Now));
++
++        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(Request(), TestContext.Current.CancellationToken);
++
++        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
++        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.Allowed);
++        result.FreshnessWatermark.ShouldBe("folder_watermark_v1");
++        result.FreshnessClass.ShouldBe("fresh");
++    }
++
++    [Fact]
++    public async Task ProviderShouldFailClosedWhenRevocationFreshnessIsUnprovenForStrictOperation()
++    {
++        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
++            ReadModel(Snapshot(
++                revocationFreshnessEstablished: false,
++                stale: false,
++                EffectivePermissionsTestSupport.FolderGrant("read_metadata"))),
++            new FixedUtcClock(Now));
++
++        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(Request(), TestContext.Current.CancellationToken);
++
++        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Stale);
++        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.FolderAclStale);
++    }
++
++    [Fact]
++    public async Task ProviderShouldAllowBoundedStaleOnlyWhenPolicyExplicitlyAllowsIt()
++    {
++        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
++            ReadModel(Snapshot(
++                revocationFreshnessEstablished: false,
++                stale: true,
++                EffectivePermissionsTestSupport.FolderGrant("read_metadata"))),
++            new FixedUtcClock(Now));
++
++        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(
++            Request(allowBoundedStale: true, policyClass: FolderOperationPolicyClass.BoundedDiagnosticRead),
++            TestContext.Current.CancellationToken);
++
++        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
++        result.FreshnessClass.ShouldBe("bounded_stale");
++    }
++
++    [Fact]
++    public async Task ProviderShouldReturnSafeNotFoundWithoutEchoingMissingFolderScope()
++    {
++        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
++            new InMemoryEffectivePermissionsReadModel(),
++            new FixedUtcClock(Now));
++
++        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(
++            Request(operationScope: "folder-secret-victim"),
++            TestContext.Current.CancellationToken);
++
++        result.Status.ShouldBe(FolderPermissionEvidenceStatus.NotFoundSafe);
++        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.SafeNotFound);
++        result.FreshnessWatermark.ShouldBeNull();
++    }
++
++    private static FolderPermissionEvidenceRequest Request(
++        string operationScope = "folder-a",
++        bool allowBoundedStale = false,
++        FolderOperationPolicyClass policyClass = FolderOperationPolicyClass.Mutation)
++        => new(
++            ManagedTenantId: "tenant-a",
++            PrincipalId: "user-a",
++            ActorSafeIdentifier: "actor-user-a",
++            ActionToken: "read_metadata",
++            OperationScope: operationScope,
++            CorrelationId: "corr-a",
++            TaskId: "task-a",
++            OperationPolicyClass: policyClass,
++            AllowBoundedStale: allowBoundedStale);
++
++    private static InMemoryEffectivePermissionsReadModel ReadModel(EffectivePermissionsReadModelSnapshot snapshot)
++    {
++        InMemoryEffectivePermissionsReadModel readModel = new();
++        readModel.Save(snapshot);
++        return readModel;
++    }
++
++    private static EffectivePermissionsReadModelSnapshot Snapshot(
++        bool revocationFreshnessEstablished,
++        bool stale,
++        params EffectivePermissionEvidenceRow[] rows)
++        => new(
++            ManagedTenantId: "tenant-a",
++            OrganizationId: "organization-a",
++            FolderId: "folder-a",
++            LifecycleState: EffectivePermissionsFolderLifecycleState.Active,
++            EvidenceRows: rows,
++            Freshness: new EffectivePermissionsFreshness(
++                ReadConsistency: "read_your_writes",
++                ObservedAt: Now,
++                ProjectionWatermark: "folder_watermark_v1",
++                Stale: stale,
++                ReasonCode: stale ? "bounded_stale" : null),
++            RevocationFreshnessEstablished: revocationFreshnessEstablished,
++            TaskScope: null);
++}
+diff --git a/tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs b/tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
+new file mode 100644
+index 0000000..2f3ca3a
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
+@@ -0,0 +1,476 @@
++using System.Text.Json;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Authorization;
++
++public sealed class LayeredFolderAuthorizationServiceTests
++{
++    private static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
++
++    [Fact]
++    public async Task AuthorizeShouldEvaluateAllowedPathInCanonicalOrder()
++    {
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++        RecordingEventStoreAuthorizationValidator validator = new(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
++        RecordingDaprPolicyEvidenceProvider dapr = new(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1"));
++        LayeredFolderAuthorizationService service = CreateService(
++            TenantStore("tenant-a", "user-a"),
++            folderEvidence,
++            validator,
++            dapr);
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeTrue();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.DaprDenyByDefaultPolicy);
++        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.Allowed);
++        result.EvaluatedLayers.ShouldBe(AuthorizationOrder.LayeredFolderAuthorization);
++        result.AllowedContext.ShouldNotBeNull();
++        result.AllowedContext.AuthoritativeTenantId.ShouldBe("tenant-a");
++        result.AllowedContext.ActorSafeIdentifier.ShouldBe("actor-user-a");
++        result.AllowedContext.ActionToken.ShouldBe("read_metadata");
++        result.AllowedContext.CorrelationId.ShouldBe("corr-a");
++        result.AllowedContext.TaskId.ShouldBe("task-a");
++        result.AllowedContext.PolicyLayers.ShouldBe(AuthorizationOrder.LayeredFolderAuthorization);
++        folderEvidence.Requests.Count.ShouldBe(1);
++        validator.Requests.Count.ShouldBe(1);
++        dapr.Requests.Count.ShouldBe(1);
++    }
++
++    [Fact]
++    public async Task MissingJwtEvidenceShouldDenyBeforeTenantProjectionOrProtectedResourceTouch()
++    {
++        RecordingTenantAccessProjectionStore tenantStore = new();
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++        RecordingEventStoreAuthorizationValidator validator = new(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
++        RecordingDaprPolicyEvidenceProvider dapr = new(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1"));
++        LayeredFolderAuthorizationService service = CreateService(tenantStore, folderEvidence, validator, dapr);
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
++            Context(authoritativeTenantId: null),
++            TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.JwtValidation);
++        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.AuthenticationDenied);
++        result.EvaluatedLayers.ShouldBe([AuthorizationLayer.JwtValidation]);
++        tenantStore.GetCalls.ShouldBe(0);
++        folderEvidence.Requests.Count.ShouldBe(0);
++        validator.Requests.Count.ShouldBe(0);
++        dapr.Requests.Count.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task ClaimTransformMismatchShouldDenyBeforeTenantProjectionOrFolderEvidence()
++    {
++        RecordingTenantAccessProjectionStore tenantStore = TenantStore("tenant-a", "user-a");
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++        LayeredFolderAuthorizationService service = CreateService(
++            tenantStore,
++            folderEvidence,
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
++            Context(claimTransformEvidence: EventStoreClaimTransformEvidence.Allowed(
++                tenantId: "tenant-b",
++                principalId: "user-a",
++                permissions: ["read_metadata"])),
++            TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.EventStoreClaimTransform);
++        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.ClaimTransformDenied);
++        result.EvaluatedLayers.ShouldBe([AuthorizationLayer.JwtValidation, AuthorizationLayer.EventStoreClaimTransform]);
++        tenantStore.GetCalls.ShouldBe(0);
++        folderEvidence.Requests.Count.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task ClientControlledTenantMismatchShouldDenyBeforeTenantProjectionOrFolderEvidence()
++    {
++        RecordingTenantAccessProjectionStore tenantStore = TenantStore("tenant-a", "user-a");
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++        LayeredFolderAuthorizationService service = CreateService(
++            tenantStore,
++            folderEvidence,
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
++            Context(clientTenantValues: new Dictionary<string, string?>
++            {
++                ["route_tenant_id"] = "tenant-a",
++                ["header_tenant_id"] = "tenant-secret-victim",
++            }),
++            TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.EventStoreClaimTransform);
++        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.ClaimTransformDenied);
++        tenantStore.GetCalls.ShouldBe(0);
++        folderEvidence.Requests.Count.ShouldBe(0);
++    }
++
++    [Theory]
++    [InlineData(TenantAccessOutcome.DisabledTenant, "tenant_access_denied")]
++    [InlineData(TenantAccessOutcome.StaleProjection, "tenant_projection_stale")]
++    [InlineData(TenantAccessOutcome.UnavailableProjection, "tenant_projection_unavailable")]
++    [InlineData(TenantAccessOutcome.MalformedEvidence, "authorization_evidence_malformed")]
++    [InlineData(TenantAccessOutcome.ReplayConflict, "authorization_evidence_malformed")]
++    [InlineData(TenantAccessOutcome.UnknownTenant, "safe_not_found")]
++    public async Task TenantAccessFailureShouldShortCircuitBeforeFolderEvidence(
++        TenantAccessOutcome outcome,
++        string expectedOutcomeCode)
++    {
++        RecordingTenantAccessProjectionStore tenantStore = outcome switch
++        {
++            TenantAccessOutcome.UnavailableProjection => new RecordingTenantAccessProjectionStore(throwOnGet: true),
++            TenantAccessOutcome.UnknownTenant => new RecordingTenantAccessProjectionStore(),
++            _ => TenantStoreForOutcome(outcome),
++        };
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++        LayeredFolderAuthorizationService service = CreateService(
++            tenantStore,
++            folderEvidence,
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.TenantAccessFreshness);
++        result.Decision.OutcomeCode.ShouldBe(expectedOutcomeCode);
++        folderEvidence.Requests.Count.ShouldBe(0);
++    }
++
++    [Theory]
++    [InlineData(FolderPermissionEvidenceStatus.Denied, "folder_acl_denied", false)]
++    [InlineData(FolderPermissionEvidenceStatus.NotFoundSafe, "safe_not_found", false)]
++    [InlineData(FolderPermissionEvidenceStatus.Stale, "folder_acl_stale", false)]
++    [InlineData(FolderPermissionEvidenceStatus.Unavailable, "folder_acl_unavailable", true)]
++    [InlineData(FolderPermissionEvidenceStatus.Malformed, "authorization_evidence_malformed", false)]
++    public async Task FolderPermissionFailureShouldShortCircuitBeforeValidatorAndDapr(
++        FolderPermissionEvidenceStatus status,
++        string expectedOutcomeCode,
++        bool expectedRetryable)
++    {
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.FromStatus(status, "folder_watermark_v1"));
++        RecordingEventStoreAuthorizationValidator validator = new(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
++        RecordingDaprPolicyEvidenceProvider dapr = new(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1"));
++        LayeredFolderAuthorizationService service = CreateService(TenantStore("tenant-a", "user-a"), folderEvidence, validator, dapr);
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.FolderAcl);
++        result.Decision.OutcomeCode.ShouldBe(expectedOutcomeCode);
++        result.Decision.Retryable.ShouldBe(expectedRetryable);
++        validator.Requests.Count.ShouldBe(0);
++        dapr.Requests.Count.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task ValidatorDenialShouldShortCircuitBeforeDaprPolicy()
++    {
++        RecordingDaprPolicyEvidenceProvider dapr = new(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1"));
++        LayeredFolderAuthorizationService service = CreateService(
++            TenantStore("tenant-a", "user-a"),
++            new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1")),
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Denied()),
++            dapr);
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.EventStoreValidator);
++        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied);
++        dapr.Requests.Count.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task RequiredDaprEvidenceShouldFailClosedWhenUnavailable()
++    {
++        LayeredFolderAuthorizationService service = CreateService(
++            TenantStore("tenant-a", "user-a"),
++            new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1")),
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Unavailable("dapr_policy_unavailable")));
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
++            Context(operationPolicy: LayeredFolderOperationPolicy.Mutation(requiresDaprPolicyEvidence: true)),
++            TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeFalse();
++        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.DaprDenyByDefaultPolicy);
++        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.DaprPolicyDenied);
++        result.Decision.Retryable.ShouldBeTrue();
++    }
++
++    [Fact]
++    public async Task BoundedDiagnosticReadShouldCarryStaleFreshnessWithoutFailingOpenForStrictReads()
++    {
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed(
++            freshnessWatermark: "folder_stale_watermark_v1",
++            freshnessClass: "bounded_stale"));
++        LayeredFolderAuthorizationService service = CreateService(
++            TenantStore("tenant-a", "user-a", lastEventTimestamp: Now.AddMinutes(-2)),
++            folderEvidence,
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
++            Context(operationPolicy: LayeredFolderOperationPolicy.BoundedDiagnosticRead()),
++            TestContext.Current.CancellationToken);
++
++        result.IsAllowed.ShouldBeTrue();
++        result.Decision.FreshnessClass.ShouldBe("bounded_stale");
++        result.AllowedContext.ShouldNotBeNull();
++        result.AllowedContext.FreshnessWatermark.ShouldBe("folder_stale_watermark_v1");
++    }
++
++    [Fact]
++    public async Task DecisionsShouldNotBeReusedAcrossTenantsPrincipalsTasksActionsOrFreshnessWatermarks()
++    {
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
++        LayeredFolderAuthorizationService service = CreateService(
++            TenantStore("tenant-a", "user-a", "tenant-b", "user-b"),
++            folderEvidence,
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
++
++        LayeredFolderAuthorizationResult first = await service.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
++        LayeredFolderAuthorizationResult second = await service.AuthorizeAsync(
++            Context(
++                authoritativeTenantId: "tenant-b",
++                principalId: "user-b",
++                actorSafeIdentifier: "actor-user-b",
++                actionToken: "query_status",
++                taskId: "task-b",
++                claimTransformEvidence: EventStoreClaimTransformEvidence.Allowed("tenant-b", "user-b", ["query_status"])),
++            TestContext.Current.CancellationToken);
++
++        first.IsAllowed.ShouldBeTrue();
++        second.IsAllowed.ShouldBeTrue();
++        folderEvidence.Requests.Count.ShouldBe(2);
++        folderEvidence.Requests[0].ManagedTenantId.ShouldBe("tenant-a");
++        folderEvidence.Requests[1].ManagedTenantId.ShouldBe("tenant-b");
++        folderEvidence.Requests[0].ActionToken.ShouldBe("read_metadata");
++        folderEvidence.Requests[1].ActionToken.ShouldBe("query_status");
++        folderEvidence.Requests[0].TaskId.ShouldBe("task-a");
++        folderEvidence.Requests[1].TaskId.ShouldBe("task-b");
++    }
++
++    [Fact]
++    public async Task DeniedDecisionSnapshotShouldRemainMetadataOnly()
++    {
++        string[] forbiddenValues =
++        [
++            "tenant-secret-victim",
++            "folder-secret-victim",
++            "Bearer eyJ.secret",
++            "user@example.invalid",
++            "repo-secret-name",
++            "validator raw exception text",
++        ];
++        LayeredFolderAuthorizationService service = CreateService(
++            TenantStore("tenant-a", "user-a"),
++            new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
++                FolderPermissionEvidenceStatus.Denied,
++                "folder_watermark_v1")),
++            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Denied()),
++            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Denied("folders")));
++
++        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
++            Context(
++                operationScope: "folder-secret-victim",
++                actorSafeIdentifier: "actor-safe-user-a",
++                clientTenantValues: new Dictionary<string, string?> { ["header_tenant"] = "tenant-a" },
++                clientPrincipalValues: new Dictionary<string, string?> { ["body_email"] = "user@example.invalid" }),
++            TestContext.Current.CancellationToken);
++
++        string json = JsonSerializer.Serialize(result);
++        foreach (string forbidden in forbiddenValues)
++        {
++            json.ShouldNotContain(forbidden, Case.Sensitive);
++        }
++
++        result.Decision.CorrelationId.ShouldBe("corr-a");
++        result.Decision.TaskId.ShouldBe("task-a");
++        result.Decision.ActorSafeIdentifier.ShouldBe("actor-safe-user-a");
++    }
++
++    private static LayeredFolderAuthorizationService CreateService(
++        IFolderTenantAccessProjectionStore tenantStore,
++        IFolderPermissionEvidenceProvider folderEvidence,
++        IEventStoreAuthorizationValidator validator,
++        IDaprPolicyEvidenceProvider dapr)
++        => new(
++            new TenantAccessAuthorizer(
++                tenantStore,
++                new FixedUtcClock(Now),
++                new TenantAccessOptions
++                {
++                    MutationFreshnessBudget = TimeSpan.FromMinutes(1),
++                    DiagnosticStalenessBudget = TimeSpan.FromMinutes(5),
++                }),
++            folderEvidence,
++            validator,
++            dapr,
++            new FixedUtcClock(Now));
++
++    private static LayeredFolderAuthorizationContext Context(
++        string? authoritativeTenantId = "tenant-a",
++        string principalId = "user-a",
++        string actorSafeIdentifier = "actor-user-a",
++        string actionToken = "read_metadata",
++        string? operationScope = "folder-a",
++        string? taskId = "task-a",
++        LayeredFolderOperationPolicy? operationPolicy = null,
++        EventStoreClaimTransformEvidence? claimTransformEvidence = null,
++        IReadOnlyDictionary<string, string?>? clientTenantValues = null,
++        IReadOnlyDictionary<string, string?>? clientPrincipalValues = null)
++        => new(
++            AuthoritativeTenantId: authoritativeTenantId,
++            PrincipalId: principalId,
++            ActorSafeIdentifier: actorSafeIdentifier,
++            ActionToken: actionToken,
++            OperationPolicy: operationPolicy ?? LayeredFolderOperationPolicy.Mutation(),
++            ClaimTransformEvidence: claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(
++                tenantId: authoritativeTenantId,
++                principalId: principalId,
++                permissions: [actionToken]),
++            OperationScope: operationScope,
++            CorrelationId: "corr-a",
++            TaskId: taskId,
++            ClientControlledTenantValues: clientTenantValues,
++            ClientControlledPrincipalValues: clientPrincipalValues);
++
++    private static RecordingTenantAccessProjectionStore TenantStore(params string[] tenantPrincipalPairs)
++    {
++        RecordingTenantAccessProjectionStore store = new();
++        for (int i = 0; i < tenantPrincipalPairs.Length; i += 2)
++        {
++            store.Save(Projection(tenantPrincipalPairs[i], tenantPrincipalPairs[i + 1], Now.AddSeconds(-30), enabled: true));
++        }
++
++        return store;
++    }
++
++    private static RecordingTenantAccessProjectionStore TenantStore(
++        string tenantId,
++        string principalId,
++        DateTimeOffset? lastEventTimestamp = null)
++    {
++        RecordingTenantAccessProjectionStore store = new();
++        store.Save(Projection(tenantId, principalId, lastEventTimestamp ?? Now.AddSeconds(-30), enabled: true));
++        return store;
++    }
++
++    private static RecordingTenantAccessProjectionStore TenantStoreForOutcome(TenantAccessOutcome outcome)
++    {
++        RecordingTenantAccessProjectionStore store = new();
++        FolderTenantAccessProjection projection = outcome switch
++        {
++            TenantAccessOutcome.DisabledTenant => Projection("tenant-a", "user-a", Now.AddSeconds(-30), enabled: false),
++            TenantAccessOutcome.StaleProjection => Projection("tenant-a", "user-a", Now.AddMinutes(-2), enabled: true),
++            TenantAccessOutcome.MalformedEvidence => Projection("tenant-a", "user-a", null, enabled: true, malformed: true),
++            TenantAccessOutcome.ReplayConflict => Projection("tenant-a", "user-a", Now.AddSeconds(-30), enabled: true, replayConflict: true),
++            _ => Projection("tenant-a", "user-a", Now.AddSeconds(-30), enabled: true),
++        };
++        store.Save(projection);
++        return store;
++    }
++
++    private static FolderTenantAccessProjection Projection(
++        string tenantId,
++        string principalId,
++        DateTimeOffset? lastEventTimestamp,
++        bool enabled,
++        bool malformed = false,
++        bool replayConflict = false)
++        => new()
++        {
++            TenantId = tenantId,
++            Enabled = enabled,
++            MalformedEvidence = malformed,
++            ReplayConflict = replayConflict,
++            Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
++            {
++                [principalId] = new(principalId, "Member"),
++            },
++            Watermark = 7,
++            ProjectionWatermark = $"{tenantId}:7",
++            LastEventTimestamp = lastEventTimestamp,
++        };
++
++    private sealed class RecordingTenantAccessProjectionStore(bool throwOnGet = false) : IFolderTenantAccessProjectionStore
++    {
++        private readonly Dictionary<string, FolderTenantAccessProjection> _projections = new(StringComparer.Ordinal);
++
++        public int GetCalls { get; private set; }
++
++        public Task<FolderTenantAccessProjection?> GetAsync(string tenantId, CancellationToken cancellationToken = default)
++        {
++            GetCalls++;
++            if (throwOnGet)
++            {
++                throw new InvalidOperationException("tenant projection unavailable");
++            }
++
++            return Task.FromResult(_projections.TryGetValue(tenantId, out FolderTenantAccessProjection? projection)
++                ? projection
++                : null);
++        }
++
++        public void Save(FolderTenantAccessProjection projection) => _projections[projection.TenantId] = projection;
++
++        public Task SaveAsync(FolderTenantAccessProjection projection, CancellationToken cancellationToken = default)
++        {
++            Save(projection);
++            return Task.CompletedTask;
++        }
++    }
++
++    private sealed class RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult result) : IFolderPermissionEvidenceProvider
++    {
++        public List<FolderPermissionEvidenceRequest> Requests { get; } = [];
++
++        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
++            FolderPermissionEvidenceRequest request,
++            CancellationToken cancellationToken = default)
++        {
++            Requests.Add(request);
++            return Task.FromResult(result);
++        }
++    }
++
++    private sealed class RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult result) : IEventStoreAuthorizationValidator
++    {
++        public List<EventStoreAuthorizationValidationRequest> Requests { get; } = [];
++
++        public Task<EventStoreAuthorizationValidationResult> ValidateAsync(
++            EventStoreAuthorizationValidationRequest request,
++            CancellationToken cancellationToken = default)
++        {
++            Requests.Add(request);
++            return Task.FromResult(result);
++        }
++    }
++
++    private sealed class RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult result) : IDaprPolicyEvidenceProvider
++    {
++        public List<DaprPolicyEvidenceRequest> Requests { get; } = [];
++
++        public Task<DaprPolicyEvidenceResult> GetEvidenceAsync(
++            DaprPolicyEvidenceRequest request,
++            CancellationToken cancellationToken = default)
++        {
++            Requests.Add(request);
++            return Task.FromResult(result);
++        }
++    }
++}

@@ -59,13 +59,14 @@ public sealed class LayeredFolderAuthorizationService(
         }
 
         evaluatedLayers.Add(AuthorizationLayer.TenantAccessFreshness);
+        string authoritativeTenantId = context.AuthoritativeTenantId.Trim();
+        TenantAccessAuthorizationContext tenantAccessContext = new(
+            authoritativeTenantId,
+            context.PrincipalId,
+            RequestedTenantId: authoritativeTenantId);
         TenantAccessAuthorizationResult tenantAccess = context.OperationPolicy.AllowBoundedStaleTenantProjection
-            ? await tenantAccessAuthorizer.AuthorizeDiagnosticReadAsync(
-                new TenantAccessAuthorizationContext(context.AuthoritativeTenantId, context.PrincipalId, RequestedTenantId: null),
-                cancellationToken).ConfigureAwait(false)
-            : await tenantAccessAuthorizer.AuthorizeMutationAsync(
-                new TenantAccessAuthorizationContext(context.AuthoritativeTenantId, context.PrincipalId, RequestedTenantId: null),
-                cancellationToken).ConfigureAwait(false);
+            ? await tenantAccessAuthorizer.AuthorizeDiagnosticReadAsync(tenantAccessContext, cancellationToken).ConfigureAwait(false)
+            : await tenantAccessAuthorizer.AuthorizeMutationAsync(tenantAccessContext, cancellationToken).ConfigureAwait(false);
 
         if (!tenantAccess.IsAllowed)
         {
@@ -81,7 +82,19 @@ public sealed class LayeredFolderAuthorizationService(
                     or TenantAccessOutcome.UnavailableProjection);
         }
 
-        string managedTenantId = tenantAccess.TenantId ?? context.AuthoritativeTenantId.Trim();
+        if (tenantAccess.TenantId is not null
+            && !string.Equals(tenantAccess.TenantId.Trim(), authoritativeTenantId, StringComparison.Ordinal))
+        {
+            return Deny(
+                AuthorizationLayer.TenantAccessFreshness,
+                LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                context,
+                actorSafeIdentifier,
+                evaluatedLayers,
+                freshnessClass: "malformed");
+        }
+
+        string managedTenantId = authoritativeTenantId;
 
         evaluatedLayers.Add(AuthorizationLayer.FolderAcl);
         if (!EffectivePermissionsActionCatalog.IsSupported(context.ActionToken))
@@ -129,16 +142,17 @@ public sealed class LayeredFolderAuthorizationService(
                 folderEvidence.Retryable);
         }
 
-        string? freshnessWatermark = folderEvidence.FreshnessWatermark ?? tenantAccess.ProjectionWatermark;
-        string freshnessClass = folderEvidence.FreshnessClass;
-        LayeredFolderAuthorizationAllowedContext safeContext = new(
+        string? folderWatermark = folderEvidence.FreshnessWatermark ?? tenantAccess.ProjectionWatermark;
+        string folderFreshnessClass = folderEvidence.FreshnessClass;
+
+        LayeredFolderAuthorizationAllowedContext validatorContext = new(
             managedTenantId,
             actorSafeIdentifier,
             context.ActionToken,
             context.OperationScope,
             context.CorrelationId,
             context.TaskId,
-            freshnessWatermark,
+            folderWatermark,
             AuthorizationOrder.LayeredFolderAuthorization);
 
         evaluatedLayers.Add(AuthorizationLayer.EventStoreValidator);
@@ -146,7 +160,7 @@ public sealed class LayeredFolderAuthorizationService(
         try
         {
             validatorResult = await eventStoreAuthorizationValidator.ValidateAsync(
-                new EventStoreAuthorizationValidationRequest(safeContext, context.OperationPolicy.PolicyClassCode),
+                new EventStoreAuthorizationValidationRequest(validatorContext, context.OperationPolicy.PolicyClassCode),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -167,7 +181,10 @@ public sealed class LayeredFolderAuthorizationService(
                 validatorResult.Retryable);
         }
 
-        freshnessWatermark ??= validatorResult.FreshnessWatermark;
+        string? watermarkAfterValidator = folderWatermark ?? validatorResult.FreshnessWatermark;
+        string freshnessClassAfterValidator = validatorResult.FreshnessWatermark is null
+            ? folderFreshnessClass
+            : MergeFreshnessClass(folderFreshnessClass, validatorResult.FreshnessClass);
 
         evaluatedLayers.Add(AuthorizationLayer.DaprDenyByDefaultPolicy);
         DaprPolicyEvidenceResult daprEvidence;
@@ -200,21 +217,42 @@ public sealed class LayeredFolderAuthorizationService(
                 daprEvidence.Retryable);
         }
 
-        freshnessWatermark ??= daprEvidence.FreshnessWatermark;
+        string? finalWatermark = watermarkAfterValidator ?? daprEvidence.FreshnessWatermark;
+        string finalFreshnessClass = daprEvidence.FreshnessWatermark is null
+            ? freshnessClassAfterValidator
+            : MergeFreshnessClass(freshnessClassAfterValidator, daprEvidence.FreshnessClass);
+
+        LayeredFolderAuthorizationAllowedContext safeContext = validatorContext with { FreshnessWatermark = finalWatermark };
+
         LayeredFolderAuthorizationDecisionSnapshot decision = Snapshot(
             AuthorizationLayer.DaprDenyByDefaultPolicy,
             LayeredAuthorizationOutcomeCodes.Allowed,
             retryable: false,
-            freshnessClass,
-            freshnessWatermark,
+            finalFreshnessClass,
+            finalWatermark,
             context,
             actorSafeIdentifier);
 
         return new LayeredFolderAuthorizationResult(
             IsAllowed: true,
             decision,
-            safeContext with { FreshnessWatermark = freshnessWatermark },
+            safeContext,
             evaluatedLayers.ToArray());
+    }
+
+    private static string MergeFreshnessClass(string current, string incoming)
+    {
+        if (string.Equals(current, "fresh", StringComparison.Ordinal))
+        {
+            return incoming;
+        }
+
+        if (string.Equals(incoming, "fresh", StringComparison.Ordinal))
+        {
+            return current;
+        }
+
+        return current;
     }
 
     private LayeredFolderAuthorizationResult Deny(
@@ -278,13 +316,18 @@ public sealed class LayeredFolderAuthorizationService(
         }
 
         string authoritative = (authoritativeValue ?? string.Empty).Trim();
-        string? firstNonEmpty = null;
-        foreach (string? raw in comparisonValues.Values)
+        string? firstObserved = null;
+        foreach (KeyValuePair<string, string?> entry in comparisonValues)
         {
-            string value = (raw ?? string.Empty).Trim();
-            if (value.Length == 0)
+            if (entry.Value is null)
             {
                 continue;
+            }
+
+            string value = entry.Value.Trim();
+            if (value.Length == 0)
+            {
+                return true;
             }
 
             if (!string.Equals(value, authoritative, StringComparison.Ordinal))
@@ -292,12 +335,12 @@ public sealed class LayeredFolderAuthorizationService(
                 return true;
             }
 
-            if (firstNonEmpty is not null && !string.Equals(value, firstNonEmpty, StringComparison.Ordinal))
+            if (firstObserved is not null && !string.Equals(value, firstObserved, StringComparison.Ordinal))
             {
                 return true;
             }
 
-            firstNonEmpty ??= value;
+            firstObserved ??= value;
         }
 
         return false;
@@ -309,7 +352,7 @@ public sealed class LayeredFolderAuthorizationService(
             : context.ActorSafeIdentifier.Trim();
 
     private static bool IsReservedTenant(string? tenantId)
-        => string.Equals(tenantId?.Trim(), "system", StringComparison.Ordinal);
+        => string.Equals(tenantId?.Trim(), "system", StringComparison.OrdinalIgnoreCase);
 
     private static string MapTenantAccessOutcome(TenantAccessOutcome outcome)
         => outcome switch

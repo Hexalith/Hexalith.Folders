@@ -5,6 +5,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -24,7 +25,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
         LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
-        FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
@@ -45,7 +46,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         InMemoryFolderTenantAccessProjectionStore store = new();
         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
         LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
-        FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest(commandTenantId: "tenant-b", userId: "user-a"), TestContext.Current.CancellationToken);
 
@@ -60,7 +61,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         FakeTenantContextAccessor tenantContext = new(authoritativeTenantId: null, principalId: "user-a");
         InMemoryFolderTenantAccessProjectionStore store = new();
         LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
-        FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
@@ -76,7 +77,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         InMemoryFolderTenantAccessProjectionStore store = new();
         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
         LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
-        FoldersDomainServiceRequestHandler handler = new([], authorizer, tenantContext);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
@@ -96,7 +97,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             new FixedFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
                 FolderPermissionEvidenceStatus.Denied,
                 "folder_watermark_v1")));
-        FoldersDomainServiceRequestHandler handler = new([processor], authorizer, tenantContext);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([processor], authorizer, tenantContext);
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
@@ -113,7 +114,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         InMemoryFolderTenantAccessProjectionStore store = new();
         await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
         LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
-        FoldersDomainServiceRequestHandler handler = new(
+        FoldersDomainServiceRequestHandler handler = CreateHandler(
             [new StubDomainProcessor(), new StubDomainProcessor()],
             authorizer,
             tenantContext);
@@ -122,6 +123,27 @@ public sealed class FoldersDomainServiceRequestHandlerTests
 
         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
         problem.StatusCode.ShouldBe(StatusCodes.Status500InternalServerError);
+    }
+
+    [Fact]
+    public async Task ProcessShouldRejectUnmappedCommandTypeAsMalformedEvidence()
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+        FoldersDomainServiceRequestHandler handler = new(
+            [],
+            authorizer,
+            tenantContext,
+            new StubClaimTransformEvidenceAccessor("tenant-a", "user-a"),
+            new FolderCommandActionTokenMapper(new Dictionary<string, FolderCommandActionMapping>(StringComparer.Ordinal)));
+
+        IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+
+        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("authorization_evidence_malformed");
     }
 
     private static LayeredFolderAuthorizationService CreateAuthorizer(
@@ -133,6 +155,23 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             new AllowingEventStoreAuthorizationValidator(),
             new ConfigurationDaprPolicyEvidenceProvider(new DaprPolicyEvidenceOptions()),
             new FixedUtcClock(Now));
+
+    private static FoldersDomainServiceRequestHandler CreateHandler(
+        IEnumerable<IDomainProcessor> processors,
+        LayeredFolderAuthorizationService authorizer,
+        FakeTenantContextAccessor tenantContext)
+    {
+        Dictionary<string, FolderCommandActionMapping> mappings = new(StringComparer.Ordinal)
+        {
+            ["Hexalith.Folders.Commands.TestCommand"] = new("create_folder", FolderCommandOperationScopeKind.OrganizationBaseline),
+        };
+        return new FoldersDomainServiceRequestHandler(
+            processors,
+            authorizer,
+            tenantContext,
+            new StubClaimTransformEvidenceAccessor(tenantContext.AuthoritativeTenantId, tenantContext.PrincipalId),
+            new FolderCommandActionTokenMapper(mappings));
+    }
 
     private static FolderTenantAccessProjection Projection(
         string tenantId,
@@ -176,6 +215,21 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         public string? AuthoritativeTenantId { get; } = authoritativeTenantId;
 
         public string? PrincipalId { get; } = principalId;
+    }
+
+    private sealed class StubClaimTransformEvidenceAccessor(string? tenantId, string? principalId)
+        : IEventStoreClaimTransformEvidenceAccessor
+    {
+        public EventStoreClaimTransformEvidence GetEvidence(string actionToken)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(actionToken);
+            if (string.IsNullOrWhiteSpace(tenantId) || string.IsNullOrWhiteSpace(principalId))
+            {
+                return EventStoreClaimTransformEvidence.Missing();
+            }
+
+            return EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [actionToken]);
+        }
     }
 
     private sealed class StubDomainProcessor : IDomainProcessor

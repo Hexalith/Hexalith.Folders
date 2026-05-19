@@ -13,13 +13,16 @@ public sealed class SafeAuthorizationDenialMappingTests
 
     [Theory]
     [InlineData("authentication_denied", 401, "authentication_failure", "no_action", false)]
-    [InlineData("claim_transform_denied", 403, "tenant_access_denied", "no_action", false)]
+    [InlineData("claim_transform_denied", 403, "authorization_denied", "no_action", false)]
     [InlineData("tenant_access_denied", 403, "tenant_access_denied", "no_action", false)]
+    [InlineData("eventstore_validator_denied", 403, "authorization_denied", "no_action", false)]
+    [InlineData("authorization_evidence_malformed", 403, "authorization_denied", "no_action", false)]
     [InlineData("safe_not_found", 404, "not_found_to_caller", "no_action", false)]
     [InlineData("folder_acl_denied", 404, "not_found_to_caller", "no_action", false)]
     [InlineData("folder_acl_unavailable", 503, "read_model_unavailable", "retry", true)]
     [InlineData("tenant_projection_unavailable", 503, "read_model_unavailable", "retry", true)]
     [InlineData("dapr_policy_denied", 503, "policy_evidence_unavailable", "retry", true)]
+    [InlineData("dapr_policy_denied", 403, "policy_denied", "no_action", false)]
     public void MapperShouldReturnSafeProblemDetailsFromDecisionSnapshot(
         string outcomeCode,
         int expectedStatusCode,

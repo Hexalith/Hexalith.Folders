@@ -1,5 +1,6 @@
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,8 @@ public static class FoldersServerServiceCollectionExtensions
         // Concrete schemes (JWT bearer, OIDC) are added by the host composition (Story 7.2).
         _ = services.AddAuthentication();
         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
+        services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();
+        services.TryAddSingleton<IFolderCommandActionTokenMapper, FolderCommandActionTokenMapper>();
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());
 

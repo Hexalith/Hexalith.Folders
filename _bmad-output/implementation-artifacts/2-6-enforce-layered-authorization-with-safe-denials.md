@@ -1,6 +1,6 @@
 # Story 2.6: Enforce layered authorization with safe denials
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -235,6 +235,7 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-19 | Code review (commit ed657e5): resolved 5 decision-needed items and applied 20 patches — production handler hardening (per-command action-token map, claim-transform accessor, organization-baseline scope, AggregateId validation), default-deny EventStore validator + Dapr policy seams, explicit mapper branches, wildcard removal, ordering tiebreaker, future-dated evidence handling, validator/snapshot watermark coherence, plus added test coverage for future-dated tenant freshness, ConfigurationDaprPolicyEvidenceProvider, body equivalence, cross-tenant same-ID, and wildcard regression. Story moved from review to done. Tests: 466 pass solution-wide (+11 new). | Claude |
 | 2026-05-19 | Implemented layered authorization evaluator, evidence seams, safe denial mapper, domain-service wiring, and offline conformance tests. | Codex |
 | 2026-05-19 | Applied advanced-elicitation hardening for immutable decision snapshots, evidence isolation, fail-closed malformed evidence, safe response mapping inputs, and timing-leakage controls. | Codex |
 | 2026-05-18 | Applied party-mode hardening for authorization order contract, denial mapping table, protected-resource no-touch tests, freshness semantics, bounded diagnostics, and adapter scope. | Codex |
@@ -345,3 +346,66 @@ GPT-5 Codex
 - `tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs`
 - `tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs`
 - `tests/Hexalith.Folders.Server.Tests/SafeAuthorizationDenialMappingTests.cs`
+
+### Review Findings
+
+_Code review on 2026-05-19 (commit `ed657e5`). Triage: 5 decision-needed, 12 patches, 4 deferred, 7 dismissed as noise._
+
+#### Decision Needed — resolved 2026-05-19
+
+All 5 decisions resolved during review. Resolutions inlined; resulting patches appear in the Patch section.
+
+- [x] [Review][Decision][Resolved → Patch] Production integration path hardening — **decision: harden now within 2.6**. Add explicit per-command action-token mapping, source claim-transform evidence from an injected provider (not the command body), use organization-baseline opaque scope for `create_folder`, and validate `Command.AggregateId` against the expected folder identity for folder-scoped commands.
+- [x] [Review][Decision][Resolved → Patch] Default-allow seams (EventStore validator + Dapr policy) — **decision: flip production defaults to fail-closed** (best practice). Change `LayeredFolderOperationPolicy.Mutation()` to `requiresDaprPolicyEvidence: true`. Replace `AllowingEventStoreAuthorizationValidator` registration with either no default (force consumers to wire one explicitly) or a default-deny validator. Allow stubs may be opt-in via explicit non-production configuration.
+- [x] [Review][Decision][Resolved → Patch] Mapper coverage for non-retryable Dapr / claim-transform denials — **decision: explicit 403 with distinct categories** (best practice: stable HTTP status, distinct categories help operators). `DaprPolicyDenied` (Retryable=false) → 403 `policy_denied`. `ClaimTransformDenied` → 403 `authorization_denied`. Remove wildcard fallthrough for these outcomes.
+- [x] [Review][Decision][Resolved → Patch] Wildcard permission tokens — **decision: remove wildcards** (best practice: principle of least privilege). `HasPermissionFor` must require an explicit token from the ACL vocabulary; no `*`, `folders:*`, or `commands:*` shortcuts. Update tests accordingly.
+- [x] [Review][Decision][Resolved → Defer] Preflight `fail` vs story `review` status — **decision: defer with documented reason**. The 36 dirty paths in `predev-preflight-2026-05-19T120131Z.json` (recorded at 12:01:31Z) are exactly this story's own in-flight files. Commit `ed657e5` landed at 14:23 the same day; working tree was clean post-commit and the offline test suite passed (274 + 27). Preflight captured a transient pre-commit state, not a quality regression. Re-run preflight before flipping the story to `done`; expected to pass with the clean tree.
+
+#### Patch
+
+##### From resolved decisions
+
+- [x] [Review][Patch] Replace substring action-token derivation with an explicit per-command mapping [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:~65-72`] — map known command types to ACL vocabulary tokens (`create_folder`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, `view_operations_console`, `configure_provider_binding`); unmapped command types must deny rather than default to `read_metadata`.
+- [x] [Review][Patch] Source `EventStoreClaimTransformEvidence` from an injected provider, not the request body [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:~28-31`] — introduce a claim-transform evidence accessor (e.g., `IEventStoreClaimTransformEvidenceAccessor`) backed by the actual EventStore claim transform / auth pipeline; remove the in-handler synthesis that compares the command to itself; drop the `commands:*` injection.
+- [x] [Review][Patch] `OperationScope` for `create_folder` must be the organization-baseline opaque scope, not `Command.AggregateId` [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:~32`] — derive the operation scope per command policy; for folder-scoped commands, validate that `Command.AggregateId` parses as the expected folder identifier shape before passing it as scope.
+- [x] [Review][Patch] Validate `Command.AggregateId` for folder-scoped commands before constructing evidence requests [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:~32`] — reject malformed identifiers with `authorization_evidence_malformed` before any folder-permission lookup.
+- [x] [Review][Patch] Flip `LayeredFolderOperationPolicy.Mutation()` default to `requiresDaprPolicyEvidence: true` [`src/Hexalith.Folders/Authorization/LayeredFolderOperationPolicy.cs:~30-37`] — production-default fail-closed. Non-production environments may explicitly construct a policy with `requiresDaprPolicyEvidence: false` or wire a permissive provider.
+- [x] [Review][Patch] Replace the default `AllowingEventStoreAuthorizationValidator` registration with a default-deny (or no default) [`src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:~42`] — either omit a default `IEventStoreAuthorizationValidator` registration (force consumers to wire one) or register a `DenyAllEventStoreAuthorizationValidator` returning safe-denial `Denied()` evidence. `AllowingEventStoreAuthorizationValidator` becomes an opt-in test/non-production wiring only.
+- [x] [Review][Patch] Add explicit mapper branches for non-retryable Dapr and claim-transform denials [`src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs:~45-62`] — `DaprPolicyDenied` when `Retryable=false` → `(403, "policy_denied")`; `ClaimTransformDenied` → `(403, "authorization_denied")`. Update `Title()` / `Message()` to cover the new categories.
+- [x] [Review][Patch] Remove wildcard permission token support from `HasPermissionFor` [`src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs:~30-34`] — require an exact, case-sensitive match against the ACL vocabulary; remove `*`, `folders:*`, `commands:*` shortcuts. Update affected tests to use explicit tokens.
+
+##### Pre-existing patches
+
+- [x] [Review][Patch] Reserved-tenant guard is case-sensitive ordinal "system" only [`src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs:~332`] — `SYSTEM`, `System`, `system` with mixed case all bypass the reserved check. Use `OrdinalIgnoreCase` (and consider canonicalizing the authoritative tenant once at ingress).
+- [x] [Review][Patch] `HasClientControlledMismatch` silently skips empty-string values [`src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs:~271-303`] — an attacker who supplies an empty ingress header for a tenant/principal dimension bypasses the mismatch check. Distinguish "key present but blank" from "key absent" and either deny on present-but-blank or include the empty value in comparison.
+- [x] [Review][Patch] `TenantAccessAuthorizer` reuse is partial [`src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs:~144-155`] — `RequestedTenantId` is always passed as `null` and `managedTenantId = tenantAccess.TenantId ?? AuthoritativeTenantId.Trim()` silently switches to the projection-returned tenant if it differs. Pass the authoritative tenant as `RequestedTenantId` and assert that any non-null `tenantAccess.TenantId` equals the authoritative value; otherwise deny with `authorization_evidence_malformed`.
+- [x] [Review][Patch] Future-dated permission evidence treated as `Stale` rather than `Malformed` [`src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs:~75-79`] — `snapshot.Freshness.ObservedAt > clock.UtcNow` is silently coerced to stale; with `AllowBoundedStale=true` an obviously bogus future-dated snapshot is then allowed. Treat future-dated observations as malformed (fail closed) per the story's "future-dated" trap.
+- [x] [Review][Patch] `EffectivePermissionsReadModelStatus.Stale` ignores `request.AllowBoundedStale` [`src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs:~45-46`] — the BoundedDiagnosticRead policy can never consume a stale read-model snapshot. Branch on `AllowBoundedStale` when `Stale` is returned (return the snapshot as bounded-stale evidence with freshness metadata, or deny consistently with strict reads).
+- [x] [Review][Patch] `Available` status with `Snapshot is null` falls through to `Unavailable` (retryable) [`src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs:~41-44`] — an `Available` status without a snapshot should be `Malformed` (non-retryable). Otherwise a buggy read model loops the caller on a permanently broken state.
+- [x] [Review][Patch] `HasActionGrant` non-deterministic for rows with identical `Sequence` and `EffectiveAt` [`src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs:~99-112`] — last enumeration wins. Add an explicit deterministic tiebreaker (prefer revoke over grant on tie, or break ties on a stable secondary key).
+- [x] [Review][Patch] Validator receives the pre-mutation `safeContext` [`src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs:~178 vs ~224-227`] — `safeContext` is built before `freshnessWatermark` is finalized, and the `with { FreshnessWatermark = ... }` clone happens after the validator is called. Validator sees a different watermark than the final snapshot reports. Build the final watermark first, then construct `safeContext` once.
+- [x] [Review][Patch] Allowed snapshot's `FreshnessClass` not synced with the validator/Dapr final watermark [`src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs:~170,~203`] — when validator/Dapr supply alternate `FreshnessWatermark` values, `FreshnessClass` still reflects the tenant/folder evidence class. Resolve to a single coherent freshness class+watermark pair on the allowed snapshot.
+- [x] [Review][Patch] Dead branch in mapper: `AuthorizationEvidenceMalformed when Retryable` is unreachable [`src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs:~407-408`] — no factory constructs that outcome with `Retryable: true`. Delete the branch or document why it must remain.
+- [x] [Review][Patch] Test coverage gaps relative to spec ACs — add: (a) `FreshnessStatus.Future` case to the tenant-access matrix theory (AC5); (b) revocation-freshness-unproven test with `policyClass: Mutation` (AC6); (c) direct unit tests for `ConfigurationDaprPolicyEvidenceProvider` covering `Enabled=false`, `RequirePolicyEvidence=false` with `RequiresPolicyEvidence=true`, and mismatched `TargetAppId` (AC8); (d) replace `DeniedDecisionSnapshotShouldRemainMetadataOnly`'s substring blocklist with a positive allow-list assertion on the serialized JSON shape (AC11).
+- [x] [Review][Patch] Test coverage gaps for enumeration-control invariants — add: (a) paired body-equivalence assertion that the Problem Details body for a nonexistent folder and an unauthorized-but-existing same-tenant folder is byte-equivalent except for correlation/task IDs (AC10); (b) explicit same-identifier cross-tenant sweep (same folder ID, task ID, lock ID, idempotency key across tenant A and tenant B) proving authorization decisions are not reused or collided (AC11/Regression Trap).
+
+#### Deferred (from resolved decisions)
+
+- [x] [Review][Defer] Preflight `fail` recorded in `_bmad-output/process-notes/predev-preflight-2026-05-19T120131Z.json` — deferred; the 36 dirty paths were this story's own in-flight files (pre-commit state at 12:01:31Z). Commit `ed657e5` at 14:23 landed the work; working tree was clean afterwards and offline test suites passed (274 + 27). Re-run preflight before moving 2.6 to `done`; expected to pass on the clean tree.
+
+#### Deferred
+
+- [x] [Review][Defer] `EventStoreClaimTransformEvidence.Allowed` exposes its internal `HashSet<string>` via `IReadOnlySet<string>` [`src/Hexalith.Folders/Authorization/EventStoreClaimTransformEvidence.cs:~17-23`] — deferred, not exploitable from current call sites; revisit if the evidence is shared across threads or returned to untrusted callers.
+- [x] [Review][Defer] Tests pin to a single UTC instant — no DST/timezone-offset or `>` vs `>=` boundary coverage on `ObservedAt > clock.UtcNow` [`tests/.../LayeredFolderAuthorizationServiceTests.cs:~11`] — deferred, fixed-clock pattern is consistent with sibling modules and the bounded-stale math is dominated by `TimeSpan` arithmetic.
+- [x] [Review][Defer] `ConfigurationDaprPolicyEvidenceProvider` does not validate empty/missing allow-lists at registration time [`src/Hexalith.Folders/Authorization/ConfigurationDaprPolicyEvidenceProvider.cs:~28-29`] — deferred to the production Dapr deployment story; configuration-validation gate belongs with the policy-deployment work.
+- [x] [Review][Defer] Bounded-diagnostic-read tests don't assert max count/size or non-touch of provider/repository/file/workspace [Tasks/Subtasks AC14 ledger] — deferred, current seams don't expose those paths so the invariant is satisfied by construction; revisit when diagnostic surface grows.
+
+#### Dismissed (recorded for traceability, not actionable)
+
+- Folder ACL denial and `safe_not_found` both mapping to 404 — intentional per the Denial Mapping Decision Table (caller must not learn whether a same-tenant resource exists).
+- `details.code` and `details.layer` leaked in Problem Details body — spec line ~70 explicitly lists `category, code, layer, freshness class, retryability, correlation ID, task ID, actor safe identifier, timestamp` as allowed metadata.
+- `TimingBucket` hard-coded to `"not_recorded"` — conservative; spec permits omitting timing buckets when timing cannot reveal resource existence.
+- `StrictRead` policy using `AuthorizeMutationAsync` freshness budget — consistent with AC12 ("mutation or strict read cannot prove freshness, it fails closed").
+- `Title()` and `Message()` varying by category in Problem Details — category-level distinction is allowed by spec.
+- `HasClientControlledMismatch` not detecting multi-ingress disagreement when only one ingress is supplied — production handler supplies a single envelope-tenant only; the multi-ingress matrix is exercised through tests.
+- `MapperShouldNotLeakProtectedIdentifiersInBodyExtensions` and `DeniedDecisionSnapshotShouldRemainMetadataOnly` cover JSON output only (not logs/traces/metrics) — there is no production logging in the current paths, so the dimension is structurally absent.

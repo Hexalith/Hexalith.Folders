@@ -42,6 +42,10 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
         {
             EffectivePermissionsReadModelStatus.Available when result.Snapshot is not null =>
                 FromSnapshot(request, result.Snapshot),
+            EffectivePermissionsReadModelStatus.Available =>
+                FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null),
+            EffectivePermissionsReadModelStatus.Stale when result.Snapshot is not null && request.AllowBoundedStale =>
+                FromSnapshot(request, result.Snapshot),
             EffectivePermissionsReadModelStatus.Stale =>
                 FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Stale, result.Freshness.ProjectionWatermark),
             EffectivePermissionsReadModelStatus.NotFound =>
@@ -78,9 +82,12 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
             return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, snapshot.Freshness.ProjectionWatermark);
         }
 
-        bool stale = snapshot.Freshness.Stale
-            || !snapshot.RevocationFreshnessEstablished
-            || snapshot.Freshness.ObservedAt > clock.UtcNow;
+        if (snapshot.Freshness.ObservedAt > clock.UtcNow)
+        {
+            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null);
+        }
+
+        bool stale = snapshot.Freshness.Stale || !snapshot.RevocationFreshnessEstablished;
         if (stale && !request.AllowBoundedStale)
         {
             return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Stale, snapshot.Freshness.ProjectionWatermark);
@@ -106,7 +113,8 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
         foreach (EffectivePermissionEvidenceRow row in snapshot.EvidenceRows
             .Where(row => row.Principal == principal && string.Equals(row.Action, request.ActionToken, StringComparison.Ordinal))
             .OrderBy(static row => row.Sequence)
-            .ThenBy(static row => row.EffectiveAt))
+            .ThenBy(static row => row.EffectiveAt)
+            .ThenBy(static row => row.Source == EffectivePermissionEvidenceSource.FolderOverrideRevoke ? 1 : 0))
         {
             granted = row.Source != EffectivePermissionEvidenceSource.FolderOverrideRevoke;
         }

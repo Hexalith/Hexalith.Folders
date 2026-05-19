@@ -32,8 +32,8 @@ public sealed record EventStoreClaimTransformEvidence(
         => new(null, null, new HashSet<string>(StringComparer.Ordinal), IsPresent: true, Malformed: true);
 
     public bool HasPermissionFor(string actionToken)
-        => PermissionTokens.Contains(actionToken)
-            || PermissionTokens.Contains("*")
-            || PermissionTokens.Contains("folders:*")
-            || PermissionTokens.Contains("commands:*");
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(actionToken);
+        return PermissionTokens.Contains(actionToken.Trim());
+    }
 }

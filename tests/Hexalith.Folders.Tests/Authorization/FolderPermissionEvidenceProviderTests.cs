@@ -77,15 +77,87 @@ public sealed class FolderPermissionEvidenceProviderTests
         result.FreshnessWatermark.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task ProviderShouldFailClosedWhenSnapshotObservedAtIsFutureDated()
+    {
+        EffectivePermissionsReadModelSnapshot snapshot = Snapshot(
+            revocationFreshnessEstablished: true,
+            stale: false,
+            EffectivePermissionsTestSupport.FolderGrant("read_metadata")) with
+        {
+            Freshness = new EffectivePermissionsFreshness(
+                ReadConsistency: "read_your_writes",
+                ObservedAt: Now.AddMinutes(5),
+                ProjectionWatermark: "folder_watermark_future",
+                Stale: false,
+                ReasonCode: null),
+        };
+        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
+            ReadModel(snapshot),
+            new FixedUtcClock(Now));
+
+        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(
+            Request(allowBoundedStale: true),
+            TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Malformed);
+        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed);
+    }
+
+    [Fact]
+    public async Task ProviderShouldFailClosedForRevocationFreshnessUnprovenUnderMutationPolicy()
+    {
+        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
+            ReadModel(Snapshot(
+                revocationFreshnessEstablished: false,
+                stale: false,
+                EffectivePermissionsTestSupport.FolderGrant("mutate_files"))),
+            new FixedUtcClock(Now));
+
+        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(
+            Request(actionToken: "mutate_files", allowBoundedStale: false, policyClass: FolderOperationPolicyClass.Mutation),
+            TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Stale);
+        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.FolderAclStale);
+    }
+
+    [Fact]
+    public async Task GrantAndRevokeAtIdenticalSequenceAndTimestampShouldPreferRevoke()
+    {
+        DateTimeOffset effectiveAt = Now.AddMinutes(-1);
+        EffectivePermissionEvidenceRow grant = new(
+            Principal: EffectivePermissionPrincipal.User("user-a"),
+            Action: "read_metadata",
+            Source: EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
+            Sequence: 1,
+            EffectiveAt: effectiveAt);
+        EffectivePermissionEvidenceRow revoke = new(
+            Principal: EffectivePermissionPrincipal.User("user-a"),
+            Action: "read_metadata",
+            Source: EffectivePermissionEvidenceSource.FolderOverrideRevoke,
+            Sequence: 1,
+            EffectiveAt: effectiveAt);
+        EffectivePermissionsFolderPermissionEvidenceProvider provider = new(
+            ReadModel(Snapshot(revocationFreshnessEstablished: true, stale: false, grant, revoke)),
+            new FixedUtcClock(Now));
+
+        FolderPermissionEvidenceResult result = await provider.GetEvidenceAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Denied);
+        result.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.FolderAclDenied);
+    }
+
     private static FolderPermissionEvidenceRequest Request(
         string operationScope = "folder-a",
         bool allowBoundedStale = false,
-        FolderOperationPolicyClass policyClass = FolderOperationPolicyClass.Mutation)
+        FolderOperationPolicyClass policyClass = FolderOperationPolicyClass.Mutation,
+        string actionToken = "read_metadata")
         => new(
             ManagedTenantId: "tenant-a",
             PrincipalId: "user-a",
             ActorSafeIdentifier: "actor-user-a",
-            ActionToken: "read_metadata",
+            ActionToken: actionToken,
             OperationScope: operationScope,
             CorrelationId: "corr-a",
             TaskId: "task-a",

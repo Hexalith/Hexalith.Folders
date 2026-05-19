@@ -42,7 +42,7 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<DaprPolicyEvidenceOptions>>().Value);
         services.TryAddSingleton<IFolderPermissionEvidenceProvider, EffectivePermissionsFolderPermissionEvidenceProvider>();
-        services.TryAddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
+        services.TryAddSingleton<IEventStoreAuthorizationValidator, DenyAllEventStoreAuthorizationValidator>();
         services.TryAddSingleton<IDaprPolicyEvidenceProvider, ConfigurationDaprPolicyEvidenceProvider>();
         services.TryAddSingleton<LayeredFolderAuthorizationService>();
 

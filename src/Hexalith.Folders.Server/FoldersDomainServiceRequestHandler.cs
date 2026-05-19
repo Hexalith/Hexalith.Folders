@@ -3,6 +3,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Http;
 
@@ -11,25 +12,41 @@ namespace Hexalith.Folders.Server;
 public sealed class FoldersDomainServiceRequestHandler(
     IEnumerable<IDomainProcessor> processors,
     LayeredFolderAuthorizationService authorizer,
-    ITenantContextAccessor tenantContext)
+    ITenantContextAccessor tenantContext,
+    IEventStoreClaimTransformEvidenceAccessor claimTransformEvidenceAccessor,
+    IFolderCommandActionTokenMapper actionTokenMapper)
 {
+    private const string OrganizationBaselineScope = "organization_baseline";
+
     public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        string actionToken = ActionTokenFor(request.Command);
+        FolderCommandActionMapping? mapping = actionTokenMapper.Map(request.Command);
+        if (mapping is null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(
+                BuildUnsupportedCommandDenial(request.Command));
+        }
+
+        string? operationScope = ResolveOperationScope(mapping.ScopeKind, request.Command);
+        if (mapping.ScopeKind == FolderCommandOperationScopeKind.FolderAggregate && operationScope is null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(
+                BuildMalformedScopeDenial(request.Command));
+        }
+
+        EventStoreClaimTransformEvidence claimTransform = claimTransformEvidenceAccessor.GetEvidence(mapping.ActionToken);
+
         LayeredFolderAuthorizationResult authorization = await authorizer.AuthorizeAsync(
             new LayeredFolderAuthorizationContext(
                 AuthoritativeTenantId: tenantContext.AuthoritativeTenantId,
                 PrincipalId: tenantContext.PrincipalId ?? string.Empty,
                 ActorSafeIdentifier: tenantContext.PrincipalId,
-                ActionToken: actionToken,
+                ActionToken: mapping.ActionToken,
                 OperationPolicy: LayeredFolderOperationPolicy.Mutation(),
-                ClaimTransformEvidence: EventStoreClaimTransformEvidence.Allowed(
-                    request.Command.TenantId,
-                    request.Command.UserId,
-                    [actionToken, "commands:*"]),
-                OperationScope: request.Command.AggregateId,
+                ClaimTransformEvidence: claimTransform,
+                OperationScope: operationScope,
                 CorrelationId: request.Command.CorrelationId,
                 TaskId: null,
                 ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
@@ -66,12 +83,54 @@ public sealed class FoldersDomainServiceRequestHandler(
         return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
     }
 
-    private static string ActionTokenFor(CommandEnvelope command)
-    {
-        ArgumentNullException.ThrowIfNull(command);
+    private static string? ResolveOperationScope(FolderCommandOperationScopeKind kind, CommandEnvelope command)
+        => kind switch
+        {
+            FolderCommandOperationScopeKind.OrganizationBaseline => OrganizationBaselineScope,
+            FolderCommandOperationScopeKind.FolderAggregate => ValidateFolderAggregateId(command.AggregateId),
+            _ => null,
+        };
 
-        return command.CommandType.Contains("CreateFolder", StringComparison.Ordinal)
-            ? "create_folder"
-            : "read_metadata";
+    private static string? ValidateFolderAggregateId(string? aggregateId)
+    {
+        if (string.IsNullOrWhiteSpace(aggregateId))
+        {
+            return null;
+        }
+
+        string trimmed = aggregateId.Trim();
+        return trimmed.Length is > 0 and <= 128 ? trimmed : null;
     }
+
+    private static LayeredFolderAuthorizationResult BuildUnsupportedCommandDenial(CommandEnvelope command)
+        => LayeredFolderAuthorizationResult.Denied(
+            new LayeredFolderAuthorizationDecisionSnapshot(
+                TerminalLayer: AuthorizationLayer.FolderAcl,
+                OutcomeCode: LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                Retryable: false,
+                FreshnessClass: "malformed",
+                FreshnessWatermark: null,
+                CorrelationId: command.CorrelationId,
+                TaskId: null,
+                ActorSafeIdentifier: "actor_present",
+                OperationPolicyClass: "mutation",
+                TimingBucket: "not_recorded",
+                DecidedAt: DateTimeOffset.UtcNow),
+            [AuthorizationLayer.JwtValidation, AuthorizationLayer.EventStoreClaimTransform, AuthorizationLayer.TenantAccessFreshness, AuthorizationLayer.FolderAcl]);
+
+    private static LayeredFolderAuthorizationResult BuildMalformedScopeDenial(CommandEnvelope command)
+        => LayeredFolderAuthorizationResult.Denied(
+            new LayeredFolderAuthorizationDecisionSnapshot(
+                TerminalLayer: AuthorizationLayer.FolderAcl,
+                OutcomeCode: LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                Retryable: false,
+                FreshnessClass: "malformed",
+                FreshnessWatermark: null,
+                CorrelationId: command.CorrelationId,
+                TaskId: null,
+                ActorSafeIdentifier: "actor_present",
+                OperationPolicyClass: "mutation",
+                TimingBucket: "not_recorded",
+                DecidedAt: DateTimeOffset.UtcNow),
+            [AuthorizationLayer.JwtValidation, AuthorizationLayer.EventStoreClaimTransform, AuthorizationLayer.TenantAccessFreshness, AuthorizationLayer.FolderAcl]);
 }

@@ -265,6 +265,94 @@ public sealed class LayeredFolderAuthorizationServiceTests
     }
 
     [Fact]
+    public async Task WildcardPermissionTokenShouldNotEscalateClaimTransformEvidence()
+    {
+        RecordingTenantAccessProjectionStore tenantStore = TenantStore("tenant-a", "user-a");
+        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
+        LayeredFolderAuthorizationService service = CreateService(
+            tenantStore,
+            folderEvidence,
+            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
+
+        LayeredFolderAuthorizationResult result = await service.AuthorizeAsync(
+            Context(claimTransformEvidence: EventStoreClaimTransformEvidence.Allowed(
+                tenantId: "tenant-a",
+                principalId: "user-a",
+                permissions: ["*", "folders:*", "commands:*"])),
+            TestContext.Current.CancellationToken);
+
+        result.IsAllowed.ShouldBeFalse();
+        result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.EventStoreClaimTransform);
+        result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.ClaimTransformDenied);
+    }
+
+    [Fact]
+    public async Task SameFolderIdAcrossTenantsShouldProduceIsolatedAuthorizationDecisions()
+    {
+        RecordingTenantAccessProjectionStore tenantStore = TenantStore("tenant-a", "user-a", "tenant-b", "user-b");
+        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
+        LayeredFolderAuthorizationService service = CreateService(
+            tenantStore,
+            folderEvidence,
+            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
+
+        LayeredFolderAuthorizationResult tenantA = await service.AuthorizeAsync(
+            Context(operationScope: "folder-shared-id"),
+            TestContext.Current.CancellationToken);
+        LayeredFolderAuthorizationResult tenantB = await service.AuthorizeAsync(
+            Context(
+                authoritativeTenantId: "tenant-b",
+                principalId: "user-b",
+                actorSafeIdentifier: "actor-user-b",
+                operationScope: "folder-shared-id",
+                taskId: "task-b",
+                claimTransformEvidence: EventStoreClaimTransformEvidence.Allowed("tenant-b", "user-b", ["read_metadata"])),
+            TestContext.Current.CancellationToken);
+
+        tenantA.IsAllowed.ShouldBeTrue();
+        tenantB.IsAllowed.ShouldBeTrue();
+        folderEvidence.Requests.Count.ShouldBe(2);
+        folderEvidence.Requests[0].ManagedTenantId.ShouldBe("tenant-a");
+        folderEvidence.Requests[1].ManagedTenantId.ShouldBe("tenant-b");
+        folderEvidence.Requests[0].OperationScope.ShouldBe("folder-shared-id");
+        folderEvidence.Requests[1].OperationScope.ShouldBe("folder-shared-id");
+        tenantA.AllowedContext.ShouldNotBeNull();
+        tenantB.AllowedContext.ShouldNotBeNull();
+        tenantA.AllowedContext.AuthoritativeTenantId.ShouldNotBe(tenantB.AllowedContext.AuthoritativeTenantId);
+    }
+
+    [Fact]
+    public async Task NonexistentAndUnauthorizedFolderShouldProduceIndistinguishableProblemBodies()
+    {
+        RecordingTenantAccessProjectionStore tenantStore = TenantStore("tenant-a", "user-a");
+        LayeredFolderAuthorizationService notFoundService = CreateService(
+            tenantStore,
+            new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
+                FolderPermissionEvidenceStatus.NotFoundSafe, null)),
+            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
+        LayeredFolderAuthorizationService deniedService = CreateService(
+            tenantStore,
+            new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
+                FolderPermissionEvidenceStatus.Denied, "folder_watermark_denied")),
+            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
+
+        LayeredFolderAuthorizationResult notFound = await notFoundService.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
+        LayeredFolderAuthorizationResult denied = await deniedService.AuthorizeAsync(Context(), TestContext.Current.CancellationToken);
+
+        notFound.IsAllowed.ShouldBeFalse();
+        denied.IsAllowed.ShouldBeFalse();
+        notFound.Decision.TerminalLayer.ShouldBe(denied.Decision.TerminalLayer);
+        // The HTTP-facing mapper collapses both to 404 not_found_to_caller; here we assert the
+        // pre-mapping snapshot does not encode caller-visible distinctions beyond the outcome code.
+        notFound.Decision.ActorSafeIdentifier.ShouldBe(denied.Decision.ActorSafeIdentifier);
+        notFound.Decision.OperationPolicyClass.ShouldBe(denied.Decision.OperationPolicyClass);
+    }
+
+    [Fact]
     public async Task DeniedDecisionSnapshotShouldRemainMetadataOnly()
     {
         string[] forbiddenValues =

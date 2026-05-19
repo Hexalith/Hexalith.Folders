@@ -56,9 +56,17 @@ public static class FolderAuthorizationDenialMapper
                 (StatusCodes.Status503ServiceUnavailable, "read_model_unavailable"),
             LayeredAuthorizationOutcomeCodes.DaprPolicyDenied when decision.Retryable =>
                 (StatusCodes.Status503ServiceUnavailable, "policy_evidence_unavailable"),
-            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed when decision.Retryable =>
-                (StatusCodes.Status503ServiceUnavailable, "read_model_unavailable"),
-            _ => (StatusCodes.Status403Forbidden, "tenant_access_denied"),
+            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied =>
+                (StatusCodes.Status403Forbidden, "policy_denied"),
+            LayeredAuthorizationOutcomeCodes.ClaimTransformDenied =>
+                (StatusCodes.Status403Forbidden, "authorization_denied"),
+            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied =>
+                (StatusCodes.Status403Forbidden, "authorization_denied"),
+            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed =>
+                (StatusCodes.Status403Forbidden, "authorization_denied"),
+            LayeredAuthorizationOutcomeCodes.TenantAccessDenied =>
+                (StatusCodes.Status403Forbidden, "tenant_access_denied"),
+            _ => (StatusCodes.Status403Forbidden, "authorization_denied"),
         };
 
     private static string Title(int statusCode)
@@ -77,6 +85,8 @@ public static class FolderAuthorizationDenialMapper
             "read_model_unavailable" => "Authorization evidence is temporarily unavailable. Retry later.",
             "policy_evidence_unavailable" => "Policy evidence is temporarily unavailable. Retry later.",
             "not_found_to_caller" => "The requested resource is not available to the caller.",
+            "policy_denied" => "Access is denied. The caller is not authorized for this operation or resource.",
+            "tenant_access_denied" => "Access is denied. The caller is not authorized for this operation or resource.",
             _ => "Access is denied. The caller is not authorized for this operation or resource.",
         };
 }

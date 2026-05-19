@@ -17,7 +17,7 @@ public sealed record LayeredFolderOperationPolicy(
     };
 
     public static LayeredFolderOperationPolicy Mutation(
-        bool requiresDaprPolicyEvidence = false,
+        bool requiresDaprPolicyEvidence = true,
         string daprTargetAppId = "folders",
         string serviceInvocationClass = "domain_service")
         => new(
@@ -29,7 +29,7 @@ public sealed record LayeredFolderOperationPolicy(
             serviceInvocationClass);
 
     public static LayeredFolderOperationPolicy StrictRead(
-        bool requiresDaprPolicyEvidence = false,
+        bool requiresDaprPolicyEvidence = true,
         string daprTargetAppId = "folders",
         string serviceInvocationClass = "query")
         => new(
@@ -41,7 +41,7 @@ public sealed record LayeredFolderOperationPolicy(
             serviceInvocationClass);
 
     public static LayeredFolderOperationPolicy BoundedDiagnosticRead(
-        bool requiresDaprPolicyEvidence = false,
+        bool requiresDaprPolicyEvidence = true,
         string daprTargetAppId = "folders",
         string serviceInvocationClass = "diagnostic_read")
         => new(
