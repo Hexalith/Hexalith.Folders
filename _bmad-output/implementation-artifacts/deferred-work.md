@@ -2,6 +2,14 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-3-create-folders-within-a-tenant (2026-05-19)
+
+Items deferred from the `/bmad-code-review 2.3` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `9f14bb7`.
+
+- `InvalidFolderMetadata` collapses length / control-char / forbidden-term failures into a single code [`src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:64-79`] — deferred, pre-existing coarse-grained pattern (Story 2.2 makes the same trade-off); splitting requires expanding the public code surface and updating consumer error-handling.
+- `IdempotentReplay` outcome is returned via `FolderResult.Rejected(...)` even though it is a successful equivalence; `FolderResult` has no `IsAccepted` helper [`src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs`] — deferred, behavior is correct, cosmetic API clarity only; revisit when CLI/MCP/SDK adapters need to dispatch on accepted-vs-rejected.
+- `FolderCreateAclEvidence.Action` is declared non-nullable but no compile-time guarantee prevents deserializer-produced `null` [`src/Hexalith.Folders/Aggregates/Folder/FolderCreateAclEvidence.cs`] — deferred, applies to every record in `Aggregates/Folder/`; revisit when contract-level deserialization hardening is introduced.
+
 ## Deferred from: code review of 1-16-wire-exit-criteria-and-parity-completeness-gates (2026-05-18)
 
 Items deferred from the `/bmad-code-review 1.16` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `e6d9de5`.

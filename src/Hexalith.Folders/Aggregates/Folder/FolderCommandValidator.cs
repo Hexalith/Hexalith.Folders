@@ -1,4 +1,7 @@
+using System.Buffers.Binary;
 using System.Globalization;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -6,7 +9,8 @@ namespace Hexalith.Folders.Aggregates.Folder;
 
 public static partial class FolderCommandValidator
 {
-    internal const int MaxIdentifierLength = 256;
+    internal const int MaxIdentifierLength = FolderStreamName.MaxSegmentLength;
+    internal const int MaxTagCount = 32;
     private const int MaxDisplayNameLength = 128;
     private const int MaxDescriptionLength = 512;
 
@@ -88,22 +92,45 @@ public static partial class FolderCommandValidator
             ? string.Empty
             : value.Trim().Normalize(NormalizationForm.FormC).ToLower(CultureInfo.InvariantCulture);
 
+    // Produces a SHA-256 hex digest over length-prefixed UTF-8 fields. Length-prefixing
+    // prevents field-separator smuggling (no field can collide with another by shifting
+    // bytes across a delimiter) and the digest caps width at 64 chars regardless of input.
     private static string Fingerprint(CreateFolder command, IReadOnlyList<string> tags)
     {
-        string[] parts =
-        [
-            command.CommandType,
-            command.ManagedTenantId,
-            command.OrganizationId,
-            command.FolderId,
-            CanonicalMetadata(command.DisplayName),
-            CanonicalMetadata(command.Description),
-            CanonicalMetadata(command.PathLabel),
-            string.Join(",", tags),
-            command.ActorPrincipalId,
-        ];
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 
-        return string.Join("|", parts);
+        AppendField(hash, command.CommandType);
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.OrganizationId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, CanonicalMetadata(command.DisplayName));
+        AppendField(hash, CanonicalMetadata(command.Description));
+        AppendField(hash, CanonicalMetadata(command.PathLabel));
+        AppendInt32(hash, tags.Count);
+        foreach (string tag in tags)
+        {
+            AppendField(hash, tag);
+        }
+
+        AppendField(hash, command.ActorPrincipalId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static void AppendField(IncrementalHash hash, string? value)
+    {
+        ReadOnlySpan<byte> bytes = value is null
+            ? ReadOnlySpan<byte>.Empty
+            : Encoding.UTF8.GetBytes(value);
+        AppendInt32(hash, bytes.Length);
+        hash.AppendData(bytes);
+    }
+
+    private static void AppendInt32(IncrementalHash hash, int value)
+    {
+        Span<byte> buffer = stackalloc byte[4];
+        BinaryPrimitives.WriteInt32LittleEndian(buffer, value);
+        hash.AppendData(buffer);
     }
 
     private static IReadOnlyList<string>? ValidateAndCanonicalizeTags(IReadOnlyList<string>? tags)
@@ -113,10 +140,15 @@ public static partial class FolderCommandValidator
             return [];
         }
 
+        if (tags.Count > MaxTagCount)
+        {
+            return null;
+        }
+
         List<string> canonical = [];
         foreach (string tag in tags)
         {
-            if (!IsSafePathLabel(tag))
+            if (string.IsNullOrWhiteSpace(tag) || !FolderStreamName.IsValidSegment(tag))
             {
                 return null;
             }
@@ -140,8 +172,11 @@ public static partial class FolderCommandValidator
             return !required;
         }
 
-        string trimmed = value.Trim();
-        if (trimmed.Length > maxLength || trimmed.Any(char.IsControl))
+        // Normalize before the forbidden-term scan so confusables (NFD-decomposed combiners,
+        // zero-width characters, Greek lookalikes) cannot bypass the blocklist while still
+        // producing a normalized fingerprint downstream.
+        string trimmed = value.Trim().Normalize(NormalizationForm.FormC);
+        if (trimmed.Length > maxLength || trimmed.Any(c => char.IsControl(c) || IsInvisibleFormatChar(c)))
         {
             return false;
         }
@@ -149,6 +184,13 @@ public static partial class FolderCommandValidator
         string canonical = trimmed.ToLower(CultureInfo.InvariantCulture);
         return !ForbiddenMetadataTerms.Any(term => canonical.Contains(term, StringComparison.Ordinal));
     }
+
+    private static bool IsInvisibleFormatChar(char c)
+        => CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.Format
+            || c == '​' // zero-width space
+            || c == '‌' // zero-width non-joiner
+            || c == '‍' // zero-width joiner
+            || c == '﻿'; // BOM / zero-width no-break space
 
     [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();

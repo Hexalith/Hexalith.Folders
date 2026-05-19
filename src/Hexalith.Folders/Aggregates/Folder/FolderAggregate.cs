@@ -39,7 +39,7 @@ public static class FolderAggregate
             command.CorrelationId,
             command.TaskId,
             command.IdempotencyKey,
-            validation.IdempotencyFingerprint);
+            validation.IdempotencyFingerprint!);
 
         return FolderResult.Accepted(command, [created]);
     }

@@ -28,14 +28,15 @@ public sealed record FolderState(
         null,
         FrozenDictionary<string, string>.Empty);
 
-    public FolderState Apply(IEnumerable<IFolderEvent> events)
+    public FolderState Apply(IEnumerable<IFolderEvent> events, FolderStreamName expectedStreamName)
     {
         ArgumentNullException.ThrowIfNull(events);
+        ArgumentNullException.ThrowIfNull(expectedStreamName);
 
         FolderState state = this;
         foreach (IFolderEvent folderEvent in events)
         {
-            state = FolderStateApply.Apply(state, folderEvent);
+            state = FolderStateApply.Apply(state, folderEvent, expectedStreamName);
         }
 
         return state;

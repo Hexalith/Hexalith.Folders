@@ -2,6 +2,18 @@ using Hexalith.Folders.Aggregates.Folder;
 
 namespace Hexalith.Folders.Testing.Factories;
 
+/// <summary>
+/// Shipped folder-creation test data factory. Every command returned from
+/// <see cref="Create"/> has been run through <see cref="FolderCommandValidator.Validate"/>,
+/// so unsafe defaults (forbidden metadata terms, invalid identifiers, oversize tag
+/// collections) raise <see cref="ArgumentException"/>. Use this helper from external
+/// consumer tests and integration suites that need a known-valid command.
+/// </summary>
+/// <remarks>
+/// The in-tree negative-control factory in
+/// <c>tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs</c>
+/// intentionally skips validation so rejection-path tests can submit malformed inputs.
+/// </remarks>
 public static class FolderCreationTestDataFactory
 {
     public static CreateFolder Create(
@@ -46,7 +58,12 @@ public static class FolderCreationTestDataFactory
         FolderCommandValidationResult result = FolderCommandValidator.Validate(command);
         if (!result.IsAccepted)
         {
-            throw new ArgumentException($"Invalid folder creation test command: {result.Code}.", nameof(command));
+            // Result-code-only error message; the offending command field could contain
+            // unsafe bytes (that is exactly why the validator rejected) and must not be
+            // echoed into the exception message.
+            throw new ArgumentException(
+                $"Invalid folder creation test command: {result.Code}.",
+                nameof(command));
         }
     }
 }

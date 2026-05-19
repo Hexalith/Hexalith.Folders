@@ -28,7 +28,8 @@ public sealed class FolderCreationCommandValidationTests
     {
         FolderResult result = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
 
-        FolderState state = FolderState.Empty.Apply(result.Events);
+        FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState state = FolderState.Empty.Apply(result.Events, streamName);
 
         state.IsCreated.ShouldBeTrue();
         state.LifecycleState.ShouldBe(FolderLifecycleState.Active);
@@ -73,7 +74,8 @@ public sealed class FolderCreationCommandValidationTests
     public void DuplicateCreateShouldReturnDuplicateEvidenceWithoutAppendingSecondEvent()
     {
         FolderResult first = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
-        FolderState state = FolderState.Empty.Apply(first.Events);
+        FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState state = FolderState.Empty.Apply(first.Events, streamName);
 
         FolderResult second = FolderAggregate.Handle(
             state,
@@ -81,5 +83,27 @@ public sealed class FolderCreationCommandValidationTests
 
         second.Code.ShouldBe(FolderResultCode.DuplicateFolder);
         second.Events.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void AggregateLevelIdempotencyConflictShouldFireWhenSameKeyCarriesDifferentFingerprint()
+    {
+        // Exercises the FolderAggregate.Handle idempotency-conflict guard directly (the gate
+        // catches conflicts via the repository ledger first, but the aggregate-level guard
+        // is the last line of defense and was previously unreachable from the test suite).
+        CreateFolder original = FolderCommandFactory.Create(idempotencyKey: "idempotency-a", displayName: "Folder A");
+        FolderResult firstResult = FolderAggregate.Handle(FolderState.Empty, original);
+        FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState state = FolderState.Empty.Apply(firstResult.Events, streamName);
+
+        FolderResult conflict = FolderAggregate.Handle(
+            state,
+            FolderCommandFactory.Create(
+                idempotencyKey: "idempotency-a",
+                folderId: "folder-b",
+                displayName: "Folder B"));
+
+        conflict.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        conflict.Events.ShouldBeEmpty();
     }
 }

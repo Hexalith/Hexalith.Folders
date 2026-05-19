@@ -16,6 +16,7 @@ public enum FolderResultCode
     TenantAccessDenied,
     FolderAclDenied,
     AclEvidenceUnavailable,
+    AclEvidenceMismatch,
     ValidationFailed,
     StaleProjection,
     UnavailableProjection,

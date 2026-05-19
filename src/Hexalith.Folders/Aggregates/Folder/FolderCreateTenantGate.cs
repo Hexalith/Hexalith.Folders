@@ -2,8 +2,16 @@ using Hexalith.Folders.Authorization;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
-public sealed class FolderCreateTenantGate(IFolderRepository repository)
+public sealed class FolderCreateTenantGate
 {
+    private readonly IFolderRepository _repository;
+
+    public FolderCreateTenantGate(IFolderRepository repository)
+    {
+        ArgumentNullException.ThrowIfNull(repository);
+        _repository = repository;
+    }
+
     public FolderResult Handle(
         CreateFolder command,
         TenantAccessAuthorizationResult tenantAccess,
@@ -17,13 +25,13 @@ public sealed class FolderCreateTenantGate(IFolderRepository repository)
         {
             return FolderResult.Rejected(
                 Map(tenantAccess.Outcome),
-                SafePassthrough(tenantAccess.TenantId),
-                SafePassthrough(command.OrganizationId),
-                SafePassthrough(command.FolderId),
-                SafePassthrough(command.ActorPrincipalId),
-                SafePassthrough(command.CorrelationId),
-                SafePassthrough(command.TaskId),
-                SafePassthrough(command.IdempotencyKey));
+                tenantAccess.TenantId,
+                command.OrganizationId,
+                command.FolderId,
+                command.ActorPrincipalId,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey);
         }
 
         if (string.IsNullOrWhiteSpace(tenantAccess.TenantId))
@@ -37,12 +45,12 @@ public sealed class FolderCreateTenantGate(IFolderRepository repository)
             return FolderResult.Rejected(
                 FolderResultCode.TenantMismatch,
                 tenantAccess.TenantId,
-                SafePassthrough(command.OrganizationId),
-                SafePassthrough(command.FolderId),
-                SafePassthrough(command.ActorPrincipalId),
-                SafePassthrough(command.CorrelationId),
-                SafePassthrough(command.TaskId),
-                SafePassthrough(command.IdempotencyKey));
+                command.OrganizationId,
+                command.FolderId,
+                command.ActorPrincipalId,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey);
         }
 
         CreateFolder authoritativeCommand = (CreateFolder)command.WithManagedTenantId(tenantAccess.TenantId);
@@ -59,16 +67,18 @@ public sealed class FolderCreateTenantGate(IFolderRepository repository)
             return FolderResult.Rejected(authoritativeCommand, validation.Code);
         }
 
-        FolderIdempotencyLookupResult lookup = repository.TryGetIdempotencyFingerprint(
+        // Stream-name construction happens after all reject-before-construction gates
+        // (tenant, payload-mismatch, ACL, metadata validation) have passed. From here on
+        // the gate uses `streamName` as the single addressable identity for the ledger,
+        // the state load, and the append.
+        FolderStreamName streamName = _repository.CreateStreamName(
             authoritativeCommand.ManagedTenantId,
-            authoritativeCommand.FolderId,
+            authoritativeCommand.FolderId);
+
+        FolderIdempotencyLookupResult lookup = _repository.TryGetIdempotencyFingerprint(
+            streamName,
             authoritativeCommand.IdempotencyKey,
             out string? priorFingerprint);
-
-        if (lookup == FolderIdempotencyLookupResult.Unavailable)
-        {
-            return FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyUnavailable);
-        }
 
         if (lookup == FolderIdempotencyLookupResult.Found)
         {
@@ -77,18 +87,27 @@ public sealed class FolderCreateTenantGate(IFolderRepository repository)
                 : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict);
         }
 
-        FolderStreamName streamName = repository.CreateStreamName(authoritativeCommand.ManagedTenantId, authoritativeCommand.FolderId);
-        FolderState state = repository.Load(streamName);
+        if (lookup == FolderIdempotencyLookupResult.Unavailable)
+        {
+            // Load state so an already-existing folder is surfaced as DuplicateFolder
+            // rather than masked by a transient ledger outage; otherwise fail closed.
+            FolderState unavailableState = _repository.Load(streamName);
+            return unavailableState.IsCreated
+                ? FolderResult.Rejected(authoritativeCommand, FolderResultCode.DuplicateFolder)
+                : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyUnavailable);
+        }
+
+        FolderState state = _repository.Load(streamName);
         FolderResult result = FolderAggregate.Handle(state, authoritativeCommand);
         if (result.Events.Count == 0)
         {
             return result;
         }
 
-        FolderAppendOutcome outcome = repository.AppendIfFingerprintAbsent(
+        FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,
             authoritativeCommand.IdempotencyKey,
-            validation.IdempotencyFingerprint,
+            validation.IdempotencyFingerprint!,
             result.Events);
 
         return outcome switch
@@ -100,36 +119,44 @@ public sealed class FolderCreateTenantGate(IFolderRepository repository)
                 FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict =>
                 FolderResult.Rejected(authoritativeCommand, FolderResultCode.AppendConflict),
-            _ => throw new InvalidOperationException($"Unhandled FolderAppendOutcome: {outcome}."),
+            // Unknown outcomes from a future adapter must fail closed without throwing,
+            // so the FolderResult contract is preserved at the gate's public boundary.
+            _ => FolderResult.Rejected(authoritativeCommand, FolderResultCode.MalformedEvidence),
         };
     }
 
+    // Returns:
+    //   null                        → ACL evidence permits the command
+    //   AclEvidenceMismatch         → ACL outcome is Allowed but evidence is for a
+    //                                 different tenant/org/principal/action (replay,
+    //                                 stale cache, misrouted projection event)
+    //   FolderAclDenied             → genuine deny
+    //   AclEvidenceUnavailable      → unavailable, malformed, stale, or unknown outcome
     private static FolderResultCode? EvaluateAcl(CreateFolder command, FolderCreateAclEvidence aclEvidence)
     {
-        if (aclEvidence.Outcome == FolderCreateAclOutcome.Allowed
-            && string.Equals(aclEvidence.ManagedTenantId, command.ManagedTenantId, StringComparison.Ordinal)
-            && string.Equals(aclEvidence.OrganizationId, command.OrganizationId, StringComparison.Ordinal)
-            && string.Equals(aclEvidence.PrincipalId, command.ActorPrincipalId, StringComparison.Ordinal)
-            && string.Equals(aclEvidence.Action, "create_folder", StringComparison.Ordinal))
+        if (aclEvidence.Outcome == FolderCreateAclOutcome.Allowed)
         {
-            return null;
+            bool matches = string.Equals(aclEvidence.ManagedTenantId, command.ManagedTenantId, StringComparison.Ordinal)
+                && string.Equals(aclEvidence.OrganizationId, command.OrganizationId, StringComparison.Ordinal)
+                && string.Equals(aclEvidence.PrincipalId, command.ActorPrincipalId, StringComparison.Ordinal)
+                && string.Equals(aclEvidence.Action, "create_folder", StringComparison.Ordinal);
+            return matches ? null : FolderResultCode.AclEvidenceMismatch;
         }
 
         return aclEvidence.Outcome switch
         {
-            FolderCreateAclOutcome.Denied or FolderCreateAclOutcome.Allowed => FolderResultCode.FolderAclDenied,
-            FolderCreateAclOutcome.Unavailable or FolderCreateAclOutcome.Malformed or FolderCreateAclOutcome.Stale =>
-                FolderResultCode.AclEvidenceUnavailable,
-            _ => throw new InvalidOperationException($"Unhandled FolderCreateAclOutcome: {aclEvidence.Outcome}."),
+            FolderCreateAclOutcome.Denied => FolderResultCode.FolderAclDenied,
+            FolderCreateAclOutcome.Unavailable
+                or FolderCreateAclOutcome.Malformed
+                or FolderCreateAclOutcome.Stale => FolderResultCode.AclEvidenceUnavailable,
+            _ => FolderResultCode.AclEvidenceUnavailable,
         };
     }
-
-    private static string? SafePassthrough(string? value)
-        => FolderCommandValidator.IsValidIdentifier(value) ? value : null;
 
     private static FolderResultCode Map(TenantAccessOutcome outcome)
         => outcome switch
         {
+            TenantAccessOutcome.Allowed => FolderResultCode.MalformedEvidence,
             TenantAccessOutcome.Denied => FolderResultCode.TenantAccessDenied,
             TenantAccessOutcome.StaleProjection => FolderResultCode.StaleProjection,
             TenantAccessOutcome.UnavailableProjection => FolderResultCode.UnavailableProjection,
@@ -139,6 +166,6 @@ public sealed class FolderCreateTenantGate(IFolderRepository repository)
             TenantAccessOutcome.TenantMismatch => FolderResultCode.TenantMismatch,
             TenantAccessOutcome.MissingAuthoritativeTenant => FolderResultCode.MissingAuthoritativeTenant,
             TenantAccessOutcome.ReplayConflict => FolderResultCode.ReplayConflict,
-            _ => throw new InvalidOperationException($"Unhandled TenantAccessOutcome: {outcome}."),
+            _ => FolderResultCode.MalformedEvidence,
         };
 }

@@ -21,6 +21,10 @@ internal sealed class RecordingFolderRepository : IFolderRepository
 
     public int StreamNamesConstructed { get; private set; }
 
+    public int IdempotencyLookups { get; private set; }
+
+    public int AppendsAttempted { get; private set; }
+
     public bool IdempotencyUnavailable { get; set; }
 
     public bool SimulateAppendConflict { get; set; }
@@ -52,10 +56,14 @@ internal sealed class RecordingFolderRepository : IFolderRepository
         string fingerprint,
         IReadOnlyList<IFolderEvent> events)
     {
-        LastDurableKey = LedgerKey(streamName.Value, idempotencyKey);
-        string ledgerKey = LedgerKey(streamName.Value, idempotencyKey);
+        AppendsAttempted++;
+        string ledgerKey = LedgerKey(streamName, idempotencyKey);
+
         if (_idempotencyFingerprints.TryGetValue(ledgerKey, out string? priorFingerprint))
         {
+            // Do NOT set LastDurableKey on a fingerprint mismatch/match short-circuit:
+            // the assertion `LastDurableKey.ShouldBeNull()` on side-effect-rejected paths
+            // is meaningful only if successful-append intent is the only thing that sets it.
             return string.Equals(priorFingerprint, fingerprint, StringComparison.Ordinal)
                 ? FolderAppendOutcome.FingerprintMatched
                 : FolderAppendOutcome.FingerprintConflict;
@@ -68,39 +76,43 @@ internal sealed class RecordingFolderRepository : IFolderRepository
 
         EventsAppended += events.Count;
         LastStreamName = streamName.Value;
+        LastDurableKey = ledgerKey;
         LastAppendedEvents = events;
-        _states[streamName.Value] = Load(streamName).Apply(events);
+        _states[streamName.Value] = Load(streamName).Apply(events, streamName);
         _idempotencyFingerprints[ledgerKey] = fingerprint;
         return FolderAppendOutcome.Appended;
     }
 
     public FolderIdempotencyLookupResult TryGetIdempotencyFingerprint(
-        string managedTenantId,
-        string folderId,
+        FolderStreamName streamName,
         string idempotencyKey,
         out string? fingerprint)
     {
+        IdempotencyLookups++;
         fingerprint = null;
         if (IdempotencyUnavailable)
         {
             return FolderIdempotencyLookupResult.Unavailable;
         }
 
-        LastDurableKey = LedgerKey(managedTenantId, folderId, idempotencyKey);
-        return _idempotencyFingerprints.TryGetValue(LastDurableKey, out fingerprint)
+        string ledgerKey = LedgerKey(streamName, idempotencyKey);
+        return _idempotencyFingerprints.TryGetValue(ledgerKey, out fingerprint)
             ? FolderIdempotencyLookupResult.Found
             : FolderIdempotencyLookupResult.Missing;
     }
 
     public void Seed(FolderStreamName streamName, IReadOnlyList<IFolderEvent> events)
-        => _states[streamName.Value] = FolderState.Empty.Apply(events);
+        => _states[streamName.Value] = FolderState.Empty.Apply(events, streamName);
 
     public void RecordIdempotency(string managedTenantId, string folderId, string idempotencyKey, string fingerprint)
-        => _idempotencyFingerprints[LedgerKey(managedTenantId, folderId, idempotencyKey)] = fingerprint;
+    {
+        FolderStreamName streamName = FolderStreamName.Create(managedTenantId, folderId);
+        _idempotencyFingerprints[LedgerKey(streamName, idempotencyKey)] = fingerprint;
+    }
 
-    private static string LedgerKey(string managedTenantId, string folderId, string idempotencyKey)
-        => $"{managedTenantId}:folders:{folderId}|{idempotencyKey}";
-
-    private static string LedgerKey(string streamName, string idempotencyKey)
-        => $"{streamName}|{idempotencyKey}";
+    // Single ledger-key shape: stream-name + idempotency key. Production impls and the
+    // test spy address the ledger under the same identity, so a real adapter cannot
+    // diverge from the test contract by reading or writing under a different key.
+    private static string LedgerKey(FolderStreamName streamName, string idempotencyKey)
+        => $"{streamName.Value}|{idempotencyKey}";
 }

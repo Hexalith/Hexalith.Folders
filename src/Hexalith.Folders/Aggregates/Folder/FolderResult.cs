@@ -16,14 +16,35 @@ public sealed record FolderResult(
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(events);
 
-        return From(command, FolderResultCode.Created, events);
+        return new(
+            FolderResultCode.Created,
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey,
+            events);
     }
 
+    // Validation-rejection paths can carry malformed bytes (the validator may itself
+    // be rejecting because an identifier is malformed). Funnel command fields through
+    // `SafePassthrough` so a result for `MalformedEvidence` cannot echo the unsafe value.
     public static FolderResult Rejected(IFolderCommand command, FolderResultCode code)
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        return From(command, code, []);
+        return new(
+            code,
+            SafePassthrough(command.ManagedTenantId),
+            SafePassthrough(command.OrganizationId),
+            SafePassthrough(command.FolderId),
+            SafePassthrough(command.ActorPrincipalId),
+            SafePassthrough(command.CorrelationId),
+            SafePassthrough(command.TaskId),
+            SafePassthrough(command.IdempotencyKey),
+            []);
     }
 
     public static FolderResult Rejected(
@@ -35,17 +56,17 @@ public sealed record FolderResult(
         string? correlationId,
         string? taskId,
         string? idempotencyKey)
-        => new(code, managedTenantId, organizationId, folderId, actorPrincipalId, correlationId, taskId, idempotencyKey, []);
-
-    private static FolderResult From(IFolderCommand command, FolderResultCode code, IReadOnlyList<IFolderEvent> events)
         => new(
             code,
-            command.ManagedTenantId,
-            command.OrganizationId,
-            command.FolderId,
-            command.ActorPrincipalId,
-            command.CorrelationId,
-            command.TaskId,
-            command.IdempotencyKey,
-            events);
+            SafePassthrough(managedTenantId),
+            SafePassthrough(organizationId),
+            SafePassthrough(folderId),
+            SafePassthrough(actorPrincipalId),
+            SafePassthrough(correlationId),
+            SafePassthrough(taskId),
+            SafePassthrough(idempotencyKey),
+            []);
+
+    private static string? SafePassthrough(string? value)
+        => FolderCommandValidator.IsValidIdentifier(value) ? value : null;
 }

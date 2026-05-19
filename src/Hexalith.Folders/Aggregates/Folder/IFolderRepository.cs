@@ -12,9 +12,12 @@ public interface IFolderRepository
         string fingerprint,
         IReadOnlyList<IFolderEvent> events);
 
+    // The ledger key is `(streamName, idempotencyKey)`. Both lookup and append address
+    // the ledger by `FolderStreamName` so any production implementation must store and
+    // retrieve under the same key; there is no longer a `(tenantId, folderId)` overload
+    // that an implementation could resolve to a different key than the append path.
     FolderIdempotencyLookupResult TryGetIdempotencyFingerprint(
-        string managedTenantId,
-        string folderId,
+        FolderStreamName streamName,
         string idempotencyKey,
         out string? fingerprint);
 }

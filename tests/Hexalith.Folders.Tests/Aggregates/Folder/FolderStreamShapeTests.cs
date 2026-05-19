@@ -16,7 +16,8 @@ public sealed class FolderStreamShapeTests
 
     [Theory]
     [InlineData("system", "folder-a", FolderResultCode.ReservedTenant)]
-    [InlineData("System", "folder-a", FolderResultCode.ReservedTenant)]
+    [InlineData("System", "folder-a", FolderResultCode.InvalidTenant)] // uppercase fails canonical-segment regex before reserved-name check
+    [InlineData(" system ", "folder-a", FolderResultCode.InvalidTenant)] // whitespace fails canonical-segment regex; consistent rejection code with non-reserved-but-whitespaced inputs
     [InlineData("tenant:a", "folder-a", FolderResultCode.InvalidTenant)]
     [InlineData("Tenant-A", "folder-a", FolderResultCode.InvalidTenant)]
     [InlineData("tenant-a", "folder:a", FolderResultCode.InvalidFolderId)]
@@ -30,5 +31,23 @@ public sealed class FolderStreamShapeTests
 
         created.ShouldBeFalse();
         code.ShouldBe(expectedCode);
+    }
+
+    [Fact]
+    public void CreateShouldReportFolderIdParamNameWhenFolderIdIsInvalid()
+    {
+        ArgumentException exception = Should.Throw<ArgumentException>(
+            () => FolderStreamName.Create("tenant-a", "Folder-A"));
+
+        exception.ParamName.ShouldBe("folderId");
+    }
+
+    [Fact]
+    public void CreateShouldReportManagedTenantIdParamNameWhenTenantIsInvalid()
+    {
+        ArgumentException exception = Should.Throw<ArgumentException>(
+            () => FolderStreamName.Create("Tenant-A", "folder-a"));
+
+        exception.ParamName.ShouldBe("managedTenantId");
     }
 }

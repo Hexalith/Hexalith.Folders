@@ -2,6 +2,13 @@ using Hexalith.Folders.Aggregates.Folder;
 
 namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
+// Test-only command factory that intentionally skips validation so the test suite
+// can exercise rejection paths with malformed inputs (invalid metadata, unsafe
+// values, malformed identifiers). The shipped sibling factory
+// `Hexalith.Folders.Testing.Factories.FolderCreationTestDataFactory.Create(...)`
+// applies `FolderCommandValidator.Validate` and throws on unsafe defaults; use that
+// helper from external consumers and integration tests, and use this one only from
+// negative-control tests inside `tests/`.
 internal static class FolderCommandFactory
 {
     public static CreateFolder Create(

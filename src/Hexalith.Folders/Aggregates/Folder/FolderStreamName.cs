@@ -10,7 +10,14 @@ public sealed partial record FolderStreamName(string Value)
     {
         if (!TryCreate(managedTenantId, folderId, out FolderStreamName? streamName, out FolderResultCode code))
         {
-            throw new ArgumentException($"Invalid folder stream name: {code}.", nameof(managedTenantId));
+            // Attribute the exception to whichever segment actually failed so callers get
+            // a meaningful `ParamName` instead of always seeing `managedTenantId`.
+            string paramName = code switch
+            {
+                FolderResultCode.InvalidFolderId => nameof(folderId),
+                _ => nameof(managedTenantId),
+            };
+            throw new ArgumentException($"Invalid folder stream name: {code}.", paramName);
         }
 
         return streamName!;
@@ -47,9 +54,13 @@ public sealed partial record FolderStreamName(string Value)
         return true;
     }
 
+    // Reserved-name check uses ordinal-equals on the raw input so whitespace and casing
+    // surface as InvalidTenant via IsValidSegment, not as ReservedTenant via Trim().
+    // This keeps the rejection-code surface deterministic and prevents differential
+    // disclosure of the reserved-name list through whitespace probing.
     internal static bool IsReservedSystemTenant(string? managedTenantId)
-        => !string.IsNullOrWhiteSpace(managedTenantId)
-            && string.Equals(managedTenantId.Trim(), "system", StringComparison.OrdinalIgnoreCase);
+        => !string.IsNullOrEmpty(managedTenantId)
+            && string.Equals(managedTenantId, "system", StringComparison.Ordinal);
 
     internal static bool IsValidSegment(string? value)
         => !string.IsNullOrWhiteSpace(value)

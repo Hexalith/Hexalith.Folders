@@ -66,7 +66,7 @@ development_status:
   epic-2: in-progress
   2-1-stand-up-domain-service-host-with-tenants-integration: done
   2-2-implement-organization-aggregate-acl-baseline: done
-  2-3-create-folders-within-a-tenant: review
+  2-3-create-folders-within-a-tenant: done
   2-4-grant-and-revoke-folder-access: ready-for-dev
   2-5-inspect-effective-permissions: ready-for-dev
   2-6-enforce-layered-authorization-with-safe-denials: ready-for-dev
