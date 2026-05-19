@@ -189,3 +189,4 @@
 2026-05-19T00:02:23+02:00	create-story	2-8-archive-folders-with-audit-preservation	ok	created ready-for-dev archive folders story
 2026-05-19T01:06:06+02:00	party-mode-review	2-8-archive-folders-with-audit-preservation	ok	recorded party-mode review trace and applied archive auth-order, idempotency/race, already-archived, audit/status, mutation-guard, and parity/no-touch hardening
 2026-05-19T02:03:25+02:00	advanced-elicitation	2-5-inspect-effective-permissions	ok	recorded advanced elicitation trace and applied canonical response ordering, duplicate evidence handling, cache isolation, and stale/unavailable no-leakage hardening
+2026-05-19T03:04:00+02:00	advanced-elicitation	2-6-enforce-layered-authorization-with-safe-denials	ok	recorded advanced elicitation trace and applied immutable decision snapshot, evidence isolation, fail-closed malformed evidence, safe mapper input, and timing-leakage hardening

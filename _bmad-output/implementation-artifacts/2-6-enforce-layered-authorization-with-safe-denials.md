@@ -17,6 +17,7 @@ so that cross-tenant access is denied without enumeration or leakage.
 - Resource access means constructing or dereferencing protected stream names, read-model keys, cache keys, idempotency keys, workspace paths, provider handles, repository references, audit keys, diagnostics keys, projection queries, EventStore command envelopes, or Dapr service invocation targets.
 - Protected resource touch means constructing, deriving, logging, timing, probing, or dereferencing any identifier, key, path, name, handle, target, partition, scope, or lookup subject for file, workspace, credential, repository, lock, commit, provider, audit, cache, stream, read-model, Dapr, diagnostics, projection, idempotency, or EventStore resources.
 - Safe denial means the canonical metadata-only denial result or Problem Details shape used for authentication, tenant, folder ACL, validator, Dapr policy, unavailable, stale, not-found-to-caller, and cross-tenant outcomes. It must not reveal unauthorized resource existence.
+- Authorization decision snapshot means the immutable metadata-only result for exactly one protected operation evaluation, including the terminal layer, terminal outcome code, retryability, freshness class, correlation ID, task ID, actor safe identifier, and optional bounded timing bucket. It must not include raw evidence payloads, protected resource identifiers, or unbucketed latency that could distinguish resource existence.
 - Authorization evidence means stable metadata such as outcome code, layer, policy class, freshness, watermark, correlation ID, task ID, actor safe identifier, and timestamp. It must not include raw claims, access tokens, membership inventories, folder names, repository names, branch names, file paths, file contents, provider payloads, exception text, or other sensitive values.
 - Bounded diagnostic read means a metadata-only, tenant-scoped, fixed-size diagnostic authorization path that can return only configured freshness/policy/correlation evidence and cannot construct or query resource-specific keys, provider/repository/file/workspace state, folder existence, ACL inventories, or raw exception details.
 - EventStore validators means the Folders-owned validation layer that decides whether the authenticated command/query envelope is allowed to reach an aggregate or projection. This story wires and tests the authorization-before-resource-access contract; aggregate business rules remain owned by their stories.
@@ -24,8 +25,8 @@ so that cross-tenant access is denied without enumeration or leakage.
 
 ## Acceptance Criteria
 
-1. Given any protected folder operation is executed through the domain service or REST host, when authorization starts, then the implementation evaluates the required decision trace in this order before resource access: `JwtValidation`, `EventStoreClaimTransform`, `TenantAccessFreshness`, `FolderAcl`, `EventStoreValidator`, and `DaprDenyByDefaultPolicy`; each denial short-circuits later layers and records only metadata-safe evidence for the layer that decided.
-2. Given authoritative tenant context is missing, mismatched, client-supplied, malformed, reserved as `system`, or competing across route, query, body, ordinary headers, forwarded headers, generated client arguments, metadata bags, or EventStore envelope fields, when authorization runs, then it returns safe denial before any protected resource touch, including constructing folder stream names, read-model keys, cache keys, idempotency records, diagnostics scopes, audit subjects, provider handles, repository references, workspace paths, lock keys, file paths, EventStore command envelopes, or Dapr invocation targets.
+1. Given any protected folder operation is executed through the domain service or REST host, when authorization starts, then the implementation evaluates the required decision trace in this order before resource access: `JwtValidation`, `EventStoreClaimTransform`, `TenantAccessFreshness`, `FolderAcl`, `EventStoreValidator`, and `DaprDenyByDefaultPolicy`; each denial short-circuits later layers and records one immutable metadata-safe authorization decision snapshot for the layer that decided.
+2. Given authoritative tenant context is missing, mismatched, client-supplied, malformed, reserved as `system`, or competing across route, query, body, ordinary headers, forwarded headers, generated client arguments, metadata bags, or EventStore envelope fields, when authorization runs, then every client-controlled tenant or principal value is treated only as comparison evidence and any mismatch returns safe denial before any protected resource touch, including constructing folder stream names, read-model keys, cache keys, idempotency records, diagnostics scopes, audit subjects, provider handles, repository references, workspace paths, lock keys, file paths, EventStore command envelopes, or Dapr invocation targets.
 3. Given JWT/authentication evidence is missing, invalid, expired, wrong issuer, wrong audience, unsigned, stale against configured clock skew, or lacks required subject/client identity, when authorization runs, then it returns the existing safe `401` denial shape and no downstream layer is evaluated.
 4. Given EventStore claim transform evidence is missing, malformed, tenant-mismatched, permission-missing, or principal-mismatched, when authorization runs, then it returns safe denial and does not query tenant projection, folder ACL, read models, EventStore streams, diagnostics, audit, provider state, repository state, workspace state, locks, files, or Dapr targets.
 5. Given Story 2.1 tenant-access projection evidence is disabled, unknown, stale beyond the configured freshness threshold, unavailable, malformed, future-dated, replay-conflicting, tenant-mismatched, or denied, when a protected operation is evaluated with a fakeable clock and explicit operation policy, then authorization fails closed with stable metadata-only evidence and no protected resource lookup.
@@ -33,9 +34,9 @@ so that cross-tenant access is denied without enumeration or leakage.
 7. Given EventStore validators reject an operation after earlier layers pass, when authorization returns the rejection, then the response and audit evidence use canonical safe categories without leaking aggregate state, stream existence, expected versions, event type names, validator exception text, or internal command payloads.
 8. Given Dapr deny-by-default policy evidence is missing, disabled, unavailable, mismatched for the target app ID, or not configured for the requested service invocation class, when authorization runs in an environment that requires Dapr policy evidence, then it fails closed before service invocation; when running offline unit tests, a deterministic fake evidence provider must prove the same decision contract without Dapr sidecars.
 9. Given authorization allows an operation, when downstream code receives the authorization result, then it contains only the minimal safe authorization context needed to continue: authoritative tenant ID, actor safe identifier, permitted action token, folder ID or opaque operation scope already authorized, correlation/task IDs, freshness/watermark evidence, and policy layer evidence.
-10. Given authorization denies an operation at any layer, when REST maps the result, then `401`, `403`, `404`, or `503` responses use the existing Contract Spine safe-denial or read-model-unavailable Problem Details shapes, share a single denial-mapping policy, preserve correlation IDs, omit resource-specific identifiers, and remain externally indistinguishable for cross-tenant, unauthorized same-tenant, not-found-to-caller, stale, unavailable, and policy-denied protected resources except for allowed canonical status/category differences.
-11. Given denied authorization produces audit, logs, traces, metrics, diagnostics, test output, Problem Details, generated client exceptions, or projection evidence, when metadata is inspected, then raw auth headers, JWTs, claim bags, provider tokens, credential material, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group names, role labels, membership inventories, tenant configuration payloads, raw request bodies, raw command/query bodies, unauthorized resource IDs, and exception text with sensitive values are absent.
-12. Given a query operation permits bounded stale reads by policy, when the tenant projection or permission read model is stale but within the documented diagnostic/read policy, then the response carries freshness metadata and the allowed operation class; given a mutation or strict read cannot prove freshness, it fails closed rather than falling back to aggregate scans, projection repair, provider calls, repository calls, audit queries, filesystem reads, unbounded diagnostics, or permissive defaults.
+10. Given authorization denies an operation at any layer, when REST maps the result, then `401`, `403`, `404`, or `503` responses use the existing Contract Spine safe-denial or read-model-unavailable Problem Details shapes, share a single denial-mapping policy, preserve correlation IDs, omit resource-specific identifiers, derive status/category only from the authorization decision snapshot and operation policy, and remain externally indistinguishable for cross-tenant, unauthorized same-tenant, not-found-to-caller, stale, unavailable, and policy-denied protected resources except for allowed canonical status/category differences.
+11. Given denied authorization produces audit, logs, traces, metrics, diagnostics, test output, Problem Details, generated client exceptions, or projection evidence, when metadata is inspected, then raw auth headers, JWTs, claim bags, provider tokens, credential material, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group names, role labels, membership inventories, tenant configuration payloads, raw request bodies, raw command/query bodies, unauthorized resource IDs, unbucketed timing/latency values, and exception text with sensitive values are absent.
+12. Given a query operation permits bounded stale reads by policy, when the tenant projection or permission read model is stale but within the documented diagnostic/read policy, then the response carries freshness metadata and the allowed operation class; given a mutation or strict read cannot prove freshness, it fails closed rather than falling back to aggregate scans, projection repair, provider calls, repository calls, audit queries, filesystem reads, cache/idempotency reuse, unbounded diagnostics, or permissive defaults.
 13. Given CLI, MCP, SDK, and REST adapters later consume the same capability, when this story completes, then the authorization result codes, canonical denial categories, action tokens, correlation propagation, and metadata fields are implemented in shared domain/server seams rather than copied into adapter-specific logic; this story only requires one production integration path plus contract-style conformance tests proving the result shape is adapter-consumable.
 14. Given tests run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider endpoints, initialized nested submodules, or live EventStore servers, when unit/server tests execute, then layer ordering, short-circuit behavior, safe denial mapping, Dapr policy evidence seam, EventStore validator rejection, stale/unavailable behavior, and metadata leakage boundaries are covered with in-memory fakes and spies.
 15. Given this story owns layered authorization enforcement only, when implementation is complete, then it does not implement ACL grant/revoke mutation, effective-permissions query semantics beyond consuming their evidence, folder creation, folder archive, provider readiness, repository binding, workspace preparation, locks, file mutation, commits, context query execution, audit browsing, CLI/MCP/UI commands, workers, production Dapr policy deployment, repair workflows, local-only folder mode, webhooks, brownfield adoption, or multi-organization-per-tenant behavior.
@@ -52,6 +53,10 @@ The canonical authorization order is:
 6. `DaprDenyByDefaultPolicy`
 
 Every implementation and test must use one ordered representation for layers, evidence, denial results, and response mapping. A denied layer must prevent all later layers and every protected resource touch. EventStore validators receive only safe authorization context and proposed operation descriptors, not materialized aggregate state, stream internals, or resource payloads.
+
+## Authorization Evidence Snapshot
+
+The layered evaluator must return exactly one authorization decision snapshot per protected operation attempt. A snapshot is either allowed or denied, never partially allowed. It carries the terminal layer, terminal outcome code, retryability, freshness class or watermark when allowed by policy, correlation ID, task ID, actor safe identifier, operation policy class, and a bounded timing bucket only when timing evidence cannot reveal resource existence. Per-request memoization or caches must be scoped by authoritative tenant, actor safe identifier, action token, operation policy, opaque folder or operation scope after authorization, and freshness watermark; stale, malformed, mismatched, or unavailable evidence must never be reused as allowed evidence.
 
 ## Denial Mapping Decision Table
 
@@ -72,11 +77,13 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
   - [ ] Model layer outcomes with stable lower-snake-case codes for allowed, authentication_denied, claim_transform_denied, tenant_access_denied, tenant_projection_stale, tenant_projection_unavailable, folder_acl_denied, folder_acl_stale, folder_acl_unavailable, eventstore_validator_denied, dapr_policy_denied, authorization_evidence_malformed, and safe_not_found.
   - [ ] Preserve the required layer order mechanically rather than relying on caller discipline.
   - [ ] Return a minimal safe allowed context for downstream operations and a minimal safe denial context for transport mapping.
+  - [ ] Emit exactly one immutable authorization decision snapshot per evaluation; malformed, unknown, or contradictory evidence must produce safe denial rather than an implicit allow or fallback.
+  - [ ] Scope any per-request memoization by authoritative tenant, actor safe identifier, action token, operation policy, authorized operation scope, and freshness watermark so decisions cannot bleed across tenants, principals, tasks, or stale evidence versions.
   - [ ] Include correlation ID and task ID propagation without making them authorization authority.
   - [ ] Keep behavior out of `Hexalith.Folders.Contracts`; only behavior-free DTOs may live there if an existing contract boundary requires them.
 - [ ] Wire authoritative identity and claim transform gates. (AC: 2, 3, 4)
   - [ ] Add input context types that separate authoritative tenant/principal evidence from route/body/query/header/generated-client comparison values.
-  - [ ] Reject mismatched tenant values before any protected key, path, target, partition, scope, diagnostics subject, audit subject, or stream name is constructed.
+  - [ ] Normalize and compare every route, query, body, ordinary header, forwarded header, generated-client argument, metadata bag, and EventStore envelope tenant or principal value before any protected key, path, target, partition, scope, diagnostics subject, audit subject, or stream name is constructed.
   - [ ] Integrate existing `TenantAccessAuthorizer` rather than creating a second tenant projection evaluator.
   - [ ] Add a narrow claim-transform evidence seam for EventStore `eventstore:tenant` and `eventstore:permission` data, with safe denial for malformed or absent evidence.
   - [ ] Keep raw claims, tokens, headers, and command bodies out of result/evidence objects.
@@ -96,8 +103,9 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
 - [ ] Map safe denial to server responses. (AC: 10, 11, 13)
   - [ ] Add server response mapping for authorization results in `Hexalith.Folders.Server` without changing Contract Spine shapes.
   - [ ] Centralize the status/category mapping in a shared mapper such as `FolderAuthorizationDenialMapper`, or a locally consistent equivalent, instead of duplicating per endpoint.
+  - [ ] Derive response status, retryability, clientAction, and category only from the authorization decision snapshot and operation policy; do not branch on resource lookup results, exception subtype, provider payload, or raw latency.
   - [ ] Reuse existing `SafeAuthorizationDenial401`, `SafeAuthorizationDenial403`, `SafeAuthorizationDenial404`, and `ReadModelUnavailable` response semantics.
-  - [ ] Ensure cross-tenant, not-found-to-caller, same-tenant unauthorized, stale, unavailable, EventStore validator denied, and Dapr policy denied paths do not disclose protected existence through body text, timing-sensitive branch behavior in tests, headers, diagnostic fields, or exception messages.
+  - [ ] Ensure cross-tenant, not-found-to-caller, same-tenant unauthorized, stale, unavailable, EventStore validator denied, and Dapr policy denied paths do not disclose protected existence through body text, timing-sensitive branch behavior in tests, headers, diagnostic fields, unbucketed elapsed durations, or exception messages.
   - [ ] Prove generated client exception shape is safe without hand-editing files under `src/Hexalith.Folders.Client/Generated/`.
   - [ ] Keep generated SDK files under `src/Hexalith.Folders.Client/Generated/` untouched.
 - [ ] Add tests and fixtures. (AC: 1-15)
@@ -106,8 +114,10 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
   - [ ] Add side-effect spies and key-factory spies proving each rejected layer prevents downstream layer evaluation, protected resource access, and protected key/path/target/scope construction.
   - [ ] Add matrix coverage for missing JWT, invalid JWT, tenant mismatch, requested tenant from each client-controlled ingress, claim-transform mismatch, each Story 2.1 tenant outcome, each folder ACL/effective-permission denial class, EventStore validator denial, Dapr policy unavailable, and allowed path.
   - [ ] Add separate stale/unavailable/timeout tests for tenant projection, folder permission evidence, EventStore validator evidence, Dapr policy evidence, mutation, strict read, and bounded diagnostic read policies.
+  - [ ] Add malformed, contradictory, future-dated, unknown-outcome, and duplicate-evidence tests proving each layer fails closed without later protected touches.
   - [ ] Add paired enumeration-control tests for nonexistent folder, unauthorized existing folder, wrong-tenant folder, same-tenant not-found-to-caller, stale authorization state, and unavailable authorization dependency.
   - [ ] Add same-identifier cross-tenant tests for folder IDs, task IDs, lock IDs, provider binding refs, repository binding refs, audit IDs, and cache/idempotency keys.
+  - [ ] Add authorization decision isolation tests proving decisions are not reused across tenants, principals, action tokens, task IDs, operation policy classes, stale freshness watermarks, or allowed-vs-denied evidence snapshots.
   - [ ] Add leakage sentinel tests with forbidden values in auth headers, claim bags, requested tenant values, principal metadata, folder ACL evidence, validator messages, Dapr policy evidence, exception messages, route values, query values, command payloads, and diagnostics sinks.
   - [ ] Add bounded diagnostic read tests proving only configured metadata fields are emitted, max count/size limits are enforced, and no folder/provider/repository/file/workspace resource is touched.
   - [ ] Add thin adapter-conformance tests proving the shared authorization result/denial shape can be consumed without duplicating authorization logic beyond the selected production integration path.
@@ -225,6 +235,7 @@ All denial responses, audit entries, logs, traces, metrics, generated-client exc
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-19 | Applied advanced-elicitation hardening for immutable decision snapshots, evidence isolation, fail-closed malformed evidence, safe response mapping inputs, and timing-leakage controls. | Codex |
 | 2026-05-18 | Applied party-mode hardening for authorization order contract, denial mapping table, protected-resource no-touch tests, freshness semantics, bounded diagnostics, and adapter scope. | Codex |
 | 2026-05-18 | Created story with layered authorization order, safe denial mapping, Dapr/EventStore evidence seams, resource-access short-circuiting, and offline leakage tests. | Codex |
 
@@ -242,6 +253,7 @@ GPT-5 Codex
 - Project context, Epic 2, PRD, architecture, Contract Spine safe denial shapes, Stories 2.1-2.5, current tenant authorization code/tests, recent commits, and story-creation lessons were reviewed.
 - Ultimate context engine analysis completed - comprehensive developer guide created.
 - Party-mode review completed on 2026-05-18T20:05:09+02:00 with Winston, Amelia, Murat, and John; coherent low-risk findings were applied inline.
+- Advanced elicitation completed on 2026-05-19T03:04:00+02:00; coherent low-risk hardening was applied inline and scope-changing proposals were deferred rather than added.
 
 ## Party-Mode Review
 
@@ -263,6 +275,26 @@ GPT-5 Codex
   - Added a `Deferred From Story 2.6` section to prevent scope creep into full adapter rollout, production Dapr deployment, diagnostics beyond bounded metadata, workers, provider/repository/workspace/file behavior, repair flows, permission UX, ACL mutation, and folder lifecycle behavior.
 - Findings deferred:
   - None requiring product or architecture decision after the inline denial mapping and bounded diagnostic constraints were added.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- ISO date and time: 2026-05-19T03:04:00+02:00
+- Selected story key: 2-6-enforce-layered-authorization-with-safe-denials
+- Command/skill invocation used: `/bmad-advanced-elicitation 2-6-enforce-layered-authorization-with-safe-denials`
+- Batch 1 method names: Security Audit Personas; Failure Mode Analysis; Pre-mortem Analysis; Self-Consistency Validation; Critique and Refine
+- Reshuffled Batch 2 method names: Red Team vs Blue Team; Chaos Monkey Scenarios; First Principles Analysis; 5 Whys Deep Dive; Architecture Decision Records
+- Findings summary:
+  - Security and failure-mode passes found that the story needed one immutable authorization decision snapshot so downstream response mapping cannot mix partial layer results or raw evidence.
+  - Pre-mortem and chaos passes identified decision reuse, stale freshness watermarks, malformed evidence, and unbucketed latency as plausible leakage or fail-open risks.
+  - Self-consistency and ADR passes confirmed the existing architecture remains correct when the evaluator centralizes evidence snapshots and keeps Contract Spine DTOs behavior-free.
+- Changes applied:
+  - Added the `Authorization decision snapshot` term and a dedicated `Authorization Evidence Snapshot` section.
+  - Tightened AC1, AC2, AC10, AC11, and AC12 for immutable snapshots, client-controlled evidence comparison, response mapping inputs, timing leakage, and cache/idempotency no-fallback behavior.
+  - Expanded tasks for fail-closed malformed evidence, decision isolation across tenants/principals/actions/tasks/freshness, safe response mapper inputs, and leakage-safe timing handling.
+  - Expanded tests for contradictory/unknown evidence, decision reuse boundaries, and stale freshness isolation.
+- Findings deferred:
+  - No product or architecture decisions were added; full cross-adapter rollout, production Dapr deployment, and diagnostics beyond bounded metadata remain deferred by the existing story scope.
 - Final recommendation: ready-for-dev
 
 ### File List
