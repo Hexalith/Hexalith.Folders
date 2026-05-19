@@ -1,5 +1,6 @@
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Queries.Folders;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -29,6 +30,17 @@ public static class FoldersServiceCollectionExtensions
 
         services.AddFoldersLayeredAuthorization();
         services.TryAddSingleton<EffectivePermissionsQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersLifecycleStatus(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddSingleton<IFolderLifecycleStatusReadModel, InMemoryFolderLifecycleStatusReadModel>();
+        services.TryAddSingleton<FolderLifecycleStatusQueryHandler>();
 
         return services;
     }

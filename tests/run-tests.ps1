@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("All", "Coverage", "Integration", "Testing")]
+    [ValidateSet("All", "Coverage", "Integration", "Testing", "UiE2E")]
     [string] $Mode = "All"
 )
 
@@ -22,6 +22,10 @@ switch ($Mode) {
     }
     "Testing" {
         $project = Join-Path $repoRoot "tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj"
+        & dotnet test $project
+    }
+    "UiE2E" {
+        $project = Join-Path $repoRoot "tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj"
         & dotnet test $project
     }
 }

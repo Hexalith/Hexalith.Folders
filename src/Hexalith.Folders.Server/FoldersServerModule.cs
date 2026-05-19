@@ -33,6 +33,7 @@ public static class FoldersServerModule
 
         services.AddDaprClient();
         services.AddFoldersEffectivePermissions();
+        services.AddFoldersLifecycleStatus();
         services.AddFoldersTenantEventProjection();
         services.AddHexalithTenants(options =>
         {

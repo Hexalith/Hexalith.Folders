@@ -37,6 +37,7 @@
     <Project Path="tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj" />
+    <Project Path="tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj" />

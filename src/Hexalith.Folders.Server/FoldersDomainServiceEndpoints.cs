@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
@@ -64,7 +65,84 @@ public static class FoldersDomainServiceEndpoints
         })
         .WithName("GetEffectivePermissions");
 
+        endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
+            string folderId,
+            HttpContext httpContext,
+            FolderLifecycleStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
+                new FolderLifecycleStatusQuery(
+                    folderId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence("read_metadata"),
+                    correlationId,
+                    TaskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"),
+                    ClientControlledTenantValues: ClientTenantIds(httpContext),
+                    ClientControlledPrincipalValues: ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            AddLifecycleHeaders(httpContext, result);
+            return ToHttpResult(result, correlationId);
+        })
+        .WithName("GetFolderLifecycleStatus");
+
         return endpoints;
+    }
+
+    private static IResult ToHttpResult(FolderLifecycleStatusQueryResult result, string? correlationId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        return result.Code switch
+        {
+            FolderLifecycleStatusResultCode.Allowed => Results.Json(
+                new FolderLifecycleStatusResponse(
+                    result.FolderId ?? string.Empty,
+                    result.LifecycleState ?? "inaccessible",
+                    result.Archived,
+                    result.RepositoryBindingId,
+                    result.ProviderBindingRef,
+                    new FreshnessMetadataResponse(
+                        result.Freshness.ReadConsistency,
+                        result.Freshness.ObservedAt,
+                        result.Freshness.ProjectionWatermark,
+                        result.Freshness.Stale)),
+                ResponseJsonOptions),
+            FolderLifecycleStatusResultCode.AuthenticationRequired => SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId),
+            FolderLifecycleStatusResultCode.NotFoundSafe => SafeProblem(
+                StatusCodes.Status404NotFound,
+                category: "not_found_to_caller",
+                code: "safe_not_found",
+                retryable: false,
+                correlationId: correlationId),
+            FolderLifecycleStatusResultCode.ReadModelUnavailable
+                or FolderLifecycleStatusResultCode.ProjectionStale => SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId),
+            _ => SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "authorization_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId),
+        };
     }
 
     private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
@@ -154,6 +232,24 @@ public static class FoldersDomainServiceEndpoints
             ["forwarded_tenant_id"] = ReadHeader(httpContext, "X-Forwarded-Tenant"),
         };
 
+    private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
+        => new Dictionary<string, string?>(StringComparer.Ordinal)
+        {
+            ["query_principal_id"] = ReadQuery(httpContext, "principalId"),
+            ["header_principal_id"] = ReadHeader(httpContext, "X-Principal-Id"),
+            ["forwarded_principal_id"] = ReadHeader(httpContext, "X-Forwarded-Principal"),
+        };
+
+    private static void AddLifecycleHeaders(HttpContext httpContext, FolderLifecycleStatusQueryResult result)
+    {
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+        }
+
+        httpContext.Response.Headers["X-Hexalith-Freshness"] = result.Freshness.ReadConsistency;
+    }
+
     private static string? ReadHeader(HttpContext httpContext, string name)
         => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
 
@@ -183,6 +279,14 @@ public static class FoldersDomainServiceEndpoints
         string FolderId,
         IReadOnlyList<string> Permissions,
         string AuthorizationOutcome,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record FolderLifecycleStatusResponse(
+        string FolderId,
+        string LifecycleState,
+        bool Archived,
+        string? RepositoryBindingId,
+        string? ProviderBindingRef,
         FreshnessMetadataResponse Freshness);
 
     private sealed record FreshnessMetadataResponse(

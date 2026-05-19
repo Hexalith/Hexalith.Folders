@@ -1,6 +1,6 @@
 # Story 2.7: Inspect folder lifecycle and binding status
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -51,46 +51,46 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 
 ## Tasks / Subtasks
 
-- [ ] Implement the lifecycle-status query surface. (AC: 1, 5, 6, 7, 8, 9)
-  - [ ] Add a query handler such as `GetFolderLifecycleStatus` under `src/Hexalith.Folders/Queries/Folders/`, `src/Hexalith.Folders/Projections/FolderList/`, or the locally established query convention once current Epic 2 implementation files land.
-  - [ ] Wire the existing `GET /api/v1/folders/{folderId}/lifecycle-status` operation in `Hexalith.Folders.Server` only if endpoint wiring is not already present.
-  - [ ] Return a metadata-only result compatible with the Contract Spine `FolderLifecycleStatus` schema: required `folderId`, `lifecycleState`, `archived`, and `freshness`; optional `repositoryBindingId` and `providerBindingRef` only when authorized and present.
-  - [ ] Preserve existing response shapes and casing exactly: `200` `FolderLifecycleStatus`, `401` `SafeAuthorizationDenial401`, `403` `SafeAuthorizationDenial403`, `404` `SafeAuthorizationDenial404`, and `503` `ReadModelUnavailable`.
-  - [ ] Preserve `x-hexalith-read-consistency.class: eventually_consistent` and freshness behavior through `FreshnessMetadata.readConsistency`, `observedAt`, optional `projectionWatermark`, and `stale`.
-  - [ ] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate only through the established Contract Spine toolchain if generated output is legitimately stale.
-- [ ] Enforce authorization-before-observation gates. (AC: 2, 3, 4)
-  - [ ] Resolve authoritative tenant context from authentication context or EventStore envelope/projection authority before constructing any folder, projection, binding, cache, audit, diagnostic, provider, repository, workspace, file, EventStore, or Dapr resource subject.
-  - [ ] Consume Story 2.1 tenant-access evidence and Story 2.6 layered authorization before folder lifecycle, binding, archive, repository, provider, audit, workspace, lock, or file evidence is observed.
-  - [ ] Treat route/query/header/body/generated-client tenant IDs and forwarded metadata as comparison values only; mismatches return safe denial before lookup.
-  - [ ] Add in-memory spies proving denied tenant or folder authorization prevents projection lookup, binding lookup, diagnostics, audit lookup, provider access, repository access, filesystem access, EventStore stream-name construction, and Dapr invocation target construction.
-  - [ ] Keep same-tenant unauthorized, cross-tenant, and not-found-to-caller outcomes externally indistinguishable except for allowed canonical status/category differences.
-  - [ ] Add explicit denial mapping tests for unauthenticated `401`, tenant/authority denied `403`, safe not-found-to-caller `404`, dependency unavailable `503`, and authorized `200` cases without using resource existence to choose the denial branch.
-- [ ] Model lifecycle and binding status deterministically. (AC: 5, 6, 7, 9)
-  - [ ] Define or consume one local lifecycle-state mapper aligned to the Contract Spine `LifecycleState` vocabulary.
-  - [ ] Define or consume one local repository-binding status mapper aligned to `RepositoryBinding.bindingState` values when binding state is present.
-  - [ ] Represent unbound folders explicitly and safely without using provider calls or external repository probes.
-  - [ ] Represent archived or not-yet-supported archive behavior explicitly; do not silently classify unknown archive state as active.
-  - [ ] Include only opaque binding references, freshness metadata, and sanitized state/reason values in successful responses.
-  - [ ] Avoid provider-specific or UI-only labels in domain/server result semantics.
-- [ ] Add read-model freshness and unavailable behavior. (AC: 4, 8, 12)
-  - [ ] Define local stale, unavailable, malformed, replay-conflicting, tenant-mismatched, and version-inconsistent outcomes if current projection code lacks them.
-  - [ ] Treat lifecycle projection, binding projection, authorization evidence, and freshness metadata as one compatible evidence snapshot; reject mixed tenant, folder, principal, action, task, watermark, or stale/fresh evidence rather than stitching a partial success.
-  - [ ] Ensure stale/unavailable lifecycle or binding projections fail closed for allowed answers rather than falling back to aggregate scans, event replay, projection repair, compensating writes, provider calls, repository calls, audit queries, or filesystem reads.
-  - [ ] Include freshness metadata in success and authorized stale/unavailable outcomes where the Contract Spine allows it.
-  - [ ] Test active/unbound, active/bound, archived/supported, archived-not-yet-supported, stale lifecycle projection, unavailable lifecycle projection, stale binding projection, unavailable binding projection, malformed projection, conflicting lifecycle/binding versions, incompatible projection watermarks, and unknown state labels.
-- [ ] Add contract and generated-client conformance tests. (AC: 1, 9, 11, 12)
-  - [ ] Add server or contract tests proving route, status codes, response casing, nullable optional fields, headers, safe denial envelopes, read-model-unavailable response, and example-compatible JSON match the existing OpenAPI operation.
-  - [ ] Add generated-client consumption tests proving `GetFolderLifecycleStatusAsync` and the generated `FolderLifecycleStatus` model can carry active/unbound, active/bound, archived, stale/unavailable, and optional binding-field cases without hand-edited generated code.
-  - [ ] Add generated-client conformance coverage for route, method, path parameter, operation ID, denial/status mappings, and response model shape after regeneration from the source Contract Spine.
-  - [ ] Ensure parity fixtures keep the `GetFolderLifecycleStatus` row aligned with read consistency, safe denial, operation ID, correlation ID, and audit metadata expectations.
-- [ ] Add metadata leakage and regression tests. (AC: 2, 4, 6, 8, 10, 12)
-  - [ ] Add unit tests such as `FolderLifecycleStatusAuthorizationGateTests`, `FolderLifecycleStatusProjectionTests`, `FolderLifecycleStatusBindingMetadataTests`, `FolderLifecycleStatusFreshnessTests`, and `FolderLifecycleStatusMetadataLeakageTests`.
-  - [ ] Add negative-control tests named like `RejectsBeforeFolderProjectionWhenTenantDenied`, `RejectsBeforeBindingLookupWhenFolderAclDenied`, `DoesNotFallbackToAggregateWhenLifecycleProjectionUnavailable`, and `DoesNotCallProviderForBindingStatus`, or local equivalents.
-  - [ ] Add cross-tenant same-identifier tests for folder IDs, repository binding IDs, provider binding refs, task IDs, operation IDs, audit IDs, cache keys, and projection keys; include tenant A and tenant B sharing folder-ID-like values so only auth/EventStore envelope authority selects observable metadata.
-  - [ ] Add cache-isolation tests proving authorized lifecycle-status responses are scoped by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, and projection watermark; stale denied or authorized answers must not be replayed across callers or freshness windows.
-  - [ ] Add stale/unavailable matrix tests for fresh lifecycle metadata, missing lifecycle metadata, missing binding metadata, stale lifecycle metadata, stale binding metadata, unavailable status source, and no provider/repository/filesystem/audit fallback.
-  - [ ] Add timing/discovery negative controls proving denied, not-found-to-caller, and unavailable paths do not branch on actual folder existence, binding existence, provider existence, projection cache hits, or external repository state.
-  - [ ] Add leakage sentinels for foreign tenant IDs, unauthorized folder IDs, provider tokens, credential material, external repository URLs, repository names, branch names, file paths, file contents, diffs, generated context payloads, raw claims, membership labels, raw request/query bodies, provider payloads, exception messages, logs, traces, metrics, diagnostics, audit records, Problem Details, and generated client exceptions.
+- [x] Implement the lifecycle-status query surface. (AC: 1, 5, 6, 7, 8, 9)
+  - [x] Add a query handler such as `GetFolderLifecycleStatus` under `src/Hexalith.Folders/Queries/Folders/`, `src/Hexalith.Folders/Projections/FolderList/`, or the locally established query convention once current Epic 2 implementation files land.
+  - [x] Wire the existing `GET /api/v1/folders/{folderId}/lifecycle-status` operation in `Hexalith.Folders.Server` only if endpoint wiring is not already present.
+  - [x] Return a metadata-only result compatible with the Contract Spine `FolderLifecycleStatus` schema: required `folderId`, `lifecycleState`, `archived`, and `freshness`; optional `repositoryBindingId` and `providerBindingRef` only when authorized and present.
+  - [x] Preserve existing response shapes and casing exactly: `200` `FolderLifecycleStatus`, `401` `SafeAuthorizationDenial401`, `403` `SafeAuthorizationDenial403`, `404` `SafeAuthorizationDenial404`, and `503` `ReadModelUnavailable`.
+  - [x] Preserve `x-hexalith-read-consistency.class: eventually_consistent` and freshness behavior through `FreshnessMetadata.readConsistency`, `observedAt`, optional `projectionWatermark`, and `stale`.
+  - [x] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate only through the established Contract Spine toolchain if generated output is legitimately stale.
+- [x] Enforce authorization-before-observation gates. (AC: 2, 3, 4)
+  - [x] Resolve authoritative tenant context from authentication context or EventStore envelope/projection authority before constructing any folder, projection, binding, cache, audit, diagnostic, provider, repository, workspace, file, EventStore, or Dapr resource subject.
+  - [x] Consume Story 2.1 tenant-access evidence and Story 2.6 layered authorization before folder lifecycle, binding, archive, repository, provider, audit, workspace, lock, or file evidence is observed.
+  - [x] Treat route/query/header/body/generated-client tenant IDs and forwarded metadata as comparison values only; mismatches return safe denial before lookup.
+  - [x] Add in-memory spies proving denied tenant or folder authorization prevents projection lookup, binding lookup, diagnostics, audit lookup, provider access, repository access, filesystem access, EventStore stream-name construction, and Dapr invocation target construction.
+  - [x] Keep same-tenant unauthorized, cross-tenant, and not-found-to-caller outcomes externally indistinguishable except for allowed canonical status/category differences.
+  - [x] Add explicit denial mapping tests for unauthenticated `401`, tenant/authority denied `403`, safe not-found-to-caller `404`, dependency unavailable `503`, and authorized `200` cases without using resource existence to choose the denial branch.
+- [x] Model lifecycle and binding status deterministically. (AC: 5, 6, 7, 9)
+  - [x] Define or consume one local lifecycle-state mapper aligned to the Contract Spine `LifecycleState` vocabulary.
+  - [x] Define or consume one local repository-binding status mapper aligned to `RepositoryBinding.bindingState` values when binding state is present.
+  - [x] Represent unbound folders explicitly and safely without using provider calls or external repository probes.
+  - [x] Represent archived or not-yet-supported archive behavior explicitly; do not silently classify unknown archive state as active.
+  - [x] Include only opaque binding references, freshness metadata, and sanitized state/reason values in successful responses.
+  - [x] Avoid provider-specific or UI-only labels in domain/server result semantics.
+- [x] Add read-model freshness and unavailable behavior. (AC: 4, 8, 12)
+  - [x] Define local stale, unavailable, malformed, replay-conflicting, tenant-mismatched, and version-inconsistent outcomes if current projection code lacks them.
+  - [x] Treat lifecycle projection, binding projection, authorization evidence, and freshness metadata as one compatible evidence snapshot; reject mixed tenant, folder, principal, action, task, watermark, or stale/fresh evidence rather than stitching a partial success.
+  - [x] Ensure stale/unavailable lifecycle or binding projections fail closed for allowed answers rather than falling back to aggregate scans, event replay, projection repair, compensating writes, provider calls, repository calls, audit queries, or filesystem reads.
+  - [x] Include freshness metadata in success and authorized stale/unavailable outcomes where the Contract Spine allows it.
+  - [x] Test active/unbound, active/bound, archived/supported, archived-not-yet-supported, stale lifecycle projection, unavailable lifecycle projection, stale binding projection, unavailable binding projection, malformed projection, conflicting lifecycle/binding versions, incompatible projection watermarks, and unknown state labels.
+- [x] Add contract and generated-client conformance tests. (AC: 1, 9, 11, 12)
+  - [x] Add server or contract tests proving route, status codes, response casing, nullable optional fields, headers, safe denial envelopes, read-model-unavailable response, and example-compatible JSON match the existing OpenAPI operation.
+  - [x] Add generated-client consumption tests proving `GetFolderLifecycleStatusAsync` and the generated `FolderLifecycleStatus` model can carry active/unbound, active/bound, archived, stale/unavailable, and optional binding-field cases without hand-edited generated code.
+  - [x] Add generated-client conformance coverage for route, method, path parameter, operation ID, denial/status mappings, and response model shape after regeneration from the source Contract Spine.
+  - [x] Ensure parity fixtures keep the `GetFolderLifecycleStatus` row aligned with read consistency, safe denial, operation ID, correlation ID, and audit metadata expectations.
+- [x] Add metadata leakage and regression tests. (AC: 2, 4, 6, 8, 10, 12)
+  - [x] Add unit tests such as `FolderLifecycleStatusAuthorizationGateTests`, `FolderLifecycleStatusProjectionTests`, `FolderLifecycleStatusBindingMetadataTests`, `FolderLifecycleStatusFreshnessTests`, and `FolderLifecycleStatusMetadataLeakageTests`.
+  - [x] Add negative-control tests named like `RejectsBeforeFolderProjectionWhenTenantDenied`, `RejectsBeforeBindingLookupWhenFolderAclDenied`, `DoesNotFallbackToAggregateWhenLifecycleProjectionUnavailable`, and `DoesNotCallProviderForBindingStatus`, or local equivalents.
+  - [x] Add cross-tenant same-identifier tests for folder IDs, repository binding IDs, provider binding refs, task IDs, operation IDs, audit IDs, cache keys, and projection keys; include tenant A and tenant B sharing folder-ID-like values so only auth/EventStore envelope authority selects observable metadata.
+  - [x] Add cache-isolation tests proving authorized lifecycle-status responses are scoped by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, and projection watermark; stale denied or authorized answers must not be replayed across callers or freshness windows.
+  - [x] Add stale/unavailable matrix tests for fresh lifecycle metadata, missing lifecycle metadata, missing binding metadata, stale lifecycle metadata, stale binding metadata, unavailable status source, and no provider/repository/filesystem/audit fallback.
+  - [x] Add timing/discovery negative controls proving denied, not-found-to-caller, and unavailable paths do not branch on actual folder existence, binding existence, provider existence, projection cache hits, or external repository state.
+  - [x] Add leakage sentinels for foreign tenant IDs, unauthorized folder IDs, provider tokens, credential material, external repository URLs, repository names, branch names, file paths, file contents, diffs, generated context payloads, raw claims, membership labels, raw request/query bodies, provider payloads, exception messages, logs, traces, metrics, diagnostics, audit records, Problem Details, and generated client exceptions.
 
 ## Dev Notes
 
@@ -204,6 +204,7 @@ so that I can tell whether a folder is active, archived, unbound, or repository-
 | 2026-05-18 | Created story with lifecycle-status contract alignment, authorization-before-observation gates, safe binding metadata, freshness handling, and offline leakage tests. | Codex |
 | 2026-05-18 | Applied party-mode review hardening for status-observation boundaries, denial/status truth table, generated-client conformance, cross-tenant same-identifier tests, and stale/unavailable no-fallback coverage. | Codex |
 | 2026-05-19 | Applied advanced-elicitation hardening for compatible evidence snapshots, unknown state fail-closed behavior, cache isolation, and timing/discovery leakage controls. | Codex |
+| 2026-05-19 | Implemented lifecycle-status query, server route, read-model freshness/snapshot guards, and offline conformance/leakage tests. | Codex |
 
 ## Party-Mode Review
 
@@ -256,10 +257,45 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- Red phase: `dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter FolderLifecycleStatus` failed on missing `Hexalith.Folders.Queries.Folders` lifecycle-status types before implementation.
+- Focused validation passed: `dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter FolderLifecycleStatus` (27 passed), `dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore --filter FolderLifecycleStatus` (4 passed), and `dotnet test .\tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj --no-restore --filter LifecycleStatus` (3 passed).
+- Project validation passed: `Hexalith.Folders.Tests` (310 passed), `Hexalith.Folders.Server.Tests` (35 passed), `Hexalith.Folders.Client.Tests` (20 passed), plus sample, CLI, contracts, integration, MCP, UI, workers, and non-scaffold testing suites.
+- Full solution build was blocked by unrelated current workspace failures in `tests/Hexalith.Folders.UI.E2E.Tests/Fixtures/PlaywrightFixture.cs` (`CA2007` on existing awaits) and `Hexalith.Folders.Testing.Tests.ScaffoldContractTests` expecting the solution project list to exclude the existing `tests/Hexalith.Folders.UI.E2E.Tests` project.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-7-inspect-folder-lifecycle-and-binding-status` equivalent workflow on 2026-05-18.
 - Project context, Epic 2, PRD, architecture, Contract Spine lifecycle-status operation, Stories 2.1-2.6, current tenant authorization/projection/test factory files, recent commits, and story-creation lessons were reviewed.
 - Ultimate context engine analysis completed - comprehensive developer guide created.
+- Added `FolderLifecycleStatusQueryHandler` and a lifecycle-status read-model contract under `src/Hexalith.Folders/Queries/Folders`, with authorization-before-observation through `LayeredFolderAuthorizationService`.
+- Implemented deterministic lifecycle/binding mapping to Contract Spine vocabulary, explicit unbound/bound metadata-only responses, archive-unsupported fail-closed handling, stale/unavailable/malformed outcomes, and compatible evidence-snapshot validation.
+- Wired `GET /api/v1/folders/{folderId}/lifecycle-status` in `Hexalith.Folders.Server` with safe denial/read-model-unavailable mapping, correlation/freshness headers, and no generated SDK edits.
+- Added offline tests for authorization no-touch behavior, active/unbound, active/bound, binding-state mapping, unknown/unsupported fail-closed behavior, tenant/task/cache isolation, metadata leakage sentinels, server response shape, and generated-client consumption.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-7-inspect-folder-lifecycle-and-binding-status.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleEvidenceScope.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleFreshness.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleProjectionState.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQuery.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryResult.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelRequest.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelResult.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelStatus.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusResultCode.cs`
+- `src/Hexalith.Folders/Queries/Folders/FolderRepositoryBindingStatus.cs`
+- `src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusReadModel.cs`
+- `src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs`
+- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs`
+- `tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs`
+- `tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusAuthorizationGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs`
+- `tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs`
+- `tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs`

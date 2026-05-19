@@ -8,6 +8,13 @@ lastSaved: '2026-05-19'
 
 ## Step 01 - Preflight
 
+### 2026-05-19 Playwright Lane Preparation
+
+- Scope change: Jerome selected `C 1+2` — Create mode with goals (1) reaffirm the xUnit v3 backend baseline and (2) **prepare the Playwright lane** for the read-only operations console without writing tests yet.
+- Preflight finding: prior runs (2026-05-12 and 2026-05-19 AM) had already deferred Playwright. Re-checked and confirmed `Microsoft.Playwright` was missing from `Directory.Packages.props`, no `tests/Hexalith.Folders.UI.E2E.Tests` project existed, and no install script lived under `tests/`. The lane was genuinely absent, so preparation work has real value rather than churn.
+- Sprint state still confirms the deferral rationale: Epic 6 (operations console) is entirely in `backlog`; story 6-2 (`scaffold-frontcomposer-hosted-read-only-operations-console`) has not started.
+- Decision: prepare the lane — central package pin, test project scaffold with a Playwright fixture, install script, route/selector contract document, and runner-script wiring — but keep the only test method `[Fact(Skip = "...")]` until Epic 6 ships a real UI.
+
 ### 2026-05-19 Preflight Refresh
 
 - Configured `test_stack_type`: `auto`.
@@ -59,6 +66,13 @@ lastSaved: '2026-05-19'
 Proceed to framework selection. Risk calculation: default to a .NET-first test architecture with xUnit v3 and Aspire/Testcontainers as the blocking lane; add Playwright only for read-only operations-console smoke/accessibility checks when UI workflows become testable. Cypress is not favored because the repo is not a JavaScript frontend app and already follows .NET/Aspire conventions.
 
 ## Step 02 - Framework Selection
+
+### 2026-05-19 Playwright Lane Preparation
+
+- Selection unchanged for the blocking lane: xUnit v3 (3.2.2) remains primary, with Shouldly, NSubstitute, Testcontainers, `Microsoft.AspNetCore.Mvc.Testing`, `Aspire.Hosting.Testing`, `coverlet.collector`, `YamlDotNet` as supporting infrastructure.
+- Adjunct selection finalized: **Microsoft.Playwright 1.59.0** (current stable per nuget.org as of 2026-05-19) is now the chosen browser automation library for the read-only operations console. Cypress remains rejected — no JavaScript frontend in the Hexalith.Folders root, no convention, no risk reduction.
+- Rationale for `Microsoft.Playwright` over `Microsoft.Playwright.MSTest` / `Microsoft.Playwright.NUnit`: the project standardizes on xUnit v3 across every other test project. Introducing a parallel runner just for E2E would add cognitive load with no upside; xUnit fixtures (`IAsyncLifetime`, `ICollectionFixture`) cover the same `PageTest`-style auto-fixturing once the host fixture is in place.
+- Lane is **deferred-active**: project compiles and is discovered, but the only test is `[Fact(Skip = "...")]` until Epic 6 story 6-2 ships an operations console host. This avoids writing flake-prone E2E tests against a moving target.
 
 ### 2026-05-19 Selection Refresh
 
@@ -140,6 +154,28 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 - Flakiness risk increases if Dapr/Aspire/provider behavior is tested primarily through UI. Keep browser tests thin and let lower levels carry the load.
 
 ## Step 03 - Scaffold Framework
+
+### 2026-05-19 Playwright Lane Preparation
+
+- Files created:
+  - `tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj` — xUnit v3 test project with `Microsoft.Playwright`, `Microsoft.NET.Test.Sdk`, `Shouldly`, `xunit.v3`, `xunit.runner.visualstudio`, `coverlet.collector`, plus a project reference to `Hexalith.Folders.Testing`. `IsPackable=false` and `RootNamespace=Hexalith.Folders.UI.E2E.Tests`.
+  - `tests/Hexalith.Folders.UI.E2E.Tests/Fixtures/PlaywrightFixture.cs` — `IAsyncLifetime` collection fixture owning `IPlaywright` + headless `IBrowser`. Missing-browser surfaces an actionable `InvalidOperationException` pointing at `install-playwright.ps1` rather than hanging or throwing an opaque `PlaywrightException`.
+  - `tests/Hexalith.Folders.UI.E2E.Tests/Fixtures/PlaywrightCollection.cs` — xUnit `[CollectionDefinition("Playwright")]` so the fixture initializes once per test run.
+  - `tests/Hexalith.Folders.UI.E2E.Tests/Smoke/OperationsConsolePlaceholderSmokeTests.cs` — one `[Fact(Skip = "Pending Epic 6 story 6-2 ...")]` method. Reports as Skipped in test runs so the lane is visible without burning CI cycles.
+  - `tests/Hexalith.Folders.UI.E2E.Tests/README.md` — route + selector contract, when-to-enable rules, network/wait/accessibility/redaction discipline, project layout, and knowledge references. This file is the authoritative pre-Epic-6 contract for anyone adding a UI test.
+  - `tests/install-playwright.ps1` — bootstrap script that builds the UI E2E project to materialize the Playwright runtime, then locates and invokes the generated `playwright.ps1 install` for Chromium. `-SkipBuild` flag for CI scenarios where the build is already current.
+- Files updated:
+  - `Directory.Packages.props` — added `<PackageVersion Include="Microsoft.Playwright" Version="1.59.0" />` under the `Testing` ItemGroup.
+  - `Hexalith.Folders.slnx` — registered the new project under `/tests/` immediately before `Hexalith.Folders.UI.Tests`.
+- Patterns applied:
+  - Lazy fixture initialization with explicit, actionable error mapping (matches `confidence-gate.md` and `selector-resilience.md` guidance — fail loudly, fail informatively).
+  - Network-first discipline documented in the project README rather than enforced by infrastructure that nothing yet calls. When the first real test arrives, the dev follows the contract or fails review.
+  - `data-testid` is mandated as the only allowed primary selector strategy — pre-empting a class of flake before any test exists to demonstrate it.
+  - Placeholder smoke test is explicitly named and skipped, not silently absent. Skipped tests show up in CI reports; "no tests" silently hides the deferral.
+- Patterns explicitly **not** applied yet:
+  - No host fixture (`OperationsConsoleHostFixture`) created — Epic 6 must define what "operations console host" means before we can wire `DistributedApplicationTestingBuilder` or `WebApplicationFactory<TEntryPoint>` for it. Creating an empty placeholder would just be dead code.
+  - No accessibility scanner package selected. `Deque.AxeCore.Playwright` is the most likely choice but will be locked in when the first real page-level test lands.
+  - No routes constants file. Story 6-2 must produce the route inventory; the test project consumes it then.
 
 ### 2026-05-19 Scaffold Refresh
 
@@ -249,6 +285,19 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 
 ## Step 04 - Documentation And Scripts
 
+### 2026-05-19 Playwright Lane Preparation
+
+- `tests/README.md` updates:
+  - Added `UiE2E` to the helper-script invocation list.
+  - Reworded the debugging note: removed the "add Playwright only when ..." admonition (it has now been done — lane is added, tests are deferred); replaced with "the UI E2E lane is wired but its only test is skipped pending Epic 6 story 6-2."
+  - Expanded the "best practices" bullet on browser tests to point at `tests/Hexalith.Folders.UI.E2E.Tests/README.md` as the authoritative route/selector contract.
+  - Added a new section **UI End-to-End Lane (deferred until Epic 6)** under the existing knowledge-reference section: bootstrap command (`pwsh .\tests\install-playwright.ps1`), local execution command, and contract pointer.
+- `tests/run-tests.ps1` updates:
+  - Added `UiE2E` to the `ValidateSet` and a matching `switch` case that runs `dotnet test` against `tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj`.
+- New script:
+  - `tests/install-playwright.ps1` — see Step 03 entry.
+- `tests/Hexalith.Folders.UI.E2E.Tests/README.md` is the single source of truth for the UI E2E contract; the root `tests/README.md` links to it rather than duplicating it.
+
 ### 2026-05-19 Documentation Refresh
 
 ### Documentation Checked
@@ -302,6 +351,43 @@ Proceed to framework selection. Risk calculation: default to a .NET-first test a
 - `powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-tests.ps1 -Mode Testing` passed: 14 tests.
 
 ## Step 05 - Validate And Summary
+
+### 2026-05-19 Playwright Lane Preparation
+
+#### Verification Commands
+
+- `dotnet restore Hexalith.Folders.slnx` — passed. `Hexalith.Folders.UI.E2E.Tests` restored cleanly with `Microsoft.Playwright 1.59.0` and the existing testing package set. 38 of 39 projects were up-to-date for restore (single new project added).
+- `dotnet build tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj --no-restore` — passed: 0 warnings, 0 errors after the CA2007 fix below.
+- `dotnet test tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj --no-build` — passed: 1 test discovered, 1 skipped, 0 failed. The placeholder reports as `[SKIP]` with the Epic 6 deferral reason.
+
+#### Build Issue Resolved
+
+- Initial build failed with three `CA2007: Consider calling ConfigureAwait on the awaited task` errors in `PlaywrightFixture.cs` (`TreatWarningsAsErrors=true` promotes CA2007 to error). Resolved by adding `.ConfigureAwait(false)` to the three awaits in `InitializeAsync` and `DisposeAsync`. Chose the explicit-per-await fix over a `tests/Directory.Build.props` `NoWarn` entry because: (1) the cause was a fixture-specific code path, (2) the sibling-module suppression pattern in Hexalith.Tenants / Hexalith.EventStore tests would mask future cases for the rest of the test surface, and (3) explicit configuration in async library-style code is a defensible default even in test infrastructure.
+
+#### Acceptance Criteria
+
+- Microsoft.Playwright centralized: passed (`Directory.Packages.props` updated).
+- New test project compiles under `TreatWarningsAsErrors=true`, `Nullable=enable`, `ImplicitUsings=enable`: passed.
+- Solution shape preserved: passed (`Hexalith.Folders.slnx` includes the new project alongside `Hexalith.Folders.UI.Tests`).
+- Placeholder smoke test discoverable and skipped (not silently absent, not running, not failing): passed.
+- Bootstrap script idempotent and parameterized: passed (`-Browser`, `-SkipBuild`).
+- Helper-script integration: passed (`run-tests.ps1 -Mode UiE2E`).
+- Route/selector contract documented and authoritative: passed (`tests/Hexalith.Folders.UI.E2E.Tests/README.md`).
+- Existing test projects unaffected: confirmed by spot build of `Hexalith.Folders.Testing.Tests` reporting "Build succeeded." with no regressions.
+- No production code modified: confirmed.
+- No tests written against unstable contracts: confirmed — only the deliberately-skipped placeholder exists.
+
+#### Open Follow-Ups (Not Applied)
+
+- When Epic 6 story 6-2 lands the operations console host: add `OperationsConsoleHostFixture` (likely backed by `DistributedApplicationTestingBuilder` from `Aspire.Hosting.Testing`), an accessibility scanner package, and the first real route smoke. Replace the placeholder test rather than adding new ones beside it.
+- Consider wiring the UI E2E lane into a separate, non-blocking CI job when the first real test ships. Trace + screenshot + video on failure only; do not retry above the Playwright default to keep flake visible.
+- If team wants `tests/Directory.Build.props` matching Hexalith.Tenants / Hexalith.EventStore convention (suppressing CA2007, xUnit1051 across all test projects), surface as a separate, opinionated change — out of scope here.
+
+#### Next Workflows (Recommended)
+
+- `TD` — Test Design on the in-flight effective-permissions surface (story 2-5 area) or the upcoming story 2-7 lifecycle/binding scope, where the risk score is meaningfully higher than UI scaffolding.
+- `RV` — Review Tests on `tests/Hexalith.Folders.Tests/Authorization/*` before story 2-7 merges, to lock in isolation and DoD discipline on a high-risk area.
+- `CI` — wire the existing focused governance gate scripts plus the UI E2E lane (non-blocking, deferred-active) into the pipeline shape.
 
 ### 2026-05-19 Validation Refresh
 
