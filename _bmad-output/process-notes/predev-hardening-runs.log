@@ -192,3 +192,4 @@
 2026-05-19T03:04:00+02:00	advanced-elicitation	2-6-enforce-layered-authorization-with-safe-denials	ok	recorded advanced elicitation trace and applied immutable decision snapshot, evidence isolation, fail-closed malformed evidence, safe mapper input, and timing-leakage hardening
 2026-05-19T04:01:58+02:00	advanced-elicitation	2-7-inspect-folder-lifecycle-and-binding-status	ok	recorded advanced elicitation trace and applied compatible evidence snapshot, unknown state fail-closed, cache isolation, and timing/discovery leakage hardening
 2026-05-19T05:02:50+02:00	advanced-elicitation	2-8-archive-folders-with-audit-preservation	ok	recorded advanced elicitation trace and applied compatible archive decision snapshot, fail-closed evidence handling, cache/idempotency scoping, and timing/discovery leakage hardening
+2026-05-19T06:02:32.5297849+02:00	none	-	none	ready buffer satisfied and all ready stories already have party-mode and advanced-elicitation traces
