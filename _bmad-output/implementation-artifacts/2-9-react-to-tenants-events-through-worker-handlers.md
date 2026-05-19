@@ -1,0 +1,200 @@
+# Story 2.9: React to Tenants events through Worker handlers
+
+Status: ready-for-dev
+
+<!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
+
+## Story
+
+As a system component,
+I want worker handlers to react to tenant lifecycle and membership events,
+so that Folders authorization stays aligned with tenant administration.
+
+## Terms
+
+- Tenants event means a `Hexalith.Tenants.Contracts.Events` payload delivered through the `system.tenants.events` Dapr pub/sub subscription with `TenantEventContext` envelope metadata.
+- Worker handler means the Folders-owned tenant-event handling surface hosted by `Hexalith.Folders.Workers`, not a new transport contract and not duplicate business logic in `Hexalith.Folders.Server`.
+- Tenant-access projection means `FolderTenantAccessProjection` and its store/handler under `src/Hexalith.Folders/Projections/TenantAccess/`, used by `TenantAccessAuthorizer` to fail closed when tenant evidence is stale, unavailable, malformed, disabled, replay-conflicting, or mismatched.
+- Folder authorization metadata means metadata-only tenant lifecycle, membership, role, and `folders.*` configuration evidence that can influence folder authorization. It does not include provider credentials, raw claim bags, group inventories beyond stable principal/role evidence, file contents, repository details, paths, or unauthorized resource existence.
+- Event identity means tenant ID, message ID, event type, sequence number, timestamp, and payload fingerprint. Correlation ID is propagated for observability but must not be part of duplicate-delivery equality because Tenants/Dapr redelivery may rotate correlation IDs.
+
+## Acceptance Criteria
+
+1. Given the Folders worker host starts, when services are registered, then `Hexalith.Folders.Workers` subscribes to `system.tenants.events` through the existing Hexalith.Tenants client subscription pattern, uses the stable pub/sub component name `pubsub`, and registers tenant event handlers for `TenantCreated`, `TenantUpdated`, `TenantDisabled`, `TenantEnabled`, `UserAddedToTenant`, `UserRemovedFromTenant`, `UserRoleChanged`, `TenantConfigurationSet`, and `TenantConfigurationRemoved` without requiring Aspire, Dapr sidecars, Redis, Keycloak, provider credentials, live Tenants data, or nested submodules for unit tests.
+2. Given equivalent Tenants events are delivered through `Hexalith.Folders.Server` and `Hexalith.Folders.Workers` during the migration, when the handlers map events to folder tenant-access evidence, then both hosts use one shared mapping/projection implementation and produce the same `FolderTenantAccessProjection` outcome; this story must not create a second divergent tenant-event mapper.
+3. Given a tenant lifecycle event is received, when `TenantCreated` or `TenantEnabled` is applied, then the tenant projection becomes enabled; when `TenantDisabled` is applied, then the tenant projection becomes disabled and subsequent Folders mutations that require fresh tenant access fail closed through existing authorization results.
+4. Given a tenant membership event is received, when `UserAddedToTenant`, `UserRemovedFromTenant`, or `UserRoleChanged` is applied, then only stable principal ID and role metadata update the local projection idempotently, removed users no longer authorize folder operations through tenant membership evidence, and raw membership inventories, auth headers, JWTs, claim bags, emails, display names, or secret-bearing attributes are not persisted or logged.
+5. Given a tenant configuration event is received, when the key starts with `folders.`, then the handler records or tombstones only that `folders.*` key as metadata-only authorization configuration evidence; when the key does not start with `folders.`, then it is ignored without changing authorization state, projection freshness, or metadata exposure.
+6. Given a duplicate Dapr/Tenants delivery has the same event identity and payload fingerprint, when the worker receives it again, then it is a no-op and does not advance state incorrectly; given the same message ID arrives with divergent tenant, event type, sequence, timestamp, or payload fingerprint evidence, then `ReplayConflict` is set and authorization fails closed without applying the conflicting mutation.
+7. Given events arrive out of order, with future timestamps beyond clock-skew tolerance, non-positive sequence numbers, missing message IDs, missing tenant IDs, missing principal IDs for membership events, tenant envelope/payload mismatch, or unsupported/malformed evidence, when the worker handles them, then the projection marks malformed evidence or drops the unsafe event according to the existing `FolderTenantAccessHandler` safety rules, does not grant access, and does not construct folder, repository, workspace, provider, audit, cache, or file subjects.
+8. Given the projection store detects optimistic concurrency conflicts, when concurrent worker deliveries target the same tenant, then the handler retries within `TenantAccessOptions.ConcurrencyRetryAttempts`, preserves idempotency, and avoids shared mutable global state across tenants.
+9. Given the worker updates tenant-access evidence, when logs, traces, metrics, diagnostics, exceptions, tests, or projection records are inspected, then they contain only tenant ID, event kind, message ID, sequence/watermark, correlation ID, safe outcome, and sanitized reason metadata; file contents, diffs, provider tokens, credential material, repository URLs/names, branch names, raw payload bodies, raw claims, group inventories, and unauthorized resource existence are absent.
+10. Given `TenantAccessAuthorizer` evaluates a mutation after tenant events have been processed, when the local projection is enabled, fresh, non-conflicting, and contains allowed principal evidence, then existing allowed authorization behavior remains available; when tenant evidence is disabled, stale, unavailable, malformed, replay-conflicting, unknown, or mismatched, then existing safe denial/read-model unavailable result codes are preserved without adding new response families.
+11. Given this story owns worker-side tenant-event handling only, when implementation is complete, then it does not implement provider readiness, repository binding, workspace workflows, folder ACL grant/revoke semantics beyond consuming projection evidence, operations-console UI, CLI/MCP commands, tenant administration APIs, webhooks, repair automation, tenant deletion, legal hold, or hard cleanup.
+
+## Tasks / Subtasks
+
+- [ ] Move tenant-event subscription ownership into the worker host without semantic drift. (AC: 1, 2)
+  - [ ] Add a worker registration extension such as `AddFoldersTenantEventWorkers` or extend `FoldersWorkersModule` to call `AddDaprClient`, `AddFoldersTenantAccess`, and `AddHexalithTenants` with `PubSubName = "pubsub"` and `TopicName = "system.tenants.events"`.
+  - [ ] Map the Tenants subscription endpoint from the worker host if the existing Tenants client subscription model requires an HTTP callback endpoint in the worker process.
+  - [ ] Keep the stable worker app ID expectation `folders-workers` aligned with AppHost/Aspire configuration.
+  - [ ] Reuse shared constants for topic and pub/sub names rather than duplicating string literals between Server and Workers.
+  - [ ] Preserve server behavior only as needed for compatibility; if handler registration moves out of Server, remove or narrow server registration in the same change so there is one authoritative handler surface.
+- [ ] Extract or reuse a single Tenants-to-Folders mapping implementation. (AC: 2, 6, 7, 9)
+  - [ ] Move the existing `FoldersTenantEventHandler` logic from `src/Hexalith.Folders.Server/` into a shared worker/domain location, or create a shared mapper consumed by both Server and Workers during transition.
+  - [ ] Preserve current event coverage: tenant created/updated/disabled/enabled, user added/removed/role changed, and configuration set/removed.
+  - [ ] Preserve the current payload fingerprint rule: deterministic hash over safe event fields, with correlation ID excluded from replay equality.
+  - [ ] Preserve envelope/payload tenant mismatch handling as a drop/fail-closed path that does not mutate either tenant projection.
+  - [ ] Keep logs structured and metadata-only.
+- [ ] Apply lifecycle and membership events through the existing projection handler. (AC: 3, 4, 8, 10)
+  - [ ] Reuse `FolderTenantAccessHandler`, `FolderTenantAccessEvent`, `FolderTenantAccessProjection`, `FolderTenantEventEvidence`, and `IFolderTenantAccessProjectionStore`.
+  - [ ] Ensure disabled tenants revoke mutating authorization through the existing `TenantAccessOutcome.DisabledTenant` mapping.
+  - [ ] Ensure removed users and changed roles update only principal/role evidence and do not leave stale allow entries.
+  - [ ] Verify stale, unavailable, malformed, replay-conflicting, unknown, disabled, mismatch, and missing-authority outcomes still map through `TenantAccessAuthorizer` without new result families.
+- [ ] Restrict configuration processing to `folders.*`. (AC: 5)
+  - [ ] Keep `TenantConfigurationSet` and `TenantConfigurationRemoved` as metadata-only inputs.
+  - [ ] Ignore non-Folders configuration keys before storing authorization evidence.
+  - [ ] Tombstone removed `folders.*` keys through `RemovedConfigurationKeys` so replays and audits can distinguish removed from never-seen configuration without storing raw values.
+  - [ ] Do not persist configuration values unless a later story explicitly defines a safe, typed Folders configuration contract.
+- [ ] Add worker-focused tests and preserve existing projection tests. (AC: 1-10)
+  - [ ] Add `tests/Hexalith.Folders.Workers.Tests/Tenants/*` coverage for worker service registration, handler dispatch, stable topic/pubsub names, and offline startup shape.
+  - [ ] Move or duplicate only as needed the current server tests for envelope mismatch and `TenantUpdated` freshness into worker tests; keep one source of behavior truth.
+  - [ ] Extend projection tests for duplicate delivery, divergent replay conflict, out-of-order delivery, future timestamps, missing message IDs, missing principal IDs, concurrent saves/retry, tenant disabled fail-closed behavior, user removal authorization evidence, role change replacement, and `folders.*` configuration filtering.
+  - [ ] Add leakage/sentinel tests proving worker logs/projections/exceptions omit secrets, raw payloads, provider data, repository/path data, file contents, claim bags, and membership inventories.
+  - [ ] Tests must run with in-memory stores/fakes and without Dapr, Aspire, Redis, Keycloak, provider credentials, live Tenants services, or nested submodule initialization.
+
+## Dev Notes
+
+### Source Context
+
+- Epic 2 requires tenant administrators and authorized actors to manage folder lifecycle and access with cross-tenant isolation before any resource access. Story 2.9 specifically requires worker handlers to react to tenant lifecycle and membership events, update local tenant-access projections and folder authorization metadata idempotently, and process only `folders.*` configuration keys. [Source: `_bmad-output/planning-artifacts/epics.md#Story 2.9`]
+- Architecture requires Hexalith.Tenants as the source of truth for tenant identity, lifecycle, and membership; Folders consumes `system.tenants.events` through Dapr pub/sub and maintains a local fail-closed tenant-access projection. [Source: `_bmad-output/planning-artifacts/architecture.md#Technology Stack Summary`]
+- Architecture names worker tenant handlers under `src/Hexalith.Folders.Workers/Tenants/TenantEventHandlers/` with `TenantDisabledHandler`, `UserRemovedFromTenantHandler`, `UserRoleChangedHandler`, and `TenantConfigurationSetHandler`, and says `TenantConfigurationSetHandler` processes `folders.*` keys only. [Source: `_bmad-output/planning-artifacts/architecture.md#Recommended Project Layout`]
+- Architecture requires worker/process-manager side effects to live in `Hexalith.Folders.Workers`; aggregates remain pure and do not call Dapr, HTTP, file I/O, Git, secret stores, databases, clocks, or randomness. [Source: `_bmad-output/planning-artifacts/architecture.md#Process Patterns`]
+- PRD states Hexalith.Tenants remains the source of truth for tenant identity, lifecycle, and membership while Hexalith.Folders owns folder-specific policy, ACLs, provider binding references, workspace state, file-operation facts, commit metadata, and operational projections. [Source: `_bmad-output/planning-artifacts/prd.md#Product Scope`]
+- Project context requires zero cross-tenant leakage, metadata-only events/logs/traces/metrics/projections/audit, tenant-prefixed keys, fail-closed authorization, and no recursive nested submodule initialization. [Source: `_bmad-output/project-context.md#Critical Don't-Miss Rules`]
+
+### Previous Story Intelligence
+
+- Story 2.1 established Folders service hosting with Tenants integration, subscription to `system.tenants.events`, and local `FolderTenantAccessProjection` semantics. Story 2.9 should move or harden that capability in the worker host rather than inventing a second projection model.
+- Story 2.2 established ACL metadata-only safety and tenant evidence gates. Tenant-event handling must feed authorization evidence and avoid leaking membership or credential details.
+- Story 2.3 established folder aggregate purity, tenant-scoped IDs, and offline aggregate tests. This story should not touch folder aggregate behavior except through existing authorization evidence consumers.
+- Story 2.4 is actively in progress in this working tree. Do not overwrite its uncommitted folder access command/projection/test work; consume its ACL concepts only through stable story guidance and current source after rebasing carefully.
+- Story 2.5 defines effective-permission inspection. This story updates evidence consumed by permission/authorization paths but must not add a public permission-query surface.
+- Story 2.6 defines layered authorization and safe denials. Tenant worker events must keep those result families stable.
+- Story 2.7 defines lifecycle/status observation and stale/unavailable no-fallback behavior. Tenant projection freshness must remain explicit.
+- Story 2.8 defines archived lifecycle behavior and mutation guards. Tenant disablement or membership removal must affect active and archived folder authorization consistently without adding archive behavior here.
+
+### Existing Implementation State
+
+- `src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs` already maps Tenants events to `FolderTenantAccessEvent`, computes deterministic fingerprints, drops envelope/payload tenant mismatches by emitting an empty tenant ID, and logs safe structured warnings.
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs` currently registers `AddDaprClient`, `AddFoldersTenantAccess`, `AddHexalithTenants`, the tenant event projection handler, and `MapTenantEventSubscription()` using `TenantEventsPubSubName = "pubsub"` and `TenantEventsTopicName = "system.tenants.events"`.
+- `src/Hexalith.Folders.Workers/Program.cs` currently only registers `AddFoldersTenantAccess()` and runs a placeholder host.
+- `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs` is a placeholder module with only the module name.
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs` already enforces idempotency, divergent replay conflict, out-of-order drops, malformed evidence, clock-skew checks, `folders.*` configuration filtering, optimistic concurrency retry, watermarking, and metadata-only projection updates.
+- `tests/Hexalith.Folders.Tests/Projections/TenantAccess/FolderTenantAccessHandlerTests.cs` already covers metadata-only membership projection, divergent duplicate replay conflict, non-Folders configuration filtering, removed Folders configuration tombstones, and future timestamp fail-closed behavior.
+- `tests/Hexalith.Folders.Server.Tests/FoldersTenantEventHandlerTests.cs` already covers envelope mismatch no-mutation and `TenantUpdated` freshness.
+- `tests/Hexalith.Folders.Workers.Tests/WorkersSmokeTests.cs` currently asserts only placeholder worker module identity and must be replaced or extended with meaningful worker registration/handler tests.
+
+### Required Architecture Patterns
+
+- Use .NET 10, C# file-scoped namespaces, nullable-aware code, one public type per file, PascalCase public members, camelCase locals/parameters, and async APIs with `CancellationToken`.
+- Keep `Hexalith.Folders.Contracts` behavior-free. Do not add tenant-event behavior, projection logic, or worker registration there.
+- Keep `Hexalith.Folders.Workers` as the host for tenant-event worker handling and future process managers. It may reference core/domain and Tenants client abstractions, but it must not duplicate server-only transport semantics.
+- Keep `FolderTenantAccessHandler` as the core projection behavior. Add narrow adapters/mappers around it instead of forking projection state or authorization semantics.
+- Use `Hexalith.Tenants.Client.Handlers.ITenantEventHandler<TEvent>` and `TenantEventContext` for event dispatch; avoid direct Dapr SDK payload parsing in Folders code unless the Tenants client pattern cannot support the worker host.
+- Treat Tenants event delivery as at-least-once. Deduplicate by message/evidence identity, tolerate ordinary duplicate delivery, and fail closed on divergent replay.
+- Use `TenantAccessOptions` for clock-skew and concurrency retry settings. Do not add hardcoded freshness windows or retry loops.
+- Logs and diagnostics must use structured templates and safe metadata only.
+
+### Files To Touch
+
+- `src/Hexalith.Folders.Workers/Program.cs`
+- `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
+- `src/Hexalith.Folders.Workers/Tenants/TenantEventHandlers/*` or a similarly narrow worker tenant-event folder
+- `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`
+- `src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs` only if extracting/moving shared behavior
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs` only if removing duplicate server handler ownership or sharing constants
+- `src/Hexalith.Folders/Projections/TenantAccess/*` only for narrowly needed projection/evidence extensions
+- `tests/Hexalith.Folders.Workers.Tests/*`
+- `tests/Hexalith.Folders.Tests/Projections/TenantAccess/*`
+- `tests/Hexalith.Folders.Server.Tests/FoldersTenantEventHandlerTests.cs` only to preserve or relocate existing behavior tests
+
+### Do Not Touch
+
+- Do not implement provider readiness, repository binding, workspace preparation, locks, file mutation, commits, context queries, UI, CLI, MCP, tenant administration APIs, webhooks, repair workflows, tenant deletion, legal hold, hard cleanup, or audit browsing.
+- Do not modify `src/Hexalith.Folders.Client/Generated/*`.
+- Do not add a second OpenAPI operation, SDK method, or public contract for tenant events unless a later contract story explicitly requires it.
+- Do not store configuration values, raw Tenants payloads, raw request bodies, raw claims, membership inventories, emails, display names, provider data, repository/path data, file contents, diffs, credentials, or secrets.
+- Do not call provider APIs, Git, filesystem working copies, audit browsing APIs, repository APIs, or EventStore aggregate scans from tenant-event handlers.
+- Do not initialize nested submodules or use recursive submodule commands.
+
+### Testing
+
+- Use xUnit v3 and Shouldly. Use NSubstitute only where a real seam needs substitution.
+- Worker tests must be offline and not require Dapr sidecars, Aspire, Redis, Keycloak, provider credentials, live Tenants services, production secrets, or nested submodules.
+- Add registration tests proving the worker host registers the Tenants client subscription, all supported `ITenantEventHandler<TEvent>` implementations, `FolderTenantAccessHandler`, projection store, and the expected topic/pubsub options.
+- Add behavior tests for tenant created/enabled/disabled, tenant updated freshness, user added/removed/role changed, configuration set/removed, non-Folders key ignore, duplicate delivery, divergent replay conflict, malformed evidence, envelope mismatch, out-of-order delivery, future timestamp, concurrency retry, and authorization fail-closed outcomes.
+- Add leakage tests using sentinel strings to inspect projection state, logs, diagnostics, exceptions, and test output for forbidden content.
+- Preserve current server/projection tests during any move so behavior is proven before and after extraction.
+
+### Regression Traps
+
+- Do not leave Server and Workers both applying the same Tenants event to the same durable projection in production topology.
+- Do not compute tenant authority from payload tenant ID when envelope/context disagrees.
+- Do not include correlation ID in duplicate-delivery equality.
+- Do not process non-`folders.*` configuration keys or store configuration values.
+- Do not let `TenantUpdated` grant membership or change roles; it may advance freshness only.
+- Do not advance projection state on malformed, replay-conflicting, or envelope-mismatched evidence.
+- Do not treat out-of-order redelivery as malicious when the existing watermark already advanced safely.
+- Do not broaden tenant disablement into folder archive/delete/cleanup behavior.
+- Do not create a new authorization result vocabulary when existing `TenantAccessOutcome` mappings already cover disabled, stale, unavailable, malformed, unknown, mismatch, missing authority, denied, and replay conflict.
+- Do not use a global in-memory singleton or cache that can replay tenant decisions across tenants, principals, roles, actions, sequence windows, or configuration evidence.
+- Do not log raw payloads or exception details that include forbidden content.
+
+### References
+
+- `_bmad-output/planning-artifacts/epics.md#Story 2.9`
+- `_bmad-output/planning-artifacts/prd.md#Product Scope`
+- `_bmad-output/planning-artifacts/prd.md#Security and Tenant Isolation`
+- `_bmad-output/planning-artifacts/architecture.md#Technology Stack Summary`
+- `_bmad-output/planning-artifacts/architecture.md#Recommended Project Layout`
+- `_bmad-output/planning-artifacts/architecture.md#Communication Patterns`
+- `_bmad-output/planning-artifacts/architecture.md#Process Patterns`
+- `_bmad-output/project-context.md#Critical Don't-Miss Rules`
+- `_bmad-output/implementation-artifacts/2-1-stand-up-domain-service-host-with-tenants-integration.md`
+- `_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md`
+- `_bmad-output/implementation-artifacts/2-4-grant-and-revoke-folder-access.md`
+- `_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md`
+- `src/Hexalith.Folders.Server/FoldersTenantEventHandler.cs`
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs`
+- `src/Hexalith.Folders.Workers/Program.cs`
+- `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs`
+- `src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessProjection.cs`
+- `src/Hexalith.Folders/Authorization/TenantAccessAuthorizer.cs`
+- `tests/Hexalith.Folders.Tests/Projections/TenantAccess/FolderTenantAccessHandlerTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/FoldersTenantEventHandlerTests.cs`
+
+## Change Log
+
+| Date | Change | Author |
+|---|---|---|
+| 2026-05-19 | Created story with worker tenant-event subscription, shared Tenants mapping, projection idempotency, `folders.*` filtering, fail-closed authorization, and offline worker tests. | Codex |
+
+## Dev Agent Record
+
+### Agent Model Used
+
+GPT-5 Codex
+
+### Debug Log References
+
+### Completion Notes List
+
+- Story created by `/bmad-create-story 2-9-react-to-tenants-events-through-worker-handlers` equivalent workflow on 2026-05-19.
+- Project context, Epic 2, PRD, architecture, current tenant projection/server/worker implementation, worker tests, Tenants client patterns, recent commits, and story-creation lessons were reviewed.
+- Preflight working-tree failure was classified as an active-dev-story soft warning because Story 2.4 is `in-progress` in both its artifact and sprint status; active development changes were left untouched.
+- Ultimate context engine analysis completed - comprehensive developer guide created.
+
+### File List
