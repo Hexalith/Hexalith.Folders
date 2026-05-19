@@ -13,6 +13,8 @@ public sealed record FolderState(
     IReadOnlyList<string> Tags,
     FolderLifecycleState? LifecycleState,
     FolderRepositoryBindingState? RepositoryBindingState,
+    IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> AccessOverrides,
+    long AccessSequence,
     IReadOnlyDictionary<string, string> IdempotencyFingerprints)
 {
     public static FolderState Empty { get; } = new(
@@ -26,6 +28,8 @@ public sealed record FolderState(
         [],
         null,
         null,
+        FrozenDictionary<FolderAccessEntryKey, FolderAccessOverride>.Empty,
+        0,
         FrozenDictionary<string, string>.Empty);
 
     public FolderState Apply(IEnumerable<IFolderEvent> events, FolderStreamName expectedStreamName)
@@ -41,4 +45,8 @@ public sealed record FolderState(
 
         return state;
     }
+
+    public bool HasFolderAccess(FolderAccessEntryKey key)
+        => AccessOverrides.TryGetValue(key, out FolderAccessOverride? access)
+            && access.IsGranted;
 }

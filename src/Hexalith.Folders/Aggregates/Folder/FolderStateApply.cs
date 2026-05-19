@@ -48,11 +48,75 @@ public static class FolderStateApply
                 RepositoryBindingState = created.RepositoryBindingState,
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
+            FolderAccessGranted granted => state with
+            {
+                AccessOverrides = RecordAccessOverride(
+                    state.AccessOverrides,
+                    Key(granted.ManagedTenantId, granted.FolderId, granted.PrincipalKind, granted.PrincipalId, granted.Action),
+                    isGranted: true,
+                    granted.AccessSequence,
+                    "grant",
+                    granted.ActorPrincipalId,
+                    granted.CorrelationId,
+                    granted.TaskId,
+                    granted.IdempotencyKey),
+                AccessSequence = Math.Max(state.AccessSequence, granted.AccessSequence),
+                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
+            },
+            FolderAccessRevoked revoked => state with
+            {
+                AccessOverrides = RecordAccessOverride(
+                    state.AccessOverrides,
+                    Key(revoked.ManagedTenantId, revoked.FolderId, revoked.PrincipalKind, revoked.PrincipalId, revoked.Action),
+                    isGranted: false,
+                    revoked.AccessSequence,
+                    "revoke",
+                    revoked.ActorPrincipalId,
+                    revoked.CorrelationId,
+                    revoked.TaskId,
+                    revoked.IdempotencyKey),
+                AccessSequence = Math.Max(state.AccessSequence, revoked.AccessSequence),
+                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
+            },
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(
                 $"Unhandled folder event type: result code {FolderResultCode.StateTransitionInvalid}."),
         };
+    }
+
+    private static FolderAccessEntryKey Key(
+        string managedTenantId,
+        string folderId,
+        FolderAccessPrincipalKind principalKind,
+        string principalId,
+        string action)
+        => new(managedTenantId, folderId, principalKind, principalId, action);
+
+    private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> RecordAccessOverride(
+        IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> current,
+        FolderAccessEntryKey key,
+        bool isGranted,
+        long accessSequence,
+        string operationIntent,
+        string actorPrincipalId,
+        string correlationId,
+        string taskId,
+        string idempotencyKey)
+    {
+        Dictionary<FolderAccessEntryKey, FolderAccessOverride> next = new(current)
+        {
+            [key] = new FolderAccessOverride(
+                key,
+                isGranted,
+                accessSequence,
+                operationIntent,
+                actorPrincipalId,
+                correlationId,
+                taskId,
+                idempotencyKey),
+        };
+        return next.ToFrozenDictionary();
     }
 
     private static IReadOnlyDictionary<string, string> RecordIdempotency(

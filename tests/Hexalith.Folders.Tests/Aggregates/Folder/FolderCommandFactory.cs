@@ -37,4 +37,56 @@ internal static class FolderCommandFactory
             taskId,
             idempotencyKey,
             payloadTenantId);
+
+    public static GrantFolderAccess GrantAccess(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        FolderAccessPrincipalKind principalKind = FolderAccessPrincipalKind.User,
+        string principalId = "target-principal-a",
+        string action = "read_metadata",
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-access-a",
+        string? payloadTenantId = null,
+        IReadOnlyDictionary<string, string?>? clientTenantIds = null,
+        IReadOnlyList<FolderAccessOperation>? operations = null)
+        => new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            operations ?? [new FolderAccessOperation(FolderAccessOperationIntent.Grant, principalKind, principalId, action)],
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId,
+            clientTenantIds);
+
+    public static RevokeFolderAccess RevokeAccess(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        FolderAccessPrincipalKind principalKind = FolderAccessPrincipalKind.User,
+        string principalId = "target-principal-a",
+        string action = "read_metadata",
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-access-b",
+        string? payloadTenantId = null,
+        IReadOnlyDictionary<string, string?>? clientTenantIds = null,
+        IReadOnlyList<FolderAccessOperation>? operations = null)
+        => new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            operations ?? [new FolderAccessOperation(FolderAccessOperationIntent.Revoke, principalKind, principalId, action)],
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId,
+            clientTenantIds);
 }

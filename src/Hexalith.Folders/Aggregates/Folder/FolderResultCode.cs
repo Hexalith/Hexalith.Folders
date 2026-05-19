@@ -2,8 +2,12 @@ namespace Hexalith.Folders.Aggregates.Folder;
 
 public enum FolderResultCode
 {
+    Accepted,
     Created,
     IdempotentReplay,
+    AlreadyApplied,
+    MissingEntry,
+    DuplicateEntry,
     IdempotencyConflict,
     IdempotencyUnavailable,
     DuplicateFolder,
@@ -17,6 +21,9 @@ public enum FolderResultCode
     FolderAclDenied,
     AclEvidenceUnavailable,
     AclEvidenceMismatch,
+    FolderNotFound,
+    UnsupportedAction,
+    InvalidPrincipal,
     ValidationFailed,
     StaleProjection,
     UnavailableProjection,

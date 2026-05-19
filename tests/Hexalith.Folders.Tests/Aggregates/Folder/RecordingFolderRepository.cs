@@ -29,6 +29,8 @@ internal sealed class RecordingFolderRepository : IFolderRepository
 
     public bool SimulateAppendConflict { get; set; }
 
+    public IReadOnlyList<IFolderEvent> ConcurrentAppendEvents { get; set; } = [];
+
     public string? LastDurableKey { get; private set; }
 
     public string? LastStreamName { get; private set; }
@@ -71,6 +73,12 @@ internal sealed class RecordingFolderRepository : IFolderRepository
 
         if (SimulateAppendConflict)
         {
+            if (ConcurrentAppendEvents.Count > 0)
+            {
+                EventsAppended += ConcurrentAppendEvents.Count;
+                _states[streamName.Value] = Load(streamName).Apply(ConcurrentAppendEvents, streamName);
+            }
+
             return FolderAppendOutcome.AppendConflict;
         }
 

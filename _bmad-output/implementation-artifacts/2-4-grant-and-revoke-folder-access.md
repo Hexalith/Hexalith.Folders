@@ -1,6 +1,6 @@
 # Story 2.4: Grant and revoke folder access
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -41,59 +41,59 @@ so that access to folders can evolve without changing repository bindings.
 
 ## Tasks / Subtasks
 
-- [ ] Extend the Folder aggregate ACL surface. (AC: 1, 2, 3, 10, 13)
-  - [ ] Add folder ACL command types such as `GrantFolderAccess` and `RevokeFolderAccess`, or local equivalents aligned with EventStore naming.
-  - [ ] Add metadata-only events such as `FolderAccessGranted` and `FolderAccessRevoked`, or local equivalents.
-  - [ ] Extend `FolderState` and event application so folder-level ACL override state replays deterministically from grant and revoke events.
-  - [ ] Keep folder stream names in the Story 2.3 `{managedTenantId}:folders:{folderId}` shape; do not derive IDs from display names, folder paths, repository names, provider names, or tenant names.
-  - [ ] Keep organization ACL baseline state separate from folder ACL overrides. Story 2.2 events are evidence inputs, not state to rewrite from folder commands.
-- [ ] Define folder ACL value objects and result evidence. (AC: 2, 3, 7, 8, 12)
-  - [ ] Define principal kinds `user`, `group`, `role`, and `delegated_service_agent` as strict domain tokens.
-  - [ ] Validate supported principal kind separately from opaque principal ID format; reject empty, whitespace, malformed, unsupported, localized, display-name, email-shaped where prohibited, case-variant, or embedded-claim principal values without leaking the raw value.
-  - [ ] Define the folder-level action vocabulary as strict lower-snake-case domain tokens and exclude `create_folder` from folder overrides.
-  - [ ] Add result/rejection codes for accepted, already_applied, missing_entry, duplicate_entry, conflicting_entry, unsupported_action, invalid_principal, invalid_folder, invalid_tenant, reserved_tenant, missing_authoritative_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, folder_acl_denied, acl_evidence_unavailable, folder_not_found, idempotency_conflict, idempotency_unavailable, append_conflict, and validation_failed.
-  - [ ] Ensure `folder_not_found`, `already_applied`, and `missing_entry` are observable only after tenant and ACL administrator gates pass; before those gates, return the same safe denial family used for unauthorized callers.
-  - [ ] Document command/result semantics in code or tests so accepted grants append exactly one grant event, accepted revokes append exactly one revoke event, already-applied grants append no event, missing-entry revokes append no event, idempotent replays append no event, conflicts append no event, and failed gates append no event.
-  - [ ] Ensure result evidence exposes stable codes and safe identifiers only; tests must not parse exception text, localized strings, diagnostic messages, or event type names.
-  - [ ] Reject unsupported action aliases rather than normalizing them into accepted permissions.
-- [ ] Add fail-closed tenant and ACL administrator gates. (AC: 4, 5, 6)
-  - [ ] Consume Story 2.1 tenant-access evidence before stream-name construction, idempotency lookup, stream load, append, projection update, diagnostics, audit lookup, provider readiness, repository access, workspace access, or file access.
-  - [ ] Consume Story 2.2 organization ACL baseline evidence before any folder stream access. If implementation needs a narrow seam, model allowed, denied, unavailable, stale, malformed, tenant-mismatched, folder-mismatched, and unsupported-action evidence without duplicating Story 2.2 aggregate logic.
-  - [ ] Add explicit negative coverage for tenant IDs supplied through command payload, route values, query parameters, ordinary headers, forwarded headers, metadata bags, and client-controlled envelope fields.
-  - [ ] Treat tenant IDs from route/body/query/header as comparison values only.
-  - [ ] Ensure non-allowed evidence returns metadata-only stable codes and does not reveal whether the target folder exists or whether a grant was already present.
-  - [ ] Add protected-resource-touch spies for every denied tenant and denied ACL evidence branch so tests prove stream-name, idempotency, stream-load, append, projection, diagnostics, audit, provider, repository, workspace, file, and cache seams were not invoked.
-  - [ ] Keep the aggregate pure; application/domain-service seams perform evidence checks and stream access.
-- [ ] Add idempotency, canonicalization, and concurrency behavior. (AC: 8, 9, 10, 11)
-  - [ ] Canonicalize command type, operation intent, tenant, folder ID, principal kind, principal ID, action, actor safe identifier, and optional scope metadata using culture-invariant rules before comparing idempotency payloads.
-  - [ ] Exclude correlation ID, task ID, timestamps, transport ordering, display-only metadata, and diagnostic-only fields from semantic idempotency equivalence while still preserving safe correlation/task IDs in result evidence.
-  - [ ] Treat raw JSON order, repeated exact entries, transport formatting, and casing noise around display-only metadata as non-semantic only when the relevant token validators allow it; strict ACL tokens remain case-sensitive lower-snake-case.
-  - [ ] Ensure grant and revoke operations for the same ACL tuple never share an idempotency equivalence class.
-  - [ ] Fail closed with `idempotency_unavailable` when an introduced idempotency boundary cannot prove equivalence after authorization succeeds; do not fall through to append.
-  - [ ] Resolve expected-version or append races by re-reading safe authorized state after tenant, ACL, validation, and idempotency gates and returning deterministic applied, no-op, or conflict evidence.
-  - [ ] Include tenant scope in every durable idempotency, duplicate-detection, cache, or operation key introduced by this story.
-- [ ] Add folder ACL projection or replay helper only as needed. (AC: 3, 13)
-  - [ ] Derive effective folder override metadata from stream/envelope tenant evidence plus event version/sequence, not from mutable payload tenant authority.
-  - [ ] Preserve revocation timestamp, event version/sequence/watermark, actor safe identifier, correlation ID, task ID, idempotency key reference, principal kind/ID, action, and operation intent for later C7 freshness enforcement.
-  - [ ] Treat stale or unavailable folder ACL projection freshness as deny/unknown evidence for later authorization consumers rather than falling back to the last known grant.
-  - [ ] Prove replay isolation for two tenants with matching folder IDs, principal IDs, and action tokens.
-  - [ ] Prove grant -> revoke -> grant and revoke -> grant -> revoke replay sequences produce deterministic final state and historical revocation metadata.
-  - [ ] Do not add public effective-permission query endpoints; Story 2.5 owns the public inspection surface.
-- [ ] Add tests and fixtures. (AC: 1-15)
-  - [ ] Add unit tests under `tests/Hexalith.Folders.Tests/Aggregates/Folder/` for grant, revoke, duplicate grant, revoke missing grant, unsupported action, invalid principal, reserved tenant, folder-not-found evidence, and stream-name shape.
-  - [ ] Add authorization gate tests for every Story 2.1 non-allowed tenant evidence outcome and Story 2.2 ACL administrator evidence outcome.
-  - [ ] Add paired short-circuit tests where tenant evidence passes and ACL evidence fails, and where tenant evidence fails before ACL evidence is queried, to prove gate order and no audit/diagnostic side effects.
-  - [ ] Add side-effect negative-control tests named like `RejectsBeforeStreamNameWhenTenantMissing`, `RejectsBeforeLoadWhenAclEvidenceDenied`, and `RejectsBeforeAppendWhenPrincipalInvalid`, or local equivalents that encode the forbidden side-effect boundary.
-  - [ ] Add idempotency tests for equivalent replay, same key plus changed operation intent, same key plus changed principal/action/folder, already-present grant with a different key, missing revoke, idempotency store unavailable, and append-conflict race handling.
-  - [ ] Add idempotency and race tests proving same folder ID, principal ID, command/idempotency key, and action in different tenants do not dedupe, leak, or reuse ACL evidence.
-  - [ ] Add replay tests proving grants and revokes derive deterministic folder override state and revocation metadata, including cross-tenant same-folder-ID isolation and repeated replay of the same stream.
-  - [ ] Add table-driven duplicate/conflict matrix tests for duplicate grant, duplicate revoke, same-command grant/revoke conflict, stale expected version, and append conflict outcomes.
-  - [ ] Add leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group display names, raw auth headers, arbitrary tenant configuration, and unauthorized resource names.
-  - [ ] Add leakage sentinel values in command metadata, tenant evidence, ACL evidence, principal token-like inputs, and denial reasons; assert denied results expose only allowed metadata fields.
-  - [ ] Add exception-path leakage tests for validation, idempotency, append-conflict, and projection-unavailable paths; test failures must not include raw command bodies, raw auth headers, emails, display names, provider/repository/file values, or arbitrary tenant configuration.
-  - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable folder ACL builders that delegate to production validation rules.
-  - [ ] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
-  - [ ] Use pure in-memory fakes and spies only for EventStore seams, tenant evidence, organization ACL evidence, idempotency records, validators, clock/time, diagnostics sinks, and audit sinks. Do not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
+- [x] Extend the Folder aggregate ACL surface. (AC: 1, 2, 3, 10, 13)
+  - [x] Add folder ACL command types such as `GrantFolderAccess` and `RevokeFolderAccess`, or local equivalents aligned with EventStore naming.
+  - [x] Add metadata-only events such as `FolderAccessGranted` and `FolderAccessRevoked`, or local equivalents.
+  - [x] Extend `FolderState` and event application so folder-level ACL override state replays deterministically from grant and revoke events.
+  - [x] Keep folder stream names in the Story 2.3 `{managedTenantId}:folders:{folderId}` shape; do not derive IDs from display names, folder paths, repository names, provider names, or tenant names.
+  - [x] Keep organization ACL baseline state separate from folder ACL overrides. Story 2.2 events are evidence inputs, not state to rewrite from folder commands.
+- [x] Define folder ACL value objects and result evidence. (AC: 2, 3, 7, 8, 12)
+  - [x] Define principal kinds `user`, `group`, `role`, and `delegated_service_agent` as strict domain tokens.
+  - [x] Validate supported principal kind separately from opaque principal ID format; reject empty, whitespace, malformed, unsupported, localized, display-name, email-shaped where prohibited, case-variant, or embedded-claim principal values without leaking the raw value.
+  - [x] Define the folder-level action vocabulary as strict lower-snake-case domain tokens and exclude `create_folder` from folder overrides.
+  - [x] Add result/rejection codes for accepted, already_applied, missing_entry, duplicate_entry, conflicting_entry, unsupported_action, invalid_principal, invalid_folder, invalid_tenant, reserved_tenant, missing_authoritative_tenant, tenant_access_denied, stale_projection, unavailable_projection, unknown_tenant, disabled_tenant, malformed_evidence, tenant_mismatch, folder_acl_denied, acl_evidence_unavailable, folder_not_found, idempotency_conflict, idempotency_unavailable, append_conflict, and validation_failed.
+  - [x] Ensure `folder_not_found`, `already_applied`, and `missing_entry` are observable only after tenant and ACL administrator gates pass; before those gates, return the same safe denial family used for unauthorized callers.
+  - [x] Document command/result semantics in code or tests so accepted grants append exactly one grant event, accepted revokes append exactly one revoke event, already-applied grants append no event, missing-entry revokes append no event, idempotent replays append no event, conflicts append no event, and failed gates append no event.
+  - [x] Ensure result evidence exposes stable codes and safe identifiers only; tests must not parse exception text, localized strings, diagnostic messages, or event type names.
+  - [x] Reject unsupported action aliases rather than normalizing them into accepted permissions.
+- [x] Add fail-closed tenant and ACL administrator gates. (AC: 4, 5, 6)
+  - [x] Consume Story 2.1 tenant-access evidence before stream-name construction, idempotency lookup, stream load, append, projection update, diagnostics, audit lookup, provider readiness, repository access, workspace access, or file access.
+  - [x] Consume Story 2.2 organization ACL baseline evidence before any folder stream access. If implementation needs a narrow seam, model allowed, denied, unavailable, stale, malformed, tenant-mismatched, folder-mismatched, and unsupported-action evidence without duplicating Story 2.2 aggregate logic.
+  - [x] Add explicit negative coverage for tenant IDs supplied through command payload, route values, query parameters, ordinary headers, forwarded headers, metadata bags, and client-controlled envelope fields.
+  - [x] Treat tenant IDs from route/body/query/header as comparison values only.
+  - [x] Ensure non-allowed evidence returns metadata-only stable codes and does not reveal whether the target folder exists or whether a grant was already present.
+  - [x] Add protected-resource-touch spies for every denied tenant and denied ACL evidence branch so tests prove stream-name, idempotency, stream-load, append, projection, diagnostics, audit, provider, repository, workspace, file, and cache seams were not invoked.
+  - [x] Keep the aggregate pure; application/domain-service seams perform evidence checks and stream access.
+- [x] Add idempotency, canonicalization, and concurrency behavior. (AC: 8, 9, 10, 11)
+  - [x] Canonicalize command type, operation intent, tenant, folder ID, principal kind, principal ID, action, actor safe identifier, and optional scope metadata using culture-invariant rules before comparing idempotency payloads.
+  - [x] Exclude correlation ID, task ID, timestamps, transport ordering, display-only metadata, and diagnostic-only fields from semantic idempotency equivalence while still preserving safe correlation/task IDs in result evidence.
+  - [x] Treat raw JSON order, repeated exact entries, transport formatting, and casing noise around display-only metadata as non-semantic only when the relevant token validators allow it; strict ACL tokens remain case-sensitive lower-snake-case.
+  - [x] Ensure grant and revoke operations for the same ACL tuple never share an idempotency equivalence class.
+  - [x] Fail closed with `idempotency_unavailable` when an introduced idempotency boundary cannot prove equivalence after authorization succeeds; do not fall through to append.
+  - [x] Resolve expected-version or append races by re-reading safe authorized state after tenant, ACL, validation, and idempotency gates and returning deterministic applied, no-op, or conflict evidence.
+  - [x] Include tenant scope in every durable idempotency, duplicate-detection, cache, or operation key introduced by this story.
+- [x] Add folder ACL projection or replay helper only as needed. (AC: 3, 13)
+  - [x] Derive effective folder override metadata from stream/envelope tenant evidence plus event version/sequence, not from mutable payload tenant authority.
+  - [x] Preserve revocation timestamp, event version/sequence/watermark, actor safe identifier, correlation ID, task ID, idempotency key reference, principal kind/ID, action, and operation intent for later C7 freshness enforcement.
+  - [x] Treat stale or unavailable folder ACL projection freshness as deny/unknown evidence for later authorization consumers rather than falling back to the last known grant.
+  - [x] Prove replay isolation for two tenants with matching folder IDs, principal IDs, and action tokens.
+  - [x] Prove grant -> revoke -> grant and revoke -> grant -> revoke replay sequences produce deterministic final state and historical revocation metadata.
+  - [x] Do not add public effective-permission query endpoints; Story 2.5 owns the public inspection surface.
+- [x] Add tests and fixtures. (AC: 1-15)
+  - [x] Add unit tests under `tests/Hexalith.Folders.Tests/Aggregates/Folder/` for grant, revoke, duplicate grant, revoke missing grant, unsupported action, invalid principal, reserved tenant, folder-not-found evidence, and stream-name shape.
+  - [x] Add authorization gate tests for every Story 2.1 non-allowed tenant evidence outcome and Story 2.2 ACL administrator evidence outcome.
+  - [x] Add paired short-circuit tests where tenant evidence passes and ACL evidence fails, and where tenant evidence fails before ACL evidence is queried, to prove gate order and no audit/diagnostic side effects.
+  - [x] Add side-effect negative-control tests named like `RejectsBeforeStreamNameWhenTenantMissing`, `RejectsBeforeLoadWhenAclEvidenceDenied`, and `RejectsBeforeAppendWhenPrincipalInvalid`, or local equivalents that encode the forbidden side-effect boundary.
+  - [x] Add idempotency tests for equivalent replay, same key plus changed operation intent, same key plus changed principal/action/folder, already-present grant with a different key, missing revoke, idempotency store unavailable, and append-conflict race handling.
+  - [x] Add idempotency and race tests proving same folder ID, principal ID, command/idempotency key, and action in different tenants do not dedupe, leak, or reuse ACL evidence.
+  - [x] Add replay tests proving grants and revokes derive deterministic folder override state and revocation metadata, including cross-tenant same-folder-ID isolation and repeated replay of the same stream.
+  - [x] Add table-driven duplicate/conflict matrix tests for duplicate grant, duplicate revoke, same-command grant/revoke conflict, stale expected version, and append conflict outcomes.
+  - [x] Add leakage tests with sentinel values for credential material, provider tokens, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group display names, raw auth headers, arbitrary tenant configuration, and unauthorized resource names.
+  - [x] Add leakage sentinel values in command metadata, tenant evidence, ACL evidence, principal token-like inputs, and denial reasons; assert denied results expose only allowed metadata fields.
+  - [x] Add exception-path leakage tests for validation, idempotency, append-conflict, and projection-unavailable paths; test failures must not include raw command bodies, raw auth headers, emails, display names, provider/repository/file values, or arbitrary tenant configuration.
+  - [x] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable folder ACL builders that delegate to production validation rules.
+  - [x] Add conformance tests in `tests/Hexalith.Folders.Testing.Tests` if new testing helpers are introduced.
+  - [x] Use pure in-memory fakes and spies only for EventStore seams, tenant evidence, organization ACL evidence, idempotency records, validators, clock/time, diagnostics sinks, and audit sinks. Do not use Dapr, EventStore server, databases, network calls, generated SDK/OpenAPI, CLI/MCP/UI/workers, provider adapters, or nested submodule initialization.
 
 ## Dev Notes
 
@@ -199,6 +199,7 @@ so that access to folders can evolve without changing repository bindings.
 | 2026-05-18 | Created story with folder ACL grant/revoke commands, fail-closed tenant and ACL administrator gates, idempotency, revocation freshness evidence, metadata-only projection guidance, and offline test guardrails. | Codex |
 | 2026-05-18 | Applied party-mode review hardening for tenant ingress rejection, ACL layering boundaries, command/result semantics, idempotency equivalence, replay/race coverage, and revocation evidence. | Codex |
 | 2026-05-18 | Applied advanced-elicitation hardening for protected-resource-touch boundaries, safe no-op observability, revocation freshness fallback behavior, management-permission proof, and exception-path leakage tests. | Codex |
+| 2026-05-19 | Implemented folder ACL grant/revoke domain surface, fail-closed access gate, replay projection helper, idempotency/concurrency handling, and focused tests. | Codex |
 
 ## Party-Mode Review
 
@@ -265,10 +266,52 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-19: `dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore` passed with 203 tests.
+- 2026-05-19: `dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --no-restore` passed with 43 tests; a transient apphost copy retry warning appeared because another test process briefly held the executable.
+- 2026-05-19: `dotnet test Hexalith.Folders.slnx --no-restore` passed across the solution.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-4-grant-and-revoke-folder-access` equivalent workflow on 2026-05-18.
 - Project context, Epic 2, PRD, architecture, Story 2.1, Story 2.2, Story 2.3, testing factories, recent commits, and story-creation lessons were reviewed.
 - Ultimate context engine analysis completed - comprehensive developer guide created.
+- Added folder-level ACL grant/revoke commands, strict principal/action value objects, metadata-only grant/revoke events, and replayable folder override state without changing folder identity or repository binding state.
+- Added `FolderAccessTenantGate` to enforce authoritative tenant evidence, Story 2.2-style ACL administrator evidence, client-controlled tenant mismatch rejection, validation, idempotency lookup, stream load, aggregate mutation, append, and safe append-conflict reread ordering.
+- Added internal folder access projection replay helper preserving access sequence/watermark and revocation metadata for later C7 freshness enforcement without adding public effective-permission endpoints.
+- Added focused tests for grant/revoke validation, duplicate/conflict canonicalization, tenant and ACL gates, idempotency replay/conflict/unavailable behavior, append-conflict reread, projection replay, tenant isolation, and metadata leakage sentinels.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-4-grant-and-revoke-folder-access.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders/Aggregates/Folder/EmptyClientTenantIds.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessAclEvidence.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessAclOutcome.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessEntryKey.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessGranted.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessOperation.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessOperationIntent.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessOverride.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessPrincipalKind.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessRevoked.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/GrantFolderAccess.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/IFolderAccessCommand.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/RevokeFolderAccess.cs`
+- `src/Hexalith.Folders/Projections/FolderAccess/FolderAccessProjection.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessAdministratorAclGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessCommandValidationTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessIdempotencyTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessMetadataLeakageTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessProjectionReplayTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderAccessTenantEvidenceGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/RecordingFolderRepository.cs`

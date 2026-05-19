@@ -30,6 +30,8 @@ public static partial class FolderCommandValidator
         "provider payload",
         "unauthorized",
         "email",
+        "auth",
+        "display",
         "@",
         "://",
         "\\",
@@ -63,6 +65,14 @@ public static partial class FolderCommandValidator
             || !IsValidIdentifier(command.IdempotencyKey))
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.MalformedEvidence);
+        }
+
+        if (command is IFolderAccessCommand access)
+        {
+            IReadOnlyList<FolderAccessOperation>? operations = ValidateAndCanonicalizeAccessOperations(access, out FolderResultCode code);
+            return operations is null
+                ? FolderCommandValidationResult.Rejected(code)
+                : FolderCommandValidationResult.AcceptedAccess(Fingerprint(access, operations), operations);
         }
 
         if (command is not CreateFolder create)
@@ -117,6 +127,31 @@ public static partial class FolderCommandValidator
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
 
+    private static string Fingerprint(IFolderAccessCommand command, IReadOnlyList<FolderAccessOperation> operations)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.CommandType);
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.OrganizationId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.ActorPrincipalId);
+        AppendInt32(hash, operations.Count);
+        foreach (FolderAccessOperation operation in operations)
+        {
+            FolderAccessEntryKey key = new(
+                command.ManagedTenantId,
+                command.FolderId,
+                operation.PrincipalKind,
+                operation.PrincipalId,
+                operation.Action);
+            AppendField(hash, operation.Intent.ToString());
+            AppendField(hash, key.CanonicalValue);
+        }
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
     private static void AppendField(IncrementalHash hash, string? value)
     {
         ReadOnlySpan<byte> bytes = value is null
@@ -162,8 +197,118 @@ public static partial class FolderCommandValidator
             .ToArray();
     }
 
+    private static IReadOnlyList<FolderAccessOperation>? ValidateAndCanonicalizeAccessOperations(
+        IFolderAccessCommand command,
+        out FolderResultCode code)
+    {
+        code = FolderResultCode.Accepted;
+        if (command.Operations.Count == 0)
+        {
+            code = FolderResultCode.ValidationFailed;
+            return null;
+        }
+
+        FolderAccessOperationIntent requiredIntent = command switch
+        {
+            GrantFolderAccess => FolderAccessOperationIntent.Grant,
+            RevokeFolderAccess => FolderAccessOperationIntent.Revoke,
+            _ => (FolderAccessOperationIntent)(-1),
+        };
+
+        if (!Enum.IsDefined(requiredIntent))
+        {
+            code = FolderResultCode.ValidationFailed;
+            return null;
+        }
+
+        Dictionary<string, FolderAccessOperation> unique = new(StringComparer.Ordinal);
+        Dictionary<string, FolderAccessOperationIntent> tupleIntents = new(StringComparer.Ordinal);
+        foreach (FolderAccessOperation operation in command.Operations)
+        {
+            FolderResultCode? operationCode = ValidateOperation(operation, requiredIntent);
+            if (operationCode is not null)
+            {
+                code = operationCode.Value;
+                return null;
+            }
+
+            FolderAccessEntryKey key = new(
+                command.ManagedTenantId,
+                command.FolderId,
+                operation.PrincipalKind,
+                operation.PrincipalId,
+                operation.Action);
+
+            string tupleKey = key.CanonicalValue;
+            if (tupleIntents.TryGetValue(tupleKey, out FolderAccessOperationIntent priorIntent)
+                && priorIntent != operation.Intent)
+            {
+                code = FolderResultCode.ReplayConflict;
+                return null;
+            }
+
+            tupleIntents[tupleKey] = operation.Intent;
+            unique[$"{operation.Intent}|{tupleKey}"] = operation;
+        }
+
+        return unique
+            .OrderBy(static pair => pair.Key, StringComparer.Ordinal)
+            .Select(static pair => pair.Value)
+            .ToArray();
+    }
+
+    internal static FolderResultCode? ValidateAccessOperation(FolderAccessOperation operation)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        if (!Enum.IsDefined(operation.PrincipalKind))
+        {
+            return FolderResultCode.InvalidPrincipal;
+        }
+
+        if (!Enum.IsDefined(operation.Intent))
+        {
+            return FolderResultCode.MalformedEvidence;
+        }
+
+        if (!FolderAccessAction.IsSupported(operation.Action))
+        {
+            return FolderResultCode.UnsupportedAction;
+        }
+
+        return IsValidPrincipalId(operation.PrincipalId)
+            ? null
+            : FolderResultCode.InvalidPrincipal;
+    }
+
+    private static FolderResultCode? ValidateOperation(
+        FolderAccessOperation operation,
+        FolderAccessOperationIntent requiredIntent)
+    {
+        FolderResultCode? code = ValidateAccessOperation(operation);
+        if (code is not null)
+        {
+            return code;
+        }
+
+        return operation.Intent == requiredIntent ? null : FolderResultCode.ReplayConflict;
+    }
+
     private static bool IsSafePathLabel(string? value)
         => string.IsNullOrWhiteSpace(value) || FolderStreamName.IsValidSegment(value);
+
+    internal static bool IsValidPrincipalId(string? value) => IsValidIdentifier(value);
+
+    internal static bool IsSafeEvidenceIdentifier(string? value)
+    {
+        if (!IsValidIdentifier(value))
+        {
+            return false;
+        }
+
+        string canonical = value!.ToLower(CultureInfo.InvariantCulture);
+        return !ForbiddenMetadataTerms.Any(term => canonical.Contains(term, StringComparison.Ordinal));
+    }
 
     private static bool IsSafeMetadata(string? value, bool required, int maxLength)
     {
