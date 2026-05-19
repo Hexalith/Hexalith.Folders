@@ -32,7 +32,7 @@ public static class FoldersServerModule
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddDaprClient();
-        services.AddFoldersTenantAccess();
+        services.AddFoldersEffectivePermissions();
         services.AddFoldersTenantEventProjection();
         services.AddHexalithTenants(options =>
         {

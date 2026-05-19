@@ -1,6 +1,6 @@
 # Story 2.5: Inspect effective permissions
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -40,52 +40,52 @@ so that I can explain who can perform work before a task begins.
 
 ## Tasks / Subtasks
 
-- [ ] Implement the effective-permissions query surface. (AC: 1, 8, 9, 11)
-  - [ ] Add a domain/query handler such as `GetEffectivePermissions` under `src/Hexalith.Folders/Authorization/` or `src/Hexalith.Folders/Queries/Permissions/`, aligned with existing project structure when Stories 2.1-2.4 land.
-  - [ ] Wire the existing `GET /api/v1/folders/{folderId}/effective-permissions` operation in `Hexalith.Folders.Server` only if the server endpoint is not already generated/wired by earlier stories.
-  - [ ] Return a metadata-only result compatible with the Contract Spine `EffectivePermissions` schema: required `folderId`, `permissions`, `authorizationOutcome`, and `freshness`; `authorizationOutcome` values remain `allowed` or `denied_safe`.
-  - [ ] Preserve existing operation responses and casing exactly: `200` `EffectivePermissions`, `401` `SafeAuthorizationDenial401`, `403` `SafeAuthorizationDenial403`, `404` `SafeAuthorizationDenial404`, and `503` `ReadModelUnavailable`.
-  - [ ] Preserve `x-hexalith-read-consistency.class: read_your_writes` and freshness behavior that reports the authorization projection watermark through `FreshnessMetadata.readConsistency`, `observedAt`, optional `projectionWatermark`, and `stale`.
-  - [ ] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate only through the established Contract Spine toolchain if generated output is legitimately stale.
-- [ ] Enforce authorization-before-observation gates. (AC: 2, 3, 4, 7)
-  - [ ] Consume authoritative tenant context before constructing folder stream names, read-model keys, cache keys, diagnostic keys, audit keys, or task/workspace lookup keys.
-  - [ ] Consume Story 2.1 tenant-access evidence before folder, ACL, lifecycle, task, workspace, audit, provider, repository, lock, or file resources are observed.
-  - [ ] Treat route/query/header/client tenant IDs, forwarded headers, metadata bags, and client-controlled envelope fields as comparison values only; mismatches return the existing safe denial evidence.
-  - [ ] Add in-memory spies proving denied tenant evidence prevents folder projection lookup, ACL projection lookup, task/workspace lookup, diagnostics, audit, provider, repository, and filesystem access.
-  - [ ] Keep safe denial envelopes externally indistinguishable across cross-tenant folder IDs, tenant denial, folder ACL denial, missing folder to an unauthorized caller, and unavailable protected resources.
-- [ ] Compute permission layers deterministically. (AC: 5, 6, 8, 9)
-  - [ ] Consume Story 2.2 organization ACL baseline as an input, not as state to mutate.
-  - [ ] Consume Story 2.4 folder override grant/revoke metadata and apply precedence as organization baseline grants, folder override grants, folder override revocations, C7 revocation freshness gate, lifecycle constraints, and task-context narrowing.
-  - [ ] Prove revokes win over organization baseline grants and folder grants for the same tenant/folder/principal/action tuple, including conflicting stale grant and fresh revoke evidence.
-  - [ ] Use strict lower-snake-case action tokens from the MVP folder ACL vocabulary: `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`; include `create_folder` only as organization-baseline evidence when explaining why it is not a folder override.
-  - [ ] Preserve principal source classes without exposing names, emails, display labels, membership counts, ACL row identifiers, projection row identifiers, cache keys, or raw membership inventories.
-  - [ ] Canonicalize outputs by deduplicating actions and principal-source classes, sorting them by contract-defined order, and proving duplicate or reordered projection inputs do not change the serialized response.
-  - [ ] Include revocation sequence/watermark/effective timestamp where needed so later C7 lock revalidation can prove freshness.
-- [ ] Add read-model freshness and unavailable behavior. (AC: 6, 8, 11)
-  - [ ] Define the local equivalent of `projection_stale`, `projection_unavailable`, and `read_model_unavailable` for this query if not already present.
-  - [ ] Ensure stale/unavailable permission projections fail closed for allowed answers rather than falling back to direct aggregate/event scans, projection repair, compensating writes, or provider/audit/filesystem lookups that bypass projection policy.
-  - [ ] Distinguish authorized stale/unavailable evidence from unauthorized safe denial without exposing protected resource existence to unauthorized callers.
-  - [ ] Include freshness metadata in success and authorized unavailable/stale outcomes: watermark, effective timestamp, consistency class, and stale/unavailable reason code.
-  - [ ] Add explicit behavior for fresh revoke, stale revoke evidence, unavailable revocation evidence, stale permission read model, unavailable permission read model, and conflicting stale grant/fresh revoke evidence.
-  - [ ] Scope any permission cache or read-model memoization by authoritative tenant, folder, principal, task/workspace scope, revocation watermark, and read-consistency class; never reuse an allowed result across principals, tenants, folders, or task scopes.
-- [ ] Add task-context narrowing without workspace behavior. (AC: 7, 13)
-  - [ ] Accept only opaque task/workspace scope identifiers already authorized for the caller, if the current contract or local handler supports task-context inspection.
-  - [ ] Narrow actions only by metadata-only task/workspace state that is safe to reveal after authorization; task context must never broaden permissions.
-  - [ ] Return safe evidence for no task context, valid narrowing context, outside-tenant context, outside-folder context, unauthorized context, unavailable context, and a context that removes all effective permissions.
-  - [ ] Do not inspect locks, workspace directories, file paths, provider state, repository state, commits, diffs, audit payloads, or worker state.
-  - [ ] Return stable safe evidence for invalid, mismatched, unauthorized, stale, or unavailable task-context metadata.
-- [ ] Add tests and fixtures. (AC: 1-13)
-  - [ ] Add unit tests such as `EffectivePermissionsAuthorizationGateTests`, `EffectivePermissionsLayeringTests`, `EffectivePermissionsRevocationFreshnessTests`, `EffectivePermissionsTaskScopeTests`, `EffectivePermissionsReadModelFreshnessTests`, and `EffectivePermissionsMetadataLeakageTests`.
-  - [ ] Add server/contract alignment tests proving route, status codes, casing, nullable fields, empty collections, error envelope, authorization failure semantics, and Problem Details categories match the existing OpenAPI operation without requiring live Dapr, EventStore, Tenants, Redis, Keycloak, GitHub, Forgejo, provider credentials, or nested submodules.
-  - [ ] Add negative-control tests named like `RejectsBeforeFolderProjectionWhenTenantMissing`, `RejectsBeforeAclProjectionWhenTenantDenied`, `RejectsBeforeTaskLookupWhenFolderAclDenied`, and `DoesNotFallbackToProviderWhenPermissionProjectionUnavailable`, or local equivalents.
-  - [ ] Add ACL precedence matrix tests for organization baseline grant, folder override grant, folder override revoke, revoke-over-grant, multiple principals, inherited-only access, direct-only access, empty ACL, and input-order independence.
-  - [ ] Add canonicalization tests for duplicate grants, duplicate revokes, repeated principal memberships, unordered projection rows, unordered action tokens, and stable serialization of equivalent permission evidence.
-  - [ ] Add C7 freshness tests for fresh revoke, stale read-model evidence, unavailable evidence, conflicting stale grant/fresh revoke, and safe denial/default-unavailable behavior when freshness cannot be established.
-  - [ ] Add task-context matrix tests for no task context, valid narrowing context, context outside tenant, context outside folder, context not authorized, context unavailable/stale, and context that removes all permissions.
-  - [ ] Add cross-tenant tests with matching folder IDs, principal IDs, task IDs, and action tokens to prove tenant scope comes from authoritative context and projection/envelope authority.
-  - [ ] Add revocation tests proving a Story 2.4 revoke removes or denies the action and carries C7 freshness evidence.
-  - [ ] Add leakage sentinel tests for foreign tenant IDs, folder IDs, principal IDs, ACL labels, task IDs, permission names, raw auth headers, provider tokens, credential material, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group names, role display names, tenant configuration payloads, membership inventories, unauthorized resource IDs, raw query bodies, logs, traces, exception messages, and Problem Details.
-  - [ ] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable effective-permission builders that delegate to production validation rules; add `tests/Hexalith.Folders.Testing.Tests` coverage if new helpers are introduced.
+- [x] Implement the effective-permissions query surface. (AC: 1, 8, 9, 11)
+  - [x] Add a domain/query handler such as `GetEffectivePermissions` under `src/Hexalith.Folders/Authorization/` or `src/Hexalith.Folders/Queries/Permissions/`, aligned with existing project structure when Stories 2.1-2.4 land.
+  - [x] Wire the existing `GET /api/v1/folders/{folderId}/effective-permissions` operation in `Hexalith.Folders.Server` only if the server endpoint is not already generated/wired by earlier stories.
+  - [x] Return a metadata-only result compatible with the Contract Spine `EffectivePermissions` schema: required `folderId`, `permissions`, `authorizationOutcome`, and `freshness`; `authorizationOutcome` values remain `allowed` or `denied_safe`.
+  - [x] Preserve existing operation responses and casing exactly: `200` `EffectivePermissions`, `401` `SafeAuthorizationDenial401`, `403` `SafeAuthorizationDenial403`, `404` `SafeAuthorizationDenial404`, and `503` `ReadModelUnavailable`.
+  - [x] Preserve `x-hexalith-read-consistency.class: read_your_writes` and freshness behavior that reports the authorization projection watermark through `FreshnessMetadata.readConsistency`, `observedAt`, optional `projectionWatermark`, and `stale`.
+  - [x] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate only through the established Contract Spine toolchain if generated output is legitimately stale.
+- [x] Enforce authorization-before-observation gates. (AC: 2, 3, 4, 7)
+  - [x] Consume authoritative tenant context before constructing folder stream names, read-model keys, cache keys, diagnostic keys, audit keys, or task/workspace lookup keys.
+  - [x] Consume Story 2.1 tenant-access evidence before folder, ACL, lifecycle, task, workspace, audit, provider, repository, lock, or file resources are observed.
+  - [x] Treat route/query/header/client tenant IDs, forwarded headers, metadata bags, and client-controlled envelope fields as comparison values only; mismatches return the existing safe denial evidence.
+  - [x] Add in-memory spies proving denied tenant evidence prevents folder projection lookup, ACL projection lookup, task/workspace lookup, diagnostics, audit, provider, repository, and filesystem access.
+  - [x] Keep safe denial envelopes externally indistinguishable across cross-tenant folder IDs, tenant denial, folder ACL denial, missing folder to an unauthorized caller, and unavailable protected resources.
+- [x] Compute permission layers deterministically. (AC: 5, 6, 8, 9)
+  - [x] Consume Story 2.2 organization ACL baseline as an input, not as state to mutate.
+  - [x] Consume Story 2.4 folder override grant/revoke metadata and apply precedence as organization baseline grants, folder override grants, folder override revocations, C7 revocation freshness gate, lifecycle constraints, and task-context narrowing.
+  - [x] Prove revokes win over organization baseline grants and folder grants for the same tenant/folder/principal/action tuple, including conflicting stale grant and fresh revoke evidence.
+  - [x] Use strict lower-snake-case action tokens from the MVP folder ACL vocabulary: `configure_provider_binding`, `prepare_workspace`, `lock_workspace`, `read_metadata`, `read_file_content`, `mutate_files`, `commit`, `query_status`, `query_audit`, and `view_operations_console`; include `create_folder` only as organization-baseline evidence when explaining why it is not a folder override.
+  - [x] Preserve principal source classes without exposing names, emails, display labels, membership counts, ACL row identifiers, projection row identifiers, cache keys, or raw membership inventories.
+  - [x] Canonicalize outputs by deduplicating actions and principal-source classes, sorting them by contract-defined order, and proving duplicate or reordered projection inputs do not change the serialized response.
+  - [x] Include revocation sequence/watermark/effective timestamp where needed so later C7 lock revalidation can prove freshness.
+- [x] Add read-model freshness and unavailable behavior. (AC: 6, 8, 11)
+  - [x] Define the local equivalent of `projection_stale`, `projection_unavailable`, and `read_model_unavailable` for this query if not already present.
+  - [x] Ensure stale/unavailable permission projections fail closed for allowed answers rather than falling back to direct aggregate/event scans, projection repair, compensating writes, or provider/audit/filesystem lookups that bypass projection policy.
+  - [x] Distinguish authorized stale/unavailable evidence from unauthorized safe denial without exposing protected resource existence to unauthorized callers.
+  - [x] Include freshness metadata in success and authorized unavailable/stale outcomes: watermark, effective timestamp, consistency class, and stale/unavailable reason code.
+  - [x] Add explicit behavior for fresh revoke, stale revoke evidence, unavailable revocation evidence, stale permission read model, unavailable permission read model, and conflicting stale grant/fresh revoke evidence.
+  - [x] Scope any permission cache or read-model memoization by authoritative tenant, folder, principal, task/workspace scope, revocation watermark, and read-consistency class; never reuse an allowed result across principals, tenants, folders, or task scopes.
+- [x] Add task-context narrowing without workspace behavior. (AC: 7, 13)
+  - [x] Accept only opaque task/workspace scope identifiers already authorized for the caller, if the current contract or local handler supports task-context inspection.
+  - [x] Narrow actions only by metadata-only task/workspace state that is safe to reveal after authorization; task context must never broaden permissions.
+  - [x] Return safe evidence for no task context, valid narrowing context, outside-tenant context, outside-folder context, unauthorized context, unavailable context, and a context that removes all effective permissions.
+  - [x] Do not inspect locks, workspace directories, file paths, provider state, repository state, commits, diffs, audit payloads, or worker state.
+  - [x] Return stable safe evidence for invalid, mismatched, unauthorized, stale, or unavailable task-context metadata.
+- [x] Add tests and fixtures. (AC: 1-13)
+  - [x] Add unit tests such as `EffectivePermissionsAuthorizationGateTests`, `EffectivePermissionsLayeringTests`, `EffectivePermissionsRevocationFreshnessTests`, `EffectivePermissionsTaskScopeTests`, `EffectivePermissionsReadModelFreshnessTests`, and `EffectivePermissionsMetadataLeakageTests`.
+  - [x] Add server/contract alignment tests proving route, status codes, casing, nullable fields, empty collections, error envelope, authorization failure semantics, and Problem Details categories match the existing OpenAPI operation without requiring live Dapr, EventStore, Tenants, Redis, Keycloak, GitHub, Forgejo, provider credentials, or nested submodules.
+  - [x] Add negative-control tests named like `RejectsBeforeFolderProjectionWhenTenantMissing`, `RejectsBeforeAclProjectionWhenTenantDenied`, `RejectsBeforeTaskLookupWhenFolderAclDenied`, and `DoesNotFallbackToProviderWhenPermissionProjectionUnavailable`, or local equivalents.
+  - [x] Add ACL precedence matrix tests for organization baseline grant, folder override grant, folder override revoke, revoke-over-grant, multiple principals, inherited-only access, direct-only access, empty ACL, and input-order independence.
+  - [x] Add canonicalization tests for duplicate grants, duplicate revokes, repeated principal memberships, unordered projection rows, unordered action tokens, and stable serialization of equivalent permission evidence.
+  - [x] Add C7 freshness tests for fresh revoke, stale read-model evidence, unavailable evidence, conflicting stale grant/fresh revoke, and safe denial/default-unavailable behavior when freshness cannot be established.
+  - [x] Add task-context matrix tests for no task context, valid narrowing context, context outside tenant, context outside folder, context not authorized, context unavailable/stale, and context that removes all permissions.
+  - [x] Add cross-tenant tests with matching folder IDs, principal IDs, task IDs, and action tokens to prove tenant scope comes from authoritative context and projection/envelope authority.
+  - [x] Add revocation tests proving a Story 2.4 revoke removes or denies the action and carries C7 freshness evidence.
+  - [x] Add leakage sentinel tests for foreign tenant IDs, folder IDs, principal IDs, ACL labels, task IDs, permission names, raw auth headers, provider tokens, credential material, repository names, branch names, file paths, file contents, diffs, generated context payloads, user emails, group names, role display names, tenant configuration payloads, membership inventories, unauthorized resource IDs, raw query bodies, logs, traces, exception messages, and Problem Details.
+  - [x] Extend `src/Hexalith.Folders.Testing/Factories/*` only with reusable effective-permission builders that delegate to production validation rules; add `tests/Hexalith.Folders.Testing.Tests` coverage if new helpers are introduced.
 
 ## Dev Notes
 
@@ -184,6 +184,7 @@ so that I can explain who can perform work before a task begins.
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-19 | Implemented effective-permission query handler, read-model seam, server route, deterministic permission layering, freshness handling, task narrowing, and focused offline tests. | Codex |
 | 2026-05-19 | Applied advanced-elicitation hardening for canonical response ordering, duplicate evidence handling, principal/task-scope cache isolation, and no-leakage stale/unavailable paths. | Codex |
 | 2026-05-18 | Applied party-mode review hardening for tenant-before-lookup ordering, deterministic ACL precedence, C7 revocation freshness, safe denial/contract alignment, task-context narrowing, and offline leakage tests. | Codex |
 | 2026-05-18 | Created story with effective-permission query contract alignment, fail-closed authorization-before-observation gates, ACL layering, revocation freshness, read-model unavailable behavior, and offline leakage tests. | Codex |
@@ -236,10 +237,56 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- 2026-05-19T10:41:53+02:00 - Started implementation; loaded project context, sprint status, and story requirements.
+- 2026-05-19T10:47:00+02:00 - Red phase confirmed with missing effective-permissions query/server types.
+- 2026-05-19T10:55:04+02:00 - Full regression validation passed with `dotnet test Hexalith.Folders.slnx --no-restore`.
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-5-inspect-effective-permissions` equivalent workflow on 2026-05-18.
 - Project context, Epic 2, PRD, architecture, existing Contract Spine effective-permissions operation, Stories 2.1-2.4, testing factories, recent commits, and story-creation lessons were reviewed.
 - Ultimate context engine analysis completed - comprehensive developer guide created.
+- Implemented `EffectivePermissionsQueryHandler` with tenant-before-read-model ordering, client-controlled tenant mismatch rejection, deterministic lower-snake-case action layering, folder revoke precedence, C7 revocation freshness fail-closed behavior, lifecycle fail-closed handling, and metadata-only task-scope narrowing.
+- Added an `IEffectivePermissionsReadModel` seam plus in-memory implementation scoped by authoritative tenant and folder for offline tests and local wiring; no aggregate scan, projection repair, provider, repository, audit, lock, workspace directory, or file fallback was introduced.
+- Wired `GET /api/v1/folders/{folderId}/effective-permissions` to the existing Contract Spine operation shape, returning `EffectivePermissions`-compatible JSON for safe results and safe Problem Details for `401`, `403`, `404`, and `503`.
+- Added focused unit and server tests covering authorization gate ordering, ACL layering, revocation freshness, stale/unavailable read models, task-scope narrowing, response shape, and leakage sentinels.
+- No generated SDK files under `src/Hexalith.Folders.Client/Generated/` were edited.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-5-inspect-effective-permissions.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/process-notes/predev-preflight-latest.json` (generated by pre-dev hardening job while story was in progress)
+- `_bmad-output/process-notes/predev-preflight-2026-05-19T084153Z.json` (generated by pre-dev hardening job while story was in progress)
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`
+- `src/Hexalith.Folders/Authorization/AuthorizationOrder.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionEvidenceRow.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionEvidenceSource.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionLevel.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionPrincipal.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionPrincipalKind.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsFolderLifecycleState.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsFreshness.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsQuery.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsQueryHandler.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsQueryResult.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsReadModelRequest.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsReadModelResult.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsReadModelSnapshot.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsReadModelStatus.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsResultCode.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsTaskScope.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsTaskScopeStatus.cs`
+- `src/Hexalith.Folders/Authorization/IEffectivePermissionsReadModel.cs`
+- `src/Hexalith.Folders/Authorization/InMemoryEffectivePermissionsReadModel.cs`
+- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`
+- `src/Hexalith.Folders.Server/FoldersServerModule.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsAuthorizationGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsLayeringTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsMetadataLeakageTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsReadModelFreshnessTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsRevocationFreshnessTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTaskScopeTests.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/EffectivePermissionsTestSupport.cs`
+- `tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs`

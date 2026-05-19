@@ -22,4 +22,15 @@ public static class FoldersServiceCollectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddFoldersEffectivePermissions(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersTenantAccess();
+        services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
+        services.TryAddSingleton<EffectivePermissionsQueryHandler>();
+
+        return services;
+    }
 }

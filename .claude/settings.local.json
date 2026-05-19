@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 D:/Hexalith.Folders/_bmad/scripts/resolve_customization.py --skill D:/Hexalith.Folders/.claude/skills/bmad-tea --key agent)"
+    ]
+  }
+}
