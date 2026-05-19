@@ -17,12 +17,15 @@ public sealed class EffectivePermissionsQueryHandler(
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(query);
+        cancellationToken.ThrowIfCancellationRequested();
 
         EffectivePermissionsFreshness deniedFreshness = EffectivePermissionsFreshness.SafeUnavailable(
             clock.UtcNow,
             "denied_safe");
 
-        if (string.IsNullOrWhiteSpace(query.AuthoritativeTenantId) || string.IsNullOrWhiteSpace(query.PrincipalId))
+        if (string.IsNullOrWhiteSpace(query.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(query.PrincipalId)
+            || string.IsNullOrWhiteSpace(query.FolderId))
         {
             return SafeResult(EffectivePermissionsResultCode.AuthenticationRequired, null, query, deniedFreshness);
         }
@@ -42,7 +45,7 @@ public sealed class EffectivePermissionsQueryHandler(
         }
 
         string managedTenantId = tenantAccess.TenantId ?? query.AuthoritativeTenantId;
-        IReadOnlyList<EffectivePermissionPrincipal> principalScopes = PrincipalScopes(query);
+        IReadOnlyList<EffectivePermissionPrincipal> principalScopes = [EffectivePermissionPrincipal.User(query.PrincipalId)];
 
         EffectivePermissionsReadModelResult readModelResult;
         try
@@ -75,7 +78,7 @@ public sealed class EffectivePermissionsQueryHandler(
             EffectivePermissionsReadModelStatus.Unavailable =>
                 SafeResult(EffectivePermissionsResultCode.ReadModelUnavailable, query.FolderId, query, readModelResult.Freshness with { Stale = true }),
             EffectivePermissionsReadModelStatus.Malformed =>
-                SafeResult(EffectivePermissionsResultCode.ProjectionStale, query.FolderId, query, readModelResult.Freshness with { Stale = true }),
+                SafeResult(EffectivePermissionsResultCode.ReadModelUnavailable, query.FolderId, query, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }),
             EffectivePermissionsReadModelStatus.NotFound =>
                 SafeResult(EffectivePermissionsResultCode.NotFoundSafe, null, query, readModelResult.Freshness),
             _ => SafeResult(EffectivePermissionsResultCode.ReadModelUnavailable, query.FolderId, query, readModelResult.Freshness),
@@ -89,11 +92,23 @@ public sealed class EffectivePermissionsQueryHandler(
     {
         if (snapshot.LifecycleState != EffectivePermissionsFolderLifecycleState.Active)
         {
-            EffectivePermissionsResultCode code = snapshot.LifecycleState is EffectivePermissionsFolderLifecycleState.Unavailable
-                ? EffectivePermissionsResultCode.ReadModelUnavailable
-                : EffectivePermissionsResultCode.DeniedSafe;
+            (EffectivePermissionsResultCode code, string reason) = snapshot.LifecycleState switch
+            {
+                EffectivePermissionsFolderLifecycleState.Unavailable => (EffectivePermissionsResultCode.ReadModelUnavailable, "lifecycle_unavailable"),
+                EffectivePermissionsFolderLifecycleState.Malformed => (EffectivePermissionsResultCode.ReadModelUnavailable, "lifecycle_malformed"),
+                EffectivePermissionsFolderLifecycleState.Stale => (EffectivePermissionsResultCode.ProjectionStale, "lifecycle_stale"),
+                EffectivePermissionsFolderLifecycleState.Archived => (EffectivePermissionsResultCode.DeniedSafe, "lifecycle_archived"),
+                EffectivePermissionsFolderLifecycleState.Missing => (EffectivePermissionsResultCode.NotFoundSafe, "lifecycle_missing"),
+                _ => (EffectivePermissionsResultCode.DeniedSafe, "lifecycle_inactive"),
+            };
 
-            return SafeResult(code, query.FolderId, query, snapshot.Freshness with { Stale = snapshot.Freshness.Stale || snapshot.LifecycleState != EffectivePermissionsFolderLifecycleState.Active });
+            string? folderId = code == EffectivePermissionsResultCode.NotFoundSafe ? null : query.FolderId;
+
+            return SafeResult(code, folderId, query, snapshot.Freshness with
+            {
+                Stale = snapshot.Freshness.Stale || snapshot.LifecycleState != EffectivePermissionsFolderLifecycleState.Active,
+                ReasonCode = snapshot.Freshness.ReasonCode ?? reason,
+            });
         }
 
         if (!snapshot.RevocationFreshnessEstablished)
@@ -117,7 +132,8 @@ public sealed class EffectivePermissionsQueryHandler(
             .Where(static row => EffectivePermissionsActionCatalog.IsSupported(row.Action))
             .OrderBy(static row => row.Sequence)
             .ThenBy(static row => row.EffectiveAt)
-            .ThenBy(static row => row.Action, Comparer<string>.Create(EffectivePermissionsActionCatalog.CompareActions)))
+            .ThenBy(static row => row.Action, Comparer<string>.Create(EffectivePermissionsActionCatalog.CompareActions))
+            .ThenBy(static row => (int)row.Source))
         {
             if (!principals.Contains(row.Principal))
             {
@@ -190,8 +206,12 @@ public sealed class EffectivePermissionsQueryHandler(
                 snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "task_scope_unavailable" });
         }
 
+        bool workspaceRequiredButMissing = !string.IsNullOrWhiteSpace(taskScope.OpaqueWorkspaceId)
+            && string.IsNullOrWhiteSpace(query.WorkspaceContextId);
+
         if (taskScope.Status != EffectivePermissionsTaskScopeStatus.Available
             || !string.Equals(taskScope.OpaqueTaskId, query.TaskContextId, StringComparison.Ordinal)
+            || workspaceRequiredButMissing
             || (!string.IsNullOrWhiteSpace(query.WorkspaceContextId)
                 && !string.Equals(taskScope.OpaqueWorkspaceId, query.WorkspaceContextId, StringComparison.Ordinal)))
         {
@@ -206,8 +226,8 @@ public sealed class EffectivePermissionsQueryHandler(
                 });
         }
 
-        allowedActions.RemoveAll(action => !taskScope.AllowedActions.Contains(action));
-        IReadOnlyList<EffectivePermissionLevel> permissions = EffectivePermissionsActionCatalog.ToPermissionLevels(allowedActions);
+        List<string> narrowedActions = [.. allowedActions.Where(action => taskScope.AllowedActions.Contains(action))];
+        IReadOnlyList<EffectivePermissionLevel> permissions = EffectivePermissionsActionCatalog.ToPermissionLevels(narrowedActions);
 
         return new EffectivePermissionsQueryResult(
             permissions.Count == 0 ? EffectivePermissionsResultCode.DeniedSafe : EffectivePermissionsResultCode.Allowed,
@@ -222,20 +242,45 @@ public sealed class EffectivePermissionsQueryHandler(
     }
 
     private static bool HasClientTenantMismatch(EffectivePermissionsQuery query)
-        => query.ClientControlledTenantIds?.Values.Any(value =>
-            !string.IsNullOrWhiteSpace(value)
-            && !string.Equals(value, query.AuthoritativeTenantId, StringComparison.Ordinal)) == true;
+    {
+        if (query.ClientControlledTenantIds is null || query.ClientControlledTenantIds.Count == 0)
+        {
+            return false;
+        }
 
-    private static IReadOnlyList<EffectivePermissionPrincipal> PrincipalScopes(EffectivePermissionsQuery query)
-        => query.PrincipalScopes is { Count: > 0 }
-            ? query.PrincipalScopes
-            : [EffectivePermissionPrincipal.User(query.PrincipalId)];
+        string authoritative = (query.AuthoritativeTenantId ?? string.Empty).Trim();
+        string? firstNonEmpty = null;
+
+        foreach (string? raw in query.ClientControlledTenantIds.Values)
+        {
+            string value = (raw ?? string.Empty).Trim();
+            if (value.Length == 0)
+            {
+                continue;
+            }
+
+            if (!string.Equals(value, authoritative, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            if (firstNonEmpty is not null && !string.Equals(value, firstNonEmpty, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            firstNonEmpty ??= value;
+        }
+
+        return false;
+    }
 
     private static EffectivePermissionsResultCode MapTenantFailure(TenantAccessOutcome outcome)
         => outcome switch
         {
             TenantAccessOutcome.MissingAuthoritativeTenant => EffectivePermissionsResultCode.AuthenticationRequired,
             TenantAccessOutcome.StaleProjection or TenantAccessOutcome.UnavailableProjection => EffectivePermissionsResultCode.ReadModelUnavailable,
+            TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict => EffectivePermissionsResultCode.ReadModelUnavailable,
             TenantAccessOutcome.UnknownTenant => EffectivePermissionsResultCode.NotFoundSafe,
             _ => EffectivePermissionsResultCode.AuthorizationDenied,
         };

@@ -16,7 +16,7 @@ public sealed class EffectivePermissionsRevocationFreshnessTests
             Freshness = new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
                 ObservedAt: EffectivePermissionsTestSupport.Now,
-                ProjectionWatermark: "folder-a:unknown-revoke-watermark",
+                ProjectionWatermark: "folder_a_unknown_revoke_wm",
                 Stale: true,
                 ReasonCode: "revocation_freshness_unproven"),
         };
@@ -40,7 +40,7 @@ public sealed class EffectivePermissionsRevocationFreshnessTests
             Freshness = new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
                 ObservedAt: EffectivePermissionsTestSupport.Now,
-                ProjectionWatermark: "folder-a:revoke-2",
+                ProjectionWatermark: "folder_a_watermark_rev_02",
                 Stale: false,
                 ReasonCode: null),
         };
@@ -49,7 +49,7 @@ public sealed class EffectivePermissionsRevocationFreshnessTests
 
         result.Code.ShouldBe(EffectivePermissionsResultCode.DeniedSafe);
         result.Permissions.ShouldBeEmpty();
-        result.Freshness.ProjectionWatermark.ShouldBe("folder-a:revoke-2");
+        result.Freshness.ProjectionWatermark.ShouldBe("folder_a_watermark_rev_02");
     }
 
     private static async Task<EffectivePermissionsQueryResult> ExecuteAsync(EffectivePermissionsReadModelSnapshot snapshot)

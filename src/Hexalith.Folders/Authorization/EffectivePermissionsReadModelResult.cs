@@ -34,8 +34,12 @@ public sealed record EffectivePermissionsReadModelResult(
     }
 
     public static EffectivePermissionsReadModelResult Unavailable(string reasonCode, DateTimeOffset observedAt)
-        => new(
+    {
+        ArgumentNullException.ThrowIfNull(reasonCode);
+
+        return new(
             EffectivePermissionsReadModelStatus.Unavailable,
             null,
             EffectivePermissionsFreshness.SafeUnavailable(observedAt, reasonCode));
+    }
 }

@@ -2,6 +2,16 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-5-inspect-effective-permissions (2026-05-19)
+
+Items deferred from the `/bmad-code-review 2.5` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `41f9a52`.
+
+- AC #9 principal-source classes are not surfaced in the response [`src/Hexalith.Folders/Authorization/EffectivePermissionsQueryResult.cs`] — deferred, requires Contract Spine extension via the contract workflow. `EffectivePermissionEvidenceSource` is computed internally; OpenAPI `EffectivePermissions` schema is `additionalProperties: false`. Project rule "Do Not Touch" forbids changing the Contract Spine outside a dedicated contract-workflow story.
+- AC #5/#6 action-token granularity is collapsed to `FolderPermissionLevel` (`read/write/administer`) [`src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs`] — deferred, same Contract Spine constraint as above. Per-action revoke precedence is still computed correctly inside `Compute` (revokes win over grants per `(principal, action)` tuple); the response shape does not expose the per-action distinction. Granular exposure requires a contract-workflow story.
+- `InMemoryEffectivePermissionsReadModel` key scope is `(managedTenantId, folderId)` only [`src/Hexalith.Folders/Authorization/InMemoryEffectivePermissionsReadModel.cs:27`] — deferred, testing-only seam; project context "Critical Don't-Miss" requires production cache keys scoped by authoritative tenant, folder, principal, task/workspace scope, revocation watermark, and read-consistency class. The handler post-filters evidence rows by principal so the response is correct today. Revisit when a durable production read model replaces the in-memory implementation.
+- `EffectivePermissionPrincipal` record equality is case-sensitive on `PrincipalId` [`src/Hexalith.Folders/Authorization/EffectivePermissionPrincipal.cs`] — deferred, convention; production auth pipeline is expected to canonicalize casing before the handler sees it. Add explicit `StringComparer.OrdinalIgnoreCase` or pipeline-side normalization when a real IDP integration requires it.
+- `EffectivePermissionsTaskScope.AllowedActions` is `IReadOnlySet<string>` without an enforced comparer [`src/Hexalith.Folders/Authorization/EffectivePermissionsTaskScope.cs`] — deferred, testing-only seam; production task-scope projection must construct the set with `StringComparer.Ordinal` to match the action catalog. Document the contract on the type when the production task-scope projection lands.
+
 ## Deferred from: code review of 2-4-grant-and-revoke-folder-access (2026-05-19)
 
 Items deferred from the `/bmad-code-review 2.4` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `0fa8c64`.

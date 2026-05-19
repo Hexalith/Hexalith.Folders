@@ -35,7 +35,7 @@ public sealed class EffectivePermissionsReadModelFreshnessTests
             Freshness = new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
                 ObservedAt: EffectivePermissionsTestSupport.Now.AddMinutes(-10),
-                ProjectionWatermark: "folder-a:stale",
+                ProjectionWatermark: "folder_a_watermark_stale",
                 Stale: true,
                 ReasonCode: "projection_stale"),
         };
@@ -45,7 +45,7 @@ public sealed class EffectivePermissionsReadModelFreshnessTests
         result.Code.ShouldBe(EffectivePermissionsResultCode.ProjectionStale);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
         result.Permissions.ShouldBeEmpty();
-        result.Freshness.ProjectionWatermark.ShouldBe("folder-a:stale");
+        result.Freshness.ProjectionWatermark.ShouldBe("folder_a_watermark_stale");
         result.Freshness.Stale.ShouldBeTrue();
     }
 

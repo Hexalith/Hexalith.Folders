@@ -34,7 +34,7 @@ public static class EffectivePermissionsActionCatalog
 
     public static bool IsSupported(string action)
         => !string.IsNullOrWhiteSpace(action)
-            && string.Equals(action, action.Trim(), StringComparison.Ordinal)
+            && action.Length == action.AsSpan().Trim().Length
             && PermissionByAction.ContainsKey(action);
 
     public static IReadOnlyList<EffectivePermissionLevel> ToPermissionLevels(IEnumerable<string> actions)

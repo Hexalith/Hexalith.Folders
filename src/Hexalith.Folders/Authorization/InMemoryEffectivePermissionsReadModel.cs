@@ -1,14 +1,16 @@
+using System.Collections.Concurrent;
+
 namespace Hexalith.Folders.Authorization;
 
 public sealed class InMemoryEffectivePermissionsReadModel : IEffectivePermissionsReadModel
 {
-    private readonly Dictionary<string, EffectivePermissionsReadModelSnapshot> _snapshots = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<ScopedSnapshotKey, EffectivePermissionsReadModelSnapshot> _snapshots = new();
 
     public void Save(EffectivePermissionsReadModelSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
 
-        _snapshots[Key(snapshot.ManagedTenantId, snapshot.FolderId)] = snapshot;
+        _snapshots[new ScopedSnapshotKey(snapshot.ManagedTenantId, snapshot.FolderId)] = snapshot;
     }
 
     public Task<EffectivePermissionsReadModelResult> GetAsync(
@@ -18,12 +20,11 @@ public sealed class InMemoryEffectivePermissionsReadModel : IEffectivePermission
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
 
-        return Task.FromResult(_snapshots.TryGetValue(Key(request.ManagedTenantId, request.FolderId), out EffectivePermissionsReadModelSnapshot? snapshot)
+        return Task.FromResult(_snapshots.TryGetValue(new ScopedSnapshotKey(request.ManagedTenantId, request.FolderId), out EffectivePermissionsReadModelSnapshot? snapshot)
             ? EffectivePermissionsReadModelResult.Available(snapshot)
             : EffectivePermissionsReadModelResult.NotFound(
                 EffectivePermissionsFreshness.SafeUnavailable(DateTimeOffset.UnixEpoch, "folder_projection_missing")));
     }
 
-    private static string Key(string managedTenantId, string folderId)
-        => string.Join('|', managedTenantId, folderId);
+    private readonly record struct ScopedSnapshotKey(string ManagedTenantId, string FolderId);
 }

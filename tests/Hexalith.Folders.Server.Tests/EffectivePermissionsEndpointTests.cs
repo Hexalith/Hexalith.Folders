@@ -80,15 +80,66 @@ public sealed class EffectivePermissionsEndpointTests
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
         using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-secret-victim/effective-permissions");
         request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-secret-victim");
+        request.Headers.Add("X-Correlation-Id", "corr-mismatch");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
-        json.ShouldContain("\"category\":\"authorization\"");
+        json.ShouldContain("\"category\":\"tenant_access_denied\"");
         json.ShouldContain("\"code\":\"denied_safe\"");
+        json.ShouldContain("\"clientAction\":\"no_action\"");
+        json.ShouldContain("\"correlationId\":\"corr-mismatch\"");
+        json.ShouldContain("\"message\":");
+        json.ShouldContain("\"details\":");
         json.ShouldNotContain("folder-secret-victim", Case.Sensitive);
         json.ShouldNotContain("tenant-secret-victim", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task EffectivePermissionsRouteShouldFoldMissingFolderIntoDeniedSafeBody()
+    {
+        InMemoryEffectivePermissionsReadModel emptyReadModel = new();
+        await using WebApplication app = BuildApp(
+            TenantStore("tenant-a", "user-a"),
+            emptyReadModel,
+            new StaticTenantContextAccessor("tenant-a", "user-a"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-missing/effective-permissions");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        document.RootElement.GetProperty("authorizationOutcome").GetString().ShouldBe("denied_safe");
+        document.RootElement.GetProperty("permissions").GetArrayLength().ShouldBe(0);
+        json.ShouldNotContain("folder-missing", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task EffectivePermissionsRouteShouldEmit503ProblemDetailsForUnavailableReadModel()
+    {
+        await using WebApplication app = BuildApp(
+            TenantStore("tenant-a", "user-a"),
+            new ThrowingReadModel(),
+            new StaticTenantContextAccessor("tenant-a", "user-a"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/effective-permissions");
+        request.Headers.Add("X-Correlation-Id", "corr-unavail");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        json.ShouldContain("\"category\":\"read_model_unavailable\"");
+        json.ShouldContain("\"retryable\":true");
+        json.ShouldContain("\"clientAction\":\"retry\"");
+        json.ShouldContain("\"correlationId\":\"corr-unavail\"");
     }
 
     private static WebApplication BuildApp(
@@ -140,12 +191,20 @@ public sealed class EffectivePermissionsEndpointTests
             Freshness: new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
                 ObservedAt: Now,
-                ProjectionWatermark: "folder-a:11",
+                ProjectionWatermark: "folder_a_watermark_v0011",
                 Stale: false,
                 ReasonCode: null),
             RevocationFreshnessEstablished: true,
             TaskScope: null));
         return readModel;
+    }
+
+    private sealed class ThrowingReadModel : IEffectivePermissionsReadModel
+    {
+        public Task<EffectivePermissionsReadModelResult> GetAsync(
+            EffectivePermissionsReadModelRequest request,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("read model unavailable");
     }
 
     private static EffectivePermissionEvidenceRow EffectivePermissionEvidenceRow(

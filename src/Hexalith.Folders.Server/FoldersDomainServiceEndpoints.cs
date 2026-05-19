@@ -8,6 +8,7 @@ using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Primitives;
 
 namespace Hexalith.Folders.Server;
 
@@ -47,28 +48,31 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
             EffectivePermissionsQueryResult result = await handler.HandleAsync(
                 new EffectivePermissionsQuery(
                     folderId,
                     tenantContext.AuthoritativeTenantId,
                     tenantContext.PrincipalId ?? string.Empty,
-                    ReadHeader(httpContext, "X-Correlation-Id"),
+                    correlationId,
                     TaskContextId: ReadHeader(httpContext, "X-Hexalith-Task-Id"),
                     WorkspaceContextId: ReadHeader(httpContext, "X-Hexalith-Workspace-Id"),
                     ClientControlledTenantIds: ClientTenantIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
-            return ToHttpResult(result);
-        });
+            return ToHttpResult(result, correlationId);
+        })
+        .WithName("GetEffectivePermissions");
 
         return endpoints;
     }
 
-    private static IResult ToHttpResult(EffectivePermissionsQueryResult result)
+    private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
         => result.Code switch
         {
             EffectivePermissionsResultCode.Allowed
                 or EffectivePermissionsResultCode.DeniedSafe
+                or EffectivePermissionsResultCode.NotFoundSafe
                 or EffectivePermissionsResultCode.ProjectionStale => Results.Json(
                     new EffectivePermissionsResponse(
                         result.FolderId ?? string.Empty,
@@ -82,39 +86,54 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions),
             EffectivePermissionsResultCode.AuthenticationRequired => SafeProblem(
                 StatusCodes.Status401Unauthorized,
-                "authentication_failure",
-                retryable: false),
-            EffectivePermissionsResultCode.NotFoundSafe => SafeProblem(
-                StatusCodes.Status404NotFound,
-                "denied_safe",
-                retryable: false),
+                category: "authentication_failure",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId),
             EffectivePermissionsResultCode.ReadModelUnavailable => SafeProblem(
                 StatusCodes.Status503ServiceUnavailable,
-                "read_model_unavailable",
-                retryable: true),
+                category: "read_model_unavailable",
+                code: "read_model_unavailable",
+                retryable: true,
+                correlationId: correlationId),
             _ => SafeProblem(
                 StatusCodes.Status403Forbidden,
-                "denied_safe",
-                retryable: false),
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId),
         };
 
-    private static IResult SafeProblem(int statusCode, string code, bool retryable)
+    private static IResult SafeProblem(int statusCode, string category, string code, bool retryable, string? correlationId)
         => Results.Problem(
             type: $"https://hexalith.dev/errors/folders/{code}",
-            title: statusCode == StatusCodes.Status503ServiceUnavailable
-                ? "Read model unavailable."
-                : "Authorization denied.",
+            title: statusCode switch
+            {
+                StatusCodes.Status401Unauthorized => "Authentication required.",
+                StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
+                _ => "Authorization denied.",
+            },
             statusCode: statusCode,
             extensions: new Dictionary<string, object?>
             {
-                ["category"] = statusCode == StatusCodes.Status401Unauthorized
-                    ? "authentication"
-                    : statusCode == StatusCodes.Status503ServiceUnavailable
-                        ? "read_model"
-                        : "authorization",
+                ["category"] = category,
                 ["code"] = code,
+                ["message"] = MessageFor(category),
+                ["correlationId"] = correlationId,
                 ["retryable"] = retryable,
+                ["clientAction"] = retryable ? "retry" : "no_action",
+                ["details"] = new Dictionary<string, object?>
+                {
+                    ["visibility"] = "metadata_only",
+                },
             });
+
+    private static string MessageFor(string category) => category switch
+    {
+        "authentication_failure" => "Authentication is required to access this resource.",
+        "read_model_unavailable" => "The read model is temporarily unavailable. Retry later.",
+        _ => "Access is denied. The caller is not authorized for this operation or resource.",
+    };
 
     private static string PermissionToken(EffectivePermissionLevel permission)
         => permission switch
@@ -136,21 +155,28 @@ public static class FoldersDomainServiceEndpoints
         };
 
     private static string? ReadHeader(HttpContext httpContext, string name)
-    {
-        string value = httpContext.Request.Headers.TryGetValue(name, out Microsoft.Extensions.Primitives.StringValues values)
-            ? values.ToString()
-            : string.Empty;
-
-        return string.IsNullOrWhiteSpace(value) ? null : value;
-    }
+        => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
 
     private static string? ReadQuery(HttpContext httpContext, string name)
-    {
-        string value = httpContext.Request.Query.TryGetValue(name, out Microsoft.Extensions.Primitives.StringValues values)
-            ? values.ToString()
-            : string.Empty;
+        => FirstNonEmpty(httpContext.Request.Query.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
 
-        return string.IsNullOrWhiteSpace(value) ? null : value;
+    private static string? FirstNonEmpty(StringValues values)
+    {
+        foreach (string? raw in values)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                continue;
+            }
+
+            string trimmed = raw.Trim();
+            if (trimmed.Length > 0)
+            {
+                return trimmed;
+            }
+        }
+
+        return null;
     }
 
     private sealed record EffectivePermissionsResponse(

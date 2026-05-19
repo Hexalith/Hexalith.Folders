@@ -23,12 +23,41 @@ public sealed class EffectivePermissionsTaskScopeTests
                 }),
         };
 
-        EffectivePermissionsQueryResult result = await ExecuteAsync(snapshot, taskContextId: "task-a").ConfigureAwait(true);
+        EffectivePermissionsQueryResult result = await ExecuteAsync(
+            snapshot,
+            taskContextId: "task-a",
+            workspaceContextId: "workspace-a").ConfigureAwait(true);
 
         result.Code.ShouldBe(EffectivePermissionsResultCode.Allowed);
         result.Permissions.ShouldBe([EffectivePermissionLevel.Read]);
         result.TaskContextId.ShouldBe("task-a");
         result.WorkspaceContextId.ShouldBe("workspace-a");
+    }
+
+    [Fact]
+    public async Task TaskScopeWithWorkspaceMustReceiveWorkspaceContextIdToBeAllowed()
+    {
+        EffectivePermissionsReadModelSnapshot snapshot = EffectivePermissionsTestSupport.Snapshot(
+            EffectivePermissionsTestSupport.OrganizationGrant("read_metadata")) with
+        {
+            TaskScope = new EffectivePermissionsTaskScope(
+                Status: EffectivePermissionsTaskScopeStatus.Available,
+                OpaqueTaskId: "task-a",
+                OpaqueWorkspaceId: "workspace-a",
+                AllowedActions: new HashSet<string>(StringComparer.Ordinal)
+                {
+                    "read_metadata",
+                }),
+        };
+
+        EffectivePermissionsQueryResult result = await ExecuteAsync(
+            snapshot,
+            taskContextId: "task-a",
+            workspaceContextId: null).ConfigureAwait(true);
+
+        result.Code.ShouldBe(EffectivePermissionsResultCode.DeniedSafe);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Permissions.ShouldBeEmpty();
     }
 
     [Theory]
@@ -63,7 +92,8 @@ public sealed class EffectivePermissionsTaskScopeTests
 
     private static async Task<EffectivePermissionsQueryResult> ExecuteAsync(
         EffectivePermissionsReadModelSnapshot snapshot,
-        string? taskContextId)
+        string? taskContextId,
+        string? workspaceContextId = null)
     {
         CountingTenantAccessProjectionStore tenantStore = new(
             EffectivePermissionsTestSupport.TenantProjection(principals: ["user-a"]));
@@ -76,7 +106,8 @@ public sealed class EffectivePermissionsTaskScopeTests
                 AuthoritativeTenantId: "tenant-a",
                 PrincipalId: "user-a",
                 CorrelationId: "corr-a",
-                TaskContextId: taskContextId),
+                TaskContextId: taskContextId,
+                WorkspaceContextId: workspaceContextId),
             TestContext.Current.CancellationToken).ConfigureAwait(true);
     }
 }

@@ -7,5 +7,4 @@ public sealed record EffectivePermissionsQuery(
     string? CorrelationId,
     string? TaskContextId = null,
     string? WorkspaceContextId = null,
-    IReadOnlyDictionary<string, string?>? ClientControlledTenantIds = null,
-    IReadOnlyList<EffectivePermissionPrincipal>? PrincipalScopes = null);
+    IReadOnlyDictionary<string, string?>? ClientControlledTenantIds = null);

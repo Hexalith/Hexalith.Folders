@@ -15,6 +15,10 @@ internal static class EffectivePermissionsTestSupport
             readModel,
             new FixedUtcClock(Now));
 
+    internal const string TenantWatermark = "tenant_a_watermark_v0007";
+
+    internal const string FolderWatermark = "folder_a_watermark_v0011";
+
     internal static FolderTenantAccessProjection TenantProjection(
         string tenantId = "tenant-a",
         params string[] principals)
@@ -32,7 +36,7 @@ internal static class EffectivePermissionsTestSupport
             Principals = principalEvidence,
             Watermark = 7,
             LastEventTimestamp = Now.AddMinutes(-1),
-            ProjectionWatermark = $"{tenantId}:7",
+            ProjectionWatermark = TenantWatermark,
         };
     }
 
@@ -47,7 +51,7 @@ internal static class EffectivePermissionsTestSupport
             Freshness: new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
                 ObservedAt: Now,
-                ProjectionWatermark: "folder-a:11",
+                ProjectionWatermark: FolderWatermark,
                 Stale: false,
                 ReasonCode: null),
             RevocationFreshnessEstablished: true,

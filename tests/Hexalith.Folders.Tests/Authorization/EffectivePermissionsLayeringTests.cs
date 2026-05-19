@@ -16,7 +16,7 @@ public sealed class EffectivePermissionsLayeringTests
         result.Code.ShouldBe(EffectivePermissionsResultCode.Allowed);
         result.AuthorizationOutcome.ShouldBe("allowed");
         result.Permissions.ShouldBe([EffectivePermissionLevel.Read]);
-        result.Freshness.ProjectionWatermark.ShouldBe("folder-a:11");
+        result.Freshness.ProjectionWatermark.ShouldBe(EffectivePermissionsTestSupport.FolderWatermark);
     }
 
     [Fact]
