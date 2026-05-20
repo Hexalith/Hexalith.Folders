@@ -21,10 +21,24 @@ public static class FoldersDomainServiceEndpoints
     private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
     private const string FoldersDomainName = "folders";
 
+    // Outbound: ignore-when-null is fine because we serialize records.
     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
+
+    // Inbound: reject unknown fields so a client cannot smuggle additional properties into
+    // the archive payload that would later be forwarded to the gateway/aggregate.
+    private static readonly JsonSerializerOptions RequestJsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+    };
+
+    private const string ReservedSystemTenant = "system";
+
+    private static readonly System.Text.RegularExpressions.Regex CanonicalSegmentRegex =
+        new("^[a-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -76,12 +90,14 @@ public static class FoldersDomainServiceEndpoints
             HttpContext httpContext,
             IEventStoreGatewayClient gateway,
             ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
             CancellationToken cancellationToken)
             => await ArchiveFolderAsync(
                 folderId,
                 httpContext,
                 gateway,
                 tenantContext,
+                timeProvider,
                 cancellationToken).ConfigureAwait(false))
         .WithName("ArchiveFolder");
 
@@ -148,19 +164,24 @@ public static class FoldersDomainServiceEndpoints
         HttpContext httpContext,
         IEventStoreGatewayClient gateway,
         ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
         CancellationToken cancellationToken)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
         ArgumentNullException.ThrowIfNull(httpContext);
         ArgumentNullException.ThrowIfNull(gateway);
         ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
 
         string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
         string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
         string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        // Validate envelope first: idempotency key, correlation/task identifiers.
         if (string.IsNullOrWhiteSpace(idempotencyKey)
             || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId))
+            || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(taskId)
+            || !IsCanonicalIdentifier(correlationId))
         {
             return SafeProblem(
                 StatusCodes.Status400BadRequest,
@@ -171,11 +192,49 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        // folderId: validate canonical segment shape before any downstream use.
+        if (string.IsNullOrWhiteSpace(folderId) || !IsCanonicalIdentifier(folderId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        // Authenticate before parsing the body so unauthenticated callers cannot probe
+        // JSON parsing/validation feedback or consume CPU on body deserialization.
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        // Reserved-tenant rejection at the edge — never let a "system" tenant context
+        // reach the command pipeline.
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
         ArchiveFolderHttpRequest? body;
         try
         {
             body = await httpContext.Request
-                .ReadFromJsonAsync<ArchiveFolderHttpRequest>(ResponseJsonOptions, cancellationToken)
+                .ReadFromJsonAsync<ArchiveFolderHttpRequest>(RequestJsonOptions, cancellationToken)
                 .ConfigureAwait(false);
         }
         catch (JsonException)
@@ -202,42 +261,54 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        SubmitCommandResponse submitted;
+        try
         {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Domain: FoldersDomainName,
+                    AggregateId: folderId,
+                    CommandType: ArchiveFolderCommandType,
+                    Payload: JsonSerializer.SerializeToElement(body, ResponseJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            // Gateway transport / serialization / Dapr failures must surface as a safe
+            // retryable evidence-unavailable result, not a 500 with internal stack.
             return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
                 correlationId: correlationId,
                 taskId: taskId);
         }
 
-        SubmitCommandResponse submitted = await gateway.SubmitCommandAsync(
-            new SubmitCommandRequest(
-                MessageId: idempotencyKey,
-                Tenant: tenantContext.AuthoritativeTenantId,
-                Domain: FoldersDomainName,
-                AggregateId: folderId,
-                CommandType: ArchiveFolderCommandType,
-                Payload: JsonSerializer.SerializeToElement(body, ResponseJsonOptions),
-                CorrelationId: correlationId,
-                Extensions: new Dictionary<string, string>
-                {
-                    ["taskId"] = taskId,
-                }),
-            cancellationToken).ConfigureAwait(false);
-
-        string acceptedCorrelationId = string.IsNullOrWhiteSpace(submitted.CorrelationId)
-            ? correlationId
-            : submitted.CorrelationId;
+        // Re-validate the gateway-returned correlation id before reflecting it into a
+        // response header to avoid log/header injection via the gateway hop.
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsCanonicalIdentifier(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
 
         return Results.Json(
             new AcceptedCommandResponse(
-                DateTimeOffset.UtcNow,
+                timeProvider.GetUtcNow(),
                 acceptedCorrelationId,
                 taskId,
                 "accepted",
@@ -245,6 +316,11 @@ public static class FoldersDomainServiceEndpoints
             ResponseJsonOptions,
             statusCode: StatusCodes.Status202Accepted);
     }
+
+    private static bool IsCanonicalIdentifier(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length <= 128
+        && CanonicalSegmentRegex.IsMatch(value);
 
     private static IResult ToHttpResult(HttpContext httpContext, FolderLifecycleStatusQueryResult result, string? correlationId, string? taskId)
     {

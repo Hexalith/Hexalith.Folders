@@ -2,6 +2,14 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-8-archive-folders-with-audit-preservation (2026-05-20)
+
+Items deferred from the `/bmad-code-review 2.8` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `ea5f08b`.
+
+- `IFolderEvent` interface coupling — `FolderProjectionEnvelope.Event` was widened from `FolderCreated` to `IFolderEvent`. Other consumers of the envelope (workers, snapshots, generated code, tests outside this diff) must remain consistent. Deferred — broader event-interface design beyond Story 2.8 scope.
+- Archive metadata fields not cleared on a hypothetical unarchive event — `FolderState.LifecycleState`, archive reason category, and projection archived-at fields would need a reset path if restore/unarchive is introduced. Deferred — Story 2.8 explicitly excludes restore/unarchive (AC14, regression traps); revisit when a restore/unarchive story is scoped.
+- AC10 "archive reason category" surfacing on `FolderLifecycleStatus` — the `FolderLifecycleStatus` schema [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7165-7185`] is `additionalProperties: false` and has no reason field. Adding the field requires a Contract Spine update via the contract-workflow story path per the Do-Not-Touch rule.
+
 ## Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)
 
 Items deferred from the `/bmad-code-review 2.7` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `a88da4c`.

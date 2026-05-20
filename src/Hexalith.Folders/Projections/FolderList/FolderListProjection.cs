@@ -47,40 +47,60 @@ public sealed record FolderListProjection
             }
 
             string key = Key(envelope.ManagedTenantId, envelope.Event.FolderId);
-            if (envelope.Event is FolderCreated created)
+            switch (envelope.Event)
             {
-                folders[key] = new FolderListItem(
-                    envelope.ManagedTenantId,
-                    created.OrganizationId,
-                    created.FolderId,
-                    created.DisplayName,
-                    created.Description,
-                    created.PathLabel,
-                    CanonicalizeTags(created.Tags),
-                    created.LifecycleState,
-                    created.RepositoryBindingState,
-                    ArchiveReasonCode: null,
-                    ArchiveActorPrincipalId: null,
-                    ArchiveCorrelationId: null,
-                    ArchiveTaskId: null,
-                    ArchiveIdempotencyKey: null,
-                    ArchivedAt: null,
-                    envelope.Sequence);
-            }
-            else if (envelope.Event is FolderArchived archived
-                && folders.TryGetValue(key, out FolderListItem? current))
-            {
-                folders[key] = current with
-                {
-                    LifecycleState = FolderLifecycleState.Archived,
-                    ArchiveReasonCode = archived.ArchiveReasonCode,
-                    ArchiveActorPrincipalId = archived.ActorPrincipalId,
-                    ArchiveCorrelationId = archived.CorrelationId,
-                    ArchiveTaskId = archived.TaskId,
-                    ArchiveIdempotencyKey = archived.IdempotencyKey,
-                    ArchivedAt = archived.OccurredAt,
-                    Sequence = envelope.Sequence,
-                };
+                case FolderCreated created:
+                    folders[key] = new FolderListItem(
+                        envelope.ManagedTenantId,
+                        created.OrganizationId,
+                        created.FolderId,
+                        created.DisplayName,
+                        created.Description,
+                        created.PathLabel,
+                        CanonicalizeTags(created.Tags),
+                        created.LifecycleState,
+                        created.RepositoryBindingState,
+                        ArchiveReasonCode: null,
+                        ArchiveActorPrincipalId: null,
+                        ArchiveCorrelationId: null,
+                        ArchiveTaskId: null,
+                        ArchiveIdempotencyKey: null,
+                        ArchivedAt: null,
+                        envelope.Sequence);
+                    break;
+
+                case FolderArchived archived:
+                    if (!folders.TryGetValue(key, out FolderListItem? current))
+                    {
+                        // An archive event for a key the projection has not yet
+                        // observed a creation for is a replay-order anomaly. Fail loudly
+                        // so callers/integration tests catch missing/mid-stream replay
+                        // rather than silently dropping the archive evidence.
+                        throw new InvalidOperationException(
+                            $"FolderListProjection received a FolderArchived envelope at sequence "
+                            + $"{envelope.Sequence} for {key} before any FolderCreated event.");
+                    }
+
+                    folders[key] = current with
+                    {
+                        LifecycleState = FolderLifecycleState.Archived,
+                        ArchiveReasonCode = archived.ArchiveReasonCode,
+                        ArchiveActorPrincipalId = archived.ActorPrincipalId,
+                        ArchiveCorrelationId = archived.CorrelationId,
+                        ArchiveTaskId = archived.TaskId,
+                        ArchiveIdempotencyKey = archived.IdempotencyKey,
+                        ArchivedAt = archived.OccurredAt,
+                        Sequence = envelope.Sequence,
+                    };
+                    break;
+
+                default:
+                    // Diverging from FolderStateApply (which throws on unknown event types)
+                    // would let new event types replay as no-ops in the projection while the
+                    // aggregate fails loudly. Throw to keep the two in sync.
+                    throw new InvalidOperationException(
+                        $"FolderListProjection received an unsupported event type "
+                        + $"'{envelope.Event.GetType().FullName}' at sequence {envelope.Sequence}.");
             }
         }
 

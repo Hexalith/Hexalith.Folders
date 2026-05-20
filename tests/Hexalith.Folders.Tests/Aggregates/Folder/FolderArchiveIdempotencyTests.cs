@@ -132,5 +132,5 @@ public sealed class FolderArchiveIdempotencyTests
         => FolderArchiveAclEvidence.Allowed(tenantId, "organization-a", folderId, "principal-a");
 
     private static FolderArchivePolicyEvidence PolicyEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
-        => FolderArchivePolicyEvidence.Allowed(tenantId, folderId, "policy-v1");
+        => FolderArchivePolicyEvidence.Allowed(tenantId, "organization-a", folderId, "policy-v1");
 }

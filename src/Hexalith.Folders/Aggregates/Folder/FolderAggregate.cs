@@ -93,16 +93,19 @@ public static class FolderAggregate
             return FolderResult.Rejected(command, validation.Code);
         }
 
+        // Check folder existence before idempotency. Probing the idempotency map on an
+        // uncreated folder could surface IdempotentReplay/IdempotencyConflict and leak
+        // whether a prior key was ever applied for a folder the caller cannot observe.
+        if (!state.IsCreated)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+        }
+
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
                 ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
-        }
-
-        if (!state.IsCreated)
-        {
-            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
         }
 
         if (state.LifecycleState == FolderLifecycleState.Archived)

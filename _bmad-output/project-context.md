@@ -1,7 +1,7 @@
 ---
 project_name: 'Hexalith.Folders'
 user_name: 'Jerome'
-date: '2026-05-10'
+date: '2026-05-20'
 workflow: 'bmad-generate-project-context'
 status: 'complete'
 sections_completed:
@@ -13,7 +13,7 @@ sections_completed:
   - code_quality_rules
   - workflow_rules
   - critical_dont_miss_rules
-rule_count: 72
+rule_count: 103
 optimized_for_llm: true
 existing_patterns_found: 12
 technology_stack_discovered: true
@@ -32,98 +32,123 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Technology Stack & Versions
 
-- Target .NET 10 with `net10.0`; keep nullable, implicit usings, `LangVersion=latest`, and warnings-as-errors inherited from root build configuration.
-- Use `.slnx` solution format and central package management through `Directory.Packages.props`; project files should not carry package versions unless explicitly justified.
-- Mirror Hexalith.Tenants and Hexalith.EventStore sibling-module conventions; architecture pins Hexalith.EventStore and Hexalith.Tenants to `3.15.1`.
-- Use Dapr for pub/sub, state store, service invocation, actors, access control, and resiliency; do not bypass Dapr/EventStore with an alternate write-side framework.
-- Use .NET Aspire AppHost for local topology; builds must not require running Aspire, Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, provider credentials, tenant data, or production secrets.
-- Use OpenAPI 3.1 as the Contract Spine in `Hexalith.Folders.Contracts`; SDK generation uses NSwag.
-- CLI uses System.CommandLine 2.x and MCP uses ModelContextProtocol C# SDK; both wrap `Hexalith.Folders.Client` rather than implementing independent business semantics.
-- Testing baseline is xUnit v3, Shouldly, NSubstitute, Testcontainers, and Aspire test host patterns from sibling modules.
+- Target .NET SDK `10.0.300` from `global.json` with `rollForward=latestPatch`; all in-scope projects target `net10.0` unless an individual project explicitly scopes otherwise.
+- Repository configuration and project files are authoritative when planning artifacts drift: prefer `global.json`, `Directory.Build.props`, `Directory.Packages.props`, `.editorconfig`, `.csproj`, and `Hexalith.Folders.slnx` over older architecture text.
+- Use C# `LangVersion=latest`, nullable enabled, implicit usings enabled, deterministic builds, and warnings-as-errors from `Directory.Build.props`.
+- Use `.slnx` solution format and central package management through `Directory.Packages.props`; project files must not carry inline package versions.
+- Root-level sibling modules are consumed through project references detected in `Directory.Build.props`, especially Hexalith.EventStore and Hexalith.Tenants. Do not replace these with ad hoc package references or initialize nested submodules.
+- Dapr .NET packages are pinned to `1.17.7`; Folders uses Dapr sidecars, pub/sub, state store, service invocation, and Dapr configuration includes deny-by-default access-control policy that must be preserved unless intentionally changed.
+- Aspire versions are intentionally mixed: `Aspire.Hosting` `13.3.3`, hosting integrations mostly `13.2.2`, preview Keycloak/Kubernetes integrations `13.2.2-preview.1.26207.2`, Aspire test host `13.2.1`, and `CommunityToolkit.Aspire.Hosting.Dapr` `13.0.0`. Do not normalize these versions without verifying compatibility.
+- Service defaults stay on the Microsoft.Extensions `10.x` family and OpenTelemetry packages `1.15.x`; keep OpenTelemetry package versions aligned by family.
+- UI uses Microsoft Fluent UI Blazor `5.0.0-rc.2-26098.1` plus Fluent UI icons `4.14.0`; treat Fluent UI APIs as RC-sensitive.
+- CLI uses System.CommandLine `2.0.8`; MCP uses ModelContextProtocol `1.3.0`; both wrap `Hexalith.Folders.Client` instead of duplicating business behavior.
+- The OpenAPI Contract Spine is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; NSwag.MSBuild `14.7.1`, Newtonsoft.Json `13.0.4`, and generated idempotency helpers derive from that spine.
+- Do not hand-edit generated client files under `src/Hexalith.Folders.Client/Generated`; change the OpenAPI spine or generation pipeline instead.
+- Tests use xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Testcontainers `4.10.0`, YamlDotNet `17.1.0`, and Microsoft.Playwright `1.59.0`.
+- Treat Dapr runtime/CLI, Playwright browser binaries, Aspire preview integrations, and Fluent UI RC APIs as test-runtime compatibility risks; upgrades require focused smoke/regression coverage, not version-only edits.
 
 ## Critical Implementation Rules
 
 ### Language-Specific Rules
 
-- Use C# file-scoped namespaces and one public type per file; file names must match the primary public type.
-- Follow sibling-module naming: PascalCase for types, methods, properties, and constants; camelCase for locals and parameters; interfaces begin with `I`; private fields use `_camelCase`; async methods end with `Async`.
-- Keep `Hexalith.Folders.Contracts` behavior-free: DTOs, identity value objects, OpenAPI/contract artifacts, and contract extensions only. Do not reference Hexalith.EventStore, Hexalith.Tenants, Server, Client, CLI, MCP, UI, Workers, or domain behavior from Contracts.
-- Keep aggregates and domain logic in `Hexalith.Folders`; transports, UI, CLI, MCP, and workers must not duplicate aggregate decisions.
-- Keep aggregate IDs opaque and immutable, preferably GUID/ULID wrappers. Folder hierarchy, names, and paths are projected metadata, never aggregate identity.
-- Authoritative tenant context comes from authentication context and EventStore envelopes, never from request payloads. Treat tenant IDs in payloads as inputs to validate, not authority.
-- Use async APIs for I/O, provider calls, Dapr calls, EventStore calls, and filesystem work; propagate `CancellationToken` through public async paths.
-- Keep provider/workspace side effects out of aggregate state transitions. Aggregates return events/results; workers and process managers perform external Git/provider/filesystem work and submit follow-up commands.
-- Do not store raw provider tokens, secrets, file contents, diffs, generated context payloads, or unauthorized resource existence in events, logs, traces, metrics, projections, audit records, diagnostics, or errors.
+- Use C# file-scoped namespaces with `using` directives outside namespaces; file names must match the primary public type and public surface should stay one primary type per file.
+- Follow repository naming rules: PascalCase for types, methods, properties, and constants; camelCase for locals and parameters; interfaces begin with `I`; private fields use `_camelCase`; async methods end with `Async`.
+- Validate public boundaries with `ArgumentNullException.ThrowIfNull(...)` and `ArgumentException.ThrowIfNullOrWhiteSpace(...)`; do not let null/blank values drift into aggregate, authorization, hash, or HTTP mapping code.
+- Model commands, events, results, and immutable contract values as records or readonly record structs when they are data-shaped; use sealed classes for concrete services and static classes for pure aggregate/validator helpers.
+- Domain rejections return typed result codes and events/results; do not throw exceptions for expected business outcomes such as duplicate folders, tenant denial, idempotency replay, or missing ACL entries.
+- Use `StringComparison.Ordinal`, `StringComparer.Ordinal`, and `CultureInfo.InvariantCulture` for identifiers, ordering, hashing, and wire-stable formatting. Do not use culture-sensitive comparisons for tenant, folder, action, correlation, or idempotency values.
+- Normalize metadata and canonical payloads deliberately before hashing or validation. Preserve NFC normalization, length-prefixing, SHA-256 hashing, duplicate-property rejection, and ordinal field ordering in idempotency code.
+- Keep sensitive metadata filtering centralized in validators. Do not duplicate or weaken blocklists for control characters, invisible format characters, paths, URLs, email markers, tokens, diffs, provider payloads, or generated context markers.
+- Public async service, query, HTTP, provider, Dapr, EventStore, filesystem, and worker paths must accept and propagate `CancellationToken`; library/server code should use `ConfigureAwait(false)` where nearby code does.
+- Aggregate handlers stay deterministic and side-effect free: pass timestamps in from the caller, return accepted/rejected results, and never perform I/O, provider calls, Dapr calls, logging, or filesystem work inside aggregate state transitions.
+- When adding a new command or access operation, update the command interface, validator, fingerprint/canonicalization logic, aggregate dispatch switch, result code mapping, event application, and tests together.
+- Prefer source-generated regex via `[GeneratedRegex]` for stable validation patterns instead of constructing regexes dynamically in hot validation paths.
 
 ### Framework-Specific Rules
 
 - Use Hexalith.EventStore as the write-side command/query/event/projection framework. Do not introduce a parallel write-side framework or direct database write model for folder state.
-- `Hexalith.Folders.Server` owns REST transport and EventStore `/process` and `/project` domain-service endpoints; external REST is `/api/v1/...`, internal EventStore invocation remains `/process` and `/project`.
-- Dapr app IDs are stable and meaningful: `eventstore`, `tenants`, `folders`, `folders-ui`, and `folders-workers`.
-- Folders subscribes to Hexalith.Tenants events through Dapr pub/sub on `system.tenants.events` and maintains a local fail-closed tenant-access projection.
-- Production authorization layering is JWT validation, EventStore claim transform, tenant-access projection freshness, folder ACL, EventStore validators, then Dapr deny-by-default policy with mTLS.
-- The SDK is the typed canonical client. CLI and MCP wrap `Hexalith.Folders.Client`; REST is a parallel transport validated against the same Contract Spine.
-- The Contract Spine is OpenAPI 3.1 at `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; server-generated OpenAPI must be validated against it as a blocking gate.
-- File upload contract is bimodal: `PutFileInline` for content up to 256KB, `PutFileStream` for streaming larger content, with SDK convenience `UploadFileAsync(stream)`.
-- Blazor Server operations console is read-only, projection-backed, and client-backed. It must not expose mutation paths, credential reveal, file browsing, file editing, raw diffs, or repair actions in MVP.
-- Provider adapters for GitHub and Forgejo sit behind provider ports. Do not treat Forgejo as a GitHub base-URL swap; capability differences require contract tests.
-- Workers own external provider, Git, working-copy, reconciliation, and rate-limit side effects. Aggregates and REST handlers should not perform provider or filesystem operations directly.
+- `Hexalith.Folders.Server` owns REST transport plus EventStore-compatible `/process` and `/project` endpoints; external REST remains `/api/v1/...`, while internal EventStore invocation routes remain `/process` and `/project`.
+- Dapr app IDs and component names are stable contracts: `eventstore`, `tenants`, `folders`, `folders-workers`, `folders-ui`, `statestore`, and `pubsub`.
+- AppHost must resolve `DaprComponents/accesscontrol.yaml` and fail fast if it is missing. Do not silently run without the Dapr access-control configuration.
+- Aspire topology is centralized in `Hexalith.Folders.Aspire`; keep shared Dapr state-store/pub-sub sidecar wiring there and AppHost environment concerns in `Hexalith.Folders.AppHost`.
+- Folders subscribes to Hexalith.Tenants events through Dapr pub/sub topic `system.tenants.events` on pubsub `pubsub`; tenant projection handlers must drop envelope/payload tenant mismatches and preserve replay/fingerprint behavior.
+- Production authorization layering is JWT validation, EventStore claim transform evidence, tenant-access projection freshness, folder ACL evidence, EventStore validators, then Dapr deny-by-default policy evidence.
+- Client-controlled tenant/principal values from headers, query strings, or payloads are comparison inputs only. Authoritative tenant and principal values come from authenticated context and EventStore claim-transform evidence.
+- The SDK is the typed canonical client. CLI and MCP must wrap `Hexalith.Folders.Client`; REST is a parallel transport validated against the same OpenAPI Contract Spine.
+- The Contract Spine is OpenAPI 3.1 at `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; server-generated OpenAPI, NSwag output, parity oracle rows, and idempotency helpers must stay synchronized with it.
+- Problem responses must remain metadata-only and follow the canonical extension shape: `category`, `code`, `message`, `correlationId`, `taskId` when present, `retryable`, `clientAction`, and `details.visibility`.
+- Blazor UI is a read-only operations console scaffold backed by the client. It must not expose mutation paths, credential reveal, file browsing, file editing, raw diffs, repair actions, or unrestricted filesystem access in MVP.
+- Workers own external provider, Git, working-copy, reconciliation, and rate-limit side effects. Aggregates, REST handlers, CLI, MCP, and UI should not perform provider or filesystem mutations directly.
+- Provider adapters for GitHub and Forgejo must sit behind provider ports and capability tests. Do not treat Forgejo as a GitHub base-URL swap.
 
 ### Testing Rules
 
-- Test projects mirror `src/` one-to-one: `tests/Hexalith.Folders.{Area}.Tests` for each production project, plus integration tests and shared fixtures.
-- Use xUnit v3, Shouldly, NSubstitute, Testcontainers, and Aspire test-host patterns from sibling modules.
-- Scaffold and unit tests must run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or initialized nested submodules.
-- Add scaffold smoke tests for solution shape, dependency direction, and root policy whenever root/project layout changes.
-- Contract and parity tests consume `tests/fixtures/parity-contract.yaml`; schema-validate it with `tests/fixtures/parity-contract.schema.json` before tests consume it.
-- SDK and REST tests assert transport parity. CLI and MCP tests assert behavioral parity, including pre-SDK errors, credential sourcing, idempotency-key sourcing, correlation sourcing, CLI exit codes, and MCP failure kinds.
-- Every workspace state/event pair in the C6 transition matrix must have a defined outcome and test coverage. Adding a state or event requires matrix and test updates in the same change.
-- Redaction/sentinel tests must iterate `tests/fixtures/audit-leakage-corpus.json` across logs, traces, metrics labels, events, audit records, projections, provider diagnostics, console views, and error responses.
-- Provider contract tests run in two modes: hermetic PR gate with pinned fixtures and live nightly drift checks against real GitHub/Forgejo.
-- Cache-key tenant-prefix enforcement is a build/CI gate. Any cache key for in-process, Dapr state, Redis, or distributed cache must carry a tenant prefix.
-- Integration tests own Aspire/Dapr/EventStore/Tenants topology behavior; unit tests should use in-memory fakes from `Hexalith.Folders.Testing` and keep external side effects out.
+- Test projects mirror production boundaries: `tests/Hexalith.Folders.{Area}.Tests` for each production area, plus integration, UI E2E, fixtures, load, and tooling lanes.
+- Use xUnit v3 and Shouldly by default; keep assertions readable in test bodies and use NSubstitute only for focused unit-test doubles.
+- Use `TestContext.Current.CancellationToken` in async xUnit tests and propagate cancellation into app code under test.
+- Unit tests own pure aggregate, validator, idempotency, authorization, projection, query, and metadata-redaction rules. Integration tests own EventStore, Dapr, Aspire, provider, and REST boundary behavior.
+- Scaffold, unit, contract, governance, and safety gates must run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, network calls, or nested submodule initialization.
+- Shared normative fixtures live under `tests/fixtures/`; do not fork parity, idempotency, previous-spine, safety-channel, redaction, or quarantine corpora into per-test-project copies.
+- Contract Spine tests must validate OpenAPI 3.1 shape, server-vs-spine drift, generated client drift, parity oracle rows, previous-spine baseline, and metadata-only diagnostics.
+- Safety invariant tests must scan all declared output channels with `tests/fixtures/audit-leakage-corpus.json`, `tests/fixtures/safety-channel-inventory.json`, and quarantined negative controls.
+- Layered authorization tests must assert short-circuit order and no protected resource touch before the relevant authorization layer passes.
+- Tests for safe denial must prove unauthorized and nonexistent resources stay indistinguishable at the caller-visible boundary.
+- Idempotency tests must cover replay, conflict, ordinal field ordering, duplicate JSON property rejection, Unicode/control-character handling, UTC date handling, and tenant-scoped keys.
+- UI E2E is a deferred Playwright-on-.NET lane; keep skipped placeholders until Epic 6 story 6-2 provides stable read-only console routes and selectors. Do not add brittle CSS/text/sleep-based tests.
+- Use `src/Hexalith.Folders.Testing` factories and HTTP helpers for tenant, folder, task, correlation, idempotency, and authorization contexts; prefer explicit overrides over hidden static fixture state.
+- Focused gate scripts under `tests/tools/*.ps1` are CI contracts. Do not add recursive submodule initialization, artifact upload, publish, semantic-release, production endpoints, secrets, or broad network assumptions to them.
 
 ### Code Quality & Style Rules
 
-- Root configuration belongs at repository root: `.editorconfig`, `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, and `Hexalith.Folders.slnx`.
-- Adapt configuration from `Hexalith.Tenants`, but replace package metadata, repository URLs, descriptions, and tags so they identify Hexalith.Folders.
-- Keep package versions centralized in `Directory.Packages.props`; do not add `<PackageReference Version="...">` in project files unless there is an explicit exception.
-- Preserve dependency direction: Contracts -> no project behavior references; core references Contracts; Server references core + Contracts; Client references Contracts; CLI/MCP wrap Client; UI references Client; Workers own process managers.
-- Organize source by concept area: `Aggregates/{Concept}`, `Projections/{Concept}`, `Providers/{ProviderName}`, `Workers/{ConceptWorkflows}`, `Authorization`, `Idempotency`, `Redaction`, and `Caching`.
-- Use shared fixtures under `tests/fixtures/` for normative cross-project data; do not fork parity, redaction, or idempotency corpora into per-test-project copies.
-- Keep placeholder code non-operative and fail-closed at runtime. Scaffold stories should not smuggle partial provider, contract, CLI, MCP, UI, or worker implementations.
-- Comments should explain domain invariants, security boundaries, or non-obvious compatibility decisions; avoid comments that restate straightforward C#.
-- Error responses use RFC 9457 Problem Details with canonical fields: `category`, `code`, `message`, `correlationId`, `retryable`, `clientAction`, and `details`.
-- Structured logs, metrics, traces, and audit fields must use correlation/task IDs and metadata-only values; never use file contents, diffs, secrets, tokens, or generated context payloads as telemetry values.
+- Root configuration belongs at repository root: `.editorconfig`, `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, `.gitignore`, and `Hexalith.Folders.slnx`.
+- Preserve `.editorconfig` formatting: spaces, 4-space indentation, CRLF for most files, LF for shell/YAML/container artifacts, UTF-8, trimmed trailing whitespace, and final newline.
+- Keep package versions centralized in `Directory.Packages.props`; never add inline `Version` attributes to project `PackageReference`s.
+- Preserve dependency direction: Contracts has no behavior/project references; core references Contracts; Server references core, Contracts, ServiceDefaults, EventStore, and Tenants; Client references Contracts; CLI/MCP/UI wrap Client; Workers own process managers.
+- Pack policy is opt-in. Only packageable library projects should set `<IsPackable>true</IsPackable>`; host, adapter, sample, worker, and test projects should not produce packages unless explicitly designed to.
+- Keep generated client files in `src/Hexalith.Folders.Client/Generated` generated by build targets. Do not manually edit generated `.g.cs` files to fix behavior.
+- Keep source organized by concept area, not broad type buckets: `Aggregates/{Concept}`, `Authorization`, `Projections/{Concept}`, `Queries/{Concept}`, provider ports/adapters, workers, idempotency, redaction, and caching.
+- Use shared contract/gate docs under `docs/contract/`, exit-criteria evidence under `docs/exit-criteria/`, and ADRs under `docs/adrs/`; do not bury normative rules in ad hoc README text.
+- Use shared fixtures under `tests/fixtures/` for normative cross-project data and keep ownership metadata machine-checkable.
+- Keep `bin/`, `obj/`, `TestResults/`, coverage, package, Playwright browser cache, logs, and local build artifacts out of source unless they are intentional fixtures.
+- Comments should explain domain invariants, security boundaries, compatibility pins, generated-artifact contracts, or story/ADR context; avoid comments that restate straightforward C#.
+- Structured diagnostics, test failure messages, logs, metrics, traces, Problem Details, and docs examples must be metadata-only. Never include secrets, tokens, raw file contents, diffs, provider payloads, local absolute paths, or unauthorized resource existence.
+- Error/problem shapes, result code names, action tokens, parity dimensions, sensitive metadata categories, and state names are public contracts. Changing one requires corresponding OpenAPI, fixtures, docs, tests, and generated artifacts.
 
 ### Development Workflow Rules
 
 - Never initialize or update nested submodules recursively unless the user explicitly asks for nested submodules.
-- Initialize or update only root-level submodules by default: `Hexalith.AI.Tools`, `Hexalith.Commons`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories`, and `Hexalith.Tenants`.
-- Do not use `git submodule update --init --recursive` in setup guidance, scripts, or agent instructions unless it is explicitly framed as user-requested nested-submodule work.
-- Build verification for scaffold/root changes is `dotnet restore Hexalith.Folders.slnx` followed by `dotnet build Hexalith.Folders.slnx` from the repository root.
-- Root setup and scaffold work must not require provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, or nested submodule initialization.
-- Use sibling modules as read-only references for patterns unless the story explicitly asks to modify them.
-- Phase 0 scaffold work should create the expected `src`, `tests`, `samples`, `docs/adrs`, `docs/exit-criteria`, `tests/fixtures`, and `tests/tools/parity-oracle-generator` structure before implementing feature behavior.
-- Phase 1 Contract Spine work is blocked until C3 retention and C4 input limits are resolved and recorded in `docs/exit-criteria/`.
-- Any change to states, error categories, parity row shape, sensitive metadata categories, provider contract snapshots, or Dapr policy must update the corresponding tests/fixtures/gates in the same change.
-- Do not add repair workflows, local-only folder mode, webhooks, brownfield adoption, multi-organization-per-tenant, or unrestricted operations-console mutation paths during MVP scaffold/contract stories.
+- Initialize/update only root-level submodules by default: `Hexalith.AI.Tools`, `Hexalith.Commons`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories`, and `Hexalith.Tenants`.
+- Do not use `git submodule update --init --recursive` in setup guidance, scripts, CI, docs, or agent instructions unless it is explicitly framed as user-requested nested-submodule work.
+- CI checkout should keep `submodules: false`; local setup docs may show the explicit root-level submodule command only.
+- Default repository verification starts with `dotnet restore Hexalith.Folders.slnx`, `dotnet build Hexalith.Folders.slnx --no-restore`, then the narrowest relevant `dotnet test` or gate script.
+- Use focused gate scripts as workflow contracts: `run-contract-spine-gates.ps1`, `run-safety-invariant-gates.ps1`, and `run-governance-completeness-gates.ps1`.
+- Do not add artifact upload, package publish, semantic-release, live provider drift, production endpoint calls, or secret-dependent behavior to focused PR gates unless the story explicitly targets release/live validation.
+- Contract Spine, generated client, parity oracle, idempotency helper, safety corpus, and governance evidence changes must update source artifacts, docs, fixtures, generated outputs, and tests together.
+- When changing root build policy, solution shape, submodule references, package versions, or CI scripts, run scaffold/root verification and check that recursive submodule commands were not introduced.
+- Use sibling modules as read-only references for patterns unless the task explicitly asks to modify a submodule; submodule changes require separate intent and commits inside that submodule.
+- AppHost and Aspire topology changes require restart of the running Aspire app before resource wiring can be trusted.
+- UI E2E work requires installing matching Playwright browser binaries through `tests/install-playwright.ps1`; do not assume the NuGet package alone is sufficient.
+- Keep local developer conveniences out of blocking lanes unless they are hermetic and metadata-only.
 
 ### Critical Don't-Miss Rules
 
 - Zero cross-tenant leakage is the top safety invariant. Deny access before touching file, workspace, credential, repository, lock, commit, provider, audit, or cache resources.
-- Events, logs, traces, metrics, projections, audit records, console responses, provider diagnostics, and error messages are metadata-only. Never include file contents, diffs, generated context payloads, provider tokens, credential material, secrets, or unauthorized resource existence.
-- All cache keys and durable operational keys must carry tenant scope. A missing tenant prefix is a correctness/security bug, not a naming nit.
-- Idempotency is required for workspace preparation, lock acquisition, file mutation, commit, and cleanup. Same key plus equivalent payload returns the same logical result; same key plus different payload returns `idempotency_conflict`.
-- Unknown provider outcomes must enter `unknown_provider_outcome` or `reconciliation_required`; do not retry in a way that could duplicate repositories, file changes, commits, or audits.
-- Workspace lifecycle must follow the C6 transition matrix exactly. Invalid state/event pairs return `state_transition_invalid` and leave state unchanged.
-- Context-query authorization order is tenant access, folder ACL, path policy, then search/glob/partial-read execution. Never search first and filter later.
-- Working copies are disposable caches under configured workspace roots. EventStore state, projections, idempotency records, and provider truth are authoritative; do not infer durable truth from local files.
-- The operations console is read-only in MVP. Redacted fields must be visibly distinct from unknown/missing fields; do not silently truncate or hide redaction.
-- CLI exit codes and MCP failure kinds must map one-to-one to canonical categories. Do not collapse distinct errors for adapter convenience.
-- GitHub and Forgejo provider support must be capability-tested. Do not assume API compatibility, permission equivalence, webhook equivalence, or identical default-branch behavior.
-- Mid-task authorization revocation must affect held locks within the configured revalidation budget; locks are not exempt from tenant-access changes.
-- Aggregate streams must use `{managedTenantId}:folders:{folderId}` and `{managedTenantId}:organizations:{organizationId}`; managed tenant folders must never use the reserved `system` tenant.
+- The reserved `system` tenant must never be used for managed tenant folder streams. Folder streams use `{managedTenantId}:folders:{folderId}` and organization streams use `{managedTenantId}:organizations:{organizationId}`.
+- Tenant authority comes from authenticated context and EventStore claim-transform evidence only. Payload, query, and header tenant/principal values are comparison inputs, not authority.
+- Authorization order is contractual: JWT validation, EventStore claim transform, tenant-access freshness, folder ACL, EventStore validator, then Dapr deny-by-default policy. Do not reorder or skip layers for convenience.
+- Metadata-only is non-negotiable across events, logs, traces, metrics, projections, audit records, Problem Details, console responses, provider diagnostics, generated artifacts, docs examples, and test failure messages.
+- All durable operational keys and cache keys must carry tenant scope unless covered by an approved entry in `tests/fixtures/cache-key-exceptions.yaml`.
+- Idempotency is required for mutating operations. Same key plus equivalent payload returns the same logical result; same key plus different payload returns `idempotency_conflict`.
+- Non-mutating operations must not accept `Idempotency-Key`; they still require correlation behavior, authorization parity, safe denial shape, audit metadata, and read-consistency classification.
+- Never search, glob, list, partially read, or inspect paths before tenant access, folder ACL, and path policy pass.
+- Unknown provider outcomes must enter `unknown_provider_outcome` or `reconciliation_required`; do not retry in ways that could duplicate repositories, file mutations, commits, audits, or idempotency records.
+- Workspace lifecycle must follow the C6 matrix. Every state/event pair must have a positive transition or explicit `state_transition_invalid` rejection with state unchanged.
+- Read-only operations console means read-only. No mutation, repair, credential reveal, file browsing, file editing, raw diffs, hidden provider payloads, or unrestricted filesystem views in MVP.
+- CLI exit codes and MCP failure kinds must map one-to-one to canonical categories from the parity oracle. Do not collapse distinct failures for adapter convenience.
+- Do not hand-edit generated parity rows, generated clients, or generated idempotency helpers. Change the OpenAPI Contract Spine or generator inputs and regenerate.
+- Do not initialize/update nested submodules recursively by default. This is a repository safety rule, not a setup preference.
+- GitHub and Forgejo support must be capability-tested. Do not assume API compatibility, permission equivalence, webhook equivalence, rate-limit equivalence, or identical default-branch behavior.
+- Redacted values must be visibly distinct from unknown or missing values. Silent truncation or hiding redaction is treated as an operator-facing correctness bug.
 
 ---
 
@@ -141,4 +166,4 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - Update it when the technology stack, architecture decisions, or workflow policies change.
 - Remove rules that become obvious or mechanically enforced everywhere.
 
-Last Updated: 2026-05-10
+Last Updated: 2026-05-20

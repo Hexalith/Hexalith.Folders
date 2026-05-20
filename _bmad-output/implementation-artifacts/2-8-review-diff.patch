@@ -1,0 +1,2613 @@
+diff --git a/Hexalith.EventStore b/Hexalith.EventStore
+index 2e68330..eb77bc7 160000
+--- a/Hexalith.EventStore
++++ b/Hexalith.EventStore
+@@ -1 +1 @@
+-Subproject commit 2e6833020ce082e6d55bb84b0c0fbf4e95645016
++Subproject commit eb77bc71e7e6bae91dd01ef2624b5807657926b1
+diff --git a/Hexalith.Memories b/Hexalith.Memories
+index 1ec1076..9063cf3 160000
+--- a/Hexalith.Memories
++++ b/Hexalith.Memories
+@@ -1 +1 @@
+-Subproject commit 1ec1076ce5761aac6fb63e4dfc1633baef5f30dc
++Subproject commit 9063cf37e55e1ce187848622d10be33d8e656f01
+diff --git a/Hexalith.Tenants b/Hexalith.Tenants
+index 44aa77f..01880c3 160000
+--- a/Hexalith.Tenants
++++ b/Hexalith.Tenants
+@@ -1 +1 @@
+-Subproject commit 44aa77f0811a6de2ef6752da29295deb2fb1b65f
++Subproject commit 01880c31c2d98ce834d6425a7427b743ca7cc5b2
+diff --git a/_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md b/_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md
+index 935ea49..3afea84 100644
+--- a/_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md
++++ b/_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md
+@@ -1,6 +1,6 @@
+ # Story 2.8: Archive folders with audit preservation
+ 
+-Status: ready-for-dev
++Status: review
+ 
+ <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
+ 
+@@ -64,51 +64,51 @@ so that retired work is no longer active while audit and status evidence remain
+ 
+ ## Tasks / Subtasks
+ 
+-- [ ] Implement the archive command contract path. (AC: 1, 2, 5, 6)
+-  - [ ] Add an `ArchiveFolder` command under `src/Hexalith.Folders/Aggregates/Folder/` matching the Contract Spine fields: `requestSchemaVersion`, `archiveReasonCode`, folder ID, actor/correlation/task evidence, idempotency key, and tenant authority inputs.
+-  - [ ] Add or extend archive command validation so supported reason codes are exactly `caller_requested`, `policy_retention`, and `operator_review`, and `requestSchemaVersion` is exactly `v1`.
+-  - [ ] Reuse the existing identifier, tenant, reserved-tenant, metadata-only, idempotency, and payload-tenant validation patterns from folder creation rather than creating parallel validation rules.
+-  - [ ] Wire `POST /api/v1/folders/{folderId}/archive` in `Hexalith.Folders.Server` only if endpoint wiring is not already generated or registered.
+-  - [ ] Preserve `202 AcceptedCommand`, validation failure, safe denial, and idempotency conflict shapes from the Contract Spine.
+-  - [ ] Prove OpenAPI and generated SDK shape parity for route, method, `operationId`, `ArchiveFolderRequest`, required idempotency/correlation/task headers, accepted response, safe denial envelopes, validation envelope, and `IdempotencyConflict`.
+-  - [ ] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate through the established Contract Spine/NSwag toolchain only if generated output is stale.
+-- [ ] Add archived lifecycle state and transition behavior. (AC: 2, 7, 8, 9, 10)
+-  - [ ] Add `Archived` or the locally canonical equivalent to `FolderLifecycleState` and ensure `FolderState` can represent it deterministically.
+-  - [ ] Add a metadata-only `FolderArchived` event carrying only managed tenant ID, organization ID, folder ID, archive reason code, actor/correlation/task evidence, idempotency key, and fingerprint plus event-envelope timestamp if that is the local convention.
+-  - [ ] Extend `FolderAggregate.Handle` or the local command gate so active folders can transition to archived exactly once when policy allows.
+-  - [ ] Define already-archived behavior as `AlreadyArchived` or the locally canonical stable state-transition rejection for a different idempotency key; same-key equivalent replay remains accepted replay evidence.
+-  - [ ] Add archived-state guards that future active-only folder, ACL, repository-binding, workspace, lock, file, commit, branch/ref, provider, and task commands can consume without implementing those future commands in this story.
+-  - [ ] Ensure `FolderStateApply` rejects foreign-tenant or foreign-folder archive events using the existing stream-safety pattern.
+-- [ ] Enforce authorization-before-archive-observation. (AC: 2, 3, 4, 8)
+-  - [ ] Resolve authoritative tenant context from authentication context or EventStore envelope/projection authority before constructing folder stream names, projection keys, cache keys, audit subjects, diagnostic scopes, EventStore envelopes, Dapr targets, provider handles, repository references, workspace paths, or file paths.
+-  - [ ] Consume Story 2.1 tenant-access evidence, Story 2.6 layered authorization, and folder admin/archive permission evidence before loading folder state or checking archive eligibility.
+-  - [ ] Treat tenant access, folder permission, idempotency, folder state, archive policy, and freshness evidence as one compatible archive decision snapshot; reject mixed tenant, folder, principal, action, task, operation, policy-version, idempotency-fingerprint, or freshness evidence rather than stitching a partial success.
+-  - [ ] Treat route/query/header/body/generated-client tenant IDs as comparison values only; mismatches return safe denial before lookup.
+-  - [ ] Keep schema-only validation separate from protected-resource validation: malformed body/schema/reason/idempotency evidence may fail early, but anything needing folder, lifecycle, projection, audit, provider, repository, workspace, or file knowledge waits until authorization permits it.
+-  - [ ] Add side-effect spies proving denied tenant or folder authorization prevents stream-name construction, stream load, append, diagnostics, audit lookup, provider access, repository access, filesystem access, EventStore envelope construction, and Dapr invocation target construction.
+-  - [ ] Keep same-tenant unauthorized, cross-tenant, and missing-to-caller outcomes externally indistinguishable except for approved canonical status/category differences.
+-  - [ ] Scope any archive decision cache, idempotency cache, authorization cache, or projection cache by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, policy version, idempotency fingerprint, and freshness watermark; denied or stale answers must not be replayed across callers or evidence windows.
+-- [ ] Preserve audit/status evidence without adding cleanup scope. (AC: 2, 10, 11, 12, 14)
+-  - [ ] Update or add folder projections so authorized lifecycle-status reads can represent archived folders with `archived: true`, an archived lifecycle state, freshness metadata, and no mutation affordance.
+-  - [ ] Preserve archive event and projection metadata under the C3 folder metadata and soft-delete marker retention reference without claiming Legal + PM approval is final.
+-  - [ ] Ensure archive handling does not delete events, compact projections, remove provider resources, clean working copies, repair status, or call tenant-deletion/legal-hold workflows.
+-  - [ ] Add audit/status metadata fields only for opaque folder ID, operation ID, correlation ID, task ID, result category, archive reason code, lifecycle transition, and sanitized policy/state category.
+-  - [ ] Ensure archive status remains queryable after archive while future active-only mutation commands see archived as terminal until a later explicitly scoped restore/unarchive story exists.
+-- [ ] Add contract, SDK, and parity conformance coverage. (AC: 1, 5, 6, 10, 13)
+-  - [ ] Add server or contract tests proving route, method, request schema, required headers, accepted response, validation failure, safe denial envelopes, idempotency conflict, operation ID, and response casing match `ArchiveFolder`.
+-  - [ ] Add generated-client consumption tests proving the generated archive method and `ArchiveFolderRequest` model can submit supported reason codes without hand-edited generated code.
+-  - [ ] Add tests proving behavior stays out of `Hexalith.Folders.Contracts` packages and no generated SDK file is hand-edited.
+-  - [ ] Ensure parity fixtures keep `ArchiveFolder` aligned with idempotency-key, safe-denial, correlation ID, task ID, audit metadata, and adapter-stage expectations.
+-  - [ ] Add tests for missing/malformed idempotency key, equivalent replay, conflicting replay, and adapter-visible validation categories.
+-- [ ] Add aggregate, projection, and leakage regression tests. (AC: 2, 7, 8, 9, 10, 11, 13)
+-  - [ ] Add tests such as `FolderArchiveCommandValidationTests`, `FolderArchiveIdempotencyTests`, `FolderArchiveAuthorizationGateTests`, `FolderArchiveStateTransitionTests`, `FolderArchiveLifecycleStatusTests`, and `FolderArchiveMetadataLeakageTests`.
+-  - [ ] Cover active-to-archived success, already-archived handling, policy-denied archive, stale/unavailable tenant authorization, stale/unavailable folder authorization, stale lifecycle projection, replay conflict, concurrent append conflict/reread, and foreign-event replay rejection.
+-  - [ ] Cover incompatible archive decision snapshots, including authorization evidence for one principal/action with idempotency or folder-state evidence for another, stale policy evidence with fresh folder state, and matching idempotency keys across different freshness or policy versions where the local fingerprint model includes them.
+-  - [ ] Cover cross-tenant same-identifier cases for folder IDs, operation IDs, correlation IDs, task IDs, stream names, cache keys, projection keys, and audit subjects.
+-  - [ ] Include representative active-only mutation guard fixtures proving archived folders reject at least metadata update, ACL mutation, repository-binding, workspace/lock, file, commit, branch/ref, provider, and task mutation categories before side effects where those command categories already have local placeholders or vocabulary.
+-  - [ ] Add forbidden-sentinel checks across responses, Problem Details, logs, traces, metrics, diagnostics, audit records, projection records, generated client exceptions, and test output.
+-  - [ ] Add timing/discovery negative controls proving denied, safe-not-found, unavailable, policy-denied, already-archived, and append-conflict paths do not branch on actual folder existence, archived state, projection cache hits, provider binding presence, workspace state, or audit-row presence.
+-  - [ ] Keep tests offline with in-memory fakes and spies; do not require GitHub, Forgejo, provider credentials, Dapr sidecars, Keycloak, Redis, live EventStore, or nested submodules.
++- [x] Implement the archive command contract path. (AC: 1, 2, 5, 6)
++  - [x] Add an `ArchiveFolder` command under `src/Hexalith.Folders/Aggregates/Folder/` matching the Contract Spine fields: `requestSchemaVersion`, `archiveReasonCode`, folder ID, actor/correlation/task evidence, idempotency key, and tenant authority inputs.
++  - [x] Add or extend archive command validation so supported reason codes are exactly `caller_requested`, `policy_retention`, and `operator_review`, and `requestSchemaVersion` is exactly `v1`.
++  - [x] Reuse the existing identifier, tenant, reserved-tenant, metadata-only, idempotency, and payload-tenant validation patterns from folder creation rather than creating parallel validation rules.
++  - [x] Wire `POST /api/v1/folders/{folderId}/archive` in `Hexalith.Folders.Server` only if endpoint wiring is not already generated or registered.
++  - [x] Preserve `202 AcceptedCommand`, validation failure, safe denial, and idempotency conflict shapes from the Contract Spine.
++  - [x] Prove OpenAPI and generated SDK shape parity for route, method, `operationId`, `ArchiveFolderRequest`, required idempotency/correlation/task headers, accepted response, safe denial envelopes, validation envelope, and `IdempotencyConflict`.
++  - [x] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate through the established Contract Spine/NSwag toolchain only if generated output is stale.
++- [x] Add archived lifecycle state and transition behavior. (AC: 2, 7, 8, 9, 10)
++  - [x] Add `Archived` or the locally canonical equivalent to `FolderLifecycleState` and ensure `FolderState` can represent it deterministically.
++  - [x] Add a metadata-only `FolderArchived` event carrying only managed tenant ID, organization ID, folder ID, archive reason code, actor/correlation/task evidence, idempotency key, and fingerprint plus event-envelope timestamp if that is the local convention.
++  - [x] Extend `FolderAggregate.Handle` or the local command gate so active folders can transition to archived exactly once when policy allows.
++  - [x] Define already-archived behavior as `AlreadyArchived` or the locally canonical stable state-transition rejection for a different idempotency key; same-key equivalent replay remains accepted replay evidence.
++  - [x] Add archived-state guards that future active-only folder, ACL, repository-binding, workspace, lock, file, commit, branch/ref, provider, and task commands can consume without implementing those future commands in this story.
++  - [x] Ensure `FolderStateApply` rejects foreign-tenant or foreign-folder archive events using the existing stream-safety pattern.
++- [x] Enforce authorization-before-archive-observation. (AC: 2, 3, 4, 8)
++  - [x] Resolve authoritative tenant context from authentication context or EventStore envelope/projection authority before constructing folder stream names, projection keys, cache keys, audit subjects, diagnostic scopes, EventStore envelopes, Dapr targets, provider handles, repository references, workspace paths, or file paths.
++  - [x] Consume Story 2.1 tenant-access evidence, Story 2.6 layered authorization, and folder admin/archive permission evidence before loading folder state or checking archive eligibility.
++  - [x] Treat tenant access, folder permission, idempotency, folder state, archive policy, and freshness evidence as one compatible archive decision snapshot; reject mixed tenant, folder, principal, action, task, operation, policy-version, idempotency-fingerprint, or freshness evidence rather than stitching a partial success.
++  - [x] Treat route/query/header/body/generated-client tenant IDs as comparison values only; mismatches return safe denial before lookup.
++  - [x] Keep schema-only validation separate from protected-resource validation: malformed body/schema/reason/idempotency evidence may fail early, but anything needing folder, lifecycle, projection, audit, provider, repository, workspace, or file knowledge waits until authorization permits it.
++  - [x] Add side-effect spies proving denied tenant or folder authorization prevents stream-name construction, stream load, append, diagnostics, audit lookup, provider access, repository access, filesystem access, EventStore envelope construction, and Dapr invocation target construction.
++  - [x] Keep same-tenant unauthorized, cross-tenant, and missing-to-caller outcomes externally indistinguishable except for approved canonical status/category differences.
++  - [x] Scope any archive decision cache, idempotency cache, authorization cache, or projection cache by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, policy version, idempotency fingerprint, and freshness watermark; denied or stale answers must not be replayed across callers or evidence windows.
++- [x] Preserve audit/status evidence without adding cleanup scope. (AC: 2, 10, 11, 12, 14)
++  - [x] Update or add folder projections so authorized lifecycle-status reads can represent archived folders with `archived: true`, an archived lifecycle state, freshness metadata, and no mutation affordance.
++  - [x] Preserve archive event and projection metadata under the C3 folder metadata and soft-delete marker retention reference without claiming Legal + PM approval is final.
++  - [x] Ensure archive handling does not delete events, compact projections, remove provider resources, clean working copies, repair status, or call tenant-deletion/legal-hold workflows.
++  - [x] Add audit/status metadata fields only for opaque folder ID, operation ID, correlation ID, task ID, result category, archive reason code, lifecycle transition, and sanitized policy/state category.
++  - [x] Ensure archive status remains queryable after archive while future active-only mutation commands see archived as terminal until a later explicitly scoped restore/unarchive story exists.
++- [x] Add contract, SDK, and parity conformance coverage. (AC: 1, 5, 6, 10, 13)
++  - [x] Add server or contract tests proving route, method, request schema, required headers, accepted response, validation failure, safe denial envelopes, idempotency conflict, operation ID, and response casing match `ArchiveFolder`.
++  - [x] Add generated-client consumption tests proving the generated archive method and `ArchiveFolderRequest` model can submit supported reason codes without hand-edited generated code.
++  - [x] Add tests proving behavior stays out of `Hexalith.Folders.Contracts` packages and no generated SDK file is hand-edited.
++  - [x] Ensure parity fixtures keep `ArchiveFolder` aligned with idempotency-key, safe-denial, correlation ID, task ID, audit metadata, and adapter-stage expectations.
++  - [x] Add tests for missing/malformed idempotency key, equivalent replay, conflicting replay, and adapter-visible validation categories.
++- [x] Add aggregate, projection, and leakage regression tests. (AC: 2, 7, 8, 9, 10, 11, 13)
++  - [x] Add tests such as `FolderArchiveCommandValidationTests`, `FolderArchiveIdempotencyTests`, `FolderArchiveAuthorizationGateTests`, `FolderArchiveStateTransitionTests`, `FolderArchiveLifecycleStatusTests`, and `FolderArchiveMetadataLeakageTests`.
++  - [x] Cover active-to-archived success, already-archived handling, policy-denied archive, stale/unavailable tenant authorization, stale/unavailable folder authorization, stale lifecycle projection, replay conflict, concurrent append conflict/reread, and foreign-event replay rejection.
++  - [x] Cover incompatible archive decision snapshots, including authorization evidence for one principal/action with idempotency or folder-state evidence for another, stale policy evidence with fresh folder state, and matching idempotency keys across different freshness or policy versions where the local fingerprint model includes them.
++  - [x] Cover cross-tenant same-identifier cases for folder IDs, operation IDs, correlation IDs, task IDs, stream names, cache keys, projection keys, and audit subjects.
++  - [x] Include representative active-only mutation guard fixtures proving archived folders reject at least metadata update, ACL mutation, repository-binding, workspace/lock, file, commit, branch/ref, provider, and task mutation categories before side effects where those command categories already have local placeholders or vocabulary.
++  - [x] Add forbidden-sentinel checks across responses, Problem Details, logs, traces, metrics, diagnostics, audit records, projection records, generated client exceptions, and test output.
++  - [x] Add timing/discovery negative controls proving denied, safe-not-found, unavailable, policy-denied, already-archived, and append-conflict paths do not branch on actual folder existence, archived state, projection cache hits, provider binding presence, workspace state, or audit-row presence.
++  - [x] Keep tests offline with in-memory fakes and spies; do not require GitHub, Forgejo, provider credentials, Dapr sidecars, Keycloak, Redis, live EventStore, or nested submodules.
+ 
+ ## Dev Notes
+ 
+@@ -268,6 +268,7 @@ so that retired work is no longer active while audit and status evidence remain
+ 
+ | Date | Change | Author |
+ |---|---|---|
++| 2026-05-20 | Implemented archive lifecycle command, endpoint wiring, authorization/idempotency guards, projections, conformance coverage, and regression tests; moved story to review. | Codex |
+ | 2026-05-19 | Applied advanced-elicitation hardening for compatible archive decision snapshots, fail-closed evidence handling, cache/idempotency scoping, and timing/discovery leakage tests. | Codex |
+ | 2026-05-19 | Party-mode review applied: tightened archive authorization ordering, idempotency/race semantics, already-archived result handling, audit/status observables, mutation guards, and parity/no-touch tests. | Codex |
+ | 2026-05-19 | Created story with archive command contract alignment, archived lifecycle transition, safe denial/idempotency rules, audit preservation, and offline leakage tests. | Codex |
+@@ -280,10 +281,68 @@ GPT-5 Codex
+ 
+ ### Debug Log References
+ 
++- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` (367 passed)
++- `dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore` (42 passed)
++- `dotnet test tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj --no-restore` (24 passed)
++- `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` (81 passed)
++- `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore` (43 passed)
++- `dotnet build Hexalith.Folders.slnx --no-restore` (passed)
++- `dotnet test Hexalith.Folders.slnx --no-restore` (passed; UI E2E placeholder skipped)
++
+ ### Completion Notes List
+ 
+ - Story created by `/bmad-create-story 2-8-archive-folders-with-audit-preservation` equivalent workflow on 2026-05-19.
+ - Project context, Epic 2, PRD, architecture, Contract Spine archive operation, C3 retention notes, Stories 2.1-2.7, current folder aggregate/projection/test patterns, recent commits, and story-creation lessons were reviewed.
+ - Ultimate context engine analysis completed - comprehensive developer guide created.
++- Added `ArchiveFolder`, reason-code validation, archive fingerprints, `FolderArchived`, archived lifecycle state, idempotent replay/conflict behavior, already-archived rejection, policy/evidence gates, and reusable active-mutation guard vocabulary.
++- Wired the existing archive contract path through the server route, EventStore gateway submission, action token mapper, action catalog, and generated-client conformance tests without hand-editing generated SDK files.
++- Preserved archive audit/status evidence in metadata-only aggregate state and folder-list projection fields while leaving provider cleanup, workspace cleanup, tenant deletion, legal hold, UI, CLI, MCP, and restore/unarchive out of scope.
++- Added offline aggregate, authorization, idempotency, projection, lifecycle-status, client, server, scaffold-contract, and metadata leakage coverage; full solution tests pass.
+ 
+ ### File List
++
++- `_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md`
++- `_bmad-output/implementation-artifacts/sprint-status.yaml`
++- `_bmad-output/process-notes/predev-preflight-latest.json`
++- `_bmad-output/process-notes/predev-preflight-2026-05-20T065726Z.json`
++- `_bmad-output/process-notes/predev-preflight-2026-05-20T070123Z.json`
++- `src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`
++- `src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs`
++- `src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs`
++- `src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs`
++- `src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs`
++- `src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs`
++- `src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs`
++- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`
++- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`
++- `tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs`
++- `tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs`
++- `tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs`
++- `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`
++- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs`
++- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs`
++- `tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs`
++- `tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs`
++- `tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs`
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index 0d3b5a4..8c99499 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -1,5 +1,5 @@
+ # generated: 2026-05-12T07:11:18+02:00
+-# last_updated: 2026-05-20T00:00:00+02:00
++# last_updated: 2026-05-20T09:24:40+02:00
+ # project: Hexalith.Folders
+ # project_key: NOKEY
+ # tracking_system: file-system
+@@ -35,7 +35,7 @@
+ # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+ 
+ generated: 2026-05-12T07:11:18+02:00
+-last_updated: 2026-05-20T00:00:00+02:00
++last_updated: 2026-05-20T09:24:40+02:00
+ project: Hexalith.Folders
+ project_key: NOKEY
+ tracking_system: file-system
+@@ -71,7 +71,7 @@ development_status:
+   2-5-inspect-effective-permissions: done
+   2-6-enforce-layered-authorization-with-safe-denials: done
+   2-7-inspect-folder-lifecycle-and-binding-status: done
+-  2-8-archive-folders-with-audit-preservation: ready-for-dev
++  2-8-archive-folders-with-audit-preservation: review
+   2-9-react-to-tenants-events-through-worker-handlers: ready-for-dev
+   epic-2-retrospective: optional
+ 
+diff --git a/_bmad-output/process-notes/predev-preflight-2026-05-20T065726Z.json b/_bmad-output/process-notes/predev-preflight-2026-05-20T065726Z.json
+new file mode 100644
+index 0000000..3e4ee34
+--- /dev/null
++++ b/_bmad-output/process-notes/predev-preflight-2026-05-20T065726Z.json
+@@ -0,0 +1,74 @@
++{
++  "schema_version": 1,
++  "produced_by": "jobs/preflight-predev-hardening.py",
++  "timestamp": "2026-05-20T06:57:26Z",
++  "repo": "D:\\Hexalith.Folders",
++  "result": "fail",
++  "bootstrap_actions": [],
++  "checks": [
++    {
++      "id": 1,
++      "name": "sprint-status.yaml parses as YAML",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
++      "result": "pass",
++      "details": "PARSE OK",
++      "file_size_bytes": 7899,
++      "line_count": 157,
++      "top_level_keys": [
++        "development_status",
++        "generated",
++        "last_updated",
++        "project",
++        "project_key",
++        "story_location",
++        "tracking_system"
++      ],
++      "development_status_count": 100
++    },
++    {
++      "id": 2,
++      "name": "artifacts root exists",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts",
++      "result": "pass",
++      "details": "directory exists"
++    },
++    {
++      "id": 3,
++      "name": "lessons ledger readable",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\process-notes\\story-creation-lessons.md",
++      "result": "pass",
++      "details": "file readable"
++    },
++    {
++      "id": 4,
++      "name": "status-artifact consistency",
++      "story_keys_checked": 86,
++      "result": "pass",
++      "details": "no drift across 86 story keys"
++    },
++    {
++      "id": 5,
++      "name": "working tree cleanliness",
++      "command": [
++        "git",
++        "status",
++        "--porcelain",
++        "--",
++        ".",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/preflight-latest.json"
++      ],
++      "exit_code": 0,
++      "stdout": " M _bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n",
++      "stderr": "",
++      "dirty_path_count": 2,
++      "result": "fail",
++      "details": "2 dirty path(s)"
++    }
++  ],
++  "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
++}
+\ No newline at end of file
+diff --git a/_bmad-output/process-notes/predev-preflight-2026-05-20T070123Z.json b/_bmad-output/process-notes/predev-preflight-2026-05-20T070123Z.json
+new file mode 100644
+index 0000000..c132f13
+--- /dev/null
++++ b/_bmad-output/process-notes/predev-preflight-2026-05-20T070123Z.json
+@@ -0,0 +1,74 @@
++{
++  "schema_version": 1,
++  "produced_by": "jobs/preflight-predev-hardening.py",
++  "timestamp": "2026-05-20T07:01:23Z",
++  "repo": "D:\\Hexalith.Folders",
++  "result": "fail",
++  "bootstrap_actions": [],
++  "checks": [
++    {
++      "id": 1,
++      "name": "sprint-status.yaml parses as YAML",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
++      "result": "pass",
++      "details": "PARSE OK",
++      "file_size_bytes": 7899,
++      "line_count": 157,
++      "top_level_keys": [
++        "development_status",
++        "generated",
++        "last_updated",
++        "project",
++        "project_key",
++        "story_location",
++        "tracking_system"
++      ],
++      "development_status_count": 100
++    },
++    {
++      "id": 2,
++      "name": "artifacts root exists",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts",
++      "result": "pass",
++      "details": "directory exists"
++    },
++    {
++      "id": 3,
++      "name": "lessons ledger readable",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\process-notes\\story-creation-lessons.md",
++      "result": "pass",
++      "details": "file readable"
++    },
++    {
++      "id": 4,
++      "name": "status-artifact consistency",
++      "story_keys_checked": 86,
++      "result": "pass",
++      "details": "no drift across 86 story keys"
++    },
++    {
++      "id": 5,
++      "name": "working tree cleanliness",
++      "command": [
++        "git",
++        "status",
++        "--porcelain",
++        "--",
++        ".",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/preflight-latest.json"
++      ],
++      "exit_code": 0,
++      "stdout": " M _bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderState.cs\n M tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs\n?? src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs\n",
++      "stderr": "",
++      "dirty_path_count": 10,
++      "result": "fail",
++      "details": "10 dirty path(s)"
++    }
++  ],
++  "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
++}
+\ No newline at end of file
+diff --git a/_bmad-output/process-notes/predev-preflight-2026-05-20T074157Z.json b/_bmad-output/process-notes/predev-preflight-2026-05-20T074157Z.json
+new file mode 100644
+index 0000000..4a2e9e9
+--- /dev/null
++++ b/_bmad-output/process-notes/predev-preflight-2026-05-20T074157Z.json
+@@ -0,0 +1,74 @@
++{
++  "schema_version": 1,
++  "produced_by": "jobs/preflight-predev-hardening.py",
++  "timestamp": "2026-05-20T07:41:57Z",
++  "repo": "D:\\Hexalith.Folders",
++  "result": "fail",
++  "bootstrap_actions": [],
++  "checks": [
++    {
++      "id": 1,
++      "name": "sprint-status.yaml parses as YAML",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
++      "result": "pass",
++      "details": "PARSE OK",
++      "file_size_bytes": 7899,
++      "line_count": 157,
++      "top_level_keys": [
++        "development_status",
++        "generated",
++        "last_updated",
++        "project",
++        "project_key",
++        "story_location",
++        "tracking_system"
++      ],
++      "development_status_count": 100
++    },
++    {
++      "id": 2,
++      "name": "artifacts root exists",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts",
++      "result": "pass",
++      "details": "directory exists"
++    },
++    {
++      "id": 3,
++      "name": "lessons ledger readable",
++      "path": "D:\\Hexalith.Folders\\_bmad-output\\process-notes\\story-creation-lessons.md",
++      "result": "pass",
++      "details": "file readable"
++    },
++    {
++      "id": 4,
++      "name": "status-artifact consistency",
++      "story_keys_checked": 86,
++      "result": "pass",
++      "details": "no drift across 86 story keys"
++    },
++    {
++      "id": 5,
++      "name": "working tree cleanliness",
++      "command": [
++        "git",
++        "status",
++        "--porcelain",
++        "--",
++        ".",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/predev-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/code-review-preflight-latest.json",
++        ":(exclude)_bmad-output/process-notes/preflight-*.json",
++        ":(exclude)_bmad-output/process-notes/preflight-latest.json"
++      ],
++      "exit_code": 0,
++      "stdout": " M Hexalith.Memories\n M _bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs\n M src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs\n M src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderState.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs\n M src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs\n M src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs\n M src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs\n M src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs\n M tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs\n M tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs\n M tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs\n M tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs\n?? src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs\n?? tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs\n?? tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs\n?? tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs\n?? tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs\n?? tests/Hexalith.Folders.Tests/Projections/FolderList/\n",
++      "stderr": "",
++      "dirty_path_count": 43,
++      "result": "fail",
++      "details": "43 dirty path(s)"
++    }
++  ],
++  "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
++}
+\ No newline at end of file
+diff --git a/_bmad-output/process-notes/predev-preflight-latest.json b/_bmad-output/process-notes/predev-preflight-latest.json
+index 187c6e2..4a2e9e9 100644
+--- a/_bmad-output/process-notes/predev-preflight-latest.json
++++ b/_bmad-output/process-notes/predev-preflight-latest.json
+@@ -1,7 +1,7 @@
+ {
+   "schema_version": 1,
+   "produced_by": "jobs/preflight-predev-hardening.py",
+-  "timestamp": "2026-05-20T06:01:57Z",
++  "timestamp": "2026-05-20T07:41:57Z",
+   "repo": "D:\\Hexalith.Folders",
+   "result": "fail",
+   "bootstrap_actions": [],
+@@ -12,7 +12,7 @@
+       "path": "D:\\Hexalith.Folders\\_bmad-output\\implementation-artifacts\\sprint-status.yaml",
+       "result": "pass",
+       "details": "PARSE OK",
+-      "file_size_bytes": 7902,
++      "file_size_bytes": 7899,
+       "line_count": 157,
+       "top_level_keys": [
+         "development_status",
+@@ -63,11 +63,11 @@
+         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
+       ],
+       "exit_code": 0,
+-      "stdout": " M Hexalith.FrontComposer\n M Hexalith.Tenants\n M _bmad-output/implementation-artifacts/2-7-inspect-folder-lifecycle-and-binding-status.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n?? _bmad-output/implementation-artifacts/2-7-review-diff.patch\n",
++      "stdout": " M Hexalith.Memories\n M _bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md\n M _bmad-output/implementation-artifacts/sprint-status.yaml\n M src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs\n M src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs\n M src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderState.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs\n M src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs\n M src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs\n M src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs\n M src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs\n M tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs\n M tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs\n M tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs\n M tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs\n?? src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs\n?? src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs\n?? tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs\n?? tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs\n?? tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs\n?? tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs\n?? tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs\n?? tests/Hexalith.Folders.Tests/Projections/FolderList/\n",
+       "stderr": "",
+-      "dirty_path_count": 5,
++      "dirty_path_count": 43,
+       "result": "fail",
+-      "details": "5 dirty path(s)"
++      "details": "43 dirty path(s)"
+     }
+   ],
+   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."
+diff --git a/src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs b/src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs
+index fcd2cfa..930424f 100644
+--- a/src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs
++++ b/src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs
+@@ -9,7 +9,7 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
+         new Dictionary<string, FolderCommandActionMapping>(StringComparer.Ordinal)
+         {
+             ["Hexalith.Folders.Commands.CreateFolder"] = new("create_folder", FolderCommandOperationScopeKind.OrganizationBaseline),
+-            ["Hexalith.Folders.Commands.ArchiveFolder"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
++            ["Hexalith.Folders.Commands.ArchiveFolder"] = new("archive_folder", FolderCommandOperationScopeKind.FolderAggregate),
+             ["Hexalith.Folders.Commands.GrantFolderAccess"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
+             ["Hexalith.Folders.Commands.RevokeFolderAccess"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
+             ["Hexalith.Folders.Commands.ConfigureProviderBinding"] = new("configure_provider_binding", FolderCommandOperationScopeKind.FolderAggregate),
+diff --git a/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs b/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+index 1c2875a..6fb8675 100644
+--- a/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
++++ b/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+@@ -1,6 +1,7 @@
+ using System.Text.Json;
+ using System.Text.Json.Serialization;
+ 
++using Hexalith.EventStore.Client.Gateway;
+ using Hexalith.EventStore.Contracts.Commands;
+ using Hexalith.EventStore.Contracts.Projections;
+ using Hexalith.Folders.Authorization;
+@@ -17,6 +18,8 @@ public static class FoldersDomainServiceEndpoints
+ {
+     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
+     private const string EventuallyConsistent = "eventually_consistent";
++    private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
++    private const string FoldersDomainName = "folders";
+ 
+     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
+     {
+@@ -68,6 +71,20 @@ public static class FoldersDomainServiceEndpoints
+         })
+         .WithName("GetEffectivePermissions");
+ 
++        endpoints.MapPost("/api/v1/folders/{folderId}/archive", async (
++            string folderId,
++            HttpContext httpContext,
++            IEventStoreGatewayClient gateway,
++            ITenantContextAccessor tenantContext,
++            CancellationToken cancellationToken)
++            => await ArchiveFolderAsync(
++                folderId,
++                httpContext,
++                gateway,
++                tenantContext,
++                cancellationToken).ConfigureAwait(false))
++        .WithName("ArchiveFolder");
++
+         endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
+             string folderId,
+             HttpContext httpContext,
+@@ -126,6 +143,109 @@ public static class FoldersDomainServiceEndpoints
+         return endpoints;
+     }
+ 
++    private static async Task<IResult> ArchiveFolderAsync(
++        string folderId,
++        HttpContext httpContext,
++        IEventStoreGatewayClient gateway,
++        ITenantContextAccessor tenantContext,
++        CancellationToken cancellationToken)
++    {
++        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
++        ArgumentNullException.ThrowIfNull(httpContext);
++        ArgumentNullException.ThrowIfNull(gateway);
++        ArgumentNullException.ThrowIfNull(tenantContext);
++
++        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
++        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
++        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
++        if (string.IsNullOrWhiteSpace(idempotencyKey)
++            || string.IsNullOrWhiteSpace(correlationId)
++            || string.IsNullOrWhiteSpace(taskId))
++        {
++            return SafeProblem(
++                StatusCodes.Status400BadRequest,
++                category: "validation_error",
++                code: "validation_error",
++                retryable: false,
++                correlationId: correlationId,
++                taskId: taskId);
++        }
++
++        ArchiveFolderHttpRequest? body;
++        try
++        {
++            body = await httpContext.Request
++                .ReadFromJsonAsync<ArchiveFolderHttpRequest>(ResponseJsonOptions, cancellationToken)
++                .ConfigureAwait(false);
++        }
++        catch (JsonException)
++        {
++            return SafeProblem(
++                StatusCodes.Status400BadRequest,
++                category: "validation_error",
++                code: "validation_error",
++                retryable: false,
++                correlationId: correlationId,
++                taskId: taskId);
++        }
++
++        if (body is null
++            || !string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
++            || !IsSupportedArchiveReason(body.ArchiveReasonCode))
++        {
++            return SafeProblem(
++                StatusCodes.Status400BadRequest,
++                category: "validation_error",
++                code: "validation_error",
++                retryable: false,
++                correlationId: correlationId,
++                taskId: taskId);
++        }
++
++        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
++        {
++            return SafeProblem(
++                StatusCodes.Status401Unauthorized,
++                category: "authentication_failure",
++                code: "authentication_failure",
++                retryable: false,
++                correlationId: correlationId,
++                taskId: taskId);
++        }
++
++        SubmitCommandResponse submitted = await gateway.SubmitCommandAsync(
++            new SubmitCommandRequest(
++                MessageId: idempotencyKey,
++                Tenant: tenantContext.AuthoritativeTenantId,
++                Domain: FoldersDomainName,
++                AggregateId: folderId,
++                CommandType: ArchiveFolderCommandType,
++                Payload: JsonSerializer.SerializeToElement(body, ResponseJsonOptions),
++                CorrelationId: correlationId,
++                Extensions: new Dictionary<string, string>
++                {
++                    ["taskId"] = taskId,
++                }),
++            cancellationToken).ConfigureAwait(false);
++
++        string acceptedCorrelationId = string.IsNullOrWhiteSpace(submitted.CorrelationId)
++            ? correlationId
++            : submitted.CorrelationId;
++
++        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
++        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
++
++        return Results.Json(
++            new AcceptedCommandResponse(
++                DateTimeOffset.UtcNow,
++                acceptedCorrelationId,
++                taskId,
++                "accepted",
++                IdempotentReplay: false),
++            ResponseJsonOptions,
++            statusCode: StatusCodes.Status202Accepted);
++    }
++
+     private static IResult ToHttpResult(HttpContext httpContext, FolderLifecycleStatusQueryResult result, string? correlationId, string? taskId)
+     {
+         if (result.AuthorizationDenial is not null)
+@@ -414,6 +534,20 @@ public static class FoldersDomainServiceEndpoints
+         return false;
+     }
+ 
++    private static bool IsSupportedArchiveReason(string? value)
++        => value is "caller_requested" or "policy_retention" or "operator_review";
++
++    private sealed record ArchiveFolderHttpRequest(
++        string? RequestSchemaVersion,
++        string? ArchiveReasonCode);
++
++    private sealed record AcceptedCommandResponse(
++        DateTimeOffset AcceptedAt,
++        string CorrelationId,
++        string TaskId,
++        string Status,
++        bool IdempotentReplay);
++
+     private sealed record EffectivePermissionsResponse(
+         string FolderId,
+         IReadOnlyList<string> Permissions,
+diff --git a/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs b/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+index d443299..8c324b9 100644
+--- a/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
++++ b/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+@@ -17,6 +17,7 @@ public static class FoldersServerServiceCollectionExtensions
+         ArgumentNullException.ThrowIfNull(services);
+ 
+         services.AddEventStore(typeof(FoldersModule).Assembly);
++        services.AddEventStoreGatewayClient();
+         services.AddHttpContextAccessor();
+         services.AddOptions<TenantContextOptions>();
+         // Register the authentication core services so the validator can introspect scheme registrations.
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs b/src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs
+new file mode 100644
+index 0000000..623dfa1
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs
+@@ -0,0 +1,23 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public sealed record ArchiveFolder(
++    string ManagedTenantId,
++    string OrganizationId,
++    string FolderId,
++    string RequestSchemaVersion,
++    string ArchiveReasonCode,
++    string ActorPrincipalId,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string? PayloadTenantId,
++    IReadOnlyDictionary<string, string?>? ClientTenantIds = null) : IFolderCommand
++{
++    public string CommandType => nameof(ArchiveFolder);
++
++    public IReadOnlyDictionary<string, string?> ClientControlledTenantIds => ClientTenantIds ?? EmptyClientTenantIds.Value;
++
++    public IFolderCommand WithManagedTenantId(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
++
++    public ArchiveFolder WithAuthoritativeTenant(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs
+index c75c154..37e3fec 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs
+@@ -5,6 +5,7 @@ public static class FolderAccessAction
+     private static readonly HashSet<string> SupportedValues = new(StringComparer.Ordinal)
+     {
+         "configure_provider_binding",
++        "archive_folder",
+         "prepare_workspace",
+         "lock_workspace",
+         "read_metadata",
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs
+new file mode 100644
+index 0000000..879e527
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs
+@@ -0,0 +1,15 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public enum FolderActiveMutationCategory
++{
++    FolderMetadata,
++    FolderAcl,
++    RepositoryBinding,
++    Workspace,
++    Lock,
++    File,
++    Commit,
++    BranchRef,
++    Provider,
++    Task,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs
+new file mode 100644
+index 0000000..dfaaf96
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs
+@@ -0,0 +1,26 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public static class FolderActiveMutationGuard
++{
++    public static FolderResultCode Evaluate(FolderState state, FolderActiveMutationCategory category)
++    {
++        ArgumentNullException.ThrowIfNull(state);
++
++        if (!Enum.IsDefined(category))
++        {
++            return FolderResultCode.StateTransitionInvalid;
++        }
++
++        if (!state.IsCreated)
++        {
++            return FolderResultCode.FolderNotFound;
++        }
++
++        return state.LifecycleState switch
++        {
++            FolderLifecycleState.Active => FolderResultCode.Accepted,
++            FolderLifecycleState.Archived => FolderResultCode.AlreadyArchived,
++            _ => FolderResultCode.StateTransitionInvalid,
++        };
++    }
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs
+index 7bdbab7..219e200 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs
+@@ -68,6 +68,12 @@ public static class FolderAggregate
+             return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+         }
+ 
++        FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.FolderAcl);
++        if (activeMutationGuard != FolderResultCode.Accepted)
++        {
++            return FolderResult.Rejected(command, activeMutationGuard);
++        }
++
+         return command switch
+         {
+             GrantFolderAccess => Grant(state, command, validation, occurredAt),
+@@ -76,6 +82,49 @@ public static class FolderAggregate
+         };
+     }
+ 
++    public static FolderResult Handle(FolderState state, ArchiveFolder command, DateTimeOffset occurredAt)
++    {
++        ArgumentNullException.ThrowIfNull(state);
++        ArgumentNullException.ThrowIfNull(command);
++
++        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
++        if (!validation.IsAccepted)
++        {
++            return FolderResult.Rejected(command, validation.Code);
++        }
++
++        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
++        {
++            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
++                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
++                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
++        }
++
++        if (!state.IsCreated)
++        {
++            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
++        }
++
++        if (state.LifecycleState == FolderLifecycleState.Archived)
++        {
++            return FolderResult.Rejected(command, FolderResultCode.AlreadyArchived);
++        }
++
++        FolderArchived archived = new(
++            command.ManagedTenantId,
++            command.OrganizationId,
++            command.FolderId,
++            validation.ArchiveReasonCode!.Value,
++            command.ActorPrincipalId,
++            command.CorrelationId,
++            command.TaskId,
++            command.IdempotencyKey,
++            validation.IdempotencyFingerprint!,
++            occurredAt);
++
++        return FolderResult.Accepted(command, [archived]);
++    }
++
+     // Convenience overloads for tests that do not care about deterministic timestamps.
+     // Production callers must always supply OccurredAt from the gate's TimeProvider so
+     // events carry real wall-clock evidence rather than DateTimeOffset.MinValue.
+@@ -85,6 +134,9 @@ public static class FolderAggregate
+     public static FolderResult Handle(FolderState state, IFolderAccessCommand command)
+         => Handle(state, command, DateTimeOffset.MinValue);
+ 
++    public static FolderResult Handle(FolderState state, ArchiveFolder command)
++        => Handle(state, command, DateTimeOffset.MinValue);
++
+     // Grant emits events per operation, skipping tuples that are already granted. Revoke
+     // mirrors this per-op semantics: it emits revoke events for present tuples, skips
+     // already-absent tuples, and only signals `MissingEntry` when every requested tuple
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs
+new file mode 100644
+index 0000000..164ad64
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs
+@@ -0,0 +1,56 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public sealed record FolderArchiveAclEvidence
++{
++    public const string ArchiveAction = "archive_folder";
++
++    public FolderArchiveAclEvidence(
++        FolderArchiveAclOutcome outcome,
++        string? managedTenantId,
++        string? organizationId,
++        string? folderId,
++        string? principalId,
++        string action)
++    {
++        if (outcome == FolderArchiveAclOutcome.Allowed
++            && !string.Equals(action, ArchiveAction, StringComparison.Ordinal))
++        {
++            throw new ArgumentException(
++                $"Allowed FolderArchiveAclEvidence must carry the archive action '{ArchiveAction}'.",
++                nameof(action));
++        }
++
++        Outcome = outcome;
++        ManagedTenantId = managedTenantId;
++        OrganizationId = organizationId;
++        FolderId = folderId;
++        PrincipalId = principalId;
++        Action = action;
++    }
++
++    public FolderArchiveAclOutcome Outcome { get; init; }
++
++    public string? ManagedTenantId { get; init; }
++
++    public string? OrganizationId { get; init; }
++
++    public string? FolderId { get; init; }
++
++    public string? PrincipalId { get; init; }
++
++    public string Action { get; init; }
++
++    public static FolderArchiveAclEvidence Allowed(
++        string managedTenantId,
++        string organizationId,
++        string folderId,
++        string principalId)
++        => new(FolderArchiveAclOutcome.Allowed, managedTenantId, organizationId, folderId, principalId, ArchiveAction);
++
++    public static FolderArchiveAclEvidence Denied(
++        string? managedTenantId,
++        string? organizationId,
++        string? folderId,
++        string? principalId)
++        => new(FolderArchiveAclOutcome.Denied, managedTenantId, organizationId, folderId, principalId, ArchiveAction);
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs
+new file mode 100644
+index 0000000..ce003de
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs
+@@ -0,0 +1,13 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public enum FolderArchiveAclOutcome
++{
++    Allowed,
++    Denied,
++    Unavailable,
++    Malformed,
++    Stale,
++    TenantMismatch,
++    FolderMismatch,
++    UnsupportedAction,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs
+new file mode 100644
+index 0000000..18fc301
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs
+@@ -0,0 +1,20 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public sealed record FolderArchivePolicyEvidence(
++    FolderArchivePolicyOutcome Outcome,
++    string? ManagedTenantId,
++    string? FolderId,
++    string? PolicyVersion)
++{
++    public static FolderArchivePolicyEvidence Allowed(
++        string managedTenantId,
++        string folderId,
++        string policyVersion)
++        => new(FolderArchivePolicyOutcome.Allowed, managedTenantId, folderId, policyVersion);
++
++    public static FolderArchivePolicyEvidence Denied(
++        string managedTenantId,
++        string folderId,
++        string policyVersion)
++        => new(FolderArchivePolicyOutcome.Denied, managedTenantId, folderId, policyVersion);
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs
+new file mode 100644
+index 0000000..342e791
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs
+@@ -0,0 +1,11 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public enum FolderArchivePolicyOutcome
++{
++    Allowed,
++    Denied,
++    Unavailable,
++    Malformed,
++    Stale,
++    ScopeMismatch,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs
+new file mode 100644
+index 0000000..c4d737b
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public enum FolderArchiveReasonCode
++{
++    CallerRequested,
++    PolicyRetention,
++    OperatorReview,
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs
+new file mode 100644
+index 0000000..fe247bc
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs
+@@ -0,0 +1,225 @@
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimeProvider timeProvider)
++{
++    private readonly IFolderRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
++    private readonly TimeProvider _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
++
++    public FolderArchiveTenantGate(IFolderRepository repository)
++        : this(repository, TimeProvider.System)
++    {
++    }
++
++    public FolderResult Handle(
++        ArchiveFolder command,
++        TenantAccessAuthorizationResult tenantAccess,
++        FolderArchiveAclEvidence aclEvidence,
++        FolderArchivePolicyEvidence policyEvidence)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++        ArgumentNullException.ThrowIfNull(tenantAccess);
++        ArgumentNullException.ThrowIfNull(aclEvidence);
++        ArgumentNullException.ThrowIfNull(policyEvidence);
++
++        if (!tenantAccess.IsAllowed)
++        {
++            return FolderResult.Rejected(
++                Map(tenantAccess.Outcome),
++                managedTenantId: null,
++                organizationId: null,
++                folderId: null,
++                principalKind: null,
++                principalId: null,
++                action: null,
++                command.ActorPrincipalId,
++                command.CorrelationId,
++                command.TaskId,
++                command.IdempotencyKey);
++        }
++
++        if (string.IsNullOrWhiteSpace(tenantAccess.TenantId))
++        {
++            return FolderResult.Rejected(command, FolderResultCode.MissingAuthoritativeTenant);
++        }
++
++        if (HasCompetingClientTenant(command, tenantAccess.TenantId))
++        {
++            return FolderResult.Rejected(
++                FolderResultCode.TenantMismatch,
++                tenantAccess.TenantId,
++                command.OrganizationId,
++                command.FolderId,
++                principalKind: null,
++                principalId: null,
++                action: null,
++                command.ActorPrincipalId,
++                command.CorrelationId,
++                command.TaskId,
++                command.IdempotencyKey);
++        }
++
++        ArchiveFolder authoritativeCommand = command.WithAuthoritativeTenant(tenantAccess.TenantId);
++
++        FolderResultCode? aclRejection = EvaluateAcl(authoritativeCommand, aclEvidence);
++        if (aclRejection is not null)
++        {
++            return FolderResult.Rejected(authoritativeCommand, aclRejection.Value);
++        }
++
++        FolderCommandValidationResult validation = FolderCommandValidator.Validate(authoritativeCommand);
++        if (!validation.IsAccepted)
++        {
++            return FolderResult.Rejected(authoritativeCommand, validation.Code);
++        }
++
++        FolderStreamName streamName = _repository.CreateStreamName(
++            authoritativeCommand.ManagedTenantId,
++            authoritativeCommand.FolderId);
++
++        FolderIdempotencyLookupResult lookup = _repository.TryGetIdempotencyFingerprint(
++            streamName,
++            authoritativeCommand.IdempotencyKey,
++            out string? priorFingerprint);
++
++        if (lookup == FolderIdempotencyLookupResult.Found)
++        {
++            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
++                ? FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay)
++                : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict);
++        }
++
++        if (lookup == FolderIdempotencyLookupResult.Unavailable)
++        {
++            return FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyUnavailable);
++        }
++
++        FolderState state = _repository.Load(streamName);
++        FolderResultCode? policyRejection = EvaluatePolicy(authoritativeCommand, policyEvidence);
++        if (policyRejection is not null)
++        {
++            return FolderResult.Rejected(authoritativeCommand, policyRejection.Value);
++        }
++
++        DateTimeOffset occurredAt = _timeProvider.GetUtcNow();
++        FolderResult result = FolderAggregate.Handle(state, authoritativeCommand, occurredAt);
++        if (result.Events.Count == 0)
++        {
++            return result;
++        }
++
++        FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
++            streamName,
++            authoritativeCommand.IdempotencyKey,
++            validation.IdempotencyFingerprint!,
++            result.Events);
++
++        return outcome switch
++        {
++            FolderAppendOutcome.Appended => result,
++            FolderAppendOutcome.FingerprintMatched =>
++                FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay),
++            FolderAppendOutcome.FingerprintConflict =>
++                FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict),
++            FolderAppendOutcome.AppendConflict =>
++                ResolveAppendConflict(_repository, streamName, authoritativeCommand, occurredAt),
++            _ => FolderResult.Rejected(authoritativeCommand, FolderResultCode.MalformedEvidence),
++        };
++    }
++
++    private static FolderResult ResolveAppendConflict(
++        IFolderRepository repository,
++        FolderStreamName streamName,
++        ArchiveFolder command,
++        DateTimeOffset occurredAt)
++    {
++        FolderState refreshed = repository.Load(streamName);
++        FolderResult refreshedResult = FolderAggregate.Handle(refreshed, command, occurredAt);
++        return refreshedResult.Events.Count == 0
++            ? refreshedResult
++            : FolderResult.Rejected(command, FolderResultCode.AppendConflict);
++    }
++
++    private static bool HasCompetingClientTenant(ArchiveFolder command, string authoritativeTenantId)
++    {
++        if (!string.IsNullOrWhiteSpace(command.ManagedTenantId)
++            && !string.Equals(command.ManagedTenantId, authoritativeTenantId, StringComparison.Ordinal))
++        {
++            return true;
++        }
++
++        if (!string.IsNullOrWhiteSpace(command.PayloadTenantId)
++            && !string.Equals(command.PayloadTenantId, authoritativeTenantId, StringComparison.Ordinal))
++        {
++            return true;
++        }
++
++        return command.ClientControlledTenantIds.Values.Any(value =>
++            !string.IsNullOrWhiteSpace(value)
++            && !string.Equals(value, authoritativeTenantId, StringComparison.Ordinal));
++    }
++
++    private static FolderResultCode? EvaluateAcl(ArchiveFolder command, FolderArchiveAclEvidence aclEvidence)
++    {
++        if (aclEvidence.Outcome == FolderArchiveAclOutcome.Allowed)
++        {
++            bool matches = string.Equals(aclEvidence.ManagedTenantId, command.ManagedTenantId, StringComparison.Ordinal)
++                && string.Equals(aclEvidence.OrganizationId, command.OrganizationId, StringComparison.Ordinal)
++                && string.Equals(aclEvidence.FolderId, command.FolderId, StringComparison.Ordinal)
++                && string.Equals(aclEvidence.PrincipalId, command.ActorPrincipalId, StringComparison.Ordinal)
++                && string.Equals(aclEvidence.Action, FolderArchiveAclEvidence.ArchiveAction, StringComparison.Ordinal);
++            return matches ? null : FolderResultCode.AclEvidenceUnavailable;
++        }
++
++        return aclEvidence.Outcome switch
++        {
++            FolderArchiveAclOutcome.Denied => FolderResultCode.FolderAclDenied,
++            FolderArchiveAclOutcome.TenantMismatch => FolderResultCode.TenantMismatch,
++            FolderArchiveAclOutcome.FolderMismatch => FolderResultCode.AclEvidenceUnavailable,
++            FolderArchiveAclOutcome.UnsupportedAction => FolderResultCode.AclEvidenceUnavailable,
++            FolderArchiveAclOutcome.Unavailable
++                or FolderArchiveAclOutcome.Malformed
++                or FolderArchiveAclOutcome.Stale => FolderResultCode.AclEvidenceUnavailable,
++            _ => FolderResultCode.AclEvidenceUnavailable,
++        };
++    }
++
++    private static FolderResultCode? EvaluatePolicy(ArchiveFolder command, FolderArchivePolicyEvidence policyEvidence)
++    {
++        if (policyEvidence.Outcome == FolderArchivePolicyOutcome.Allowed)
++        {
++            bool matches = string.Equals(policyEvidence.ManagedTenantId, command.ManagedTenantId, StringComparison.Ordinal)
++                && string.Equals(policyEvidence.FolderId, command.FolderId, StringComparison.Ordinal)
++                && !string.IsNullOrWhiteSpace(policyEvidence.PolicyVersion);
++            return matches ? null : FolderResultCode.AclEvidenceUnavailable;
++        }
++
++        return policyEvidence.Outcome switch
++        {
++            FolderArchivePolicyOutcome.Denied => FolderResultCode.ArchivePolicyDenied,
++            FolderArchivePolicyOutcome.ScopeMismatch
++                or FolderArchivePolicyOutcome.Unavailable
++                or FolderArchivePolicyOutcome.Malformed
++                or FolderArchivePolicyOutcome.Stale => FolderResultCode.AclEvidenceUnavailable,
++            _ => FolderResultCode.AclEvidenceUnavailable,
++        };
++    }
++
++    private static FolderResultCode Map(TenantAccessOutcome outcome)
++        => outcome switch
++        {
++            TenantAccessOutcome.Allowed => throw new InvalidOperationException(
++                $"TenantAccessAuthorizationResult invariant broken: Outcome=Allowed with IsAllowed=false."),
++            TenantAccessOutcome.Denied => FolderResultCode.TenantAccessDenied,
++            TenantAccessOutcome.StaleProjection => FolderResultCode.StaleProjection,
++            TenantAccessOutcome.UnavailableProjection => FolderResultCode.UnavailableProjection,
++            TenantAccessOutcome.UnknownTenant => FolderResultCode.UnknownTenant,
++            TenantAccessOutcome.DisabledTenant => FolderResultCode.DisabledTenant,
++            TenantAccessOutcome.MalformedEvidence => FolderResultCode.MalformedEvidence,
++            TenantAccessOutcome.TenantMismatch => FolderResultCode.TenantMismatch,
++            TenantAccessOutcome.MissingAuthoritativeTenant => FolderResultCode.MissingAuthoritativeTenant,
++            TenantAccessOutcome.ReplayConflict => FolderResultCode.ReplayConflict,
++            _ => FolderResultCode.MalformedEvidence,
++        };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs
+new file mode 100644
+index 0000000..05a4027
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs
+@@ -0,0 +1,13 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public sealed record FolderArchived(
++    string ManagedTenantId,
++    string OrganizationId,
++    string FolderId,
++    FolderArchiveReasonCode ArchiveReasonCode,
++    string ActorPrincipalId,
++    string CorrelationId,
++    string TaskId,
++    string IdempotencyKey,
++    string IdempotencyFingerprint,
++    DateTimeOffset OccurredAt) : IFolderEvent;
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs
+index 211e2eb..c7de04b 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs
+@@ -5,16 +5,22 @@ public sealed record FolderCommandValidationResult(
+     FolderResultCode Code,
+     string? IdempotencyFingerprint,
+     IReadOnlyList<string> CanonicalTags,
+-    IReadOnlyList<FolderAccessOperation> AccessOperations)
++    IReadOnlyList<FolderAccessOperation> AccessOperations,
++    FolderArchiveReasonCode? ArchiveReasonCode)
+ {
+     public static FolderCommandValidationResult Accepted(string idempotencyFingerprint, IReadOnlyList<string> canonicalTags)
+-        => new(true, FolderResultCode.Created, idempotencyFingerprint, canonicalTags, []);
++        => new(true, FolderResultCode.Created, idempotencyFingerprint, canonicalTags, [], null);
+ 
+     public static FolderCommandValidationResult AcceptedAccess(
+         string idempotencyFingerprint,
+         IReadOnlyList<FolderAccessOperation> accessOperations)
+-        => new(true, FolderResultCode.Accepted, idempotencyFingerprint, [], accessOperations);
++        => new(true, FolderResultCode.Accepted, idempotencyFingerprint, [], accessOperations, null);
++
++    public static FolderCommandValidationResult AcceptedArchive(
++        string idempotencyFingerprint,
++        FolderArchiveReasonCode archiveReasonCode)
++        => new(true, FolderResultCode.Accepted, idempotencyFingerprint, [], [], archiveReasonCode);
+ 
+     public static FolderCommandValidationResult Rejected(FolderResultCode code)
+-        => new(false, code, null, [], []);
++        => new(false, code, null, [], [], null);
+ }
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs
+index 28fc63f..ee08ca1 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs
+@@ -72,10 +72,10 @@ public static partial class FolderCommandValidator
+             return FolderCommandValidationResult.Rejected(FolderResultCode.InvalidFolderId);
+         }
+ 
+-        if (!IsValidIdentifier(command.ActorPrincipalId)
+-            || !IsValidIdentifier(command.CorrelationId)
+-            || !IsValidIdentifier(command.TaskId)
+-            || !IsValidIdentifier(command.IdempotencyKey))
++        if (!IsSafeEvidenceIdentifier(command.ActorPrincipalId)
++            || !IsSafeEvidenceIdentifier(command.CorrelationId)
++            || !IsSafeEvidenceIdentifier(command.TaskId)
++            || !IsSafeEvidenceIdentifier(command.IdempotencyKey))
+         {
+             return FolderCommandValidationResult.Rejected(FolderResultCode.MalformedEvidence);
+         }
+@@ -88,6 +88,19 @@ public static partial class FolderCommandValidator
+                 : FolderCommandValidationResult.AcceptedAccess(Fingerprint(access, operations), operations);
+         }
+ 
++        if (command is ArchiveFolder archive)
++        {
++            if (!string.Equals(archive.RequestSchemaVersion, "v1", StringComparison.Ordinal)
++                || !TryParseArchiveReasonCode(archive.ArchiveReasonCode, out FolderArchiveReasonCode archiveReasonCode))
++            {
++                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
++            }
++
++            return FolderCommandValidationResult.AcceptedArchive(
++                Fingerprint(archive, archiveReasonCode),
++                archiveReasonCode);
++        }
++
+         if (command is not CreateFolder create)
+         {
+             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+@@ -140,6 +153,21 @@ public static partial class FolderCommandValidator
+         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+     }
+ 
++    private static string Fingerprint(ArchiveFolder command, FolderArchiveReasonCode archiveReasonCode)
++    {
++        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
++
++        AppendField(hash, command.CommandType);
++        AppendField(hash, command.ManagedTenantId);
++        AppendField(hash, command.OrganizationId);
++        AppendField(hash, command.FolderId);
++        AppendField(hash, command.RequestSchemaVersion);
++        AppendField(hash, ToContractValue(archiveReasonCode));
++        AppendField(hash, command.ActorPrincipalId);
++
++        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
++    }
++
+     private static string Fingerprint(IFolderAccessCommand command, IReadOnlyList<FolderAccessOperation> operations)
+     {
+         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+@@ -313,6 +341,34 @@ public static partial class FolderCommandValidator
+         return operation.Intent == requiredIntent ? null : FolderResultCode.ReplayConflict;
+     }
+ 
++    private static bool TryParseArchiveReasonCode(string? value, out FolderArchiveReasonCode reasonCode)
++    {
++        reasonCode = default;
++        switch (value)
++        {
++            case "caller_requested":
++                reasonCode = FolderArchiveReasonCode.CallerRequested;
++                return true;
++            case "policy_retention":
++                reasonCode = FolderArchiveReasonCode.PolicyRetention;
++                return true;
++            case "operator_review":
++                reasonCode = FolderArchiveReasonCode.OperatorReview;
++                return true;
++            default:
++                return false;
++        }
++    }
++
++    private static string ToContractValue(FolderArchiveReasonCode reasonCode)
++        => reasonCode switch
++        {
++            FolderArchiveReasonCode.CallerRequested => "caller_requested",
++            FolderArchiveReasonCode.PolicyRetention => "policy_retention",
++            FolderArchiveReasonCode.OperatorReview => "operator_review",
++            _ => string.Empty,
++        };
++
+     private static bool IsSafePathLabel(string? value)
+         => string.IsNullOrWhiteSpace(value) || FolderStreamName.IsValidSegment(value);
+ 
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs
+index 455f63b..eb685ec 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs
+@@ -3,4 +3,5 @@ namespace Hexalith.Folders.Aggregates.Folder;
+ public enum FolderLifecycleState
+ {
+     Active,
++    Archived,
+ }
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs
+index cec51d6..0a756d8 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs
+@@ -61,6 +61,26 @@ public sealed record FolderResult(
+             events);
+     }
+ 
++    public static FolderResult Accepted(ArchiveFolder command, IReadOnlyList<IFolderEvent> events)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++        ArgumentNullException.ThrowIfNull(events);
++
++        return new(
++            FolderResultCode.Accepted,
++            command.ManagedTenantId,
++            command.OrganizationId,
++            command.FolderId,
++            null,
++            null,
++            null,
++            command.ActorPrincipalId,
++            command.CorrelationId,
++            command.TaskId,
++            command.IdempotencyKey,
++            events);
++    }
++
+     // Validation-rejection paths can carry malformed bytes (the validator may itself
+     // be rejecting because an identifier is malformed). Funnel command fields through
+     // `SafePassthrough` so a result for `MalformedEvidence` cannot echo the unsafe value.
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
+index 9e2570c..3eaa7b4 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
+@@ -6,6 +6,8 @@ public enum FolderResultCode
+     Created,
+     IdempotentReplay,
+     AlreadyApplied,
++    AlreadyArchived,
++    ArchivePolicyDenied,
+     MissingEntry,
+     DuplicateEntry,
+     ConflictingEntry,
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderState.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderState.cs
+index b84e98d..3b63163 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderState.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderState.cs
+@@ -13,6 +13,12 @@ public sealed record FolderState(
+     IReadOnlyList<string> Tags,
+     FolderLifecycleState? LifecycleState,
+     FolderRepositoryBindingState? RepositoryBindingState,
++    FolderArchiveReasonCode? ArchiveReasonCode,
++    string? ArchiveActorPrincipalId,
++    string? ArchiveCorrelationId,
++    string? ArchiveTaskId,
++    string? ArchiveIdempotencyKey,
++    DateTimeOffset? ArchivedAt,
+     IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> AccessOverrides,
+     long AccessSequence,
+     IReadOnlyDictionary<string, string> IdempotencyFingerprints)
+@@ -28,6 +34,12 @@ public sealed record FolderState(
+         [],
+         null,
+         null,
++        null,
++        null,
++        null,
++        null,
++        null,
++        null,
+         FrozenDictionary<FolderAccessEntryKey, FolderAccessOverride>.Empty,
+         0,
+         FrozenDictionary<string, string>.Empty);
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs
+index 01e0a7e..3c7d4f6 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs
+@@ -60,6 +60,17 @@ public static class FolderStateApply
+                 AccessSequence = AdvanceWatermark(state.AccessSequence, revoked.AccessSequence),
+                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
+             },
++            FolderArchived archived => state with
++            {
++                LifecycleState = FolderLifecycleState.Archived,
++                ArchiveReasonCode = archived.ArchiveReasonCode,
++                ArchiveActorPrincipalId = archived.ActorPrincipalId,
++                ArchiveCorrelationId = archived.CorrelationId,
++                ArchiveTaskId = archived.TaskId,
++                ArchiveIdempotencyKey = archived.IdempotencyKey,
++                ArchivedAt = archived.OccurredAt,
++                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
++            },
+             // Unknown event types fail loudly. Silently no-op'ing would let a future event
+             // type poison the idempotency ledger on cold replay against an older code path.
+             _ => throw new InvalidOperationException(
+diff --git a/src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs b/src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs
+index fac4841..acaf5df 100644
+--- a/src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs
++++ b/src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs
+@@ -7,6 +7,7 @@ public static class EffectivePermissionsActionCatalog
+         "configure_provider_binding",
+         "prepare_workspace",
+         "lock_workspace",
++        "archive_folder",
+         "read_metadata",
+         "read_file_content",
+         "mutate_files",
+@@ -28,6 +29,7 @@ public static class EffectivePermissionsActionCatalog
+         ["lock_workspace"] = EffectivePermissionLevel.Write,
+         ["mutate_files"] = EffectivePermissionLevel.Write,
+         ["commit"] = EffectivePermissionLevel.Write,
++        ["archive_folder"] = EffectivePermissionLevel.Administer,
+         ["configure_provider_binding"] = EffectivePermissionLevel.Administer,
+         ["create_folder"] = EffectivePermissionLevel.Administer,
+     };
+diff --git a/src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs b/src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs
+index 641e68e..eaa390f 100644
+--- a/src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs
++++ b/src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs
+@@ -12,4 +12,10 @@ public sealed record FolderListItem(
+     IReadOnlyList<string> Tags,
+     FolderLifecycleState LifecycleState,
+     FolderRepositoryBindingState RepositoryBindingState,
++    FolderArchiveReasonCode? ArchiveReasonCode,
++    string? ArchiveActorPrincipalId,
++    string? ArchiveCorrelationId,
++    string? ArchiveTaskId,
++    string? ArchiveIdempotencyKey,
++    DateTimeOffset? ArchivedAt,
+     long Sequence);
+diff --git a/src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs b/src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs
+index 74f112d..7daa153 100644
+--- a/src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs
++++ b/src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs
+@@ -47,17 +47,41 @@ public sealed record FolderListProjection
+             }
+ 
+             string key = Key(envelope.ManagedTenantId, envelope.Event.FolderId);
+-            folders[key] = new FolderListItem(
+-                envelope.ManagedTenantId,
+-                envelope.Event.OrganizationId,
+-                envelope.Event.FolderId,
+-                envelope.Event.DisplayName,
+-                envelope.Event.Description,
+-                envelope.Event.PathLabel,
+-                CanonicalizeTags(envelope.Event.Tags),
+-                envelope.Event.LifecycleState,
+-                envelope.Event.RepositoryBindingState,
+-                envelope.Sequence);
++            if (envelope.Event is FolderCreated created)
++            {
++                folders[key] = new FolderListItem(
++                    envelope.ManagedTenantId,
++                    created.OrganizationId,
++                    created.FolderId,
++                    created.DisplayName,
++                    created.Description,
++                    created.PathLabel,
++                    CanonicalizeTags(created.Tags),
++                    created.LifecycleState,
++                    created.RepositoryBindingState,
++                    ArchiveReasonCode: null,
++                    ArchiveActorPrincipalId: null,
++                    ArchiveCorrelationId: null,
++                    ArchiveTaskId: null,
++                    ArchiveIdempotencyKey: null,
++                    ArchivedAt: null,
++                    envelope.Sequence);
++            }
++            else if (envelope.Event is FolderArchived archived
++                && folders.TryGetValue(key, out FolderListItem? current))
++            {
++                folders[key] = current with
++                {
++                    LifecycleState = FolderLifecycleState.Archived,
++                    ArchiveReasonCode = archived.ArchiveReasonCode,
++                    ArchiveActorPrincipalId = archived.ActorPrincipalId,
++                    ArchiveCorrelationId = archived.CorrelationId,
++                    ArchiveTaskId = archived.TaskId,
++                    ArchiveIdempotencyKey = archived.IdempotencyKey,
++                    ArchivedAt = archived.OccurredAt,
++                    Sequence = envelope.Sequence,
++                };
++            }
+         }
+ 
+         return new FolderListProjection(folders.ToFrozenDictionary(StringComparer.Ordinal));
+diff --git a/src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs b/src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs
+index 823d60d..25f49d1 100644
+--- a/src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs
++++ b/src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs
+@@ -5,4 +5,4 @@ namespace Hexalith.Folders.Projections.FolderList;
+ public sealed record FolderProjectionEnvelope(
+     string ManagedTenantId,
+     long Sequence,
+-    FolderCreated Event);
++    IFolderEvent Event);
+diff --git a/tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs b/tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs
+new file mode 100644
+index 0000000..275d273
+--- /dev/null
++++ b/tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs
+@@ -0,0 +1,41 @@
++using System.Reflection;
++using Hexalith.Folders.Client.Generated;
++using Newtonsoft.Json;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Client.Tests;
++
++public sealed class ArchiveFolderClientConformanceTests
++{
++    [Fact]
++    public void GeneratedClientExposesArchiveFolderOperationWithRequiredHeaders()
++    {
++        MethodInfo method = typeof(IClient).GetMethods()
++            .Single(method => method.Name == "ArchiveFolderAsync" && method.GetParameters().Length == 6);
++
++        method.ReturnType.ShouldBe(typeof(Task<AcceptedCommand>));
++        method.GetParameters().Select(static parameter => parameter.Name).ToArray()
++            .ShouldBe(["folderId", "idempotency_Key", "x_Correlation_Id", "x_Hexalith_Task_Id", "body", "cancellationToken"]);
++    }
++
++    [Theory]
++    [InlineData(ArchiveFolderRequestArchiveReasonCode.Caller_requested, "caller_requested")]
++    [InlineData(ArchiveFolderRequestArchiveReasonCode.Policy_retention, "policy_retention")]
++    [InlineData(ArchiveFolderRequestArchiveReasonCode.Operator_review, "operator_review")]
++    public void GeneratedArchiveRequestSerializesSupportedReasonCodes(
++        ArchiveFolderRequestArchiveReasonCode reasonCode,
++        string expectedWireValue)
++    {
++        ArchiveFolderRequest request = new()
++        {
++            RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
++            ArchiveReasonCode = reasonCode,
++        };
++
++        string json = JsonConvert.SerializeObject(request);
++
++        json.ShouldContain("\"requestSchemaVersion\":\"v1\"");
++        json.ShouldContain($"\"archiveReasonCode\":\"{expectedWireValue}\"");
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs b/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs
+new file mode 100644
+index 0000000..ca22707
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs
+@@ -0,0 +1,164 @@
++using System.Net;
++using System.Net.Http.Json;
++using System.Text.Json;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Queries;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Server;
++using Hexalith.Folders.Server.Authentication;
++
++using Microsoft.AspNetCore.Builder;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.DependencyInjection.Extensions;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++public sealed class ArchiveFolderEndpointTests
++{
++    [Fact]
++    public async Task ArchiveFolderEndpointShouldSubmitExistingArchiveCommandAndReturnAcceptedShape()
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
++            {
++                Content = JsonContent.Create(new
++                {
++                    requestSchemaVersion = "v1",
++                    archiveReasonCode = "caller_requested",
++                }),
++            };
++            request.Headers.Add("Idempotency-Key", "idempotency-a");
++            request.Headers.Add("X-Correlation-Id", "correlation-a");
++            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
++            response.Headers.GetValues("X-Correlation-Id").Single().ShouldBe("correlation-a");
++            response.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe("task-a");
++            using JsonDocument document = JsonDocument.Parse(
++                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
++            document.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-a");
++            document.RootElement.GetProperty("taskId").GetString().ShouldBe("task-a");
++            document.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
++            document.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
++
++            gateway.Requests.Count.ShouldBe(1);
++            SubmitCommandRequest submitted = gateway.Requests.Single();
++            submitted.MessageId.ShouldBe("idempotency-a");
++            submitted.Tenant.ShouldBe("tenant-a");
++            submitted.Domain.ShouldBe("folders");
++            submitted.AggregateId.ShouldBe("folder-a");
++            submitted.CommandType.ShouldBe("Hexalith.Folders.Commands.ArchiveFolder");
++            submitted.CorrelationId.ShouldBe("correlation-a");
++            submitted.Extensions.ShouldNotBeNull();
++            submitted.Extensions["taskId"].ShouldBe("task-a");
++            submitted.Payload.GetProperty("requestSchemaVersion").GetString().ShouldBe("v1");
++            submitted.Payload.GetProperty("archiveReasonCode").GetString().ShouldBe("caller_requested");
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task ArchiveFolderEndpointShouldRejectMissingIdempotencyKeyBeforeGatewaySubmit()
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
++            {
++                Content = JsonContent.Create(new
++                {
++                    requestSchemaVersion = "v1",
++                    archiveReasonCode = "caller_requested",
++                }),
++            };
++            request.Headers.Add("X-Correlation-Id", "correlation-a");
++            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            gateway.Requests.ShouldBeEmpty();
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    private static async Task<WebApplication> StartAppAsync(
++        RecordingEventStoreGatewayClient gateway,
++        string? tenantId,
++        string? principalId)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
++        {
++            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
++        });
++        builder.Configuration["urls"] = "http://127.0.0.1:0";
++        builder.Services.AddFoldersServer();
++        builder.Services.RemoveAll<IEventStoreGatewayClient>();
++        builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
++        builder.Services.RemoveAll<ITenantContextAccessor>();
++        builder.Services.AddSingleton<ITenantContextAccessor>(new FixedTenantContextAccessor(tenantId, principalId));
++
++        WebApplication app = builder.Build();
++        app.MapFoldersServerEndpoints();
++        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++        return app;
++    }
++
++    private sealed class FixedTenantContextAccessor(string? tenantId, string? principalId) : ITenantContextAccessor
++    {
++        public string? AuthoritativeTenantId { get; } = tenantId;
++
++        public string? PrincipalId { get; } = principalId;
++    }
++
++    private sealed class RecordingEventStoreGatewayClient : IEventStoreGatewayClient
++    {
++        public List<SubmitCommandRequest> Requests { get; } = [];
++
++        public Task<SubmitCommandResponse> SubmitCommandAsync(
++            SubmitCommandRequest request,
++            CancellationToken cancellationToken = default)
++        {
++            Requests.Add(request);
++            return Task.FromResult(new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
++        }
++
++        public Task<EventStoreQueryResult> SubmitQueryAsync(
++            SubmitQueryRequest request,
++            string? ifNoneMatch = null,
++            CancellationToken cancellationToken = default)
++            => throw new NotSupportedException();
++
++        public Task<EventStoreQueryResult<T>> SubmitQueryAsync<T>(
++            SubmitQueryRequest request,
++            string? ifNoneMatch = null,
++            CancellationToken cancellationToken = default)
++            => throw new NotSupportedException();
++
++        public Task<StreamReadPage> ReadStreamAsync(
++            StreamReadRequest request,
++            CancellationToken cancellationToken = default)
++            => throw new NotSupportedException();
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs b/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs
+new file mode 100644
+index 0000000..2938fee
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs
+@@ -0,0 +1,34 @@
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.Folders.Server.Authorization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++public sealed class FolderCommandActionTokenMapperTests
++{
++    [Fact]
++    public void ArchiveFolderCommandShouldMapToArchiveAdminAction()
++    {
++        FolderCommandActionTokenMapper mapper = new();
++
++        FolderCommandActionMapping? mapping = mapper.Map(Command("Hexalith.Folders.Commands.ArchiveFolder"));
++
++        mapping.ShouldNotBeNull();
++        mapping.ActionToken.ShouldBe("archive_folder");
++        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
++    }
++
++    private static CommandEnvelope Command(string commandType)
++        => new(
++            MessageId: "01J00000000000000000000001",
++            TenantId: "tenant-a",
++            Domain: "folders",
++            AggregateId: "folder-a",
++            CommandType: commandType,
++            Payload: [0x01],
++            CorrelationId: "corr-a",
++            CausationId: null,
++            UserId: "user-a",
++            Extensions: null);
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs b/tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs
+index bc64eeb..171a7fb 100644
+--- a/tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs
+@@ -46,6 +46,7 @@ public sealed class ServerEndpointRegistrationTests
+         routes.ShouldContain("/");
+         routes.ShouldContain("/process");
+         routes.ShouldContain("/project");
++        routes.ShouldContain("/api/v1/folders/{folderId}/archive");
+         routes.ShouldContain("/tenants/events");
+         routes.ShouldContain("dapr/subscribe");
+     }
+diff --git a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+index 905ff3e..dfe328f 100644
+--- a/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
++++ b/tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
+@@ -31,6 +31,7 @@ public sealed class ScaffoldContractTests
+         "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+         "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+         "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
++        "tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj",
+         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+@@ -116,6 +117,7 @@ public sealed class ScaffoldContractTests
+         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
++        AssertReferences(references, "Hexalith.Folders.UI.E2E.Tests", ["Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
+         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs
+new file mode 100644
+index 0000000..ba7f637
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs
+@@ -0,0 +1,159 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Authorization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Folder;
++
++public sealed class FolderArchiveAuthorizationGateTests
++{
++    [Theory]
++    [InlineData(TenantAccessOutcome.Denied, FolderResultCode.TenantAccessDenied)]
++    [InlineData(TenantAccessOutcome.StaleProjection, FolderResultCode.StaleProjection)]
++    [InlineData(TenantAccessOutcome.UnavailableProjection, FolderResultCode.UnavailableProjection)]
++    [InlineData(TenantAccessOutcome.UnknownTenant, FolderResultCode.UnknownTenant)]
++    [InlineData(TenantAccessOutcome.DisabledTenant, FolderResultCode.DisabledTenant)]
++    [InlineData(TenantAccessOutcome.MalformedEvidence, FolderResultCode.MalformedEvidence)]
++    [InlineData(TenantAccessOutcome.TenantMismatch, FolderResultCode.TenantMismatch)]
++    [InlineData(TenantAccessOutcome.MissingAuthoritativeTenant, FolderResultCode.MissingAuthoritativeTenant)]
++    [InlineData(TenantAccessOutcome.ReplayConflict, FolderResultCode.ReplayConflict)]
++    public void RejectedTenantEvidenceShouldPreventArchiveObservation(
++        TenantAccessOutcome outcome,
++        FolderResultCode expectedCode)
++    {
++        RecordingFolderRepository repository = new();
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(),
++            Evidence(outcome),
++            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
++            FolderArchivePolicyEvidence.Allowed("tenant-a", "folder-a", "policy-v1"));
++
++        result.Code.ShouldBe(expectedCode);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.IdempotencyLookups.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.AppendsAttempted.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++        repository.DiagnosticsQueried.ShouldBe(0);
++        repository.AuditResourcesQueried.ShouldBe(0);
++        repository.ProviderReadinessChecked.ShouldBe(0);
++        repository.RepositoriesCreated.ShouldBe(0);
++    }
++
++    [Fact]
++    public void ClientControlledTenantMismatchShouldRejectBeforeStreamConstruction()
++    {
++        RecordingFolderRepository repository = new();
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(payloadTenantId: "tenant-from-payload"),
++            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
++            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
++            FolderArchivePolicyEvidence.Allowed("tenant-a", "folder-a", "policy-v1"));
++
++        result.Code.ShouldBe(FolderResultCode.TenantMismatch);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.AppendsAttempted.ShouldBe(0);
++    }
++
++    [Fact]
++    public void AclDeniedShouldRejectBeforeStreamConstruction()
++    {
++        RecordingFolderRepository repository = new();
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(),
++            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
++            FolderArchiveAclEvidence.Denied("tenant-a", "organization-a", "folder-a", "principal-a"),
++            FolderArchivePolicyEvidence.Allowed("tenant-a", "folder-a", "policy-v1"));
++
++        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.AppendsAttempted.ShouldBe(0);
++    }
++
++    [Fact]
++    public void AllowedAclEvidenceForDifferentPrincipalShouldFailClosedBeforeStreamConstruction()
++    {
++        RecordingFolderRepository repository = new();
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(),
++            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
++            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-b"),
++            FolderArchivePolicyEvidence.Allowed("tenant-a", "folder-a", "policy-v1"));
++
++        result.Code.ShouldBe(FolderResultCode.AclEvidenceUnavailable);
++        repository.StreamNamesConstructed.ShouldBe(0);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.AppendsAttempted.ShouldBe(0);
++    }
++
++    [Fact]
++    public void PolicyDeniedShouldLeaveLifecycleStateUnchangedWithoutAppend()
++    {
++        RecordingFolderRepository repository = SeededRepository();
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(),
++            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
++            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
++            FolderArchivePolicyEvidence.Denied("tenant-a", "folder-a", "policy-v1"));
++
++        result.Code.ShouldBe(FolderResultCode.ArchivePolicyDenied);
++        result.Events.ShouldBeEmpty();
++        repository.StreamNamesConstructed.ShouldBe(1);
++        repository.StreamsLoaded.ShouldBe(1);
++        repository.AppendsAttempted.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++    }
++
++    [Fact]
++    public void PolicyEvidenceForDifferentTenantShouldFailClosedWithoutAppend()
++    {
++        RecordingFolderRepository repository = SeededRepository();
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(),
++            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
++            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
++            FolderArchivePolicyEvidence.Allowed("tenant-b", "folder-a", "policy-v1"));
++
++        result.Code.ShouldBe(FolderResultCode.AclEvidenceUnavailable);
++        result.Events.ShouldBeEmpty();
++        repository.StreamsLoaded.ShouldBe(1);
++        repository.AppendsAttempted.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++    }
++
++    private static RecordingFolderRepository SeededRepository()
++    {
++        RecordingFolderRepository repository = new();
++        FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
++        FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
++        repository.Seed(streamName, created.Events);
++        return repository;
++    }
++
++    private static TenantAccessAuthorizationResult Evidence(
++        TenantAccessOutcome outcome,
++        string? tenantId = "tenant-a")
++        => new(
++            outcome,
++            outcome == TenantAccessOutcome.Allowed ? "allowed" : "denied",
++            tenantId,
++            tenantId is null ? null : $"{tenantId}:7",
++            new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero),
++            TimeSpan.FromMinutes(1),
++            TenantProjectionFreshnessStatus.Fresh,
++            "local-projection");
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs
+new file mode 100644
+index 0000000..f7c62d5
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs
+@@ -0,0 +1,79 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Folder;
++
++public sealed class FolderArchiveCommandValidationTests
++{
++    [Fact]
++    public void ArchiveFolderShouldEmitMetadataOnlyArchivedEventForActiveFolder()
++    {
++        FolderState state = CreatedState();
++        ArchiveFolder command = FolderCommandFactory.Archive();
++
++        FolderResult result = FolderAggregate.Handle(state, command);
++
++        result.Code.ShouldBe(FolderResultCode.Accepted);
++        result.Events.Count.ShouldBe(1);
++        FolderArchived archived = result.Events.OfType<FolderArchived>().Single();
++        archived.ManagedTenantId.ShouldBe("tenant-a");
++        archived.OrganizationId.ShouldBe("organization-a");
++        archived.FolderId.ShouldBe("folder-a");
++        archived.ArchiveReasonCode.ShouldBe(FolderArchiveReasonCode.CallerRequested);
++        archived.ActorPrincipalId.ShouldBe("principal-a");
++        archived.CorrelationId.ShouldBe("correlation-a");
++        archived.TaskId.ShouldBe("task-a");
++        archived.IdempotencyKey.ShouldBe("idempotency-archive-a");
++    }
++
++    [Fact]
++    public void ArchivedFolderStateShouldReplayAsArchivedWithReasonEvidence()
++    {
++        FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
++        FolderState active = CreatedState();
++        FolderResult archived = FolderAggregate.Handle(active, FolderCommandFactory.Archive());
++
++        FolderState state = active.Apply(archived.Events, streamName);
++
++        state.LifecycleState.ShouldBe(FolderLifecycleState.Archived);
++        state.ArchiveReasonCode.ShouldBe(FolderArchiveReasonCode.CallerRequested);
++    }
++
++    [Theory]
++    [InlineData("v2", "caller_requested")]
++    [InlineData("v1", "unsupported_reason")]
++    [InlineData("v1", " caller_requested")]
++    public void UnsupportedArchiveSchemaOrReasonShouldRejectBeforeEvents(
++        string requestSchemaVersion,
++        string archiveReasonCode)
++    {
++        FolderResult result = FolderAggregate.Handle(
++            CreatedState(),
++            FolderCommandFactory.Archive(
++                requestSchemaVersion: requestSchemaVersion,
++                archiveReasonCode: archiveReasonCode));
++
++        result.Code.ShouldBe(FolderResultCode.ValidationFailed);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void ArchiveFingerprintShouldIncludeReasonCodeAndSchema()
++    {
++        FolderCommandValidationResult callerRequested = FolderCommandValidator.Validate(
++            FolderCommandFactory.Archive(archiveReasonCode: "caller_requested"));
++        FolderCommandValidationResult operatorReview = FolderCommandValidator.Validate(
++            FolderCommandFactory.Archive(archiveReasonCode: "operator_review"));
++
++        callerRequested.IsAccepted.ShouldBeTrue();
++        operatorReview.IsAccepted.ShouldBeTrue();
++        callerRequested.IdempotencyFingerprint.ShouldNotBe(operatorReview.IdempotencyFingerprint);
++    }
++
++    private static FolderState CreatedState()
++    {
++        FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
++        return FolderState.Empty.Apply(created.Events, FolderStreamName.Create("tenant-a", "folder-a"));
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs
+new file mode 100644
+index 0000000..9fa137a
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs
+@@ -0,0 +1,136 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Authorization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Folder;
++
++public sealed class FolderArchiveIdempotencyTests
++{
++    [Fact]
++    public void EquivalentReplayShouldReturnIdempotentReplayWithoutDuplicateArchiveEvent()
++    {
++        RecordingFolderRepository repository = SeededRepository();
++        FolderArchiveTenantGate gate = new(repository);
++        ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
++
++        FolderResult first = gate.Handle(command, TenantEvidence(), AclEvidence(), PolicyEvidence());
++        FolderResult second = gate.Handle(command, TenantEvidence(), AclEvidence(), PolicyEvidence());
++
++        first.Code.ShouldBe(FolderResultCode.Accepted);
++        second.Code.ShouldBe(FolderResultCode.IdempotentReplay);
++        repository.EventsAppended.ShouldBe(1);
++    }
++
++    [Fact]
++    public void SameKeyWithDifferentArchiveReasonShouldRejectAsConflictBeforeLoad()
++    {
++        RecordingFolderRepository repository = SeededRepository();
++        ArchiveFolder original = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", archiveReasonCode: "caller_requested");
++        FolderCommandValidationResult validation = FolderCommandValidator.Validate(original);
++        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-archive-a", validation.IdempotencyFingerprint!);
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(
++            FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", archiveReasonCode: "operator_review"),
++            TenantEvidence(),
++            AclEvidence(),
++            PolicyEvidence());
++
++        result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
++        repository.StreamsLoaded.ShouldBe(0);
++        repository.AppendsAttempted.ShouldBe(0);
++        repository.EventsAppended.ShouldBe(0);
++    }
++
++    [Fact]
++    public void AppendConflictShouldRereadAndReturnIdempotentReplayWhenRacingEquivalentArchiveWon()
++    {
++        RecordingFolderRepository repository = SeededRepository();
++        ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
++        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
++        repository.SimulateAppendConflict = true;
++        repository.ConcurrentAppendEvents =
++        [
++            new FolderArchived(
++                "tenant-a",
++                "organization-a",
++                "folder-a",
++                validation.ArchiveReasonCode!.Value,
++                "principal-a",
++                "correlation-a",
++                "task-a",
++                "idempotency-archive-a",
++                validation.IdempotencyFingerprint!,
++                new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero)),
++        ];
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult result = gate.Handle(command, TenantEvidence(), AclEvidence(), PolicyEvidence());
++
++        result.Code.ShouldBe(FolderResultCode.IdempotentReplay);
++        repository.EventsAppended.ShouldBe(0);
++        repository.ConcurrentEventsApplied.ShouldBe(1);
++    }
++
++    [Fact]
++    public void SameOpaqueFolderIdInDifferentTenantsShouldUseDifferentArchiveLedgerKeys()
++    {
++        RecordingFolderRepository repository = new();
++        Seed(repository, "tenant-a", "folder-shared");
++        Seed(repository, "tenant-b", "folder-shared");
++        FolderArchiveTenantGate gate = new(repository);
++
++        FolderResult first = gate.Handle(
++            FolderCommandFactory.Archive(folderId: "folder-shared", idempotencyKey: "idempotency-archive-a"),
++            TenantEvidence("tenant-a"),
++            AclEvidence("tenant-a", "folder-shared"),
++            PolicyEvidence("tenant-a", "folder-shared"));
++        string? firstKey = repository.LastDurableKey;
++
++        FolderResult second = gate.Handle(
++            FolderCommandFactory.Archive(managedTenantId: "tenant-b", folderId: "folder-shared", idempotencyKey: "idempotency-archive-a"),
++            TenantEvidence("tenant-b"),
++            AclEvidence("tenant-b", "folder-shared"),
++            PolicyEvidence("tenant-b", "folder-shared"));
++        string? secondKey = repository.LastDurableKey;
++
++        first.Code.ShouldBe(FolderResultCode.Accepted);
++        second.Code.ShouldBe(FolderResultCode.Accepted);
++        firstKey.ShouldBe("tenant-a:folders:folder-shared|idempotency-archive-a");
++        secondKey.ShouldBe("tenant-b:folders:folder-shared|idempotency-archive-a");
++    }
++
++    private static RecordingFolderRepository SeededRepository()
++    {
++        RecordingFolderRepository repository = new();
++        Seed(repository, "tenant-a", "folder-a");
++        return repository;
++    }
++
++    private static void Seed(RecordingFolderRepository repository, string tenantId, string folderId)
++    {
++        FolderStreamName streamName = FolderStreamName.Create(tenantId, folderId);
++        FolderResult created = FolderAggregate.Handle(
++            FolderState.Empty,
++            FolderCommandFactory.Create(managedTenantId: tenantId, folderId: folderId));
++        repository.Seed(streamName, created.Events);
++    }
++
++    private static TenantAccessAuthorizationResult TenantEvidence(string tenantId = "tenant-a")
++        => new(
++            TenantAccessOutcome.Allowed,
++            "allowed",
++            tenantId,
++            $"{tenantId}:7",
++            new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero),
++            TimeSpan.FromMinutes(1),
++            TenantProjectionFreshnessStatus.Fresh,
++            "local-projection");
++
++    private static FolderArchiveAclEvidence AclEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
++        => FolderArchiveAclEvidence.Allowed(tenantId, "organization-a", folderId, "principal-a");
++
++    private static FolderArchivePolicyEvidence PolicyEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
++        => FolderArchivePolicyEvidence.Allowed(tenantId, folderId, "policy-v1");
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+new file mode 100644
+index 0000000..28f8410
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+@@ -0,0 +1,56 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Folder;
++
++public sealed class FolderArchiveMetadataLeakageTests
++{
++    [Theory]
++    [InlineData("github_pat_credential_material")]
++    [InlineData("principal-token")]
++    [InlineData("principal@example.com")]
++    public void UnsafeActorEvidenceShouldRejectWithoutEchoingUnsafeIdentifier(string unsafeActor)
++    {
++        FolderResult result = FolderAggregate.Handle(
++            CreatedState(),
++            FolderCommandFactory.Archive(actorPrincipalId: unsafeActor));
++
++        result.Code.ShouldBe(FolderResultCode.MalformedEvidence);
++        result.ActorPrincipalId.ShouldBeNull();
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void AcceptedArchiveEventShouldCarryOnlyMetadataEvidence()
++    {
++        FolderResult result = FolderAggregate.Handle(CreatedState(), FolderCommandFactory.Archive());
++
++        FolderArchived archived = result.Events.OfType<FolderArchived>().Single();
++        string serialized = string.Join(
++            '|',
++            archived.ManagedTenantId,
++            archived.OrganizationId,
++            archived.FolderId,
++            archived.ArchiveReasonCode,
++            archived.ActorPrincipalId,
++            archived.CorrelationId,
++            archived.TaskId,
++            archived.IdempotencyKey);
++
++        serialized.ShouldNotContain("token", Case.Insensitive);
++        serialized.ShouldNotContain("secret", Case.Insensitive);
++        serialized.ShouldNotContain("credential", Case.Insensitive);
++        serialized.ShouldNotContain("repository", Case.Insensitive);
++        serialized.ShouldNotContain("diff --git", Case.Insensitive);
++        serialized.ShouldNotContain("://", Case.Sensitive);
++        serialized.ShouldNotContain("\\", Case.Sensitive);
++        serialized.ShouldNotContain("/", Case.Sensitive);
++    }
++
++    private static FolderState CreatedState()
++    {
++        FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
++        return FolderState.Empty.Apply(created.Events, FolderStreamName.Create("tenant-a", "folder-a"));
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs
+new file mode 100644
+index 0000000..c7b5190
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs
+@@ -0,0 +1,86 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Aggregates.Folder;
++
++public sealed class FolderArchiveStateTransitionTests
++{
++    [Fact]
++    public void AlreadyArchivedFolderWithDifferentIdempotencyKeyShouldReturnStableStateResult()
++    {
++        FolderState archived = ArchivedState();
++
++        FolderResult result = FolderAggregate.Handle(
++            archived,
++            FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-b"));
++
++        result.Code.ShouldBe(FolderResultCode.AlreadyArchived);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void AccessMutationAgainstArchivedFolderShouldRejectBeforeEvents()
++    {
++        FolderState archived = ArchivedState();
++
++        FolderResult result = FolderAggregate.Handle(
++            archived,
++            FolderCommandFactory.GrantAccess(idempotencyKey: "idempotency-access-archived"));
++
++        result.Code.ShouldBe(FolderResultCode.AlreadyArchived);
++        result.Events.ShouldBeEmpty();
++    }
++
++    [Fact]
++    public void ForeignArchiveEventShouldRejectDuringReplay()
++    {
++        FolderState active = CreatedState();
++        FolderArchived foreign = new(
++            "tenant-b",
++            "organization-a",
++            "folder-a",
++            FolderArchiveReasonCode.CallerRequested,
++            "principal-a",
++            "correlation-a",
++            "task-a",
++            "idempotency-archive-a",
++            "fingerprint-a",
++            new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero));
++
++        InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
++            active.Apply([foreign], FolderStreamName.Create("tenant-a", "folder-a")));
++
++        exception.Message.ShouldContain(FolderResultCode.TenantMismatch.ToString());
++    }
++
++    [Theory]
++    [InlineData(FolderActiveMutationCategory.FolderMetadata)]
++    [InlineData(FolderActiveMutationCategory.FolderAcl)]
++    [InlineData(FolderActiveMutationCategory.RepositoryBinding)]
++    [InlineData(FolderActiveMutationCategory.Workspace)]
++    [InlineData(FolderActiveMutationCategory.Lock)]
++    [InlineData(FolderActiveMutationCategory.File)]
++    [InlineData(FolderActiveMutationCategory.Commit)]
++    [InlineData(FolderActiveMutationCategory.BranchRef)]
++    [InlineData(FolderActiveMutationCategory.Provider)]
++    [InlineData(FolderActiveMutationCategory.Task)]
++    public void ActiveOnlyMutationGuardShouldRejectArchivedFolders(FolderActiveMutationCategory category)
++    {
++        FolderActiveMutationGuard.Evaluate(ArchivedState(), category).ShouldBe(FolderResultCode.AlreadyArchived);
++    }
++
++    private static FolderState CreatedState()
++    {
++        FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
++        return FolderState.Empty.Apply(created.Events, FolderStreamName.Create("tenant-a", "folder-a"));
++    }
++
++    private static FolderState ArchivedState()
++    {
++        FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
++        FolderState active = CreatedState();
++        FolderResult archived = FolderAggregate.Handle(active, FolderCommandFactory.Archive());
++        return active.Apply(archived.Events, streamName);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs
+index e89a42c..5fbe90b 100644
+--- a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs
+@@ -89,4 +89,29 @@ internal static class FolderCommandFactory
+             idempotencyKey,
+             payloadTenantId,
+             clientTenantIds);
++
++    public static ArchiveFolder Archive(
++        string managedTenantId = "tenant-a",
++        string organizationId = "organization-a",
++        string folderId = "folder-a",
++        string requestSchemaVersion = "v1",
++        string archiveReasonCode = "caller_requested",
++        string actorPrincipalId = "principal-a",
++        string correlationId = "correlation-a",
++        string taskId = "task-a",
++        string idempotencyKey = "idempotency-archive-a",
++        string? payloadTenantId = null,
++        IReadOnlyDictionary<string, string?>? clientTenantIds = null)
++        => new(
++            managedTenantId,
++            organizationId,
++            folderId,
++            requestSchemaVersion,
++            archiveReasonCode,
++            actorPrincipalId,
++            correlationId,
++            taskId,
++            idempotencyKey,
++            payloadTenantId,
++            clientTenantIds);
+ }
+diff --git a/tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs b/tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs
+new file mode 100644
+index 0000000..850d462
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs
+@@ -0,0 +1,18 @@
++using Hexalith.Folders.Authorization;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Authorization;
++
++public sealed class ArchiveActionCatalogTests
++{
++    [Fact]
++    public void ArchiveFolderActionShouldRequireAdministerPermission()
++    {
++        EffectivePermissionsActionCatalog.IsSupported("archive_folder").ShouldBeTrue();
++
++        IReadOnlyList<EffectivePermissionLevel> levels = EffectivePermissionsActionCatalog.ToPermissionLevels(["archive_folder"]);
++
++        levels.ShouldBe([EffectivePermissionLevel.Administer]);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs b/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs
+new file mode 100644
+index 0000000..2c1dc6e
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs
+@@ -0,0 +1,72 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Projections.FolderList;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Projections.FolderList;
++
++public sealed class FolderArchiveProjectionReplayTests
++{
++    [Fact]
++    public void ProjectionShouldPreserveMetadataAndMarkFolderArchived()
++    {
++        FolderListProjection projection = FolderListProjection.Empty.Apply(
++            [
++                new FolderProjectionEnvelope("tenant-a", 1, Created("tenant-a", "folder-a")),
++                new FolderProjectionEnvelope("tenant-a", 2, Archived("tenant-a", "folder-a")),
++            ]);
++
++        FolderListItem item = projection.Get("tenant-a", "folder-a").ShouldNotBeNull();
++        item.DisplayName.ShouldBe("Folder A");
++        item.LifecycleState.ShouldBe(FolderLifecycleState.Archived);
++        item.ArchiveReasonCode.ShouldBe(FolderArchiveReasonCode.CallerRequested);
++        item.ArchiveCorrelationId.ShouldBe("correlation-archive-a");
++        item.ArchiveTaskId.ShouldBe("task-archive-a");
++        item.Sequence.ShouldBe(2);
++    }
++
++    [Fact]
++    public void ProjectionShouldSkipArchiveEventWhenEnvelopeTenantDisagreesWithEventTenant()
++    {
++        FolderListProjection projection = FolderListProjection.Empty.Apply(
++            [
++                new FolderProjectionEnvelope("tenant-a", 1, Created("tenant-a", "folder-a")),
++                new FolderProjectionEnvelope("tenant-a", 2, Archived("tenant-b", "folder-a")),
++            ]);
++
++        FolderListItem item = projection.Get("tenant-a", "folder-a").ShouldNotBeNull();
++        item.LifecycleState.ShouldBe(FolderLifecycleState.Active);
++        item.ArchiveReasonCode.ShouldBeNull();
++    }
++
++    private static FolderCreated Created(string tenantId, string folderId)
++        => new(
++            tenantId,
++            "organization-a",
++            folderId,
++            "Folder A",
++            "safe description",
++            "folder-a",
++            ["alpha"],
++            FolderLifecycleState.Active,
++            FolderRepositoryBindingState.Unbound,
++            "principal-a",
++            "correlation-a",
++            "task-a",
++            "idempotency-a",
++            $"fingerprint-{tenantId}-{folderId}",
++            new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero));
++
++    private static FolderArchived Archived(string tenantId, string folderId)
++        => new(
++            tenantId,
++            "organization-a",
++            folderId,
++            FolderArchiveReasonCode.CallerRequested,
++            "principal-a",
++            "correlation-archive-a",
++            "task-archive-a",
++            "idempotency-archive-a",
++            $"fingerprint-archive-{tenantId}-{folderId}",
++            new DateTimeOffset(2026, 5, 20, 8, 30, 0, TimeSpan.Zero));
++}
+diff --git a/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs
+index 8f7a203..47ec8c3 100644
+--- a/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs
+@@ -39,6 +39,29 @@ public sealed class FolderLifecycleStatusProjectionTests
+         result.ProviderBindingRef.ShouldBe("provider_binding_opaque_safe");
+     }
+ 
++    [Fact]
++    public async Task ArchivedFolderReturnsInaccessibleArchivedStatusWithFreshnessEvidence()
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
++            "tenant-a",
++            "folder-a",
++            FolderLifecycleProjectionState.Archived,
++            FolderRepositoryBindingStatus.Unbound,
++            evidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(),
++            diagnosticSentinels: []);
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        result.LifecycleState.ShouldBe("inaccessible");
++        result.Archived.ShouldBeTrue();
++        result.FolderId.ShouldBe("folder-a");
++        result.Freshness.ProjectionWatermark.ShouldBe(FolderLifecycleStatusTestSupport.LifecycleWatermark);
++        result.CorrelationId.ShouldBe("corr-a");
++        result.TaskId.ShouldBe("task-a");
++    }
++
+     [Theory]
+     [InlineData(FolderRepositoryBindingStatus.BindingRequested, "requested")]
+     [InlineData(FolderRepositoryBindingStatus.Failed, "failed")]

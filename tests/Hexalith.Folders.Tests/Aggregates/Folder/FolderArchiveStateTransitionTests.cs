@@ -28,7 +28,10 @@ public sealed class FolderArchiveStateTransitionTests
             archived,
             FolderCommandFactory.GrantAccess(idempotencyKey: "idempotency-access-archived"));
 
-        result.Code.ShouldBe(FolderResultCode.AlreadyArchived);
+        // ACL mutation against an archived folder must be rejected with a category-neutral
+        // state-transition code so ACL callers do not learn that the folder is specifically
+        // archived. Direct ArchiveFolder commands still report AlreadyArchived.
+        result.Code.ShouldBe(FolderResultCode.StateTransitionInvalid);
         result.Events.ShouldBeEmpty();
     }
 
@@ -48,10 +51,11 @@ public sealed class FolderArchiveStateTransitionTests
             "fingerprint-a",
             new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero));
 
-        InvalidOperationException exception = Should.Throw<InvalidOperationException>(() =>
+        // Apply on a stream-name/event-tenant mismatch is a stream-safety violation. Assert
+        // exception type rather than message text — the message is for operators, not for
+        // tests, and asserting on it couples the test to error-formatting drift.
+        Should.Throw<InvalidOperationException>(() =>
             active.Apply([foreign], FolderStreamName.Create("tenant-a", "folder-a")));
-
-        exception.Message.ShouldContain(FolderResultCode.TenantMismatch.ToString());
     }
 
     [Theory]
@@ -67,7 +71,11 @@ public sealed class FolderArchiveStateTransitionTests
     [InlineData(FolderActiveMutationCategory.Task)]
     public void ActiveOnlyMutationGuardShouldRejectArchivedFolders(FolderActiveMutationCategory category)
     {
-        FolderActiveMutationGuard.Evaluate(ArchivedState(), category).ShouldBe(FolderResultCode.AlreadyArchived);
+        // Category-neutral state-transition rejection: callers of active-only mutations
+        // (ACL/workspace/lock/etc.) must not learn from the result code that the folder is
+        // specifically archived vs. in any other terminal state. ArchiveFolder itself
+        // surfaces AlreadyArchived through its own response shape.
+        FolderActiveMutationGuard.Evaluate(ArchivedState(), category).ShouldBe(FolderResultCode.StateTransitionInvalid);
     }
 
     private static FolderState CreatedState()

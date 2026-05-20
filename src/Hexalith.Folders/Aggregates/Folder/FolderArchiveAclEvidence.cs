@@ -12,12 +12,37 @@ public sealed record FolderArchiveAclEvidence
         string? principalId,
         string action)
     {
-        if (outcome == FolderArchiveAclOutcome.Allowed
-            && !string.Equals(action, ArchiveAction, StringComparison.Ordinal))
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (outcome == FolderArchiveAclOutcome.Allowed)
         {
-            throw new ArgumentException(
-                $"Allowed FolderArchiveAclEvidence must carry the archive action '{ArchiveAction}'.",
-                nameof(action));
+            if (!string.Equals(action, ArchiveAction, StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    $"Allowed FolderArchiveAclEvidence must carry the archive action '{ArchiveAction}'.",
+                    nameof(action));
+            }
+
+            if (string.IsNullOrWhiteSpace(managedTenantId))
+            {
+                throw new ArgumentException(
+                    "Allowed FolderArchiveAclEvidence must carry a non-empty managedTenantId.",
+                    nameof(managedTenantId));
+            }
+
+            if (string.IsNullOrWhiteSpace(folderId))
+            {
+                throw new ArgumentException(
+                    "Allowed FolderArchiveAclEvidence must carry a non-empty folderId.",
+                    nameof(folderId));
+            }
+
+            if (string.IsNullOrWhiteSpace(principalId))
+            {
+                throw new ArgumentException(
+                    "Allowed FolderArchiveAclEvidence must carry a non-empty principalId.",
+                    nameof(principalId));
+            }
         }
 
         Outcome = outcome;

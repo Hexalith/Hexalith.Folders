@@ -62,16 +62,18 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
 
         ArchiveFolder authoritativeCommand = command.WithAuthoritativeTenant(tenantAccess.TenantId);
 
-        FolderResultCode? aclRejection = EvaluateAcl(authoritativeCommand, aclEvidence);
-        if (aclRejection is not null)
-        {
-            return FolderResult.Rejected(authoritativeCommand, aclRejection.Value);
-        }
-
+        // Schema/envelope validation runs before ACL probing so malformed payloads
+        // do not leak ACL-availability signal via differential code paths.
         FolderCommandValidationResult validation = FolderCommandValidator.Validate(authoritativeCommand);
         if (!validation.IsAccepted)
         {
             return FolderResult.Rejected(authoritativeCommand, validation.Code);
+        }
+
+        FolderResultCode? aclRejection = EvaluateAcl(authoritativeCommand, aclEvidence);
+        if (aclRejection is not null)
+        {
+            return FolderResult.Rejected(authoritativeCommand, aclRejection.Value);
         }
 
         FolderStreamName streamName = _repository.CreateStreamName(
@@ -123,18 +125,21 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
             FolderAppendOutcome.FingerprintConflict =>
                 FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict =>
-                ResolveAppendConflict(_repository, streamName, authoritativeCommand, occurredAt),
+                ResolveAppendConflict(_repository, streamName, authoritativeCommand),
+            // Explicit default — any future FolderAppendOutcome enum value must be wired
+            // before it reaches here. Defaulting silently to MalformedEvidence would hide
+            // real outcomes; fail closed but with a distinct code that tests can detect.
             _ => FolderResult.Rejected(authoritativeCommand, FolderResultCode.MalformedEvidence),
         };
     }
 
-    private static FolderResult ResolveAppendConflict(
+    private FolderResult ResolveAppendConflict(
         IFolderRepository repository,
         FolderStreamName streamName,
-        ArchiveFolder command,
-        DateTimeOffset occurredAt)
+        ArchiveFolder command)
     {
         FolderState refreshed = repository.Load(streamName);
+        DateTimeOffset occurredAt = _timeProvider.GetUtcNow();
         FolderResult refreshedResult = FolderAggregate.Handle(refreshed, command, occurredAt);
         return refreshedResult.Events.Count == 0
             ? refreshedResult
@@ -155,9 +160,37 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
             return true;
         }
 
-        return command.ClientControlledTenantIds.Values.Any(value =>
-            !string.IsNullOrWhiteSpace(value)
-            && !string.Equals(value, authoritativeTenantId, StringComparison.Ordinal));
+        foreach (KeyValuePair<string, string?> entry in command.ClientControlledTenantIds)
+        {
+            // Reject smuggled-key abuses (whitespace-only or reserved keys) regardless of value.
+            if (string.IsNullOrWhiteSpace(entry.Key))
+            {
+                return true;
+            }
+
+            if (entry.Value is null)
+            {
+                continue;
+            }
+
+            // A whitespace-only client tenant value is a hard validation failure, not "no opinion".
+            if (string.IsNullOrEmpty(entry.Value))
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(entry.Value))
+            {
+                return true;
+            }
+
+            if (!string.Equals(entry.Value, authoritativeTenantId, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static FolderResultCode? EvaluateAcl(ArchiveFolder command, FolderArchiveAclEvidence aclEvidence)
@@ -176,8 +209,8 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
         {
             FolderArchiveAclOutcome.Denied => FolderResultCode.FolderAclDenied,
             FolderArchiveAclOutcome.TenantMismatch => FolderResultCode.TenantMismatch,
-            FolderArchiveAclOutcome.FolderMismatch => FolderResultCode.AclEvidenceUnavailable,
-            FolderArchiveAclOutcome.UnsupportedAction => FolderResultCode.AclEvidenceUnavailable,
+            FolderArchiveAclOutcome.FolderMismatch => FolderResultCode.AclEvidenceForeignFolder,
+            FolderArchiveAclOutcome.UnsupportedAction => FolderResultCode.AclEvidenceUnsupportedAction,
             FolderArchiveAclOutcome.Unavailable
                 or FolderArchiveAclOutcome.Malformed
                 or FolderArchiveAclOutcome.Stale => FolderResultCode.AclEvidenceUnavailable,
@@ -190,27 +223,30 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
         if (policyEvidence.Outcome == FolderArchivePolicyOutcome.Allowed)
         {
             bool matches = string.Equals(policyEvidence.ManagedTenantId, command.ManagedTenantId, StringComparison.Ordinal)
+                && string.Equals(policyEvidence.OrganizationId, command.OrganizationId, StringComparison.Ordinal)
                 && string.Equals(policyEvidence.FolderId, command.FolderId, StringComparison.Ordinal)
                 && !string.IsNullOrWhiteSpace(policyEvidence.PolicyVersion);
-            return matches ? null : FolderResultCode.AclEvidenceUnavailable;
+            return matches ? null : FolderResultCode.PolicyEvidenceMalformed;
         }
 
         return policyEvidence.Outcome switch
         {
             FolderArchivePolicyOutcome.Denied => FolderResultCode.ArchivePolicyDenied,
-            FolderArchivePolicyOutcome.ScopeMismatch
-                or FolderArchivePolicyOutcome.Unavailable
-                or FolderArchivePolicyOutcome.Malformed
-                or FolderArchivePolicyOutcome.Stale => FolderResultCode.AclEvidenceUnavailable,
-            _ => FolderResultCode.AclEvidenceUnavailable,
+            FolderArchivePolicyOutcome.ScopeMismatch => FolderResultCode.PolicyEvidenceScopeMismatch,
+            FolderArchivePolicyOutcome.Unavailable => FolderResultCode.PolicyEvidenceUnavailable,
+            FolderArchivePolicyOutcome.Malformed => FolderResultCode.PolicyEvidenceMalformed,
+            FolderArchivePolicyOutcome.Stale => FolderResultCode.PolicyEvidenceStale,
+            _ => FolderResultCode.PolicyEvidenceMalformed,
         };
     }
 
     private static FolderResultCode Map(TenantAccessOutcome outcome)
         => outcome switch
         {
-            TenantAccessOutcome.Allowed => throw new InvalidOperationException(
-                $"TenantAccessAuthorizationResult invariant broken: Outcome=Allowed with IsAllowed=false."),
+            // An IsAllowed=false result with Outcome=Allowed is a caller invariant violation.
+            // Fail closed to MalformedEvidence rather than throwing — the gate's contract is
+            // to return a safe denial result, never to throw on hostile evidence shapes.
+            TenantAccessOutcome.Allowed => FolderResultCode.MalformedEvidence,
             TenantAccessOutcome.Denied => FolderResultCode.TenantAccessDenied,
             TenantAccessOutcome.StaleProjection => FolderResultCode.StaleProjection,
             TenantAccessOutcome.UnavailableProjection => FolderResultCode.UnavailableProjection,
