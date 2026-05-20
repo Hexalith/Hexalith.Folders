@@ -19,6 +19,7 @@ so that tenants can create and bind GitHub repositories through the canonical pr
 - GitHub credential reference means an opaque non-secret reference. This story may request a credential through the approved credential seam only after authorization succeeds, but it must never persist, log, project, return, compare, or snapshot token material.
 - Canonical provider result means the internal Folders provider result/failure taxonomy from Story 3.2, not raw Octokit exception text or GitHub response bodies.
 - Unknown provider outcome means GitHub accepted, may have accepted, or timed out during an operation where safe retry could duplicate a repository, branch/ref mutation, file change, commit, audit, or readiness state.
+- GitHub target fingerprint means a deterministic metadata-only representation of authorized owner, repository, branch/ref, API version, credential mode, provider binding, and operation scope; it must not contain raw labels before authorization or secret-bearing values at any time.
 
 ## Acceptance Criteria
 
@@ -34,6 +35,8 @@ so that tenants can create and bind GitHub repositories through the canonical pr
 10. Given the adapter emits telemetry, diagnostics, audit evidence, readiness evidence, projection/cache evidence, exceptions, provider results, or test output, when sentinel values for provider tokens, JWTs, PEM/private keys, credential URLs, repository URLs with userinfo, raw GitHub payloads, branch names with secrets, file contents, diffs, owner names, repository names, emails, installation IDs, and unauthorized resource names are present in inputs or mocked responses, then all observable outputs remain metadata-only and fail tests if forbidden values appear.
 11. Given this story is complete, when unit and contract tests run in a developer machine or CI PR gate, then GitHub adapter tests pass offline with fake Octokit/GitHub seams or recorded hermetic fixtures and no live GitHub, Forgejo, provider credentials, tenant seed data, Aspire, Dapr sidecars, Redis, Keycloak, or nested submodule initialization; offline test groups cover denied-path no-touch behavior, canonical failure mapping, redaction, dependency guards, API-version fixtures, and permission-mapping fixtures.
 12. Given live GitHub drift or real installation validation is needed, when this story is implemented, then those checks are deferred to the provider contract/live-nightly drift path and are not required for PR-gate unit tests, local builds, or story completion.
+13. Given provider binding metadata names a GitHub credential mode, owner, repository, branch/ref, or installation target, when the mode is unsupported, ambiguous, missing required scope, malformed, mixed between GitHub App and fine-grained credential assumptions, or contains unsafe casing/Unicode/control-character forms, then the adapter returns a canonical validation/readiness failure before constructing Octokit and records only sanitized metadata, never raw target labels or token context.
+14. Given readiness, capability, reconciliation, projection, or cache evidence is produced, when the adapter stores or compares that evidence, then the fingerprint includes tenant, organization, provider binding, GitHub API version, credential mode, operation identifier, authorization-evidence freshness, and safe target fingerprint dimensions so stale, cross-binding, or cross-credential evidence cannot authorize later operations.
 
 ## Tasks / Subtasks
 
@@ -49,11 +52,13 @@ so that tenants can create and bind GitHub repositories through the canonical pr
   - [ ] Resolve credential references only through the approved authorized credential seam after tenant, organization, ACL, and provider-binding authorization succeeds.
   - [ ] Build Octokit clients from short-lived in-memory credential material and dispose or release any credential-bearing objects according to the local abstraction.
   - [ ] Set explicit product/user-agent and GitHub API version behavior according to the pinned compatibility decision; do not rely on ambient defaults that can drift silently.
+  - [ ] Validate the binding credential mode before Octokit construction; unsupported or mixed GitHub App/fine-grained assumptions must fail canonically without probing GitHub.
   - [ ] Treat owner, repository, installation, branch/ref, and credential labels as sensitive before authorization and as safe metadata only when explicitly allowed by the internal provider evidence model.
   - [ ] Add tests proving denied paths make zero calls to credential resolution, Octokit client factories, GitHub API seams, repository lookup, branch lookup, readiness probes, audit writers, metrics, logs, diagnostics, and capability caches.
 - [ ] Map GitHub readiness and capability evidence. (AC: 5, 8, 9)
   - [ ] Convert GitHub App/fine-grained permission evidence into the Story 3.2 capability profile without storing raw permission payloads.
   - [ ] Include safe metadata for GitHub API version, provider family/key, provider binding reference, capability profile schema/version, supported operations, unsupported or partial operations, rate-limit posture, retryability hints, and sanitized reason codes.
+  - [ ] Include authorization-evidence freshness and safe target fingerprint dimensions in readiness/cache keys so evidence cannot be reused across tenants, organizations, bindings, credential modes, API versions, or target repositories.
   - [ ] Preserve GitHub-specific capability differences as metadata consumed by downstream readiness/repository workflows instead of adding product workflow branches that assume GitHub semantics.
   - [ ] Validate required permissions for repository creation, contents read/write, branch/ref inspection, commit/status operations, and metadata access through hermetic tests and documented compatibility evidence.
 - [ ] Implement canonical result and failure mapping. (AC: 6, 7)
@@ -65,6 +70,7 @@ so that tenants can create and bind GitHub repositories through the canonical pr
   - [ ] Do not include raw GitHub response bodies, raw headers that may contain sensitive data, repository clone URLs, owner/repository names before authorization, branch secrets, installation secrets, or exception stack traces in provider results.
 - [ ] Add GitHub operation coverage behind the provider port. (AC: 1, 5, 6, 7, 8)
   - [ ] Implement the GitHub operations currently required by `IGitProvider` for readiness, repository create/bind evidence, branch/ref inspection, file mutation support, commit support, and status query.
+  - [ ] Normalize and validate authorized owner, repository, and branch/ref inputs only after authorization succeeds; reject unsafe or ambiguous target labels with canonical validation/readiness categories and sanitized reason codes.
   - [ ] Keep operation implementations idempotency-aware where the port requires idempotency evidence, but leave cross-workflow orchestration, worker process managers, and reconciliation scheduling to later stories unless the current port explicitly owns a narrow return model.
   - [ ] Do not implement Forgejo behavior, local Git working-copy behavior, webhooks, background drift polling, CLI/MCP commands, UI pages, repair workflows, or generated SDK edits in this story.
 - [ ] Add offline tests and dependency guards. (AC: 2, 3, 6, 7, 10, 11, 12)
@@ -73,6 +79,7 @@ so that tenants can create and bind GitHub repositories through the canonical pr
   - [ ] Cover success, equivalent existing repository, validation failure, authentication failure, permission failure, missing owner/repository, repository conflict, branch protection conflict, rate limit, secondary rate limit, timeout, 5xx, malformed response, unknown outcome, and reconciliation-required cases.
   - [ ] Add leakage tests using sentinel token, JWT, PEM, credential URL, embedded-credential repository URL, raw GitHub payload, branch name with secret, file content, diff, email, display name, installation ID, owner, repository, and unauthorized resource values.
   - [ ] Add dependency/architecture guard tests proving only the concrete GitHub provider area references Octokit and GitHub-specific types.
+  - [ ] Add fixture tests for unsupported credential modes, mixed GitHub App/fine-grained assumptions, unsafe target labels, stale authorization evidence, and cross-binding capability/cache reuse attempts.
   - [ ] Add hermetic fixture tests for GitHub API version and permission mapping assumptions; live GitHub drift tests are deferred to nightly/provider-contract infrastructure.
 
 ### GitHub Failure Mapping Matrix
@@ -81,6 +88,7 @@ so that tenants can create and bind GitHub repositories through the canonical pr
 |---|---|---|---|
 | Success or existing-equivalent state | success or equivalent success | no retry | provider family, operation ID, provider binding reference, capability/profile version |
 | 400 / validation failure / malformed request | validation failure | do not retry automatically | sanitized reason code and operation ID |
+| Unsupported or ambiguous credential mode / malformed target label before GitHub call | validation failure or readiness unavailable according to operation context | do not construct Octokit or retry automatically | sanitized reason code, provider binding reference, and credential-mode category only |
 | 401 / revoked or invalid credential | provider authentication required | do not retry automatically | provider binding reference and credential-reference category only |
 | 403 missing permission | provider permission insufficient | do not retry automatically | permission family, API-version evidence, sanitized reason code |
 | 403 abuse or secondary rate protection | provider rate limited | retry only after safe retry-after metadata and only for idempotent reads | safe retry-after category, operation ID, provider binding reference |
@@ -102,6 +110,7 @@ so that tenants can create and bind GitHub repositories through the canonical pr
 - Architecture requires known provider failures to be distinguished from unknown outcomes; unknown outcomes enter reconciliation instead of silent retry. [Source: `_bmad-output/planning-artifacts/epics.md#AR-PROVIDER-05`]
 - Official NuGet metadata checked during story creation shows `Octokit` 14.0.0 as the current package version and compatible with computed `net10.0` targets. [Source: `https://www.nuget.org/packages/Octokit/14.0.0`]
 - Current GitHub REST documentation states that the REST API is versioned and GitHub App endpoints require specific token contexts; GitHub App permission docs describe endpoint permissions and the `X-Accepted-GitHub-Permissions` header for permission discovery. [Source: `https://docs.github.com/en/rest/apps/apps`; `https://docs.github.com/en/rest/authentication/permissions-required-for-github-apps?apiVersion=latest`]
+- Advanced elicitation identified credential-mode ambiguity, target-label normalization, stale authorization evidence, and cross-binding cache reuse as pre-dev implementation traps; these are now explicit story constraints rather than left to adapter discretion.
 
 ### Previous Story Intelligence
 
@@ -172,6 +181,8 @@ so that tenants can create and bind GitHub repositories through the canonical pr
 - Do not map every Octokit `NotFound` to product `not_found`; before authorization it may need a safe denial/read-model unavailable family to avoid existence leakage.
 - Do not classify rate limits, secondary abuse limits, credential revocation, branch protection conflicts, and repository conflicts as one generic provider failure.
 - Do not cache capability or readiness evidence globally by provider family; include tenant/organization, provider binding, safe target metadata, API version, profile schema/version, and authorization-evidence freshness dimensions.
+- Do not reuse readiness, capability, or reconciliation evidence across credential modes, GitHub API versions, bindings, authorization snapshots, or normalized target fingerprints.
+- Do not normalize owner/repository/branch labels before authorization in a way that leaks whether the target exists; validation must stay metadata-only until the authorized boundary.
 - Do not include raw GitHub payloads "for debugging" in logs, traces, diagnostics, exceptions, profile metadata, audit records, or test snapshots.
 - Do not manually edit generated SDK files or parity rows.
 
@@ -200,6 +211,7 @@ so that tenants can create and bind GitHub repositories through the canonical pr
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-20 | Applied advanced elicitation hardening for credential-mode validation, safe target fingerprints, stale authorization evidence, cross-binding cache isolation, and related offline fixtures. | Codex |
 | 2026-05-19 | Applied party-mode review hardening for Octokit seam containment, dependency guards, canonical failure mapping, retry boundaries, offline test grouping, and redaction coverage. | Codex |
 | 2026-05-19 | Created story with GitHub Octokit adapter boundary, authorization-before-observation, credential redaction, canonical failure mapping, unknown-outcome reconciliation, API-version/permission compatibility evidence, and offline tests. | Codex |
 
@@ -218,6 +230,7 @@ GPT-5 Codex
 - Preflight working-tree failure was classified as an active-dev-story soft warning because Story 2.7 is `in-progress` in both its artifact and sprint status; active development changes were left untouched.
 - Official NuGet and GitHub REST/GitHub Apps documentation were checked for Octokit version, API versioning, and GitHub App permission evidence.
 - Ultimate context engine analysis completed - comprehensive developer guide created.
+- Advanced elicitation completed on 2026-05-20T10:12:39+02:00; accepted low-risk hardening was applied inline for credential-mode validation, safe target fingerprints, stale authorization evidence, and cache/reconciliation isolation.
 
 ### File List
 
@@ -242,4 +255,25 @@ GPT-5 Codex
 - Findings deferred:
   - Live GitHub drift checks and real branch-protection behavior remain deferred to nightly/provider-contract infrastructure.
   - Credential lifecycle, refresh, remediation UX, reconciliation queue mechanics, webhooks, Forgejo parity decisions, CLI/MCP/UI surfaces, generated SDK edits, performance tuning, and caching policy remain out of scope unless a later story owns them.
+- Final recommendation: ready-for-dev
+
+## Advanced Elicitation
+
+- Date/time: 2026-05-20T10:12:39+02:00
+- Selected story key: 3-3-implement-github-provider-adapter
+- Command/skill invocation used: `/bmad-advanced-elicitation 3-3-implement-github-provider-adapter`
+- Batch 1 method names: Red Team vs Blue Team; Security Audit Personas; Failure Mode Analysis; Pre-mortem Analysis; Self-Consistency Validation
+- Reshuffled Batch 2 method names: First Principles Analysis; Graph of Thoughts; Architecture Decision Records; Challenge from Critical Perspective; Comparative Analysis Matrix
+- Findings summary:
+  - Credential-mode ambiguity could let implementation mix GitHub App, installation-token, and fine-grained credential assumptions behind one Octokit path.
+  - Authorized target labels needed explicit safe-fingerprint rules so owner, repository, branch/ref, installation, and API-version evidence cannot leak or collide across bindings.
+  - Readiness/capability/reconciliation evidence needed cache dimensions for authorization freshness, credential mode, API version, operation scope, and safe target fingerprint.
+  - Offline tests needed direct fixture coverage for unsupported credential modes, malformed target labels, stale authorization evidence, and cross-binding evidence reuse.
+- Changes applied:
+  - Added a GitHub target fingerprint term and acceptance criteria for credential-mode validation, safe target normalization, and cache/reconciliation isolation.
+  - Added task checklist items for validating credential mode before Octokit construction, isolating readiness/cache keys, rejecting unsafe target labels, and covering stale/cross-binding evidence fixtures.
+  - Added a failure-mapping row for unsupported or ambiguous credential mode and malformed target label handling before any GitHub call.
+  - Added source-context, testing, and regression-trap guidance for the new hardening constraints.
+- Findings deferred:
+  - Credential lifecycle, refresh/remediation UX, live GitHub drift checks, real branch-protection behavior, and reconciliation scheduling remain deferred to later owned stories or nightly provider-contract infrastructure.
 - Final recommendation: ready-for-dev
