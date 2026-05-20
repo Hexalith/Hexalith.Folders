@@ -58,17 +58,24 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
 - **Cons:** Largest blast radius — every concrete folder event, projection envelope, repository, and test fixture changes. May require coordinated changes in `Hexalith.EventStore` submodule if `IEventPayload` has unexpected members.
 - **Files touched (estimate):** Every `*.cs` file in `src/Hexalith.Folders/Aggregates/Folder/*` declaring an event, every projection, `IFolderRepository.cs`, every test using folder events.
 
-**Decision recorder:** the team must capture the chosen option as an ADR under `docs/adrs/` before implementation starts. The ADR should reference Story 2.8's BLOCKED finding and this story's Acceptance Criteria.
+**Decision recorder:** the team must capture the chosen option as an ADR under `docs/adrs/` before implementation starts. The ADR should reference Story 2.8's BLOCKED finding and this story's Acceptance Criteria. The ADR must also record how `FolderResult` becomes `DomainResult` and gateway result payload evidence, how duplicate persistence is prevented, how request cancellation is handled given the current `IDomainProcessor.ProcessAsync(CommandEnvelope, object?)` signature has no `CancellationToken`, and how layered authorization evidence is handed to the processor without leaking across requests.
+
+## Party-Mode Review Hardening Notes
+
+- `FoldersDomainServiceRequestHandler.ProcessAsync` currently authorizes before invoking a processor, but the approved `LayeredFolderAuthorizationResult` is local state. If archive ACL evidence is backed by that result, the story needs an explicit scoped evidence handoff, not an implicit provider lookup that can re-run authorization or read stale request state.
+- `IDomainProcessor.ProcessAsync(CommandEnvelope, object?)` currently has no cancellation token. Any task requiring CT propagation must either keep IO-bearing evidence calls in the request handler before processor invocation, extend the EventStore contract deliberately, or document a bounded no-IO processor path in the ADR.
+- `DomainResult` rejects mixed success/rejection event lists and only exposes `ResultPayload` for successful results through `DomainServiceWireResult`. The chosen persistence option must specify the exact success, rejection, no-op, and accepted-command payload mapping so the REST `202 AcceptedCommand` path does not depend on a test-only gateway shortcut.
+- `FolderAccessTenantGate.Map` still throws if `TenantAccessOutcome.Allowed` arrives with `IsAllowed=false`, while `FolderArchiveTenantGate.Map` returns a safe rejection. Applying the chosen persistence option consistently should also reconcile this failure-mode difference or explicitly justify it in the ADR.
 
 ## Acceptance Criteria
 
-1. Given the architectural decision is captured as an ADR in `docs/adrs/` (referenced from this story), when implementation starts, then the ADR records which of Options A / B / C was selected, the rationale, and the impact on `FolderAccessTenantGate` (which must follow the same pattern for consistency unless the ADR explicitly carves it out).
+1. Given the architectural decision is captured as an ADR in `docs/adrs/` (referenced from this story), when implementation starts, then the ADR records which of Options A / B / C was selected, the rationale, the `FolderResult` → `DomainResult` / `ResultPayload` mapping, the cancellation boundary, the layered-auth evidence handoff mechanism, and the impact on `FolderAccessTenantGate` (which must follow the same pattern for consistency unless the ADR explicitly carves it out).
 
 2. Given an authenticated tenant administrator submits `POST /api/v1/folders/{folderId}/archive` with valid envelope and body, when the request flows through the production wiring (REST endpoint → `IEventStoreGatewayClient.SubmitCommandAsync` → `/process` → `FoldersDomainServiceRequestHandler.ProcessAsync` → `IDomainProcessor` → `FolderArchiveTenantGate.Handle` → `FolderAggregate.Handle` → persistence), then the response is `202 AcceptedCommand`, the folder lifecycle state becomes `Archived`, exactly one `FolderArchived` event is appended, and the result preserves only operation/correlation/task/sanitized evidence per Story 2.8 AC2.
 
 3. Given the gate requires `TenantAccessAuthorizationResult`, `FolderArchiveAclEvidence`, and `FolderArchivePolicyEvidence`, when the processor is invoked, then evidence is sourced from production-grade providers registered in DI: tenant access via `TenantAccessAuthorizer.AuthorizeMutationAsync`, ACL evidence via a `IFolderArchiveAclEvidenceProvider` backed by the layered authorization result, and policy evidence via a `IFolderArchivePolicyEvidenceProvider` (baseline implementation may return `Allowed` with a versioned policy stub; real archive-retention policy logic is Epic 7 work and explicitly out of scope).
 
-4. Given the layered authorization in `FoldersDomainServiceRequestHandler.ProcessAsync` has already approved the action token (`archive_folder`), when the processor re-derives evidence for the gate, then it must NOT re-run JWT validation or claim-transform layers (those are already proven by the layered authz result); evidence providers may consume the layered authz result via DI scoping.
+4. Given the layered authorization in `FoldersDomainServiceRequestHandler.ProcessAsync` has already approved the action token (`archive_folder`), when the processor derives evidence for the gate, then it must NOT re-run JWT validation or claim-transform layers (those are already proven by the layered authz result); evidence providers must consume the current request's layered authz result through an explicit scoped accessor or other ADR-approved handoff that is cleared between requests and cannot leak stale allow/deny evidence.
 
 5. Given the processor is invoked with a command type other than `Hexalith.Folders.Commands.ArchiveFolder`, when dispatch runs, then either (a) the processor handles the other folder command types using the same evidence-sourcing pattern (preferred), or (b) the processor returns a stable `UnsupportedCommandType` rejection that maps to the canonical safe denial — never throws or 500s.
 
@@ -88,6 +95,9 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
   - [ ] Create `docs/adrs/{NNN}-folder-domain-processor-persistence.md`.
   - [ ] Reference Story 2.8 BLOCKED finding and this story.
   - [ ] Record Option A / B / C selection plus rationale.
+  - [ ] Record the exact `FolderResult` → `DomainResult` / `DomainServiceWireResult.ResultPayload` mapping for accepted, rejected, idempotent replay, already-archived, no-op, and unsupported-command outcomes.
+  - [ ] Record how cancellation is handled despite the current `IDomainProcessor.ProcessAsync(CommandEnvelope, object?)` interface lacking `CancellationToken`.
+  - [ ] Record how the approved layered authorization result is passed to archive/access evidence providers without re-running JWT/claim-transform layers or leaking stale request evidence.
   - [ ] Get review sign-off before proceeding.
 
 - [ ] Implement the chosen persistence option. (AC: 1, 2, 8)
@@ -97,14 +107,16 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
 
 - [ ] Build `FolderDomainProcessor : IDomainProcessor`. (AC: 2, 3, 4, 5)
   - [ ] Decode `CommandEnvelope.Payload` to typed Folders commands using `RequestJsonOptions`-equivalent strictness (reject unknown fields).
-  - [ ] Source evidence via DI-registered providers: `TenantAccessAuthorizer`, `IFolderArchiveAclEvidenceProvider`, `IFolderArchivePolicyEvidenceProvider`.
-  - [ ] Invoke the gate; map `FolderResult` → `DomainResult` (success / rejection / no-op).
+  - [ ] Source evidence via DI-registered providers: `TenantAccessAuthorizer`, `IFolderArchiveAclEvidenceProvider`, `IFolderArchivePolicyEvidenceProvider`, and the ADR-approved scoped layered-auth handoff.
+  - [ ] Invoke the gate; map `FolderResult` → `DomainResult` (success / rejection / no-op) without producing mixed regular/rejection event lists.
+  - [ ] Preserve accepted-command response evidence through the ADR-approved `ResultPayload` or equivalent EventStore gateway mechanism; do not rely on the current server endpoint test double that bypasses `/process`.
   - [ ] Handle all current and reasonably-foreseeable folder command types; emit canonical safe denial for unsupported types.
 
 - [ ] Build evidence providers with production defaults. (AC: 3)
-  - [ ] `LayeredAuthBackedFolderArchiveAclEvidenceProvider`: consumes the layered authorization result via scoped DI to produce `FolderArchiveAclEvidence.Allowed(...)` when the layered authz allowed `archive_folder`; otherwise `Denied(...)`.
+  - [ ] `LayeredAuthBackedFolderArchiveAclEvidenceProvider`: consumes the current request's layered authorization result via the ADR-approved scoped handoff to produce `FolderArchiveAclEvidence.Allowed(...)` when the layered authz allowed `archive_folder`; otherwise `Denied(...)`.
   - [ ] `BaselineFolderArchivePolicyEvidenceProvider`: returns `Allowed` with a stable versioned policy stub (`policy_version: "v1-baseline"`). Real archive-retention logic is explicitly Epic 7.
-  - [ ] Both providers must propagate `CancellationToken`.
+  - [ ] Both providers must propagate `CancellationToken` when invoked before the processor or through an ADR-approved EventStore contract extension; if the processor remains on the current no-token interface, no provider may hide long-running IO inside `IDomainProcessor.ProcessAsync`.
+  - [ ] Add a test that executes two sequential requests in the same test host with different authorization outcomes and proves the scoped layered-auth evidence cannot bleed from the first request into the second.
 
 - [ ] Register the processor and providers in DI. (AC: 2, 9)
   - [ ] `AddFoldersDomainServices` registers `FolderDomainProcessor` as scoped `IDomainProcessor` (keyed by `FoldersServerModule.DomainName` if the framework supports keyed processors).
@@ -116,6 +128,8 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
   - [ ] Wires a real (in-memory) `IEventStoreGatewayClient` that round-trips to `/process` in the same process.
   - [ ] Asserts happy path: 202, single `FolderArchived` persisted, projection updated.
   - [ ] Asserts denial-table rows: cross-tenant, malformed body, missing key, already-archived, idempotency-conflict, gateway-server-error.
+  - [ ] Asserts the processor path covers the ADR-selected `DomainResult` / `ResultPayload` mapping and never double-writes through both gate-owned and framework-owned persistence.
+  - [ ] Asserts cancellation or request-abort behavior at the ADR-defined boundary.
   - [ ] Asserts no test-only processor seam exists in production code paths.
 
 - [ ] Update Story 2.8 status when this story is done. (AC: 10)
@@ -142,4 +156,25 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-20 | Applied party-mode review hardening for scoped layered-authorization evidence handoff, cancellation-boundary decisioning, `DomainResult` / result-payload mapping, duplicate-persistence prevention, and access/archive gate consistency checks. | Codex |
 | 2026-05-20 | Created from Story 2.8 `/bmad-code-review` round-2 BLOCKED finding. Three architectural options documented; ADR required before implementation. | Claude |
+
+## Party-Mode Review
+
+- Date/time: 2026-05-20T13:04:31+02:00
+- Selected story key: `2-8b-wire-folder-domain-processor`
+- Command/skill invocation used: `/bmad-party-mode 2-8b-wire-folder-domain-processor; review;`
+- Participating BMAD agents: Winston (System Architect), Amelia (Senior Software Engineer), Murat (Test Architect), John (Product Manager)
+- Findings summary:
+  - Winston: the story correctly frames the persistence mismatch, but the ADR also needs to decide result mapping, cancellation, and request-scoped authorization evidence handoff before implementation.
+  - Amelia: `IDomainProcessor` has no cancellation token and `DomainResult` disallows mixed success/rejection events, so the implementation needs exact contracts for provider invocation, accepted payloads, no-op behavior, and unsupported commands.
+  - Murat: the integration tests must prove true REST -> gateway -> `/process` flow, no stale scoped authorization bleed, no double-write through both persistence paths, and the ADR-defined cancellation boundary.
+  - John: the story should keep the product scope narrow: fix production archive wiring, update Story 2.8 only when this blocker is resolved, and defer broader EventStore or retention-policy work unless the ADR explicitly selects it.
+- Changes applied:
+  - Added party-mode hardening notes for scoped layered-auth evidence, cancellation mismatch, `DomainResult` / `ResultPayload` mapping, and access/archive gate consistency.
+  - Expanded AC1 and AC4 to require explicit ADR decisions and stale-evidence isolation.
+  - Expanded ADR, processor, evidence-provider, and integration-test subtasks to make these implementation traps testable.
+- Findings deferred:
+  - Whether to extend the EventStore `IDomainProcessor` interface with cancellation support remains an ADR decision.
+  - Whether Option A, B, or C is selected remains a human architecture decision before implementation.
+- Final recommendation: ready-for-dev
