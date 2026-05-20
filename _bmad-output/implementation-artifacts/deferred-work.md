@@ -2,6 +2,28 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)
+
+Items deferred from the `/bmad-code-review 2.7` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `a88da4c`.
+
+- `FolderAuthorizationDenialMapper` emits non-canonical categories (`not_found_to_caller`, `policy_denied`, `policy_evidence_unavailable`) [`src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs:45-70`] — deferred, pre-existing from Story 2.6 and shared by other endpoints; fixing requires a coordinated category-vocabulary update across operations and SDK callers.
+- `FolderLifecycleStatus.lifecycleState` schema conflates lifecycle and binding tokens [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7076-7089`] — deferred, Contract Spine design; the implementation conforms to the spec as written. Adjusting requires a contract-workflow story.
+- `InMemoryFolderLifecycleStatusReadModel` registered as production default [`src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:42`] — deferred, intentional pattern matching `InMemoryFolderTenantAccessProjectionStore` and `InMemoryEffectivePermissionsReadModel`. Production deployment is expected to register the real implementation; revisit in Epic 7 production wiring.
+- Singleton lifetime for query handler and read model risks captive dependency if any collaborator becomes scoped [`src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:42-43`] — deferred, all current dependencies are singletons; revisit when scoped seams are introduced.
+- `DiagnosticSentinels` on `FolderLifecycleStatusReadModelSnapshot` is never read by the handler [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs:12`] — deferred, harmless dead state; may anchor future redaction-enforcement logic.
+- `HasNoBindingReferences` duplicates `HasValue` logic [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:321-326`] — deferred, cosmetic consolidation.
+- `Save` is not on `IFolderLifecycleStatusReadModel` interface — test-only seam [`src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs:9`] — deferred, intentional pattern; promote to `IFolderLifecycleStatusSeed` when a second backing store appears.
+- `FolderLifecycleProjectionState.Unknown` is handled by the switch's `_` arm, never matched by name [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:117-132`] — deferred, cosmetic.
+- Test files use `ConfigureAwait(true)` while production handler uses `ConfigureAwait(false)` [`tests/Hexalith.Folders.Tests/Queries/Folders/*.cs`] — deferred, style inconsistency.
+- `ActorSafeIdentifier: "actor_present"` magic string [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:43`] — deferred, extract to a named constant.
+- `AllowedOutcome` and `DeniedSafeOutcome` string constants in handler instead of an enum [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:12-13`] — deferred, parallel representation to `Code` invites drift.
+- `ReasonCode` null-coalesce ordering is inconsistent across branches and can bury handler-determined reasons [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:93-99,126,189-194,279-287`] — deferred, refactor pass to consolidate.
+- Snapshot freshness mutation idiom repeated and `ProjectionWatermark` preserved on `Unavailable` outcomes [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:93-99,189-194,279-287`] — deferred, refactor pass.
+- `LifecycleStatusClientConformanceTests` asserts `methods.Single(m => ...)` and locks NSwag parameter mangling [`tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs`] — deferred, brittle to generator upgrades.
+- `MapFoldersServerEndpointsShouldRegisterLifecycleStatusRoute` builds an app without `await using` disposal [`tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs`] — deferred, resource leak in test process.
+- `FolderLifecycleStatusTestSupport` builds `EventStoreClaimTransformEvidence.Allowed(...)` with nullable tenant/principal parameters [`tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs`] — deferred, opaque test scaffolding.
+- Lifecycle 200 response does not echo `taskId` body field even when `X-Hexalith-Task-Id` is read [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:107-119`] — deferred, requires contract update to declare `taskId` in `FolderLifecycleStatus`.
+
 ## Deferred from: code review of 2-5-inspect-effective-permissions (2026-05-19)
 
 Items deferred from the `/bmad-code-review 2.5` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `41f9a52`.

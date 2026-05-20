@@ -7,5 +7,7 @@ public enum FolderLifecycleStatusResultCode
     AuthorizationDenied,
     NotFoundSafe,
     ProjectionStale,
+    ProjectionUnavailable,
     ReadModelUnavailable,
+    ArchiveStateUnsupported,
 }

@@ -101,6 +101,111 @@ public sealed class FolderLifecycleStatusEndpointTests
     }
 
     [Fact]
+    public async Task LifecycleStatusRouteShouldEmit401ForUnauthenticatedCaller()
+    {
+        await using WebApplication app = BuildApp(
+            TenantStore("tenant-a", "user-a"),
+            PermissionReadModel(),
+            LifecycleReadModel(),
+            new StaticTenantContextAccessor(authoritativeTenantId: null, principalId: null),
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
+        request.Headers.Add("X-Correlation-Id", "corr-anon");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        json.ShouldContain("\"category\":\"authentication_failure\"");
+        json.ShouldContain("\"code\":\"authentication_failure\"");
+        json.ShouldContain("\"clientAction\":\"no_action\"");
+        // Freshness/Correlation response headers must NOT leak on denial paths.
+        response.Headers.Contains("X-Hexalith-Freshness").ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task LifecycleStatusRouteShouldEmit404ForBlankFolderId()
+    {
+        await using WebApplication app = BuildApp(
+            TenantStore("tenant-a", "user-a"),
+            PermissionReadModel(),
+            LifecycleReadModel(),
+            new StaticTenantContextAccessor("tenant-a", "user-a"),
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        // ASP.NET route binding will reject a literal empty segment with 404 from routing.
+        // Use a whitespace-only encoded segment to ensure our handler sees the blank id.
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/%20/lifecycle-status");
+        request.Headers.Add("X-Correlation-Id", "corr-blank");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        json.ShouldContain("\"category\":\"not_found\"");
+        json.ShouldContain("\"code\":\"not_found\"");
+    }
+
+    [Fact]
+    public async Task LifecycleStatusRouteShouldEmit400ForUnsupportedFreshnessClass()
+    {
+        await using WebApplication app = BuildApp(
+            TenantStore("tenant-a", "user-a"),
+            PermissionReadModel(),
+            LifecycleReadModel(),
+            new StaticTenantContextAccessor("tenant-a", "user-a"),
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
+        request.Headers.Add("X-Correlation-Id", "corr-freshness");
+        request.Headers.Add("X-Hexalith-Freshness", "snapshot_per_task");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldContain("\"code\":\"unsupported_read_consistency\"");
+    }
+
+    [Fact]
+    public async Task LifecycleStatusRouteShouldIgnorePrincipalQueryStringValue()
+    {
+        await using WebApplication app = BuildApp(
+            TenantStore("tenant-a", "user-a"),
+            PermissionReadModel(),
+            LifecycleReadModel(),
+            new StaticTenantContextAccessor("tenant-a", "user-a"),
+            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        // Attacker passes a different principal in the query string; endpoint must ignore it
+        // and serve the legitimate principal from the authentication context.
+        using HttpRequestMessage request = new(
+            HttpMethod.Get,
+            "/api/v1/folders/folder-a/lifecycle-status?principalId=user-attacker");
+        // Correlation must match the snapshot's EvidenceScope ("corr-a") to satisfy the
+        // compatible-evidence-snapshot invariant; the focus of this test is the query-string
+        // principal value, not correlation drift.
+        request.Headers.Add("X-Correlation-Id", "corr-a");
+        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        json.ShouldNotContain("user-attacker", Case.Sensitive);
+    }
+
+    [Fact]
     public async Task LifecycleStatusRouteShouldEmit503ForUnavailableReadModel()
     {
         await using WebApplication app = BuildApp(
@@ -197,7 +302,7 @@ public sealed class FolderLifecycleStatusEndpointTests
 
     private static InMemoryFolderLifecycleStatusReadModel LifecycleReadModel()
     {
-        InMemoryFolderLifecycleStatusReadModel readModel = new();
+        InMemoryFolderLifecycleStatusReadModel readModel = new(new FixedUtcClock(Now));
         readModel.Save(new FolderLifecycleStatusReadModelSnapshot(
             ManagedTenantId: "tenant-a",
             FolderId: "folder-a",
@@ -230,9 +335,9 @@ public sealed class FolderLifecycleStatusEndpointTests
             => throw new InvalidOperationException("raw unavailable diagnostic must not leak");
     }
 
-    private sealed class StaticTenantContextAccessor(string tenantId, string principalId) : ITenantContextAccessor
+    private sealed class StaticTenantContextAccessor(string? authoritativeTenantId, string? principalId) : ITenantContextAccessor
     {
-        public string? AuthoritativeTenantId => tenantId;
+        public string? AuthoritativeTenantId => authoritativeTenantId;
 
         public string? PrincipalId => principalId;
     }

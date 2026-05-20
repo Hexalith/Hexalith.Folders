@@ -1,18 +1,25 @@
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Hexalith.Folders.Queries.Folders;
 
 public sealed class FolderLifecycleStatusQueryHandler(
     LayeredFolderAuthorizationService authorizationService,
     IFolderLifecycleStatusReadModel readModel,
-    IUtcClock clock)
+    IUtcClock clock,
+    ILogger<FolderLifecycleStatusQueryHandler>? logger = null)
 {
     private const string ActionToken = "read_metadata";
+    private const string ActorPresentIdentifier = "actor_present";
     private const string AllowedOutcome = "allowed";
     private const string DeniedSafeOutcome = "denied_safe";
     private const string EventuallyConsistent = "eventually_consistent";
     private const string OperationId = "GetFolderLifecycleStatus";
+
+    private readonly ILogger<FolderLifecycleStatusQueryHandler> _logger = logger ?? NullLogger<FolderLifecycleStatusQueryHandler>.Instance;
 
     public async Task<FolderLifecycleStatusQueryResult> HandleAsync(
         FolderLifecycleStatusQuery query,
@@ -25,12 +32,22 @@ public sealed class FolderLifecycleStatusQueryHandler(
             clock.UtcNow,
             "denied_safe");
 
+        // Authentication-class denials: missing authoritative tenant or principal.
         if (string.IsNullOrWhiteSpace(query.AuthoritativeTenantId)
-            || string.IsNullOrWhiteSpace(query.PrincipalId)
-            || string.IsNullOrWhiteSpace(query.FolderId))
+            || string.IsNullOrWhiteSpace(query.PrincipalId))
         {
             return SafeResult(
                 FolderLifecycleStatusResultCode.AuthenticationRequired,
+                deniedFreshness,
+                query,
+                authorizationDenial: null);
+        }
+
+        // Empty folder ID is a not-found-to-caller case, not an authentication failure.
+        if (string.IsNullOrWhiteSpace(query.FolderId))
+        {
+            return SafeResult(
+                FolderLifecycleStatusResultCode.NotFoundSafe,
                 deniedFreshness,
                 query,
                 authorizationDenial: null);
@@ -40,7 +57,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
             new LayeredFolderAuthorizationContext(
                 query.AuthoritativeTenantId,
                 query.PrincipalId,
-                ActorSafeIdentifier: "actor_present",
+                ActorSafeIdentifier: ActorPresentIdentifier,
                 ActionToken,
                 LayeredFolderOperationPolicy.StrictRead(),
                 query.ClaimTransformEvidence,
@@ -78,6 +95,12 @@ public sealed class FolderLifecycleStatusQueryHandler(
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
+            // Metadata-only logging: capture exception type to aid diagnostics without leaking
+            // payloads, identifiers, or provider details through structured logs.
+            _logger.LogWarning(
+                ex,
+                "Folder lifecycle-status read-model call failed; returning ReadModelUnavailable. Exception type: {ExceptionType}",
+                ex.GetType().FullName);
             return SafeResult(
                 FolderLifecycleStatusResultCode.ReadModelUnavailable,
                 FolderLifecycleFreshness.SafeUnavailable(clock.UtcNow, "read_model_unavailable"),
@@ -94,7 +117,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
             FolderLifecycleStatusReadModelStatus.Stale =>
                 SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
             FolderLifecycleStatusReadModelStatus.Unavailable =>
-                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ProjectionUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
             FolderLifecycleStatusReadModelStatus.Malformed =>
                 SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }, query, null),
             FolderLifecycleStatusReadModelStatus.NotFound =>
@@ -119,15 +142,17 @@ public sealed class FolderLifecycleStatusQueryHandler(
             FolderLifecycleProjectionState.Active => ComputeActive(query, snapshot),
             FolderLifecycleProjectionState.Archived => ComputeArchived(query, snapshot),
             FolderLifecycleProjectionState.ArchiveUnsupported =>
-                Unavailable(query, snapshot.Freshness, "archive_state_unsupported"),
+                ArchiveUnsupportedResult(query, snapshot.Freshness),
             FolderLifecycleProjectionState.Missing =>
                 SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, snapshot.Freshness, query, null),
             FolderLifecycleProjectionState.Stale =>
                 SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "lifecycle_stale" }, query, null),
             FolderLifecycleProjectionState.Unavailable =>
-                Unavailable(query, snapshot.Freshness, "lifecycle_unavailable"),
+                SafeResult(FolderLifecycleStatusResultCode.ProjectionUnavailable, snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "lifecycle_unavailable" }, query, null),
             FolderLifecycleProjectionState.Malformed =>
                 Unavailable(query, snapshot.Freshness, "lifecycle_malformed"),
+            FolderLifecycleProjectionState.Unknown =>
+                Unavailable(query, snapshot.Freshness, "lifecycle_state_unknown"),
             _ => Unavailable(query, snapshot.Freshness, "lifecycle_state_unknown"),
         };
     }
@@ -158,7 +183,14 @@ public sealed class FolderLifecycleStatusQueryHandler(
             return Unavailable(query, snapshot.Freshness, "evidence_tenant_mismatch");
         }
 
-        if (HasValue(scope.PrincipalId) && !Matches(scope.PrincipalId, query.PrincipalId))
+        // Principal scope is mandatory: snapshots must be scoped per principal to avoid
+        // cross-principal reuse (project-context "Critical Don't-Miss").
+        if (!HasValue(scope.PrincipalId))
+        {
+            return Unavailable(query, snapshot.Freshness, "evidence_principal_missing");
+        }
+
+        if (!Matches(scope.PrincipalId, query.PrincipalId))
         {
             return Unavailable(query, snapshot.Freshness, "principal_mismatch");
         }
@@ -286,6 +318,15 @@ public sealed class FolderLifecycleStatusQueryHandler(
             query,
             authorizationDenial: null);
 
+    private static FolderLifecycleStatusQueryResult ArchiveUnsupportedResult(
+        FolderLifecycleStatusQuery query,
+        FolderLifecycleFreshness freshness)
+        => SafeResult(
+            FolderLifecycleStatusResultCode.ArchiveStateUnsupported,
+            freshness with { Stale = true, ReasonCode = freshness.ReasonCode ?? "archive_state_unsupported" },
+            query,
+            authorizationDenial: null);
+
     private static FolderLifecycleStatusQueryResult SafeResult(
         FolderLifecycleStatusResultCode code,
         FolderLifecycleFreshness freshness,
@@ -315,7 +356,14 @@ public sealed class FolderLifecycleStatusQueryHandler(
                 or LayeredAuthorizationOutcomeCodes.FolderAclUnavailable
                 or LayeredAuthorizationOutcomeCodes.FolderAclStale => FolderLifecycleStatusResultCode.ReadModelUnavailable,
             LayeredAuthorizationOutcomeCodes.DaprPolicyDenied when authorization.Decision.Retryable => FolderLifecycleStatusResultCode.ReadModelUnavailable,
-            _ => FolderLifecycleStatusResultCode.AuthorizationDenied,
+            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied
+                or LayeredAuthorizationOutcomeCodes.ClaimTransformDenied
+                or LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied
+                or LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed
+                or LayeredAuthorizationOutcomeCodes.TenantAccessDenied => FolderLifecycleStatusResultCode.AuthorizationDenied,
+            // Unknown outcome codes fail closed to ReadModelUnavailable rather than silently
+            // downgrading to a 403 — protects against future outcome additions.
+            _ => FolderLifecycleStatusResultCode.ReadModelUnavailable,
         };
 
     private static bool HasNoBindingReferences(FolderLifecycleStatusReadModelSnapshot snapshot)
@@ -326,5 +374,5 @@ public sealed class FolderLifecycleStatusQueryHandler(
         => !string.IsNullOrWhiteSpace(value);
 
     private static bool Matches(string? left, string? right)
-        => string.Equals(left?.Trim(), right?.Trim(), StringComparison.Ordinal);
+        => string.Equals(left, right, StringComparison.Ordinal);
 }

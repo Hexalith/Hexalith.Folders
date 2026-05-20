@@ -1,0 +1,1779 @@
+diff --git a/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs b/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+index 4e4e83f..e865acb 100644
+--- a/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
++++ b/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
+ using Hexalith.EventStore.Contracts.Commands;
+ using Hexalith.EventStore.Contracts.Projections;
+ using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Queries.Folders;
+ using Hexalith.Folders.Server.Authentication;
+ 
+ using Microsoft.AspNetCore.Http;
+@@ -64,9 +65,86 @@ public static class FoldersDomainServiceEndpoints
+         })
+         .WithName("GetEffectivePermissions");
+ 
++        endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
++            string folderId,
++            HttpContext httpContext,
++            FolderLifecycleStatusQueryHandler handler,
++            ITenantContextAccessor tenantContext,
++            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
++            CancellationToken cancellationToken)
++            =>
++        {
++            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
++            FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++                new FolderLifecycleStatusQuery(
++                    folderId,
++                    tenantContext.AuthoritativeTenantId,
++                    tenantContext.PrincipalId,
++                    claimTransformEvidence.GetEvidence("read_metadata"),
++                    correlationId,
++                    TaskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"),
++                    ClientControlledTenantValues: ClientTenantIds(httpContext),
++                    ClientControlledPrincipalValues: ClientPrincipalIds(httpContext)),
++                cancellationToken).ConfigureAwait(false);
++
++            AddLifecycleHeaders(httpContext, result);
++            return ToHttpResult(result, correlationId);
++        })
++        .WithName("GetFolderLifecycleStatus");
++
+         return endpoints;
+     }
+ 
++    private static IResult ToHttpResult(FolderLifecycleStatusQueryResult result, string? correlationId)
++    {
++        if (result.AuthorizationDenial is not null)
++        {
++            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
++        }
++
++        return result.Code switch
++        {
++            FolderLifecycleStatusResultCode.Allowed => Results.Json(
++                new FolderLifecycleStatusResponse(
++                    result.FolderId ?? string.Empty,
++                    result.LifecycleState ?? "inaccessible",
++                    result.Archived,
++                    result.RepositoryBindingId,
++                    result.ProviderBindingRef,
++                    new FreshnessMetadataResponse(
++                        result.Freshness.ReadConsistency,
++                        result.Freshness.ObservedAt,
++                        result.Freshness.ProjectionWatermark,
++                        result.Freshness.Stale)),
++                ResponseJsonOptions),
++            FolderLifecycleStatusResultCode.AuthenticationRequired => SafeProblem(
++                StatusCodes.Status401Unauthorized,
++                category: "authentication_failure",
++                code: "denied_safe",
++                retryable: false,
++                correlationId: correlationId),
++            FolderLifecycleStatusResultCode.NotFoundSafe => SafeProblem(
++                StatusCodes.Status404NotFound,
++                category: "not_found_to_caller",
++                code: "safe_not_found",
++                retryable: false,
++                correlationId: correlationId),
++            FolderLifecycleStatusResultCode.ReadModelUnavailable
++                or FolderLifecycleStatusResultCode.ProjectionStale => SafeProblem(
++                    StatusCodes.Status503ServiceUnavailable,
++                    category: "read_model_unavailable",
++                    code: "read_model_unavailable",
++                    retryable: true,
++                    correlationId: correlationId),
++            _ => SafeProblem(
++                StatusCodes.Status403Forbidden,
++                category: "authorization_denied",
++                code: "denied_safe",
++                retryable: false,
++                correlationId: correlationId),
++        };
++    }
++
+     private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
+         => result.Code switch
+         {
+@@ -154,6 +232,24 @@ public static class FoldersDomainServiceEndpoints
+             ["forwarded_tenant_id"] = ReadHeader(httpContext, "X-Forwarded-Tenant"),
+         };
+ 
++    private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
++        => new Dictionary<string, string?>(StringComparer.Ordinal)
++        {
++            ["query_principal_id"] = ReadQuery(httpContext, "principalId"),
++            ["header_principal_id"] = ReadHeader(httpContext, "X-Principal-Id"),
++            ["forwarded_principal_id"] = ReadHeader(httpContext, "X-Forwarded-Principal"),
++        };
++
++    private static void AddLifecycleHeaders(HttpContext httpContext, FolderLifecycleStatusQueryResult result)
++    {
++        if (!string.IsNullOrWhiteSpace(result.CorrelationId))
++        {
++            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
++        }
++
++        httpContext.Response.Headers["X-Hexalith-Freshness"] = result.Freshness.ReadConsistency;
++    }
++
+     private static string? ReadHeader(HttpContext httpContext, string name)
+         => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
+ 
+@@ -185,6 +281,14 @@ public static class FoldersDomainServiceEndpoints
+         string AuthorizationOutcome,
+         FreshnessMetadataResponse Freshness);
+ 
++    private sealed record FolderLifecycleStatusResponse(
++        string FolderId,
++        string LifecycleState,
++        bool Archived,
++        string? RepositoryBindingId,
++        string? ProviderBindingRef,
++        FreshnessMetadataResponse Freshness);
++
+     private sealed record FreshnessMetadataResponse(
+         string ReadConsistency,
+         DateTimeOffset ObservedAt,
+diff --git a/src/Hexalith.Folders.Server/FoldersServerModule.cs b/src/Hexalith.Folders.Server/FoldersServerModule.cs
+index 53cd764..7c6ebac 100644
+--- a/src/Hexalith.Folders.Server/FoldersServerModule.cs
++++ b/src/Hexalith.Folders.Server/FoldersServerModule.cs
+@@ -33,6 +33,7 @@ public static class FoldersServerModule
+ 
+         services.AddDaprClient();
+         services.AddFoldersEffectivePermissions();
++        services.AddFoldersLifecycleStatus();
+         services.AddFoldersTenantEventProjection();
+         services.AddHexalithTenants(options =>
+         {
+diff --git a/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs b/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
+index 40df562..92c2be8 100644
+--- a/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
++++ b/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
+@@ -1,5 +1,6 @@
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Folders.Queries.Folders;
+ 
+ using Microsoft.Extensions.DependencyInjection;
+ using Microsoft.Extensions.DependencyInjection.Extensions;
+@@ -33,6 +34,17 @@ public static class FoldersServiceCollectionExtensions
+         return services;
+     }
+ 
++    public static IServiceCollection AddFoldersLifecycleStatus(this IServiceCollection services)
++    {
++        ArgumentNullException.ThrowIfNull(services);
++
++        services.AddFoldersLayeredAuthorization();
++        services.TryAddSingleton<IFolderLifecycleStatusReadModel, InMemoryFolderLifecycleStatusReadModel>();
++        services.TryAddSingleton<FolderLifecycleStatusQueryHandler>();
++
++        return services;
++    }
++
+     public static IServiceCollection AddFoldersLayeredAuthorization(this IServiceCollection services)
+     {
+         ArgumentNullException.ThrowIfNull(services);
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleEvidenceScope.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleEvidenceScope.cs
+new file mode 100644
+index 0000000..5c0bb6f
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleEvidenceScope.cs
+@@ -0,0 +1,9 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleEvidenceScope(
++    string? ManagedTenantId,
++    string? PrincipalId,
++    string? ActionToken,
++    string? TaskId,
++    string? CorrelationId,
++    string? AuthorizationWatermark);
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleFreshness.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleFreshness.cs
+new file mode 100644
+index 0000000..18679c4
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleFreshness.cs
+@@ -0,0 +1,12 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleFreshness(
++    string ReadConsistency,
++    DateTimeOffset ObservedAt,
++    string? ProjectionWatermark,
++    bool Stale,
++    string? ReasonCode)
++{
++    public static FolderLifecycleFreshness SafeUnavailable(DateTimeOffset observedAt, string reasonCode)
++        => new("eventually_consistent", observedAt, null, Stale: true, reasonCode);
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleProjectionState.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleProjectionState.cs
+new file mode 100644
+index 0000000..32f3036
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleProjectionState.cs
+@@ -0,0 +1,13 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public enum FolderLifecycleProjectionState
++{
++    Active,
++    Archived,
++    ArchiveUnsupported,
++    Missing,
++    Stale,
++    Unavailable,
++    Malformed,
++    Unknown,
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQuery.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQuery.cs
+new file mode 100644
+index 0000000..f7cecb9
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQuery.cs
+@@ -0,0 +1,13 @@
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleStatusQuery(
++    string FolderId,
++    string? AuthoritativeTenantId,
++    string? PrincipalId,
++    EventStoreClaimTransformEvidence ClaimTransformEvidence,
++    string? CorrelationId,
++    string? TaskId,
++    IReadOnlyDictionary<string, string?>? ClientControlledTenantValues,
++    IReadOnlyDictionary<string, string?>? ClientControlledPrincipalValues);
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs
+new file mode 100644
+index 0000000..9ed0222
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs
+@@ -0,0 +1,330 @@
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed class FolderLifecycleStatusQueryHandler(
++    LayeredFolderAuthorizationService authorizationService,
++    IFolderLifecycleStatusReadModel readModel,
++    IUtcClock clock)
++{
++    private const string ActionToken = "read_metadata";
++    private const string AllowedOutcome = "allowed";
++    private const string DeniedSafeOutcome = "denied_safe";
++    private const string EventuallyConsistent = "eventually_consistent";
++    private const string OperationId = "GetFolderLifecycleStatus";
++
++    public async Task<FolderLifecycleStatusQueryResult> HandleAsync(
++        FolderLifecycleStatusQuery query,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(query);
++        cancellationToken.ThrowIfCancellationRequested();
++
++        FolderLifecycleFreshness deniedFreshness = FolderLifecycleFreshness.SafeUnavailable(
++            clock.UtcNow,
++            "denied_safe");
++
++        if (string.IsNullOrWhiteSpace(query.AuthoritativeTenantId)
++            || string.IsNullOrWhiteSpace(query.PrincipalId)
++            || string.IsNullOrWhiteSpace(query.FolderId))
++        {
++            return SafeResult(
++                FolderLifecycleStatusResultCode.AuthenticationRequired,
++                deniedFreshness,
++                query,
++                authorizationDenial: null);
++        }
++
++        LayeredFolderAuthorizationResult authorization = await authorizationService.AuthorizeAsync(
++            new LayeredFolderAuthorizationContext(
++                query.AuthoritativeTenantId,
++                query.PrincipalId,
++                ActorSafeIdentifier: "actor_present",
++                ActionToken,
++                LayeredFolderOperationPolicy.StrictRead(),
++                query.ClaimTransformEvidence,
++                OperationScope: query.FolderId,
++                query.CorrelationId,
++                query.TaskId,
++                query.ClientControlledTenantValues,
++                query.ClientControlledPrincipalValues),
++            cancellationToken).ConfigureAwait(false);
++
++        if (!authorization.IsAllowed || authorization.AllowedContext is null)
++        {
++            return SafeResult(
++                MapAuthorizationDenial(authorization),
++                deniedFreshness,
++                query,
++                authorization);
++        }
++
++        LayeredFolderAuthorizationAllowedContext allowed = authorization.AllowedContext;
++        FolderLifecycleStatusReadModelResult readModelResult;
++        try
++        {
++            readModelResult = await readModel.GetAsync(
++                new FolderLifecycleStatusReadModelRequest(
++                    allowed.AuthoritativeTenantId,
++                    query.FolderId,
++                    query.PrincipalId,
++                    ActionToken,
++                    query.TaskId,
++                    query.CorrelationId,
++                    allowed.FreshnessWatermark,
++                    EventuallyConsistent),
++                cancellationToken).ConfigureAwait(false);
++        }
++        catch (Exception ex) when (ex is not OperationCanceledException)
++        {
++            return SafeResult(
++                FolderLifecycleStatusResultCode.ReadModelUnavailable,
++                FolderLifecycleFreshness.SafeUnavailable(clock.UtcNow, "read_model_unavailable"),
++                query,
++                authorizationDenial: null);
++        }
++
++        return readModelResult.Status switch
++        {
++            FolderLifecycleStatusReadModelStatus.Available when readModelResult.Snapshot is not null =>
++                Compute(query, allowed, readModelResult.Snapshot),
++            FolderLifecycleStatusReadModelStatus.Available =>
++                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
++            FolderLifecycleStatusReadModelStatus.Stale =>
++                SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
++            FolderLifecycleStatusReadModelStatus.Unavailable =>
++                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
++            FolderLifecycleStatusReadModelStatus.Malformed =>
++                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }, query, null),
++            FolderLifecycleStatusReadModelStatus.NotFound =>
++                SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, readModelResult.Freshness, query, null),
++            _ => SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true }, query, null),
++        };
++    }
++
++    private FolderLifecycleStatusQueryResult Compute(
++        FolderLifecycleStatusQuery query,
++        LayeredFolderAuthorizationAllowedContext allowed,
++        FolderLifecycleStatusReadModelSnapshot snapshot)
++    {
++        FolderLifecycleStatusQueryResult? incompatible = ValidateSnapshotCompatibility(query, allowed, snapshot);
++        if (incompatible is not null)
++        {
++            return incompatible;
++        }
++
++        return snapshot.LifecycleState switch
++        {
++            FolderLifecycleProjectionState.Active => ComputeActive(query, snapshot),
++            FolderLifecycleProjectionState.Archived => ComputeArchived(query, snapshot),
++            FolderLifecycleProjectionState.ArchiveUnsupported =>
++                Unavailable(query, snapshot.Freshness, "archive_state_unsupported"),
++            FolderLifecycleProjectionState.Missing =>
++                SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, snapshot.Freshness, query, null),
++            FolderLifecycleProjectionState.Stale =>
++                SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "lifecycle_stale" }, query, null),
++            FolderLifecycleProjectionState.Unavailable =>
++                Unavailable(query, snapshot.Freshness, "lifecycle_unavailable"),
++            FolderLifecycleProjectionState.Malformed =>
++                Unavailable(query, snapshot.Freshness, "lifecycle_malformed"),
++            _ => Unavailable(query, snapshot.Freshness, "lifecycle_state_unknown"),
++        };
++    }
++
++    private FolderLifecycleStatusQueryResult? ValidateSnapshotCompatibility(
++        FolderLifecycleStatusQuery query,
++        LayeredFolderAuthorizationAllowedContext allowed,
++        FolderLifecycleStatusReadModelSnapshot snapshot)
++    {
++        if (snapshot.Freshness.ObservedAt > clock.UtcNow)
++        {
++            return Unavailable(query, snapshot.Freshness, "freshness_observed_in_future");
++        }
++
++        if (!Matches(snapshot.ManagedTenantId, allowed.AuthoritativeTenantId))
++        {
++            return Unavailable(query, snapshot.Freshness, "tenant_mismatch");
++        }
++
++        if (!Matches(snapshot.FolderId, query.FolderId))
++        {
++            return Unavailable(query, snapshot.Freshness, "folder_mismatch");
++        }
++
++        FolderLifecycleEvidenceScope scope = snapshot.EvidenceScope;
++        if (HasValue(scope.ManagedTenantId) && !Matches(scope.ManagedTenantId, allowed.AuthoritativeTenantId))
++        {
++            return Unavailable(query, snapshot.Freshness, "evidence_tenant_mismatch");
++        }
++
++        if (HasValue(scope.PrincipalId) && !Matches(scope.PrincipalId, query.PrincipalId))
++        {
++            return Unavailable(query, snapshot.Freshness, "principal_mismatch");
++        }
++
++        if (HasValue(scope.ActionToken) && !Matches(scope.ActionToken, ActionToken))
++        {
++            return Unavailable(query, snapshot.Freshness, "action_mismatch");
++        }
++
++        if (HasValue(scope.TaskId) && !Matches(scope.TaskId, query.TaskId))
++        {
++            return Unavailable(query, snapshot.Freshness, "task_mismatch");
++        }
++
++        if (HasValue(scope.CorrelationId) && !Matches(scope.CorrelationId, query.CorrelationId))
++        {
++            return Unavailable(query, snapshot.Freshness, "correlation_mismatch");
++        }
++
++        if (HasValue(scope.AuthorizationWatermark)
++            && !Matches(scope.AuthorizationWatermark, allowed.FreshnessWatermark))
++        {
++            return Unavailable(query, snapshot.Freshness, "incompatible_authorization_watermark");
++        }
++
++        if (snapshot.Freshness.Stale)
++        {
++            return SafeResult(
++                FolderLifecycleStatusResultCode.ProjectionStale,
++                snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "projection_stale" },
++                query,
++                null);
++        }
++
++        return null;
++    }
++
++    private static FolderLifecycleStatusQueryResult ComputeActive(
++        FolderLifecycleStatusQuery query,
++        FolderLifecycleStatusReadModelSnapshot snapshot)
++        => snapshot.BindingStatus switch
++        {
++            FolderRepositoryBindingStatus.Unbound when HasNoBindingReferences(snapshot) =>
++                Success(query, snapshot, "ready", archived: false, repositoryBindingId: null, providerBindingRef: null),
++            FolderRepositoryBindingStatus.Unbound =>
++                Unavailable(query, snapshot.Freshness, "unbound_binding_metadata_malformed"),
++            FolderRepositoryBindingStatus.BindingRequested =>
++                SuccessWithBinding(query, snapshot, "requested"),
++            FolderRepositoryBindingStatus.Bound =>
++                SuccessWithBinding(query, snapshot, "ready"),
++            FolderRepositoryBindingStatus.Failed =>
++                SuccessWithBinding(query, snapshot, "failed"),
++            FolderRepositoryBindingStatus.UnknownProviderOutcome =>
++                SuccessWithBinding(query, snapshot, "unknown_provider_outcome"),
++            FolderRepositoryBindingStatus.ReconciliationRequired =>
++                SuccessWithBinding(query, snapshot, "reconciliation_required"),
++            FolderRepositoryBindingStatus.Unsupported =>
++                Unavailable(query, snapshot.Freshness, "binding_state_unsupported"),
++            _ => Unavailable(query, snapshot.Freshness, "binding_state_unknown"),
++        };
++
++    private static FolderLifecycleStatusQueryResult ComputeArchived(
++        FolderLifecycleStatusQuery query,
++        FolderLifecycleStatusReadModelSnapshot snapshot)
++        => snapshot.BindingStatus switch
++        {
++            FolderRepositoryBindingStatus.Unbound when HasNoBindingReferences(snapshot) =>
++                Success(query, snapshot, "inaccessible", archived: true, repositoryBindingId: null, providerBindingRef: null),
++            FolderRepositoryBindingStatus.Unbound =>
++                Unavailable(query, snapshot.Freshness, "unbound_binding_metadata_malformed"),
++            FolderRepositoryBindingStatus.Bound =>
++                SuccessWithBinding(query, snapshot, "inaccessible", archived: true),
++            _ => Unavailable(query, snapshot.Freshness, "archived_binding_state_unsupported"),
++        };
++
++    private static FolderLifecycleStatusQueryResult SuccessWithBinding(
++        FolderLifecycleStatusQuery query,
++        FolderLifecycleStatusReadModelSnapshot snapshot,
++        string lifecycleState,
++        bool archived = false)
++    {
++        if (string.IsNullOrWhiteSpace(snapshot.RepositoryBindingId)
++            || string.IsNullOrWhiteSpace(snapshot.ProviderBindingRef))
++        {
++            return Unavailable(query, snapshot.Freshness, "binding_metadata_malformed");
++        }
++
++        return Success(
++            query,
++            snapshot,
++            lifecycleState,
++            archived,
++            snapshot.RepositoryBindingId,
++            snapshot.ProviderBindingRef);
++    }
++
++    private static FolderLifecycleStatusQueryResult Success(
++        FolderLifecycleStatusQuery query,
++        FolderLifecycleStatusReadModelSnapshot snapshot,
++        string lifecycleState,
++        bool archived,
++        string? repositoryBindingId,
++        string? providerBindingRef)
++        => new(
++            FolderLifecycleStatusResultCode.Allowed,
++            snapshot.FolderId,
++            lifecycleState,
++            archived,
++            repositoryBindingId,
++            providerBindingRef,
++            AllowedOutcome,
++            snapshot.Freshness,
++            query.CorrelationId,
++            query.TaskId,
++            OperationId,
++            AuthorizationDenial: null);
++
++    private static FolderLifecycleStatusQueryResult Unavailable(
++        FolderLifecycleStatusQuery query,
++        FolderLifecycleFreshness freshness,
++        string reasonCode)
++        => SafeResult(
++            FolderLifecycleStatusResultCode.ReadModelUnavailable,
++            freshness with { Stale = true, ReasonCode = freshness.ReasonCode ?? reasonCode },
++            query,
++            authorizationDenial: null);
++
++    private static FolderLifecycleStatusQueryResult SafeResult(
++        FolderLifecycleStatusResultCode code,
++        FolderLifecycleFreshness freshness,
++        FolderLifecycleStatusQuery query,
++        LayeredFolderAuthorizationResult? authorizationDenial)
++        => new(
++            code,
++            FolderId: null,
++            LifecycleState: null,
++            Archived: false,
++            RepositoryBindingId: null,
++            ProviderBindingRef: null,
++            DeniedSafeOutcome,
++            freshness,
++            query.CorrelationId,
++            query.TaskId,
++            OperationId,
++            authorizationDenial);
++
++    private static FolderLifecycleStatusResultCode MapAuthorizationDenial(LayeredFolderAuthorizationResult authorization)
++        => authorization.Decision.OutcomeCode switch
++        {
++            LayeredAuthorizationOutcomeCodes.AuthenticationDenied => FolderLifecycleStatusResultCode.AuthenticationRequired,
++            LayeredAuthorizationOutcomeCodes.SafeNotFound or LayeredAuthorizationOutcomeCodes.FolderAclDenied => FolderLifecycleStatusResultCode.NotFoundSafe,
++            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable
++                or LayeredAuthorizationOutcomeCodes.TenantProjectionStale
++                or LayeredAuthorizationOutcomeCodes.FolderAclUnavailable
++                or LayeredAuthorizationOutcomeCodes.FolderAclStale => FolderLifecycleStatusResultCode.ReadModelUnavailable,
++            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied when authorization.Decision.Retryable => FolderLifecycleStatusResultCode.ReadModelUnavailable,
++            _ => FolderLifecycleStatusResultCode.AuthorizationDenied,
++        };
++
++    private static bool HasNoBindingReferences(FolderLifecycleStatusReadModelSnapshot snapshot)
++        => string.IsNullOrWhiteSpace(snapshot.RepositoryBindingId)
++            && string.IsNullOrWhiteSpace(snapshot.ProviderBindingRef);
++
++    private static bool HasValue(string? value)
++        => !string.IsNullOrWhiteSpace(value);
++
++    private static bool Matches(string? left, string? right)
++        => string.Equals(left?.Trim(), right?.Trim(), StringComparison.Ordinal);
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryResult.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryResult.cs
+new file mode 100644
+index 0000000..6aacdc2
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryResult.cs
+@@ -0,0 +1,17 @@
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleStatusQueryResult(
++    FolderLifecycleStatusResultCode Code,
++    string? FolderId,
++    string? LifecycleState,
++    bool Archived,
++    string? RepositoryBindingId,
++    string? ProviderBindingRef,
++    string AuthorizationOutcome,
++    FolderLifecycleFreshness Freshness,
++    string? CorrelationId,
++    string? TaskId,
++    string OperationId,
++    LayeredFolderAuthorizationResult? AuthorizationDenial);
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelRequest.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelRequest.cs
+new file mode 100644
+index 0000000..aa28a1f
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelRequest.cs
+@@ -0,0 +1,11 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleStatusReadModelRequest(
++    string ManagedTenantId,
++    string FolderId,
++    string PrincipalId,
++    string ActionToken,
++    string? TaskId,
++    string? CorrelationId,
++    string? AuthorizationWatermark,
++    string ReadConsistency);
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelResult.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelResult.cs
+new file mode 100644
+index 0000000..5ee1d72
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelResult.cs
+@@ -0,0 +1,45 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleStatusReadModelResult(
++    FolderLifecycleStatusReadModelStatus Status,
++    FolderLifecycleStatusReadModelSnapshot? Snapshot,
++    FolderLifecycleFreshness Freshness)
++{
++    public static FolderLifecycleStatusReadModelResult Available(FolderLifecycleStatusReadModelSnapshot snapshot)
++    {
++        ArgumentNullException.ThrowIfNull(snapshot);
++
++        return new(FolderLifecycleStatusReadModelStatus.Available, snapshot, snapshot.Freshness);
++    }
++
++    public static FolderLifecycleStatusReadModelResult Stale(FolderLifecycleStatusReadModelSnapshot snapshot)
++    {
++        ArgumentNullException.ThrowIfNull(snapshot);
++
++        return new(FolderLifecycleStatusReadModelStatus.Stale, snapshot, snapshot.Freshness with { Stale = true });
++    }
++
++    public static FolderLifecycleStatusReadModelResult NotFound(FolderLifecycleFreshness freshness)
++    {
++        ArgumentNullException.ThrowIfNull(freshness);
++
++        return new(FolderLifecycleStatusReadModelStatus.NotFound, null, freshness);
++    }
++
++    public static FolderLifecycleStatusReadModelResult Malformed(FolderLifecycleFreshness freshness)
++    {
++        ArgumentNullException.ThrowIfNull(freshness);
++
++        return new(FolderLifecycleStatusReadModelStatus.Malformed, null, freshness with { Stale = true });
++    }
++
++    public static FolderLifecycleStatusReadModelResult Unavailable(string reasonCode, DateTimeOffset observedAt)
++    {
++        ArgumentException.ThrowIfNullOrWhiteSpace(reasonCode);
++
++        return new(
++            FolderLifecycleStatusReadModelStatus.Unavailable,
++            null,
++            FolderLifecycleFreshness.SafeUnavailable(observedAt, reasonCode));
++    }
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs
+new file mode 100644
+index 0000000..513846b
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs
+@@ -0,0 +1,12 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed record FolderLifecycleStatusReadModelSnapshot(
++    string ManagedTenantId,
++    string FolderId,
++    FolderLifecycleProjectionState LifecycleState,
++    FolderRepositoryBindingStatus BindingStatus,
++    string? RepositoryBindingId,
++    string? ProviderBindingRef,
++    FolderLifecycleFreshness Freshness,
++    FolderLifecycleEvidenceScope EvidenceScope,
++    IReadOnlyList<string> DiagnosticSentinels);
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelStatus.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelStatus.cs
+new file mode 100644
+index 0000000..3539496
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelStatus.cs
+@@ -0,0 +1,10 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public enum FolderLifecycleStatusReadModelStatus
++{
++    Available,
++    NotFound,
++    Stale,
++    Unavailable,
++    Malformed,
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusResultCode.cs b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusResultCode.cs
+new file mode 100644
+index 0000000..a895cba
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusResultCode.cs
+@@ -0,0 +1,11 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public enum FolderLifecycleStatusResultCode
++{
++    Allowed,
++    AuthenticationRequired,
++    AuthorizationDenied,
++    NotFoundSafe,
++    ProjectionStale,
++    ReadModelUnavailable,
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/FolderRepositoryBindingStatus.cs b/src/Hexalith.Folders/Queries/Folders/FolderRepositoryBindingStatus.cs
+new file mode 100644
+index 0000000..01d2151
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/FolderRepositoryBindingStatus.cs
+@@ -0,0 +1,13 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public enum FolderRepositoryBindingStatus
++{
++    Unbound,
++    BindingRequested,
++    Bound,
++    Failed,
++    UnknownProviderOutcome,
++    ReconciliationRequired,
++    Unsupported,
++    Unknown,
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusReadModel.cs b/src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusReadModel.cs
+new file mode 100644
+index 0000000..8007f59
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/IFolderLifecycleStatusReadModel.cs
+@@ -0,0 +1,8 @@
++namespace Hexalith.Folders.Queries.Folders;
++
++public interface IFolderLifecycleStatusReadModel
++{
++    Task<FolderLifecycleStatusReadModelResult> GetAsync(
++        FolderLifecycleStatusReadModelRequest request,
++        CancellationToken cancellationToken = default);
++}
+diff --git a/src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs b/src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs
+new file mode 100644
+index 0000000..0bc81af
+--- /dev/null
++++ b/src/Hexalith.Folders/Queries/Folders/InMemoryFolderLifecycleStatusReadModel.cs
+@@ -0,0 +1,30 @@
++using System.Collections.Concurrent;
++
++namespace Hexalith.Folders.Queries.Folders;
++
++public sealed class InMemoryFolderLifecycleStatusReadModel : IFolderLifecycleStatusReadModel
++{
++    private readonly ConcurrentDictionary<ScopedSnapshotKey, FolderLifecycleStatusReadModelSnapshot> _snapshots = new();
++
++    public void Save(FolderLifecycleStatusReadModelSnapshot snapshot)
++    {
++        ArgumentNullException.ThrowIfNull(snapshot);
++
++        _snapshots[new ScopedSnapshotKey(snapshot.ManagedTenantId, snapshot.FolderId)] = snapshot;
++    }
++
++    public Task<FolderLifecycleStatusReadModelResult> GetAsync(
++        FolderLifecycleStatusReadModelRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(request);
++        cancellationToken.ThrowIfCancellationRequested();
++
++        return Task.FromResult(_snapshots.TryGetValue(new ScopedSnapshotKey(request.ManagedTenantId, request.FolderId), out FolderLifecycleStatusReadModelSnapshot? snapshot)
++            ? FolderLifecycleStatusReadModelResult.Available(snapshot)
++            : FolderLifecycleStatusReadModelResult.NotFound(
++                FolderLifecycleFreshness.SafeUnavailable(DateTimeOffset.UnixEpoch, "folder_lifecycle_projection_missing")));
++    }
++
++    private readonly record struct ScopedSnapshotKey(string ManagedTenantId, string FolderId);
++}
+diff --git a/tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs b/tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs
+new file mode 100644
+index 0000000..8130bd8
+--- /dev/null
++++ b/tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs
+@@ -0,0 +1,76 @@
++using System.Reflection;
++using Hexalith.Folders.Client.Generated;
++using Newtonsoft.Json;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Client.Tests;
++
++public sealed class LifecycleStatusClientConformanceTests
++{
++    [Fact]
++    public void GeneratedClientExposesGetFolderLifecycleStatusOperation()
++    {
++        MethodInfo method = typeof(IClient).GetMethods()
++            .Single(method => method.Name == "GetFolderLifecycleStatusAsync" && method.GetParameters().Length == 4);
++
++        method.ReturnType.ShouldBe(typeof(Task<FolderLifecycleStatus>));
++        method.GetParameters().Select(static parameter => parameter.Name).ToArray()
++            .ShouldBe(["folderId", "x_Correlation_Id", "x_Hexalith_Freshness", "cancellationToken"]);
++    }
++
++    [Fact]
++    public void GeneratedFolderLifecycleStatusCarriesActiveUnboundShapeWithoutOptionalBindingFields()
++    {
++        var status = new FolderLifecycleStatus
++        {
++            FolderId = "folder_opaque_active_unbound",
++            LifecycleState = LifecycleState.Ready,
++            Archived = false,
++            Freshness = new FreshnessMetadata
++            {
++                ReadConsistency = ReadConsistencyClass.Eventually_consistent,
++                ObservedAt = new DateTimeOffset(2026, 5, 19, 12, 0, 0, TimeSpan.Zero),
++                ProjectionWatermark = "projection_watermark_opaque",
++                Stale = false,
++            },
++        };
++
++        string json = JsonConvert.SerializeObject(status);
++
++        json.ShouldContain("\"folderId\":\"folder_opaque_active_unbound\"");
++        json.ShouldContain("\"lifecycleState\":\"ready\"");
++        json.ShouldContain("\"archived\":false");
++        json.ShouldContain("\"readConsistency\":\"eventually_consistent\"");
++        json.ShouldNotContain("repositoryBindingId", Case.Sensitive);
++        json.ShouldNotContain("providerBindingRef", Case.Sensitive);
++    }
++
++    [Fact]
++    public void GeneratedFolderLifecycleStatusCarriesActiveBoundOpaqueBindingFields()
++    {
++        var status = new FolderLifecycleStatus
++        {
++            FolderId = "folder_opaque_active_bound",
++            LifecycleState = LifecycleState.Ready,
++            Archived = false,
++            RepositoryBindingId = "repository_binding_opaque_safe",
++            ProviderBindingRef = "provider_binding_opaque_safe",
++            Freshness = new FreshnessMetadata
++            {
++                ReadConsistency = ReadConsistencyClass.Eventually_consistent,
++                ObservedAt = new DateTimeOffset(2026, 5, 19, 12, 0, 0, TimeSpan.Zero),
++                ProjectionWatermark = "projection_watermark_opaque",
++                Stale = false,
++            },
++        };
++
++        string json = JsonConvert.SerializeObject(status);
++
++        json.ShouldContain("\"repositoryBindingId\":\"repository_binding_opaque_safe\"");
++        json.ShouldContain("\"providerBindingRef\":\"provider_binding_opaque_safe\"");
++        json.ShouldNotContain("https://provider.invalid", Case.Sensitive);
++        json.ShouldNotContain("branch-name", Case.Sensitive);
++        json.ShouldNotContain("credential-material", Case.Sensitive);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs b/tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs
+new file mode 100644
+index 0000000..f159d28
+--- /dev/null
++++ b/tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs
+@@ -0,0 +1,246 @@
++using System.Net;
++using System.Text.Json;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Folders.Queries.Folders;
++using Hexalith.Folders.Server.Authentication;
++using Microsoft.AspNetCore.Builder;
++using Microsoft.AspNetCore.Routing;
++using Microsoft.Extensions.DependencyInjection;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Server.Tests;
++
++public sealed class FolderLifecycleStatusEndpointTests
++{
++    private static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
++
++    [Fact]
++    public void MapFoldersServerEndpointsShouldRegisterLifecycleStatusRoute()
++    {
++        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
++        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore("tenant-a", "user-a"));
++        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(PermissionReadModel());
++        builder.Services.AddSingleton<IFolderLifecycleStatusReadModel>(LifecycleReadModel());
++        builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
++        builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor("tenant-a", "user-a"));
++        builder.Services.AddSingleton<IEventStoreClaimTransformEvidenceAccessor>(new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
++        builder.Services.AddFoldersServer();
++        WebApplication app = builder.Build();
++
++        app.MapFoldersServerEndpoints();
++
++        string[] routes = ((IEndpointRouteBuilder)app)
++            .DataSources
++            .SelectMany(static source => source.Endpoints)
++            .OfType<RouteEndpoint>()
++            .Select(static endpoint => endpoint.RoutePattern.RawText ?? string.Empty)
++            .ToArray();
++
++        routes.ShouldContain("/api/v1/folders/{folderId}/lifecycle-status");
++    }
++
++    [Fact]
++    public async Task LifecycleStatusRouteShouldReturnContractShapedActiveUnboundResponse()
++    {
++        await using WebApplication app = BuildApp(
++            TenantStore("tenant-a", "user-a"),
++            PermissionReadModel(),
++            LifecycleReadModel(),
++            new StaticTenantContextAccessor("tenant-a", "user-a"),
++            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
++
++        await app.StartAsync(TestContext.Current.CancellationToken);
++        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
++        request.Headers.Add("X-Correlation-Id", "corr-a");
++        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
++
++        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
++        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
++        using JsonDocument document = JsonDocument.Parse(json);
++
++        response.StatusCode.ShouldBe(HttpStatusCode.OK);
++        response.Headers.TryGetValues("X-Correlation-Id", out IEnumerable<string>? correlationHeaders).ShouldBeTrue();
++        correlationHeaders.ShouldNotBeNull().ShouldContain("corr-a");
++        document.RootElement.GetProperty("folderId").GetString().ShouldBe("folder-a");
++        document.RootElement.GetProperty("lifecycleState").GetString().ShouldBe("ready");
++        document.RootElement.GetProperty("archived").GetBoolean().ShouldBeFalse();
++        document.RootElement.TryGetProperty("repositoryBindingId", out _).ShouldBeFalse();
++        document.RootElement.TryGetProperty("providerBindingRef", out _).ShouldBeFalse();
++        document.RootElement.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
++        document.RootElement.GetProperty("freshness").GetProperty("stale").GetBoolean().ShouldBeFalse();
++    }
++
++    [Fact]
++    public async Task LifecycleStatusRouteShouldUseSafeDenialEnvelopeForTenantMismatch()
++    {
++        await using WebApplication app = BuildApp(
++            TenantStore("tenant-a", "user-a"),
++            PermissionReadModel(),
++            LifecycleReadModel(),
++            new StaticTenantContextAccessor("tenant-a", "user-a"),
++            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
++
++        await app.StartAsync(TestContext.Current.CancellationToken);
++        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-secret-victim/lifecycle-status");
++        request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-secret-victim");
++        request.Headers.Add("X-Correlation-Id", "corr-mismatch");
++
++        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
++        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
++
++        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
++        json.ShouldContain("\"category\":\"authorization_denied\"");
++        json.ShouldContain("\"clientAction\":\"no_action\"");
++        json.ShouldContain("\"correlationId\":\"corr-mismatch\"");
++        json.ShouldNotContain("folder-secret-victim", Case.Sensitive);
++        json.ShouldNotContain("tenant-secret-victim", Case.Sensitive);
++    }
++
++    [Fact]
++    public async Task LifecycleStatusRouteShouldEmit503ForUnavailableReadModel()
++    {
++        await using WebApplication app = BuildApp(
++            TenantStore("tenant-a", "user-a"),
++            PermissionReadModel(),
++            new ThrowingLifecycleStatusReadModel(),
++            new StaticTenantContextAccessor("tenant-a", "user-a"),
++            new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
++
++        await app.StartAsync(TestContext.Current.CancellationToken);
++        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
++        request.Headers.Add("X-Correlation-Id", "corr-unavailable");
++
++        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
++        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
++
++        response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
++        json.ShouldContain("\"category\":\"read_model_unavailable\"");
++        json.ShouldContain("\"retryable\":true");
++        json.ShouldContain("\"clientAction\":\"retry\"");
++        json.ShouldContain("\"correlationId\":\"corr-unavailable\"");
++    }
++
++    private static WebApplication BuildApp(
++        IFolderTenantAccessProjectionStore tenantStore,
++        IEffectivePermissionsReadModel permissionsReadModel,
++        IFolderLifecycleStatusReadModel lifecycleReadModel,
++        ITenantContextAccessor tenantContext,
++        IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence)
++    {
++        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
++        {
++            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
++        });
++        builder.Configuration["urls"] = "http://127.0.0.1:0";
++        builder.Services.AddSingleton(tenantStore);
++        builder.Services.AddSingleton(permissionsReadModel);
++        builder.Services.AddSingleton(lifecycleReadModel);
++        builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
++        builder.Services.AddSingleton(tenantContext);
++        builder.Services.AddSingleton(claimTransformEvidence);
++        builder.Services.AddFoldersServer();
++        WebApplication app = builder.Build();
++        app.MapFoldersServerEndpoints();
++        return app;
++    }
++
++    private static InMemoryFolderTenantAccessProjectionStore TenantStore(string tenantId, string principalId)
++    {
++        InMemoryFolderTenantAccessProjectionStore store = new();
++        store.SaveAsync(new FolderTenantAccessProjection
++        {
++            TenantId = tenantId,
++            Enabled = true,
++            Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
++            {
++                [principalId] = new(principalId, "Member"),
++            },
++            Watermark = 7,
++            ProjectionWatermark = $"{tenantId}:7",
++            LastEventTimestamp = DateTimeOffset.UtcNow,
++        }).GetAwaiter().GetResult();
++        return store;
++    }
++
++    private static InMemoryEffectivePermissionsReadModel PermissionReadModel()
++    {
++        InMemoryEffectivePermissionsReadModel readModel = new();
++        readModel.Save(new EffectivePermissionsReadModelSnapshot(
++            ManagedTenantId: "tenant-a",
++            OrganizationId: "organization-a",
++            FolderId: "folder-a",
++            LifecycleState: EffectivePermissionsFolderLifecycleState.Active,
++            EvidenceRows:
++            [
++                new(
++                    EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
++                    EffectivePermissionPrincipal.User("user-a"),
++                    "read_metadata",
++                    Sequence: 1,
++                    EffectiveAt: Now),
++            ],
++            Freshness: new EffectivePermissionsFreshness(
++                ReadConsistency: "read_your_writes",
++                ObservedAt: Now,
++                ProjectionWatermark: "permission_watermark_v1",
++                Stale: false,
++                ReasonCode: null),
++            RevocationFreshnessEstablished: true,
++            TaskScope: null));
++        return readModel;
++    }
++
++    private static InMemoryFolderLifecycleStatusReadModel LifecycleReadModel()
++    {
++        InMemoryFolderLifecycleStatusReadModel readModel = new();
++        readModel.Save(new FolderLifecycleStatusReadModelSnapshot(
++            ManagedTenantId: "tenant-a",
++            FolderId: "folder-a",
++            LifecycleState: FolderLifecycleProjectionState.Active,
++            BindingStatus: FolderRepositoryBindingStatus.Unbound,
++            RepositoryBindingId: null,
++            ProviderBindingRef: null,
++            Freshness: new FolderLifecycleFreshness(
++                ReadConsistency: "eventually_consistent",
++                ObservedAt: Now,
++                ProjectionWatermark: "lifecycle_watermark_v1",
++                Stale: false,
++                ReasonCode: null),
++            EvidenceScope: new FolderLifecycleEvidenceScope(
++                ManagedTenantId: "tenant-a",
++                PrincipalId: "user-a",
++                ActionToken: "read_metadata",
++                TaskId: null,
++                CorrelationId: "corr-a",
++                AuthorizationWatermark: "permission_watermark_v1"),
++            DiagnosticSentinels: []));
++        return readModel;
++    }
++
++    private sealed class ThrowingLifecycleStatusReadModel : IFolderLifecycleStatusReadModel
++    {
++        public Task<FolderLifecycleStatusReadModelResult> GetAsync(
++            FolderLifecycleStatusReadModelRequest request,
++            CancellationToken cancellationToken = default)
++            => throw new InvalidOperationException("raw unavailable diagnostic must not leak");
++    }
++
++    private sealed class StaticTenantContextAccessor(string tenantId, string principalId) : ITenantContextAccessor
++    {
++        public string? AuthoritativeTenantId => tenantId;
++
++        public string? PrincipalId => principalId;
++    }
++
++    private sealed class StaticClaimTransformEvidenceAccessor(string tenantId, string principalId)
++        : IEventStoreClaimTransformEvidenceAccessor
++    {
++        public EventStoreClaimTransformEvidence GetEvidence(string actionToken)
++            => EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [actionToken]);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusAuthorizationGateTests.cs b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusAuthorizationGateTests.cs
+new file mode 100644
+index 0000000..33cc2e9
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusAuthorizationGateTests.cs
+@@ -0,0 +1,116 @@
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Queries.Folders;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Queries.Folders;
++
++public sealed class FolderLifecycleStatusAuthorizationGateTests
++{
++    [Fact]
++    public async Task RejectsBeforeFolderProjectionWhenTenantDenied()
++    {
++        CountingTenantAccessProjectionStore tenantStore = new(
++            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-b"]));
++        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveUnbound()));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
++
++        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthorizationDenied);
++        result.FolderId.ShouldBeNull();
++        tenantStore.Gets.ShouldBe(1);
++        readModel.Requests.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task ClientTenantMismatchRejectsBeforeTenantProjectionLookup()
++    {
++        CountingTenantAccessProjectionStore tenantStore = new(
++            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
++        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveUnbound()));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
++
++        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(clientTenantValues: new Dictionary<string, string?>
++            {
++                ["header_hexalith_tenant_id"] = "tenant-b",
++            }),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthorizationDenied);
++        tenantStore.Gets.ShouldBe(0);
++        readModel.Requests.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task RejectsBeforeBindingLookupWhenFolderAclDenied()
++    {
++        CountingTenantAccessProjectionStore tenantStore = new(
++            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
++        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveBound()));
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(
++            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "acl_watermark_v1"));
++        RecordingEventStoreAuthorizationValidator validator = new(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
++        RecordingDaprPolicyEvidenceProvider dapr = new(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1"));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(
++            tenantStore,
++            readModel,
++            folderEvidence,
++            validator,
++            dapr);
++
++        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.NotFoundSafe);
++        readModel.Requests.ShouldBe(0);
++        folderEvidence.Requests.Count.ShouldBe(1);
++        validator.Requests.Count.ShouldBe(0);
++        dapr.Requests.Count.ShouldBe(0);
++    }
++
++    [Fact]
++    public async Task AllowsReadModelOnlyAfterLayeredAuthorization()
++    {
++        CountingTenantAccessProjectionStore tenantStore = new(
++            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
++        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveUnbound()));
++        RecordingFolderPermissionEvidenceProvider folderEvidence = new(
++            FolderPermissionEvidenceResult.Allowed(FolderLifecycleStatusTestSupport.AuthorizationWatermark));
++        RecordingEventStoreAuthorizationValidator validator = new(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
++        RecordingDaprPolicyEvidenceProvider dapr = new(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1"));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(
++            tenantStore,
++            readModel,
++            folderEvidence,
++            validator,
++            dapr);
++
++        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        tenantStore.Gets.ShouldBe(1);
++        folderEvidence.Requests.Count.ShouldBe(1);
++        validator.Requests.Count.ShouldBe(1);
++        dapr.Requests.Count.ShouldBe(1);
++        readModel.Requests.ShouldBe(1);
++        readModel.LastRequest.ShouldNotBeNull();
++        readModel.LastRequest.ManagedTenantId.ShouldBe("tenant-a");
++        readModel.LastRequest.FolderId.ShouldBe("folder-a");
++        readModel.LastRequest.PrincipalId.ShouldBe("user-a");
++        readModel.LastRequest.ActionToken.ShouldBe("read_metadata");
++        readModel.LastRequest.TaskId.ShouldBe("task-a");
++        readModel.LastRequest.CorrelationId.ShouldBe("corr-a");
++        readModel.LastRequest.AuthorizationWatermark.ShouldBe(FolderLifecycleStatusTestSupport.AuthorizationWatermark);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs
+new file mode 100644
+index 0000000..38e5963
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs
+@@ -0,0 +1,77 @@
++using System.Text.Json;
++using Hexalith.Folders.Queries.Folders;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Queries.Folders;
++
++public sealed class FolderLifecycleStatusMetadataLeakageTests
++{
++    [Fact]
++    public async Task SafeDenialShouldNotEchoUnauthorizedResourceIdentifiers()
++    {
++        CountingTenantAccessProjectionStore tenantStore = new();
++        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveBound(
++                "repository_binding_secret_victim",
++                "provider_binding_secret_victim")));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
++
++        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(
++                folderId: "folder-secret-victim",
++                tenantId: "tenant-attacker",
++                principalId: "principal-secret-victim",
++                clientTenantValues: new Dictionary<string, string?>
++                {
++                    ["header"] = "tenant-secret-victim",
++                }),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        string serialized = JsonSerializer.Serialize(result);
++
++        result.FolderId.ShouldBeNull();
++        serialized.ShouldNotContain("folder-secret-victim", Case.Sensitive);
++        serialized.ShouldNotContain("tenant-secret-victim", Case.Sensitive);
++        serialized.ShouldNotContain("principal-secret-victim", Case.Sensitive);
++        serialized.ShouldNotContain("repository_binding_secret_victim", Case.Sensitive);
++        serialized.ShouldNotContain("provider_binding_secret_victim", Case.Sensitive);
++        readModel.Requests.ShouldBe(0);
++    }
++
++    [Theory]
++    [InlineData("raw-auth-header")]
++    [InlineData("provider-token")]
++    [InlineData("credential-material")]
++    [InlineData("https://provider.invalid/org/repository")]
++    [InlineData("repo-name")]
++    [InlineData("branch-name")]
++    [InlineData("C:\\tenant\\workspace\\secret.txt")]
++    [InlineData("generated context payload")]
++    [InlineData("user@example.test")]
++    [InlineData("raw provider payload")]
++    public async Task SuccessfulStatusShouldNotExposeDiagnosticOrProviderSentinels(string sentinel)
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveBound(
++            "repository_binding_opaque_safe",
++            "provider_binding_opaque_safe") with
++        {
++            DiagnosticSentinels = [sentinel],
++        };
++        CountingTenantAccessProjectionStore tenantStore = new(
++            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
++        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(snapshot));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
++
++        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        string serialized = JsonSerializer.Serialize(result);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        serialized.ShouldContain("repository_binding_opaque_safe", Case.Sensitive);
++        serialized.ShouldContain("provider_binding_opaque_safe", Case.Sensitive);
++        serialized.ShouldNotContain(sentinel, Case.Sensitive);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs
+new file mode 100644
+index 0000000..0706e41
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs
+@@ -0,0 +1,212 @@
++using Hexalith.Folders.Queries.Folders;
++using Hexalith.Folders.Projections.TenantAccess;
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.Tests.Queries.Folders;
++
++public sealed class FolderLifecycleStatusProjectionTests
++{
++    [Fact]
++    public async Task ActiveUnboundFolderReturnsReadyMetadataOnlyStatus()
++    {
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveUnbound())).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        result.FolderId.ShouldBe("folder-a");
++        result.LifecycleState.ShouldBe("ready");
++        result.Archived.ShouldBeFalse();
++        result.RepositoryBindingId.ShouldBeNull();
++        result.ProviderBindingRef.ShouldBeNull();
++        result.Freshness.ReadConsistency.ShouldBe("eventually_consistent");
++        result.Freshness.ProjectionWatermark.ShouldBe(FolderLifecycleStatusTestSupport.LifecycleWatermark);
++        result.Freshness.Stale.ShouldBeFalse();
++    }
++
++    [Fact]
++    public async Task ActiveBoundFolderReturnsOnlyOpaqueBindingMetadata()
++    {
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(FolderLifecycleStatusReadModelResult.Available(
++            FolderLifecycleStatusTestSupport.ActiveBound(
++                "repository_binding_opaque_safe",
++                "provider_binding_opaque_safe"))).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        result.LifecycleState.ShouldBe("ready");
++        result.Archived.ShouldBeFalse();
++        result.RepositoryBindingId.ShouldBe("repository_binding_opaque_safe");
++        result.ProviderBindingRef.ShouldBe("provider_binding_opaque_safe");
++    }
++
++    [Theory]
++    [InlineData(FolderRepositoryBindingStatus.BindingRequested, "requested")]
++    [InlineData(FolderRepositoryBindingStatus.Failed, "failed")]
++    [InlineData(FolderRepositoryBindingStatus.UnknownProviderOutcome, "unknown_provider_outcome")]
++    [InlineData(FolderRepositoryBindingStatus.ReconciliationRequired, "reconciliation_required")]
++    public async Task RecognizedBindingStatesMapToContractLifecycleVocabulary(
++        FolderRepositoryBindingStatus bindingStatus,
++        string expectedLifecycleState)
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
++            "tenant-a",
++            "folder-a",
++            FolderLifecycleProjectionState.Active,
++            bindingStatus,
++            "repository_binding_opaque_safe",
++            "provider_binding_opaque_safe");
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        result.LifecycleState.ShouldBe(expectedLifecycleState);
++        result.RepositoryBindingId.ShouldBe("repository_binding_opaque_safe");
++        result.ProviderBindingRef.ShouldBe("provider_binding_opaque_safe");
++    }
++
++    [Fact]
++    public async Task ArchiveUnsupportedFailsClosedInsteadOfDefaultingActive()
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
++            "tenant-a",
++            "folder-a",
++            FolderLifecycleProjectionState.ArchiveUnsupported,
++            FolderRepositoryBindingStatus.Unbound);
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
++        result.LifecycleState.ShouldBeNull();
++        result.Freshness.Stale.ShouldBeTrue();
++        result.Freshness.ReasonCode.ShouldBe("archive_state_unsupported");
++    }
++
++    [Fact]
++    public async Task UnknownBindingStateFailsClosed()
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
++            "tenant-a",
++            "folder-a",
++            FolderLifecycleProjectionState.Active,
++            FolderRepositoryBindingStatus.Unknown);
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
++        result.Freshness.Stale.ShouldBeTrue();
++        result.Freshness.ReasonCode.ShouldBe("binding_state_unknown");
++    }
++
++    [Fact]
++    public async Task IncompatibleAuthorizationWatermarkFailsClosed()
++    {
++        FolderLifecycleEvidenceScope evidenceScope = FolderLifecycleStatusTestSupport.EvidenceScope(
++            authorizationWatermark: "different_authorization_watermark");
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound(
++            evidenceScope: evidenceScope);
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
++        result.Freshness.Stale.ShouldBeTrue();
++        result.Freshness.ReasonCode.ShouldBe("incompatible_authorization_watermark");
++    }
++
++    [Fact]
++    public async Task StaleLifecycleProjectionFailsClosedWithFreshnessEvidence()
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound() with
++        {
++            Freshness = FolderLifecycleStatusTestSupport.Freshness(stale: true, reasonCode: "projection_stale"),
++        };
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Stale(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
++        result.Freshness.Stale.ShouldBeTrue();
++        result.Freshness.ReasonCode.ShouldBe("projection_stale");
++    }
++
++    [Fact]
++    public async Task SameFolderIdAcrossTenantsUsesTenantScopedLifecycleProjection()
++    {
++        InMemoryFolderTenantAccessProjectionStore tenantStore = new();
++        await tenantStore.SaveAsync(
++            FolderLifecycleStatusTestSupport.TenantProjection("tenant-a", "user-a"),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++        await tenantStore.SaveAsync(
++            FolderLifecycleStatusTestSupport.TenantProjection("tenant-b", "user-b"),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++        InMemoryFolderLifecycleStatusReadModel readModel = new();
++        readModel.Save(FolderLifecycleStatusTestSupport.Snapshot(
++            "tenant-a",
++            "shared-folder-id",
++            FolderLifecycleProjectionState.Active,
++            FolderRepositoryBindingStatus.Bound,
++            "repository_binding_tenant_a",
++            "provider_binding_tenant_a",
++            FolderLifecycleStatusTestSupport.EvidenceScope("tenant-a", "user-a", correlationId: "corr-a")));
++        readModel.Save(FolderLifecycleStatusTestSupport.Snapshot(
++            "tenant-b",
++            "shared-folder-id",
++            FolderLifecycleProjectionState.Active,
++            FolderRepositoryBindingStatus.Bound,
++            "repository_binding_tenant_b",
++            "provider_binding_tenant_b",
++            FolderLifecycleStatusTestSupport.EvidenceScope("tenant-b", "user-b", correlationId: "corr-b")));
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
++
++        FolderLifecycleStatusQueryResult tenantA = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query("shared-folder-id", "tenant-a", "user-a", correlationId: "corr-a"),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++        FolderLifecycleStatusQueryResult tenantB = await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(
++                "shared-folder-id",
++                "tenant-b",
++                "user-b",
++                correlationId: "corr-b",
++                claimTransformEvidence: Hexalith.Folders.Authorization.EventStoreClaimTransformEvidence.Allowed(
++                    "tenant-b",
++                    "user-b",
++                    ["read_metadata"])),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++        tenantA.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        tenantB.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
++        tenantA.RepositoryBindingId.ShouldBe("repository_binding_tenant_a");
++        tenantB.RepositoryBindingId.ShouldBe("repository_binding_tenant_b");
++        tenantA.ProviderBindingRef.ShouldBe("provider_binding_tenant_a");
++        tenantB.ProviderBindingRef.ShouldBe("provider_binding_tenant_b");
++    }
++
++    [Fact]
++    public async Task MismatchedTaskEvidenceFailsClosedInsteadOfReusingCachedStatus()
++    {
++        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound(
++            evidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(taskId: "different-task"));
++
++        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
++            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
++
++        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
++        result.Freshness.Stale.ShouldBeTrue();
++        result.Freshness.ReasonCode.ShouldBe("task_mismatch");
++    }
++
++    private static async Task<FolderLifecycleStatusQueryResult> ExecuteAsync(FolderLifecycleStatusReadModelResult readModelResult)
++    {
++        CountingTenantAccessProjectionStore tenantStore = new(
++            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
++        CountingLifecycleStatusReadModel readModel = new(readModelResult);
++        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
++
++        return await handler.HandleAsync(
++            FolderLifecycleStatusTestSupport.Query(),
++            TestContext.Current.CancellationToken).ConfigureAwait(true);
++    }
++}
+diff --git a/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs
+new file mode 100644
+index 0000000..a849a87
+--- /dev/null
++++ b/tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs
+@@ -0,0 +1,218 @@
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Folders.Queries.Folders;
++
++namespace Hexalith.Folders.Tests.Queries.Folders;
++
++internal static class FolderLifecycleStatusTestSupport
++{
++    internal static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
++
++    internal const string TenantWatermark = "tenant_a_watermark_v0007";
++
++    internal const string AuthorizationWatermark = "auth_folder_watermark_v0011";
++
++    internal const string LifecycleWatermark = "lifecycle_folder_watermark_v0023";
++
++    internal static FolderLifecycleStatusQueryHandler Handler(
++        IFolderTenantAccessProjectionStore tenantStore,
++        IFolderLifecycleStatusReadModel lifecycleReadModel,
++        RecordingFolderPermissionEvidenceProvider? folderEvidence = null,
++        RecordingEventStoreAuthorizationValidator? validator = null,
++        RecordingDaprPolicyEvidenceProvider? dapr = null)
++    {
++        LayeredFolderAuthorizationService authorization = new(
++            new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
++            folderEvidence ?? new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.Allowed(AuthorizationWatermark)),
++            validator ?? new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
++            dapr ?? new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1")),
++            new FixedUtcClock(Now));
++
++        return new FolderLifecycleStatusQueryHandler(
++            authorization,
++            lifecycleReadModel,
++            new FixedUtcClock(Now));
++    }
++
++    internal static FolderLifecycleStatusQuery Query(
++        string folderId = "folder-a",
++        string? tenantId = "tenant-a",
++        string? principalId = "user-a",
++        string? taskId = "task-a",
++        string? correlationId = "corr-a",
++        IReadOnlyDictionary<string, string?>? clientTenantValues = null,
++        EventStoreClaimTransformEvidence? claimTransformEvidence = null)
++        => new(
++            folderId,
++            tenantId,
++            principalId,
++            claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, ["read_metadata"]),
++            correlationId,
++            taskId,
++            clientTenantValues,
++            ClientControlledPrincipalValues: null);
++
++    internal static FolderLifecycleStatusReadModelSnapshot ActiveUnbound(
++        string tenantId = "tenant-a",
++        string folderId = "folder-a",
++        FolderLifecycleEvidenceScope? evidenceScope = null,
++        IReadOnlyList<string>? diagnosticSentinels = null)
++        => Snapshot(
++            tenantId,
++            folderId,
++            FolderLifecycleProjectionState.Active,
++            FolderRepositoryBindingStatus.Unbound,
++            repositoryBindingId: null,
++            providerBindingRef: null,
++            evidenceScope,
++            diagnosticSentinels);
++
++    internal static FolderLifecycleStatusReadModelSnapshot ActiveBound(
++        string repositoryBindingId = "repository_binding_opaque_001",
++        string providerBindingRef = "provider_binding_opaque_001")
++        => Snapshot(
++            "tenant-a",
++            "folder-a",
++            FolderLifecycleProjectionState.Active,
++            FolderRepositoryBindingStatus.Bound,
++            repositoryBindingId,
++            providerBindingRef);
++
++    internal static FolderLifecycleStatusReadModelSnapshot Snapshot(
++        string tenantId,
++        string folderId,
++        FolderLifecycleProjectionState lifecycleState,
++        FolderRepositoryBindingStatus bindingStatus,
++        string? repositoryBindingId = null,
++        string? providerBindingRef = null,
++        FolderLifecycleEvidenceScope? evidenceScope = null,
++        IReadOnlyList<string>? diagnosticSentinels = null)
++        => new(
++            ManagedTenantId: tenantId,
++            FolderId: folderId,
++            LifecycleState: lifecycleState,
++            BindingStatus: bindingStatus,
++            RepositoryBindingId: repositoryBindingId,
++            ProviderBindingRef: providerBindingRef,
++            Freshness: Freshness(),
++            EvidenceScope: evidenceScope ?? EvidenceScope(),
++            DiagnosticSentinels: diagnosticSentinels ?? []);
++
++    internal static FolderLifecycleFreshness Freshness(
++        bool stale = false,
++        string? projectionWatermark = LifecycleWatermark,
++        string? reasonCode = null)
++        => new(
++            ReadConsistency: "eventually_consistent",
++            ObservedAt: Now,
++            ProjectionWatermark: projectionWatermark,
++            Stale: stale,
++            ReasonCode: reasonCode);
++
++    internal static FolderLifecycleEvidenceScope EvidenceScope(
++        string tenantId = "tenant-a",
++        string principalId = "user-a",
++        string actionToken = "read_metadata",
++        string? taskId = "task-a",
++        string? correlationId = "corr-a",
++        string? authorizationWatermark = AuthorizationWatermark)
++        => new(
++            tenantId,
++            principalId,
++            actionToken,
++            taskId,
++            correlationId,
++            authorizationWatermark);
++
++    internal static FolderTenantAccessProjection TenantProjection(
++        string tenantId = "tenant-a",
++        params string[] principals)
++    {
++        Dictionary<string, FolderTenantPrincipalEvidence> principalEvidence = principals
++            .ToDictionary(
++                static principal => principal,
++                static principal => new FolderTenantPrincipalEvidence(principal, "Member"),
++                StringComparer.Ordinal);
++
++        return new FolderTenantAccessProjection
++        {
++            TenantId = tenantId,
++            Enabled = true,
++            Principals = principalEvidence,
++            Watermark = 7,
++            LastEventTimestamp = Now.AddMinutes(-1),
++            ProjectionWatermark = TenantWatermark,
++        };
++    }
++}
++
++internal sealed class CountingLifecycleStatusReadModel(FolderLifecycleStatusReadModelResult result)
++    : IFolderLifecycleStatusReadModel
++{
++    public int Requests { get; private set; }
++
++    public FolderLifecycleStatusReadModelRequest? LastRequest { get; private set; }
++
++    public Task<FolderLifecycleStatusReadModelResult> GetAsync(
++        FolderLifecycleStatusReadModelRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        Requests++;
++        LastRequest = request;
++        return Task.FromResult(result);
++    }
++}
++
++internal sealed class CountingTenantAccessProjectionStore(FolderTenantAccessProjection? projection = null)
++    : IFolderTenantAccessProjectionStore
++{
++    public int Gets { get; private set; }
++
++    public Task<FolderTenantAccessProjection?> GetAsync(string tenantId, CancellationToken cancellationToken = default)
++    {
++        Gets++;
++        return Task.FromResult(projection);
++    }
++
++    public Task SaveAsync(FolderTenantAccessProjection projection, CancellationToken cancellationToken = default)
++        => Task.CompletedTask;
++}
++
++internal sealed class RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult result) : IFolderPermissionEvidenceProvider
++{
++    public List<FolderPermissionEvidenceRequest> Requests { get; } = [];
++
++    public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
++        FolderPermissionEvidenceRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        Requests.Add(request);
++        return Task.FromResult(result);
++    }
++}
++
++internal sealed class RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult result) : IEventStoreAuthorizationValidator
++{
++    public List<EventStoreAuthorizationValidationRequest> Requests { get; } = [];
++
++    public Task<EventStoreAuthorizationValidationResult> ValidateAsync(
++        EventStoreAuthorizationValidationRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        Requests.Add(request);
++        return Task.FromResult(result);
++    }
++}
++
++internal sealed class RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult result) : IDaprPolicyEvidenceProvider
++{
++    public List<DaprPolicyEvidenceRequest> Requests { get; } = [];
++
++    public Task<DaprPolicyEvidenceResult> GetEvidenceAsync(
++        DaprPolicyEvidenceRequest request,
++        CancellationToken cancellationToken = default)
++    {
++        Requests.Add(request);
++        return Task.FromResult(result);
++    }
++}

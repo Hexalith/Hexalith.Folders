@@ -15,6 +15,9 @@ namespace Hexalith.Folders.Server;
 
 public static class FoldersDomainServiceEndpoints
 {
+    private const string FreshnessHeaderName = "X-Hexalith-Freshness";
+    private const string EventuallyConsistent = "eventually_consistent";
+
     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -75,6 +78,35 @@ public static class FoldersDomainServiceEndpoints
             =>
         {
             string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+            // The operation declares x-hexalith-read-consistency.class: eventually_consistent.
+            // A caller-supplied stricter class is silently invalid; surface as 400 instead of
+            // silently downgrading to eventually_consistent.
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
+            {
+                return Results.Problem(
+                    type: "https://hexalith.dev/errors/folders/validation_error",
+                    title: "Unsupported read-consistency class.",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["category"] = "validation_error",
+                        ["code"] = "unsupported_read_consistency",
+                        ["message"] = "Operation supports eventually_consistent only.",
+                        ["correlationId"] = correlationId,
+                        ["taskId"] = taskId,
+                        ["retryable"] = false,
+                        ["clientAction"] = "no_action",
+                        ["details"] = new Dictionary<string, object?>
+                        {
+                            ["visibility"] = "metadata_only",
+                        },
+                    });
+            }
+
             FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
                 new FolderLifecycleStatusQuery(
                     folderId,
@@ -82,67 +114,124 @@ public static class FoldersDomainServiceEndpoints
                     tenantContext.PrincipalId,
                     claimTransformEvidence.GetEvidence("read_metadata"),
                     correlationId,
-                    TaskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"),
+                    TaskId: taskId,
                     ClientControlledTenantValues: ClientTenantIds(httpContext),
                     ClientControlledPrincipalValues: ClientPrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
-            AddLifecycleHeaders(httpContext, result);
-            return ToHttpResult(result, correlationId);
+            return ToHttpResult(httpContext, result, correlationId, taskId);
         })
         .WithName("GetFolderLifecycleStatus");
 
         return endpoints;
     }
 
-    private static IResult ToHttpResult(FolderLifecycleStatusQueryResult result, string? correlationId)
+    private static IResult ToHttpResult(HttpContext httpContext, FolderLifecycleStatusQueryResult result, string? correlationId, string? taskId)
     {
         if (result.AuthorizationDenial is not null)
         {
             return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
         }
 
-        return result.Code switch
+        switch (result.Code)
         {
-            FolderLifecycleStatusResultCode.Allowed => Results.Json(
-                new FolderLifecycleStatusResponse(
-                    result.FolderId ?? string.Empty,
-                    result.LifecycleState ?? "inaccessible",
-                    result.Archived,
-                    result.RepositoryBindingId,
-                    result.ProviderBindingRef,
-                    new FreshnessMetadataResponse(
-                        result.Freshness.ReadConsistency,
-                        result.Freshness.ObservedAt,
-                        result.Freshness.ProjectionWatermark,
-                        result.Freshness.Stale)),
-                ResponseJsonOptions),
-            FolderLifecycleStatusResultCode.AuthenticationRequired => SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId),
-            FolderLifecycleStatusResultCode.NotFoundSafe => SafeProblem(
-                StatusCodes.Status404NotFound,
-                category: "not_found_to_caller",
-                code: "safe_not_found",
-                retryable: false,
-                correlationId: correlationId),
-            FolderLifecycleStatusResultCode.ReadModelUnavailable
-                or FolderLifecycleStatusResultCode.ProjectionStale => SafeProblem(
+            case FolderLifecycleStatusResultCode.Allowed:
+                // Defensive: an Allowed result with null FolderId or LifecycleState is a
+                // handler invariant break. Fail closed rather than synthesizing a Contract
+                // Spine value the caller is told to trust.
+                if (string.IsNullOrWhiteSpace(result.FolderId) || string.IsNullOrWhiteSpace(result.LifecycleState))
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                AddLifecycleSuccessHeaders(httpContext, result);
+                return Results.Json(
+                    new FolderLifecycleStatusResponse(
+                        result.FolderId,
+                        result.LifecycleState,
+                        result.Archived,
+                        result.RepositoryBindingId,
+                        result.ProviderBindingRef,
+                        new FreshnessMetadataResponse(
+                            result.Freshness.ReadConsistency,
+                            result.Freshness.ObservedAt,
+                            result.Freshness.ProjectionWatermark,
+                            result.Freshness.Stale)),
+                    ResponseJsonOptions);
+
+            case FolderLifecycleStatusResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ReadModelUnavailable:
+                return SafeProblem(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
                     retryable: true,
-                    correlationId: correlationId),
-            _ => SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "authorization_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId),
-        };
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ArchiveStateUnsupported:
+                // Permanent until Story 2.8 lands — non-retryable.
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "internal_error",
+                    code: "archive_state_unsupported",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.AuthorizationDenied:
+            default:
+                // AuthorizationDenied without AuthorizationDenial details is a handler
+                // invariant break — fail closed to read_model_unavailable.
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "internal_error",
+                    code: "read_model_unavailable",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
     }
 
     private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
@@ -167,49 +256,68 @@ public static class FoldersDomainServiceEndpoints
                 category: "authentication_failure",
                 code: "denied_safe",
                 retryable: false,
-                correlationId: correlationId),
+                correlationId: correlationId,
+                taskId: null),
             EffectivePermissionsResultCode.ReadModelUnavailable => SafeProblem(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "read_model_unavailable",
                 retryable: true,
-                correlationId: correlationId),
+                correlationId: correlationId,
+                taskId: null),
             _ => SafeProblem(
                 StatusCodes.Status403Forbidden,
                 category: "tenant_access_denied",
                 code: "denied_safe",
                 retryable: false,
-                correlationId: correlationId),
+                correlationId: correlationId,
+                taskId: null),
         };
 
-    private static IResult SafeProblem(int statusCode, string category, string code, bool retryable, string? correlationId)
-        => Results.Problem(
+    private static IResult SafeProblem(int statusCode, string category, string code, bool retryable, string? correlationId, string? taskId)
+    {
+        Dictionary<string, object?> extensions = new()
+        {
+            ["category"] = category,
+            ["code"] = code,
+            ["message"] = MessageFor(category),
+            ["correlationId"] = correlationId,
+            ["retryable"] = retryable,
+            ["clientAction"] = retryable ? "retry" : "no_action",
+            ["details"] = new Dictionary<string, object?>
+            {
+                ["visibility"] = "metadata_only",
+            },
+        };
+
+        if (!string.IsNullOrWhiteSpace(taskId))
+        {
+            extensions["taskId"] = taskId;
+        }
+
+        return Results.Problem(
             type: $"https://hexalith.dev/errors/folders/{code}",
             title: statusCode switch
             {
+                StatusCodes.Status400BadRequest => "Validation failure.",
                 StatusCodes.Status401Unauthorized => "Authentication required.",
+                StatusCodes.Status404NotFound => "Resource not available.",
                 StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
                 _ => "Authorization denied.",
             },
             statusCode: statusCode,
-            extensions: new Dictionary<string, object?>
-            {
-                ["category"] = category,
-                ["code"] = code,
-                ["message"] = MessageFor(category),
-                ["correlationId"] = correlationId,
-                ["retryable"] = retryable,
-                ["clientAction"] = retryable ? "retry" : "no_action",
-                ["details"] = new Dictionary<string, object?>
-                {
-                    ["visibility"] = "metadata_only",
-                },
-            });
+            extensions: extensions);
+    }
 
     private static string MessageFor(string category) => category switch
     {
         "authentication_failure" => "Authentication is required to access this resource.",
         "read_model_unavailable" => "The read model is temporarily unavailable. Retry later.",
+        "projection_stale" => "The read-model projection is stale. Retry later.",
+        "projection_unavailable" => "The read-model projection is unavailable. Retry later.",
+        "not_found" => "The requested resource is not available to the caller.",
+        "validation_error" => "Request validation failed.",
+        "internal_error" => "The operation cannot be completed in this configuration.",
         _ => "Access is denied. The caller is not authorized for this operation or resource.",
     };
 
@@ -233,21 +341,30 @@ public static class FoldersDomainServiceEndpoints
         };
 
     private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
+        // Principal identity is header-only — query-string sources are not accepted to
+        // reduce attack surface.
         => new Dictionary<string, string?>(StringComparer.Ordinal)
         {
-            ["query_principal_id"] = ReadQuery(httpContext, "principalId"),
             ["header_principal_id"] = ReadHeader(httpContext, "X-Principal-Id"),
             ["forwarded_principal_id"] = ReadHeader(httpContext, "X-Forwarded-Principal"),
         };
 
-    private static void AddLifecycleHeaders(HttpContext httpContext, FolderLifecycleStatusQueryResult result)
+    private static void AddLifecycleSuccessHeaders(HttpContext httpContext, FolderLifecycleStatusQueryResult result)
     {
-        if (!string.IsNullOrWhiteSpace(result.CorrelationId))
+        // Only invoked on the Allowed branch — OpenAPI declares these headers only on the
+        // 200 response. Writing them on denial paths would leak that the lifecycle handler
+        // was reached vs other handlers.
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId)
+            && !ContainsControlChars(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
-        httpContext.Response.Headers["X-Hexalith-Freshness"] = result.Freshness.ReadConsistency;
+        if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
+            && !ContainsControlChars(result.Freshness.ReadConsistency))
+        {
+            httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+        }
     }
 
     private static string? ReadHeader(HttpContext httpContext, string name)
@@ -266,13 +383,35 @@ public static class FoldersDomainServiceEndpoints
             }
 
             string trimmed = raw.Trim();
-            if (trimmed.Length > 0)
+            if (trimmed.Length == 0)
             {
-                return trimmed;
+                continue;
             }
+
+            // Reject header/query values containing CR or LF to prevent response-splitting
+            // when echoed back into response headers.
+            if (ContainsControlChars(trimmed))
+            {
+                continue;
+            }
+
+            return trimmed;
         }
 
         return null;
+    }
+
+    private static bool ContainsControlChars(string value)
+    {
+        foreach (char c in value)
+        {
+            if (c == '\r' || c == '\n' || char.IsControl(c))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private sealed record EffectivePermissionsResponse(
