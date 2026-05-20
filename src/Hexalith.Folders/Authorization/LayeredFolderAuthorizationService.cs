@@ -222,7 +222,11 @@ public sealed class LayeredFolderAuthorizationService(
             ? freshnessClassAfterValidator
             : MergeFreshnessClass(freshnessClassAfterValidator, daprEvidence.FreshnessClass);
 
-        LayeredFolderAuthorizationAllowedContext safeContext = validatorContext with { FreshnessWatermark = finalWatermark };
+        LayeredFolderAuthorizationAllowedContext safeContext = validatorContext with
+        {
+            FreshnessWatermark = finalWatermark,
+            OrganizationId = folderEvidence.OrganizationId,
+        };
 
         LayeredFolderAuthorizationDecisionSnapshot decision = Snapshot(
             AuthorizationLayer.DaprDenyByDefaultPolicy,

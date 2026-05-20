@@ -8,4 +8,7 @@ public sealed record LayeredFolderAuthorizationAllowedContext(
     string? CorrelationId,
     string? TaskId,
     string? FreshnessWatermark,
-    IReadOnlyList<AuthorizationLayer> PolicyLayers);
+    IReadOnlyList<AuthorizationLayer> PolicyLayers)
+{
+    public string? OrganizationId { get; init; }
+}

@@ -1,4 +1,6 @@
 using Hexalith.EventStore.Client.Registration;
+using Hexalith.EventStore.Client.Handlers;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 
@@ -26,6 +28,13 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
         services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();
         services.TryAddSingleton<IFolderCommandActionTokenMapper, FolderCommandActionTokenMapper>();
+        services.TryAddScoped<ILayeredFolderAuthorizationResultAccessor, ScopedLayeredFolderAuthorizationResultAccessor>();
+        services.TryAddScoped<IFolderArchiveAclEvidenceProvider, LayeredAuthBackedFolderArchiveAclEvidenceProvider>();
+        services.TryAddScoped<IFolderArchivePolicyEvidenceProvider, BaselineFolderArchivePolicyEvidenceProvider>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddScoped<FolderArchiveTenantGate>();
+        services.TryAddScoped<FolderAccessTenantGate>();
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());
 

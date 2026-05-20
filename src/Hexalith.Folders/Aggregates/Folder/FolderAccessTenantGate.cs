@@ -210,11 +210,10 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
     private static FolderResultCode Map(TenantAccessOutcome outcome)
         => outcome switch
         {
-            // `Allowed` is unreachable here because the caller already checked IsAllowed.
-            // If we get here with Allowed it means the upstream contract (Outcome==Allowed
-            // implies IsAllowed==true) was violated — fail loud rather than coerce to a code.
-            TenantAccessOutcome.Allowed => throw new InvalidOperationException(
-                $"TenantAccessAuthorizationResult invariant broken: Outcome=Allowed with IsAllowed=false."),
+            // An IsAllowed=false result with Outcome=Allowed is a caller invariant violation.
+            // Match the archive gate: fail closed with safe malformed evidence instead of
+            // throwing from the domain gate.
+            TenantAccessOutcome.Allowed => FolderResultCode.MalformedEvidence,
             TenantAccessOutcome.Denied => FolderResultCode.TenantAccessDenied,
             TenantAccessOutcome.StaleProjection => FolderResultCode.StaleProjection,
             TenantAccessOutcome.UnavailableProjection => FolderResultCode.UnavailableProjection,

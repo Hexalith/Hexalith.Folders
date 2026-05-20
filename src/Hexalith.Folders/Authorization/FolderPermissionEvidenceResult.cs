@@ -7,15 +7,21 @@ public sealed record FolderPermissionEvidenceResult(
     string FreshnessClass,
     bool Retryable)
 {
+    public string? OrganizationId { get; init; }
+
     public static FolderPermissionEvidenceResult Allowed(
         string? freshnessWatermark,
-        string freshnessClass = "fresh")
+        string freshnessClass = "fresh",
+        string? organizationId = null)
         => new(
             FolderPermissionEvidenceStatus.Allowed,
             LayeredAuthorizationOutcomeCodes.Allowed,
             freshnessWatermark,
             freshnessClass,
-            Retryable: false);
+            Retryable: false)
+        {
+            OrganizationId = organizationId,
+        };
 
     public static FolderPermissionEvidenceResult FromStatus(
         FolderPermissionEvidenceStatus status,

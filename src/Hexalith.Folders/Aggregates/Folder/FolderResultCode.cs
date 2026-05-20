@@ -42,4 +42,5 @@ public enum FolderResultCode
     TenantMismatch,
     ReplayConflict,
     StateTransitionInvalid,
+    UnsupportedCommandType,
 }

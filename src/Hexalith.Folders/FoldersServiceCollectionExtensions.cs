@@ -1,3 +1,4 @@
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
@@ -16,6 +17,7 @@ public static class FoldersServiceCollectionExtensions
 
         services.AddOptions<TenantAccessOptions>().BindConfiguration(TenantAccessOptions.SectionName);
         services.TryAddSingleton<IUtcClock, SystemUtcClock>();
+        services.TryAddSingleton<IFolderRepository, InMemoryFolderRepository>();
         services.TryAddSingleton<IFolderTenantAccessProjectionStore, InMemoryFolderTenantAccessProjectionStore>();
         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<TenantAccessOptions>>().Value);
         services.TryAddSingleton<TenantAccessAuthorizer>();

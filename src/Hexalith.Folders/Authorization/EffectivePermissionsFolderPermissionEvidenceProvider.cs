@@ -100,7 +100,8 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
 
         return FolderPermissionEvidenceResult.Allowed(
             snapshot.Freshness.ProjectionWatermark,
-            stale ? "bounded_stale" : "fresh");
+            stale ? "bounded_stale" : "fresh",
+            snapshot.OrganizationId);
     }
 
     private static bool HasActionGrant(
