@@ -93,6 +93,8 @@ public static class FolderAggregate
             return FolderResult.Rejected(command, validation.Code);
         }
 
+        string idempotencyFingerprint = command.DecisionIdempotencyFingerprint ?? validation.IdempotencyFingerprint!;
+
         // Check folder existence before idempotency. Probing the idempotency map on an
         // uncreated folder could surface IdempotentReplay/IdempotencyConflict and leak
         // whether a prior key was ever applied for a folder the caller cannot observe.
@@ -103,7 +105,7 @@ public static class FolderAggregate
 
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+            return string.Equals(priorFingerprint, idempotencyFingerprint, StringComparison.Ordinal)
                 ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
@@ -122,7 +124,7 @@ public static class FolderAggregate
             command.CorrelationId,
             command.TaskId,
             command.IdempotencyKey,
-            validation.IdempotencyFingerprint!,
+            idempotencyFingerprint,
             occurredAt);
 
         return FolderResult.Accepted(command, [archived]);

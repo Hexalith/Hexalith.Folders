@@ -11,7 +11,8 @@ public sealed record ArchiveFolder(
     string TaskId,
     string IdempotencyKey,
     string? PayloadTenantId,
-    IReadOnlyDictionary<string, string?>? ClientTenantIds = null) : IFolderCommand
+    IReadOnlyDictionary<string, string?>? ClientTenantIds = null,
+    string? DecisionIdempotencyFingerprint = null) : IFolderCommand
 {
     public string CommandType => nameof(ArchiveFolder);
 
@@ -20,4 +21,6 @@ public sealed record ArchiveFolder(
     public IFolderCommand WithManagedTenantId(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
 
     public ArchiveFolder WithAuthoritativeTenant(string managedTenantId) => this with { ManagedTenantId = managedTenantId };
+
+    public ArchiveFolder WithDecisionFingerprint(string fingerprint) => this with { DecisionIdempotencyFingerprint = fingerprint };
 }

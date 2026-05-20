@@ -63,6 +63,35 @@ public sealed class FolderLifecycleStatusProjectionTests
     }
 
     [Theory]
+    [InlineData("sdk")]
+    [InlineData("cli")]
+    [InlineData("mcp")]
+    [InlineData("console")]
+    public async Task ArchivedInaccessibleVocabularyShouldStayStableAcrossConsumerSurfaces(string consumerSurface)
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            FolderLifecycleProjectionState.Archived,
+            FolderRepositoryBindingStatus.Unbound,
+            evidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(),
+            diagnosticSentinels: []);
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed, consumerSurface);
+        result.LifecycleState.ShouldBe("inaccessible", consumerSurface);
+        result.Archived.ShouldBeTrue(consumerSurface);
+
+        string archiveParityRow = ArchiveFolderParityRow();
+        archiveParityRow.ShouldContain("- 'sdk'");
+        archiveParityRow.ShouldContain("- 'cli'");
+        archiveParityRow.ShouldContain("- 'mcp'");
+        archiveParityRow.ShouldContain("- 'rest'");
+    }
+
+    [Theory]
     [InlineData(FolderRepositoryBindingStatus.BindingRequested, "requested")]
     [InlineData(FolderRepositoryBindingStatus.Failed, "failed")]
     [InlineData(FolderRepositoryBindingStatus.UnknownProviderOutcome, "unknown_provider_outcome")]
@@ -340,5 +369,32 @@ public sealed class FolderLifecycleStatusProjectionTests
         return await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
             TestContext.Current.CancellationToken).ConfigureAwait(true);
+    }
+
+    private static string ArchiveFolderParityRow()
+    {
+        string path = Path.Combine(RepositoryRoot(), "tests", "fixtures", "parity-contract.yaml");
+        string content = File.ReadAllText(path);
+        const string rowStart = "- operation_id: 'ArchiveFolder'";
+        int start = content.IndexOf(rowStart, StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0);
+        int next = content.IndexOf("\n- operation_id:", start + rowStart.Length, StringComparison.Ordinal);
+        return next < 0 ? content[start..] : content[start..next];
+    }
+
+    private static string RepositoryRoot()
+    {
+        DirectoryInfo? current = new(AppContext.BaseDirectory);
+        while (current is not null)
+        {
+            if (File.Exists(Path.Combine(current.FullName, "Hexalith.Folders.slnx")))
+            {
+                return current.FullName;
+            }
+
+            current = current.Parent;
+        }
+
+        throw new InvalidOperationException("Could not locate repository root.");
     }
 }

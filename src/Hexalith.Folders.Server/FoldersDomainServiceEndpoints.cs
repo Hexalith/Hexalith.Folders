@@ -180,6 +180,7 @@ public static class FoldersDomainServiceEndpoints
         if (string.IsNullOrWhiteSpace(idempotencyKey)
             || string.IsNullOrWhiteSpace(correlationId)
             || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(idempotencyKey)
             || !IsCanonicalIdentifier(taskId)
             || !IsCanonicalIdentifier(correlationId))
         {
@@ -248,14 +249,35 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
-        if (body is null
-            || !string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
-            || !IsSupportedArchiveReason(body.ArchiveReasonCode))
+        if (body is null)
         {
             return SafeProblem(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (!IsSupportedArchiveReason(body.ArchiveReasonCode))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_archive_reason_code",
                 retryable: false,
                 correlationId: correlationId,
                 taskId: taskId);
@@ -278,6 +300,10 @@ public static class FoldersDomainServiceEndpoints
                         ["taskId"] = taskId,
                     }),
                 cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
         }
         catch (OperationCanceledException)
         {
@@ -312,7 +338,7 @@ public static class FoldersDomainServiceEndpoints
                 acceptedCorrelationId,
                 taskId,
                 "accepted",
-                IdempotentReplay: false),
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
             ResponseJsonOptions,
             statusCode: StatusCodes.Status202Accepted);
     }
@@ -321,6 +347,86 @@ public static class FoldersDomainServiceEndpoints
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= 128
         && CanonicalSegmentRegex.IsMatch(value);
+
+    private static bool IsIdempotentReplay(JsonElement? resultPayload)
+    {
+        if (resultPayload is null || resultPayload.Value.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        JsonElement root = resultPayload.Value;
+        if (root.TryGetProperty("idempotentReplay", out JsonElement replay)
+            && replay.ValueKind is JsonValueKind.True or JsonValueKind.False)
+        {
+            return replay.GetBoolean();
+        }
+
+        if (TryReadString(root, "code", out string? code)
+            || TryReadString(root, "status", out code)
+            || TryReadString(root, "result", out code))
+        {
+            return string.Equals(code, "idempotent_replay", StringComparison.Ordinal)
+                || string.Equals(code, "IdempotentReplay", StringComparison.Ordinal);
+        }
+
+        return false;
+    }
+
+    private static IResult ToArchiveGatewayProblem(EventStoreGatewayException exception, string correlationId, string taskId)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        string safeCorrelationId = IsCanonicalIdentifier(exception.CorrelationId)
+            ? exception.CorrelationId!
+            : correlationId;
+
+        return exception.StatusCode switch
+        {
+            StatusCodes.Status400BadRequest => SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+            StatusCodes.Status401Unauthorized => SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+            StatusCodes.Status404NotFound => SafeProblem(
+                StatusCodes.Status404NotFound,
+                category: "not_found",
+                code: "not_found",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+            StatusCodes.Status409Conflict => SafeProblem(
+                StatusCodes.Status409Conflict,
+                category: "idempotency_conflict",
+                code: "idempotency_conflict",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+            StatusCodes.Status503ServiceUnavailable => SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+            _ => SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+        };
+    }
 
     private static IResult ToHttpResult(HttpContext httpContext, FolderLifecycleStatusQueryResult result, string? correlationId, string? taskId)
     {
@@ -470,13 +576,20 @@ public static class FoldersDomainServiceEndpoints
                 taskId: null),
         };
 
-    private static IResult SafeProblem(int statusCode, string category, string code, bool retryable, string? correlationId, string? taskId)
+    private static IResult SafeProblem(
+        int statusCode,
+        string category,
+        string code,
+        bool retryable,
+        string? correlationId,
+        string? taskId,
+        string? message = null)
     {
         Dictionary<string, object?> extensions = new()
         {
             ["category"] = category,
             ["code"] = code,
-            ["message"] = MessageFor(category),
+            ["message"] = message ?? MessageFor(category),
             ["correlationId"] = correlationId,
             ["retryable"] = retryable,
             ["clientAction"] = retryable ? "retry" : "no_action",
@@ -498,6 +611,7 @@ public static class FoldersDomainServiceEndpoints
                 StatusCodes.Status400BadRequest => "Validation failure.",
                 StatusCodes.Status401Unauthorized => "Authentication required.",
                 StatusCodes.Status404NotFound => "Resource not available.",
+                StatusCodes.Status409Conflict => "Idempotency conflict.",
                 StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
                 _ => "Authorization denied.",
             },
@@ -568,6 +682,14 @@ public static class FoldersDomainServiceEndpoints
 
     private static string? ReadQuery(HttpContext httpContext, string name)
         => FirstNonEmpty(httpContext.Request.Query.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
+
+    private static bool TryReadString(JsonElement root, string propertyName, out string? value)
+    {
+        value = root.TryGetProperty(propertyName, out JsonElement property) && property.ValueKind == JsonValueKind.String
+            ? property.GetString()
+            : null;
+        return !string.IsNullOrWhiteSpace(value);
+    }
 
     private static string? FirstNonEmpty(StringValues values)
     {

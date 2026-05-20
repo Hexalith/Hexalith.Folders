@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-20T15:00:00+02:00
+# last_updated: 2026-05-20T11:40:52+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-20T15:00:00+02:00
+last_updated: 2026-05-20T11:40:52+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -71,7 +71,7 @@ development_status:
   2-5-inspect-effective-permissions: done
   2-6-enforce-layered-authorization-with-safe-denials: done
   2-7-inspect-folder-lifecycle-and-binding-status: done
-  2-8-archive-folders-with-audit-preservation: in-progress
+  2-8-archive-folders-with-audit-preservation: review
   2-9-react-to-tenants-events-through-worker-handlers: ready-for-dev
   epic-2-retrospective: optional
 

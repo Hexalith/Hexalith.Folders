@@ -164,6 +164,35 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.RequestSchemaVersion);
         AppendField(hash, ToContractValue(archiveReasonCode));
         AppendField(hash, command.ActorPrincipalId);
+        AppendField(hash, command.CorrelationId);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, command.IdempotencyKey);
+        AppendField(hash, command.PayloadTenantId);
+        AppendInt32(hash, command.ClientControlledTenantIds.Count);
+        foreach (KeyValuePair<string, string?> tenantEntry in command.ClientControlledTenantIds.OrderBy(static x => x.Key, StringComparer.Ordinal))
+        {
+            AppendField(hash, tenantEntry.Key);
+            AppendField(hash, tenantEntry.Value);
+        }
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    internal static string BindArchiveDecisionFingerprint(
+        ArchiveFolder command,
+        string commandFingerprint,
+        string? policyVersion,
+        string? freshnessWatermark)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentException.ThrowIfNullOrWhiteSpace(commandFingerprint);
+
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "archive-decision-v1");
+        AppendField(hash, commandFingerprint);
+        AppendField(hash, command.IdempotencyKey);
+        AppendField(hash, policyVersion);
+        AppendField(hash, freshnessWatermark);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }

@@ -19,6 +19,20 @@ public sealed class FolderCommandActionTokenMapperTests
         mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
     }
 
+    [Theory]
+    [InlineData("Hexalith.Folders.Commands.GrantFolderAccess")]
+    [InlineData("Hexalith.Folders.Commands.RevokeFolderAccess")]
+    public void FolderAclMutationCommandsShouldMapToAdministerAccessAction(string commandType)
+    {
+        FolderCommandActionTokenMapper mapper = new();
+
+        FolderCommandActionMapping? mapping = mapper.Map(Command(commandType));
+
+        mapping.ShouldNotBeNull();
+        mapping.ActionToken.ShouldBe("manage_folder_access");
+        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
+    }
+
     private static CommandEnvelope Command(string commandType)
         => new(
             MessageId: "01J00000000000000000000001",

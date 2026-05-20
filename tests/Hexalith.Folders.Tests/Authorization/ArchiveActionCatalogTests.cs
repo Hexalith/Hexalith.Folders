@@ -15,4 +15,14 @@ public sealed class ArchiveActionCatalogTests
 
         levels.ShouldBe([EffectivePermissionLevel.Administer]);
     }
+
+    [Fact]
+    public void FolderAclMutationActionShouldRequireAdministerPermission()
+    {
+        EffectivePermissionsActionCatalog.IsSupported("manage_folder_access").ShouldBeTrue();
+
+        IReadOnlyList<EffectivePermissionLevel> levels = EffectivePermissionsActionCatalog.ToPermissionLevels(["manage_folder_access"]);
+
+        levels.ShouldBe([EffectivePermissionLevel.Administer]);
+    }
 }

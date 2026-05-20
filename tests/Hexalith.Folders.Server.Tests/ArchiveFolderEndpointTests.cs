@@ -103,6 +103,128 @@ public sealed class ArchiveFolderEndpointTests
         }
     }
 
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldSurfaceIdempotentReplayFromGatewayPayload()
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Response = new SubmitCommandResponse(
+                "correlation-a",
+                JsonSerializer.SerializeToElement(new { idempotentReplay = true })),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            using JsonDocument document = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            document.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData(403, "tenant_access_denied", "denied_safe")]
+    [InlineData(404, "not_found", "not_found")]
+    [InlineData(409, "idempotency_conflict", "idempotency_conflict")]
+    public async Task ArchiveFolderEndpointShouldMapGatewayRejectionsToContractSafeShapes(
+        int gatewayStatus,
+        string expectedCategory,
+        string expectedCode)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                gatewayStatus,
+                "Gateway rejection",
+                type: "https://hexalith.dev/errors/internal-detail",
+                detail: "folder folder-a rejected by internal gateway",
+                correlationId: "correlation-gateway"),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe((HttpStatusCode)gatewayStatus);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe(expectedCategory);
+            document.RootElement.GetProperty("code").GetString().ShouldBe(expectedCode);
+            document.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-gateway");
+            json.ShouldNotContain("folder folder-a rejected");
+            gateway.Requests.Count.ShouldBe(1);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldReturnSchemaVersionHintWithoutGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest(requestSchemaVersion: "V1");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("validation_error");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("unsupported_request_schema_version");
+            document.RootElement.GetProperty("message").GetString().ShouldBe("requestSchemaVersion must be exactly v1.");
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldRejectMalformedIdempotencyKeyBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+            request.Headers.Remove("Idempotency-Key");
+            request.Headers.Add("Idempotency-Key", "idempotency key");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
     private static async Task<WebApplication> StartAppAsync(
         RecordingEventStoreGatewayClient gateway,
         string? tenantId,
@@ -125,6 +247,22 @@ public sealed class ArchiveFolderEndpointTests
         return app;
     }
 
+    private static HttpRequestMessage CreateValidArchiveRequest(string requestSchemaVersion = "v1")
+    {
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion,
+                archiveReasonCode = "caller_requested",
+            }),
+        };
+        request.Headers.Add("Idempotency-Key", "idempotency-a");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        return request;
+    }
+
     private sealed class FixedTenantContextAccessor(string? tenantId, string? principalId) : ITenantContextAccessor
     {
         public string? AuthoritativeTenantId { get; } = tenantId;
@@ -136,12 +274,21 @@ public sealed class ArchiveFolderEndpointTests
     {
         public List<SubmitCommandRequest> Requests { get; } = [];
 
+        public SubmitCommandResponse? Response { get; init; }
+
+        public Exception? Exception { get; init; }
+
         public Task<SubmitCommandResponse> SubmitCommandAsync(
             SubmitCommandRequest request,
             CancellationToken cancellationToken = default)
         {
             Requests.Add(request);
-            return Task.FromResult(new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
+            if (Exception is not null)
+            {
+                throw Exception;
+            }
+
+            return Task.FromResult(Response ?? new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
         }
 
         public Task<EventStoreQueryResult> SubmitQueryAsync(

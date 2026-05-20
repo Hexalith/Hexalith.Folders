@@ -28,7 +28,7 @@ public sealed class FolderArchiveIdempotencyTests
         RecordingFolderRepository repository = SeededRepository();
         ArchiveFolder original = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", archiveReasonCode: "caller_requested");
         FolderCommandValidationResult validation = FolderCommandValidator.Validate(original);
-        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-archive-a", validation.IdempotencyFingerprint!);
+        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-archive-a", ArchiveDecisionFingerprint(original, validation));
         FolderArchiveTenantGate gate = new(repository);
 
         FolderResult result = gate.Handle(
@@ -44,7 +44,119 @@ public sealed class FolderArchiveIdempotencyTests
     }
 
     [Fact]
+    public void SameKeyWithDifferentCorrelationShouldRejectAsConflictBeforeLoad()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        ArchiveFolder original = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", correlationId: "correlation-a");
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(original);
+        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-archive-a", ArchiveDecisionFingerprint(original, validation));
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", correlationId: "correlation-b"),
+            TenantEvidence(),
+            AclEvidence(),
+            PolicyEvidence());
+
+        result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
+    public void SameKeyWithDifferentPolicyVersionShouldRejectAsConflictBeforeLoad()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-archive-a", ArchiveDecisionFingerprint(command, validation));
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            command,
+            TenantEvidence(),
+            AclEvidence(),
+            PolicyEvidence(policyVersion: "policy-v2"));
+
+        result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
+    public void SameKeyWithDifferentFreshnessWatermarkShouldRejectAsConflictBeforeLoad()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-archive-a", ArchiveDecisionFingerprint(command, validation));
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            command,
+            TenantEvidence(projectionWatermark: "tenant-a:8"),
+            AclEvidence(),
+            PolicyEvidence());
+
+        result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
     public void AppendConflictShouldRereadAndReturnIdempotentReplayWhenRacingEquivalentArchiveWon()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        string decisionFingerprint = ArchiveDecisionFingerprint(command, validation);
+        repository.SimulateAppendConflict = true;
+        repository.ConcurrentAppendEvents =
+        [
+            new FolderArchived(
+                "tenant-a",
+                "organization-a",
+                "folder-a",
+                validation.ArchiveReasonCode!.Value,
+                "principal-a",
+                "correlation-a",
+                "task-a",
+                "idempotency-archive-a",
+                decisionFingerprint,
+                new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero)),
+        ];
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(command, TenantEvidence(), AclEvidence(), PolicyEvidence());
+
+        result.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        repository.EventsAppended.ShouldBe(0);
+        repository.ConcurrentEventsApplied.ShouldBe(1);
+    }
+
+    [Fact]
+    public void AppendConflictShouldReturnConflictWhenNoRacingArchiveIsMaterialized()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        repository.SimulateAppendConflict = true;
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a"),
+            TenantEvidence(),
+            AclEvidence(),
+            PolicyEvidence());
+
+        result.Code.ShouldBe(FolderResultCode.AppendConflict);
+        repository.EventsAppended.ShouldBe(0);
+        repository.ConcurrentEventsApplied.ShouldBe(0);
+    }
+
+    [Fact]
+    public void AppendConflictShouldReturnIdempotencyConflictWhenRacingSameKeyCarriesDifferentFingerprint()
     {
         RecordingFolderRepository repository = SeededRepository();
         ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
@@ -58,17 +170,17 @@ public sealed class FolderArchiveIdempotencyTests
                 "folder-a",
                 validation.ArchiveReasonCode!.Value,
                 "principal-a",
-                "correlation-a",
+                "correlation-b",
                 "task-a",
                 "idempotency-archive-a",
-                validation.IdempotencyFingerprint!,
+                "different-fingerprint",
                 new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero)),
         ];
         FolderArchiveTenantGate gate = new(repository);
 
         FolderResult result = gate.Handle(command, TenantEvidence(), AclEvidence(), PolicyEvidence());
 
-        result.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
         repository.EventsAppended.ShouldBe(0);
         repository.ConcurrentEventsApplied.ShouldBe(1);
     }
@@ -117,12 +229,12 @@ public sealed class FolderArchiveIdempotencyTests
         repository.Seed(streamName, created.Events);
     }
 
-    private static TenantAccessAuthorizationResult TenantEvidence(string tenantId = "tenant-a")
+    private static TenantAccessAuthorizationResult TenantEvidence(string tenantId = "tenant-a", string? projectionWatermark = null)
         => new(
             TenantAccessOutcome.Allowed,
             "allowed",
             tenantId,
-            $"{tenantId}:7",
+            projectionWatermark ?? $"{tenantId}:7",
             new DateTimeOffset(2026, 5, 20, 8, 0, 0, TimeSpan.Zero),
             TimeSpan.FromMinutes(1),
             TenantProjectionFreshnessStatus.Fresh,
@@ -131,6 +243,16 @@ public sealed class FolderArchiveIdempotencyTests
     private static FolderArchiveAclEvidence AclEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
         => FolderArchiveAclEvidence.Allowed(tenantId, "organization-a", folderId, "principal-a");
 
-    private static FolderArchivePolicyEvidence PolicyEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
-        => FolderArchivePolicyEvidence.Allowed(tenantId, "organization-a", folderId, "policy-v1");
+    private static FolderArchivePolicyEvidence PolicyEvidence(
+        string tenantId = "tenant-a",
+        string folderId = "folder-a",
+        string policyVersion = "policy-v1")
+        => FolderArchivePolicyEvidence.Allowed(tenantId, "organization-a", folderId, policyVersion);
+
+    private static string ArchiveDecisionFingerprint(ArchiveFolder command, FolderCommandValidationResult validation)
+        => FolderCommandValidator.BindArchiveDecisionFingerprint(
+            command,
+            validation.IdempotencyFingerprint!,
+            "policy-v1",
+            "tenant-a:7");
 }

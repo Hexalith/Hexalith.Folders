@@ -76,6 +76,19 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
             return FolderResult.Rejected(authoritativeCommand, aclRejection.Value);
         }
 
+        FolderResultCode? policyRejection = EvaluatePolicy(authoritativeCommand, policyEvidence);
+        if (policyRejection is not null)
+        {
+            return FolderResult.Rejected(authoritativeCommand, policyRejection.Value);
+        }
+
+        string decisionFingerprint = FolderCommandValidator.BindArchiveDecisionFingerprint(
+            authoritativeCommand,
+            validation.IdempotencyFingerprint!,
+            policyEvidence.PolicyVersion,
+            tenantAccess.ProjectionWatermark);
+        authoritativeCommand = authoritativeCommand.WithDecisionFingerprint(decisionFingerprint);
+
         FolderStreamName streamName = _repository.CreateStreamName(
             authoritativeCommand.ManagedTenantId,
             authoritativeCommand.FolderId);
@@ -87,7 +100,7 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
 
         if (lookup == FolderIdempotencyLookupResult.Found)
         {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+            return string.Equals(priorFingerprint, decisionFingerprint, StringComparison.Ordinal)
                 ? FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay)
                 : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict);
         }
@@ -98,12 +111,6 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
         }
 
         FolderState state = _repository.Load(streamName);
-        FolderResultCode? policyRejection = EvaluatePolicy(authoritativeCommand, policyEvidence);
-        if (policyRejection is not null)
-        {
-            return FolderResult.Rejected(authoritativeCommand, policyRejection.Value);
-        }
-
         DateTimeOffset occurredAt = _timeProvider.GetUtcNow();
         FolderResult result = FolderAggregate.Handle(state, authoritativeCommand, occurredAt);
         if (result.Events.Count == 0)
@@ -114,7 +121,7 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,
             authoritativeCommand.IdempotencyKey,
-            validation.IdempotencyFingerprint!,
+            decisionFingerprint,
             result.Events);
 
         return outcome switch
