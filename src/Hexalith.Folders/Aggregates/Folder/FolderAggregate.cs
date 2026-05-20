@@ -103,6 +103,13 @@ public static class FolderAggregate
             return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
         }
 
+        // Idempotency check BEFORE lifecycle. Same idempotency key already recorded on this
+        // stream means the prior archive command was accepted (its FolderArchived event is
+        // what put the folder in Archived state), so this is a logical replay, not a new
+        // attempt. Different-key archive against an already-archived folder falls through to
+        // the AlreadyArchived state check below. This ordering also lets the gate's
+        // ResolveAppendConflict reread surface IdempotentReplay/IdempotencyConflict correctly
+        // when a racer's archive won the append race.
         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
         {
             return string.Equals(priorFingerprint, idempotencyFingerprint, StringComparison.Ordinal)

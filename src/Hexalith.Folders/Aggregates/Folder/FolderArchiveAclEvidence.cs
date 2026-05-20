@@ -30,6 +30,13 @@ public sealed record FolderArchiveAclEvidence
                     nameof(managedTenantId));
             }
 
+            if (string.IsNullOrWhiteSpace(organizationId))
+            {
+                throw new ArgumentException(
+                    "Allowed FolderArchiveAclEvidence must carry a non-empty organizationId.",
+                    nameof(organizationId));
+            }
+
             if (string.IsNullOrWhiteSpace(folderId))
             {
                 throw new ArgumentException(

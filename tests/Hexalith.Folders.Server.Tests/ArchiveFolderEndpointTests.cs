@@ -124,6 +124,11 @@ public sealed class ArchiveFolderEndpointTests
             using JsonDocument document = JsonDocument.Parse(
                 await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
             document.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
+            // Ensure the endpoint actually reached the gateway with the canonical archive
+            // command; a future short-circuit returning replay without invoking the gateway
+            // would otherwise pass this test silently.
+            gateway.Requests.Count.ShouldBe(1);
+            gateway.Requests.Single().CommandType.ShouldBe("Hexalith.Folders.Commands.ArchiveFolder");
         }
         finally
         {
@@ -217,6 +222,195 @@ public sealed class ArchiveFolderEndpointTests
 
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
             gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldReturnUnauthenticatedWhenTenantContextIsMissing()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, tenantId: null, principalId: null).ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("authentication_failure");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("authentication_failure");
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("X-Correlation-Id")]
+    [InlineData("X-Hexalith-Task-Id")]
+    public async Task ArchiveFolderEndpointShouldRejectWhenRequiredEnvelopeHeaderIsMissing(string headerName)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+            request.Headers.Remove(headerName);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldRejectMalformedJsonBodyBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
+            {
+                Content = new StringContent("{ this is not valid json", System.Text.Encoding.UTF8, "application/json"),
+            };
+            request.Headers.Add("Idempotency-Key", "idempotency-a");
+            request.Headers.Add("X-Correlation-Id", "correlation-a");
+            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("validation_error");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("validation_error");
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldRejectBodyWithUnknownFieldsBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    archiveReasonCode = "caller_requested",
+                    smuggledTenantId = "tenant-b",
+                }),
+            };
+            request.Headers.Add("Idempotency-Key", "idempotency-a");
+            request.Headers.Add("X-Correlation-Id", "correlation-a");
+            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldRejectBodyWithNullRequiredFieldsBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = (string?)null,
+                    archiveReasonCode = (string?)null,
+                }),
+            };
+            request.Headers.Add("Idempotency-Key", "idempotency-a");
+            request.Headers.Add("X-Correlation-Id", "correlation-a");
+            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData(500)]
+    [InlineData(502)]
+    [InlineData(504)]
+    public async Task ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable(int gatewayStatus)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                gatewayStatus,
+                "Gateway upstream failure",
+                type: "https://hexalith.dev/errors/internal-detail",
+                detail: "internal gateway exception text",
+                correlationId: "correlation-gateway"),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            // Gateway 5xx must surface as safe 503 evidence_unavailable, NOT as 403
+            // tenant_access_denied — the latter would actively mislead operators investigating
+            // a backend incident.
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("read_model_unavailable");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("evidence_unavailable");
+            document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeTrue();
+            json.ShouldNotContain("internal gateway exception text");
         }
         finally
         {

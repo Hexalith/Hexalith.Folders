@@ -37,7 +37,7 @@ public sealed class FolderCommandActionTokenMapperTests
         => new(
             MessageId: "01J00000000000000000000001",
             TenantId: "tenant-a",
-            Domain: "folders",
+            Domain: FoldersServerModule.DomainName,
             AggregateId: "folder-a",
             CommandType: commandType,
             Payload: [0x01],

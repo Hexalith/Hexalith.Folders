@@ -25,6 +25,8 @@ public static class FoldersServerModule
 
     public const string TenantEventsTopicName = "system.tenants.events";
 
+    public const string DomainName = "folders";
+
     public static string Description => $"{FoldersContractMetadata.ModuleName} server scaffold";
 
     public static IServiceCollection AddFoldersServer(this IServiceCollection services)

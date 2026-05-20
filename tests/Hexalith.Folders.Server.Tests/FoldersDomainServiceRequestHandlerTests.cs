@@ -200,7 +200,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             new CommandEnvelope(
                 MessageId: "01J00000000000000000000001",
                 TenantId: commandTenantId,
-                Domain: "folders",
+                Domain: FoldersServerModule.DomainName,
                 AggregateId: "agg-1",
                 CommandType: "Hexalith.Folders.Commands.TestCommand",
                 Payload: [0x01],

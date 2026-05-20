@@ -34,9 +34,15 @@ public sealed class FolderArchiveProjectionReplayTests
                 new FolderProjectionEnvelope("tenant-a", 2, Archived("tenant-b", "folder-a")),
             ]);
 
+        // Envelope tenant ("tenant-a") wins as the projection key. The archive event
+        // claiming a different tenant ("tenant-b") must NOT be recorded under that
+        // claimed tenant either — otherwise a malicious or buggy producer could write
+        // archive evidence into a tenant that the envelope never authorized.
         FolderListItem item = projection.Get("tenant-a", "folder-a").ShouldNotBeNull();
         item.LifecycleState.ShouldBe(FolderLifecycleState.Active);
         item.ArchiveReasonCode.ShouldBeNull();
+
+        projection.Get("tenant-b", "folder-a").ShouldBeNull();
     }
 
     private static FolderCreated Created(string tenantId, string folderId)

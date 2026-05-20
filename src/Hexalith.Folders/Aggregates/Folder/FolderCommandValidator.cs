@@ -371,32 +371,10 @@ public static partial class FolderCommandValidator
     }
 
     private static bool TryParseArchiveReasonCode(string? value, out FolderArchiveReasonCode reasonCode)
-    {
-        reasonCode = default;
-        switch (value)
-        {
-            case "caller_requested":
-                reasonCode = FolderArchiveReasonCode.CallerRequested;
-                return true;
-            case "policy_retention":
-                reasonCode = FolderArchiveReasonCode.PolicyRetention;
-                return true;
-            case "operator_review":
-                reasonCode = FolderArchiveReasonCode.OperatorReview;
-                return true;
-            default:
-                return false;
-        }
-    }
+        => FolderArchiveReasonCodes.TryParse(value, out reasonCode);
 
     private static string ToContractValue(FolderArchiveReasonCode reasonCode)
-        => reasonCode switch
-        {
-            FolderArchiveReasonCode.CallerRequested => "caller_requested",
-            FolderArchiveReasonCode.PolicyRetention => "policy_retention",
-            FolderArchiveReasonCode.OperatorReview => "operator_review",
-            _ => string.Empty,
-        };
+        => FolderArchiveReasonCodes.ToContractValue(reasonCode);
 
     private static bool IsSafePathLabel(string? value)
         => string.IsNullOrWhiteSpace(value) || FolderStreamName.IsValidSegment(value);

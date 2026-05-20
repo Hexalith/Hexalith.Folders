@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
@@ -19,7 +20,6 @@ public static class FoldersDomainServiceEndpoints
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
     private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
-    private const string FoldersDomainName = "folders";
 
     // Outbound: ignore-when-null is fine because we serialize records.
     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
@@ -35,10 +35,25 @@ public static class FoldersDomainServiceEndpoints
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
     };
 
+    // Gateway payload: outbound JSON forwarded to the EventStore gateway. Kept separate from
+    // ResponseJsonOptions so HTTP-response tweaks (e.g. WriteIndented) cannot accidentally
+    // change wire shape of the command payload.
+    private static readonly JsonSerializerOptions GatewayPayloadJsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
     private const string ReservedSystemTenant = "system";
 
     private static readonly System.Text.RegularExpressions.Regex CanonicalSegmentRegex =
         new("^[a-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    // Gateway-returned correlation IDs may carry uppercase hex (ULIDs, UUIDs) coming from
+    // upstream systems. Caller-supplied identifiers stay strictly lowercase canonical to
+    // preserve safe-comparison invariants; the gateway-corrected echo is validated against
+    // this broader shape so traces remain joinable across hops.
+    private static readonly System.Text.RegularExpressions.Regex GatewayCorrelationRegex =
+        new("^[A-Za-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -272,7 +287,7 @@ public static class FoldersDomainServiceEndpoints
                 message: "requestSchemaVersion must be exactly v1.");
         }
 
-        if (!IsSupportedArchiveReason(body.ArchiveReasonCode))
+        if (!FolderArchiveReasonCodes.IsSupported(body.ArchiveReasonCode))
         {
             return SafeProblem(
                 StatusCodes.Status400BadRequest,
@@ -290,10 +305,10 @@ public static class FoldersDomainServiceEndpoints
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
                     Tenant: tenantContext.AuthoritativeTenantId,
-                    Domain: FoldersDomainName,
+                    Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: ArchiveFolderCommandType,
-                    Payload: JsonSerializer.SerializeToElement(body, ResponseJsonOptions),
+                    Payload: JsonSerializer.SerializeToElement(body, GatewayPayloadJsonOptions),
                     CorrelationId: correlationId,
                     Extensions: new Dictionary<string, string>
                     {
@@ -323,9 +338,11 @@ public static class FoldersDomainServiceEndpoints
         }
 
         // Re-validate the gateway-returned correlation id before reflecting it into a
-        // response header to avoid log/header injection via the gateway hop.
+        // response header to avoid log/header injection via the gateway hop. Gateway-corrected
+        // IDs may carry uppercase characters (UUIDs, ULIDs from upstream systems), so use the
+        // broader gateway-correlation shape rather than the strict caller-side canonical shape.
         string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
-            && IsCanonicalIdentifier(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
             ? submitted.CorrelationId
             : correlationId;
 
@@ -347,6 +364,11 @@ public static class FoldersDomainServiceEndpoints
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= 128
         && CanonicalSegmentRegex.IsMatch(value);
+
+    private static bool IsSafeGatewayCorrelationId(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length <= 128
+        && GatewayCorrelationRegex.IsMatch(value);
 
     private static bool IsIdempotentReplay(JsonElement? resultPayload)
     {
@@ -377,7 +399,7 @@ public static class FoldersDomainServiceEndpoints
     {
         ArgumentNullException.ThrowIfNull(exception);
 
-        string safeCorrelationId = IsCanonicalIdentifier(exception.CorrelationId)
+        string safeCorrelationId = IsSafeGatewayCorrelationId(exception.CorrelationId)
             ? exception.CorrelationId!
             : correlationId;
 
@@ -412,6 +434,16 @@ public static class FoldersDomainServiceEndpoints
                 correlationId: safeCorrelationId,
                 taskId: taskId),
             StatusCodes.Status503ServiceUnavailable => SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
+            // Any 5xx from the gateway (500, 502, 504) is an upstream failure, not an
+            // authorization decision. Surfacing it as 403 denied_safe would be active
+            // misinformation to operators chasing a backend incident. Map to safe 503.
+            >= 500 and < 600 => SafeProblem(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -731,9 +763,6 @@ public static class FoldersDomainServiceEndpoints
 
         return false;
     }
-
-    private static bool IsSupportedArchiveReason(string? value)
-        => value is "caller_requested" or "policy_retention" or "operator_review";
 
     private sealed record ArchiveFolderHttpRequest(
         string? RequestSchemaVersion,

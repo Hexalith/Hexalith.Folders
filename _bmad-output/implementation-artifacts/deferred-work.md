@@ -2,6 +2,23 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)
+
+Items deferred from the `/bmad-code-review 2.8` second-pass triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commits `ea5f08b..c3e948e`. Round-2 was scoped to verifying round-1 "Resolved" claims; many round-2 candidates were re-classified to **decision-needed** because they depend on whether `FolderArchiveTenantGate` is actually wired into production.
+
+- Validator-version fingerprint skew — cross-deploy `IsSafeEvidenceIdentifier` changes can invalidate prior idempotency replay. Deferred — needs a versioned-validator regression test once a second validator version exists.
+- `FolderListProjection.Apply` throw-on-missing-create tears down multi-tenant rebuild while `FolderStateApply` is per-stream — asymmetric blast radius. Deferred — revisit when projection-rebuild tooling and replay diagnostics are introduced (Epic 6/7).
+- `FolderArchiveAclEvidence` is an unsigned value object — defense relies on trustworthy upstream `Allowed(...)` callers. Deferred — architectural concern, addresses with evidence-signing or capability-token redesign beyond Story 2.8.
+- `FolderState` six adjacent same-typed nullable-string parameters (silent-swap risk on positional construction) — current callers use `with`-syntax. Deferred — revisit if a positional caller is introduced.
+- `FolderArchived.IdempotencyFingerprint` non-empty invariant undocumented at event level — not currently reachable from `FolderAggregate.Handle`. Deferred — promote to an event-level invariant if a non-aggregate writer appears.
+- `ArchiveFolder.PayloadTenantId` with malformed segment matching the authoritative tenant — narrow edge case. Deferred — revisit if payload-tenant smuggling becomes a verified threat.
+- `ArchiveFolderClientConformanceTests` parameter-order assertion is brittle to NSwag generator changes — currently passing. Deferred — relax to a set-equality assertion when a generator upgrade breaks it.
+- `FolderArchiveMetadataLeakageTests` asserts the validator's input restriction indirectly via factory defaults — gives confirmation, not coverage. Deferred — expand to a corpus-driven property test in a future hardening pass.
+- Untested branches: `FolderArchivePolicyOutcome.ScopeMismatch`, several `FolderArchiveAclOutcome` variants, `FolderAppendOutcome.FingerprintConflict` mapping — become live once the gate is wired into production. Deferred until that happens.
+- `FolderArchiveTenantGate(TimeProvider)` constructor never exercised by tests or production callers. Deferred — moot until the gate is wired.
+- No `CancellationToken` propagation through `FolderArchiveTenantGate.Handle` or `IFolderRepository` methods. Deferred — moot until the gate is wired; add async port at the same time.
+- `EffectivePermissionsActionCatalog` insertion order untested — cosmetic until a positional consumer appears. Deferred.
+
 ## Deferred from: code review of 2-8-archive-folders-with-audit-preservation (2026-05-20)
 
 Items deferred from the `/bmad-code-review 2.8` triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commit `ea5f08b`.

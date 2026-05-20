@@ -78,6 +78,36 @@ public sealed class FolderArchiveStateTransitionTests
         FolderActiveMutationGuard.Evaluate(ArchivedState(), category).ShouldBe(FolderResultCode.StateTransitionInvalid);
     }
 
+    [Theory]
+    [InlineData(FolderActiveMutationCategory.FolderMetadata)]
+    [InlineData(FolderActiveMutationCategory.FolderAcl)]
+    [InlineData(FolderActiveMutationCategory.RepositoryBinding)]
+    [InlineData(FolderActiveMutationCategory.Workspace)]
+    [InlineData(FolderActiveMutationCategory.Lock)]
+    [InlineData(FolderActiveMutationCategory.File)]
+    [InlineData(FolderActiveMutationCategory.Commit)]
+    [InlineData(FolderActiveMutationCategory.BranchRef)]
+    [InlineData(FolderActiveMutationCategory.Provider)]
+    [InlineData(FolderActiveMutationCategory.Task)]
+    public void ActiveOnlyMutationGuardShouldAcceptActiveFolders(FolderActiveMutationCategory category)
+    {
+        // Symmetric coverage: every active-only mutation category must be Accepted on an
+        // Active folder so future stories that wire those commands (Epic 3 repository
+        // binding, Epic 4 workspace/lock/file/commit/branch/provider/task) inherit the guard
+        // without per-category surprises. AC9 representative-fixture closure.
+        FolderActiveMutationGuard.Evaluate(CreatedState(), category).ShouldBe(FolderResultCode.Accepted);
+    }
+
+    [Fact]
+    public void ActiveOnlyMutationGuardShouldRejectUncreatedFolderAsNotFound()
+    {
+        // Pre-create state must produce FolderNotFound rather than StateTransitionInvalid so
+        // future mutation pipelines short-circuit before constructing folder stream names,
+        // projection keys, or audit subjects.
+        FolderActiveMutationGuard.Evaluate(FolderState.Empty, FolderActiveMutationCategory.FolderAcl)
+            .ShouldBe(FolderResultCode.FolderNotFound);
+    }
+
     private static FolderState CreatedState()
     {
         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
