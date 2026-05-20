@@ -39,6 +39,29 @@ public sealed class FolderLifecycleStatusProjectionTests
         result.ProviderBindingRef.ShouldBe("provider_binding_opaque_safe");
     }
 
+    [Fact]
+    public async Task ArchivedFolderReturnsInaccessibleArchivedStatusWithFreshnessEvidence()
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            FolderLifecycleProjectionState.Archived,
+            FolderRepositoryBindingStatus.Unbound,
+            evidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(),
+            diagnosticSentinels: []);
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
+        result.LifecycleState.ShouldBe("inaccessible");
+        result.Archived.ShouldBeTrue();
+        result.FolderId.ShouldBe("folder-a");
+        result.Freshness.ProjectionWatermark.ShouldBe(FolderLifecycleStatusTestSupport.LifecycleWatermark);
+        result.CorrelationId.ShouldBe("corr-a");
+        result.TaskId.ShouldBe("task-a");
+    }
+
     [Theory]
     [InlineData(FolderRepositoryBindingStatus.BindingRequested, "requested")]
     [InlineData(FolderRepositoryBindingStatus.Failed, "failed")]

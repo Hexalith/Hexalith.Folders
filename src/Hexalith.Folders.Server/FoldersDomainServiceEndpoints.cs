@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Authorization;
@@ -17,6 +18,8 @@ public static class FoldersDomainServiceEndpoints
 {
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
+    private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
+    private const string FoldersDomainName = "folders";
 
     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -67,6 +70,20 @@ public static class FoldersDomainServiceEndpoints
             return ToHttpResult(result, correlationId);
         })
         .WithName("GetEffectivePermissions");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/archive", async (
+            string folderId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            CancellationToken cancellationToken)
+            => await ArchiveFolderAsync(
+                folderId,
+                httpContext,
+                gateway,
+                tenantContext,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("ArchiveFolder");
 
         endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
             string folderId,
@@ -124,6 +141,109 @@ public static class FoldersDomainServiceEndpoints
         .WithName("GetFolderLifecycleStatus");
 
         return endpoints;
+    }
+
+    private static async Task<IResult> ArchiveFolderAsync(
+        string folderId,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        if (string.IsNullOrWhiteSpace(idempotencyKey)
+            || string.IsNullOrWhiteSpace(correlationId)
+            || string.IsNullOrWhiteSpace(taskId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        ArchiveFolderHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<ArchiveFolderHttpRequest>(ResponseJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null
+            || !string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+            || !IsSupportedArchiveReason(body.ArchiveReasonCode))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        SubmitCommandResponse submitted = await gateway.SubmitCommandAsync(
+            new SubmitCommandRequest(
+                MessageId: idempotencyKey,
+                Tenant: tenantContext.AuthoritativeTenantId,
+                Domain: FoldersDomainName,
+                AggregateId: folderId,
+                CommandType: ArchiveFolderCommandType,
+                Payload: JsonSerializer.SerializeToElement(body, ResponseJsonOptions),
+                CorrelationId: correlationId,
+                Extensions: new Dictionary<string, string>
+                {
+                    ["taskId"] = taskId,
+                }),
+            cancellationToken).ConfigureAwait(false);
+
+        string acceptedCorrelationId = string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            ? correlationId
+            : submitted.CorrelationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                DateTimeOffset.UtcNow,
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: false),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
     }
 
     private static IResult ToHttpResult(HttpContext httpContext, FolderLifecycleStatusQueryResult result, string? correlationId, string? taskId)
@@ -413,6 +533,20 @@ public static class FoldersDomainServiceEndpoints
 
         return false;
     }
+
+    private static bool IsSupportedArchiveReason(string? value)
+        => value is "caller_requested" or "policy_retention" or "operator_review";
+
+    private sealed record ArchiveFolderHttpRequest(
+        string? RequestSchemaVersion,
+        string? ArchiveReasonCode);
+
+    private sealed record AcceptedCommandResponse(
+        DateTimeOffset AcceptedAt,
+        string CorrelationId,
+        string TaskId,
+        string Status,
+        bool IdempotentReplay);
 
     private sealed record EffectivePermissionsResponse(
         string FolderId,

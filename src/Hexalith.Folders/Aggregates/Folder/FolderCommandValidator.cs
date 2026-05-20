@@ -72,10 +72,10 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.Rejected(FolderResultCode.InvalidFolderId);
         }
 
-        if (!IsValidIdentifier(command.ActorPrincipalId)
-            || !IsValidIdentifier(command.CorrelationId)
-            || !IsValidIdentifier(command.TaskId)
-            || !IsValidIdentifier(command.IdempotencyKey))
+        if (!IsSafeEvidenceIdentifier(command.ActorPrincipalId)
+            || !IsSafeEvidenceIdentifier(command.CorrelationId)
+            || !IsSafeEvidenceIdentifier(command.TaskId)
+            || !IsSafeEvidenceIdentifier(command.IdempotencyKey))
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.MalformedEvidence);
         }
@@ -86,6 +86,19 @@ public static partial class FolderCommandValidator
             return operations is null
                 ? FolderCommandValidationResult.Rejected(code)
                 : FolderCommandValidationResult.AcceptedAccess(Fingerprint(access, operations), operations);
+        }
+
+        if (command is ArchiveFolder archive)
+        {
+            if (!string.Equals(archive.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !TryParseArchiveReasonCode(archive.ArchiveReasonCode, out FolderArchiveReasonCode archiveReasonCode))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedArchive(
+                Fingerprint(archive, archiveReasonCode),
+                archiveReasonCode);
         }
 
         if (command is not CreateFolder create)
@@ -135,6 +148,21 @@ public static partial class FolderCommandValidator
             AppendField(hash, tag);
         }
 
+        AppendField(hash, command.ActorPrincipalId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string Fingerprint(ArchiveFolder command, FolderArchiveReasonCode archiveReasonCode)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.CommandType);
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.OrganizationId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.RequestSchemaVersion);
+        AppendField(hash, ToContractValue(archiveReasonCode));
         AppendField(hash, command.ActorPrincipalId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
@@ -312,6 +340,34 @@ public static partial class FolderCommandValidator
 
         return operation.Intent == requiredIntent ? null : FolderResultCode.ReplayConflict;
     }
+
+    private static bool TryParseArchiveReasonCode(string? value, out FolderArchiveReasonCode reasonCode)
+    {
+        reasonCode = default;
+        switch (value)
+        {
+            case "caller_requested":
+                reasonCode = FolderArchiveReasonCode.CallerRequested;
+                return true;
+            case "policy_retention":
+                reasonCode = FolderArchiveReasonCode.PolicyRetention;
+                return true;
+            case "operator_review":
+                reasonCode = FolderArchiveReasonCode.OperatorReview;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static string ToContractValue(FolderArchiveReasonCode reasonCode)
+        => reasonCode switch
+        {
+            FolderArchiveReasonCode.CallerRequested => "caller_requested",
+            FolderArchiveReasonCode.PolicyRetention => "policy_retention",
+            FolderArchiveReasonCode.OperatorReview => "operator_review",
+            _ => string.Empty,
+        };
 
     private static bool IsSafePathLabel(string? value)
         => string.IsNullOrWhiteSpace(value) || FolderStreamName.IsValidSegment(value);

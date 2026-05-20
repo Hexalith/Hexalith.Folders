@@ -7,6 +7,7 @@ public static class EffectivePermissionsActionCatalog
         "configure_provider_binding",
         "prepare_workspace",
         "lock_workspace",
+        "archive_folder",
         "read_metadata",
         "read_file_content",
         "mutate_files",
@@ -28,6 +29,7 @@ public static class EffectivePermissionsActionCatalog
         ["lock_workspace"] = EffectivePermissionLevel.Write,
         ["mutate_files"] = EffectivePermissionLevel.Write,
         ["commit"] = EffectivePermissionLevel.Write,
+        ["archive_folder"] = EffectivePermissionLevel.Administer,
         ["configure_provider_binding"] = EffectivePermissionLevel.Administer,
         ["create_folder"] = EffectivePermissionLevel.Administer,
     };

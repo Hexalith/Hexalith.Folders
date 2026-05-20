@@ -60,6 +60,17 @@ public static class FolderStateApply
                 AccessSequence = AdvanceWatermark(state.AccessSequence, revoked.AccessSequence),
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
+            FolderArchived archived => state with
+            {
+                LifecycleState = FolderLifecycleState.Archived,
+                ArchiveReasonCode = archived.ArchiveReasonCode,
+                ArchiveActorPrincipalId = archived.ActorPrincipalId,
+                ArchiveCorrelationId = archived.CorrelationId,
+                ArchiveTaskId = archived.TaskId,
+                ArchiveIdempotencyKey = archived.IdempotencyKey,
+                ArchivedAt = archived.OccurredAt,
+                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
+            },
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(

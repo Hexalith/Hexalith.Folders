@@ -5,4 +5,4 @@ namespace Hexalith.Folders.Projections.FolderList;
 public sealed record FolderProjectionEnvelope(
     string ManagedTenantId,
     long Sequence,
-    FolderCreated Event);
+    IFolderEvent Event);

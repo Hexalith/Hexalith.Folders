@@ -68,12 +68,61 @@ public static class FolderAggregate
             return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
         }
 
+        FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.FolderAcl);
+        if (activeMutationGuard != FolderResultCode.Accepted)
+        {
+            return FolderResult.Rejected(command, activeMutationGuard);
+        }
+
         return command switch
         {
             GrantFolderAccess => Grant(state, command, validation, occurredAt),
             RevokeFolderAccess => Revoke(state, command, validation, occurredAt),
             _ => FolderResult.Rejected(command, FolderResultCode.ValidationFailed),
         };
+    }
+
+    public static FolderResult Handle(FolderState state, ArchiveFolder command, DateTimeOffset occurredAt)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(command);
+
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return FolderResult.Rejected(command, validation.Code);
+        }
+
+        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (!state.IsCreated)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+        }
+
+        if (state.LifecycleState == FolderLifecycleState.Archived)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.AlreadyArchived);
+        }
+
+        FolderArchived archived = new(
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
+            validation.ArchiveReasonCode!.Value,
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey,
+            validation.IdempotencyFingerprint!,
+            occurredAt);
+
+        return FolderResult.Accepted(command, [archived]);
     }
 
     // Convenience overloads for tests that do not care about deterministic timestamps.
@@ -83,6 +132,9 @@ public static class FolderAggregate
         => Handle(state, command, DateTimeOffset.MinValue);
 
     public static FolderResult Handle(FolderState state, IFolderAccessCommand command)
+        => Handle(state, command, DateTimeOffset.MinValue);
+
+    public static FolderResult Handle(FolderState state, ArchiveFolder command)
         => Handle(state, command, DateTimeOffset.MinValue);
 
     // Grant emits events per operation, skipping tuples that are already granted. Revoke

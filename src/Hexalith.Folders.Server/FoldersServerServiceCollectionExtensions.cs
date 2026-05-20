@@ -17,6 +17,7 @@ public static class FoldersServerServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddEventStore(typeof(FoldersModule).Assembly);
+        services.AddEventStoreGatewayClient();
         services.AddHttpContextAccessor();
         services.AddOptions<TenantContextOptions>();
         // Register the authentication core services so the validator can introspect scheme registrations.

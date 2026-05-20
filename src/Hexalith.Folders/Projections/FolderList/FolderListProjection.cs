@@ -47,17 +47,41 @@ public sealed record FolderListProjection
             }
 
             string key = Key(envelope.ManagedTenantId, envelope.Event.FolderId);
-            folders[key] = new FolderListItem(
-                envelope.ManagedTenantId,
-                envelope.Event.OrganizationId,
-                envelope.Event.FolderId,
-                envelope.Event.DisplayName,
-                envelope.Event.Description,
-                envelope.Event.PathLabel,
-                CanonicalizeTags(envelope.Event.Tags),
-                envelope.Event.LifecycleState,
-                envelope.Event.RepositoryBindingState,
-                envelope.Sequence);
+            if (envelope.Event is FolderCreated created)
+            {
+                folders[key] = new FolderListItem(
+                    envelope.ManagedTenantId,
+                    created.OrganizationId,
+                    created.FolderId,
+                    created.DisplayName,
+                    created.Description,
+                    created.PathLabel,
+                    CanonicalizeTags(created.Tags),
+                    created.LifecycleState,
+                    created.RepositoryBindingState,
+                    ArchiveReasonCode: null,
+                    ArchiveActorPrincipalId: null,
+                    ArchiveCorrelationId: null,
+                    ArchiveTaskId: null,
+                    ArchiveIdempotencyKey: null,
+                    ArchivedAt: null,
+                    envelope.Sequence);
+            }
+            else if (envelope.Event is FolderArchived archived
+                && folders.TryGetValue(key, out FolderListItem? current))
+            {
+                folders[key] = current with
+                {
+                    LifecycleState = FolderLifecycleState.Archived,
+                    ArchiveReasonCode = archived.ArchiveReasonCode,
+                    ArchiveActorPrincipalId = archived.ActorPrincipalId,
+                    ArchiveCorrelationId = archived.CorrelationId,
+                    ArchiveTaskId = archived.TaskId,
+                    ArchiveIdempotencyKey = archived.IdempotencyKey,
+                    ArchivedAt = archived.OccurredAt,
+                    Sequence = envelope.Sequence,
+                };
+            }
         }
 
         return new FolderListProjection(folders.ToFrozenDictionary(StringComparer.Ordinal));

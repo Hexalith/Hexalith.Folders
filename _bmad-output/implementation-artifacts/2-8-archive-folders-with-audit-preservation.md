@@ -1,6 +1,6 @@
 # Story 2.8: Archive folders with audit preservation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -64,51 +64,51 @@ so that retired work is no longer active while audit and status evidence remain 
 
 ## Tasks / Subtasks
 
-- [ ] Implement the archive command contract path. (AC: 1, 2, 5, 6)
-  - [ ] Add an `ArchiveFolder` command under `src/Hexalith.Folders/Aggregates/Folder/` matching the Contract Spine fields: `requestSchemaVersion`, `archiveReasonCode`, folder ID, actor/correlation/task evidence, idempotency key, and tenant authority inputs.
-  - [ ] Add or extend archive command validation so supported reason codes are exactly `caller_requested`, `policy_retention`, and `operator_review`, and `requestSchemaVersion` is exactly `v1`.
-  - [ ] Reuse the existing identifier, tenant, reserved-tenant, metadata-only, idempotency, and payload-tenant validation patterns from folder creation rather than creating parallel validation rules.
-  - [ ] Wire `POST /api/v1/folders/{folderId}/archive` in `Hexalith.Folders.Server` only if endpoint wiring is not already generated or registered.
-  - [ ] Preserve `202 AcceptedCommand`, validation failure, safe denial, and idempotency conflict shapes from the Contract Spine.
-  - [ ] Prove OpenAPI and generated SDK shape parity for route, method, `operationId`, `ArchiveFolderRequest`, required idempotency/correlation/task headers, accepted response, safe denial envelopes, validation envelope, and `IdempotencyConflict`.
-  - [ ] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate through the established Contract Spine/NSwag toolchain only if generated output is stale.
-- [ ] Add archived lifecycle state and transition behavior. (AC: 2, 7, 8, 9, 10)
-  - [ ] Add `Archived` or the locally canonical equivalent to `FolderLifecycleState` and ensure `FolderState` can represent it deterministically.
-  - [ ] Add a metadata-only `FolderArchived` event carrying only managed tenant ID, organization ID, folder ID, archive reason code, actor/correlation/task evidence, idempotency key, and fingerprint plus event-envelope timestamp if that is the local convention.
-  - [ ] Extend `FolderAggregate.Handle` or the local command gate so active folders can transition to archived exactly once when policy allows.
-  - [ ] Define already-archived behavior as `AlreadyArchived` or the locally canonical stable state-transition rejection for a different idempotency key; same-key equivalent replay remains accepted replay evidence.
-  - [ ] Add archived-state guards that future active-only folder, ACL, repository-binding, workspace, lock, file, commit, branch/ref, provider, and task commands can consume without implementing those future commands in this story.
-  - [ ] Ensure `FolderStateApply` rejects foreign-tenant or foreign-folder archive events using the existing stream-safety pattern.
-- [ ] Enforce authorization-before-archive-observation. (AC: 2, 3, 4, 8)
-  - [ ] Resolve authoritative tenant context from authentication context or EventStore envelope/projection authority before constructing folder stream names, projection keys, cache keys, audit subjects, diagnostic scopes, EventStore envelopes, Dapr targets, provider handles, repository references, workspace paths, or file paths.
-  - [ ] Consume Story 2.1 tenant-access evidence, Story 2.6 layered authorization, and folder admin/archive permission evidence before loading folder state or checking archive eligibility.
-  - [ ] Treat tenant access, folder permission, idempotency, folder state, archive policy, and freshness evidence as one compatible archive decision snapshot; reject mixed tenant, folder, principal, action, task, operation, policy-version, idempotency-fingerprint, or freshness evidence rather than stitching a partial success.
-  - [ ] Treat route/query/header/body/generated-client tenant IDs as comparison values only; mismatches return safe denial before lookup.
-  - [ ] Keep schema-only validation separate from protected-resource validation: malformed body/schema/reason/idempotency evidence may fail early, but anything needing folder, lifecycle, projection, audit, provider, repository, workspace, or file knowledge waits until authorization permits it.
-  - [ ] Add side-effect spies proving denied tenant or folder authorization prevents stream-name construction, stream load, append, diagnostics, audit lookup, provider access, repository access, filesystem access, EventStore envelope construction, and Dapr invocation target construction.
-  - [ ] Keep same-tenant unauthorized, cross-tenant, and missing-to-caller outcomes externally indistinguishable except for approved canonical status/category differences.
-  - [ ] Scope any archive decision cache, idempotency cache, authorization cache, or projection cache by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, policy version, idempotency fingerprint, and freshness watermark; denied or stale answers must not be replayed across callers or evidence windows.
-- [ ] Preserve audit/status evidence without adding cleanup scope. (AC: 2, 10, 11, 12, 14)
-  - [ ] Update or add folder projections so authorized lifecycle-status reads can represent archived folders with `archived: true`, an archived lifecycle state, freshness metadata, and no mutation affordance.
-  - [ ] Preserve archive event and projection metadata under the C3 folder metadata and soft-delete marker retention reference without claiming Legal + PM approval is final.
-  - [ ] Ensure archive handling does not delete events, compact projections, remove provider resources, clean working copies, repair status, or call tenant-deletion/legal-hold workflows.
-  - [ ] Add audit/status metadata fields only for opaque folder ID, operation ID, correlation ID, task ID, result category, archive reason code, lifecycle transition, and sanitized policy/state category.
-  - [ ] Ensure archive status remains queryable after archive while future active-only mutation commands see archived as terminal until a later explicitly scoped restore/unarchive story exists.
-- [ ] Add contract, SDK, and parity conformance coverage. (AC: 1, 5, 6, 10, 13)
-  - [ ] Add server or contract tests proving route, method, request schema, required headers, accepted response, validation failure, safe denial envelopes, idempotency conflict, operation ID, and response casing match `ArchiveFolder`.
-  - [ ] Add generated-client consumption tests proving the generated archive method and `ArchiveFolderRequest` model can submit supported reason codes without hand-edited generated code.
-  - [ ] Add tests proving behavior stays out of `Hexalith.Folders.Contracts` packages and no generated SDK file is hand-edited.
-  - [ ] Ensure parity fixtures keep `ArchiveFolder` aligned with idempotency-key, safe-denial, correlation ID, task ID, audit metadata, and adapter-stage expectations.
-  - [ ] Add tests for missing/malformed idempotency key, equivalent replay, conflicting replay, and adapter-visible validation categories.
-- [ ] Add aggregate, projection, and leakage regression tests. (AC: 2, 7, 8, 9, 10, 11, 13)
-  - [ ] Add tests such as `FolderArchiveCommandValidationTests`, `FolderArchiveIdempotencyTests`, `FolderArchiveAuthorizationGateTests`, `FolderArchiveStateTransitionTests`, `FolderArchiveLifecycleStatusTests`, and `FolderArchiveMetadataLeakageTests`.
-  - [ ] Cover active-to-archived success, already-archived handling, policy-denied archive, stale/unavailable tenant authorization, stale/unavailable folder authorization, stale lifecycle projection, replay conflict, concurrent append conflict/reread, and foreign-event replay rejection.
-  - [ ] Cover incompatible archive decision snapshots, including authorization evidence for one principal/action with idempotency or folder-state evidence for another, stale policy evidence with fresh folder state, and matching idempotency keys across different freshness or policy versions where the local fingerprint model includes them.
-  - [ ] Cover cross-tenant same-identifier cases for folder IDs, operation IDs, correlation IDs, task IDs, stream names, cache keys, projection keys, and audit subjects.
-  - [ ] Include representative active-only mutation guard fixtures proving archived folders reject at least metadata update, ACL mutation, repository-binding, workspace/lock, file, commit, branch/ref, provider, and task mutation categories before side effects where those command categories already have local placeholders or vocabulary.
-  - [ ] Add forbidden-sentinel checks across responses, Problem Details, logs, traces, metrics, diagnostics, audit records, projection records, generated client exceptions, and test output.
-  - [ ] Add timing/discovery negative controls proving denied, safe-not-found, unavailable, policy-denied, already-archived, and append-conflict paths do not branch on actual folder existence, archived state, projection cache hits, provider binding presence, workspace state, or audit-row presence.
-  - [ ] Keep tests offline with in-memory fakes and spies; do not require GitHub, Forgejo, provider credentials, Dapr sidecars, Keycloak, Redis, live EventStore, or nested submodules.
+- [x] Implement the archive command contract path. (AC: 1, 2, 5, 6)
+  - [x] Add an `ArchiveFolder` command under `src/Hexalith.Folders/Aggregates/Folder/` matching the Contract Spine fields: `requestSchemaVersion`, `archiveReasonCode`, folder ID, actor/correlation/task evidence, idempotency key, and tenant authority inputs.
+  - [x] Add or extend archive command validation so supported reason codes are exactly `caller_requested`, `policy_retention`, and `operator_review`, and `requestSchemaVersion` is exactly `v1`.
+  - [x] Reuse the existing identifier, tenant, reserved-tenant, metadata-only, idempotency, and payload-tenant validation patterns from folder creation rather than creating parallel validation rules.
+  - [x] Wire `POST /api/v1/folders/{folderId}/archive` in `Hexalith.Folders.Server` only if endpoint wiring is not already generated or registered.
+  - [x] Preserve `202 AcceptedCommand`, validation failure, safe denial, and idempotency conflict shapes from the Contract Spine.
+  - [x] Prove OpenAPI and generated SDK shape parity for route, method, `operationId`, `ArchiveFolderRequest`, required idempotency/correlation/task headers, accepted response, safe denial envelopes, validation envelope, and `IdempotencyConflict`.
+  - [x] Do not hand-edit `src/Hexalith.Folders.Client/Generated/*`; regenerate through the established Contract Spine/NSwag toolchain only if generated output is stale.
+- [x] Add archived lifecycle state and transition behavior. (AC: 2, 7, 8, 9, 10)
+  - [x] Add `Archived` or the locally canonical equivalent to `FolderLifecycleState` and ensure `FolderState` can represent it deterministically.
+  - [x] Add a metadata-only `FolderArchived` event carrying only managed tenant ID, organization ID, folder ID, archive reason code, actor/correlation/task evidence, idempotency key, and fingerprint plus event-envelope timestamp if that is the local convention.
+  - [x] Extend `FolderAggregate.Handle` or the local command gate so active folders can transition to archived exactly once when policy allows.
+  - [x] Define already-archived behavior as `AlreadyArchived` or the locally canonical stable state-transition rejection for a different idempotency key; same-key equivalent replay remains accepted replay evidence.
+  - [x] Add archived-state guards that future active-only folder, ACL, repository-binding, workspace, lock, file, commit, branch/ref, provider, and task commands can consume without implementing those future commands in this story.
+  - [x] Ensure `FolderStateApply` rejects foreign-tenant or foreign-folder archive events using the existing stream-safety pattern.
+- [x] Enforce authorization-before-archive-observation. (AC: 2, 3, 4, 8)
+  - [x] Resolve authoritative tenant context from authentication context or EventStore envelope/projection authority before constructing folder stream names, projection keys, cache keys, audit subjects, diagnostic scopes, EventStore envelopes, Dapr targets, provider handles, repository references, workspace paths, or file paths.
+  - [x] Consume Story 2.1 tenant-access evidence, Story 2.6 layered authorization, and folder admin/archive permission evidence before loading folder state or checking archive eligibility.
+  - [x] Treat tenant access, folder permission, idempotency, folder state, archive policy, and freshness evidence as one compatible archive decision snapshot; reject mixed tenant, folder, principal, action, task, operation, policy-version, idempotency-fingerprint, or freshness evidence rather than stitching a partial success.
+  - [x] Treat route/query/header/body/generated-client tenant IDs as comparison values only; mismatches return safe denial before lookup.
+  - [x] Keep schema-only validation separate from protected-resource validation: malformed body/schema/reason/idempotency evidence may fail early, but anything needing folder, lifecycle, projection, audit, provider, repository, workspace, or file knowledge waits until authorization permits it.
+  - [x] Add side-effect spies proving denied tenant or folder authorization prevents stream-name construction, stream load, append, diagnostics, audit lookup, provider access, repository access, filesystem access, EventStore envelope construction, and Dapr invocation target construction.
+  - [x] Keep same-tenant unauthorized, cross-tenant, and missing-to-caller outcomes externally indistinguishable except for approved canonical status/category differences.
+  - [x] Scope any archive decision cache, idempotency cache, authorization cache, or projection cache by tenant, principal, action, task/correlation context, folder ID, authorization evidence version, policy version, idempotency fingerprint, and freshness watermark; denied or stale answers must not be replayed across callers or evidence windows.
+- [x] Preserve audit/status evidence without adding cleanup scope. (AC: 2, 10, 11, 12, 14)
+  - [x] Update or add folder projections so authorized lifecycle-status reads can represent archived folders with `archived: true`, an archived lifecycle state, freshness metadata, and no mutation affordance.
+  - [x] Preserve archive event and projection metadata under the C3 folder metadata and soft-delete marker retention reference without claiming Legal + PM approval is final.
+  - [x] Ensure archive handling does not delete events, compact projections, remove provider resources, clean working copies, repair status, or call tenant-deletion/legal-hold workflows.
+  - [x] Add audit/status metadata fields only for opaque folder ID, operation ID, correlation ID, task ID, result category, archive reason code, lifecycle transition, and sanitized policy/state category.
+  - [x] Ensure archive status remains queryable after archive while future active-only mutation commands see archived as terminal until a later explicitly scoped restore/unarchive story exists.
+- [x] Add contract, SDK, and parity conformance coverage. (AC: 1, 5, 6, 10, 13)
+  - [x] Add server or contract tests proving route, method, request schema, required headers, accepted response, validation failure, safe denial envelopes, idempotency conflict, operation ID, and response casing match `ArchiveFolder`.
+  - [x] Add generated-client consumption tests proving the generated archive method and `ArchiveFolderRequest` model can submit supported reason codes without hand-edited generated code.
+  - [x] Add tests proving behavior stays out of `Hexalith.Folders.Contracts` packages and no generated SDK file is hand-edited.
+  - [x] Ensure parity fixtures keep `ArchiveFolder` aligned with idempotency-key, safe-denial, correlation ID, task ID, audit metadata, and adapter-stage expectations.
+  - [x] Add tests for missing/malformed idempotency key, equivalent replay, conflicting replay, and adapter-visible validation categories.
+- [x] Add aggregate, projection, and leakage regression tests. (AC: 2, 7, 8, 9, 10, 11, 13)
+  - [x] Add tests such as `FolderArchiveCommandValidationTests`, `FolderArchiveIdempotencyTests`, `FolderArchiveAuthorizationGateTests`, `FolderArchiveStateTransitionTests`, `FolderArchiveLifecycleStatusTests`, and `FolderArchiveMetadataLeakageTests`.
+  - [x] Cover active-to-archived success, already-archived handling, policy-denied archive, stale/unavailable tenant authorization, stale/unavailable folder authorization, stale lifecycle projection, replay conflict, concurrent append conflict/reread, and foreign-event replay rejection.
+  - [x] Cover incompatible archive decision snapshots, including authorization evidence for one principal/action with idempotency or folder-state evidence for another, stale policy evidence with fresh folder state, and matching idempotency keys across different freshness or policy versions where the local fingerprint model includes them.
+  - [x] Cover cross-tenant same-identifier cases for folder IDs, operation IDs, correlation IDs, task IDs, stream names, cache keys, projection keys, and audit subjects.
+  - [x] Include representative active-only mutation guard fixtures proving archived folders reject at least metadata update, ACL mutation, repository-binding, workspace/lock, file, commit, branch/ref, provider, and task mutation categories before side effects where those command categories already have local placeholders or vocabulary.
+  - [x] Add forbidden-sentinel checks across responses, Problem Details, logs, traces, metrics, diagnostics, audit records, projection records, generated client exceptions, and test output.
+  - [x] Add timing/discovery negative controls proving denied, safe-not-found, unavailable, policy-denied, already-archived, and append-conflict paths do not branch on actual folder existence, archived state, projection cache hits, provider binding presence, workspace state, or audit-row presence.
+  - [x] Keep tests offline with in-memory fakes and spies; do not require GitHub, Forgejo, provider credentials, Dapr sidecars, Keycloak, Redis, live EventStore, or nested submodules.
 
 ## Dev Notes
 
@@ -268,6 +268,7 @@ so that retired work is no longer active while audit and status evidence remain 
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-20 | Implemented archive lifecycle command, endpoint wiring, authorization/idempotency guards, projections, conformance coverage, and regression tests; moved story to review. | Codex |
 | 2026-05-19 | Applied advanced-elicitation hardening for compatible archive decision snapshots, fail-closed evidence handling, cache/idempotency scoping, and timing/discovery leakage tests. | Codex |
 | 2026-05-19 | Party-mode review applied: tightened archive authorization ordering, idempotency/race semantics, already-archived result handling, audit/status observables, mutation guards, and parity/no-touch tests. | Codex |
 | 2026-05-19 | Created story with archive command contract alignment, archived lifecycle transition, safe denial/idempotency rules, audit preservation, and offline leakage tests. | Codex |
@@ -280,10 +281,68 @@ GPT-5 Codex
 
 ### Debug Log References
 
+- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` (367 passed)
+- `dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore` (42 passed)
+- `dotnet test tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj --no-restore` (24 passed)
+- `dotnet test tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj --no-restore` (81 passed)
+- `dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --no-restore` (43 passed)
+- `dotnet build Hexalith.Folders.slnx --no-restore` (passed)
+- `dotnet test Hexalith.Folders.slnx --no-restore` (passed; UI E2E placeholder skipped)
+
 ### Completion Notes List
 
 - Story created by `/bmad-create-story 2-8-archive-folders-with-audit-preservation` equivalent workflow on 2026-05-19.
 - Project context, Epic 2, PRD, architecture, Contract Spine archive operation, C3 retention notes, Stories 2.1-2.7, current folder aggregate/projection/test patterns, recent commits, and story-creation lessons were reviewed.
 - Ultimate context engine analysis completed - comprehensive developer guide created.
+- Added `ArchiveFolder`, reason-code validation, archive fingerprints, `FolderArchived`, archived lifecycle state, idempotent replay/conflict behavior, already-archived rejection, policy/evidence gates, and reusable active-mutation guard vocabulary.
+- Wired the existing archive contract path through the server route, EventStore gateway submission, action token mapper, action catalog, and generated-client conformance tests without hand-editing generated SDK files.
+- Preserved archive audit/status evidence in metadata-only aggregate state and folder-list projection fields while leaving provider cleanup, workspace cleanup, tenant deletion, legal hold, UI, CLI, MCP, and restore/unarchive out of scope.
+- Added offline aggregate, authorization, idempotency, projection, lifecycle-status, client, server, scaffold-contract, and metadata leakage coverage; full solution tests pass.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/process-notes/predev-preflight-latest.json`
+- `_bmad-output/process-notes/predev-preflight-2026-05-20T065726Z.json`
+- `_bmad-output/process-notes/predev-preflight-2026-05-20T070123Z.json`
+- `src/Hexalith.Folders/Aggregates/Folder/ArchiveFolder.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAccessAction.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationCategory.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderActiveMutationGuard.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclOutcome.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyEvidence.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchivePolicyOutcome.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderArchived.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidationResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderLifecycleState.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderResult.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs`
+- `src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs`
+- `src/Hexalith.Folders/Projections/FolderList/FolderListItem.cs`
+- `src/Hexalith.Folders/Projections/FolderList/FolderListProjection.cs`
+- `src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs`
+- `src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs`
+- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`
+- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`
+- `tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs`
+- `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveCommandValidationTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveIdempotencyTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCommandFactory.cs`
+- `tests/Hexalith.Folders.Tests/Authorization/ArchiveActionCatalogTests.cs`
+- `tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs`
+- `tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusProjectionTests.cs`

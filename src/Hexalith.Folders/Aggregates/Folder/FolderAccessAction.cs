@@ -5,6 +5,7 @@ public static class FolderAccessAction
     private static readonly HashSet<string> SupportedValues = new(StringComparer.Ordinal)
     {
         "configure_provider_binding",
+        "archive_folder",
         "prepare_workspace",
         "lock_workspace",
         "read_metadata",

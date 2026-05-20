@@ -12,4 +12,10 @@ public sealed record FolderListItem(
     IReadOnlyList<string> Tags,
     FolderLifecycleState LifecycleState,
     FolderRepositoryBindingState RepositoryBindingState,
+    FolderArchiveReasonCode? ArchiveReasonCode,
+    string? ArchiveActorPrincipalId,
+    string? ArchiveCorrelationId,
+    string? ArchiveTaskId,
+    string? ArchiveIdempotencyKey,
+    DateTimeOffset? ArchivedAt,
     long Sequence);

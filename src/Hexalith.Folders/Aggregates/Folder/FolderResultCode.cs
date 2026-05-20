@@ -6,6 +6,8 @@ public enum FolderResultCode
     Created,
     IdempotentReplay,
     AlreadyApplied,
+    AlreadyArchived,
+    ArchivePolicyDenied,
     MissingEntry,
     DuplicateEntry,
     ConflictingEntry,

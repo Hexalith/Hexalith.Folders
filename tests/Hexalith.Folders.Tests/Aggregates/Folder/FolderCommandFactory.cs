@@ -89,4 +89,29 @@ internal static class FolderCommandFactory
             idempotencyKey,
             payloadTenantId,
             clientTenantIds);
+
+    public static ArchiveFolder Archive(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        string requestSchemaVersion = "v1",
+        string archiveReasonCode = "caller_requested",
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-archive-a",
+        string? payloadTenantId = null,
+        IReadOnlyDictionary<string, string?>? clientTenantIds = null)
+        => new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            requestSchemaVersion,
+            archiveReasonCode,
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId,
+            clientTenantIds);
 }

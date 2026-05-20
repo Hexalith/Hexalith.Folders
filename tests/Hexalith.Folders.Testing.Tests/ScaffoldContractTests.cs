@@ -31,6 +31,7 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
         "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
         "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
+        "tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj",
         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
@@ -116,6 +117,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.UI.E2E.Tests", ["Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);

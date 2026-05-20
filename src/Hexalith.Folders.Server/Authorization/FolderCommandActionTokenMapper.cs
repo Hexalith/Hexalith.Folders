@@ -9,7 +9,7 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
         new Dictionary<string, FolderCommandActionMapping>(StringComparer.Ordinal)
         {
             ["Hexalith.Folders.Commands.CreateFolder"] = new("create_folder", FolderCommandOperationScopeKind.OrganizationBaseline),
-            ["Hexalith.Folders.Commands.ArchiveFolder"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
+            ["Hexalith.Folders.Commands.ArchiveFolder"] = new("archive_folder", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.GrantFolderAccess"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.RevokeFolderAccess"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.ConfigureProviderBinding"] = new("configure_provider_binding", FolderCommandOperationScopeKind.FolderAggregate),
