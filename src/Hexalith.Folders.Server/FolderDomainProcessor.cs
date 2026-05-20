@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
@@ -11,19 +12,23 @@ using Hexalith.Folders.Server.Authorization;
 
 namespace Hexalith.Folders.Server;
 
-public sealed class FolderDomainProcessor(
+public sealed partial class FolderDomainProcessor(
     FolderArchiveTenantGate archiveGate,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
 {
-    private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
-
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
     };
+
+    // Mirrors FoldersDomainServiceEndpoints.CanonicalSegmentRegex. Extension values
+    // arriving on the /process boundary are not validated by the REST endpoint, so the
+    // processor re-validates before propagating them into command/event metadata.
+    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.Compiled)]
+    private static partial Regex CanonicalSegmentRegex();
 
     private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
@@ -42,7 +47,7 @@ public sealed class FolderDomainProcessor(
             return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
         }
 
-        return string.Equals(command.CommandType, ArchiveFolderCommandType, StringComparison.Ordinal)
+        return string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal)
             ? await ProcessArchiveAsync(command).ConfigureAwait(false)
             : Rejection(command, FolderResultCode.UnsupportedCommandType, null);
     }
@@ -56,7 +61,7 @@ public sealed class FolderDomainProcessor(
         }
         catch (JsonException)
         {
-            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
         }
 
         if (payload is null)
@@ -64,20 +69,34 @@ public sealed class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
 
+        // Layered authorization must have run upstream in the request handler and pinned the
+        // authoritative tenant/actor/organization onto the scoped accessor. If it didn't, the
+        // request should never have reached the processor — but fail closed to a malformed
+        // evidence rejection if the contract is somehow violated.
         LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
-        string organizationId = allowed?.OrganizationId ?? string.Empty;
-        string taskId = envelope.Extensions is not null
-            && envelope.Extensions.TryGetValue("taskId", out string? extensionTaskId)
-            ? extensionTaskId
-            : string.Empty;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        // taskId is a /process extension; sanitize the bytes that came over the wire before
+        // they end up in command/event metadata or audit subjects.
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
 
         ArchiveFolder command = new(
-            envelope.TenantId,
-            organizationId,
+            // Source tenant/actor/organization from the verified layered-auth context, not the
+            // raw envelope. Layered auth already compared envelope.TenantId against the
+            // authenticated tenant; keep the envelope value only as a client-controlled
+            // comparison input on ClientTenantIds.
+            allowed.AuthoritativeTenantId,
+            allowed.OrganizationId,
             envelope.AggregateId,
             payload.RequestSchemaVersion ?? string.Empty,
             payload.ArchiveReasonCode ?? string.Empty,
-            envelope.UserId,
+            allowed.ActorSafeIdentifier,
             envelope.CorrelationId,
             taskId,
             envelope.MessageId,
@@ -95,8 +114,34 @@ public sealed class FolderDomainProcessor(
             .GetEvidenceAsync(command, CancellationToken.None)
             .ConfigureAwait(false);
 
-        FolderResult result = _archiveGate.Handle(command, tenantAccess, aclEvidence, policyEvidence);
+        FolderResult result;
+        try
+        {
+            result = _archiveGate.Handle(command, tenantAccess, aclEvidence, policyEvidence);
+        }
+        catch (Exception)
+        {
+            // Any unexpected exception from the gate (e.g. an evidence constructor invariant
+            // violation) must fail closed without leaking type/stack metadata through the
+            // gateway response or framework 500 path.
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
         return ToDomainResult(envelope, result);
+    }
+
+    private static string TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
+    {
+        if (extensions is null
+            || !extensions.TryGetValue(key, out string? value)
+            || string.IsNullOrWhiteSpace(value)
+            || value.Length > 128
+            || !CanonicalSegmentRegex().IsMatch(value))
+        {
+            return string.Empty;
+        }
+
+        return value;
     }
 
     private static TenantAccessAuthorizationResult BuildTenantAccess(LayeredFolderAuthorizationAllowedContext? allowed)
@@ -137,21 +182,24 @@ public sealed class FolderDomainProcessor(
 
     private static DomainResult Rejection(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
     {
-        IRejectionEvent rejection = new FolderCommandRejected(
-            code.ToString(),
-            envelope.CommandType,
-            result?.ManagedTenantId,
-            result?.OrganizationId,
-            result?.FolderId,
-            result?.ActorPrincipalId,
-            result?.CorrelationId ?? envelope.CorrelationId,
-            result?.TaskId,
-            result?.IdempotencyKey ?? envelope.MessageId);
+        // FolderCommandRejected.Create canonicalizes correlation/idempotency identifiers
+        // before they enter the rejection event so that an internal /process caller cannot
+        // smuggle CR/LF or oversized values into downstream log/trace surfaces.
+        IRejectionEvent rejection = FolderCommandRejected.Create(
+            code: code.ToString(),
+            commandType: envelope.CommandType,
+            managedTenantId: result?.ManagedTenantId,
+            organizationId: result?.OrganizationId,
+            folderId: result?.FolderId,
+            actorPrincipalId: result?.ActorPrincipalId,
+            correlationId: result?.CorrelationId ?? envelope.CorrelationId,
+            taskId: result?.TaskId,
+            idempotencyKey: result?.IdempotencyKey ?? envelope.MessageId);
 
         return DomainResult.Rejection([rejection]);
     }
 
     private sealed record ArchiveFolderPayload(
-        string? RequestSchemaVersion,
-        string? ArchiveReasonCode);
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? ArchiveReasonCode);
 }

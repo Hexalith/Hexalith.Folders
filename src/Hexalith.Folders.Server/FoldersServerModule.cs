@@ -27,6 +27,8 @@ public static class FoldersServerModule
 
     public const string DomainName = "folders";
 
+    public const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
+
     public static string Description => $"{FoldersContractMetadata.ModuleName} server scaffold";
 
     public static IServiceCollection AddFoldersServer(this IServiceCollection services)

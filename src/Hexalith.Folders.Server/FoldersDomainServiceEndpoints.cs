@@ -19,7 +19,6 @@ public static class FoldersDomainServiceEndpoints
 {
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
-    private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
 
     // Outbound: ignore-when-null is fine because we serialize records.
     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
@@ -307,7 +306,7 @@ public static class FoldersDomainServiceEndpoints
                     Tenant: tenantContext.AuthoritativeTenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
-                    CommandType: ArchiveFolderCommandType,
+                    CommandType: FoldersServerModule.ArchiveFolderCommandType,
                     Payload: JsonSerializer.SerializeToElement(body, GatewayPayloadJsonOptions),
                     CorrelationId: correlationId,
                     Extensions: new Dictionary<string, string>

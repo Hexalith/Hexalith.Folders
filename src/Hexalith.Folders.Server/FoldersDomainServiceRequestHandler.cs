@@ -15,7 +15,7 @@ public sealed class FoldersDomainServiceRequestHandler(
     ITenantContextAccessor tenantContext,
     IEventStoreClaimTransformEvidenceAccessor claimTransformEvidenceAccessor,
     IFolderCommandActionTokenMapper actionTokenMapper,
-    ILayeredFolderAuthorizationResultAccessor? authorizationResultAccessor = null)
+    ILayeredFolderAuthorizationResultAccessor authorizationResultAccessor)
 {
     private const string OrganizationBaselineScope = "organization_baseline";
 
@@ -80,23 +80,17 @@ public sealed class FoldersDomainServiceRequestHandler(
                 statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        ILayeredFolderAuthorizationResultAccessor? accessor = authorizationResultAccessor;
+        ArgumentNullException.ThrowIfNull(authorizationResultAccessor);
         try
         {
-            if (accessor is not null)
-            {
-                accessor.Current = authorization;
-            }
+            authorizationResultAccessor.BeginScope(authorization);
 
             DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
             return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
         }
         finally
         {
-            if (accessor is not null)
-            {
-                accessor.Current = null;
-            }
+            authorizationResultAccessor.EndScope();
         }
     }
 

@@ -6,6 +6,7 @@ using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.Folders;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 
@@ -430,6 +431,7 @@ public sealed class ArchiveFolderEndpointTests
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();

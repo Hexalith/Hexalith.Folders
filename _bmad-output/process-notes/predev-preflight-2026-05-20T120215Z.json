@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "produced_by": "jobs/preflight-predev-hardening.py",
-  "timestamp": "2026-05-20T13:02:19Z",
+  "timestamp": "2026-05-20T12:02:15Z",
   "repo": "D:\\Hexalith.Folders",
   "result": "fail",
   "bootstrap_actions": [],
@@ -63,11 +63,11 @@
         ":(exclude)_bmad-output/process-notes/preflight-latest.json"
       ],
       "exit_code": 0,
-      "stdout": " M _bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n M src/Hexalith.Folders.Server/Authorization/FolderCommandActionTokenMapper.cs\n M src/Hexalith.Folders.Server/Authorization/ILayeredFolderAuthorizationResultAccessor.cs\n M src/Hexalith.Folders.Server/Authorization/LayeredAuthBackedFolderArchiveAclEvidenceProvider.cs\n M src/Hexalith.Folders.Server/Authorization/ScopedLayeredFolderAuthorizationResultAccessor.cs\n M src/Hexalith.Folders.Server/FolderCommandRejected.cs\n M src/Hexalith.Folders.Server/FolderDomainProcessor.cs\n M src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs\n M src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs\n M src/Hexalith.Folders.Server/FoldersServerModule.cs\n M src/Hexalith.Folders.Server/Program.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCode.cs\n M src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs\n M src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs\n M src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs\n M tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs\n M tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs\n M tests/Hexalith.Folders.Server.Tests/EffectivePermissionsEndpointTests.cs\n M tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs\n M tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs\n M tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs\n?? _bmad-output/implementation-artifacts/2-8-round3-review-diff.patch\n",
+      "stdout": " M _bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md\n M _bmad-output/implementation-artifacts/deferred-work.md\n?? _bmad-output/implementation-artifacts/2-8-round3-review-diff.patch\n",
       "stderr": "",
-      "dirty_path_count": 24,
+      "dirty_path_count": 3,
       "result": "fail",
-      "details": "24 dirty path(s)"
+      "details": "3 dirty path(s)"
     }
   ],
   "note_to_llm": "This file was produced by jobs/preflight-predev-hardening.py. The recurring pre-dev hardening job MUST quote the contents of this file verbatim when reporting pre-flight results; do NOT re-run the checks yourself, paraphrase them, or summarize them in your own words."

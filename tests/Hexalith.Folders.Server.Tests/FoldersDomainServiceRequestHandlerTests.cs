@@ -137,7 +137,8 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             authorizer,
             tenantContext,
             new StubClaimTransformEvidenceAccessor("tenant-a", "user-a"),
-            new FolderCommandActionTokenMapper(new Dictionary<string, FolderCommandActionMapping>(StringComparer.Ordinal)));
+            new FolderCommandActionTokenMapper(new Dictionary<string, FolderCommandActionMapping>(StringComparer.Ordinal)),
+            new ScopedLayeredFolderAuthorizationResultAccessor());
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
@@ -170,7 +171,8 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             authorizer,
             tenantContext,
             new StubClaimTransformEvidenceAccessor(tenantContext.AuthoritativeTenantId, tenantContext.PrincipalId),
-            new FolderCommandActionTokenMapper(mappings));
+            new FolderCommandActionTokenMapper(mappings),
+            new ScopedLayeredFolderAuthorizationResultAccessor());
     }
 
     private static FolderTenantAccessProjection Projection(

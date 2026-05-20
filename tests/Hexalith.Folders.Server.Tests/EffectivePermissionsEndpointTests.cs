@@ -24,6 +24,7 @@ public sealed class EffectivePermissionsEndpointTests
         builder.Services.AddSingleton<IEffectivePermissionsReadModel>(ReadModel());
         builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor("tenant-a", "user-a"));
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
 
         app.MapFoldersServerEndpoints();
@@ -156,6 +157,7 @@ public sealed class EffectivePermissionsEndpointTests
         builder.Services.AddSingleton(readModel);
         builder.Services.AddSingleton(tenantContext);
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
         return app;

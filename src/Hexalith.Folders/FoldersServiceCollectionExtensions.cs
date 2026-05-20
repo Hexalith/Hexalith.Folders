@@ -17,11 +17,23 @@ public static class FoldersServiceCollectionExtensions
 
         services.AddOptions<TenantAccessOptions>().BindConfiguration(TenantAccessOptions.SectionName);
         services.TryAddSingleton<IUtcClock, SystemUtcClock>();
-        services.TryAddSingleton<IFolderRepository, InMemoryFolderRepository>();
         services.TryAddSingleton<IFolderTenantAccessProjectionStore, InMemoryFolderTenantAccessProjectionStore>();
         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<TenantAccessOptions>>().Value);
         services.TryAddSingleton<TenantAccessAuthorizer>();
         services.TryAddSingleton<FolderTenantAccessHandler>();
+
+        return services;
+    }
+
+    // Opt-in in-memory IFolderRepository registration. Production AppHosts MUST register
+    // a real EventStore-backed repository instead; integration tests and dev hosts call
+    // this method explicitly so a production composition that forgets to register a
+    // repository fails loud at startup rather than silently running on a dictionary.
+    public static IServiceCollection AddInMemoryFolderRepository(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.TryAddSingleton<IFolderRepository, InMemoryFolderRepository>();
 
         return services;
     }

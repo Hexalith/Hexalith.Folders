@@ -208,12 +208,21 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
     }
 
     private static FolderResultCode Map(TenantAccessOutcome outcome)
-        => outcome switch
+    {
+        // An IsAllowed=false result with Outcome=Allowed is a caller invariant violation.
+        // Match the archive gate: fail closed with safe malformed evidence instead of
+        // throwing from the domain gate. Tag the active trace span so the impossible-state
+        // branch leaves a metadata-only signal for operators even though it returns a
+        // generic safe denial. No exception text, no resource identifiers — the tag is a
+        // boolean trigger only.
+        if (outcome == TenantAccessOutcome.Allowed)
         {
-            // An IsAllowed=false result with Outcome=Allowed is a caller invariant violation.
-            // Match the archive gate: fail closed with safe malformed evidence instead of
-            // throwing from the domain gate.
-            TenantAccessOutcome.Allowed => FolderResultCode.MalformedEvidence,
+            System.Diagnostics.Activity.Current?.SetTag("hexalith.folders.access_gate.allowed_invariant_violation", "true");
+            return FolderResultCode.MalformedEvidence;
+        }
+
+        return outcome switch
+        {
             TenantAccessOutcome.Denied => FolderResultCode.TenantAccessDenied,
             TenantAccessOutcome.StaleProjection => FolderResultCode.StaleProjection,
             TenantAccessOutcome.UnavailableProjection => FolderResultCode.UnavailableProjection,
@@ -225,4 +234,5 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
             TenantAccessOutcome.ReplayConflict => FolderResultCode.ReplayConflict,
             _ => FolderResultCode.MalformedEvidence,
         };
+    }
 }

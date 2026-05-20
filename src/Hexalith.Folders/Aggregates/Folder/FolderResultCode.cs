@@ -34,6 +34,7 @@ public enum FolderResultCode
     UnsupportedAction,
     InvalidPrincipal,
     ValidationFailed,
+    MalformedJsonPayload,
     StaleProjection,
     UnavailableProjection,
     UnknownTenant,

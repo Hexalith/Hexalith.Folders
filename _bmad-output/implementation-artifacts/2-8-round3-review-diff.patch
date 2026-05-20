@@ -1,0 +1,1762 @@
+diff --git a/docs/adrs/0001-folder-domain-processor-persistence.md b/docs/adrs/0001-folder-domain-processor-persistence.md
+new file mode 100644
+index 0000000..543bb1e
+--- /dev/null
++++ b/docs/adrs/0001-folder-domain-processor-persistence.md
+@@ -0,0 +1,50 @@
++# ADR 0001: Folder domain processor persistence ownership
++
++Date: 2026-05-20
++
++## Status
++
++Accepted for Story 2.8b implementation.
++
++## Context
++
++Story 2.8 added archive command validation, decision-bound idempotency, ACL/policy checks, and append-conflict reread inside `FolderArchiveTenantGate`, but round-2 review found that no production `/process` callback invoked the gate. Story 2.8b exists to wire that callback.
++
++The EventStore `IDomainProcessor` contract returns `DomainResult` events that the EventStore framework persists. The existing Folders gates (`FolderCreateTenantGate`, `FolderAccessTenantGate`, and `FolderArchiveTenantGate`) already persist through `IFolderRepository.AppendIfFingerprintAbsent` so they can atomically pair stream append with the local idempotency fingerprint ledger and race reread behavior.
++
++## Decision
++
++Select Option B: the Folders gates keep persistence ownership, and `FolderDomainProcessor` invokes the relevant gate from `/process`. The processor returns `DomainResult.NoOp()` for gate-owned accepted mutations and idempotent replays so the EventStore framework does not double-write folder events. Domain rejections are returned as a single metadata-only `FolderCommandRejected` rejection event.
++
++Option A was rejected for this story because the current EventStore append path does not expose the same folder-specific idempotency fingerprint ledger and append-conflict reread semantics. Option C was rejected because unifying `IFolderEvent` with `IEventPayload` has a much larger blast radius and is not required to repair the production archive path.
++
++## Result Mapping
++
++`FolderResultCode.Accepted`, `Created`, `IdempotentReplay`, and `AlreadyApplied` map to `DomainResult.NoOp()`.
++
++All other `FolderResultCode` values map to `DomainResult.Rejection([FolderCommandRejected])`. The rejection payload carries only safe metadata: code, tenant/folder/organization when already sanitized by `FolderResult`, correlation/task/idempotency evidence, and command type.
++
++Because EventStore currently drops `ResultPayload` for no-op domain results, accepted archive responses preserve the existing operation/correlation/task evidence but do not depend on `ResultPayload` to signal idempotent replay. A future EventStore enhancement may add no-op result payload support; that is outside this story.
++
++## Cancellation Boundary
++
++`IDomainProcessor.ProcessAsync(CommandEnvelope, object?)` has no `CancellationToken`. IO-bearing work remains in the endpoint/gateway/request-handler path where cancellation is available. The processor and evidence providers used inside it are intentionally bounded, in-memory/scoped operations:
++
++- layered authorization has already run with the request `CancellationToken`;
++- archive ACL evidence reads the current scoped layered authorization result;
++- baseline archive policy evidence is a deterministic in-memory policy stub;
++- gate persistence uses `IFolderRepository`, whose current contract is synchronous.
++
++Extending `IDomainProcessor` with cancellation would require EventStore contract work and is deferred.
++
++## Layered Authorization Evidence Handoff
++
++`FoldersDomainServiceRequestHandler` stores the approved `LayeredFolderAuthorizationResult` in a scoped accessor immediately before invoking the domain processor and clears it in a `finally` block. Evidence providers consume this accessor and never rerun JWT validation or claim-transform checks inside the processor. Sequential requests in the same host must not observe stale authorization evidence.
++
++## Access Gate Impact
++
++`FolderAccessTenantGate` keeps the same gate-owned persistence pattern as archive. This story also aligns its invariant-failure behavior with archive by returning a safe `MalformedEvidence` result instead of throwing when `TenantAccessOutcome.Allowed` arrives with `IsAllowed == false`.
++
++## Consequences
++
++The production archive path now follows REST endpoint -> EventStore gateway -> `/process` -> `FolderDomainProcessor` -> `FolderArchiveTenantGate` -> `IFolderRepository`. This deliberately bypasses EventStore framework event persistence for folder mutation events to preserve the existing Folders idempotency and race semantics. The tradeoff is documented here so a later architecture story can revisit Option A or C deliberately.
+diff --git a/src/Hexalith.Folders.Server/Authorization/BaselineFolderArchivePolicyEvidenceProvider.cs b/src/Hexalith.Folders.Server/Authorization/BaselineFolderArchivePolicyEvidenceProvider.cs
+new file mode 100644
+index 0000000..1014633
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/Authorization/BaselineFolderArchivePolicyEvidenceProvider.cs
+@@ -0,0 +1,24 @@
++using Hexalith.Folders.Aggregates.Folder;
++
++namespace Hexalith.Folders.Server.Authorization;
++
++public sealed class BaselineFolderArchivePolicyEvidenceProvider : IFolderArchivePolicyEvidenceProvider
++{
++    public const string PolicyVersion = "v1-baseline";
++
++    public Task<FolderArchivePolicyEvidence> GetEvidenceAsync(
++        ArchiveFolder command,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++        cancellationToken.ThrowIfCancellationRequested();
++
++        FolderArchivePolicyEvidence evidence = FolderArchivePolicyEvidence.Allowed(
++            command.ManagedTenantId,
++            command.OrganizationId,
++            command.FolderId,
++            PolicyVersion);
++
++        return Task.FromResult(evidence);
++    }
++}
+diff --git a/src/Hexalith.Folders.Server/Authorization/IFolderArchiveAclEvidenceProvider.cs b/src/Hexalith.Folders.Server/Authorization/IFolderArchiveAclEvidenceProvider.cs
+new file mode 100644
+index 0000000..fbfed46
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/Authorization/IFolderArchiveAclEvidenceProvider.cs
+@@ -0,0 +1,10 @@
++using Hexalith.Folders.Aggregates.Folder;
++
++namespace Hexalith.Folders.Server.Authorization;
++
++public interface IFolderArchiveAclEvidenceProvider
++{
++    Task<FolderArchiveAclEvidence> GetEvidenceAsync(
++        ArchiveFolder command,
++        CancellationToken cancellationToken = default);
++}
+diff --git a/src/Hexalith.Folders.Server/Authorization/IFolderArchivePolicyEvidenceProvider.cs b/src/Hexalith.Folders.Server/Authorization/IFolderArchivePolicyEvidenceProvider.cs
+new file mode 100644
+index 0000000..42c0a5b
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/Authorization/IFolderArchivePolicyEvidenceProvider.cs
+@@ -0,0 +1,10 @@
++using Hexalith.Folders.Aggregates.Folder;
++
++namespace Hexalith.Folders.Server.Authorization;
++
++public interface IFolderArchivePolicyEvidenceProvider
++{
++    Task<FolderArchivePolicyEvidence> GetEvidenceAsync(
++        ArchiveFolder command,
++        CancellationToken cancellationToken = default);
++}
+diff --git a/src/Hexalith.Folders.Server/Authorization/ILayeredFolderAuthorizationResultAccessor.cs b/src/Hexalith.Folders.Server/Authorization/ILayeredFolderAuthorizationResultAccessor.cs
+new file mode 100644
+index 0000000..7f62ee2
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/Authorization/ILayeredFolderAuthorizationResultAccessor.cs
+@@ -0,0 +1,8 @@
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Server.Authorization;
++
++public interface ILayeredFolderAuthorizationResultAccessor
++{
++    LayeredFolderAuthorizationResult? Current { get; set; }
++}
+diff --git a/src/Hexalith.Folders.Server/Authorization/LayeredAuthBackedFolderArchiveAclEvidenceProvider.cs b/src/Hexalith.Folders.Server/Authorization/LayeredAuthBackedFolderArchiveAclEvidenceProvider.cs
+new file mode 100644
+index 0000000..49b0010
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/Authorization/LayeredAuthBackedFolderArchiveAclEvidenceProvider.cs
+@@ -0,0 +1,38 @@
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Server.Authorization;
++
++public sealed class LayeredAuthBackedFolderArchiveAclEvidenceProvider(
++    ILayeredFolderAuthorizationResultAccessor authorizationAccessor) : IFolderArchiveAclEvidenceProvider
++{
++    private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
++        authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
++
++    public Task<FolderArchiveAclEvidence> GetEvidenceAsync(
++        ArchiveFolder command,
++        CancellationToken cancellationToken = default)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++        cancellationToken.ThrowIfCancellationRequested();
++
++        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
++        FolderArchiveAclEvidence evidence = allowed is not null
++            && string.Equals(allowed.ActionToken, FolderArchiveAclEvidence.ArchiveAction, StringComparison.Ordinal)
++            && string.Equals(allowed.OperationScope, command.FolderId, StringComparison.Ordinal)
++            && string.Equals(allowed.AuthoritativeTenantId, command.ManagedTenantId, StringComparison.Ordinal)
++            && !string.IsNullOrWhiteSpace(allowed.OrganizationId)
++                ? FolderArchiveAclEvidence.Allowed(
++                    allowed.AuthoritativeTenantId,
++                    allowed.OrganizationId,
++                    command.FolderId,
++                    allowed.ActorSafeIdentifier)
++                : FolderArchiveAclEvidence.Denied(
++                    command.ManagedTenantId,
++                    command.OrganizationId,
++                    command.FolderId,
++                    command.ActorPrincipalId);
++
++        return Task.FromResult(evidence);
++    }
++}
+diff --git a/src/Hexalith.Folders.Server/Authorization/ScopedLayeredFolderAuthorizationResultAccessor.cs b/src/Hexalith.Folders.Server/Authorization/ScopedLayeredFolderAuthorizationResultAccessor.cs
+new file mode 100644
+index 0000000..39c9b89
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/Authorization/ScopedLayeredFolderAuthorizationResultAccessor.cs
+@@ -0,0 +1,8 @@
++using Hexalith.Folders.Authorization;
++
++namespace Hexalith.Folders.Server.Authorization;
++
++public sealed class ScopedLayeredFolderAuthorizationResultAccessor : ILayeredFolderAuthorizationResultAccessor
++{
++    public LayeredFolderAuthorizationResult? Current { get; set; }
++}
+diff --git a/src/Hexalith.Folders.Server/FolderCommandRejected.cs b/src/Hexalith.Folders.Server/FolderCommandRejected.cs
+new file mode 100644
+index 0000000..ef1a9f4
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/FolderCommandRejected.cs
+@@ -0,0 +1,14 @@
++using Hexalith.EventStore.Contracts.Events;
++
++namespace Hexalith.Folders.Server;
++
++public sealed record FolderCommandRejected(
++    string Code,
++    string CommandType,
++    string? ManagedTenantId,
++    string? OrganizationId,
++    string? FolderId,
++    string? ActorPrincipalId,
++    string? CorrelationId,
++    string? TaskId,
++    string? IdempotencyKey) : IRejectionEvent;
+diff --git a/src/Hexalith.Folders.Server/FolderDomainProcessor.cs b/src/Hexalith.Folders.Server/FolderDomainProcessor.cs
+new file mode 100644
+index 0000000..fcf1b4f
+--- /dev/null
++++ b/src/Hexalith.Folders.Server/FolderDomainProcessor.cs
+@@ -0,0 +1,157 @@
++using System.Text.Json;
++using System.Text.Json.Serialization;
++
++using Hexalith.EventStore.Client.Handlers;
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Events;
++using Hexalith.EventStore.Contracts.Results;
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Server.Authorization;
++
++namespace Hexalith.Folders.Server;
++
++public sealed class FolderDomainProcessor(
++    FolderArchiveTenantGate archiveGate,
++    ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
++    IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
++    IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
++{
++    private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
++
++    private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
++    {
++        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
++        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
++    };
++
++    private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
++    private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
++        authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
++    private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
++        archiveAclEvidenceProvider ?? throw new ArgumentNullException(nameof(archiveAclEvidenceProvider));
++    private readonly IFolderArchivePolicyEvidenceProvider _archivePolicyEvidenceProvider =
++        archivePolicyEvidenceProvider ?? throw new ArgumentNullException(nameof(archivePolicyEvidenceProvider));
++
++    public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
++    {
++        ArgumentNullException.ThrowIfNull(command);
++
++        if (!string.Equals(command.Domain, FoldersServerModule.DomainName, StringComparison.Ordinal))
++        {
++            return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
++        }
++
++        return string.Equals(command.CommandType, ArchiveFolderCommandType, StringComparison.Ordinal)
++            ? await ProcessArchiveAsync(command).ConfigureAwait(false)
++            : Rejection(command, FolderResultCode.UnsupportedCommandType, null);
++    }
++
++    private async Task<DomainResult> ProcessArchiveAsync(CommandEnvelope envelope)
++    {
++        ArchiveFolderPayload? payload;
++        try
++        {
++            payload = JsonSerializer.Deserialize<ArchiveFolderPayload>(envelope.Payload, PayloadJsonOptions);
++        }
++        catch (JsonException)
++        {
++            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
++        }
++
++        if (payload is null)
++        {
++            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
++        }
++
++        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
++        string organizationId = allowed?.OrganizationId ?? string.Empty;
++        string taskId = envelope.Extensions is not null
++            && envelope.Extensions.TryGetValue("taskId", out string? extensionTaskId)
++            ? extensionTaskId
++            : string.Empty;
++
++        ArchiveFolder command = new(
++            envelope.TenantId,
++            organizationId,
++            envelope.AggregateId,
++            payload.RequestSchemaVersion ?? string.Empty,
++            payload.ArchiveReasonCode ?? string.Empty,
++            envelope.UserId,
++            envelope.CorrelationId,
++            taskId,
++            envelope.MessageId,
++            PayloadTenantId: null,
++            ClientTenantIds: new Dictionary<string, string?>(StringComparer.Ordinal)
++            {
++                ["eventstore_envelope_tenant"] = envelope.TenantId,
++            });
++
++        TenantAccessAuthorizationResult tenantAccess = BuildTenantAccess(allowed);
++        FolderArchiveAclEvidence aclEvidence = await _archiveAclEvidenceProvider
++            .GetEvidenceAsync(command, CancellationToken.None)
++            .ConfigureAwait(false);
++        FolderArchivePolicyEvidence policyEvidence = await _archivePolicyEvidenceProvider
++            .GetEvidenceAsync(command, CancellationToken.None)
++            .ConfigureAwait(false);
++
++        FolderResult result = _archiveGate.Handle(command, tenantAccess, aclEvidence, policyEvidence);
++        return ToDomainResult(envelope, result);
++    }
++
++    private static TenantAccessAuthorizationResult BuildTenantAccess(LayeredFolderAuthorizationAllowedContext? allowed)
++        => allowed is null
++            ? new(
++                TenantAccessOutcome.MalformedEvidence,
++                "malformed_evidence",
++                null,
++                null,
++                null,
++                null,
++                TenantProjectionFreshnessStatus.Unknown,
++                "layered-authorization")
++            : new(
++                TenantAccessOutcome.Allowed,
++                "allowed",
++                allowed.AuthoritativeTenantId,
++                allowed.FreshnessWatermark,
++                null,
++                null,
++                MapFreshness(allowed),
++                "layered-authorization");
++
++    private static TenantProjectionFreshnessStatus MapFreshness(LayeredFolderAuthorizationAllowedContext allowed)
++        => string.IsNullOrWhiteSpace(allowed.FreshnessWatermark)
++            ? TenantProjectionFreshnessStatus.Unknown
++            : TenantProjectionFreshnessStatus.Fresh;
++
++    private static DomainResult ToDomainResult(CommandEnvelope envelope, FolderResult result)
++        => result.Code switch
++        {
++            FolderResultCode.Accepted
++                or FolderResultCode.Created
++                or FolderResultCode.IdempotentReplay
++                or FolderResultCode.AlreadyApplied => DomainResult.NoOp(),
++            _ => Rejection(envelope, result.Code, result),
++        };
++
++    private static DomainResult Rejection(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
++    {
++        IRejectionEvent rejection = new FolderCommandRejected(
++            code.ToString(),
++            envelope.CommandType,
++            result?.ManagedTenantId,
++            result?.OrganizationId,
++            result?.FolderId,
++            result?.ActorPrincipalId,
++            result?.CorrelationId ?? envelope.CorrelationId,
++            result?.TaskId,
++            result?.IdempotencyKey ?? envelope.MessageId);
++
++        return DomainResult.Rejection([rejection]);
++    }
++
++    private sealed record ArchiveFolderPayload(
++        string? RequestSchemaVersion,
++        string? ArchiveReasonCode);
++}
+diff --git a/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs b/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+index c66e762..f825f65 100644
+--- a/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
++++ b/src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
+ using Hexalith.EventStore.Client.Gateway;
+ using Hexalith.EventStore.Contracts.Commands;
+ using Hexalith.EventStore.Contracts.Projections;
++using Hexalith.Folders.Aggregates.Folder;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Queries.Folders;
+ using Hexalith.Folders.Server.Authentication;
+@@ -19,7 +20,6 @@ public static class FoldersDomainServiceEndpoints
+     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
+     private const string EventuallyConsistent = "eventually_consistent";
+     private const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
+-    private const string FoldersDomainName = "folders";
+ 
+     // Outbound: ignore-when-null is fine because we serialize records.
+     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
+@@ -35,11 +35,26 @@ public static class FoldersDomainServiceEndpoints
+         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+     };
+ 
++    // Gateway payload: outbound JSON forwarded to the EventStore gateway. Kept separate from
++    // ResponseJsonOptions so HTTP-response tweaks (e.g. WriteIndented) cannot accidentally
++    // change wire shape of the command payload.
++    private static readonly JsonSerializerOptions GatewayPayloadJsonOptions = new(JsonSerializerDefaults.Web)
++    {
++        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
++    };
++
+     private const string ReservedSystemTenant = "system";
+ 
+     private static readonly System.Text.RegularExpressions.Regex CanonicalSegmentRegex =
+         new("^[a-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
+ 
++    // Gateway-returned correlation IDs may carry uppercase hex (ULIDs, UUIDs) coming from
++    // upstream systems. Caller-supplied identifiers stay strictly lowercase canonical to
++    // preserve safe-comparison invariants; the gateway-corrected echo is validated against
++    // this broader shape so traces remain joinable across hops.
++    private static readonly System.Text.RegularExpressions.Regex GatewayCorrelationRegex =
++        new("^[A-Za-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
++
+     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
+     {
+         ArgumentNullException.ThrowIfNull(endpoints);
+@@ -272,7 +287,7 @@ public static class FoldersDomainServiceEndpoints
+                 message: "requestSchemaVersion must be exactly v1.");
+         }
+ 
+-        if (!IsSupportedArchiveReason(body.ArchiveReasonCode))
++        if (!FolderArchiveReasonCodes.IsSupported(body.ArchiveReasonCode))
+         {
+             return SafeProblem(
+                 StatusCodes.Status400BadRequest,
+@@ -290,10 +305,10 @@ public static class FoldersDomainServiceEndpoints
+                 new SubmitCommandRequest(
+                     MessageId: idempotencyKey,
+                     Tenant: tenantContext.AuthoritativeTenantId,
+-                    Domain: FoldersDomainName,
++                    Domain: FoldersServerModule.DomainName,
+                     AggregateId: folderId,
+                     CommandType: ArchiveFolderCommandType,
+-                    Payload: JsonSerializer.SerializeToElement(body, ResponseJsonOptions),
++                    Payload: JsonSerializer.SerializeToElement(body, GatewayPayloadJsonOptions),
+                     CorrelationId: correlationId,
+                     Extensions: new Dictionary<string, string>
+                     {
+@@ -323,9 +338,11 @@ public static class FoldersDomainServiceEndpoints
+         }
+ 
+         // Re-validate the gateway-returned correlation id before reflecting it into a
+-        // response header to avoid log/header injection via the gateway hop.
++        // response header to avoid log/header injection via the gateway hop. Gateway-corrected
++        // IDs may carry uppercase characters (UUIDs, ULIDs from upstream systems), so use the
++        // broader gateway-correlation shape rather than the strict caller-side canonical shape.
+         string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+-            && IsCanonicalIdentifier(submitted.CorrelationId)
++            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+             ? submitted.CorrelationId
+             : correlationId;
+ 
+@@ -348,6 +365,11 @@ public static class FoldersDomainServiceEndpoints
+         && value.Length <= 128
+         && CanonicalSegmentRegex.IsMatch(value);
+ 
++    private static bool IsSafeGatewayCorrelationId(string? value)
++        => !string.IsNullOrWhiteSpace(value)
++        && value.Length <= 128
++        && GatewayCorrelationRegex.IsMatch(value);
++
+     private static bool IsIdempotentReplay(JsonElement? resultPayload)
+     {
+         if (resultPayload is null || resultPayload.Value.ValueKind != JsonValueKind.Object)
+@@ -377,7 +399,7 @@ public static class FoldersDomainServiceEndpoints
+     {
+         ArgumentNullException.ThrowIfNull(exception);
+ 
+-        string safeCorrelationId = IsCanonicalIdentifier(exception.CorrelationId)
++        string safeCorrelationId = IsSafeGatewayCorrelationId(exception.CorrelationId)
+             ? exception.CorrelationId!
+             : correlationId;
+ 
+@@ -418,6 +440,16 @@ public static class FoldersDomainServiceEndpoints
+                 retryable: true,
+                 correlationId: safeCorrelationId,
+                 taskId: taskId),
++            // Any 5xx from the gateway (500, 502, 504) is an upstream failure, not an
++            // authorization decision. Surfacing it as 403 denied_safe would be active
++            // misinformation to operators chasing a backend incident. Map to safe 503.
++            >= 500 and < 600 => SafeProblem(
++                StatusCodes.Status503ServiceUnavailable,
++                category: "read_model_unavailable",
++                code: "evidence_unavailable",
++                retryable: true,
++                correlationId: safeCorrelationId,
++                taskId: taskId),
+             _ => SafeProblem(
+                 StatusCodes.Status403Forbidden,
+                 category: "tenant_access_denied",
+@@ -732,9 +764,6 @@ public static class FoldersDomainServiceEndpoints
+         return false;
+     }
+ 
+-    private static bool IsSupportedArchiveReason(string? value)
+-        => value is "caller_requested" or "policy_retention" or "operator_review";
+-
+     private sealed record ArchiveFolderHttpRequest(
+         string? RequestSchemaVersion,
+         string? ArchiveReasonCode);
+diff --git a/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs b/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
+index 15cdb5f..9c89eda 100644
+--- a/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
++++ b/src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs
+@@ -14,7 +14,8 @@ public sealed class FoldersDomainServiceRequestHandler(
+     LayeredFolderAuthorizationService authorizer,
+     ITenantContextAccessor tenantContext,
+     IEventStoreClaimTransformEvidenceAccessor claimTransformEvidenceAccessor,
+-    IFolderCommandActionTokenMapper actionTokenMapper)
++    IFolderCommandActionTokenMapper actionTokenMapper,
++    ILayeredFolderAuthorizationResultAccessor? authorizationResultAccessor = null)
+ {
+     private const string OrganizationBaselineScope = "organization_baseline";
+ 
+@@ -79,8 +80,24 @@ public sealed class FoldersDomainServiceRequestHandler(
+                 statusCode: StatusCodes.Status500InternalServerError);
+         }
+ 
+-        DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
+-        return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
++        ILayeredFolderAuthorizationResultAccessor? accessor = authorizationResultAccessor;
++        try
++        {
++            if (accessor is not null)
++            {
++                accessor.Current = authorization;
++            }
++
++            DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
++            return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
++        }
++        finally
++        {
++            if (accessor is not null)
++            {
++                accessor.Current = null;
++            }
++        }
+     }
+ 
+     private static string? ResolveOperationScope(FolderCommandOperationScopeKind kind, CommandEnvelope command)
+diff --git a/src/Hexalith.Folders.Server/FoldersServerModule.cs b/src/Hexalith.Folders.Server/FoldersServerModule.cs
+index 7c6ebac..947265e 100644
+--- a/src/Hexalith.Folders.Server/FoldersServerModule.cs
++++ b/src/Hexalith.Folders.Server/FoldersServerModule.cs
+@@ -25,6 +25,8 @@ public static class FoldersServerModule
+ 
+     public const string TenantEventsTopicName = "system.tenants.events";
+ 
++    public const string DomainName = "folders";
++
+     public static string Description => $"{FoldersContractMetadata.ModuleName} server scaffold";
+ 
+     public static IServiceCollection AddFoldersServer(this IServiceCollection services)
+diff --git a/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs b/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+index 8c324b9..480aec1 100644
+--- a/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
++++ b/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+@@ -1,4 +1,6 @@
+ using Hexalith.EventStore.Client.Registration;
++using Hexalith.EventStore.Client.Handlers;
++using Hexalith.Folders.Aggregates.Folder;
+ using Hexalith.Folders.Server.Authentication;
+ using Hexalith.Folders.Server.Authorization;
+ 
+@@ -26,6 +28,13 @@ public static class FoldersServerServiceCollectionExtensions
+         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
+         services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();
+         services.TryAddSingleton<IFolderCommandActionTokenMapper, FolderCommandActionTokenMapper>();
++        services.TryAddScoped<ILayeredFolderAuthorizationResultAccessor, ScopedLayeredFolderAuthorizationResultAccessor>();
++        services.TryAddScoped<IFolderArchiveAclEvidenceProvider, LayeredAuthBackedFolderArchiveAclEvidenceProvider>();
++        services.TryAddScoped<IFolderArchivePolicyEvidenceProvider, BaselineFolderArchivePolicyEvidenceProvider>();
++        services.TryAddSingleton(TimeProvider.System);
++        services.TryAddScoped<FolderArchiveTenantGate>();
++        services.TryAddScoped<FolderAccessTenantGate>();
++        services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
+         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
+         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());
+ 
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs
+index e1c8f0b..ea41984 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs
+@@ -210,11 +210,10 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
+     private static FolderResultCode Map(TenantAccessOutcome outcome)
+         => outcome switch
+         {
+-            // `Allowed` is unreachable here because the caller already checked IsAllowed.
+-            // If we get here with Allowed it means the upstream contract (Outcome==Allowed
+-            // implies IsAllowed==true) was violated — fail loud rather than coerce to a code.
+-            TenantAccessOutcome.Allowed => throw new InvalidOperationException(
+-                $"TenantAccessAuthorizationResult invariant broken: Outcome=Allowed with IsAllowed=false."),
++            // An IsAllowed=false result with Outcome=Allowed is a caller invariant violation.
++            // Match the archive gate: fail closed with safe malformed evidence instead of
++            // throwing from the domain gate.
++            TenantAccessOutcome.Allowed => FolderResultCode.MalformedEvidence,
+             TenantAccessOutcome.Denied => FolderResultCode.TenantAccessDenied,
+             TenantAccessOutcome.StaleProjection => FolderResultCode.StaleProjection,
+             TenantAccessOutcome.UnavailableProjection => FolderResultCode.UnavailableProjection,
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs
+index b672476..51cfb68 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs
+@@ -103,6 +103,13 @@ public static class FolderAggregate
+             return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+         }
+ 
++        // Idempotency check BEFORE lifecycle. Same idempotency key already recorded on this
++        // stream means the prior archive command was accepted (its FolderArchived event is
++        // what put the folder in Archived state), so this is a logical replay, not a new
++        // attempt. Different-key archive against an already-archived folder falls through to
++        // the AlreadyArchived state check below. This ordering also lets the gate's
++        // ResolveAppendConflict reread surface IdempotentReplay/IdempotencyConflict correctly
++        // when a racer's archive won the append race.
+         if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+         {
+             return string.Equals(priorFingerprint, idempotencyFingerprint, StringComparison.Ordinal)
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs
+index 9ef0c13..ce3e798 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveAclEvidence.cs
+@@ -30,6 +30,13 @@ public sealed record FolderArchiveAclEvidence
+                     nameof(managedTenantId));
+             }
+ 
++            if (string.IsNullOrWhiteSpace(organizationId))
++            {
++                throw new ArgumentException(
++                    "Allowed FolderArchiveAclEvidence must carry a non-empty organizationId.",
++                    nameof(organizationId));
++            }
++
+             if (string.IsNullOrWhiteSpace(folderId))
+             {
+                 throw new ArgumentException(
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCodes.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCodes.cs
+new file mode 100644
+index 0000000..b19c610
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderArchiveReasonCodes.cs
+@@ -0,0 +1,38 @@
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public static class FolderArchiveReasonCodes
++{
++    public const string CallerRequested = "caller_requested";
++    public const string PolicyRetention = "policy_retention";
++    public const string OperatorReview = "operator_review";
++
++    public static bool IsSupported(string? value) => TryParse(value, out _);
++
++    public static bool TryParse(string? value, out FolderArchiveReasonCode reasonCode)
++    {
++        switch (value)
++        {
++            case CallerRequested:
++                reasonCode = FolderArchiveReasonCode.CallerRequested;
++                return true;
++            case PolicyRetention:
++                reasonCode = FolderArchiveReasonCode.PolicyRetention;
++                return true;
++            case OperatorReview:
++                reasonCode = FolderArchiveReasonCode.OperatorReview;
++                return true;
++            default:
++                reasonCode = default;
++                return false;
++        }
++    }
++
++    public static string ToContractValue(FolderArchiveReasonCode reasonCode)
++        => reasonCode switch
++        {
++            FolderArchiveReasonCode.CallerRequested => CallerRequested,
++            FolderArchiveReasonCode.PolicyRetention => PolicyRetention,
++            FolderArchiveReasonCode.OperatorReview => OperatorReview,
++            _ => string.Empty,
++        };
++}
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs
+index ef7f2b1..595823a 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs
+@@ -371,32 +371,10 @@ public static partial class FolderCommandValidator
+     }
+ 
+     private static bool TryParseArchiveReasonCode(string? value, out FolderArchiveReasonCode reasonCode)
+-    {
+-        reasonCode = default;
+-        switch (value)
+-        {
+-            case "caller_requested":
+-                reasonCode = FolderArchiveReasonCode.CallerRequested;
+-                return true;
+-            case "policy_retention":
+-                reasonCode = FolderArchiveReasonCode.PolicyRetention;
+-                return true;
+-            case "operator_review":
+-                reasonCode = FolderArchiveReasonCode.OperatorReview;
+-                return true;
+-            default:
+-                return false;
+-        }
+-    }
++        => FolderArchiveReasonCodes.TryParse(value, out reasonCode);
+ 
+     private static string ToContractValue(FolderArchiveReasonCode reasonCode)
+-        => reasonCode switch
+-        {
+-            FolderArchiveReasonCode.CallerRequested => "caller_requested",
+-            FolderArchiveReasonCode.PolicyRetention => "policy_retention",
+-            FolderArchiveReasonCode.OperatorReview => "operator_review",
+-            _ => string.Empty,
+-        };
++        => FolderArchiveReasonCodes.ToContractValue(reasonCode);
+ 
+     private static bool IsSafePathLabel(string? value)
+         => string.IsNullOrWhiteSpace(value) || FolderStreamName.IsValidSegment(value);
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs b/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
+index 85726aa..426a654 100644
+--- a/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
++++ b/src/Hexalith.Folders/Aggregates/Folder/FolderResultCode.cs
+@@ -42,4 +42,5 @@ public enum FolderResultCode
+     TenantMismatch,
+     ReplayConflict,
+     StateTransitionInvalid,
++    UnsupportedCommandType,
+ }
+diff --git a/src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs b/src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs
+new file mode 100644
+index 0000000..5662787
+--- /dev/null
++++ b/src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs
+@@ -0,0 +1,128 @@
++using System.Collections.Concurrent;
++
++using Hexalith.Folders.Queries.Folders;
++
++namespace Hexalith.Folders.Aggregates.Folder;
++
++public sealed class InMemoryFolderRepository(IFolderLifecycleStatusReadModel? lifecycleReadModel = null) : IFolderRepository
++{
++    private readonly ConcurrentDictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
++    private readonly ConcurrentDictionary<string, FolderState> _states = new(StringComparer.Ordinal);
++    private readonly object _gate = new();
++    private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel = lifecycleReadModel as InMemoryFolderLifecycleStatusReadModel;
++
++    public int EventsAppended { get; private set; }
++
++    public FolderStreamName CreateStreamName(string managedTenantId, string folderId)
++        => FolderStreamName.Create(managedTenantId, folderId);
++
++    public FolderState Load(FolderStreamName streamName)
++    {
++        ArgumentNullException.ThrowIfNull(streamName);
++
++        return _states.TryGetValue(streamName.Value, out FolderState? state)
++            ? state
++            : FolderState.Empty;
++    }
++
++    public FolderAppendOutcome AppendIfFingerprintAbsent(
++        FolderStreamName streamName,
++        string idempotencyKey,
++        string fingerprint,
++        IReadOnlyList<IFolderEvent> events)
++    {
++        ArgumentNullException.ThrowIfNull(streamName);
++        ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
++        ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
++        ArgumentNullException.ThrowIfNull(events);
++
++        lock (_gate)
++        {
++            string ledgerKey = LedgerKey(streamName, idempotencyKey);
++            if (_idempotencyFingerprints.TryGetValue(ledgerKey, out string? priorFingerprint))
++            {
++                return string.Equals(priorFingerprint, fingerprint, StringComparison.Ordinal)
++                    ? FolderAppendOutcome.FingerprintMatched
++                    : FolderAppendOutcome.FingerprintConflict;
++            }
++
++            FolderState current = Load(streamName);
++            FolderState next = current.Apply(events, streamName);
++            _states[streamName.Value] = next;
++            _idempotencyFingerprints[ledgerKey] = fingerprint;
++            EventsAppended += events.Count;
++            SaveLifecycleSnapshot(next);
++            return FolderAppendOutcome.Appended;
++        }
++    }
++
++    public FolderIdempotencyLookupResult TryGetIdempotencyFingerprint(
++        FolderStreamName streamName,
++        string idempotencyKey,
++        out string? fingerprint)
++    {
++        ArgumentNullException.ThrowIfNull(streamName);
++        ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
++
++        return _idempotencyFingerprints.TryGetValue(LedgerKey(streamName, idempotencyKey), out fingerprint)
++            ? FolderIdempotencyLookupResult.Found
++            : FolderIdempotencyLookupResult.Missing;
++    }
++
++    public void Seed(FolderStreamName streamName, IReadOnlyList<IFolderEvent> events)
++    {
++        ArgumentNullException.ThrowIfNull(streamName);
++        ArgumentNullException.ThrowIfNull(events);
++
++        lock (_gate)
++        {
++            FolderState seeded = FolderState.Empty.Apply(events, streamName);
++            _states[streamName.Value] = seeded;
++            foreach (IFolderEvent folderEvent in events)
++            {
++                if (!string.IsNullOrWhiteSpace(folderEvent.IdempotencyKey))
++                {
++                    _idempotencyFingerprints[LedgerKey(streamName, folderEvent.IdempotencyKey)] = folderEvent.IdempotencyFingerprint;
++                }
++            }
++
++            SaveLifecycleSnapshot(seeded);
++        }
++    }
++
++    public void ResetAppendCounters() => EventsAppended = 0;
++
++    private static string LedgerKey(FolderStreamName streamName, string idempotencyKey)
++        => $"{streamName.Value}|{idempotencyKey}";
++
++    private void SaveLifecycleSnapshot(FolderState state)
++    {
++        if (_lifecycleReadModel is null
++            || !state.IsCreated
++            || string.IsNullOrWhiteSpace(state.ManagedTenantId)
++            || string.IsNullOrWhiteSpace(state.FolderId))
++        {
++            return;
++        }
++
++        DateTimeOffset observedAt = state.ArchivedAt ?? DateTimeOffset.UnixEpoch;
++        _lifecycleReadModel.Save(new FolderLifecycleStatusReadModelSnapshot(
++            state.ManagedTenantId,
++            state.FolderId,
++            state.LifecycleState == FolderLifecycleState.Archived
++                ? FolderLifecycleProjectionState.Archived
++                : FolderLifecycleProjectionState.Active,
++            FolderRepositoryBindingStatus.Unbound,
++            RepositoryBindingId: null,
++            ProviderBindingRef: null,
++            new FolderLifecycleFreshness("eventually_consistent", observedAt, "in-memory-folder-repository", Stale: false, ReasonCode: null),
++            new FolderLifecycleEvidenceScope(
++                state.ManagedTenantId,
++                state.ArchiveActorPrincipalId,
++                "read_metadata",
++                state.ArchiveTaskId,
++                state.ArchiveCorrelationId,
++                "in-memory-folder-repository"),
++            []));
++    }
++}
+diff --git a/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs b/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs
+index aad0e84..acb780e 100644
+--- a/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs
++++ b/src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs
+@@ -100,7 +100,8 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
+ 
+         return FolderPermissionEvidenceResult.Allowed(
+             snapshot.Freshness.ProjectionWatermark,
+-            stale ? "bounded_stale" : "fresh");
++            stale ? "bounded_stale" : "fresh",
++            snapshot.OrganizationId);
+     }
+ 
+     private static bool HasActionGrant(
+diff --git a/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs
+index fde1e09..aa49dc9 100644
+--- a/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs
++++ b/src/Hexalith.Folders/Authorization/FolderPermissionEvidenceResult.cs
+@@ -7,15 +7,21 @@ public sealed record FolderPermissionEvidenceResult(
+     string FreshnessClass,
+     bool Retryable)
+ {
++    public string? OrganizationId { get; init; }
++
+     public static FolderPermissionEvidenceResult Allowed(
+         string? freshnessWatermark,
+-        string freshnessClass = "fresh")
++        string freshnessClass = "fresh",
++        string? organizationId = null)
+         => new(
+             FolderPermissionEvidenceStatus.Allowed,
+             LayeredAuthorizationOutcomeCodes.Allowed,
+             freshnessWatermark,
+             freshnessClass,
+-            Retryable: false);
++            Retryable: false)
++        {
++            OrganizationId = organizationId,
++        };
+ 
+     public static FolderPermissionEvidenceResult FromStatus(
+         FolderPermissionEvidenceStatus status,
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
+index 74829ec..437b085 100644
+--- a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
+@@ -8,4 +8,7 @@ public sealed record LayeredFolderAuthorizationAllowedContext(
+     string? CorrelationId,
+     string? TaskId,
+     string? FreshnessWatermark,
+-    IReadOnlyList<AuthorizationLayer> PolicyLayers);
++    IReadOnlyList<AuthorizationLayer> PolicyLayers)
++{
++    public string? OrganizationId { get; init; }
++}
+diff --git a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
+index 0e1e49b..0f6f5e4 100644
+--- a/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
++++ b/src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
+@@ -222,7 +222,11 @@ public sealed class LayeredFolderAuthorizationService(
+             ? freshnessClassAfterValidator
+             : MergeFreshnessClass(freshnessClassAfterValidator, daprEvidence.FreshnessClass);
+ 
+-        LayeredFolderAuthorizationAllowedContext safeContext = validatorContext with { FreshnessWatermark = finalWatermark };
++        LayeredFolderAuthorizationAllowedContext safeContext = validatorContext with
++        {
++            FreshnessWatermark = finalWatermark,
++            OrganizationId = folderEvidence.OrganizationId,
++        };
+ 
+         LayeredFolderAuthorizationDecisionSnapshot decision = Snapshot(
+             AuthorizationLayer.DaprDenyByDefaultPolicy,
+diff --git a/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs b/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
+index 92c2be8..17ce0e6 100644
+--- a/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
++++ b/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs
+@@ -1,3 +1,4 @@
++using Hexalith.Folders.Aggregates.Folder;
+ using Hexalith.Folders.Authorization;
+ using Hexalith.Folders.Projections.TenantAccess;
+ using Hexalith.Folders.Queries.Folders;
+@@ -16,6 +17,7 @@ public static class FoldersServiceCollectionExtensions
+ 
+         services.AddOptions<TenantAccessOptions>().BindConfiguration(TenantAccessOptions.SectionName);
+         services.TryAddSingleton<IUtcClock, SystemUtcClock>();
++        services.TryAddSingleton<IFolderRepository, InMemoryFolderRepository>();
+         services.TryAddSingleton<IFolderTenantAccessProjectionStore, InMemoryFolderTenantAccessProjectionStore>();
+         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<TenantAccessOptions>>().Value);
+         services.TryAddSingleton<TenantAccessAuthorizer>();
+diff --git a/tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs b/tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+new file mode 100644
+index 0000000..a1af4e3
+--- /dev/null
++++ b/tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+@@ -0,0 +1,502 @@
++using System.Net;
++using System.Net.Http.Json;
++using System.Text.Json;
++
++using Hexalith.EventStore.Client.Gateway;
++using Hexalith.EventStore.Contracts.Commands;
++using Hexalith.EventStore.Contracts.Queries;
++using Hexalith.EventStore.Contracts.Results;
++using Hexalith.EventStore.Contracts.Streams;
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Authorization;
++using Hexalith.Folders.Projections.TenantAccess;
++using Hexalith.Folders.Queries.Folders;
++using Hexalith.Folders.Server;
++using Hexalith.Folders.Server.Authentication;
++
++using Microsoft.AspNetCore.Builder;
++using Microsoft.Extensions.DependencyInjection;
++using Microsoft.Extensions.DependencyInjection.Extensions;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.IntegrationTests;
++
++public sealed class ArchiveFolderProcessWiringTests
++{
++    private static readonly DateTimeOffset Now = new(2026, 5, 20, 11, 0, 0, TimeSpan.Zero);
++
++    [Fact]
++    public async Task ArchiveRequestShouldRoundTripThroughProcessAndPersistOneArchiveEvent()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            SeedTenant(host.TenantStore, "tenant-a", "user-a");
++            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
++            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
++
++            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
++
++            HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
++            host.Gateway.ProcessCalls.ShouldBe(1);
++            host.Gateway.LastWireEventCount.ShouldBe(0, "Option B keeps folder event persistence inside the gate and returns no framework events.");
++            host.Repository.EventsAppended.ShouldBe(1);
++            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a")).LifecycleState.ShouldBe(FolderLifecycleState.Archived);
++            FolderLifecycleStatusReadModelResult lifecycle = await host.LifecycleReadModel
++                .GetAsync(
++                    new FolderLifecycleStatusReadModelRequest(
++                        "tenant-a",
++                        "folder-a",
++                        "user-a",
++                        "read_metadata",
++                        TaskId: null,
++                        CorrelationId: null,
++                        AuthorizationWatermark: null,
++                        "eventually_consistent"),
++                    TestContext.Current.CancellationToken)
++                .ConfigureAwait(true);
++            lifecycle.Snapshot.ShouldNotBeNull();
++            lifecycle.Snapshot.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Archived);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task SequentialRequestsShouldNotReusePriorLayeredAuthorizationEvidence()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            SeedTenant(host.TenantStore, "tenant-a", "user-a");
++            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
++            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
++
++            HttpResponseMessage allowed = await host.Client
++                .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested"), TestContext.Current.CancellationToken)
++                .ConfigureAwait(true);
++            allowed.StatusCode.ShouldBe(HttpStatusCode.Accepted);
++
++            host.Context.Set("tenant-a", "user-b");
++            HttpResponseMessage denied = await host.Client
++                .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-b", "operator_review"), TestContext.Current.CancellationToken)
++                .ConfigureAwait(true);
++
++            denied.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
++            host.Repository.EventsAppended.ShouldBe(1);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task ArchiveRequestShouldSurfaceIdempotencyConflictThroughGatewayAndProcess()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            SeedTenant(host.TenantStore, "tenant-a", "user-a");
++            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
++            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
++
++            HttpResponseMessage first = await host.Client
++                .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested"), TestContext.Current.CancellationToken)
++                .ConfigureAwait(true);
++            first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
++
++            HttpResponseMessage conflict = await host.Client
++                .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-a", "operator_review"), TestContext.Current.CancellationToken)
++                .ConfigureAwait(true);
++
++            conflict.StatusCode.ShouldBe(HttpStatusCode.Conflict);
++            host.Repository.EventsAppended.ShouldBe(1);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task ArchiveRequestShouldSurfaceAlreadyArchivedAsSafeDenialThroughProcess()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            SeedTenant(host.TenantStore, "tenant-a", "user-a");
++            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
++            SeedArchivedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
++
++            HttpResponseMessage response = await host.Client
++                .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-b", "caller_requested"), TestContext.Current.CancellationToken)
++                .ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
++            host.Repository.EventsAppended.ShouldBe(0);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task MissingIdempotencyKeyShouldStopBeforeGatewayRoundTrip()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
++            request.Headers.Remove("Idempotency-Key");
++
++            HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            host.Gateway.ProcessCalls.ShouldBe(0);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task MalformedBodyShouldStopBeforeGatewayRoundTrip()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
++            {
++                Content = new StringContent("{ nope", System.Text.Encoding.UTF8, "application/json"),
++            };
++            request.Headers.Add("Idempotency-Key", "archive-key-a");
++            request.Headers.Add("X-Correlation-Id", "correlation-a");
++            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
++
++            HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            host.Gateway.ProcessCalls.ShouldBe(0);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task CancelledRequestShouldStopBeforeGatewayRoundTrip()
++    {
++        TestHost host = await StartHostAsync().ConfigureAwait(true);
++        try
++        {
++            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
++            using CancellationTokenSource cts = new();
++            await cts.CancelAsync().ConfigureAwait(true);
++
++            await Should.ThrowAsync<TaskCanceledException>(
++                async () => await host.Client.SendAsync(request, cts.Token).ConfigureAwait(true));
++
++            host.Gateway.ProcessCalls.ShouldBe(0);
++        }
++        finally
++        {
++            await host.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    private static async Task<TestHost> StartHostAsync()
++    {
++        MutableTenantAndClaimContext context = new("tenant-a", "user-a");
++        InMemoryFolderRepository repository = new();
++        InMemoryFolderTenantAccessProjectionStore tenantStore = new();
++        InMemoryEffectivePermissionsReadModel permissions = new();
++        InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
++        repository = new InMemoryFolderRepository(lifecycleReadModel);
++        Uri? hostUri = null;
++        InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
++
++        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
++        {
++            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
++        });
++        builder.Configuration["urls"] = "http://127.0.0.1:0";
++        builder.Services.AddFoldersServer();
++        builder.Services.RemoveAll<IEventStoreGatewayClient>();
++        builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
++        builder.Services.RemoveAll<ITenantContextAccessor>();
++        builder.Services.AddSingleton<ITenantContextAccessor>(context);
++        builder.Services.RemoveAll<IEventStoreClaimTransformEvidenceAccessor>();
++        builder.Services.AddSingleton<IEventStoreClaimTransformEvidenceAccessor>(context);
++        builder.Services.RemoveAll<IFolderRepository>();
++        builder.Services.AddSingleton<IFolderRepository>(repository);
++        builder.Services.RemoveAll<IFolderLifecycleStatusReadModel>();
++        builder.Services.AddSingleton<IFolderLifecycleStatusReadModel>(lifecycleReadModel);
++        builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
++        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(tenantStore);
++        builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
++        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(permissions);
++        builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
++        builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
++        builder.Services.RemoveAll<IUtcClock>();
++        builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(Now));
++
++        WebApplication app = builder.Build();
++        app.MapFoldersServerEndpoints();
++        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++        hostUri = new Uri(app.Urls.First());
++        return new TestHost(app, new HttpClient { BaseAddress = hostUri }, gateway, context, repository, tenantStore, permissions, lifecycleReadModel);
++    }
++
++    private static HttpRequestMessage CreateValidArchiveRequest(string folderId, string key, string reasonCode)
++    {
++        HttpRequestMessage request = new(HttpMethod.Post, $"/api/v1/folders/{folderId}/archive")
++        {
++            Content = JsonContent.Create(new
++            {
++                requestSchemaVersion = "v1",
++                archiveReasonCode = reasonCode,
++            }),
++        };
++        request.Headers.Add("Idempotency-Key", key);
++        request.Headers.Add("X-Correlation-Id", $"correlation-{key}");
++        request.Headers.Add("X-Hexalith-Task-Id", $"task-{key}");
++        return request;
++    }
++
++    private static void SeedTenant(InMemoryFolderTenantAccessProjectionStore store, string tenantId, string principalId)
++        => store.SaveAsync(
++            new FolderTenantAccessProjection
++            {
++                TenantId = tenantId,
++                Enabled = true,
++                Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
++                {
++                    [principalId] = new(principalId, "Owner"),
++                },
++                Watermark = 1,
++                LastEventTimestamp = Now.AddMinutes(-1),
++                ProjectionWatermark = $"{tenantId}:1",
++            },
++            TestContext.Current.CancellationToken).GetAwaiter().GetResult();
++
++    private static void SeedPermissions(
++        InMemoryEffectivePermissionsReadModel readModel,
++        string tenantId,
++        string organizationId,
++        string folderId,
++        string principalId)
++        => readModel.Save(new EffectivePermissionsReadModelSnapshot(
++            tenantId,
++            organizationId,
++            folderId,
++            EffectivePermissionsFolderLifecycleState.Active,
++            [
++                new(
++                    EffectivePermissionEvidenceSource.FolderOverrideGrant,
++                    EffectivePermissionPrincipal.User(principalId),
++                    "archive_folder",
++                    Sequence: 1,
++                    EffectiveAt: Now.AddMinutes(-1)),
++            ],
++            new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
++            RevocationFreshnessEstablished: true,
++            TaskScope: null));
++
++    private static void SeedFolder(InMemoryFolderRepository repository, string tenantId, string organizationId, string folderId)
++        => repository.Seed(
++            FolderStreamName.Create(tenantId, folderId),
++            [
++                new FolderCreated(
++                    tenantId,
++                    organizationId,
++                    folderId,
++                    "Folder",
++                    null,
++                    null,
++                    [],
++                    FolderLifecycleState.Active,
++                    FolderRepositoryBindingState.Unbound,
++                    "user-a",
++                    "seed-correlation",
++                    "seed-task",
++                    "seed-key",
++                    "seed-fingerprint",
++                    Now.AddMinutes(-2)),
++            ]);
++
++    private static void SeedArchivedFolder(InMemoryFolderRepository repository, string tenantId, string organizationId, string folderId)
++    {
++        SeedFolder(repository, tenantId, organizationId, folderId);
++        repository.Seed(
++            FolderStreamName.Create(tenantId, folderId),
++            [
++                new FolderCreated(
++                    tenantId,
++                    organizationId,
++                    folderId,
++                    "Folder",
++                    null,
++                    null,
++                    [],
++                    FolderLifecycleState.Active,
++                    FolderRepositoryBindingState.Unbound,
++                    "user-a",
++                    "seed-correlation",
++                    "seed-task",
++                    "seed-key",
++                    "seed-fingerprint",
++                    Now.AddMinutes(-2)),
++                new FolderArchived(
++                    tenantId,
++                    organizationId,
++                    folderId,
++                    FolderArchiveReasonCode.CallerRequested,
++                    "user-a",
++                    "seed-archive-correlation",
++                    "seed-archive-task",
++                    "seed-archive-key",
++                    "seed-archive-fingerprint",
++                    Now.AddMinutes(-1)),
++            ]);
++        repository.ResetAppendCounters();
++    }
++
++    private sealed record TestHost(
++        WebApplication App,
++        HttpClient Client,
++        InProcessEventStoreGatewayClient Gateway,
++        MutableTenantAndClaimContext Context,
++        InMemoryFolderRepository Repository,
++        InMemoryFolderTenantAccessProjectionStore TenantStore,
++        InMemoryEffectivePermissionsReadModel Permissions,
++        InMemoryFolderLifecycleStatusReadModel LifecycleReadModel) : IAsyncDisposable
++    {
++        public async ValueTask DisposeAsync()
++        {
++            Client.Dispose();
++            await App.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await App.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    private sealed class MutableTenantAndClaimContext(string tenantId, string principalId)
++        : ITenantContextAccessor, IEventStoreClaimTransformEvidenceAccessor
++    {
++        public string? AuthoritativeTenantId { get; private set; } = tenantId;
++
++        public string? PrincipalId { get; private set; } = principalId;
++
++        public void Set(string tenantId, string principalId)
++        {
++            AuthoritativeTenantId = tenantId;
++            PrincipalId = principalId;
++        }
++
++        public EventStoreClaimTransformEvidence GetEvidence(string actionToken)
++            => EventStoreClaimTransformEvidence.Allowed(
++                AuthoritativeTenantId ?? string.Empty,
++                PrincipalId ?? string.Empty,
++                [actionToken]);
++    }
++
++    private sealed class InProcessEventStoreGatewayClient(
++        Func<Uri> baseAddress,
++        MutableTenantAndClaimContext context) : IEventStoreGatewayClient
++    {
++        public int LastWireEventCount { get; private set; }
++
++        public int ProcessCalls { get; private set; }
++
++        public async Task<SubmitCommandResponse> SubmitCommandAsync(
++            SubmitCommandRequest request,
++            CancellationToken cancellationToken = default)
++        {
++            ProcessCalls++;
++            using HttpClient client = new() { BaseAddress = baseAddress() };
++            CommandEnvelope envelope = new(
++                request.MessageId,
++                request.Tenant,
++                request.Domain,
++                request.AggregateId,
++                request.CommandType,
++                JsonSerializer.SerializeToUtf8Bytes(request.Payload),
++                request.CorrelationId ?? request.MessageId,
++                CausationId: null,
++                context.PrincipalId ?? "actor-present",
++                request.Extensions);
++
++            HttpResponseMessage response = await client
++                .PostAsJsonAsync("/process", new DomainServiceRequest(envelope, CurrentState: null), cancellationToken)
++                .ConfigureAwait(false);
++            if (!response.IsSuccessStatusCode)
++            {
++                throw new EventStoreGatewayException((int)response.StatusCode, response.ReasonPhrase ?? "Process failed", correlationId: request.CorrelationId);
++            }
++
++            DomainServiceWireResult result = (await response.Content
++                .ReadFromJsonAsync<DomainServiceWireResult>(cancellationToken)
++                .ConfigureAwait(false))!;
++            LastWireEventCount = result.Events.Count;
++
++            if (result.IsRejection)
++            {
++                throw ToGatewayException(result, request.CorrelationId ?? request.MessageId);
++            }
++
++            return new SubmitCommandResponse(request.CorrelationId ?? request.MessageId);
++        }
++
++        public Task<EventStoreQueryResult> SubmitQueryAsync(
++            SubmitQueryRequest request,
++            string? ifNoneMatch = null,
++            CancellationToken cancellationToken = default)
++            => throw new NotSupportedException();
++
++        public Task<EventStoreQueryResult<T>> SubmitQueryAsync<T>(
++            SubmitQueryRequest request,
++            string? ifNoneMatch = null,
++            CancellationToken cancellationToken = default)
++            => throw new NotSupportedException();
++
++        public Task<StreamReadPage> ReadStreamAsync(
++            StreamReadRequest request,
++            CancellationToken cancellationToken = default)
++            => throw new NotSupportedException();
++
++        private static EventStoreGatewayException ToGatewayException(DomainServiceWireResult result, string correlationId)
++        {
++            DomainServiceWireEvent rejection = result.Events.Single();
++            using JsonDocument document = JsonDocument.Parse(rejection.Payload);
++            string code = document.RootElement.TryGetProperty("code", out JsonElement camelCode)
++                ? camelCode.GetString() ?? "MalformedEvidence"
++                : document.RootElement.GetProperty("Code").GetString() ?? "MalformedEvidence";
++            int status = code switch
++            {
++                nameof(FolderResultCode.IdempotencyConflict) => 409,
++                nameof(FolderResultCode.FolderNotFound) => 404,
++                nameof(FolderResultCode.ValidationFailed)
++                    or nameof(FolderResultCode.InvalidFolderId)
++                    or nameof(FolderResultCode.InvalidTenant)
++                    or nameof(FolderResultCode.ReservedTenant) => 400,
++                nameof(FolderResultCode.StaleProjection)
++                    or nameof(FolderResultCode.UnavailableProjection)
++                    or nameof(FolderResultCode.PolicyEvidenceUnavailable)
++                    or nameof(FolderResultCode.PolicyEvidenceStale)
++                    or nameof(FolderResultCode.AclEvidenceUnavailable) => 503,
++                _ => 403,
++            };
++
++            return new EventStoreGatewayException(status, "Rejected", correlationId: correlationId);
++        }
++    }
++}
+diff --git a/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs b/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs
+index 69188b8..8c2e791 100644
+--- a/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/ArchiveFolderEndpointTests.cs
+@@ -124,6 +124,11 @@ public sealed class ArchiveFolderEndpointTests
+             using JsonDocument document = JsonDocument.Parse(
+                 await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+             document.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
++            // Ensure the endpoint actually reached the gateway with the canonical archive
++            // command; a future short-circuit returning replay without invoking the gateway
++            // would otherwise pass this test silently.
++            gateway.Requests.Count.ShouldBe(1);
++            gateway.Requests.Single().CommandType.ShouldBe("Hexalith.Folders.Commands.ArchiveFolder");
+         }
+         finally
+         {
+@@ -225,6 +230,195 @@ public sealed class ArchiveFolderEndpointTests
+         }
+     }
+ 
++    [Fact]
++    public async Task ArchiveFolderEndpointShouldReturnUnauthenticatedWhenTenantContextIsMissing()
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, tenantId: null, principalId: null).ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = CreateValidArchiveRequest();
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
++            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            using JsonDocument document = JsonDocument.Parse(json);
++            document.RootElement.GetProperty("category").GetString().ShouldBe("authentication_failure");
++            document.RootElement.GetProperty("code").GetString().ShouldBe("authentication_failure");
++            gateway.Requests.ShouldBeEmpty();
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Theory]
++    [InlineData("X-Correlation-Id")]
++    [InlineData("X-Hexalith-Task-Id")]
++    public async Task ArchiveFolderEndpointShouldRejectWhenRequiredEnvelopeHeaderIsMissing(string headerName)
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = CreateValidArchiveRequest();
++            request.Headers.Remove(headerName);
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            gateway.Requests.ShouldBeEmpty();
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task ArchiveFolderEndpointShouldRejectMalformedJsonBodyBeforeGatewaySubmit()
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
++            {
++                Content = new StringContent("{ this is not valid json", System.Text.Encoding.UTF8, "application/json"),
++            };
++            request.Headers.Add("Idempotency-Key", "idempotency-a");
++            request.Headers.Add("X-Correlation-Id", "correlation-a");
++            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            using JsonDocument document = JsonDocument.Parse(json);
++            document.RootElement.GetProperty("category").GetString().ShouldBe("validation_error");
++            document.RootElement.GetProperty("code").GetString().ShouldBe("validation_error");
++            gateway.Requests.ShouldBeEmpty();
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task ArchiveFolderEndpointShouldRejectBodyWithUnknownFieldsBeforeGatewaySubmit()
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
++            {
++                Content = JsonContent.Create(new
++                {
++                    requestSchemaVersion = "v1",
++                    archiveReasonCode = "caller_requested",
++                    smuggledTenantId = "tenant-b",
++                }),
++            };
++            request.Headers.Add("Idempotency-Key", "idempotency-a");
++            request.Headers.Add("X-Correlation-Id", "correlation-a");
++            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            gateway.Requests.ShouldBeEmpty();
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Fact]
++    public async Task ArchiveFolderEndpointShouldRejectBodyWithNullRequiredFieldsBeforeGatewaySubmit()
++    {
++        RecordingEventStoreGatewayClient gateway = new();
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
++            {
++                Content = JsonContent.Create(new
++                {
++                    requestSchemaVersion = (string?)null,
++                    archiveReasonCode = (string?)null,
++                }),
++            };
++            request.Headers.Add("Idempotency-Key", "idempotency-a");
++            request.Headers.Add("X-Correlation-Id", "correlation-a");
++            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
++            gateway.Requests.ShouldBeEmpty();
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
++    [Theory]
++    [InlineData(500)]
++    [InlineData(502)]
++    [InlineData(504)]
++    public async Task ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable(int gatewayStatus)
++    {
++        RecordingEventStoreGatewayClient gateway = new()
++        {
++            Exception = new EventStoreGatewayException(
++                gatewayStatus,
++                "Gateway upstream failure",
++                type: "https://hexalith.dev/errors/internal-detail",
++                detail: "internal gateway exception text",
++                correlationId: "correlation-gateway"),
++        };
++        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
++        try
++        {
++            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
++            using HttpRequestMessage request = CreateValidArchiveRequest();
++
++            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
++
++            // Gateway 5xx must surface as safe 503 evidence_unavailable, NOT as 403
++            // tenant_access_denied — the latter would actively mislead operators investigating
++            // a backend incident.
++            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
++            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            using JsonDocument document = JsonDocument.Parse(json);
++            document.RootElement.GetProperty("category").GetString().ShouldBe("read_model_unavailable");
++            document.RootElement.GetProperty("code").GetString().ShouldBe("evidence_unavailable");
++            document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeTrue();
++            json.ShouldNotContain("internal gateway exception text");
++        }
++        finally
++        {
++            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
++            await app.DisposeAsync().ConfigureAwait(true);
++        }
++    }
++
+     private static async Task<WebApplication> StartAppAsync(
+         RecordingEventStoreGatewayClient gateway,
+         string? tenantId,
+diff --git a/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs b/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs
+index 3c8d3ca..bd151da 100644
+--- a/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/FolderCommandActionTokenMapperTests.cs
+@@ -37,7 +37,7 @@ public sealed class FolderCommandActionTokenMapperTests
+         => new(
+             MessageId: "01J00000000000000000000001",
+             TenantId: "tenant-a",
+-            Domain: "folders",
++            Domain: FoldersServerModule.DomainName,
+             AggregateId: "folder-a",
+             CommandType: commandType,
+             Payload: [0x01],
+diff --git a/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs b/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
+index 432feee..83fbf96 100644
+--- a/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
++++ b/tests/Hexalith.Folders.Server.Tests/FoldersDomainServiceRequestHandlerTests.cs
+@@ -200,7 +200,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
+             new CommandEnvelope(
+                 MessageId: "01J00000000000000000000001",
+                 TenantId: commandTenantId,
+-                Domain: "folders",
++                Domain: FoldersServerModule.DomainName,
+                 AggregateId: "agg-1",
+                 CommandType: "Hexalith.Folders.Commands.TestCommand",
+                 Payload: [0x01],
+diff --git a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs
+index e9fa9c0..f30e51f 100644
+--- a/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs
++++ b/tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveStateTransitionTests.cs
+@@ -78,6 +78,36 @@ public sealed class FolderArchiveStateTransitionTests
+         FolderActiveMutationGuard.Evaluate(ArchivedState(), category).ShouldBe(FolderResultCode.StateTransitionInvalid);
+     }
+ 
++    [Theory]
++    [InlineData(FolderActiveMutationCategory.FolderMetadata)]
++    [InlineData(FolderActiveMutationCategory.FolderAcl)]
++    [InlineData(FolderActiveMutationCategory.RepositoryBinding)]
++    [InlineData(FolderActiveMutationCategory.Workspace)]
++    [InlineData(FolderActiveMutationCategory.Lock)]
++    [InlineData(FolderActiveMutationCategory.File)]
++    [InlineData(FolderActiveMutationCategory.Commit)]
++    [InlineData(FolderActiveMutationCategory.BranchRef)]
++    [InlineData(FolderActiveMutationCategory.Provider)]
++    [InlineData(FolderActiveMutationCategory.Task)]
++    public void ActiveOnlyMutationGuardShouldAcceptActiveFolders(FolderActiveMutationCategory category)
++    {
++        // Symmetric coverage: every active-only mutation category must be Accepted on an
++        // Active folder so future stories that wire those commands (Epic 3 repository
++        // binding, Epic 4 workspace/lock/file/commit/branch/provider/task) inherit the guard
++        // without per-category surprises. AC9 representative-fixture closure.
++        FolderActiveMutationGuard.Evaluate(CreatedState(), category).ShouldBe(FolderResultCode.Accepted);
++    }
++
++    [Fact]
++    public void ActiveOnlyMutationGuardShouldRejectUncreatedFolderAsNotFound()
++    {
++        // Pre-create state must produce FolderNotFound rather than StateTransitionInvalid so
++        // future mutation pipelines short-circuit before constructing folder stream names,
++        // projection keys, or audit subjects.
++        FolderActiveMutationGuard.Evaluate(FolderState.Empty, FolderActiveMutationCategory.FolderAcl)
++            .ShouldBe(FolderResultCode.FolderNotFound);
++    }
++
+     private static FolderState CreatedState()
+     {
+         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
+diff --git a/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs b/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs
+index 2c1dc6e..33094fb 100644
+--- a/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs
++++ b/tests/Hexalith.Folders.Tests/Projections/FolderList/FolderArchiveProjectionReplayTests.cs
+@@ -34,9 +34,15 @@ public sealed class FolderArchiveProjectionReplayTests
+                 new FolderProjectionEnvelope("tenant-a", 2, Archived("tenant-b", "folder-a")),
+             ]);
+ 
++        // Envelope tenant ("tenant-a") wins as the projection key. The archive event
++        // claiming a different tenant ("tenant-b") must NOT be recorded under that
++        // claimed tenant either — otherwise a malicious or buggy producer could write
++        // archive evidence into a tenant that the envelope never authorized.
+         FolderListItem item = projection.Get("tenant-a", "folder-a").ShouldNotBeNull();
+         item.LifecycleState.ShouldBe(FolderLifecycleState.Active);
+         item.ArchiveReasonCode.ShouldBeNull();
++
++        projection.Get("tenant-b", "folder-a").ShouldBeNull();
+     }
+ 
+     private static FolderCreated Created(string tenantId, string folderId)

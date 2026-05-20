@@ -217,11 +217,10 @@ public sealed class ArchiveFolderProcessWiringTests
     private static async Task<TestHost> StartHostAsync()
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
-        InMemoryFolderRepository repository = new();
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         InMemoryEffectivePermissionsReadModel permissions = new();
         InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
-        repository = new InMemoryFolderRepository(lifecycleReadModel);
+        InMemoryFolderRepository repository = new(lifecycleReadModel);
         Uri? hostUri = null;
         InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
 
@@ -336,7 +335,10 @@ public sealed class ArchiveFolderProcessWiringTests
 
     private static void SeedArchivedFolder(InMemoryFolderRepository repository, string tenantId, string organizationId, string folderId)
     {
-        SeedFolder(repository, tenantId, organizationId, folderId);
+        // Seed both lifecycle events in a single call so FolderState is recomputed from
+        // empty with the full transition history. Each event carries a distinct
+        // idempotency key so the seed ledger guard (which now rejects duplicate keys) sees
+        // two independent entries.
         repository.Seed(
             FolderStreamName.Create(tenantId, folderId),
             [
@@ -485,6 +487,7 @@ public sealed class ArchiveFolderProcessWiringTests
                 nameof(FolderResultCode.IdempotencyConflict) => 409,
                 nameof(FolderResultCode.FolderNotFound) => 404,
                 nameof(FolderResultCode.ValidationFailed)
+                    or nameof(FolderResultCode.MalformedJsonPayload)
                     or nameof(FolderResultCode.InvalidFolderId)
                     or nameof(FolderResultCode.InvalidTenant)
                     or nameof(FolderResultCode.ReservedTenant) => 400,

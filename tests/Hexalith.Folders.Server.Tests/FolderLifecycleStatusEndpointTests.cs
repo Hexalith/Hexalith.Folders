@@ -27,6 +27,7 @@ public sealed class FolderLifecycleStatusEndpointTests
         builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor("tenant-a", "user-a"));
         builder.Services.AddSingleton<IEventStoreClaimTransformEvidenceAccessor>(new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a"));
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
 
         app.MapFoldersServerEndpoints();
@@ -249,6 +250,7 @@ public sealed class FolderLifecycleStatusEndpointTests
         builder.Services.AddSingleton(tenantContext);
         builder.Services.AddSingleton(claimTransformEvidence);
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
         return app;

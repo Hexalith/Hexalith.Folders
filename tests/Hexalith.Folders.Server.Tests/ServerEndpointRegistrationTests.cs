@@ -30,6 +30,7 @@ public sealed class ServerEndpointRegistrationTests
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
 
         app.UseCloudEvents();
@@ -56,6 +57,7 @@ public sealed class ServerEndpointRegistrationTests
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
 
         app.UseCloudEvents();
@@ -84,6 +86,7 @@ public sealed class ServerEndpointRegistrationTests
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
         builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
 
         app.UseCloudEvents();

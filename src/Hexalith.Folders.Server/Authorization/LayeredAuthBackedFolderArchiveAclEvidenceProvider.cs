@@ -17,11 +17,16 @@ public sealed class LayeredAuthBackedFolderArchiveAclEvidenceProvider(
         cancellationToken.ThrowIfCancellationRequested();
 
         LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        // FolderArchiveAclEvidence.Allowed throws on null/whitespace identifiers; check the
+        // allowed context's invariants before calling the factory so that a degenerate
+        // allowed context fails closed as Denied rather than throwing through the processor.
         FolderArchiveAclEvidence evidence = allowed is not null
+            && !string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            && !string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            && !string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier)
             && string.Equals(allowed.ActionToken, FolderArchiveAclEvidence.ArchiveAction, StringComparison.Ordinal)
             && string.Equals(allowed.OperationScope, command.FolderId, StringComparison.Ordinal)
             && string.Equals(allowed.AuthoritativeTenantId, command.ManagedTenantId, StringComparison.Ordinal)
-            && !string.IsNullOrWhiteSpace(allowed.OrganizationId)
                 ? FolderArchiveAclEvidence.Allowed(
                     allowed.AuthoritativeTenantId,
                     allowed.OrganizationId,

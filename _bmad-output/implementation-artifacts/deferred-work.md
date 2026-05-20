@@ -2,6 +2,24 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)
+
+Items deferred from the `/bmad-code-review 2.8` third-pass triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commits `c3e948e..HEAD` covering Round-2 hardening (`91ef308`) and Story 2.8b production `/process` wiring (`8705034`). Production-code patches were applied in full; the items below are test-coverage additions that were not applied in this round but track real coverage gaps worth closing in a follow-up.
+
+- Add gateway 5xx Theory cases for 503/505/507/599 in `ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable`. Deferred — the `>= 500 and < 600` catch-all production arm covers the behavior; this is regression-trap coverage.
+- Add a `GatewayCorrelationRegex` header-injection Theory in `ArchiveFolderEndpointTests` proving CR/LF / oversized / control-character bytes are rejected before being reflected into `X-Correlation-Id`. Deferred.
+- Add a cancel-mid-flight integration test to `ArchiveFolderProcessWiringTests` that exercises the in-processor cancellation/cleanup path (current `CancelledRequestShouldStopBeforeGatewayRoundTrip` only verifies the HttpClient-level cancel before the request leaves the test). Deferred.
+- Replace `InProcessEventStoreGatewayClient.ToGatewayException`'s ad-hoc `FolderResultCode → HTTP status` mapping with a shared mapping path used by the production EventStore gateway. Deferred — current test mapping is consistent with the safe-denial REST contract but duplicates logic.
+- Add `FolderCommandRejected` to `FolderArchiveMetadataLeakageTests` sentinel iteration so every `tests/fixtures/audit-leakage-corpus.json` value is asserted absent across the new rejection-event payload. Deferred — the production `FolderCommandRejected.Create` factory canonicalizes all identifiers at construction time which mitigates the leak vector, but corpus-driven coverage remains a regression trap.
+- Add `ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted` integration test covering REST → gateway → `/process` → gate same-key + equivalent-payload replay path. Deferred — gate-unit and endpoint-unit replay coverage exists; the round-trip is unverified end-to-end.
+- Add a foreign-tenant smuggling integration test (`ArchiveRequestShouldRejectWhenEnvelopeTenantDisagreesWithAuthenticatedTenant`). Deferred — gate-unit coverage of `HasCompetingClientTenant` plus layered-auth tenant comparison at the request handler provide defense-in-depth.
+- Add a `DenyingFolderArchivePolicyEvidenceProvider` test fake and an integration test exercising the AC8 policy-denied path end-to-end through `/process`. Deferred to Epic 7 when the production policy provider lands; gate-unit coverage of `FolderArchivePolicyOutcome.Denied` exists.
+
+- `IDomainProcessor.ProcessAsync` lacks `CancellationToken`, so `FolderDomainProcessor` passes `CancellationToken.None` into the ACL/policy evidence providers. ADR 0001 explicitly accepts this tradeoff (providers are deterministic in-memory operations bounded by the layered-auth context). Deferred — revisit when the EventStore framework's `IDomainProcessor` contract gains a CT.
+- `InMemoryFolderRepository` mixes `lock (_gate)` with an internal `ConcurrentDictionary`; the lock is the real serialization primitive and the dictionary's thread-safety adds nothing. Deferred — style cleanup; revisit when an EventStore-backed `IFolderRepository` replaces the in-memory implementation as the production default.
+- `SequentialRequestsShouldNotReusePriorLayeredAuthorizationEvidence` does not detect a scenario where the scoped accessor is accidentally re-registered as singleton; a singleton accessor with manual clearing in `finally` would also pass. Deferred — architectural test-design concern; revisit when DI lifetime auditing tooling is in place.
+- `FolderCommandRejected` is a new `IRejectionEvent` type; the projection/event-routing boundary between `IFolderEvent` (projection-bound) and `IRejectionEvent` (gateway-bound) is implicit. Deferred — document the contract or introduce an explicit marker if a future projection consumes `IRejectionEvent`.
+
 ## Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)
 
 Items deferred from the `/bmad-code-review 2.8` second-pass triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commits `ea5f08b..c3e948e`. Round-2 was scoped to verifying round-1 "Resolved" claims; many round-2 candidates were re-classified to **decision-needed** because they depend on whether `FolderArchiveTenantGate` is actually wired into production.
