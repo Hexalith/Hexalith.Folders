@@ -1,4 +1,7 @@
 module,skill,display-name,menu-code,description,action,args,phase,preceded-by,followed-by,required,output-location,outputs
+BMad Automator,_meta,,,,,,,,,false,,
+BMad Automator,bmad-story-automator,Story Automator,SA,Automate the BMAD story build cycle across create dev QA review and retrospective steps.,,,4-implementation,bmad-sprint-planning,,false,implementation_artifacts,story automation run
+BMad Automator,bmad-story-automator-review,Story Automator Review,SAR,Runs the autonomous code review flow used by story automator sessions including auto-fix handling and sprint-status sync.,,,4-implementation,bmad-dev-story,,false,implementation_artifacts,review report
 BMad Method,_meta,,,,,,,,,false,https://docs.bmad-method.org/llms.txt,
 BMad Method,bmad-investigate,Investigate,IN,Forensic case investigation calibrated to the input. Evidence-graded analysis with hypothesis tracking. Produces a structured case file.,,4-implementation,,,false,implementation_artifacts,investigation report,
 BMad Method,bmad-brainstorming,Brainstorm Project,BP,Expert guided facilitation through a single or multiple techniques.,,,1-analysis,,,false,planning_artifacts,brainstorming session
@@ -56,5 +59,5 @@ Test Architecture Enterprise,bmad-testarch-ci,CI Setup,CI,Configure CI/CD qualit
 Test Architecture Enterprise,bmad-testarch-atdd,ATDD,AT,Generate red-phase acceptance test scaffolds before implementation.,,,4-implementation,bmad-create-story:create,bmad-dev-story,false,test_artifacts,atdd-checklist|red-phase acceptance tests
 Test Architecture Enterprise,bmad-testarch-automate,Test Automation,TA,Expand test coverage.,,,4-implementation,bmad-testarch-atdd,,false,test_artifacts,test suite
 Test Architecture Enterprise,bmad-testarch-test-review,Test Review,RV,Quality audit (0-100 scoring).,,,4-implementation,bmad-testarch-automate,,false,test_artifacts,review report
-Test Architecture Enterprise,bmad-testarch-nfr,NFR Assessment,NR,Non-functional requirements assessment.,,,4-implementation,bmad-testarch-automate,,false,test_artifacts,nfr report
+Test Architecture Enterprise,bmad-testarch-nfr,NFR Evidence Audit,NR,Audit non-functional requirement evidence.,,,4-implementation,bmad-testarch-automate,,false,test_artifacts,nfr report
 Test Architecture Enterprise,bmad-testarch-trace,Traceability,TR,Coverage traceability and gate.,,,4-implementation,bmad-testarch-test-review,,false,test_artifacts,traceability matrix|gate decision

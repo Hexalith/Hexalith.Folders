@@ -29,6 +29,11 @@ public static class FoldersServerModule
 
     public const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
 
+    // Maximum length for canonical identifiers (correlation id, task id, idempotency key,
+    // folder id, taskId extension). Shared between the REST endpoint regex, the processor
+    // extension reader, and the rejection-event canonicalizer so a length bump cannot drift.
+    public const int MaxCanonicalIdentifierLength = 128;
+
     public static string Description => $"{FoldersContractMetadata.ModuleName} server scaffold";
 
     public static IServiceCollection AddFoldersServer(this IServiceCollection services)

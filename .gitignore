@@ -430,3 +430,11 @@ FodyWeavers.xsd
 
 # Hexalith.Folders: JetBrains Rider lscache build cache files (machine-local)
 *.lscache
+
+# Hexalith.Folders: predev-hardening preflight snapshots are local runner artifacts.
+# The rolling `predev-preflight-latest.json` pointer is the intentional fixture committed
+# to source; timestamped snapshots accumulated hourly are noise. Keep only the latest.
+# Historical timestamped snapshots predating this rule remain in source — they can be
+# cleaned up under a separate housekeeping task.
+_bmad-output/process-notes/predev-preflight-*Z.json
+!_bmad-output/process-notes/predev-preflight-latest.json

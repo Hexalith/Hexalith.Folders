@@ -80,11 +80,12 @@ public sealed class FoldersDomainServiceRequestHandler(
                 statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        ArgumentNullException.ThrowIfNull(authorizationResultAccessor);
+        // Begin the scope before entering the try block — if BeginScope throws (e.g. on a
+        // null authorization payload or because a prior scope was not torn down), the
+        // finally block must not attempt to EndScope a scope that never began.
+        authorizationResultAccessor.BeginScope(authorization);
         try
         {
-            authorizationResultAccessor.BeginScope(authorization);
-
             DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
             return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
         }

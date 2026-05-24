@@ -29,10 +29,14 @@ public static class FoldersServiceCollectionExtensions
     // a real EventStore-backed repository instead; integration tests and dev hosts call
     // this method explicitly so a production composition that forgets to register a
     // repository fails loud at startup rather than silently running on a dictionary.
+    // Also ensures TimeProvider.System is available — the in-memory repository needs one
+    // for projection observed-at timestamps and the constructor would otherwise resolve a
+    // different default depending on whether the host registered one.
     public static IServiceCollection AddInMemoryFolderRepository(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
+        services.TryAddSingleton(TimeProvider.System);
         services.TryAddSingleton<IFolderRepository, InMemoryFolderRepository>();
 
         return services;

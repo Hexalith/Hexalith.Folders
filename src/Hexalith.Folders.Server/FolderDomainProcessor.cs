@@ -59,8 +59,10 @@ public sealed partial class FolderDomainProcessor(
         {
             payload = JsonSerializer.Deserialize<ArchiveFolderPayload>(envelope.Payload, PayloadJsonOptions);
         }
-        catch (JsonException)
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
         {
+            // JsonException = malformed JSON / missing required field; NotSupportedException
+            // = type-system mismatch. Both fail closed to the same safe 400 category.
             return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
         }
 
@@ -119,11 +121,13 @@ public sealed partial class FolderDomainProcessor(
         {
             result = _archiveGate.Handle(command, tenantAccess, aclEvidence, policyEvidence);
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             // Any unexpected exception from the gate (e.g. an evidence constructor invariant
             // violation) must fail closed without leaking type/stack metadata through the
-            // gateway response or framework 500 path.
+            // gateway response or framework 500 path. OperationCanceledException is allowed
+            // to propagate so cancellation semantics are preserved if a future async
+            // dependency adds them.
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
@@ -135,8 +139,9 @@ public sealed partial class FolderDomainProcessor(
         if (extensions is null
             || !extensions.TryGetValue(key, out string? value)
             || string.IsNullOrWhiteSpace(value)
-            || value.Length > 128
-            || !CanonicalSegmentRegex().IsMatch(value))
+            || value.Length > FoldersServerModule.MaxCanonicalIdentifierLength
+            || !CanonicalSegmentRegex().IsMatch(value)
+            || HasPathTraversalShape(value))
         {
             return string.Empty;
         }
@@ -144,26 +149,32 @@ public sealed partial class FolderDomainProcessor(
         return value;
     }
 
-    private static TenantAccessAuthorizationResult BuildTenantAccess(LayeredFolderAuthorizationAllowedContext? allowed)
-        => allowed is null
-            ? new(
-                TenantAccessOutcome.MalformedEvidence,
-                "malformed_evidence",
-                null,
-                null,
-                null,
-                null,
-                TenantProjectionFreshnessStatus.Unknown,
-                "layered-authorization")
-            : new(
-                TenantAccessOutcome.Allowed,
-                "allowed",
-                allowed.AuthoritativeTenantId,
-                allowed.FreshnessWatermark,
-                null,
-                null,
-                MapFreshness(allowed),
-                "layered-authorization");
+    private static bool HasPathTraversalShape(string value) =>
+        // CanonicalSegmentRegex permits `.` and `-`, so "..", "..." and leading/trailing
+        // dots/dashes pass the regex. These shapes are too close to filesystem traversal
+        // tokens to safely propagate into audit subjects or diagnostic scopes.
+        value.Contains("..", StringComparison.Ordinal)
+        || value.StartsWith('.')
+        || value.EndsWith('.')
+        || value.StartsWith('-')
+        || value.EndsWith('-');
+
+    // Caller (ProcessArchiveAsync) already guards against null `allowed` before calling this
+    // method, so the parameter is non-nullable. The dead null arm was removed to avoid
+    // misleading readers into thinking the path can fire.
+    private static TenantAccessAuthorizationResult BuildTenantAccess(LayeredFolderAuthorizationAllowedContext allowed)
+    {
+        ArgumentNullException.ThrowIfNull(allowed);
+        return new(
+            TenantAccessOutcome.Allowed,
+            "allowed",
+            allowed.AuthoritativeTenantId,
+            allowed.FreshnessWatermark,
+            null,
+            null,
+            MapFreshness(allowed),
+            "layered-authorization");
+    }
 
     private static TenantProjectionFreshnessStatus MapFreshness(LayeredFolderAuthorizationAllowedContext allowed)
         => string.IsNullOrWhiteSpace(allowed.FreshnessWatermark)
@@ -184,7 +195,10 @@ public sealed partial class FolderDomainProcessor(
     {
         // FolderCommandRejected.Create canonicalizes correlation/idempotency identifiers
         // before they enter the rejection event so that an internal /process caller cannot
-        // smuggle CR/LF or oversized values into downstream log/trace surfaces.
+        // smuggle CR/LF or oversized values into downstream log/trace surfaces. Values that
+        // fail the canonical filter are dropped to null and a metadata-only trace tag is
+        // stamped so operators can correlate the dropped-value case without identifier text
+        // leaking through the payload.
         IRejectionEvent rejection = FolderCommandRejected.Create(
             code: code.ToString(),
             commandType: envelope.CommandType,

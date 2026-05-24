@@ -2,6 +2,18 @@
 
 This file accumulates items deferred from BMAD reviews and audits. Each section is dated and references its source story.
 
+## Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 4 (2026-05-20)
+
+Items deferred from the `/bmad-code-review 2.8` fourth-pass triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commits `d9dbffd^..HEAD` (round-3 hardening + three no-op predev-hardening runs + subproject pointer/preflight chore). Triage: 5 decision-needed, 19 patches, 7 deferred, 8 dismissed.
+
+- `FolderDomainProcessor:50-52` `command.CommandType` case-sensitivity — CommandType is canonical and emitted by the REST endpoint; case-mismatched arrival implies an upstream bug, not a wire concern. Deferred — pre-existing convention.
+- `LayeredAuthBackedFolderArchiveAclEvidenceProvider:23-39` trailing-whitespace tenant mismatch — depends on upstream tenant normalization invariants enforced by layered authorization. Deferred — out-of-scope normalization concern; revisit if a non-normalized identifier path emerges.
+- `FolderCommandRejected.Create` callable via reflection bypass [`src/Hexalith.Folders.Server/FolderCommandRejected.cs:59-78`] — System.Text.Json does not deserialize records with a private constructor unless `[JsonConstructor]` is explicitly applied; no realistic attack vector today. Deferred — revisit if the rejection type joins any deserialization surface.
+- Concurrent identical-fingerprint clock skew at `InMemoryFolderRepository:56-91` — current fingerprint composition is deterministic-per-inputs and does not include clock material. Deferred — only becomes live if a future fingerprint dimension adds time-based material.
+- **(Round-3 echo)** `IDomainProcessor.ProcessAsync` lacks `CancellationToken`, so `FolderDomainProcessor` passes `CancellationToken.None` into evidence providers. ADR 0001 explicitly accepts this tradeoff. Deferred — the round-4 catch-block patch (`when (ex is not OperationCanceledException)`) is the right scope-level mitigation; revisit when the EventStore framework's `IDomainProcessor` contract gains a CT.
+- **(Round-3 echo)** `InMemoryFolderRepository` mixes `lock (_gate)` with an internal `ConcurrentDictionary` — the lock is the real serialization primitive. Deferred — style cleanup; revisit when an EventStore-backed repository replaces the in-memory implementation as the production default.
+- **(Round-3 echo)** `FolderCommandRejected` projection/event-routing boundary between `IFolderEvent` (projection-bound) and `IRejectionEvent` (gateway-bound) is implicit. Deferred — design-level documentation work; introduce an explicit marker if a future projection consumes `IRejectionEvent`.
+
 ## Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)
 
 Items deferred from the `/bmad-code-review 2.8` third-pass triage (Blind Hunter + Edge Case Hunter + Acceptance Auditor) over commits `c3e948e..HEAD` covering Round-2 hardening (`91ef308`) and Story 2.8b production `/process` wiring (`8705034`). Production-code patches were applied in full; the items below are test-coverage additions that were not applied in this round but track real coverage gaps worth closing in a follow-up.

@@ -213,11 +213,11 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
         // Match the archive gate: fail closed with safe malformed evidence instead of
         // throwing from the domain gate. Tag the active trace span so the impossible-state
         // branch leaves a metadata-only signal for operators even though it returns a
-        // generic safe denial. No exception text, no resource identifiers — the tag is a
-        // boolean trigger only.
+        // generic safe denial. Pass the boolean `true` (not the string "true") so OTel
+        // filters like tag.IsTrue() match correctly.
         if (outcome == TenantAccessOutcome.Allowed)
         {
-            System.Diagnostics.Activity.Current?.SetTag("hexalith.folders.access_gate.allowed_invariant_violation", "true");
+            System.Diagnostics.Activity.Current?.SetTag("hexalith.folders.access_gate.allowed_invariant_violation", true);
             return FolderResultCode.MalformedEvidence;
         }
 
@@ -232,7 +232,16 @@ public sealed class FolderAccessTenantGate(IFolderRepository repository, TimePro
             TenantAccessOutcome.TenantMismatch => FolderResultCode.TenantMismatch,
             TenantAccessOutcome.MissingAuthoritativeTenant => FolderResultCode.MissingAuthoritativeTenant,
             TenantAccessOutcome.ReplayConflict => FolderResultCode.ReplayConflict,
-            _ => FolderResultCode.MalformedEvidence,
+            // Stamp the trace span with the unknown enum value (enum names only, no PII)
+            // so a future TenantAccessOutcome addition leaves a discoverable signal
+            // instead of being silently misclassified as MalformedEvidence.
+            _ => MapUnknownOutcome(outcome),
         };
+    }
+
+    private static FolderResultCode MapUnknownOutcome(TenantAccessOutcome outcome)
+    {
+        System.Diagnostics.Activity.Current?.SetTag("hexalith.folders.access_gate.unknown_outcome", outcome.ToString());
+        return FolderResultCode.MalformedEvidence;
     }
 }

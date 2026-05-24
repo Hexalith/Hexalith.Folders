@@ -22,7 +22,10 @@ public static class FolderArchiveReasonCodes
                 reasonCode = FolderArchiveReasonCode.OperatorReview;
                 return true;
             default:
-                reasonCode = default;
+                // Coerce miss to the explicit None sentinel rather than the default-valued
+                // member of FolderArchiveReasonCode, so a downstream caller cannot mistake a
+                // parse failure for a supported reason code.
+                reasonCode = FolderArchiveReasonCode.None;
                 return false;
         }
     }
@@ -33,6 +36,16 @@ public static class FolderArchiveReasonCodes
             FolderArchiveReasonCode.CallerRequested => CallerRequested,
             FolderArchiveReasonCode.PolicyRetention => PolicyRetention,
             FolderArchiveReasonCode.OperatorReview => OperatorReview,
-            _ => string.Empty,
+            // None is an internal sentinel and must never reach the wire. Returning
+            // string.Empty would silently produce an empty contract value for downstream
+            // consumers that cannot distinguish missing from unknown.
+            FolderArchiveReasonCode.None => throw new ArgumentOutOfRangeException(
+                nameof(reasonCode),
+                reasonCode,
+                "FolderArchiveReasonCode.None is an internal sentinel and is not a valid contract value."),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(reasonCode),
+                reasonCode,
+                $"Unsupported FolderArchiveReasonCode '{reasonCode}'."),
         };
 }
