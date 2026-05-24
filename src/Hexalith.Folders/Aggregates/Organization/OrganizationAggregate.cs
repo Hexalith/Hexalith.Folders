@@ -2,6 +2,8 @@ namespace Hexalith.Folders.Aggregates.Organization;
 
 public static class OrganizationAggregate
 {
+    private const string ConfiguredStatus = "configured";
+
     public static OrganizationAclResult Handle(OrganizationState state, IOrganizationAclCommand command)
     {
         ArgumentNullException.ThrowIfNull(state);
@@ -94,6 +96,62 @@ public static class OrganizationAggregate
         }
 
         return OrganizationAclResult.Accepted(command, events);
+    }
+
+    public static OrganizationProviderBindingResult Handle(OrganizationState state, ConfigureProviderBinding command)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(command);
+
+        OrganizationProviderBindingCommandValidationResult validation =
+            OrganizationProviderBindingCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return OrganizationProviderBindingResult.Rejected(command, validation.Code);
+        }
+
+        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.AlreadyApplied)
+                : OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.IdempotencyConflict);
+        }
+
+        if (state.ProviderBindings.TryGetValue(command.ProviderBindingRef, out OrganizationProviderBinding? existing))
+        {
+            string existingFingerprint = OrganizationProviderBindingCommandValidator.Fingerprint(
+                command with
+                {
+                    CredentialReferenceId = existing.CredentialReferenceId,
+                    ProviderKind = existing.ProviderKind,
+                    NamingPolicy = existing.NamingPolicy,
+                    BranchPolicy = existing.BranchPolicy,
+                });
+
+            return string.Equals(existingFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.AlreadyApplied)
+                : OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.DuplicateConflict);
+        }
+
+        IOrganizationEvent[] events =
+        [
+            new ProviderBindingConfigured(
+                command.ManagedTenantId,
+                command.OrganizationId,
+                command.ProviderBindingRef,
+                command.ProviderKind,
+                command.CredentialReferenceId,
+                command.NamingPolicy,
+                command.BranchPolicy,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey,
+                validation.IdempotencyFingerprint,
+                ConfiguredStatus,
+                command.OccurredAt),
+        ];
+
+        return OrganizationProviderBindingResult.Accepted(command, events);
     }
 
     private static OrganizationAclEntryKey KeyFor(IOrganizationAclCommand command, OrganizationAclOperation operation)
