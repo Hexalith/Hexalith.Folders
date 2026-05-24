@@ -324,6 +324,7 @@ public sealed class CommitStatusContractGroupTests
                         && !relative.StartsWith("bin/", StringComparison.Ordinal)
                         && !relative.StartsWith("Aggregates/Organization/", StringComparison.Ordinal)
                         && !relative.StartsWith("Aggregates/Folder/", StringComparison.Ordinal)
+                        && !relative.StartsWith("Providers/Abstractions/", StringComparison.Ordinal)
                         && MatchesGlob(relative, pattern);
                 })
                 .ToArray();

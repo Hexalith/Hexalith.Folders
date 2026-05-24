@@ -79,7 +79,7 @@ development_status:
   # Epic 3: Provider Readiness And Repository Binding
   epic-3: in-progress
   3-1-configure-provider-binding-and-credential-reference: done
-  3-2-define-igitprovider-port-and-capability-model: ready-for-dev
+  3-2-define-igitprovider-port-and-capability-model: done
   3-3-implement-github-provider-adapter: ready-for-dev
   3-4-implement-forgejo-provider-adapter-and-drift-detection: ready-for-dev
   3-5-validate-provider-readiness-with-safe-diagnostics: backlog

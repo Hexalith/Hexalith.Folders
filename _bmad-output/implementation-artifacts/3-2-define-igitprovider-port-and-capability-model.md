@@ -1,6 +1,6 @@
 # Story 3.2: Define IGitProvider port and capability model
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -35,49 +35,49 @@ so that GitHub, Forgejo, and future providers can expose differences without cha
 
 ## Tasks / Subtasks
 
-- [ ] Add the provider abstraction model in the core project. (AC: 1, 2, 3, 8, 11)
-  - [ ] Create `src/Hexalith.Folders/Providers/Abstractions/IGitProvider.cs` and related one-public-type-per-file models such as `ProviderCapabilityProfile`, `ProviderOperationCapability`, `ProviderOperationSupport`, `ProviderCapabilityDiscoveryRequest`, `ProviderCapabilityDiscoveryResult`, `ProviderCapabilityProfileVersion`, and `ProviderFailureCategory`.
-  - [ ] Keep the initial `IGitProvider` surface narrow: provider identity plus capability-profile discovery/comparison only; repository, branch, workspace, file, commit, webhook, readiness-execution, credential-resolution, and validation methods belong to later stories.
-  - [ ] Keep the abstractions behavior-free with respect to public transports; do not add REST endpoint handlers, generated client edits, CLI/MCP tools, UI pages, worker process managers, or provider-specific adapters in this story.
-  - [ ] Capability discovery in this story is computed from static or provider-declared metadata supplied to the fake/test provider; it must not perform network, credential, filesystem, Dapr, EventStore, SDK, or live provider calls.
-  - [ ] Model capability support as extensible data keyed by canonical operation identifiers rather than boolean GitHub/Forgejo properties or closed two-provider enums.
-  - [ ] Normalize provider family/key and operation identifiers through a single comparer/parser so casing, aliases, whitespace, and duplicate/conflicting operation rows are deterministic failures or normalized matches, not adapter-specific behavior.
-  - [ ] Include safe target/version metadata and capability profile fingerprints so future readiness and drift stories can compare evidence without storing raw provider payloads.
-  - [ ] Keep provider operation names aligned with the existing Contract Spine and parity vocabulary where those operations already exist.
-- [ ] Define provider failure and retry semantics at the port boundary. (AC: 4, 8)
-  - [ ] Add canonical failure categories and retryability hints needed by readiness/repository/workspace stories, including unsupported capability, unavailable provider, rate limit, insufficient permission, credential-reference invalid, known provider failure, unknown provider outcome, reconciliation required, validation error, and internal error.
-  - [ ] Treat provider failure categories as internal decision categories unless a named public Contract Spine gap is discovered and regenerated; provider-specific HTTP status bodies, SDK exception types, and adapter diagnostics remain opaque metadata.
-  - [ ] Separate known provider failures from unknown outcomes; unknown outcomes must produce metadata that downstream workflows can route to reconciliation instead of unsafe retry.
-  - [ ] Treat stale, ambiguous, drifted, duplicate, and internally conflicting capability evidence as validation/conflict/reconciliation outcomes with safe reason codes; do not silently downgrade them to unsupported capability or choose a winner by collection order.
-  - [ ] Ensure result types can carry safe remediation category, retry-after metadata where safe, profile version, correlation ID, and sanitized reason code.
-  - [ ] Do not surface raw HTTP status bodies, upstream headers containing sensitive data, provider installation identifiers, repository URLs, branch names, credential labels, or raw exception messages.
-- [ ] Add authorization-before-observation wrapper seams only where needed. (AC: 5, 6)
-  - [ ] If this story introduces an application-facing capability query service, place tenant/organization/provider-binding authorization before adapter lookup, credential reference inspection, capability cache lookup, repository lookup, projection read, audit write, or diagnostics.
-  - [ ] If no application-facing query service is introduced, add or document a narrow test seam proving the future wrapper ordering contract without creating REST, SDK, CLI, MCP, UI, worker, or EventStore handler behavior.
-  - [ ] Reuse existing tenant-access and ACL result families; do not invent a separate provider authorization vocabulary.
-  - [ ] Use `configure_provider_binding` only for configuration; define or reuse a narrower read/status permission only if an authorized capability-read path is included.
-  - [ ] Capture one immutable authorization/evidence snapshot per attempt so retries, duplicate checks, and profile-cache reads do not reuse stale positive authorization.
-  - [ ] Dimension any future cache/read-model seam by tenant/organization, provider binding, provider family/key, profile schema/version, target metadata, and authorization evidence freshness; denied paths must not warm or read shared capability evidence before authorization succeeds.
-  - [ ] Use in-memory spies/fakes to prove denied paths make zero calls to provider adapters, credential references, repository lookup, branch/workspace lookup, cache/projection/audit stores, capability comparison, metrics, or diagnostic enrichment.
-- [ ] Add an offline fake/test provider and conformance tests. (AC: 2, 3, 4, 7, 8, 10)
-  - [ ] Add a fake provider under test code or `Hexalith.Folders.Testing` that returns deterministic capability profiles for multiple provider families, including at least GitHub-like, Forgejo-like, and third-provider/custom-family examples.
-  - [ ] Keep fake providers transport-free and adapter-free; they may model capability metadata differences but must not simulate concrete GitHub/Forgejo SDK behavior, live transport errors, credential exchange, or adapter quirks.
-  - [ ] Add conformance tests proving capability discovery exposes supported, unsupported, partial, emulated, branch/ref, file-limit, credential-mode, rate-limit, retryability, version, and failure-category metadata without live provider calls.
-  - [ ] Add deterministic comparison tests proving equivalent profiles compare stable across ordering differences where allowed and changed evidence changes the profile fingerprint/version.
-  - [ ] Add tests for duplicate operation identifiers, conflicting support markers, provider-family alias/casing differences, missing profile schema/version, stale evidence, and target-version drift so the port returns stable safe failures instead of accepting malformed profiles.
-  - [ ] Add fingerprint tests covering stable collection ordering, case normalization, null handling, version normalization, ignored correlation/timestamp/diagnostic fields, and repeatable serialized shape when serialization is used.
-  - [ ] Add negative tests for unsupported provider family, disabled capability, malformed target evidence, stale profile version, unknown outcome, rate limit, permission failure, unavailable provider, and drift/incompatible version metadata.
-  - [ ] Add a guard fake that throws if any test attempts HTTP, Dapr, filesystem working-copy, Git, secret-store, Aspire, Redis, Keycloak, GitHub, Forgejo, or Tenants network access.
-- [ ] Preserve Contract Spine and parity alignment. (AC: 2, 4, 8, 9)
-  - [ ] Review `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `tests/fixtures/parity-contract.yaml`, and `TenantFolderProviderContractGroupTests` before changing any public provider-readiness/support evidence shape.
-  - [ ] If contract artifacts change, regenerate/update parity fixtures through the existing generator and update contract tests in the same change.
-  - [ ] If no public contract changes are needed, add tests or documentation proving the internal port maps to the existing provider readiness/support evidence vocabulary without drift.
-  - [ ] Do not manually edit generated SDK files under `src/Hexalith.Folders.Client/Generated/*`.
-- [ ] Add leakage and boundary tests. (AC: 5, 6, 10, 11)
-  - [ ] Use sentinel values for provider tokens, API keys, PEM/private keys, JWT-like strings, credential URLs, repository URLs with userinfo, raw provider JSON, branch names containing secrets, file contents, diffs, display names, emails, and unauthorized resource names.
-  - [ ] Assert commands, requests, results, profiles, exceptions, logs, diagnostics, projections if any, and test output do not contain forbidden values.
-  - [ ] Add dependency/architecture guard tests proving `src/Hexalith.Folders/Providers/Abstractions` does not reference GitHub/Forgejo clients, Octokit, Forgejo HTTP clients, Dapr, EventStore handlers, generated SDK, CLI, MCP, UI, Workers, Aspire, Redis, Keycloak, filesystem working-copy APIs, or live provider transports.
-  - [ ] Add negative-scope tests or source-shape assertions that this story did not add GitHub/Forgejo adapters, live provider clients, worker side effects, CLI/MCP/UI behavior, or generated SDK edits.
+- [x] Add the provider abstraction model in the core project. (AC: 1, 2, 3, 8, 11)
+  - [x] Create `src/Hexalith.Folders/Providers/Abstractions/IGitProvider.cs` and related one-public-type-per-file models such as `ProviderCapabilityProfile`, `ProviderOperationCapability`, `ProviderOperationSupport`, `ProviderCapabilityDiscoveryRequest`, `ProviderCapabilityDiscoveryResult`, `ProviderCapabilityProfileVersion`, and `ProviderFailureCategory`.
+  - [x] Keep the initial `IGitProvider` surface narrow: provider identity plus capability-profile discovery/comparison only; repository, branch, workspace, file, commit, webhook, readiness-execution, credential-resolution, and validation methods belong to later stories.
+  - [x] Keep the abstractions behavior-free with respect to public transports; do not add REST endpoint handlers, generated client edits, CLI/MCP tools, UI pages, worker process managers, or provider-specific adapters in this story.
+  - [x] Capability discovery in this story is computed from static or provider-declared metadata supplied to the fake/test provider; it must not perform network, credential, filesystem, Dapr, EventStore, SDK, or live provider calls.
+  - [x] Model capability support as extensible data keyed by canonical operation identifiers rather than boolean GitHub/Forgejo properties or closed two-provider enums.
+  - [x] Normalize provider family/key and operation identifiers through a single comparer/parser so casing, aliases, whitespace, and duplicate/conflicting operation rows are deterministic failures or normalized matches, not adapter-specific behavior.
+  - [x] Include safe target/version metadata and capability profile fingerprints so future readiness and drift stories can compare evidence without storing raw provider payloads.
+  - [x] Keep provider operation names aligned with the existing Contract Spine and parity vocabulary where those operations already exist.
+- [x] Define provider failure and retry semantics at the port boundary. (AC: 4, 8)
+  - [x] Add canonical failure categories and retryability hints needed by readiness/repository/workspace stories, including unsupported capability, unavailable provider, rate limit, insufficient permission, credential-reference invalid, known provider failure, unknown provider outcome, reconciliation required, validation error, and internal error.
+  - [x] Treat provider failure categories as internal decision categories unless a named public Contract Spine gap is discovered and regenerated; provider-specific HTTP status bodies, SDK exception types, and adapter diagnostics remain opaque metadata.
+  - [x] Separate known provider failures from unknown outcomes; unknown outcomes must produce metadata that downstream workflows can route to reconciliation instead of unsafe retry.
+  - [x] Treat stale, ambiguous, drifted, duplicate, and internally conflicting capability evidence as validation/conflict/reconciliation outcomes with safe reason codes; do not silently downgrade them to unsupported capability or choose a winner by collection order.
+  - [x] Ensure result types can carry safe remediation category, retry-after metadata where safe, profile version, correlation ID, and sanitized reason code.
+  - [x] Do not surface raw HTTP status bodies, upstream headers containing sensitive data, provider installation identifiers, repository URLs, branch names, credential labels, or raw exception messages.
+- [x] Add authorization-before-observation wrapper seams only where needed. (AC: 5, 6)
+  - [x] If this story introduces an application-facing capability query service, place tenant/organization/provider-binding authorization before adapter lookup, credential reference inspection, capability cache lookup, repository lookup, projection read, audit write, or diagnostics.
+  - [x] If no application-facing query service is introduced, add or document a narrow test seam proving the future wrapper ordering contract without creating REST, SDK, CLI, MCP, UI, worker, or EventStore handler behavior.
+  - [x] Reuse existing tenant-access and ACL result families; do not invent a separate provider authorization vocabulary.
+  - [x] Use `configure_provider_binding` only for configuration; define or reuse a narrower read/status permission only if an authorized capability-read path is included.
+  - [x] Capture one immutable authorization/evidence snapshot per attempt so retries, duplicate checks, and profile-cache reads do not reuse stale positive authorization.
+  - [x] Dimension any future cache/read-model seam by tenant/organization, provider binding, provider family/key, profile schema/version, target metadata, and authorization evidence freshness; denied paths must not warm or read shared capability evidence before authorization succeeds.
+  - [x] Use in-memory spies/fakes to prove denied paths make zero calls to provider adapters, credential references, repository lookup, branch/workspace lookup, cache/projection/audit stores, capability comparison, metrics, or diagnostic enrichment.
+- [x] Add an offline fake/test provider and conformance tests. (AC: 2, 3, 4, 7, 8, 10)
+  - [x] Add a fake provider under test code or `Hexalith.Folders.Testing` that returns deterministic capability profiles for multiple provider families, including at least GitHub-like, Forgejo-like, and third-provider/custom-family examples.
+  - [x] Keep fake providers transport-free and adapter-free; they may model capability metadata differences but must not simulate concrete GitHub/Forgejo SDK behavior, live transport errors, credential exchange, or adapter quirks.
+  - [x] Add conformance tests proving capability discovery exposes supported, unsupported, partial, emulated, branch/ref, file-limit, credential-mode, rate-limit, retryability, version, and failure-category metadata without live provider calls.
+  - [x] Add deterministic comparison tests proving equivalent profiles compare stable across ordering differences where allowed and changed evidence changes the profile fingerprint/version.
+  - [x] Add tests for duplicate operation identifiers, conflicting support markers, provider-family alias/casing differences, missing profile schema/version, stale evidence, and target-version drift so the port returns stable safe failures instead of accepting malformed profiles.
+  - [x] Add fingerprint tests covering stable collection ordering, case normalization, null handling, version normalization, ignored correlation/timestamp/diagnostic fields, and repeatable serialized shape when serialization is used.
+  - [x] Add negative tests for unsupported provider family, disabled capability, malformed target evidence, stale profile version, unknown outcome, rate limit, permission failure, unavailable provider, and drift/incompatible version metadata.
+  - [x] Add a guard fake that throws if any test attempts HTTP, Dapr, filesystem working-copy, Git, secret-store, Aspire, Redis, Keycloak, GitHub, Forgejo, or Tenants network access.
+- [x] Preserve Contract Spine and parity alignment. (AC: 2, 4, 8, 9)
+  - [x] Review `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `tests/fixtures/parity-contract.yaml`, and `TenantFolderProviderContractGroupTests` before changing any public provider-readiness/support evidence shape.
+  - [x] If contract artifacts change, regenerate/update parity fixtures through the existing generator and update contract tests in the same change.
+  - [x] If no public contract changes are needed, add tests or documentation proving the internal port maps to the existing provider readiness/support evidence vocabulary without drift.
+  - [x] Do not manually edit generated SDK files under `src/Hexalith.Folders.Client/Generated/*`.
+- [x] Add leakage and boundary tests. (AC: 5, 6, 10, 11)
+  - [x] Use sentinel values for provider tokens, API keys, PEM/private keys, JWT-like strings, credential URLs, repository URLs with userinfo, raw provider JSON, branch names containing secrets, file contents, diffs, display names, emails, and unauthorized resource names.
+  - [x] Assert commands, requests, results, profiles, exceptions, logs, diagnostics, projections if any, and test output do not contain forbidden values.
+  - [x] Add dependency/architecture guard tests proving `src/Hexalith.Folders/Providers/Abstractions` does not reference GitHub/Forgejo clients, Octokit, Forgejo HTTP clients, Dapr, EventStore handlers, generated SDK, CLI, MCP, UI, Workers, Aspire, Redis, Keycloak, filesystem working-copy APIs, or live provider transports.
+  - [x] Add negative-scope tests or source-shape assertions that this story did not add GitHub/Forgejo adapters, live provider clients, worker side effects, CLI/MCP/UI behavior, or generated SDK edits.
 
 ## Dev Notes
 
@@ -190,6 +190,8 @@ so that GitHub, Forgejo, and future providers can expose differences without cha
 
 | Date | Change | Author |
 |---|---|---|
+| 2026-05-24 | Adversarial code review (auto-fix): corrected `unsupported_provider_capability` retryability semantics (permanent, not retryable), added real provider-payload sentinel injection/rejection leakage coverage, completed File List documentation. Status → done. | Amelia (AI Review) |
+| 2026-05-24 | Implemented internal provider port abstractions, static capability model, offline fake provider conformance tests, authorization-before-observation seam, leakage/dependency guards, and contract negative-scope allowance for provider abstractions. | Codex |
 | 2026-05-19 | Applied advanced elicitation hardening for normalized provider/operation identity, cache/fingerprint dimensions, stale/conflicting evidence semantics, and malformed-profile tests. | Codex |
 | 2026-05-19 | Applied party-mode review hardening for metadata-only discovery boundaries, internal failure taxonomy, authorization-before-observation seams, deterministic fingerprint rules, and hermetic conformance/leakage tests. | Codex |
 | 2026-05-19 | Created story with N-provider-ready provider port, metadata-only capability model, failure taxonomy, offline fake-provider conformance tests, authorization-before-observation guardrails, and Contract Spine alignment. | Codex |
@@ -210,8 +212,50 @@ GPT-5 Codex
 - Ultimate context engine analysis completed - comprehensive developer guide created.
 - Party-mode review applied low-risk story hardening for internal-only provider port boundaries, static metadata-only capability discovery, no public Contract Spine drift without explicit gap, authorization-before-observation evidence seams, deterministic profile fingerprint normalization, fake-provider conformance, leakage, and dependency guard tests.
 - Advanced elicitation applied low-risk hardening for normalized provider/operation identifiers, malformed-profile rejection, tenant/provider-binding-scoped fingerprints and cache dimensions, stale/drift semantics, and duplicate/conflicting capability evidence tests.
+- Implemented `IGitProvider` as a narrow internal port for provider identity, capability discovery, and profile comparison only.
+- Added metadata-only capability profile, operation support, credential mode, rate-limit posture, failure category, retryability, safe target evidence, authorization snapshot, and deterministic fingerprint/version models.
+- Added normalization and validation for provider family/key and canonical operation identifiers, including deterministic duplicate/conflicting operation failures and stale/incompatible evidence outcomes.
+- Added an authorization-before-observation discovery service seam with tests proving denied paths make zero provider/evidence-store calls.
+- Added offline fake providers and conformance, fingerprint, failure taxonomy, leakage, and dependency-boundary tests; no public OpenAPI/parity artifacts or generated SDK files were changed.
+- Validation completed: `dotnet build Hexalith.Folders.slnx --no-restore`, focused provider abstraction tests, contract tests, and full `dotnet test Hexalith.Folders.slnx --no-build` all passed.
 
 ### File List
+
+- `src/Hexalith.Folders/Providers/Abstractions/IGitProvider.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/IProviderCapabilityAuthorizer.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/IProviderCapabilityEvidenceStore.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/IProviderCapabilityResolver.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderAuthorizationEvidenceSnapshot.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityAuthorizationResult.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityComparisonResult.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityDiscoveryRequest.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityDiscoveryResult.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityDiscoveryService.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityOperationRow.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityProfile.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityProfileFactory.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCapabilityProfileVersion.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderCredentialMode.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderFailureCategory.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderFailureCategoryExtensions.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderIdentityIdentifier.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderOperationCapability.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderOperationCatalog.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderOperationIdentifier.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderOperationSupport.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRateLimitPosture.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderTargetEvidence.cs`
+- `src/Hexalith.Folders.Testing/Providers/FakeGitProvider.cs`
+- `src/Hexalith.Folders.Testing/Providers/ProviderCapabilityTestData.cs`
+- `src/Hexalith.Folders.Testing/Providers/RecordingProviderCapabilityAuthorizer.cs`
+- `src/Hexalith.Folders.Testing/Providers/RecordingProviderCapabilityEvidenceStore.cs`
+- `src/Hexalith.Folders.Testing/Providers/RecordingProviderCapabilityResolver.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Abstractions/ProviderCapabilityBoundaryTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Abstractions/ProviderCapabilityDiscoveryWorkflowTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Abstractions/ProviderCapabilityFailureTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Abstractions/ProviderCapabilityProfileTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs`
 
 ## Party-Mode Review
 
@@ -256,3 +300,36 @@ GPT-5 Codex
   - Live provider capability probing, cache persistence strategy, readiness recovery policy, and adapter-specific stale/drift detection mechanisms.
   - Any public Contract Spine change for provider capability profile exposure.
 - Final recommendation: ready-for-dev
+
+## Senior Developer Review (AI)
+
+- Reviewer: Jérôme Piquot (automated adversarial review)
+- Date: 2026-05-24
+- Outcome: **Approve** (auto-fixed). 0 Critical remaining; 1 High and 2 Medium found and fixed.
+- Review scope: story File List + git-discovered changes for `src/Hexalith.Folders/Providers/Abstractions/*`, `src/Hexalith.Folders.Testing/Providers/*`, `tests/Hexalith.Folders.Tests/Providers/Abstractions/*`, and the two contract-group guard exclusions. `_bmad/`, `_bmad-output/`, and skill/config folders were excluded.
+
+### Findings and resolutions
+
+1. **[HIGH][AC4, AC8] `unsupported_provider_capability` was retryable-by-default.**
+   `ProviderFailureCategoryExtensions.IsRetryableByDefault` returned `true` for `UnsupportedProviderCapability`. An unsupported capability is a stable/permanent condition; retrying capability discovery can never succeed and would push downstream readiness/repository workflows into futile retry loops, contradicting AC4's "stable internal failure categories" and the regression-trap guidance on unsafe automatic retry (capability changes flow through `reconciliation_required`, not short-term retry).
+   - Fix: removed `UnsupportedProviderCapability` from `IsRetryableByDefault` (`ProviderFailureCategoryExtensions.cs`); corrected the `ProviderCapabilityFailureTests` theory expectation from `true` → `false`.
+
+2. **[MEDIUM] File List incomplete.**
+   `tests/Hexalith.Folders.Tests/Providers/Abstractions/ProviderCapabilityDiscoveryWorkflowTests.cs` existed in git and is referenced in `tests/test-summary.md` but was missing from Dev Agent Record → File List.
+   - Fix: added the file to the File List.
+
+3. **[MEDIUM][AC6] Trivially-passing leakage test.**
+   `ProviderCapabilityBoundaryTests.RequestsAndResultsShouldNotSerializeCredentialOrProviderPayloadSentinels` serialized a clean request that never contained the forbidden sentinels, so the assertions passed trivially. The PEM/JWT/repo-URL-with-userinfo/branch-secret/diff/email sentinels were never exercised through the rejection path.
+   - Fix: added `ProviderPayloadShapedEvidenceShouldBeRejectedAndNeverSerializedIntoResults`, which injects each credential/provider-payload-shaped sentinel as provider evidence metadata and asserts the port rejects it (`provider_validation_failed`, null profile) and that the serialized result never contains the sentinel.
+
+### Verification
+
+- `dotnet test ... --filter FullyQualifiedName~Providers.Abstractions` → 33/33 passing (was 32; +1 new leakage test).
+- `dotnet test tests/Hexalith.Folders.Tests` → 513/513 passing, 0 failed.
+- `dotnet test tests/Hexalith.Folders.Contracts.Tests --filter ...TenantFolderProviderContractGroupTests` → 5/5 passing.
+
+### Notes (no change required)
+
+- AC1/AC3/AC11: `IGitProvider` surface is narrow (identity + discovery + comparison); capability differences are modeled as data rows, not two-provider switches; no adapters, transports, or generated SDK edits were added.
+- AC5: `ProviderCapabilityDiscoveryService` authorizes before touching the evidence store, resolver, or provider; denied-path test proves zero downstream calls.
+- The `AuditOpsConsoleContractGroupTests`/`CommitStatusContractGroupTests` edits correctly exclude only `Providers/Abstractions/` (the in-scope port) from the "no provider adapters" negative-scope guard; `Providers/**` adapters remain guarded.
