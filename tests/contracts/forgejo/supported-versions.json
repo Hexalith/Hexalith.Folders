@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "forgejo-supported-versions-v1",
+  "generatedAt": "2026-05-20",
+  "owner": "platform-engineering",
+  "reviewer": "folders-provider-maintainers",
+  "entries": [
+    {
+      "version": "15.0.2",
+      "versionFamily": "15.0",
+      "supportClass": "latest-stable-lts",
+      "sourceUrl": "https://forgejo.org/releases/",
+      "snapshotPath": "tests/contracts/forgejo/15.0.2/swagger.v1.json",
+      "expectedApiCompatibilityPosture": "supported",
+      "owner": "platform-engineering",
+      "reviewer": "folders-provider-maintainers",
+      "datedSource": "2026-05-20",
+      "integrityHash": "sha256:e8af1aa23b7b05a49d49261060552d9390c8bdc915676b2d5579db6e788ad0b4"
+    },
+    {
+      "version": "14.0.5",
+      "versionFamily": "14.0",
+      "supportClass": "n-1-discontinued-reference",
+      "sourceUrl": "https://forgejo.org/releases/",
+      "snapshotPath": "tests/contracts/forgejo/14.0.5/swagger.v1.json",
+      "expectedApiCompatibilityPosture": "additive-compatible",
+      "owner": "platform-engineering",
+      "reviewer": "folders-provider-maintainers",
+      "datedSource": "2026-05-20",
+      "integrityHash": "sha256:86685a7022d4641cd49b63f0ec7103d49bc81d8ef9906fd547b1697d991096a3"
+    },
+    {
+      "version": "11.0.14",
+      "versionFamily": "11.0",
+      "supportClass": "older-lts",
+      "sourceUrl": "https://forgejo.org/releases/",
+      "snapshotPath": "tests/contracts/forgejo/11.0.14/swagger.v1.json",
+      "expectedApiCompatibilityPosture": "supported",
+      "owner": "platform-engineering",
+      "reviewer": "folders-provider-maintainers",
+      "datedSource": "2026-05-20",
+      "integrityHash": "sha256:b261134584865b0643241a8999ca75758d964aca85aeed93558d85d8dfc9cf37"
+    }
+  ]
+}

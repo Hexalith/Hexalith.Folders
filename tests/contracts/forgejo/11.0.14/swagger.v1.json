@@ -1,0 +1,67 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Forgejo API",
+    "version": "11.0.14"
+  },
+  "basePath": "/api/v1",
+  "paths": {
+    "/version": {
+      "get": {
+        "operationId": "getVersion"
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "getCurrentUser"
+      }
+    },
+    "/orgs/{org}/repos": {
+      "post": {
+        "operationId": "createOrgRepo"
+      }
+    },
+    "/repos/{owner}/{repo}": {
+      "get": {
+        "operationId": "repoGet"
+      }
+    },
+    "/repos/{owner}/{repo}/branches": {
+      "get": {
+        "operationId": "repoListBranches"
+      }
+    },
+    "/repos/{owner}/{repo}/branches/{branch}": {
+      "get": {
+        "operationId": "repoGetBranch"
+      }
+    },
+    "/repos/{owner}/{repo}/contents/{filepath}": {
+      "get": {
+        "operationId": "repoGetContents"
+      },
+      "post": {
+        "operationId": "repoCreateFile"
+      },
+      "put": {
+        "operationId": "repoUpdateFile"
+      },
+      "delete": {
+        "operationId": "repoDeleteFile"
+      }
+    },
+    "/repos/{owner}/{repo}/git/commits/{sha}": {
+      "get": {
+        "operationId": "repoGetSingleCommit"
+      }
+    },
+    "/repos/{owner}/{repo}/statuses/{sha}": {
+      "get": {
+        "operationId": "repoListStatuses"
+      },
+      "post": {
+        "operationId": "repoCreateStatus"
+      }
+    }
+  }
+}

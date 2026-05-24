@@ -1,4 +1,19 @@
 {
   "version": "1.0.0",
-  "presets": []
+  "presets": [
+    {
+      "name": "automator-config",
+      "createdAt": "2026-05-24T07:51:15Z",
+      "config": {
+        "defaultPrimary": "codex",
+        "defaultFallback": false,
+        "perTask": {
+          "review": {
+            "primary": "claude",
+            "fallback": false
+          }
+        }
+      }
+    }
+  ]
 }

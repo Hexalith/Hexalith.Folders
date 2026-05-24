@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "forgejo-drift-classification-fixtures-v1",
+  "redactionPolicy": "metadata-only",
+  "fixtures": [
+    {
+      "name": "additive-field",
+      "changeKind": "additive-field",
+      "expectedClassification": "additive-compatible",
+      "severity": "warning"
+    },
+    {
+      "name": "removed-field",
+      "changeKind": "removed-field",
+      "expectedClassification": "breaking-incompatible",
+      "severity": "failure"
+    },
+    {
+      "name": "type-change",
+      "changeKind": "type-change",
+      "expectedClassification": "breaking-incompatible",
+      "severity": "failure"
+    },
+    {
+      "name": "enum-new-string-value",
+      "changeKind": "enum-new-string-value",
+      "expectedClassification": "additive-compatible",
+      "severity": "warning"
+    },
+    {
+      "name": "nullability-change",
+      "changeKind": "nullability-change",
+      "expectedClassification": "breaking-incompatible",
+      "severity": "failure"
+    },
+    {
+      "name": "error-shape-change",
+      "changeKind": "error-shape-change",
+      "expectedClassification": "breaking-incompatible",
+      "severity": "failure"
+    },
+    {
+      "name": "pagination-shape-change",
+      "changeKind": "pagination-shape-change",
+      "expectedClassification": "breaking-incompatible",
+      "severity": "failure"
+    },
+    {
+      "name": "auth-rate-limit-header-change",
+      "changeKind": "auth-rate-limit-header-change",
+      "expectedClassification": "breaking-incompatible",
+      "severity": "failure"
+    },
+    {
+      "name": "unknown-operation",
+      "changeKind": "unknown-operation",
+      "expectedClassification": "unknown-unclassified",
+      "severity": "failure"
+    }
+  ]
+}

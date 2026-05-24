@@ -1,0 +1,1876 @@
+D:\Hexalith.Folders\_bmad-output\project-context.md
+
+ succeeded in 772ms:
+src\Hexalith.Folders.Workers\Program.cs
+src\Hexalith.Folders.Workers\Hexalith.Folders.Workers.csproj
+tests\Hexalith.Folders.Mcp.Tests\Hexalith.Folders.Mcp.Tests.csproj
+tests\Hexalith.Folders.Cli.Tests\Hexalith.Folders.Cli.Tests.csproj
+tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj
+src\Hexalith.Folders\Hexalith.Folders.csproj
+tests\tools\pattern-examples\Hexalith.Folders.PatternExamples.csproj
+tests\Hexalith.Folders.Client.Tests\Hexalith.Folders.Client.Tests.csproj
+src\Hexalith.Folders.UI\Program.cs
+src\Hexalith.Folders.UI\Hexalith.Folders.UI.csproj
+tests\tools\parity-oracle-generator\Program.cs
+tests\tools\parity-oracle-generator\Hexalith.Folders.ParityOracleGenerator.csproj
+tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj
+tests\Hexalith.Folders.Contracts.Tests\Hexalith.Folders.Contracts.Tests.csproj
+tests\Hexalith.Folders.UI.Tests\Hexalith.Folders.UI.Tests.csproj
+src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj
+src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj
+src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj
+src\Hexalith.Folders.AppHost\Program.cs
+src\Hexalith.Folders.AppHost\Hexalith.Folders.AppHost.csproj
+src\Hexalith.Folders.Mcp\Program.cs
+src\Hexalith.Folders.Mcp\Hexalith.Folders.Mcp.csproj
+src\Hexalith.Folders.ServiceDefaults\Hexalith.Folders.ServiceDefaults.csproj
+tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj
+tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj
+src\Hexalith.Folders.Cli\Program.cs
+src\Hexalith.Folders.Cli\Hexalith.Folders.Cli.csproj
+tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj
+src\Hexalith.Folders.Client\Generation\Hexalith.Folders.Client.Generation.csproj
+src\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj
+src\Hexalith.Folders.Client\Generation\Program.cs
+src\Hexalith.Folders.Client\Generation\Shared\Hexalith.Folders.Client.Generation.Shared.csproj
+src\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj
+src\Hexalith.Folders.Server\Program.cs
+tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj
+
+ succeeded in 1541ms:
+ M .agents/skills/bmad-story-automator/data/agent-config-presets.json
+ M .agents/skills/bmad-story-automator/src/story_automator/commands/basic.py
+ M .agents/skills/bmad-story-automator/src/story_automator/commands/tmux.py
+ M .agents/skills/bmad-story-automator/src/story_automator/core/tmux_runtime.py
+ M .gitignore
+?? .agents/.story-automator-active
+?? .codex/
+?? _bmad-output/story-automator/
+
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders.Workers\\FoldersWorkersModule.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath _bmad-output\\project-context.md" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders.Server\\FoldersTenantEventHandler.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders.Server\\FoldersServerModule.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath tests\\Hexalith.Folders.Workers.Tests\\WorkersSmokeTests.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders.Workers\\Program.cs" in D:\Hexalith.Folders
+ succeeded in 448ms:
+using Hexalith.Folders.Contracts;
+
+namespace Hexalith.Folders.Workers;
+
+public static class FoldersWorkersModule
+{
+    public static string Name => $"{FoldersContractMetadata.ModuleName}.Workers";
+}
+
+ succeeded in 586ms:
+---
+project_name: 'Hexalith.Folders'
+user_name: 'Jerome'
+date: '2026-05-20'
+workflow: 'bmad-generate-project-context'
+status: 'complete'
+sections_completed:
+  - discovery
+  - technology_stack
+  - language_rules
+  - framework_rules
+  - testing_rules
+  - code_quality_rules
+  - workflow_rules
+  - critical_dont_miss_rules
+rule_count: 103
+optimized_for_llm: true
+existing_patterns_found: 12
+technology_stack_discovered: true
+source_context:
+  - '_bmad-output/planning-artifacts/architecture.md'
+  - '_bmad-output/planning-artifacts/prd.md'
+  - '_bmad-output/implementation-artifacts/1-1-establish-a-consumer-buildable-module-scaffold.md'
+  - '_bmad-output/implementation-artifacts/1-2-establish-root-configuration-and-submodule-policy.md'
+---
+
+# Project Context for AI Agents
+
+_This file contains critical rules and patterns that AI agents must follow when implementing code in this project. Focus on unobvious details that agents might otherwise miss._
+
+---
+
+## Technology Stack & Versions
+
+- Target .NET SDK `10.0.300` from `global.json` with `rollForward=latestPatch`; all in-scope projects target `net10.0` unless an individual project explicitly scopes otherwise.
+- Repository configuration and project files are authoritative when planning artifacts drift: prefer `global.json`, `Directory.Build.props`, `Directory.Packages.props`, `.editorconfig`, `.csproj`, and
+ `Hexalith.Folders.slnx` over older architecture text.
+- Use C# `LangVersion=latest`, nullable enabled, implicit usings enabled, deterministic builds, and warnings-as-errors from `Directory.Build.props`.
+- Use `.slnx` solution format and central package management through `Directory.Packages.props`; project files must not carry inline package versions.
+- Root-level sibling modules are consumed through project references detected in `Directory.Build.props`, especially Hexalith.EventStore and Hexalith.Tenants. Do not replace these with ad hoc package
+references or initialize nested submodules.
+- Dapr .NET packages are pinned to `1.17.7`; Folders uses Dapr sidecars, pub/sub, state store, service invocation, and Dapr configuration includes deny-by-default access-control policy that must be pr
+eserved unless intentionally changed.
+- Aspire versions are intentionally mixed: `Aspire.Hosting` `13.3.3`, hosting integrations mostly `13.2.2`, preview Keycloak/Kubernetes integrations `13.2.2-preview.1.26207.2`, Aspire test host `13.2.
+1`, and `CommunityToolkit.Aspire.Hosting.Dapr` `13.0.0`. Do not normalize these versions without verifying compatibility.
+- Service defaults stay on the Microsoft.Extensions `10.x` family and OpenTelemetry packages `1.15.x`; keep OpenTelemetry package versions aligned by family.
+- UI uses Microsoft Fluent UI Blazor `5.0.0-rc.2-26098.1` plus Fluent UI icons `4.14.0`; treat Fluent UI APIs as RC-sensitive.
+- CLI uses System.CommandLine `2.0.8`; MCP uses ModelContextProtocol `1.3.0`; both wrap `Hexalith.Folders.Client` instead of duplicating business behavior.
+- The OpenAPI Contract Spine is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; NSwag.MSBuild `14.7.1`, Newtonsoft.Json `13.0.4`, and generated idempotency helpers derive from that
+spine.
+- Do not hand-edit generated client files under `src/Hexalith.Folders.Client/Generated`; change the OpenAPI spine or generation pipeline instead.
+- Tests use xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Testcontainers `4.10.0`, YamlDotNet `17.1.0`, and Microsoft.Playwright `1.59.0`.
+- Treat Dapr runtime/CLI, Playwright browser binaries, Aspire preview integrations, and Fluent UI RC APIs as test-runtime compatibility risks; upgrades require focused smoke/regression coverage, not v
+ersion-only edits.
+
+## Critical Implementation Rules
+
+### Language-Specific Rules
+
+- Use C# file-scoped namespaces with `using` directives outside namespaces; file names must match the primary public type and public surface should stay one primary type per file.
+- Follow repository naming rules: PascalCase for types, methods, properties, and constants; camelCase for locals and parameters; interfaces begin with `I`; private fields use `_camelCase`; async metho
+ds end with `Async`.
+- Validate public boundaries with `ArgumentNullException.ThrowIfNull(...)` and `ArgumentException.ThrowIfNullOrWhiteSpace(...)`; do not let null/blank values drift into aggregate, authorization, hash,
+ or HTTP mapping code.
+- Model commands, events, results, and immutable contract values as records or readonly record structs when they are data-shaped; use sealed classes for concrete services and static classes for pure a
+ggregate/validator helpers.
+- Domain rejections return typed result codes and events/results; do not throw exceptions for expected business outcomes such as duplicate folders, tenant denial, idempotency replay, or missing ACL en
+tries.
+- Use `StringComparison.Ordinal`, `StringComparer.Ordinal`, and `CultureInfo.InvariantCulture` for identifiers, ordering, hashing, and wire-stable formatting. Do not use culture-sensitive comparisons
+for tenant, folder, action, correlation, or idempotency values.
+- Normalize metadata and canonical payloads deliberately before hashing or validation. Preserve NFC normalization, length-prefixing, SHA-256 hashing, duplicate-property rejection, and ordinal field or
+dering in idempotency code.
+- Keep sensitive metadata filtering centralized in validators. Do not duplicate or weaken blocklists for control characters, invisible format characters, paths, URLs, email markers, tokens, diffs, pro
+vider payloads, or generated context markers.
+- Public async service, query, HTTP, provider, Dapr, EventStore, filesystem, and worker paths must accept and propagate `CancellationToken`; library/server code should use `ConfigureAwait(false)` wher
+e nearby code does.
+- Aggregate handlers stay deterministic and side-effect free: pass timestamps in from the caller, return accepted/rejected results, and never perform I/O, provider calls, Dapr calls, logging, or files
+ystem work inside aggregate state transitions.
+- When adding a new command or access operation, update the command interface, validator, fingerprint/canonicalization logic, aggregate dispatch switch, result code mapping, event application, and tes
+ts together.
+- Prefer source-generated regex via `[GeneratedRegex]` for stable validation patterns instead of constructing regexes dynamically in hot validation paths.
+
+### Framework-Specific Rules
+
+- Use Hexalith.EventStore as the write-side command/query/event/projection framework. Do not introduce a parallel write-side framework or direct database write model for folder state.
+- `Hexalith.Folders.Server` owns REST transport plus EventStore-compatible `/process` and `/project` endpoints; external REST remains `/api/v1/...`, while internal EventStore invocation routes remain
+`/process` and `/project`.
+- Dapr app IDs and component names are stable contracts: `eventstore`, `tenants`, `folders`, `folders-workers`, `folders-ui`, `statestore`, and `pubsub`.
+- AppHost must resolve `DaprComponents/accesscontrol.yaml` and fail fast if it is missing. Do not silently run without the Dapr access-control configuration.
+- Aspire topology is centralized in `Hexalith.Folders.Aspire`; keep shared Dapr state-store/pub-sub sidecar wiring there and AppHost environment concerns in `Hexalith.Folders.AppHost`.
+- Folders subscribes to Hexalith.Tenants events through Dapr pub/sub topic `system.tenants.events` on pubsub `pubsub`; tenant projection handlers must drop envelope/payload tenant mismatches and prese
+rve replay/fingerprint behavior.
+- Production authorization layering is JWT validation, EventStore claim transform evidence, tenant-access projection freshness, folder ACL evidence, EventStore validators, then Dapr deny-by-default po
+licy evidence.
+- Client-controlled tenant/principal values from headers, query strings, or payloads are comparison inputs only. Authoritative tenant and principal values come from authenticated context and EventStor
+e claim-transform evidence.
+- The SDK is the typed canonical client. CLI and MCP must wrap `Hexalith.Folders.Client`; REST is a parallel transport validated against the same OpenAPI Contract Spine.
+- The Contract Spine is OpenAPI 3.1 at `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; server-generated OpenAPI, NSwag output, parity oracle rows, and idempotency helpers must stay
+synchronized with it.
+- Problem responses must remain metadata-only and follow the canonical extension shape: `category`, `code`, `message`, `correlationId`, `taskId` when present, `retryable`, `clientAction`, and `details
+.visibility`.
+- Blazor UI is a read-only operations console scaffold backed by the client. It must not expose mutation paths, credential reveal, file browsing, file editing, raw diffs, repair actions, or unrestrict
+ed filesystem access in MVP.
+- Workers own external provider, Git, working-copy, reconciliation, and rate-limit side effects. Aggregates, REST handlers, CLI, MCP, and UI should not perform provider or filesystem mutations directl
+y.
+- Provider adapters for GitHub and Forgejo must sit behind provider ports and capability tests. Do not treat Forgejo as a GitHub base-URL swap.
+
+### Testing Rules
+
+- Test projects mirror production boundaries: `tests/Hexalith.Folders.{Area}.Tests` for each production area, plus integration, UI E2E, fixtures, load, and tooling lanes.
+- Use xUnit v3 and Shouldly by default; keep assertions readable in test bodies and use NSubstitute only for focused unit-test doubles.
+- Use `TestContext.Current.CancellationToken` in async xUnit tests and propagate cancellation into app code under test.
+- Unit tests own pure aggregate, validator, idempotency, authorization, projection, query, and metadata-redaction rules. Integration tests own EventStore, Dapr, Aspire, provider, and REST boundary beh
+avior.
+- Scaffold, unit, contract, governance, and safety gates must run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, network c
+alls, or nested submodule initialization.
+- Shared normative fixtures live under `tests/fixtures/`; do not fork parity, idempotency, previous-spine, safety-channel, redaction, or quarantine corpora into per-test-project copies.
+- Contract Spine tests must validate OpenAPI 3.1 shape, server-vs-spine drift, generated client drift, parity oracle rows, previous-spine baseline, and metadata-only diagnostics.
+- Safety invariant tests must scan all declared output channels with `tests/fixtures/audit-leakage-corpus.json`, `tests/fixtures/safety-channel-inventory.json`, and quarantined negative controls.
+- Layered authorization tests must assert short-circuit order and no protected resource touch before the relevant authorization layer passes.
+- Tests for safe denial must prove unauthorized and nonexistent resources stay indistinguishable at the caller-visible boundary.
+- Idempotency tests must cover replay, conflict, ordinal field ordering, duplicate JSON property rejection, Unicode/control-character handling, UTC date handling, and tenant-scoped keys.
+- UI E2E is a deferred Playwright-on-.NET lane; keep skipped placeholders until Epic 6 story 6-2 provides stable read-only console routes and selectors. Do not add brittle CSS/text/sleep-based tests.
+- Use `src/Hexalith.Folders.Testing` factories and HTTP helpers for tenant, folder, task, correlation, idempotency, and authorization contexts; prefer explicit overrides over hidden static fixture sta
+te.
+- Focused gate scripts under `tests/tools/*.ps1` are CI contracts. Do not add recursive submodule initialization, artifact upload, publish, semantic-release, production endpoints, secrets, or broad ne
+twork assumptions to them.
+
+### Code Quality & Style Rules
+
+- Root configuration belongs at repository root: `.editorconfig`, `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, `.gitignore`, and `Hexalith.Folders.slnx`.
+- Preserve `.editorconfig` formatting: spaces, 4-space indentation, CRLF for most files, LF for shell/YAML/container artifacts, UTF-8, trimmed trailing whitespace, and final newline.
+- Keep package versions centralized in `Directory.Packages.props`; never add inline `Version` attributes to project `PackageReference`s.
+- Preserve dependency direction: Contracts has no behavior/project references; core references Contracts; Server references core, Contracts, ServiceDefaults, EventStore, and Tenants; Client references
+ Contracts; CLI/MCP/UI wrap Client; Workers own process managers.
+- Pack policy is opt-in. Only packageable library projects should set `<IsPackable>true</IsPackable>`; host, adapter, sample, worker, and test projects should not produce packages unless explicitly de
+signed to.
+- Keep generated client files in `src/Hexalith.Folders.Client/Generated` generated by build targets. Do not manually edit generated `.g.cs` files to fix behavior.
+- Keep source organized by concept area, not broad type buckets: `Aggregates/{Concept}`, `Authorization`, `Projections/{Concept}`, `Queries/{Concept}`, provider ports/adapters, workers, idempotency, r
+edaction, and caching.
+- Use shared contract/gate docs under `docs/contract/`, exit-criteria evidence under `docs/exit-criteria/`, and ADRs under `docs/adrs/`; do not bury normative rules in ad hoc README text.
+- Use shared fixtures under `tests/fixtures/` for normative cross-project data and keep ownership metadata machine-checkable.
+- Keep `bin/`, `obj/`, `TestResults/`, coverage, package, Playwright browser cache, logs, and local build artifacts out of source unless they are intentional fixtures.
+- Comments should explain domain invariants, security boundaries, compatibility pins, generated-artifact contracts, or story/ADR context; avoid comments that restate straightforward C#.
+- Structured diagnostics, test failure messages, logs, metrics, traces, Problem Details, and docs examples must be metadata-only. Never include secrets, tokens, raw file contents, diffs, provider payl
+oads, local absolute paths, or unauthorized resource existence.
+- Error/problem shapes, result code names, action tokens, parity dimensions, sensitive metadata categories, and state names are public contracts. Changing one requires corresponding OpenAPI, fixtures,
+ docs, tests, and generated artifacts.
+
+### Development Workflow Rules
+
+- Never initialize or update nested submodules recursively unless the user explicitly asks for nested submodules.
+- Initialize/update only root-level submodules by default: `Hexalith.AI.Tools`, `Hexalith.Commons`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories`, and `Hexalith.Tenants`.
+- Do not use `git submodule update --init --recursive` in setup guidance, scripts, CI, docs, or agent instructions unless it is explicitly framed as user-requested nested-submodule work.
+- CI checkout should keep `submodules: false`; local setup docs may show the explicit root-level submodule command only.
+- Default repository verification starts with `dotnet restore Hexalith.Folders.slnx`, `dotnet build Hexalith.Folders.slnx --no-restore`, then the narrowest relevant `dotnet test` or gate script.
+- Use focused gate scripts as workflow contracts: `run-contract-spine-gates.ps1`, `run-safety-invariant-gates.ps1`, and `run-governance-completeness-gates.ps1`.
+- Do not add artifact upload, package publish, semantic-release, live provider drift, production endpoint calls, or secret-dependent behavior to focused PR gates unless the story explicitly targets re
+lease/live validation.
+- Contract Spine, generated client, parity oracle, idempotency helper, safety corpus, and governance evidence changes must update source artifacts, docs, fixtures, generated outputs, and tests togethe
+r.
+- When changing root build policy, solution shape, submodule references, package versions, or CI scripts, run scaffold/root verification and check that recursive submodule commands were not introduced
+.
+- Use sibling modules as read-only references for patterns unless the task explicitly asks to modify a submodule; submodule changes require separate intent and commits inside that submodule.
+- AppHost and Aspire topology changes require restart of the running Aspire app before resource wiring can be trusted.
+- UI E2E work requires installing matching Playwright browser binaries through `tests/install-playwright.ps1`; do not assume the NuGet package alone is sufficient.
+- Keep local developer conveniences out of blocking lanes unless they are hermetic and metadata-only.
+
+### Critical Don't-Miss Rules
+
+- Zero cross-tenant leakage is the top safety invariant. Deny access before touching file, workspace, credential, repository, lock, commit, provider, audit, or cache resources.
+- The reserved `system` tenant must never be used for managed tenant folder streams. Folder streams use `{managedTenantId}:folders:{folderId}` and organization streams use `{managedTenantId}:organizat
+ions:{organizationId}`.
+- Tenant authority comes from authenticated context and EventStore claim-transform evidence only. Payload, query, and header tenant/principal values are comparison inputs, not authority.
+- Authorization order is contractual: JWT validation, EventStore claim transform, tenant-access freshness, folder ACL, EventStore validator, then Dapr deny-by-default policy. Do not reorder or skip la
+yers for convenience.
+- Metadata-only is non-negotiable across events, logs, traces, metrics, projections, audit records, Problem Details, console responses, provider diagnostics, generated artifacts, docs examples, and te
+st failure messages.
+- All durable operational keys and cache keys must carry tenant scope unless covered by an approved entry in `tests/fixtures/cache-key-exceptions.yaml`.
+- Idempotency is required for mutating operations. Same key plus equivalent payload returns the same logical result; same key plus different payload returns `idempotency_conflict`.
+- Non-mutating operations must not accept `Idempotency-Key`; they still require correlation behavior, authorization parity, safe denial shape, audit metadata, and read-consistency classification.
+- Never search, glob, list, partially read, or inspect paths before tenant access, folder ACL, and path policy pass.
+- Unknown provider outcomes must enter `unknown_provider_outcome` or `reconciliation_required`; do not retry in ways that could duplicate repositories, file mutations, commits, audits, or idempotency
+records.
+- Workspace lifecycle must follow the C6 matrix. Every state/event pair must have a positive transition or explicit `state_transition_invalid` rejection with state unchanged.
+- Read-only operations console means read-only. No mutation, repair, credential reveal, file browsing, file editing, raw diffs, hidden provider payloads, or unrestricted filesystem views in MVP.
+- CLI exit codes and MCP failure kinds must map one-to-one to canonical categories from the parity oracle. Do not collapse distinct failures for adapter convenience.
+- Do not hand-edit generated parity rows, generated clients, or generated idempotency helpers. Change the OpenAPI Contract Spine or generator inputs and regenerate.
+- Do not initialize/update nested submodules recursively by default. This is a repository safety rule, not a setup preference.
+- GitHub and Forgejo support must be capability-tested. Do not assume API compatibility, permission equivalence, webhook equivalence, rate-limit equivalence, or identical default-branch behavior.
+- Redacted values must be visibly distinct from unknown or missing values. Silent truncation or hiding redaction is treated as an operator-facing correctness bug.
+
+---
+
+## Usage Guidelines
+
+**For AI Agents:**
+
+- Read this file before implementing code in Hexalith.Folders.
+- Follow all rules exactly as documented; when in doubt, choose the more restrictive option.
+- Update this file when new project-specific implementation patterns become stable.
+
+**For Humans:**
+
+- Keep this file lean and focused on rules agents are likely to miss.
+- Update it when the technology stack, architecture decisions, or workflow policies change.
+- Remove rules that become obvious or mechanically enforced everywhere.
+
+Last Updated: 2026-05-20
+
+ succeeded in 716ms:
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
+
+using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Tenants.Client.Handlers;
+using Hexalith.Tenants.Contracts.Events;
+
+using Microsoft.Extensions.Logging;
+
+namespace Hexalith.Folders.Server;
+
+public sealed class FoldersTenantEventHandler(
+    FolderTenantAccessHandler handler,
+    ILogger<FoldersTenantEventHandler>? logger = null) :
+    ITenantEventHandler<TenantCreated>,
+    ITenantEventHandler<TenantUpdated>,
+    ITenantEventHandler<TenantDisabled>,
+    ITenantEventHandler<TenantEnabled>,
+    ITenantEventHandler<UserAddedToTenant>,
+    ITenantEventHandler<UserRemovedFromTenant>,
+    ITenantEventHandler<UserRoleChanged>,
+    ITenantEventHandler<TenantConfigurationSet>,
+    ITenantEventHandler<TenantConfigurationRemoved>
+{
+    private const char FieldSeparator = '';
+    private const string NullMarker = "null";
+
+    public Task HandleAsync(TenantCreated @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantCreated, @event.TenantId, context, fingerprintParts: [@event.Name]), cancellationToken);
+    }
+
+    public Task HandleAsync(TenantUpdated @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantUpdated, @event.TenantId, context, fingerprintParts: [@event.Name]), cancellationToken);
+    }
+
+    public Task HandleAsync(TenantDisabled @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantDisabled, @event.TenantId, context), cancellationToken);
+    }
+
+    public Task HandleAsync(TenantEnabled @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantEnabled, @event.TenantId, context), cancellationToken);
+    }
+
+    public Task HandleAsync(UserAddedToTenant @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(
+            FolderTenantAccessEventKind.UserAddedToTenant,
+            @event.TenantId,
+            context,
+            principalId: @event.UserId,
+            role: @event.Role.ToString(),
+            fingerprintParts: [@event.UserId, @event.Role.ToString()]), cancellationToken);
+    }
+
+    public Task HandleAsync(UserRemovedFromTenant @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(
+            FolderTenantAccessEventKind.UserRemovedFromTenant,
+            @event.TenantId,
+            context,
+            principalId: @event.UserId,
+            fingerprintParts: [@event.UserId]), cancellationToken);
+    }
+
+    public Task HandleAsync(UserRoleChanged @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(
+            FolderTenantAccessEventKind.UserRoleChanged,
+            @event.TenantId,
+            context,
+            principalId: @event.UserId,
+            role: @event.NewRole.ToString(),
+            previousRole: @event.OldRole.ToString(),
+            fingerprintParts: [@event.UserId, @event.OldRole.ToString(), @event.NewRole.ToString()]), cancellationToken);
+    }
+
+    public Task HandleAsync(TenantConfigurationSet @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(
+            FolderTenantAccessEventKind.TenantConfigurationSet,
+            @event.TenantId,
+            context,
+            configurationKey: @event.Key,
+            fingerprintParts: [@event.Key]), cancellationToken);
+    }
+
+    public Task HandleAsync(TenantConfigurationRemoved @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+        ArgumentNullException.ThrowIfNull(context);
+        return handler.HandleAsync(ToProjectionEvent(
+            FolderTenantAccessEventKind.TenantConfigurationRemoved,
+            @event.TenantId,
+            context,
+            configurationKey: @event.Key,
+            fingerprintParts: [@event.Key]), cancellationToken);
+    }
+
+    private FolderTenantAccessEvent ToProjectionEvent(
+        FolderTenantAccessEventKind kind,
+        string eventTenantId,
+        TenantEventContext context,
+        string? principalId = null,
+        string? role = null,
+        string? previousRole = null,
+        string? configurationKey = null,
+        string?[]? fingerprintParts = null)
+    {
+        string projectionTenantId = eventTenantId;
+        if (!string.Equals(context.TenantId, eventTenantId, StringComparison.Ordinal))
+        {
+            logger?.LogWarning(
+                "Tenant envelope mismatch: envelope TenantId={EnvelopeTenantId} differs from payload TenantId={PayloadTenantId} for event {EventKind} (MessageId={MessageId}); event will be dropped.",
+                context.TenantId, eventTenantId, kind, context.MessageId);
+            projectionTenantId = string.Empty;
+        }
+
+        return new FolderTenantAccessEvent(
+            kind,
+            projectionTenantId,
+            context.MessageId,
+            context.SequenceNumber,
+            context.Timestamp,
+            context.CorrelationId,
+            principalId,
+            role,
+            previousRole,
+            configurationKey,
+            FingerprintHash(fingerprintParts));
+    }
+
+    private static string FingerprintHash(string?[]? parts)
+    {
+        if (parts is null || parts.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        StringBuilder canonical = new();
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (i > 0)
+            {
+                _ = canonical.Append(FieldSeparator);
+            }
+
+            _ = canonical.Append(parts[i] is null ? NullMarker : parts[i]);
+        }
+
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(canonical.ToString()));
+        return Convert.ToHexString(hash).ToLowerInvariant();
+    }
+}
+
+ succeeded in 945ms:
+using Hexalith.Folders.Contracts;
+using Hexalith.Folders.ServiceDefaults;
+using Hexalith.Tenants.Client.Registration;
+using Hexalith.Tenants.Client.Handlers;
+using Hexalith.Tenants.Client.Subscription;
+using Hexalith.Tenants.Contracts.Events;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+namespace Hexalith.Folders.Server;
+
+public static class FoldersServerModule
+{
+    public const string ProcessRoute = "/process";
+
+    public const string ProjectRoute = "/project";
+
+    public const string TenantEventsRoute = "/tenants/events";
+
+    public const string TenantEventsPubSubName = "pubsub";
+
+    public const string TenantEventsTopicName = "system.tenants.events";
+
+    public const string DomainName = "folders";
+
+    public const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
+
+    // Maximum length for canonical identifiers (correlation id, task id, idempotency key,
+    // folder id, taskId extension). Shared between the REST endpoint regex, the processor
+    // extension reader, and the rejection-event canonicalizer so a length bump cannot drift.
+    public const int MaxCanonicalIdentifierLength = 128;
+
+    public static string Description => $"{FoldersContractMetadata.ModuleName} server scaffold";
+
+    public static IServiceCollection AddFoldersServer(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddDaprClient();
+        services.AddFoldersEffectivePermissions();
+        services.AddFoldersLifecycleStatus();
+        services.AddFoldersTenantEventProjection();
+        services.AddHexalithTenants(options =>
+        {
+            options.PubSubName = TenantEventsPubSubName;
+            options.TopicName = TenantEventsTopicName;
+        });
+        services.AddFoldersDomainServices();
+
+        return services;
+    }
+
+    private static IServiceCollection AddFoldersTenantEventProjection(this IServiceCollection services)
+    {
+        services.TryAddSingleton<FoldersTenantEventHandler>();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantCreated>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantUpdated>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantDisabled>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantEnabled>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserAddedToTenant>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserRemovedFromTenant>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserRoleChanged>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantConfigurationSet>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantConfigurationRemoved>, FoldersTenantEventHandler>());
+        return services;
+    }
+
+    public static IEndpointRouteBuilder MapFoldersServerEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        ArgumentNullException.ThrowIfNull(endpoints);
+
+        endpoints.MapDefaultEndpoints();
+        endpoints.MapGet("/", () => Description);
+        endpoints.MapFoldersDomainServiceEndpoints();
+        endpoints.MapTenantEventSubscription();
+
+        return endpoints;
+    }
+}
+
+ succeeded in 1083ms:
+using Hexalith.Folders.Workers;
+using Shouldly;
+using Xunit;
+
+namespace Hexalith.Folders.Workers.Tests;
+
+public sealed class WorkersSmokeTests
+{
+    [Fact]
+    public void WorkersModuleRemainsPlaceholderOnly() => FoldersWorkersModule.Name.ShouldBe("Hexalith.Folders.Workers");
+}
+
+ succeeded in 1218ms:
+using Hexalith.Folders;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddFoldersTenantAccess();
+
+await builder.Build().RunAsync().ConfigureAwait(false);
+
+codex
+The existing behavior is currently server-owned: `FoldersServerModule` registers the Tenants subscription and a server-local `FoldersTenantEventHandler`. The worker module is still a placeholder, so t
+he main implementation is to extract the handler into shared/core code, register it from Workers, and add worker registration/behavior tests without broadening contracts.
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath tests\\Hexalith.Folders.Server.Tests\\FoldersTenantEventHandlerTests.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath tests\\Hexalith.Folders.Tests\\Projections\\TenantAccess\\FolderTenantAccessHandlerTests.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\Projections\\TenantAccess\\FolderTenantAccessHandler.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\Projections\\TenantAccess\\FolderTenantAccessEvent.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath tests\\Hexalith.Folders.Server.Tests\\ServerEndpointRegistrationTests.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\Projections\\TenantAccess\\FolderTenantAccessProjection.cs" in D:\Hexalith.Folders
+ succeeded in 399ms:
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Server;
+using Hexalith.Tenants.Client.Handlers;
+using Hexalith.Tenants.Contracts.Events;
+
+using Shouldly;
+using Xunit;
+
+namespace Hexalith.Folders.Server.Tests;
+
+public sealed class FoldersTenantEventHandlerTests
+{
+    private static readonly DateTimeOffset Now = new(2026, 5, 18, 12, 0, 0, TimeSpan.Zero);
+
+    [Fact]
+    public async Task TenantEnvelopeMismatchShouldNotMutateProjection()
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        FolderTenantAccessHandler projectionHandler = new(store, new FixedUtcClock(Now), new TenantAccessOptions());
+        FoldersTenantEventHandler subject = new(projectionHandler);
+
+        // Envelope says tenant-a, payload says tenant-b: the handler must drop the event without granting access.
+        TenantEventContext context = new(
+            TenantId: "tenant-a",
+            MessageId: "01J00000000000000000000099",
+            SequenceNumber: 1,
+            Timestamp: Now,
+            CorrelationId: "corr-99");
+
+        await subject.HandleAsync(new TenantCreated("tenant-b", "Tenant B", null, Now), context, TestContext.Current.CancellationToken);
+
+        FolderTenantAccessProjection? envelopeTenantProjection = await store.GetAsync("tenant-a", TestContext.Current.CancellationToken);
+        FolderTenantAccessProjection? payloadTenantProjection = await store.GetAsync("tenant-b", TestContext.Current.CancellationToken);
+        envelopeTenantProjection.ShouldBeNull();
+        payloadTenantProjection.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task TenantUpdatedShouldAdvanceWatermarkWithoutGrantingMembership()
+    {
+        // Sanity: TenantUpdated is a no-op for membership but must still advance freshness.
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        FolderTenantAccessHandler projectionHandler = new(store, new FixedUtcClock(Now.AddMinutes(1)), new TenantAccessOptions());
+        FoldersTenantEventHandler subject = new(projectionHandler);
+
+        TenantEventContext createdContext = new("tenant-a", "01J00000000000000000000100", 1, Now, "corr-100");
+        TenantEventContext updatedContext = new("tenant-a", "01J00000000000000000000101", 2, Now, "corr-101");
+
+        await subject.HandleAsync(new TenantCreated("tenant-a", "Tenant A", null, Now), createdContext, TestContext.Current.CancellationToken);
+        await subject.HandleAsync(new TenantUpdated("tenant-a", "Tenant A renamed", null), updatedContext, TestContext.Current.CancellationToken);
+
+        FolderTenantAccessProjection? projection = await store.GetAsync("tenant-a", TestContext.Current.CancellationToken);
+        projection.ShouldNotBeNull();
+        projection.Watermark.ShouldBe(2);
+        projection.Principals.ShouldBeEmpty();
+        projection.MalformedEvidence.ShouldBeFalse();
+        projection.ReplayConflict.ShouldBeFalse();
+    }
+}
+
+ succeeded in 589ms:
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
+using Shouldly;
+using Xunit;
+
+namespace Hexalith.Folders.Tests.Projections.TenantAccess;
+
+public sealed class FolderTenantAccessHandlerTests
+{
+    private static readonly DateTimeOffset EventTimestamp = new(2026, 5, 18, 12, 0, 0, TimeSpan.Zero);
+
+    private static FolderTenantAccessHandler CreateHandler(IFolderTenantAccessProjectionStore store, DateTimeOffset now)
+        => new(store, new FixedUtcClock(now), new TenantAccessOptions());
+
+    [Fact]
+    public async Task UserAddedToTenantShouldProjectMetadataOnlyAccessEvidence()
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        FolderTenantAccessHandler handler = CreateHandler(store, EventTimestamp.AddMinutes(1));
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantCreated, "tenant-a", "01J00000000000000000000001", 1),
+            cancellationToken);
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.UserAddedToTenant, "tenant-a", "01J00000000000000000000002", 2, principalId: "user-a", role: "TenantOwner"),
+            cancellationToken);
+
+        FolderTenantAccessProjection? projection = await store.GetAsync("tenant-a", cancellationToken);
+
+        projection.ShouldNotBeNull();
+        projection.TenantId.ShouldBe("tenant-a");
+        projection.Enabled.ShouldBeTrue();
+        projection.Watermark.ShouldBe(2);
+        projection.LastEventTimestamp.ShouldBe(EventTimestamp);
+        projection.Principals.Keys.ShouldContain("user-a");
+        projection.Principals["user-a"].Role.ShouldBe("TenantOwner");
+    }
+
+    [Fact]
+    public async Task DuplicateMessageWithDivergentMetadataShouldRecordReplayConflictWithoutAdvancingWatermark()
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        FolderTenantAccessHandler handler = CreateHandler(store, EventTimestamp.AddMinutes(1));
+        string messageId = "01J00000000000000000000010";
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantCreated, "tenant-a", messageId, 1, payloadFingerprint: "created"),
+            cancellationToken);
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantDisabled, "tenant-a", messageId, 2, payloadFingerprint: "disabled"),
+            cancellationToken);
+
+        FolderTenantAccessProjection? projection = await store.GetAsync("tenant-a", cancellationToken);
+
+        projection.ShouldNotBeNull();
+        projection.Watermark.ShouldBe(1);
+        projection.ReplayConflict.ShouldBeTrue();
+        projection.Enabled.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task NonFoldersConfigurationShouldBeIgnoredAndRemovedFoldersConfigurationShouldBeTombstoned()
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        FolderTenantAccessHandler handler = CreateHandler(store, EventTimestamp.AddMinutes(1));
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantCreated, "tenant-a", "01J00000000000000000000020", 1),
+            cancellationToken);
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantConfigurationSet, "tenant-a", "01J00000000000000000000021", 2, configurationKey: "billing.plan"),
+            cancellationToken);
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantConfigurationSet, "tenant-a", "01J00000000000000000000022", 3, configurationKey: "folders.create.enabled"),
+            cancellationToken);
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantConfigurationRemoved, "tenant-a", "01J00000000000000000000023", 4, configurationKey: "folders.create.enabled"),
+            cancellationToken);
+
+        FolderTenantAccessProjection? projection = await store.GetAsync("tenant-a", cancellationToken);
+
+        projection.ShouldNotBeNull();
+        projection.ConfigurationKeys.ShouldNotContain("billing.plan");
+        projection.ConfigurationKeys.ShouldNotContain("folders.create.enabled");
+        projection.RemovedConfigurationKeys.ShouldContain("folders.create.enabled");
+    }
+
+    [Fact]
+    public async Task FutureTimestampShouldMarkProjectionMalformedAndFailClosed()
+    {
+        DateTimeOffset now = EventTimestamp;
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        FolderTenantAccessHandler handler = CreateHandler(store, now);
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+
+        await handler.HandleAsync(
+            Event(FolderTenantAccessEventKind.TenantCreated, "tenant-a", "01J00000000000000000000030", 1, timestamp: now.AddMinutes(5)),
+            cancellationToken);
+
+        FolderTenantAccessProjection? projection = await store.GetAsync("tenant-a", cancellationToken);
+
+        projection.ShouldNotBeNull();
+        projection.MalformedEvidence.ShouldBeTrue();
+        projection.Watermark.ShouldBe(0);
+    }
+
+    private static FolderTenantAccessEvent Event(
+        FolderTenantAccessEventKind kind,
+        string tenantId,
+        string messageId,
+        long sequenceNumber,
+        string? principalId = null,
+        string? role = null,
+        string? configurationKey = null,
+        string? payloadFingerprint = null,
+        DateTimeOffset? timestamp = null)
+        => new(
+            kind,
+            tenantId,
+            messageId,
+            sequenceNumber,
+            timestamp ?? EventTimestamp,
+            "correlation-a",
+            principalId,
+            role,
+            ConfigurationKey: configurationKey,
+            PayloadFingerprint: payloadFingerprint ?? tenantId);
+}
+
+ succeeded in 750ms:
+using Hexalith.Folders.Authorization;
+
+using Microsoft.Extensions.Logging;
+
+namespace Hexalith.Folders.Projections.TenantAccess;
+
+public sealed class FolderTenantAccessHandler(
+    IFolderTenantAccessProjectionStore store,
+    IUtcClock clock,
+    TenantAccessOptions options,
+    ILogger<FolderTenantAccessHandler>? logger = null)
+{
+    public async Task HandleAsync(FolderTenantAccessEvent @event, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(@event);
+
+        if (string.IsNullOrWhiteSpace(@event.TenantId))
+        {
+            return;
+        }
+
+        int attempts = Math.Max(1, options.ConcurrencyRetryAttempts);
+        for (int attempt = 0; attempt < attempts; attempt++)
+        {
+            try
+            {
+                await ApplyOnceAsync(@event, cancellationToken).ConfigureAwait(false);
+                return;
+            }
+            catch (TenantAccessConcurrencyException) when (attempt + 1 < attempts)
+            {
+                logger?.LogDebug(
+                    "Optimistic concurrency conflict applying tenant event {EventKind} for tenant {TenantId}; retry {Attempt} of {Attempts}.",
+                    @event.Kind, @event.TenantId, attempt + 2, attempts);
+            }
+        }
+    }
+
+    private async Task ApplyOnceAsync(FolderTenantAccessEvent @event, CancellationToken cancellationToken)
+    {
+        FolderTenantAccessProjection projection = await store.GetAsync(@event.TenantId, cancellationToken).ConfigureAwait(false)
+            ?? new FolderTenantAccessProjection { TenantId = @event.TenantId };
+
+        if (IsMalformed(@event))
+        {
+            projection.MalformedEvidence = true;
+            await store.SaveAsync(projection, cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
+        FolderTenantEventEvidence evidence = CreateEvidence(@event);
+        if (projection.ProcessedMessages.TryGetValue(@event.MessageId, out FolderTenantEventEvidence? existing))
+        {
+            if (existing != evidence)
+            {
+                projection.ReplayConflict = true;
+                await store.SaveAsync(projection, cancellationToken).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
+        if (@event.SequenceNumber <= projection.Watermark)
+        {
+            // Legitimate out-of-order at-least-once delivery: a newer-sequence event already advanced the
+            // watermark. Dropping silently (rather than flagging MalformedEvidence) keeps the tenant healthy
+            // through normal pub/sub redelivery patterns.
+            logger?.LogDebug(
+                "Dropping out-of-order tenant event {EventKind} for tenant {TenantId}: sequence {Sequence} <= watermark {Watermark}.",
+                @event.Kind, @event.TenantId, @event.SequenceNumber, projection.Watermark);
+            return;
+        }
+
+        Apply(projection, @event);
+        projection.ProcessedMessages[@event.MessageId] = evidence;
+        projection.Watermark = @event.SequenceNumber;
+        projection.LastEventTimestamp = @event.Timestamp;
+        projection.ProjectionWatermark = $"{@event.TenantId}:{@event.SequenceNumber}";
+
+        await store.SaveAsync(projection, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static void Apply(FolderTenantAccessProjection projection, FolderTenantAccessEvent @event)
+    {
+        switch (@event.Kind)
+        {
+            case FolderTenantAccessEventKind.TenantCreated:
+            case FolderTenantAccessEventKind.TenantEnabled:
+                projection.Enabled = true;
+                break;
+            case FolderTenantAccessEventKind.TenantDisabled:
+                projection.Enabled = false;
+                break;
+            case FolderTenantAccessEventKind.UserAddedToTenant:
+            case FolderTenantAccessEventKind.UserRoleChanged:
+                if (!string.IsNullOrWhiteSpace(@event.PrincipalId) && !string.IsNullOrWhiteSpace(@event.Role))
+                {
+                    projection.Principals[@event.PrincipalId] = new FolderTenantPrincipalEvidence(@event.PrincipalId, @event.Role);
+                }
+
+                break;
+            case FolderTenantAccessEventKind.UserRemovedFromTenant:
+                if (!string.IsNullOrWhiteSpace(@event.PrincipalId))
+                {
+                    _ = projection.Principals.Remove(@event.PrincipalId);
+                }
+
+                break;
+            case FolderTenantAccessEventKind.TenantConfigurationSet:
+                AddConfigurationKey(projection, @event.ConfigurationKey);
+                break;
+            case FolderTenantAccessEventKind.TenantConfigurationRemoved:
+                RemoveConfigurationKey(projection, @event.ConfigurationKey);
+                break;
+            case FolderTenantAccessEventKind.TenantUpdated:
+            default:
+                break;
+        }
+    }
+
+    private static void AddConfigurationKey(FolderTenantAccessProjection projection, string? key)
+    {
+        if (key is null || !IsFoldersConfigurationKey(key))
+        {
+            return;
+        }
+
+        _ = projection.ConfigurationKeys.Add(key);
+        _ = projection.RemovedConfigurationKeys.Remove(key);
+    }
+
+    private static void RemoveConfigurationKey(FolderTenantAccessProjection projection, string? key)
+    {
+        if (key is null || !IsFoldersConfigurationKey(key))
+        {
+            return;
+        }
+
+        _ = projection.ConfigurationKeys.Remove(key);
+        _ = projection.RemovedConfigurationKeys.Add(key);
+    }
+
+    private bool IsMalformed(FolderTenantAccessEvent @event)
+        => string.IsNullOrWhiteSpace(@event.MessageId)
+            || @event.SequenceNumber <= 0
+            || @event.Timestamp - clock.UtcNow > options.ClockSkewTolerance
+            || ((@event.Kind is FolderTenantAccessEventKind.UserAddedToTenant
+                or FolderTenantAccessEventKind.UserRemovedFromTenant
+                or FolderTenantAccessEventKind.UserRoleChanged)
+                && string.IsNullOrWhiteSpace(@event.PrincipalId));
+
+    private static bool IsFoldersConfigurationKey(string key)
+        => key.StartsWith("folders.", StringComparison.Ordinal);
+
+    private static FolderTenantEventEvidence CreateEvidence(FolderTenantAccessEvent @event)
+        => new(
+            @event.MessageId,
+            @event.TenantId,
+            @event.Kind.ToString(),
+            @event.SequenceNumber,
+            @event.Timestamp,
+            @event.PayloadFingerprint);
+}
+
+ succeeded in 869ms:
+namespace Hexalith.Folders.Projections.TenantAccess;
+
+public sealed record FolderTenantAccessEvent(
+    FolderTenantAccessEventKind Kind,
+    string TenantId,
+    string MessageId,
+    long SequenceNumber,
+    DateTimeOffset Timestamp,
+    string CorrelationId,
+    string? PrincipalId = null,
+    string? Role = null,
+    string? PreviousRole = null,
+    string? ConfigurationKey = null,
+    string PayloadFingerprint = "");
+
+ succeeded in 1069ms:
+using Dapr;
+
+using Hexalith.Folders.Server;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+
+using Shouldly;
+using Xunit;
+
+namespace Hexalith.Folders.Server.Tests;
+
+public sealed class ServerEndpointRegistrationTests
+{
+    [Fact]
+    public void FoldersServerModuleShouldExposeStableDomainAndTenantRoutes()
+    {
+        FoldersServerModule.ProcessRoute.ShouldBe("/process");
+        FoldersServerModule.ProjectRoute.ShouldBe("/project");
+        FoldersServerModule.TenantEventsRoute.ShouldBe("/tenants/events");
+        FoldersServerModule.TenantEventsPubSubName.ShouldBe("pubsub");
+        FoldersServerModule.TenantEventsTopicName.ShouldBe("system.tenants.events");
+        FoldersServerModule.Description.ShouldContain("server scaffold");
+    }
+
+    [Fact]
+    public void MapFoldersServerEndpointsShouldRegisterDomainServiceAndTenantSubscriptionRoutes()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
+        WebApplication app = builder.Build();
+
+        app.UseCloudEvents();
+        app.MapSubscribeHandler();
+        app.MapFoldersServerEndpoints();
+
+        string[] routes = ((IEndpointRouteBuilder)app)
+            .DataSources
+            .SelectMany(static source => source.Endpoints)
+            .OfType<RouteEndpoint>()
+            .Select(static endpoint => endpoint.RoutePattern.RawText ?? string.Empty)
+            .ToArray();
+
+        routes.ShouldContain("/");
+        routes.ShouldContain("/process");
+        routes.ShouldContain("/project");
+        routes.ShouldContain("/api/v1/folders/{folderId}/archive");
+        routes.ShouldContain("/tenants/events");
+        routes.ShouldContain("dapr/subscribe");
+    }
+
+    [Fact]
+    public void TenantEventsRouteShouldCarryExpectedTopicMetadata()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
+        WebApplication app = builder.Build();
+
+        app.UseCloudEvents();
+        app.MapSubscribeHandler();
+        app.MapFoldersServerEndpoints();
+
+        RouteEndpoint? tenantEndpoint = ((IEndpointRouteBuilder)app)
+            .DataSources
+            .SelectMany(static source => source.Endpoints)
+            .OfType<RouteEndpoint>()
+            .FirstOrDefault(static endpoint => string.Equals(endpoint.RoutePattern.RawText, "/tenants/events", StringComparison.Ordinal));
+
+        tenantEndpoint.ShouldNotBeNull();
+        ITopicMetadata? topicMetadata = tenantEndpoint.Metadata.GetMetadata<ITopicMetadata>();
+        topicMetadata.ShouldNotBeNull();
+        topicMetadata.PubsubName.ShouldBe(FoldersServerModule.TenantEventsPubSubName);
+        topicMetadata.Name.ShouldBe(FoldersServerModule.TenantEventsTopicName);
+    }
+
+    [Fact]
+    public async Task ProjectRouteShouldReturn501NotImplemented()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
+        });
+        builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
+        WebApplication app = builder.Build();
+
+        app.UseCloudEvents();
+        app.MapSubscribeHandler();
+        app.MapFoldersServerEndpoints();
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using StringContent body = new("{}", System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(FoldersServerModule.ProjectRoute, body, TestContext.Current.CancellationToken);
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotImplemented);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken);
+        }
+    }
+}
+
+ succeeded in 1202ms:
+namespace Hexalith.Folders.Projections.TenantAccess;
+
+public sealed class FolderTenantAccessProjection
+{
+    public string TenantId { get; init; } = string.Empty;
+
+    public bool Enabled { get; set; }
+
+    public Dictionary<string, FolderTenantPrincipalEvidence> Principals { get; init; } = new(StringComparer.Ordinal);
+
+    public HashSet<string> ConfigurationKeys { get; init; } = new(StringComparer.Ordinal);
+
+    public HashSet<string> RemovedConfigurationKeys { get; init; } = new(StringComparer.Ordinal);
+
+    public Dictionary<string, FolderTenantEventEvidence> ProcessedMessages { get; init; } = new(StringComparer.Ordinal);
+
+    public long Watermark { get; set; }
+
+    public string ProjectionWatermark { get; set; } = string.Empty;
+
+    public DateTimeOffset? LastEventTimestamp { get; set; }
+
+    public bool ReplayConflict { get; set; }
+
+    public bool MalformedEvidence { get; set; }
+
+    /// <summary>
+    /// Optimistic concurrency token. <see cref="IFolderTenantAccessProjectionStore.SaveAsync"/> rejects writes
+    /// whose <see cref="Version"/> does not match the currently-stored version and increments the stored version
+    /// on success.
+    /// </summary>
+    public long Version { get; set; }
+
+    public FolderTenantAccessProjection Clone()
+        => new()
+        {
+            TenantId = TenantId,
+            Enabled = Enabled,
+            Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(Principals, StringComparer.Ordinal),
+            ConfigurationKeys = new HashSet<string>(ConfigurationKeys, StringComparer.Ordinal),
+            RemovedConfigurationKeys = new HashSet<string>(RemovedConfigurationKeys, StringComparer.Ordinal),
+            ProcessedMessages = new Dictionary<string, FolderTenantEventEvidence>(ProcessedMessages, StringComparer.Ordinal),
+            Watermark = Watermark,
+            ProjectionWatermark = ProjectionWatermark,
+            LastEventTimestamp = LastEventTimestamp,
+            ReplayConflict = ReplayConflict,
+            MalformedEvidence = MalformedEvidence,
+            Version = Version,
+        };
+}
+
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders.Workers\\Hexalith.Folders.Workers.csproj" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders.Server\\Hexalith.Folders.Server.csproj" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command 'rg "class InMemoryFolderTenantAccessProjectionStore|AddFoldersTenantAccess|TenantAccessOptions|IFolderTenantAccessProjectionStore|TenantAccessAut
+horizer" -n src tests' in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath tests\\Hexalith.Folders.Workers.Tests\\Hexalith.Folders.Workers.Tests.csproj" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\Hexalith.Folders.csproj" in D:\Hexalith.Folders
+ succeeded in 471ms:
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <EnableContainer>true</EnableContainer>
+    <ContainerRepository>folders</ContainerRepository>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.Server.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.IntegrationTests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.ServiceDefaults\Hexalith.Folders.ServiceDefaults.csproj" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Client\Hexalith.EventStore.Client.csproj" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Contracts\Hexalith.EventStore.Contracts.csproj" />
+    <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants.Client\Hexalith.Tenants.Client.csproj" />
+  </ItemGroup>
+</Project>
+
+ succeeded in 632ms:
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.Workers.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+</Project>
+
+ succeeded in 750ms:
+src\Hexalith.Folders.Workers\Program.cs:7:builder.Services.AddFoldersTenantAccess();
+tests\Hexalith.Folders.IntegrationTests\ArchiveFolderProcessWiringTests.cs:243:        builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
+tests\Hexalith.Folders.IntegrationTests\ArchiveFolderProcessWiringTests.cs:244:        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(tenantStore);
+tests\Hexalith.Folders.Tests\Queries\Folders\FolderLifecycleStatusTestSupport.cs:18:        IFolderTenantAccessProjectionStore tenantStore,
+tests\Hexalith.Folders.Tests\Queries\Folders\FolderLifecycleStatusTestSupport.cs:25:            new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
+tests\Hexalith.Folders.Tests\Queries\Folders\FolderLifecycleStatusTestSupport.cs:167:    : IFolderTenantAccessProjectionStore
+tests\Hexalith.Folders.Tests\Projections\TenantAccess\FolderTenantAccessHandlerTests.cs:12:    private static FolderTenantAccessHandler CreateHandler(IFolderTenantAccessProjectionStore store, DateTime
+Offset now)
+tests\Hexalith.Folders.Tests\Projections\TenantAccess\FolderTenantAccessHandlerTests.cs:13:        => new(store, new FixedUtcClock(now), new TenantAccessOptions());
+tests\Hexalith.Folders.Server.Tests\FoldersTenantEventHandlerTests.cs:20:        FolderTenantAccessHandler projectionHandler = new(store, new FixedUtcClock(Now), new TenantAccessOptions());
+tests\Hexalith.Folders.Server.Tests\FoldersTenantEventHandlerTests.cs:44:        FolderTenantAccessHandler projectionHandler = new(store, new FixedUtcClock(Now.AddMinutes(1)), new TenantAccessOptions(
+));
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:8:public sealed class TenantAccessAuthorizerTests
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:18:        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:43:        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:65:        (TenantAccessAuthorizer Authorizer, TenantAccessOutcome Expected)[] cases =
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:73:        foreach ((TenantAccessAuthorizer authorizer, TenantAccessOutcome expected) in cases)
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:89:        TenantAccessAuthorizer authorizer = CreateAuthorizer(store);
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:101:    private static TenantAccessAuthorizer CreateAuthorizer(IFolderTenantAccessProjectionStore store)
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:102:        => new(store, new FixedUtcClock(Now), new TenantAccessOptions());
+tests\Hexalith.Folders.Tests\Authorization\TenantAccessAuthorizerTests.cs:129:    private sealed class ThrowingFolderTenantAccessProjectionStore : IFolderTenantAccessProjectionStore
+tests\Hexalith.Folders.Server.Tests\FoldersDomainServiceRequestHandlerTests.cs:151:        IFolderTenantAccessProjectionStore store,
+tests\Hexalith.Folders.Server.Tests\FoldersDomainServiceRequestHandlerTests.cs:154:            new TenantAccessAuthorizer(store, new FixedUtcClock(Now), new TenantAccessOptions()),
+tests\Hexalith.Folders.Server.Tests\FolderLifecycleStatusEndpointTests.cs:23:        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore("tenant-a", "user-a"));
+tests\Hexalith.Folders.Server.Tests\FolderLifecycleStatusEndpointTests.cs:235:        IFolderTenantAccessProjectionStore tenantStore,
+tests\Hexalith.Folders.Tests\Authorization\LayeredFolderAuthorizationServiceTests.cs:395:        IFolderTenantAccessProjectionStore tenantStore,
+tests\Hexalith.Folders.Tests\Authorization\LayeredFolderAuthorizationServiceTests.cs:400:            new TenantAccessAuthorizer(
+tests\Hexalith.Folders.Tests\Authorization\LayeredFolderAuthorizationServiceTests.cs:403:                new TenantAccessOptions
+tests\Hexalith.Folders.Tests\Authorization\LayeredFolderAuthorizationServiceTests.cs:498:    private sealed class RecordingTenantAccessProjectionStore(bool throwOnGet = false) : IFolderTenantAccessPro
+jectionStore
+tests\Hexalith.Folders.Server.Tests\EffectivePermissionsEndpointTests.cs:23:        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore("tenant-a", "user-a"));
+tests\Hexalith.Folders.Server.Tests\EffectivePermissionsEndpointTests.cs:147:        IFolderTenantAccessProjectionStore tenantStore,
+tests\Hexalith.Folders.Tests\Authorization\EffectivePermissionsTestSupport.cs:11:        IFolderTenantAccessProjectionStore tenantStore,
+tests\Hexalith.Folders.Tests\Authorization\EffectivePermissionsTestSupport.cs:14:            new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
+tests\Hexalith.Folders.Tests\Authorization\EffectivePermissionsTestSupport.cs:83:    : IFolderTenantAccessProjectionStore
+src\Hexalith.Folders\Projections\TenantAccess\FolderTenantAccessHandler.cs:8:    IFolderTenantAccessProjectionStore store,
+src\Hexalith.Folders\Projections\TenantAccess\FolderTenantAccessHandler.cs:10:    TenantAccessOptions options,
+src\Hexalith.Folders\Projections\TenantAccess\IFolderTenantAccessProjectionStore.cs:3:public interface IFolderTenantAccessProjectionStore
+src\Hexalith.Folders\Projections\TenantAccess\TenantAccessConcurrencyException.cs:4:/// Thrown by <see cref="IFolderTenantAccessProjectionStore.SaveAsync"/> when the projection's
+src\Hexalith.Folders\Projections\TenantAccess\FolderTenantAccessProjection.cs:28:    /// Optimistic concurrency token. <see cref="IFolderTenantAccessProjectionStore.SaveAsync"/> rejects writes
+src\Hexalith.Folders\Authorization\EffectivePermissionsQueryHandler.cs:6:    TenantAccessAuthorizer tenantAccessAuthorizer,
+src\Hexalith.Folders\Projections\TenantAccess\InMemoryFolderTenantAccessProjectionStore.cs:5:public sealed class InMemoryFolderTenantAccessProjectionStore : IFolderTenantAccessProjectionStore
+src\Hexalith.Folders\FoldersServiceCollectionExtensions.cs:14:    public static IServiceCollection AddFoldersTenantAccess(this IServiceCollection services)
+src\Hexalith.Folders\FoldersServiceCollectionExtensions.cs:18:        services.AddOptions<TenantAccessOptions>().BindConfiguration(TenantAccessOptions.SectionName);
+src\Hexalith.Folders\FoldersServiceCollectionExtensions.cs:20:        services.TryAddSingleton<IFolderTenantAccessProjectionStore, InMemoryFolderTenantAccessProjectionStore>();
+src\Hexalith.Folders\FoldersServiceCollectionExtensions.cs:21:        services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<TenantAccessOptions>>().Value);
+src\Hexalith.Folders\FoldersServiceCollectionExtensions.cs:22:        services.TryAddSingleton<TenantAccessAuthorizer>();
+src\Hexalith.Folders\FoldersServiceCollectionExtensions.cs:70:        services.AddFoldersTenantAccess();
+src\Hexalith.Folders\Authorization\TenantAccessOptions.cs:3:public sealed class TenantAccessOptions
+src\Hexalith.Folders\Authorization\TenantAccessAuthorizer.cs:5:public sealed class TenantAccessAuthorizer(
+src\Hexalith.Folders\Authorization\TenantAccessAuthorizer.cs:6:    IFolderTenantAccessProjectionStore store,
+src\Hexalith.Folders\Authorization\TenantAccessAuthorizer.cs:8:    TenantAccessOptions options)
+src\Hexalith.Folders\Authorization\LayeredFolderAuthorizationService.cs:6:    TenantAccessAuthorizer tenantAccessAuthorizer,
+
+ succeeded in 922ms:
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Workers\Hexalith.Folders.Workers.csproj" />
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
+
+ succeeded in 1085ms:
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexalith.Folders.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+</Project>
+
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "rg \"class Tenant.*Options|PubSubName|TopicName|MapTenantEventSubscription\" Hexalith.Tenants\\src -n" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "rg \"record .*Tenant|enum TenantRole|TenantConfigurationSet|MapTenantEventSubscription|AddHexalithTenants|class TenantEvent\" Hexalith.Tenants\\s
+rc -n" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\FoldersServiceCollectionExtensions.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\Authorization\\TenantAccessOptions.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath src\\Hexalith.Folders\\Projections\\TenantAccess\\InMemoryFolderTenantAccessProjectionStore.cs" in D:\Hexalith.Folders
+ succeeded in 412ms:
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Subscription\TenantEventSubscriptionEndpoints.cs:22:    public static IEndpointRouteBuilder MapTenantEventSubscription(this IEndpointRouteBuilder endpoints
+) {
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Subscription\TenantEventSubscriptionEndpoints.cs:44:            }).WithTopic(options.PubSubName, options.TopicName);
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Configuration\HexalithTenantsOptions.cs:4:    public string PubSubName { get; set; } = "pubsub";
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Configuration\HexalithTenantsOptions.cs:6:    public string TopicName { get; set; } = "system.tenants.events";
+Hexalith.Tenants\src\Hexalith.Tenants\appsettings.json:21:      "PubSubName": "pubsub"
+
+ succeeded in 561ms:
+Hexalith.Tenants\src\Hexalith.Tenants.Testing\Projections\InMemoryTenantProjection.cs:53:            case TenantConfigurationSet e:
+Hexalith.Tenants\src\Hexalith.Tenants.Testing\Fakes\InMemoryTenantService.cs:283:                case TenantConfigurationSet e:
+Hexalith.Tenants\src\Hexalith.Tenants.Aspire\HexalithTenantsResources.cs:8:/// Contains the resource builders created by <see cref="HexalithTenantsExtensions.AddHexalithTenants"/>
+Hexalith.Tenants\src\Hexalith.Tenants.Aspire\HexalithTenantsResources.cs:14:public record HexalithTenantsResources(
+Hexalith.Tenants\src\Hexalith.Tenants.Aspire\HexalithTenantsExtensions.cs:25:    public static HexalithTenantsResources AddHexalithTenants(
+Hexalith.Tenants\src\Hexalith.Tenants.AppHost\Program.cs:37:HexalithTenantsResources tenantsResources = builder.AddHexalithTenants(tenants, accessControlConfigPath);
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Handlers\TenantEventContext.cs:11:public record TenantEventContext(
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Handlers\TenantProjectionEventHandler.cs:21:    ITenantEventHandler<TenantConfigurationSet>,
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Handlers\TenantProjectionEventHandler.cs:99:    public Task HandleAsync(TenantConfigurationSet @event, TenantEventContext context, CancellationToken cancel
+lationToken = default)
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Subscription\TenantEventEnvelope.cs:17:public record TenantEventEnvelope(
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Subscription\TenantEventSubscriptionEndpoints.cs:14:public static class TenantEventSubscriptionEndpoints {
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Subscription\TenantEventSubscriptionEndpoints.cs:22:    public static IEndpointRouteBuilder MapTenantEventSubscription(this IEndpointRouteBuilder endpoints
+) {
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Subscription\TenantEventProcessor.cs:17:public class TenantEventProcessor {
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Registration\TenantServiceCollectionExtensions.cs:18:    private sealed class TenantEventInfrastructureMarker;
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Registration\TenantServiceCollectionExtensions.cs:25:    public static IServiceCollection AddHexalithTenants(this IServiceCollection services) {
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Registration\TenantServiceCollectionExtensions.cs:46:    public static IServiceCollection AddHexalithTenants(
+Hexalith.Tenants\src\Hexalith.Tenants.Client\Registration\TenantServiceCollectionExtensions.cs:97:        RegisterEventHandler<TenantConfigurationSet, TenantProjectionEventHandler>(services);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Queries\TenantAuditEntry.cs:8:public sealed record TenantAuditEntry(
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Queries\TenantDetail.cs:8:public sealed record TenantDetail(
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Queries\UserTenantMembership.cs:8:public sealed record UserTenantMembership(string TenantId, string Name, TenantStatus Status, TenantRole Role);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Queries\TenantSummary.cs:8:public sealed record TenantSummary(string TenantId, string Name, TenantStatus Status);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Queries\TenantMember.cs:8:public sealed record TenantMember(string UserId, TenantRole Role);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Hexalith.Tenants.Contracts.csproj.lscache:89: TenantConfigurationSet.cs
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Enums\TenantRole.cs:3:public enum TenantRole {
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\AddUserToTenant.cs:5:public record AddUserToTenant(string TenantId, string UserId, TenantRole Role);
+Hexalith.Tenants\src\Hexalith.Tenants\Actors\TenantsProjectionActor.cs:582:    private sealed record TenantAuditQueryPayload(
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\ChangeUserRole.cs:5:public record ChangeUserRole(string TenantId, string UserId, TenantRole NewRole);
+Hexalith.Tenants\src\Hexalith.Tenants.Server\Aggregates\TenantState.cs:58:    public void Apply(TenantConfigurationSet e) {
+Hexalith.Tenants\src\Hexalith.Tenants.Server\Aggregates\TenantAggregate.cs:136:            _ => DomainResult.Success([new TenantConfigurationSet(command.TenantId, command.Key, command.Value)]),
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\CreateTenant.cs:3:public record CreateTenant(string TenantId, string Name, string? Description);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\TenantConfigurationRemoved.cs:3:public record TenantConfigurationRemoved(string TenantId, string Key) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\TenantConfigurationSet.cs:3:public record TenantConfigurationSet(string TenantId, string Key, string Value) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\TenantCreated.cs:3:public record TenantCreated(string TenantId, string Name, string? Description, DateTimeOffset CreatedAt) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\GlobalAdministratorSet.cs:3:public record GlobalAdministratorSet(string TenantId, string UserId) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\DisableTenant.cs:3:public record DisableTenant(string TenantId);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\TenantEnabled.cs:3:public record TenantEnabled(string TenantId, DateTimeOffset EnabledAt) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\GlobalAdministratorRemoved.cs:3:public record GlobalAdministratorRemoved(string TenantId, string UserId) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Server\Projections\TenantIndexEntry.cs:5:public sealed record TenantIndexEntry(string Name, TenantStatus Status);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\TenantDisabled.cs:3:public record TenantDisabled(string TenantId, DateTimeOffset DisabledAt) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants\Configuration\TenantBootstrapOptions.cs:3:public record TenantBootstrapOptions {
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\EnableTenant.cs:3:public record EnableTenant(string TenantId);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\TenantUpdated.cs:3:public record TenantUpdated(string TenantId, string Name, string? Description) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\RemoveTenantConfiguration.cs:3:public record RemoveTenantConfiguration(string TenantId, string Key);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\RemoveUserFromTenant.cs:3:public record RemoveUserFromTenant(string TenantId, string UserId);
+Hexalith.Tenants\src\Hexalith.Tenants.Server\Projections\TenantAuditReadModel.cs:78:            nameof(TenantConfigurationSet) => CreateAdministrativeEntry(evt, Deserialize<TenantConfigurationSet>(evt
+.Payload), eventType, e => new Dictionary<string, string>(StringComparer.Ordinal) {
+Hexalith.Tenants\src\Hexalith.Tenants.Server\Projections\TenantAuditReadModel.cs:147:            TenantConfigurationSet e => e.TenantId,
+Hexalith.Tenants\src\Hexalith.Tenants\Queries\TenantQueryPaginationPayloadParser.cs:52:internal sealed record TenantQueryPaginationPayload(string? Cursor, int PageSize);
+Hexalith.Tenants\src\Hexalith.Tenants.Server\Projections\TenantReadModel.cs:55:    public void Apply(TenantConfigurationSet e) {
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\UserRoleChanged.cs:5:public record UserRoleChanged(string TenantId, string UserId, TenantRole OldRole, TenantRole NewRole) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\UserAddedToTenant.cs:5:public record UserAddedToTenant(string TenantId, string UserId, TenantRole Role) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\UserRemovedFromTenant.cs:3:public record UserRemovedFromTenant(string TenantId, string UserId) : IEventPayload;
+Hexalith.Tenants\src\Hexalith.Tenants\Queries\TenantQueryCursorCodec.cs:134:    private sealed record TenantQueryCursorPayload(
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\ConfigurationLimitExceededRejection.cs:3:public record ConfigurationLimitExceededRejection(string TenantId, string LimitType, int Curr
+entCount, int MaxAllowed) : IRejectionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\UpdateTenant.cs:3:public record UpdateTenant(string TenantId, string Name, string? Description);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Commands\SetTenantConfiguration.cs:3:public record SetTenantConfiguration(string TenantId, string Key, string Value);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\GlobalAdminAlreadyBootstrappedRejection.cs:3:public record GlobalAdminAlreadyBootstrappedRejection(string TenantId) : IRejectionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\LastGlobalAdministratorRejection.cs:3:public record LastGlobalAdministratorRejection(string TenantId, string UserId) : IRejectionEvent
+;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\RoleEscalationRejection.cs:5:public record RoleEscalationRejection(string TenantId, string UserId, TenantRole AttemptedRole) : IReject
+ionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\TenantAlreadyExistsRejection.cs:3:public record TenantAlreadyExistsRejection(string TenantId) : IRejectionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants\Projections\TenantProjectionHandler.cs:206:        else if (name.EndsWith(nameof(TenantConfigurationSet), StringComparison.Ordinal)) {
+Hexalith.Tenants\src\Hexalith.Tenants\Projections\TenantProjectionHandler.cs:207:            TenantConfigurationSet? e = JsonSerializer.Deserialize<TenantConfigurationSet>(evt.Payload, s_options);
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\TenantDisabledRejection.cs:3:public record TenantDisabledRejection(string TenantId) : IRejectionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\TenantNotFoundRejection.cs:3:public record TenantNotFoundRejection(string TenantId) : IRejectionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\UserAlreadyInTenantRejection.cs:5:public record UserAlreadyInTenantRejection(string TenantId, string UserId, TenantRole ExistingRole)
+: IRejectionEvent;
+Hexalith.Tenants\src\Hexalith.Tenants.Contracts\Events\Rejections\UserNotInTenantRejection.cs:3:public record UserNotInTenantRejection(string TenantId, string UserId) : IRejectionEvent;
+
+ succeeded in 724ms:
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Queries.Folders;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+
+namespace Hexalith.Folders;
+
+public static class FoldersServiceCollectionExtensions
+{
+    public static IServiceCollection AddFoldersTenantAccess(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddOptions<TenantAccessOptions>().BindConfiguration(TenantAccessOptions.SectionName);
+        services.TryAddSingleton<IUtcClock, SystemUtcClock>();
+        services.TryAddSingleton<IFolderTenantAccessProjectionStore, InMemoryFolderTenantAccessProjectionStore>();
+        services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<TenantAccessOptions>>().Value);
+        services.TryAddSingleton<TenantAccessAuthorizer>();
+        services.TryAddSingleton<FolderTenantAccessHandler>();
+
+        return services;
+    }
+
+    // Opt-in in-memory IFolderRepository registration. Production AppHosts MUST register
+    // a real EventStore-backed repository instead; integration tests and dev hosts call
+    // this method explicitly so a production composition that forgets to register a
+    // repository fails loud at startup rather than silently running on a dictionary.
+    // Also ensures TimeProvider.System is available — the in-memory repository needs one
+    // for projection observed-at timestamps and the constructor would otherwise resolve a
+    // different default depending on whether the host registered one.
+    public static IServiceCollection AddInMemoryFolderRepository(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddSingleton<IFolderRepository, InMemoryFolderRepository>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersEffectivePermissions(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddSingleton<EffectivePermissionsQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersLifecycleStatus(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddSingleton<IFolderLifecycleStatusReadModel, InMemoryFolderLifecycleStatusReadModel>();
+        services.TryAddSingleton<FolderLifecycleStatusQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersLayeredAuthorization(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersTenantAccess();
+        services.AddOptions<DaprPolicyEvidenceOptions>().BindConfiguration(DaprPolicyEvidenceOptions.SectionName);
+        services.TryAddSingleton<IEffectivePermissionsReadModel, InMemoryEffectivePermissionsReadModel>();
+        services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<DaprPolicyEvidenceOptions>>().Value);
+        services.TryAddSingleton<IFolderPermissionEvidenceProvider, EffectivePermissionsFolderPermissionEvidenceProvider>();
+        services.TryAddSingleton<IEventStoreAuthorizationValidator, DenyAllEventStoreAuthorizationValidator>();
+        services.TryAddSingleton<IDaprPolicyEvidenceProvider, ConfigurationDaprPolicyEvidenceProvider>();
+        services.TryAddSingleton<LayeredFolderAuthorizationService>();
+
+        return services;
+    }
+}
+
+ succeeded in 915ms:
+namespace Hexalith.Folders.Authorization;
+
+public sealed class TenantAccessOptions
+{
+    public const string SectionName = "Folders:TenantAccess";
+
+    public TimeSpan MutationFreshnessBudget { get; set; } = TimeSpan.FromMinutes(5);
+
+    public TimeSpan DiagnosticStalenessBudget { get; set; } = TimeSpan.FromMinutes(30);
+
+    /// <summary>
+    /// Tolerance applied when comparing an event's <c>Timestamp</c> against the local UTC clock.
+    /// A producer clock running slightly ahead of the projection host is normal; flagging any
+    /// future-dated event as malformed would brick the tenant on benign drift.
+    /// </summary>
+    public TimeSpan ClockSkewTolerance { get; set; } = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// Number of read-modify-write attempts the projection handler will make before surfacing
+    /// a <see cref="Hexalith.Folders.Projections.TenantAccess.TenantAccessConcurrencyException"/>.
+    /// </summary>
+    public int ConcurrencyRetryAttempts { get; set; } = 3;
+}
+
+ succeeded in 982ms:
+using System.Collections.Concurrent;
+
+namespace Hexalith.Folders.Projections.TenantAccess;
+
+public sealed class InMemoryFolderTenantAccessProjectionStore : IFolderTenantAccessProjectionStore
+{
+    private readonly ConcurrentDictionary<string, FolderTenantAccessProjection> _projections = new(StringComparer.Ordinal);
+    private readonly Lock _saveLock = new();
+
+    public Task<FolderTenantAccessProjection?> GetAsync(string tenantId, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        _ = _projections.TryGetValue(tenantId, out FolderTenantAccessProjection? projection);
+        return Task.FromResult(projection?.Clone());
+    }
+
+    public Task SaveAsync(FolderTenantAccessProjection projection, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(projection);
+        ArgumentException.ThrowIfNullOrWhiteSpace(projection.TenantId);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        lock (_saveLock)
+        {
+            long currentVersion = _projections.TryGetValue(projection.TenantId, out FolderTenantAccessProjection? existing)
+                ? existing.Version
+                : 0L;
+
+            if (projection.Version != currentVersion)
+            {
+                throw new TenantAccessConcurrencyException(projection.TenantId, projection.Version, currentVersion);
+            }
+
+            FolderTenantAccessProjection snapshot = projection.Clone();
+            snapshot.Version = currentVersion + 1L;
+            _projections[projection.TenantId] = snapshot;
+        }
+
+        return Task.CompletedTask;
+    }
+}
+
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath Hexalith.Tenants\\src\\Hexalith.Tenants.Client\\Subscription\\TenantEventProcessor.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath Hexalith.Tenants\\src\\Hexalith.Tenants.Client\\Configuration\\HexalithTenantsOptions.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath Hexalith.Tenants\\src\\Hexalith.Tenants.Client\\Subscription\\TenantEventEnvelope.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath Hexalith.Tenants\\src\\Hexalith.Tenants.Client\\Registration\\TenantServiceCollectionExtensions.cs" in D:\Hexalith.Folde
+rs
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -LiteralPath Hexalith.Tenants\\src\\Hexalith.Tenants.Client\\Subscription\\TenantEventSubscriptionEndpoints.cs" in D:\Hexalith.Folder
+s
+ succeeded in 452ms:
+namespace Hexalith.Tenants.Client.Configuration;
+
+public class HexalithTenantsOptions {
+    public string PubSubName { get; set; } = "pubsub";
+
+    public string TopicName { get; set; } = "system.tenants.events";
+
+    public string CommandApiAppId { get; set; } = "commandapi";
+}
+
+ succeeded in 605ms:
+using System.Collections.Concurrent;
+using System.Reflection;
+using System.Text.Json;
+
+using Hexalith.EventStore.Contracts.Events;
+using Hexalith.Tenants.Client.Handlers;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace Hexalith.Tenants.Client.Subscription;
+
+/// <summary>
+/// Receives tenant event envelopes, resolves the event type, deserializes the payload,
+/// deduplicates by MessageId, and dispatches to registered <see cref="ITenantEventHandler{TEvent}"/> implementations.
+/// </summary>
+public class TenantEventProcessor {
+    private enum ProcessingState {
+        InProgress,
+        Completed,
+    }
+
+    private static readonly MethodInfo _dispatchMethod = typeof(TenantEventProcessor)
+        .GetMethod(nameof(DispatchAsync), BindingFlags.NonPublic | BindingFlags.Instance)!;
+
+    private readonly IReadOnlyDictionary<string, Type> _eventTypeRegistry;
+    private readonly ILogger<TenantEventProcessor> _logger;
+
+    // NOTE: This dictionary grows unboundedly. For MVP, this is acceptable (consuming services are
+    // typically restarted periodically). Production deployments should consider a bounded LRU cache
+    // or external deduplication store.
+    private readonly ConcurrentDictionary<string, ProcessingState> _processedMessageIds = new(StringComparer.Ordinal);
+    private readonly IServiceProvider _serviceProvider;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TenantEventProcessor"/> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider for resolving event handlers.</param>
+    /// <param name="eventTypeRegistry">The mapping of event type names to their CLR types.</param>
+    /// <param name="logger">The logger.</param>
+    public TenantEventProcessor(
+        IServiceProvider serviceProvider,
+        IReadOnlyDictionary<string, Type> eventTypeRegistry,
+        ILogger<TenantEventProcessor> logger) {
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+        ArgumentNullException.ThrowIfNull(eventTypeRegistry);
+        ArgumentNullException.ThrowIfNull(logger);
+        _serviceProvider = serviceProvider;
+        _eventTypeRegistry = eventTypeRegistry;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Processes a tenant event envelope: deduplicates, resolves type, deserializes, and dispatches to handlers.
+    /// </summary>
+    /// <param name="envelope">The tenant event envelope.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The event processing outcome.</returns>
+    public async Task<TenantEventProcessingResult> ProcessAsync(TenantEventEnvelope envelope, CancellationToken cancellationToken = default) {
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        if (!_processedMessageIds.TryAdd(envelope.MessageId, ProcessingState.InProgress)) {
+            _logger.LogDebug("Skipping duplicate event {MessageId}", envelope.MessageId);
+            return TenantEventProcessingResult.Duplicate;
+        }
+
+        try {
+            if (!_eventTypeRegistry.TryGetValue(envelope.EventTypeName, out Type? eventType)) {
+                _logger.LogWarning("Unknown event type '{EventTypeName}' — skipping", envelope.EventTypeName);
+                _processedMessageIds[envelope.MessageId] = ProcessingState.Completed;
+                return TenantEventProcessingResult.SkippedUnknownEventType;
+            }
+
+            object? deserialized;
+            try {
+                deserialized = JsonSerializer.Deserialize(envelope.Payload, eventType);
+            }
+            catch (JsonException exception) {
+                _logger.LogWarning(exception, "Failed to deserialize event {MessageId} as {EventTypeName}", envelope.MessageId, envelope.EventTypeName);
+                _ = _processedMessageIds.TryRemove(envelope.MessageId, out _);
+                return TenantEventProcessingResult.FailedInvalidPayload;
+            }
+            catch (NotSupportedException exception) {
+                _logger.LogWarning(exception, "Failed to deserialize event {MessageId} as {EventTypeName}", envelope.MessageId, envelope.EventTypeName);
+                _ = _processedMessageIds.TryRemove(envelope.MessageId, out _);
+                return TenantEventProcessingResult.FailedInvalidPayload;
+            }
+
+            if (deserialized is not IEventPayload @event) {
+                _logger.LogWarning("Failed to deserialize event {MessageId} as {EventTypeName}", envelope.MessageId, envelope.EventTypeName);
+                _ = _processedMessageIds.TryRemove(envelope.MessageId, out _);
+                return TenantEventProcessingResult.FailedInvalidPayload;
+            }
+
+            var context = new TenantEventContext(
+                envelope.AggregateId,
+                envelope.MessageId,
+                envelope.SequenceNumber,
+                envelope.Timestamp,
+                envelope.CorrelationId);
+
+            MethodInfo genericDispatch = _dispatchMethod.MakeGenericMethod(eventType);
+            int handlerCount = await ((Task<int>)genericDispatch.Invoke(this, [@event, context, cancellationToken])!).ConfigureAwait(false);
+            if (handlerCount == 0) {
+                _logger.LogWarning("No handlers registered for event type '{EventTypeName}' — skipping", envelope.EventTypeName);
+                _processedMessageIds[envelope.MessageId] = ProcessingState.Completed;
+                return TenantEventProcessingResult.SkippedNoHandlers;
+            }
+
+            _processedMessageIds[envelope.MessageId] = ProcessingState.Completed;
+            return TenantEventProcessingResult.Processed;
+        }
+        catch {
+            _ = _processedMessageIds.TryRemove(envelope.MessageId, out _);
+            throw;
+        }
+    }
+
+    private async Task<int> DispatchAsync<TEvent>(TEvent @event, TenantEventContext context, CancellationToken cancellationToken)
+        where TEvent : IEventPayload {
+        ITenantEventHandler<TEvent>[] handlers = _serviceProvider.GetServices<ITenantEventHandler<TEvent>>().ToArray();
+        foreach (ITenantEventHandler<TEvent> handler in handlers) {
+            await handler.HandleAsync(@event, context, cancellationToken).ConfigureAwait(false);
+        }
+
+        return handlers.Length;
+    }
+}
+
+ succeeded in 715ms:
+namespace Hexalith.Tenants.Client.Subscription;
+
+/// <summary>
+/// Wire-format DTO for tenant events received via DAPR pub/sub.
+/// Matches the flat EventEnvelope published by EventStore's EventPublisher.
+/// Only the fields needed by consuming services are declared; JSON deserialization ignores extras.
+/// </summary>
+/// <param name="MessageId">The unique event message ID (ULID) for idempotency.</param>
+/// <param name="AggregateId">The aggregate ID — for tenant events this is the managed tenant ID.</param>
+/// <param name="TenantId">The tenant scope (always "system" for tenant management events).</param>
+/// <param name="EventTypeName">The fully qualified .NET type name of the event payload.</param>
+/// <param name="SequenceNumber">The event sequence number within the aggregate.</param>
+/// <param name="Timestamp">When the event was persisted.</param>
+/// <param name="CorrelationId">The request correlation ID for tracing.</param>
+/// <param name="SerializationFormat">The serialization format (always "json").</param>
+/// <param name="Payload">The JSON-serialized event payload bytes.</param>
+public record TenantEventEnvelope(
+    string MessageId,
+    string AggregateId,
+    string TenantId,
+    string EventTypeName,
+    long SequenceNumber,
+    DateTimeOffset Timestamp,
+    string CorrelationId,
+    string SerializationFormat,
+    byte[] Payload);
+
+ succeeded in 923ms:
+using Hexalith.EventStore.Contracts.Events;
+using Hexalith.Tenants.Client.Configuration;
+using Hexalith.Tenants.Client.Handlers;
+using Hexalith.Tenants.Client.Projections;
+using Hexalith.Tenants.Client.Subscription;
+using Hexalith.Tenants.Contracts.Events;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+namespace Hexalith.Tenants.Client.Registration;
+
+/// <summary>
+/// Extension methods for registering tenant client services in the dependency injection container.
+/// </summary>
+public static class TenantServiceCollectionExtensions {
+    private sealed class TenantEventInfrastructureMarker;
+
+    /// <summary>
+    /// Registers tenant client services in the dependency injection container with configuration bound from appsettings.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddHexalithTenants(this IServiceCollection services) {
+        ArgumentNullException.ThrowIfNull(services);
+
+        EnsureCoreRegistrations(services);
+        EnsureEventHandlerRegistrations(services);
+
+        // Opportunistic configuration binding
+        IConfiguration? configuration = TryGetConfiguration(services);
+        if (configuration is not null && !HasTenantOptionsConfiguration(services)) {
+            _ = services.Configure<HexalithTenantsOptions>(configuration.GetSection("Tenants"));
+        }
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers tenant client services in the dependency injection container with explicit options configuration.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configureOptions">A delegate to configure <see cref="HexalithTenantsOptions"/>.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddHexalithTenants(
+        this IServiceCollection services,
+        Action<HexalithTenantsOptions> configureOptions) {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
+
+        EnsureCoreRegistrations(services);
+        EnsureEventHandlerRegistrations(services);
+
+        // Idempotency: skip duplicate options configuration (same sentinel as parameterless overload)
+        if (!HasTenantOptionsConfiguration(services)) {
+            _ = services.Configure(configureOptions);
+        }
+
+        return services;
+    }
+
+    private static IReadOnlyDictionary<string, Type> BuildEventTypeRegistry() => typeof(TenantCreated).Assembly
+            .GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract && typeof(IEventPayload).IsAssignableFrom(t))
+            .ToDictionary(t => t.FullName!, t => t);
+
+    private static void EnsureCoreRegistrations(IServiceCollection services) {
+        ArgumentNullException.ThrowIfNull(services);
+
+        if (!services.Any(s => s.ServiceType == typeof(Dapr.Client.DaprClient))) {
+            services.AddDaprClient();
+        }
+
+        _ = services.AddOptions<HexalithTenantsOptions>();
+    }
+
+    private static void EnsureEventHandlerRegistrations(IServiceCollection services) {
+        ArgumentNullException.ThrowIfNull(services);
+
+        if (services.Any(s => s.ServiceType == typeof(TenantEventInfrastructureMarker))) {
+            return;
+        }
+
+        if (!services.Any(s => s.ServiceType == typeof(ITenantProjectionStore))) {
+            _ = services.AddSingleton<ITenantProjectionStore, InMemoryTenantProjectionStore>();
+        }
+
+        _ = services.AddSingleton<TenantProjectionEventHandler>();
+        RegisterEventHandler<TenantCreated, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<TenantUpdated, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<TenantDisabled, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<TenantEnabled, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<UserAddedToTenant, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<UserRemovedFromTenant, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<UserRoleChanged, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<TenantConfigurationSet, TenantProjectionEventHandler>(services);
+        RegisterEventHandler<TenantConfigurationRemoved, TenantProjectionEventHandler>(services);
+
+        IReadOnlyDictionary<string, Type> registry = BuildEventTypeRegistry();
+        _ = services.AddSingleton(registry);
+
+        _ = services.AddSingleton<TenantEventProcessor>();
+        _ = services.AddSingleton<TenantEventInfrastructureMarker>();
+    }
+
+    private static bool HasTenantOptionsConfiguration(IServiceCollection services) {
+        ArgumentNullException.ThrowIfNull(services);
+        return services.Any(s => s.ServiceType == typeof(IConfigureOptions<HexalithTenantsOptions>));
+    }
+
+    private static void RegisterEventHandler<TEvent, THandler>(IServiceCollection services)
+        where TEvent : IEventPayload
+        where THandler : class, ITenantEventHandler<TEvent> => services.AddSingleton<ITenantEventHandler<TEvent>>(sp => sp.GetRequiredService<THandler>());
+
+    private static IConfiguration? TryGetConfiguration(IServiceCollection services) {
+        ArgumentNullException.ThrowIfNull(services);
+        ServiceDescriptor? descriptor = services.LastOrDefault(static s => s.ServiceType == typeof(IConfiguration));
+        if (descriptor?.ImplementationInstance is IConfiguration configurationInstance) {
+            return configurationInstance;
+        }
+
+        if (descriptor is null) {
+            return null;
+        }
+
+        using ServiceProvider tempProvider = services.BuildServiceProvider();
+        return tempProvider.GetService<IConfiguration>();
+    }
+}
+
+ succeeded in 1012ms:
+using Hexalith.Tenants.Client.Configuration;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+namespace Hexalith.Tenants.Client.Subscription;
+
+/// <summary>
+/// Maps DAPR pub/sub subscription endpoint for tenant events.
+/// </summary>
+public static class TenantEventSubscriptionEndpoints {
+    /// <summary>
+    /// Maps the DAPR pub/sub subscription endpoint for tenant events.
+    /// Consuming services call this to subscribe to tenant event notifications.
+    /// Requires <c>app.UseCloudEvents()</c> and <c>app.MapSubscribeHandler()</c> to be configured.
+    /// </summary>
+    /// <param name="endpoints">The endpoint route builder.</param>
+    /// <returns>The endpoint route builder for chaining.</returns>
+    public static IEndpointRouteBuilder MapTenantEventSubscription(this IEndpointRouteBuilder endpoints) {
+        ArgumentNullException.ThrowIfNull(endpoints);
+
+        HexalithTenantsOptions options = endpoints.ServiceProvider
+            .GetRequiredService<IOptions<HexalithTenantsOptions>>().Value;
+
+        _ = endpoints.MapPost("/tenants/events", async (
+            TenantEventEnvelope envelope,
+            TenantEventProcessor processor,
+            CancellationToken cancellationToken) => {
+                TenantEventProcessingResult result = await processor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+                return result switch {
+                    TenantEventProcessingResult.Processed => Results.Ok(),
+                    TenantEventProcessingResult.Duplicate => Results.Ok(),
+                    TenantEventProcessingResult.SkippedUnknownEventType => Results.Ok(),
+                    TenantEventProcessingResult.SkippedNoHandlers => Results.Ok(),
+                    TenantEventProcessingResult.FailedInvalidPayload => Results.Problem(
+                        title: "Tenant event processing failed.",
+                        detail: "The tenant event payload could not be deserialized.",
+                        statusCode: StatusCodes.Status500InternalServerError),
+                    _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
+                };
+            }).WithTopic(options.PubSubName, options.TopicName);
+
+        return endpoints;
+    }
+}
+
+

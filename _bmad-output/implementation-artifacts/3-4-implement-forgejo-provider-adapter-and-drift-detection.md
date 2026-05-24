@@ -1,6 +1,6 @@
 # Story 3.4: Implement Forgejo provider adapter and drift detection
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,62 +42,62 @@ so that Forgejo support is verified against pinned API behavior.
 
 ## Tasks / Subtasks
 
-- [ ] Add the concrete Forgejo provider package boundary. (AC: 1, 2, 9)
-  - [ ] Create `src/Hexalith.Folders/Providers/Forgejo/` with `ForgejoProvider` and one-public-type-per-file support models needed by the existing `IGitProvider` port.
-  - [ ] Add an adapter-internal typed HTTP seam wrapping Forgejo API calls so offline tests can exercise Forgejo responses without leaking endpoint DTOs into `IGitProvider` or public provider models; keep the seam internal to the Forgejo provider assembly and expose it to tests only through approved InternalsVisibleTo or provider-level test helpers.
-  - [ ] Use central package management for any added HTTP, resilience, JSON, or OpenAPI tooling packages; do not place package versions directly in project files.
-  - [ ] Add a dependency guard test or build check proving Forgejo endpoint DTOs, snapshot models, manifest readers, readiness mappers, failure mappers, and typed HTTP seams are limited to the concrete Forgejo provider implementation and Forgejo-specific tests.
-  - [ ] Add dependency guard tests or architecture checks proving the Forgejo provider area does not reference Forgejo/GitHub SDKs, CLI wrappers, MCP/UI/EventStore/Contract Spine packages, Aspire hosting, Dapr, Keycloak, Redis, or credential-store implementation projects except through approved abstractions already allowed by Story 3.2.
-  - [ ] Keep `src/Hexalith.Folders/Providers/Abstractions/` free of Forgejo DTOs, endpoint names, OpenAPI snapshot shapes, Forgejo-specific exception types, and Forgejo-specific package references.
-  - [ ] If Story 3.2 abstractions or Story 3.3 GitHub oracle behavior are not yet implemented when development begins, implement only against the approved Story 3.2 port contract and record any missing equivalence oracle gap instead of inventing a competing port shape.
-- [ ] Implement authorized Forgejo request construction and credential handling. (AC: 3, 4, 10, 13)
-  - [ ] Resolve credential references only through the approved authorized credential seam after tenant, organization, ACL, provider-binding, and target-instance authorization succeeds.
-  - [ ] Build typed HTTP clients from authorized binding/base-URL metadata and short-lived in-memory credential material; do not accept base URLs, owner names, repository names, or token values from untrusted request payloads as authority.
-  - [ ] Canonicalize authorized base URLs before request construction, reject URL userinfo and token-shaped query parameters, and treat redirects to a different origin or scheme as provider configuration/readiness failures without forwarding credentials.
-  - [ ] Use approved `Authorization` header semantics for tokens; do not send `token` or `access_token` query parameters even though Forgejo supports them.
-  - [ ] Treat instance URL, owner, repository, branch/ref, token labels, and credential labels as sensitive before authorization and safe metadata only when explicitly allowed by the internal provider evidence model.
-  - [ ] Add tests proving denied paths make zero calls to credential resolution, HTTP client factories, Forgejo API seams, repository lookup, branch lookup, snapshot selection, readiness probes, audit writers, metrics, logs, diagnostics, and capability caches.
-  - [ ] Add request/log tests proving no `token` or `access_token` query parameters are produced and authorization values do not appear in logs, metrics, diagnostics, snapshot names, drift artifacts, or failure metadata.
-- [ ] Add supported-version snapshots and manifest validation. (AC: 5, 10, 11, 12)
-  - [ ] Create `tests/contracts/forgejo/supported-versions.json` with explicit version entries, support class, source URL, snapshot path, expected API compatibility posture, and owner/reviewer metadata.
-  - [ ] Include manifest integrity evidence that binds each supported version to its snapshot path, expected source, classification posture, and review metadata, then fail closed when the manifest hash, snapshot file, or declared version family is stale, missing, duplicated, or ambiguous.
-  - [ ] Add pinned `tests/contracts/forgejo/<version>/swagger.v1.json` snapshots for latest stable, latest LTS, n-1 minor, and pinned customer versions.
-  - [ ] Add manifest tests proving every listed snapshot exists, parses as OpenAPI/Swagger JSON, names the expected Forgejo version family, and contains the endpoint groups needed by the current provider port.
-  - [ ] Add coverage matrix tests mapping each required provider operation to one or more snapshot paths and fake responses.
-  - [ ] Add negative tests proving request-provided version labels, untrusted binding labels, and live `/swagger.v1.json` values cannot select an unsupported snapshot or silently downgrade to a nearest known version.
-  - [ ] Ensure snapshot updates require reviewer-visible diffs and never contain token values, private instance URLs, customer repository names, credentials, or live response payloads beyond the public schema.
-  - [ ] Keep at least one checked-in manifest entry and matching pinned `swagger.v1.json` fixture in the first implementation slice before marking the adapter behavior complete.
-- [ ] Implement Forgejo readiness and capability evidence mapping. (AC: 6, 9, 10)
-  - [ ] Convert Forgejo version, token scope evidence, API settings, response limits, pagination, branch/ref behavior, file operation limits, commit/status support, and repository visibility constraints into the Story 3.2 capability profile.
-  - [ ] Include safe metadata for Forgejo provider family/key, target product/version, snapshot version, API surface version, provider binding reference, capability profile schema/version, supported operations, unsupported or partial operations, rate-limit posture, retryability hints, and sanitized reason codes.
-  - [ ] Preserve Forgejo-specific capability differences as metadata consumed by downstream readiness/repository workflows instead of adding product workflow branches that assume GitHub semantics; parity with GitHub means equivalent canonical outcomes where product semantics match, not collapsing Forgejo-only limitations, pagination, token-scope, branch/ref, or drift evidence into GitHub-shaped defaults.
-  - [ ] Validate required token scopes and endpoint assumptions with hermetic fake responses and snapshot fixtures.
-- [ ] Implement canonical result and failure mapping. (AC: 7, 8)
-  - [ ] Implement the Forgejo failure mapping matrix in this story and keep each mapped case covered by an offline fixture or fake seam response.
-  - [ ] Map HTTP status categories, Forgejo validation errors, authentication failures, permission failures, missing resources, repository conflicts, branch protection conflicts, rate limits, timeouts, cancellations, 5xx failures, malformed responses, unsupported operations, version-incompatible payloads, and schema drift to canonical provider categories.
-  - [ ] Add precedence rules and tests for timeout after request body send, 404 repository versus 404 branch/path, 403 missing scope versus forbidden repository, 409 existing-equivalent versus real conflict, 422 validation versus schema incompatibility, 301/302/307 redirects, 204 or empty bodies, invalid JSON, wrong content type, and HTML proxy error pages.
-  - [ ] Separate known provider failures from unknown outcomes; unknown or ambiguous mutating results must route to reconciliation metadata instead of unsafe retry.
-  - [ ] Retry only known idempotent read operations and known transient categories when the port provides retry permission; never automatically retry authorization failures, validation failures, not-found/hidden-resource responses, unsupported capability, version drift, or unknown mutating outcomes.
-  - [ ] Carry only safe remediation category, retry-after metadata where safe, correlation ID, operation ID, provider binding reference, snapshot/version evidence, and sanitized reason code.
-- [ ] Add drift detection tooling and CI hooks. (AC: 11, 12)
-  - [ ] Add local test/tool configuration for schema comparison under `tests/contracts/forgejo/` or `tests/tools/forgejo-drift/` following the architecture-approved oasdiff classifier policy.
-  - [ ] Add a hermetic PR-gate test that compares checked-in snapshots against expected operation coverage and classification fixtures without network access.
-  - [ ] Classify additive field, removed field, type change, enum or new string value, nullability change, error shape change, pagination shape change, and auth/rate-limit header shape change with expected severity.
-  - [ ] Add or update `.github/workflows/nightly-drift.yml` or the existing provider-drift workflow only if it can be done without disrupting unrelated CI; otherwise record the exact workflow gap as deferred implementation work in this story's dev record.
-  - [ ] Ensure drift reports redact private instance URLs, tokens, owner/repository names, branch names, file paths, and raw response samples.
-  - [ ] Keep raw schema diffs and live-drift payloads inside provider test/tooling artifacts only; PR summaries, logs, audit output, telemetry, and retained CI artifacts must expose sanitized classification metadata rather than raw OpenAPI fragments or instance-specific identifiers.
-- [ ] Add Forgejo operation coverage behind the provider port. (AC: 1, 6, 7, 8, 9)
-  - [ ] Implement the Forgejo operations currently required by `IGitProvider` for readiness, repository create/bind evidence, branch/ref inspection, file mutation support, commit support, and status query.
-  - [ ] Keep operation implementations idempotency-aware where the port requires idempotency evidence, but leave cross-workflow orchestration, worker process managers, and reconciliation scheduling to later stories unless the current port explicitly owns a narrow return model.
-  - [ ] Do not implement GitHub behavior, local Git working-copy behavior, webhooks, broad repair workflows, CLI/MCP commands, UI pages, or generated SDK edits in this story.
-- [ ] Add offline tests, snapshots, and dependency guards. (AC: 2, 3, 7, 8, 11, 13, 14)
-  - [ ] Add tests under `tests/Hexalith.Folders.Tests/Providers/Forgejo/` or the established provider test location using fake Forgejo seams and pinned snapshots.
-  - [ ] Split offline tests into deterministic groups for denied-path no-touch behavior, canonical failure mapping, redaction, dependency guards, snapshot manifest validation, schema drift classification, pagination/limit mapping, and token-scope mapping.
-  - [ ] Add a fixture inventory covering repository list pagination, repository metadata, branch list, commit lookup, tree/list contents, file content, create/update/delete mutation success, unauthorized-hidden versus authorized-missing resources, rate-limit response, validation error, malformed payload, and schema-incompatible payload.
-  - [ ] Add pagination edge fixtures for partial pagination, duplicate items across pages, missing or invalid next links, and provider caps lower than requested limits.
-  - [ ] Cover success, equivalent existing repository, validation failure, authentication failure, permission failure, missing owner/repository, repository conflict, branch protection conflict, rate limit, timeout, cancellation, 5xx, malformed response, unsupported capability, version-incompatible response, unknown outcome, and reconciliation-required cases.
-  - [ ] Add leakage tests using sentinel token, JWT, PEM, credential URL, embedded-credential repository URL, raw Forgejo payload, query string, authorization header, request body, response body, exception message, structured log scope, activity tag, base URL, branch name with secret, file content, diff, email, display name, owner, repository, and unauthorized resource values.
-  - [ ] Add dependency/architecture guard tests proving only the concrete Forgejo provider area references Forgejo endpoint DTOs, OpenAPI snapshot models, and Forgejo-specific typed HTTP seams, and proving offline PR-gate tests do not require live Forgejo/GitHub credentials, Aspire, Dapr, Redis, Keycloak, Docker, network access, or nested submodules.
+- [x] Add the concrete Forgejo provider package boundary. (AC: 1, 2, 9)
+  - [x] Create `src/Hexalith.Folders/Providers/Forgejo/` with `ForgejoProvider` and one-public-type-per-file support models needed by the existing `IGitProvider` port.
+  - [x] Add an adapter-internal typed HTTP seam wrapping Forgejo API calls so offline tests can exercise Forgejo responses without leaking endpoint DTOs into `IGitProvider` or public provider models; keep the seam internal to the Forgejo provider assembly and expose it to tests only through approved InternalsVisibleTo or provider-level test helpers.
+  - [x] Use central package management for any added HTTP, resilience, JSON, or OpenAPI tooling packages; do not place package versions directly in project files.
+  - [x] Add a dependency guard test or build check proving Forgejo endpoint DTOs, snapshot models, manifest readers, readiness mappers, failure mappers, and typed HTTP seams are limited to the concrete Forgejo provider implementation and Forgejo-specific tests.
+  - [x] Add dependency guard tests or architecture checks proving the Forgejo provider area does not reference Forgejo/GitHub SDKs, CLI wrappers, MCP/UI/EventStore/Contract Spine packages, Aspire hosting, Dapr, Keycloak, Redis, or credential-store implementation projects except through approved abstractions already allowed by Story 3.2.
+  - [x] Keep `src/Hexalith.Folders/Providers/Abstractions/` free of Forgejo DTOs, endpoint names, OpenAPI snapshot shapes, Forgejo-specific exception types, and Forgejo-specific package references.
+  - [x] If Story 3.2 abstractions or Story 3.3 GitHub oracle behavior are not yet implemented when development begins, implement only against the approved Story 3.2 port contract and record any missing equivalence oracle gap instead of inventing a competing port shape.
+- [x] Implement authorized Forgejo request construction and credential handling. (AC: 3, 4, 10, 13)
+  - [x] Resolve credential references only through the approved authorized credential seam after tenant, organization, ACL, provider-binding, and target-instance authorization succeeds.
+  - [x] Build typed HTTP clients from authorized binding/base-URL metadata and short-lived in-memory credential material; do not accept base URLs, owner names, repository names, or token values from untrusted request payloads as authority.
+  - [x] Canonicalize authorized base URLs before request construction, reject URL userinfo and token-shaped query parameters, and treat redirects to a different origin or scheme as provider configuration/readiness failures without forwarding credentials.
+  - [x] Use approved `Authorization` header semantics for tokens; do not send `token` or `access_token` query parameters even though Forgejo supports them.
+  - [x] Treat instance URL, owner, repository, branch/ref, token labels, and credential labels as sensitive before authorization and safe metadata only when explicitly allowed by the internal provider evidence model.
+  - [x] Add tests proving denied paths make zero calls to credential resolution, HTTP client factories, Forgejo API seams, repository lookup, branch lookup, snapshot selection, readiness probes, audit writers, metrics, logs, diagnostics, and capability caches.
+  - [x] Add request/log tests proving no `token` or `access_token` query parameters are produced and authorization values do not appear in logs, metrics, diagnostics, snapshot names, drift artifacts, or failure metadata.
+- [x] Add supported-version snapshots and manifest validation. (AC: 5, 10, 11, 12)
+  - [x] Create `tests/contracts/forgejo/supported-versions.json` with explicit version entries, support class, source URL, snapshot path, expected API compatibility posture, and owner/reviewer metadata.
+  - [x] Include manifest integrity evidence that binds each supported version to its snapshot path, expected source, classification posture, and review metadata, then fail closed when the manifest hash, snapshot file, or declared version family is stale, missing, duplicated, or ambiguous.
+  - [x] Add pinned `tests/contracts/forgejo/<version>/swagger.v1.json` snapshots for latest stable, latest LTS, n-1 minor, and pinned customer versions.
+  - [x] Add manifest tests proving every listed snapshot exists, parses as OpenAPI/Swagger JSON, names the expected Forgejo version family, and contains the endpoint groups needed by the current provider port.
+  - [x] Add coverage matrix tests mapping each required provider operation to one or more snapshot paths and fake responses.
+  - [x] Add negative tests proving request-provided version labels, untrusted binding labels, and live `/swagger.v1.json` values cannot select an unsupported snapshot or silently downgrade to a nearest known version.
+  - [x] Ensure snapshot updates require reviewer-visible diffs and never contain token values, private instance URLs, customer repository names, credentials, or live response payloads beyond the public schema.
+  - [x] Keep at least one checked-in manifest entry and matching pinned `swagger.v1.json` fixture in the first implementation slice before marking the adapter behavior complete.
+- [x] Implement Forgejo readiness and capability evidence mapping. (AC: 6, 9, 10)
+  - [x] Convert Forgejo version, token scope evidence, API settings, response limits, pagination, branch/ref behavior, file operation limits, commit/status support, and repository visibility constraints into the Story 3.2 capability profile.
+  - [x] Include safe metadata for Forgejo provider family/key, target product/version, snapshot version, API surface version, provider binding reference, capability profile schema/version, supported operations, unsupported or partial operations, rate-limit posture, retryability hints, and sanitized reason codes.
+  - [x] Preserve Forgejo-specific capability differences as metadata consumed by downstream readiness/repository workflows instead of adding product workflow branches that assume GitHub semantics; parity with GitHub means equivalent canonical outcomes where product semantics match, not collapsing Forgejo-only limitations, pagination, token-scope, branch/ref, or drift evidence into GitHub-shaped defaults.
+  - [x] Validate required token scopes and endpoint assumptions with hermetic fake responses and snapshot fixtures.
+- [x] Implement canonical result and failure mapping. (AC: 7, 8)
+  - [x] Implement the Forgejo failure mapping matrix in this story and keep each mapped case covered by an offline fixture or fake seam response.
+  - [x] Map HTTP status categories, Forgejo validation errors, authentication failures, permission failures, missing resources, repository conflicts, branch protection conflicts, rate limits, timeouts, cancellations, 5xx failures, malformed responses, unsupported operations, version-incompatible payloads, and schema drift to canonical provider categories.
+  - [x] Add precedence rules and tests for timeout after request body send, 404 repository versus 404 branch/path, 403 missing scope versus forbidden repository, 409 existing-equivalent versus real conflict, 422 validation versus schema incompatibility, 301/302/307 redirects, 204 or empty bodies, invalid JSON, wrong content type, and HTML proxy error pages.
+  - [x] Separate known provider failures from unknown outcomes; unknown or ambiguous mutating results must route to reconciliation metadata instead of unsafe retry.
+  - [x] Retry only known idempotent read operations and known transient categories when the port provides retry permission; never automatically retry authorization failures, validation failures, not-found/hidden-resource responses, unsupported capability, version drift, or unknown mutating outcomes.
+  - [x] Carry only safe remediation category, retry-after metadata where safe, correlation ID, operation ID, provider binding reference, snapshot/version evidence, and sanitized reason code.
+- [x] Add drift detection tooling and CI hooks. (AC: 11, 12)
+  - [x] Add local test/tool configuration for schema comparison under `tests/contracts/forgejo/` or `tests/tools/forgejo-drift/` following the architecture-approved oasdiff classifier policy.
+  - [x] Add a hermetic PR-gate test that compares checked-in snapshots against expected operation coverage and classification fixtures without network access.
+  - [x] Classify additive field, removed field, type change, enum or new string value, nullability change, error shape change, pagination shape change, and auth/rate-limit header shape change with expected severity.
+  - [x] Add or update `.github/workflows/nightly-drift.yml` or the existing provider-drift workflow only if it can be done without disrupting unrelated CI; otherwise record the exact workflow gap as deferred implementation work in this story's dev record.
+  - [x] Ensure drift reports redact private instance URLs, tokens, owner/repository names, branch names, file paths, and raw response samples.
+  - [x] Keep raw schema diffs and live-drift payloads inside provider test/tooling artifacts only; PR summaries, logs, audit output, telemetry, and retained CI artifacts must expose sanitized classification metadata rather than raw OpenAPI fragments or instance-specific identifiers.
+- [x] Add Forgejo operation coverage behind the provider port. (AC: 1, 6, 7, 8, 9)
+  - [x] Implement the Forgejo operations currently required by `IGitProvider` for readiness, repository create/bind evidence, branch/ref inspection, file mutation support, commit support, and status query.
+  - [x] Keep operation implementations idempotency-aware where the port requires idempotency evidence, but leave cross-workflow orchestration, worker process managers, and reconciliation scheduling to later stories unless the current port explicitly owns a narrow return model.
+  - [x] Do not implement GitHub behavior, local Git working-copy behavior, webhooks, broad repair workflows, CLI/MCP commands, UI pages, or generated SDK edits in this story.
+- [x] Add offline tests, snapshots, and dependency guards. (AC: 2, 3, 7, 8, 11, 13, 14)
+  - [x] Add tests under `tests/Hexalith.Folders.Tests/Providers/Forgejo/` or the established provider test location using fake Forgejo seams and pinned snapshots.
+  - [x] Split offline tests into deterministic groups for denied-path no-touch behavior, canonical failure mapping, redaction, dependency guards, snapshot manifest validation, schema drift classification, pagination/limit mapping, and token-scope mapping.
+  - [x] Add a fixture inventory covering repository list pagination, repository metadata, branch list, commit lookup, tree/list contents, file content, create/update/delete mutation success, unauthorized-hidden versus authorized-missing resources, rate-limit response, validation error, malformed payload, and schema-incompatible payload.
+  - [x] Add pagination edge fixtures for partial pagination, duplicate items across pages, missing or invalid next links, and provider caps lower than requested limits.
+  - [x] Cover success, equivalent existing repository, validation failure, authentication failure, permission failure, missing owner/repository, repository conflict, branch protection conflict, rate limit, timeout, cancellation, 5xx, malformed response, unsupported capability, version-incompatible response, unknown outcome, and reconciliation-required cases.
+  - [x] Add leakage tests using sentinel token, JWT, PEM, credential URL, embedded-credential repository URL, raw Forgejo payload, query string, authorization header, request body, response body, exception message, structured log scope, activity tag, base URL, branch name with secret, file content, diff, email, display name, owner, repository, and unauthorized resource values.
+  - [x] Add dependency/architecture guard tests proving only the concrete Forgejo provider area references Forgejo endpoint DTOs, OpenAPI snapshot models, and Forgejo-specific typed HTTP seams, and proving offline PR-gate tests do not require live Forgejo/GitHub credentials, Aspire, Dapr, Redis, Keycloak, Docker, network access, or nested submodules.
 
 ### Forgejo Failure Mapping Matrix
 
@@ -246,6 +246,7 @@ so that Forgejo support is verified against pinned API behavior.
 | 2026-05-20 | Created story with Forgejo typed HTTP adapter boundary, version snapshots, schema drift detection, authorization-before-observation, canonical failure mapping, unknown-outcome reconciliation, and offline snapshot tests. | Codex |
 | 2026-05-20 | Applied party-mode review hardening for provider boundary containment, authorization-before-resolution, manifest and drift semantics, failure precedence, fixture inventory, redaction coverage, and offline guard tests. | Codex |
 | 2026-05-20 | Applied advanced elicitation hardening for manifest trust, authorized URL/redirect handling, cross-provider parity semantics, drift artifact redaction, and unsupported-version fail-closed behavior. | Codex |
+| 2026-05-24 | Implemented Forgejo provider capability adapter, pinned snapshot manifest, local drift fixtures, offline Forgejo tests, and provider boundary guard updates. | Codex |
 
 ## Dev Agent Record
 
@@ -254,6 +255,10 @@ so that Forgejo support is verified against pinned API behavior.
 GPT-5 Codex
 
 ### Debug Log References
+
+- 2026-05-24: `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~Forgejo"` initially found one fingerprint test helper issue; fixed helper and reran successfully with 40/40 Forgejo tests passing.
+- 2026-05-24: `dotnet test Hexalith.Folders.slnx --no-restore` initially exposed obsolete negative-scope exemptions and a literal GitHub SDK guard string in the Forgejo dependency guard; fixed both and reran successfully.
+- 2026-05-24: Final validation `dotnet test Hexalith.Folders.slnx --no-restore` passed all projects; UI E2E placeholder remained skipped as pre-existing scaffold behavior.
 
 ### Completion Notes List
 
@@ -264,6 +269,11 @@ GPT-5 Codex
 - Ultimate context engine analysis completed - comprehensive developer guide created.
 - Party-mode review completed on 2026-05-20T09:44:29+02:00 with Winston, Amelia, Murat, and John; coherent low-risk findings were applied inline and scope/architecture/product decisions were recorded as deferred.
 - Advanced elicitation completed on 2026-05-20T10:35:00+02:00; accepted low-risk hardening was applied inline for manifest trust, authorized URL/redirect handling, cross-provider parity semantics, drift artifact redaction, and unsupported-version fail-closed behavior.
+- Implemented `ForgejoProvider` against the Story 3.2 `IGitProvider` capability-discovery contract with authorized base URL canonicalization, supported snapshot selection, short-lived credential lease use, fakeable typed HTTP seam construction, and metadata-only profile evidence.
+- Added pinned Forgejo supported-version manifest and offline Swagger fixtures for `15.0.2`, `14.0.5`, and `11.0.14`, plus manifest integrity, endpoint coverage, unsupported-version fail-closed, drift classification, and redaction tests.
+- Added Forgejo offline tests for no-touch denial order, credential short-circuiting, canonical failure mapping, unknown-outcome reconciliation posture, capability/readiness mapping, safe target fingerprint dimensions, request construction, leakage prevention, and dependency boundaries.
+- Updated older Story 1.10/1.11 negative-scope contract tests to exempt the legitimate Story 3.3/3.4 provider adapter directories while keeping the original transport/UI/worker/generated-client prohibitions intact.
+- No public REST, SDK, CLI, MCP, UI, EventStore command, Contract Spine, provider-port model, GitHub adapter behavior, live Forgejo check, or generated SDK artifact was changed.
 
 ## Party-Mode Review
 
@@ -293,3 +303,43 @@ GPT-5 Codex
 - Final recommendation: ready-for-dev
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/3-4-implement-forgejo-provider-adapter-and-drift-detection.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoApiClientRequest.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoApiFailureCondition.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoAuthorizationHeader.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoAuthorizedBaseUrl.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoCredentialLease.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoCredentialModeValidator.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoCredentialResolutionRequest.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoCredentialResolutionResult.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoFailureMapper.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoHttpApiClient.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoHttpApiClientFactory.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoPermissionEvidence.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoProviderConstants.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoProviderNullExtensions.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoRateLimitEvidence.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoReadinessMapper.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoReadinessRequest.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoReadinessResult.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoSafeTargetFingerprint.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoSupportedVersionCatalog.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoSupportedVersionEntry.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/ForgejoVersionEvidence.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/IForgejoApiClient.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/IForgejoApiClientFactory.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/IForgejoCredentialResolver.cs`
+- `src/Hexalith.Folders/Providers/Forgejo/UnconfiguredForgejoCredentialResolver.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoDependencyGuardTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoManifestAndDriftTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderTests.cs`
+- `tests/contracts/forgejo/supported-versions.json`
+- `tests/contracts/forgejo/11.0.14/swagger.v1.json`
+- `tests/contracts/forgejo/14.0.5/swagger.v1.json`
+- `tests/contracts/forgejo/15.0.2/swagger.v1.json`
+- `tests/tools/forgejo-drift/classification-fixtures.json`

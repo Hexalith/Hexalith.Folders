@@ -33,6 +33,19 @@ def _stop_hook_command(command: str, project_root: Path) -> str:
     command_parts = shlex.split(command)
     if not command_parts:
         return command
+    if os.name == "nt":
+        workflow_src = _workflow_root() / "src"
+        return shlex.join(
+            [
+                "env",
+                f"PROJECT_ROOT={project_root.as_posix()}",
+                f"PYTHONPATH={workflow_src.as_posix()}",
+                "python",
+                "-m",
+                "story_automator",
+                *command_parts[1:],
+            ]
+        )
     candidates = [
         _workflow_root() / "scripts" / "story-automator",
         Path(shutil.which("story-automator")) if shutil.which("story-automator") else None,

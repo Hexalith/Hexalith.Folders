@@ -525,6 +525,7 @@ public sealed class AuditOpsConsoleContractGroupTests
                         && !relative.StartsWith("Aggregates/Folder/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/Abstractions/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/GitHub/", StringComparison.Ordinal)
+                        && !relative.StartsWith("Providers/Forgejo/", StringComparison.Ordinal)
                         && MatchesGlob(relative, pattern);
                 })
                 .ToArray();

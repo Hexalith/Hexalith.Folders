@@ -1,0 +1,1890 @@
+
+ succeeded in 1108ms:
+D:\Hexalith.Folders\Hexalith.Commons\_bmad-output\project-context.md
+D:\Hexalith.Folders\Hexalith.EventStore\_bmad-output\project-context.md
+D:\Hexalith.Folders\Hexalith.FrontComposer\_bmad-output\project-context.md
+D:\Hexalith.Folders\Hexalith.Memories\_bmad-output\project-context.md
+D:\Hexalith.Folders\Hexalith.Tenants\_bmad-output\project-context.md
+D:\Hexalith.Folders\_bmad-output\project-context.md
+
+ succeeded in 1155ms:
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup Label="Dapr">
+    <PackageVersion Include="Dapr.Client" Version="1.17.9" />
+    <PackageVersion Include="Dapr.AspNetCore" Version="1.17.9" />
+    <PackageVersion Include="Dapr.Actors" Version="1.17.9" />
+    <PackageVersion Include="Dapr.Actors.AspNetCore" Version="1.17.9" />
+  </ItemGroup>
+  <ItemGroup Label="Aspire">
+    <PackageVersion Include="Aspire.Hosting" Version="13.3.3" />
+    <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="13.2.2" />
+    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.2.2" />
+    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="13.2.2-preview.1.26207.2" />
+    <PackageVersion Include="Aspire.Hosting.Kubernetes" Version="13.2.2-preview.1.26207.2" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.2.2" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.2.1" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="13.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="Aspire ServiceDefaults">
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.6.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.6.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.2" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
+  </ItemGroup>
+  <ItemGroup Label="Microsoft.Extensions">
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="Blazor">
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.0-rc.2-26098.1" />
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.14.0" />
+  </ItemGroup>
+  <ItemGroup Label="CLI">
+    <PackageVersion Include="System.CommandLine" Version="2.0.8" />
+  </ItemGroup>
+  <ItemGroup Label="MCP">
+    <PackageVersion Include="ModelContextProtocol" Version="1.3.0" />
+  </ItemGroup>
+  <ItemGroup Label="Application">
+    <PackageVersion Include="MediatR" Version="14.1.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="NSwag.MSBuild" Version="14.7.1" />
+    <PackageVersion Include="Octokit" Version="14.0.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.7" />
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+  </ItemGroup>
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="coverlet.collector" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+    <PackageVersion Include="xunit.v3.assert" Version="3.2.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="Testcontainers" Version="4.10.0" />
+    <PackageVersion Include="YamlDotNet" Version="17.1.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.59.0" />
+  </ItemGroup>
+</Project>
+
+
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw _bmad-output\\project-context.md" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw src\\Hexalith.Folders\\Providers\\Abstractions\\IGitProvider.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw tests\\Hexalith.Folders.Tests\\Providers\\GitHub\\GitHubProviderTests.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubProvider.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Select-String -Path _bmad-output\\implementation-artifacts\\3-4-implement-forgejo-provider-adapter-and-drift-detection.md -Pattern '"'^[- ]*'"\\-
+ \\[ \\]' | ForEach-Object { \"{0}:{1}\" -f "'$_.LineNumber, $_.Line }' in D:\Hexalith.Folders
+ succeeded in 466ms:
+---
+project_name: 'Hexalith.Folders'
+user_name: 'Jerome'
+date: '2026-05-20'
+workflow: 'bmad-generate-project-context'
+status: 'complete'
+sections_completed:
+  - discovery
+  - technology_stack
+  - language_rules
+  - framework_rules
+  - testing_rules
+  - code_quality_rules
+  - workflow_rules
+  - critical_dont_miss_rules
+rule_count: 103
+optimized_for_llm: true
+existing_patterns_found: 12
+technology_stack_discovered: true
+source_context:
+  - '_bmad-output/planning-artifacts/architecture.md'
+  - '_bmad-output/planning-artifacts/prd.md'
+  - '_bmad-output/implementation-artifacts/1-1-establish-a-consumer-buildable-module-scaffold.md'
+  - '_bmad-output/implementation-artifacts/1-2-establish-root-configuration-and-submodule-policy.md'
+---
+
+# Project Context for AI Agents
+
+_This file contains critical rules and patterns that AI agents must follow when implementing code in this project. Focus on unobvious details that agents might otherwise miss._
+
+---
+
+## Technology Stack & Versions
+
+- Target .NET SDK `10.0.300` from `global.json` with `rollForward=latestPatch`; all in-scope projects target `net10.0` unless an individual project explicitly scopes otherwise.
+- Repository configuration and project files are authoritative when planning artifacts drift: prefer `global.json`, `Directory.Build.props`, `Directory.Packages.props`, `.editorconfig`, `.csproj`, and
+ `Hexalith.Folders.slnx` over older architecture text.
+- Use C# `LangVersion=latest`, nullable enabled, implicit usings enabled, deterministic builds, and warnings-as-errors from `Directory.Build.props`.
+- Use `.slnx` solution format and central package management through `Directory.Packages.props`; project files must not carry inline package versions.
+- Root-level sibling modules are consumed through project references detected in `Directory.Build.props`, especially Hexalith.EventStore and Hexalith.Tenants. Do not replace these with ad hoc package
+references or initialize nested submodules.
+- Dapr .NET packages are pinned to `1.17.7`; Folders uses Dapr sidecars, pub/sub, state store, service invocation, and Dapr configuration includes deny-by-default access-control policy that must be pr
+eserved unless intentionally changed.
+- Aspire versions are intentionally mixed: `Aspire.Hosting` `13.3.3`, hosting integrations mostly `13.2.2`, preview Keycloak/Kubernetes integrations `13.2.2-preview.1.26207.2`, Aspire test host `13.2.
+1`, and `CommunityToolkit.Aspire.Hosting.Dapr` `13.0.0`. Do not normalize these versions without verifying compatibility.
+- Service defaults stay on the Microsoft.Extensions `10.x` family and OpenTelemetry packages `1.15.x`; keep OpenTelemetry package versions aligned by family.
+- UI uses Microsoft Fluent UI Blazor `5.0.0-rc.2-26098.1` plus Fluent UI icons `4.14.0`; treat Fluent UI APIs as RC-sensitive.
+- CLI uses System.CommandLine `2.0.8`; MCP uses ModelContextProtocol `1.3.0`; both wrap `Hexalith.Folders.Client` instead of duplicating business behavior.
+- The OpenAPI Contract Spine is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; NSwag.MSBuild `14.7.1`, Newtonsoft.Json `13.0.4`, and generated idempotency helpers derive from that
+spine.
+- Do not hand-edit generated client files under `src/Hexalith.Folders.Client/Generated`; change the OpenAPI spine or generation pipeline instead.
+- Tests use xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Testcontainers `4.10.0`, YamlDotNet `17.1.0`, and Microsoft.Playwright `1.59.0`.
+- Treat Dapr runtime/CLI, Playwright browser binaries, Aspire preview integrations, and Fluent UI RC APIs as test-runtime compatibility risks; upgrades require focused smoke/regression coverage, not v
+ersion-only edits.
+
+## Critical Implementation Rules
+
+### Language-Specific Rules
+
+- Use C# file-scoped namespaces with `using` directives outside namespaces; file names must match the primary public type and public surface should stay one primary type per file.
+- Follow repository naming rules: PascalCase for types, methods, properties, and constants; camelCase for locals and parameters; interfaces begin with `I`; private fields use `_camelCase`; async metho
+ds end with `Async`.
+- Validate public boundaries with `ArgumentNullException.ThrowIfNull(...)` and `ArgumentException.ThrowIfNullOrWhiteSpace(...)`; do not let null/blank values drift into aggregate, authorization, hash,
+ or HTTP mapping code.
+- Model commands, events, results, and immutable contract values as records or readonly record structs when they are data-shaped; use sealed classes for concrete services and static classes for pure a
+ggregate/validator helpers.
+- Domain rejections return typed result codes and events/results; do not throw exceptions for expected business outcomes such as duplicate folders, tenant denial, idempotency replay, or missing ACL en
+tries.
+- Use `StringComparison.Ordinal`, `StringComparer.Ordinal`, and `CultureInfo.InvariantCulture` for identifiers, ordering, hashing, and wire-stable formatting. Do not use culture-sensitive comparisons
+for tenant, folder, action, correlation, or idempotency values.
+- Normalize metadata and canonical payloads deliberately before hashing or validation. Preserve NFC normalization, length-prefixing, SHA-256 hashing, duplicate-property rejection, and ordinal field or
+dering in idempotency code.
+- Keep sensitive metadata filtering centralized in validators. Do not duplicate or weaken blocklists for control characters, invisible format characters, paths, URLs, email markers, tokens, diffs, pro
+vider payloads, or generated context markers.
+- Public async service, query, HTTP, provider, Dapr, EventStore, filesystem, and worker paths must accept and propagate `CancellationToken`; library/server code should use `ConfigureAwait(false)` wher
+e nearby code does.
+- Aggregate handlers stay deterministic and side-effect free: pass timestamps in from the caller, return accepted/rejected results, and never perform I/O, provider calls, Dapr calls, logging, or files
+ystem work inside aggregate state transitions.
+- When adding a new command or access operation, update the command interface, validator, fingerprint/canonicalization logic, aggregate dispatch switch, result code mapping, event application, and tes
+ts together.
+- Prefer source-generated regex via `[GeneratedRegex]` for stable validation patterns instead of constructing regexes dynamically in hot validation paths.
+
+### Framework-Specific Rules
+
+- Use Hexalith.EventStore as the write-side command/query/event/projection framework. Do not introduce a parallel write-side framework or direct database write model for folder state.
+- `Hexalith.Folders.Server` owns REST transport plus EventStore-compatible `/process` and `/project` endpoints; external REST remains `/api/v1/...`, while internal EventStore invocation routes remain
+`/process` and `/project`.
+- Dapr app IDs and component names are stable contracts: `eventstore`, `tenants`, `folders`, `folders-workers`, `folders-ui`, `statestore`, and `pubsub`.
+- AppHost must resolve `DaprComponents/accesscontrol.yaml` and fail fast if it is missing. Do not silently run without the Dapr access-control configuration.
+- Aspire topology is centralized in `Hexalith.Folders.Aspire`; keep shared Dapr state-store/pub-sub sidecar wiring there and AppHost environment concerns in `Hexalith.Folders.AppHost`.
+- Folders subscribes to Hexalith.Tenants events through Dapr pub/sub topic `system.tenants.events` on pubsub `pubsub`; tenant projection handlers must drop envelope/payload tenant mismatches and prese
+rve replay/fingerprint behavior.
+- Production authorization layering is JWT validation, EventStore claim transform evidence, tenant-access projection freshness, folder ACL evidence, EventStore validators, then Dapr deny-by-default po
+licy evidence.
+- Client-controlled tenant/principal values from headers, query strings, or payloads are comparison inputs only. Authoritative tenant and principal values come from authenticated context and EventStor
+e claim-transform evidence.
+- The SDK is the typed canonical client. CLI and MCP must wrap `Hexalith.Folders.Client`; REST is a parallel transport validated against the same OpenAPI Contract Spine.
+- The Contract Spine is OpenAPI 3.1 at `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; server-generated OpenAPI, NSwag output, parity oracle rows, and idempotency helpers must stay
+synchronized with it.
+- Problem responses must remain metadata-only and follow the canonical extension shape: `category`, `code`, `message`, `correlationId`, `taskId` when present, `retryable`, `clientAction`, and `details
+.visibility`.
+- Blazor UI is a read-only operations console scaffold backed by the client. It must not expose mutation paths, credential reveal, file browsing, file editing, raw diffs, repair actions, or unrestrict
+ed filesystem access in MVP.
+- Workers own external provider, Git, working-copy, reconciliation, and rate-limit side effects. Aggregates, REST handlers, CLI, MCP, and UI should not perform provider or filesystem mutations directl
+y.
+- Provider adapters for GitHub and Forgejo must sit behind provider ports and capability tests. Do not treat Forgejo as a GitHub base-URL swap.
+
+### Testing Rules
+
+- Test projects mirror production boundaries: `tests/Hexalith.Folders.{Area}.Tests` for each production area, plus integration, UI E2E, fixtures, load, and tooling lanes.
+- Use xUnit v3 and Shouldly by default; keep assertions readable in test bodies and use NSubstitute only for focused unit-test doubles.
+- Use `TestContext.Current.CancellationToken` in async xUnit tests and propagate cancellation into app code under test.
+- Unit tests own pure aggregate, validator, idempotency, authorization, projection, query, and metadata-redaction rules. Integration tests own EventStore, Dapr, Aspire, provider, and REST boundary beh
+avior.
+- Scaffold, unit, contract, governance, and safety gates must run without provider credentials, tenant seed data, production secrets, running Dapr sidecars, Keycloak, Redis, GitHub, Forgejo, network c
+alls, or nested submodule initialization.
+- Shared normative fixtures live under `tests/fixtures/`; do not fork parity, idempotency, previous-spine, safety-channel, redaction, or quarantine corpora into per-test-project copies.
+- Contract Spine tests must validate OpenAPI 3.1 shape, server-vs-spine drift, generated client drift, parity oracle rows, previous-spine baseline, and metadata-only diagnostics.
+- Safety invariant tests must scan all declared output channels with `tests/fixtures/audit-leakage-corpus.json`, `tests/fixtures/safety-channel-inventory.json`, and quarantined negative controls.
+- Layered authorization tests must assert short-circuit order and no protected resource touch before the relevant authorization layer passes.
+- Tests for safe denial must prove unauthorized and nonexistent resources stay indistinguishable at the caller-visible boundary.
+- Idempotency tests must cover replay, conflict, ordinal field ordering, duplicate JSON property rejection, Unicode/control-character handling, UTC date handling, and tenant-scoped keys.
+- UI E2E is a deferred Playwright-on-.NET lane; keep skipped placeholders until Epic 6 story 6-2 provides stable read-only console routes and selectors. Do not add brittle CSS/text/sleep-based tests.
+- Use `src/Hexalith.Folders.Testing` factories and HTTP helpers for tenant, folder, task, correlation, idempotency, and authorization contexts; prefer explicit overrides over hidden static fixture sta
+te.
+- Focused gate scripts under `tests/tools/*.ps1` are CI contracts. Do not add recursive submodule initialization, artifact upload, publish, semantic-release, production endpoints, secrets, or broad ne
+twork assumptions to them.
+
+### Code Quality & Style Rules
+
+- Root configuration belongs at repository root: `.editorconfig`, `Directory.Build.props`, `Directory.Packages.props`, `global.json`, `nuget.config`, `.gitignore`, and `Hexalith.Folders.slnx`.
+- Preserve `.editorconfig` formatting: spaces, 4-space indentation, CRLF for most files, LF for shell/YAML/container artifacts, UTF-8, trimmed trailing whitespace, and final newline.
+- Keep package versions centralized in `Directory.Packages.props`; never add inline `Version` attributes to project `PackageReference`s.
+- Preserve dependency direction: Contracts has no behavior/project references; core references Contracts; Server references core, Contracts, ServiceDefaults, EventStore, and Tenants; Client references
+ Contracts; CLI/MCP/UI wrap Client; Workers own process managers.
+- Pack policy is opt-in. Only packageable library projects should set `<IsPackable>true</IsPackable>`; host, adapter, sample, worker, and test projects should not produce packages unless explicitly de
+signed to.
+- Keep generated client files in `src/Hexalith.Folders.Client/Generated` generated by build targets. Do not manually edit generated `.g.cs` files to fix behavior.
+- Keep source organized by concept area, not broad type buckets: `Aggregates/{Concept}`, `Authorization`, `Projections/{Concept}`, `Queries/{Concept}`, provider ports/adapters, workers, idempotency, r
+edaction, and caching.
+- Use shared contract/gate docs under `docs/contract/`, exit-criteria evidence under `docs/exit-criteria/`, and ADRs under `docs/adrs/`; do not bury normative rules in ad hoc README text.
+- Use shared fixtures under `tests/fixtures/` for normative cross-project data and keep ownership metadata machine-checkable.
+- Keep `bin/`, `obj/`, `TestResults/`, coverage, package, Playwright browser cache, logs, and local build artifacts out of source unless they are intentional fixtures.
+- Comments should explain domain invariants, security boundaries, compatibility pins, generated-artifact contracts, or story/ADR context; avoid comments that restate straightforward C#.
+- Structured diagnostics, test failure messages, logs, metrics, traces, Problem Details, and docs examples must be metadata-only. Never include secrets, tokens, raw file contents, diffs, provider payl
+oads, local absolute paths, or unauthorized resource existence.
+- Error/problem shapes, result code names, action tokens, parity dimensions, sensitive metadata categories, and state names are public contracts. Changing one requires corresponding OpenAPI, fixtures,
+ docs, tests, and generated artifacts.
+
+### Development Workflow Rules
+
+- Never initialize or update nested submodules recursively unless the user explicitly asks for nested submodules.
+- Initialize/update only root-level submodules by default: `Hexalith.AI.Tools`, `Hexalith.Commons`, `Hexalith.EventStore`, `Hexalith.FrontComposer`, `Hexalith.Memories`, and `Hexalith.Tenants`.
+- Do not use `git submodule update --init --recursive` in setup guidance, scripts, CI, docs, or agent instructions unless it is explicitly framed as user-requested nested-submodule work.
+- CI checkout should keep `submodules: false`; local setup docs may show the explicit root-level submodule command only.
+- Default repository verification starts with `dotnet restore Hexalith.Folders.slnx`, `dotnet build Hexalith.Folders.slnx --no-restore`, then the narrowest relevant `dotnet test` or gate script.
+- Use focused gate scripts as workflow contracts: `run-contract-spine-gates.ps1`, `run-safety-invariant-gates.ps1`, and `run-governance-completeness-gates.ps1`.
+- Do not add artifact upload, package publish, semantic-release, live provider drift, production endpoint calls, or secret-dependent behavior to focused PR gates unless the story explicitly targets re
+lease/live validation.
+- Contract Spine, generated client, parity oracle, idempotency helper, safety corpus, and governance evidence changes must update source artifacts, docs, fixtures, generated outputs, and tests togethe
+r.
+- When changing root build policy, solution shape, submodule references, package versions, or CI scripts, run scaffold/root verification and check that recursive submodule commands were not introduced
+.
+- Use sibling modules as read-only references for patterns unless the task explicitly asks to modify a submodule; submodule changes require separate intent and commits inside that submodule.
+- AppHost and Aspire topology changes require restart of the running Aspire app before resource wiring can be trusted.
+- UI E2E work requires installing matching Playwright browser binaries through `tests/install-playwright.ps1`; do not assume the NuGet package alone is sufficient.
+- Keep local developer conveniences out of blocking lanes unless they are hermetic and metadata-only.
+
+### Critical Don't-Miss Rules
+
+- Zero cross-tenant leakage is the top safety invariant. Deny access before touching file, workspace, credential, repository, lock, commit, provider, audit, or cache resources.
+- The reserved `system` tenant must never be used for managed tenant folder streams. Folder streams use `{managedTenantId}:folders:{folderId}` and organization streams use `{managedTenantId}:organizat
+ions:{organizationId}`.
+- Tenant authority comes from authenticated context and EventStore claim-transform evidence only. Payload, query, and header tenant/principal values are comparison inputs, not authority.
+- Authorization order is contractual: JWT validation, EventStore claim transform, tenant-access freshness, folder ACL, EventStore validator, then Dapr deny-by-default policy. Do not reorder or skip la
+yers for convenience.
+- Metadata-only is non-negotiable across events, logs, traces, metrics, projections, audit records, Problem Details, console responses, provider diagnostics, generated artifacts, docs examples, and te
+st failure messages.
+- All durable operational keys and cache keys must carry tenant scope unless covered by an approved entry in `tests/fixtures/cache-key-exceptions.yaml`.
+- Idempotency is required for mutating operations. Same key plus equivalent payload returns the same logical result; same key plus different payload returns `idempotency_conflict`.
+- Non-mutating operations must not accept `Idempotency-Key`; they still require correlation behavior, authorization parity, safe denial shape, audit metadata, and read-consistency classification.
+- Never search, glob, list, partially read, or inspect paths before tenant access, folder ACL, and path policy pass.
+- Unknown provider outcomes must enter `unknown_provider_outcome` or `reconciliation_required`; do not retry in ways that could duplicate repositories, file mutations, commits, audits, or idempotency
+records.
+- Workspace lifecycle must follow the C6 matrix. Every state/event pair must have a positive transition or explicit `state_transition_invalid` rejection with state unchanged.
+- Read-only operations console means read-only. No mutation, repair, credential reveal, file browsing, file editing, raw diffs, hidden provider payloads, or unrestricted filesystem views in MVP.
+- CLI exit codes and MCP failure kinds must map one-to-one to canonical categories from the parity oracle. Do not collapse distinct failures for adapter convenience.
+- Do not hand-edit generated parity rows, generated clients, or generated idempotency helpers. Change the OpenAPI Contract Spine or generator inputs and regenerate.
+- Do not initialize/update nested submodules recursively by default. This is a repository safety rule, not a setup preference.
+- GitHub and Forgejo support must be capability-tested. Do not assume API compatibility, permission equivalence, webhook equivalence, rate-limit equivalence, or identical default-branch behavior.
+- Redacted values must be visibly distinct from unknown or missing values. Silent truncation or hiding redaction is treated as an operator-facing correctness bug.
+
+---
+
+## Usage Guidelines
+
+**For AI Agents:**
+
+- Read this file before implementing code in Hexalith.Folders.
+- Follow all rules exactly as documented; when in doubt, choose the more restrictive option.
+- Update this file when new project-specific implementation patterns become stable.
+
+**For Humans:**
+
+- Keep this file lean and focused on rules agents are likely to miss.
+- Update it when the technology stack, architecture decisions, or workflow policies change.
+- Remove rules that become obvious or mechanically enforced everywhere.
+
+Last Updated: 2026-05-20
+
+
+ succeeded in 620ms:
+namespace Hexalith.Folders.Providers.Abstractions;
+
+public interface IGitProvider
+{
+    string ProviderFamily { get; }
+
+    string ProviderKey { get; }
+
+    Task<ProviderCapabilityDiscoveryResult> DiscoverCapabilitiesAsync(
+        ProviderCapabilityDiscoveryRequest request,
+        CancellationToken cancellationToken = default);
+
+    ProviderCapabilityComparisonResult CompareCapabilityProfiles(
+        ProviderCapabilityProfile current,
+        ProviderCapabilityProfile candidate);
+}
+
+
+ succeeded in 779ms:
+using System.Text.Json;
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.GitHub;
+using Hexalith.Folders.Testing.Providers;
+using Shouldly;
+using Xunit;
+
+namespace Hexalith.Folders.Tests.Providers.GitHub;
+
+public sealed class GitHubProviderTests
+{
+    [Fact]
+    public async Task DiscoversGitHubCapabilityProfileThroughInternalApiSeam()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("ghp_123456789012345678901234567890123456");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        ProviderCapabilityProfile profile = result.Profile.ShouldNotBeNull();
+        profile.ProviderFamily.ShouldBe("github");
+        profile.ProviderKey.ShouldBe("github");
+        profile.TargetEvidence.ApiSurfaceVersion.ShouldBe("github-rest-2022-11-28");
+        profile.Evidence["profile_source"].ShouldBe("github_octokit_seam");
+        profile.Evidence["github_api_version"].ShouldBe("2022-11-28");
+        profile.Evidence["credential_mode"].ShouldBe("appinstallationreference");
+        profile.Evidence["authorization_freshness"].ShouldBe("fresh");
+        profile.Evidence["safe_target_fingerprint"].ShouldNotBeNullOrWhiteSpace();
+        profile.KnownFailureMappings["timeout_mutation"].ShouldBe("unknown_provider_outcome");
+        profile.Operations.Select(o => o.OperationId).ShouldContain(ProviderOperationCatalog.RepositoryCreation);
+        profile.Operations.Select(o => o.OperationId).ShouldContain(ProviderOperationCatalog.BranchRefInspection);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.FileMutationSupport).Support.ShouldBe(ProviderOperationSupport.Partial);
+        profile.RateLimit.RetryAfter.ShouldBe(TimeSpan.FromSeconds(90));
+
+        credentialResolver.Calls.ShouldBe(1);
+        apiClientFactory.Calls.ShouldBe(1);
+        apiClient.ReadinessCalls.ShouldBe(1);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("ghp_123456789012345678901234567890123456", Case.Sensitive);
+        serialized.ShouldNotContain("unauthorized-owner", Case.Sensitive);
+        serialized.ShouldNotContain("repository-secret", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task UnsupportedCredentialModesFailBeforeCredentialsOrOctokitClientCreation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(
+                credentialModes:
+                [
+                    ProviderCredentialMode.AppInstallationReference,
+                    ProviderCredentialMode.UserDelegatedReference,
+                ]),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("ambiguous_github_credential_mode");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task MissingCredentialModesFailBeforeCredentialsOrOctokitClientCreation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(credentialModes: []),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("missing_github_credential_mode");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task UnsupportedSingleCredentialModeFailsBeforeCredentialsOrOctokitClientCreation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(credentialModes: [ProviderCredentialMode.ServiceAccountReference]),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("unsupported_github_credential_mode");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task UnsafeTargetLabelsFailBeforeCredentialsOrProviderObservation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+        ProviderCapabilityDiscoveryRequest request = Request() with
+        {
+            TargetEvidence = ProviderCapabilityTestData.TargetEvidence() with
+            {
+                Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["owner"] = "unauthorized-owner",
+                    ["repository"] = "repository-secret",
+                    ["branch"] = "branch-secret-prod",
+                },
+            },
+        };
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            request,
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("unsafe_github_target_metadata");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("unauthorized-owner", Case.Sensitive);
+        serialized.ShouldNotContain("repository-secret", Case.Sensitive);
+        serialized.ShouldNotContain("branch-secret-prod", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task StaleTargetEvidenceFailsBeforeCredentialsOrProviderObservation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request() with
+            {
+                TargetEvidence = ProviderCapabilityTestData.TargetEvidence(isStale: true),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ReconciliationRequired);
+        result.ReasonCode.ShouldBe("target_evidence_stale");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task PropagatesPinnedGitHubCompatibilityMetadataOnlyToInternalApiSeam()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("ghp_123456789012345678901234567890123456");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryRequest request = Request(
+            credentialModes: [ProviderCredentialMode.UserDelegatedReference],
+            correlationId: "correlation-github-compatibility");
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            request,
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialMode.ShouldBe(ProviderCredentialMode.UserDelegatedReference);
+        credentialResolver.LastRequest.ShouldNotBeNull().AuthorizationEvidenceFingerprint.ShouldBe("authz-snapshot-default");
+        apiClientFactory.LastRequest.ShouldNotBeNull().ProductHeader.ShouldBe("Hexalith-Folders");
+        apiClientFactory.LastRequest.ShouldNotBeNull().ApiVersion.ShouldBe("2022-11-28");
+        apiClientFactory.LastRequest.ShouldNotBeNull().CredentialMode.ShouldBe(ProviderCredentialMode.UserDelegatedReference);
+        apiClientFactory.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        apiClientFactory.LastRequest.ShouldNotBeNull().CorrelationId.ShouldBe("correlation-github-compatibility");
+        apiClientFactory.CredentialWasAvailableAtCreation.ShouldBeTrue();
+
+        GitHubReadinessRequest readinessRequest = apiClient.LastRequest.ShouldNotBeNull();
+        readinessRequest.ManagedTenantId.ShouldBe("tenant-a");
+        readinessRequest.OrganizationId.ShouldBe("organization-a");
+        readinessRequest.ProviderBindingRef.ShouldBe("binding-a");
+        readinessRequest.CredentialMode.ShouldBe(ProviderCredentialMode.UserDelegatedReference);
+        readinessRequest.ApiVersion.ShouldBe("2022-11-28");
+        readinessRequest.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        readinessRequest.CorrelationId.ShouldBe("correlation-github-compatibility");
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("ghp_123456789012345678901234567890123456", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task CredentialResolutionFailuresShortCircuitBeforeOctokitClientCreation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Failure(
+            ProviderFailureCategory.ProviderAuthenticationRequired,
+            "github_credential_unavailable",
+            TimeSpan.FromSeconds(30));
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderAuthenticationRequired);
+        result.ReasonCode.ShouldBe("github_credential_unavailable");
+        result.RetryAfter.ShouldBe(TimeSpan.FromSeconds(30));
+        credentialResolver.Calls.ShouldBe(1);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task PermissionEvidenceMapsUnavailableGitHubCapabilitiesWithoutRawProviderDetails()
+    {
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success(
+            new GitHubPermissionEvidence(
+                SupportsRepositoryCreation: false,
+                SupportsRepositoryBinding: true,
+                SupportsBranchRefInspection: false,
+                SupportsFileMutation: false,
+                SupportsCommit: false,
+                SupportsStatus: false,
+                SupportsMetadata: false));
+        GitHubProvider provider = new(
+            RecordingGitHubCredentialResolver.Success("token"),
+            new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(),
+            TestContext.Current.CancellationToken);
+
+        ProviderCapabilityProfile profile = result.Profile.ShouldNotBeNull();
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.ProviderSupportEvidence).Support.ShouldBe(ProviderOperationSupport.Unavailable);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.RepositoryCreation).Support.ShouldBe(ProviderOperationSupport.Unavailable);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.BranchRefInspection).FailureCategory.ShouldBe(ProviderFailureCategory.ProviderPermissionInsufficient);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.FileMutationSupport).Support.ShouldBe(ProviderOperationSupport.Unavailable);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.CommitSupport).Support.ShouldBe(ProviderOperationSupport.Unavailable);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.StatusQuery).Support.ShouldBe(ProviderOperationSupport.Unavailable);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("permissions", Case.Insensitive);
+        serialized.ShouldNotContain("raw_payload", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task SafeTargetFingerprintIsIsolatedByBindingAuthorizationCredentialModeAndOperationScope()
+    {
+        GitHubProvider provider = new(
+            RecordingGitHubCredentialResolver.Success("token"),
+            new RecordingGitHubApiClientFactory(RecordingGitHubApiClient.Success()));
+
+        ProviderCapabilityDiscoveryRequest baseline = Request(targetEvidence: TargetEvidenceWithoutDeclaredFingerprint("readiness"));
+
+        string baselineFingerprint = await DiscoverSafeTargetFingerprintAsync(provider, baseline);
+        string bindingFingerprint = await DiscoverSafeTargetFingerprintAsync(provider, baseline with { ProviderBindingRef = "binding-b" });
+        string authorizationFingerprint = await DiscoverSafeTargetFingerprintAsync(
+            provider,
+            baseline with
+            {
+                AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
+                    "authz-snapshot-b",
+                    DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
+                    "fresh"),
+            });
+        string credentialModeFingerprint = await DiscoverSafeTargetFingerprintAsync(
+            provider,
+            baseline with { CredentialModeRequirements = [ProviderCredentialMode.UserDelegatedReference] });
+        string operationScopeFingerprint = await DiscoverSafeTargetFingerprintAsync(
+            provider,
+            baseline with { TargetEvidence = TargetEvidenceWithoutDeclaredFingerprint("repository_creation") });
+
+        bindingFingerprint.ShouldNotBe(baselineFingerprint);
+        authorizationFingerprint.ShouldNotBe(baselineFingerprint);
+        credentialModeFingerprint.ShouldNotBe(baselineFingerprint);
+        operationScopeFingerprint.ShouldNotBe(baselineFingerprint);
+    }
+
+    [Theory]
+    [InlineData("ValidationFailure", ProviderFailureCategory.ProviderValidationFailed, "github_validation_failed", false)]
+    [InlineData("AuthenticationRequired", ProviderFailureCategory.ProviderAuthenticationRequired, "github_authentication_required", false)]
+    [InlineData("PermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient", false)]
+    [InlineData("NotFoundOrHidden", ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing", false)]
+    [InlineData("RepositoryConflict", ProviderFailureCategory.ProviderConflict, "github_repository_conflict", false)]
+    [InlineData("BranchProtectionConflict", ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict", false)]
+    [InlineData("PrimaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited", true)]
+    [InlineData("SecondaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited", true)]
+    [InlineData("ServerUnavailable", ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable", true)]
+    [InlineData("TimeoutDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown", false)]
+    [InlineData("MalformedResponse", ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response", false)]
+    [InlineData("UnexpectedTransportFailure", ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown", false)]
+    public async Task MapsGitHubFailuresToCanonicalProviderResults(
+        string conditionName,
+        ProviderFailureCategory expectedCategory,
+        string expectedReason,
+        bool expectedRetryable)
+    {
+        GitHubApiFailureCondition condition = Enum.Parse<GitHubApiFailureCondition>(conditionName);
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Failure(condition);
+        GitHubProvider provider = new(
+            RecordingGitHubCredentialResolver.Success("token"),
+            new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+        result.Retryable.ShouldBe(expectedRetryable);
+        result.SafeRemediationCode.ShouldNotContain("unauthorized", Case.Sensitive);
+        result.SafeRemediationCode.ShouldNotContain("repository", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task StaleAuthorizationEvidenceFailsBeforeCredentialLookup()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request() with
+            {
+                AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
+                    "stale-authz",
+                    DateTimeOffset.Parse("2026-05-24T00:00:00+00:00"),
+                    "stale"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ReconciliationRequired);
+        result.ReasonCode.ShouldBe("authorization_evidence_stale");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ForbiddenTargetLabelsAreRejectedWithoutLeakingSentinels()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        string[] sentinels =
+        [
+            "owner-acme-secret",
+            "repository-secret",
+            "branch-secret-prod",
+            "installation-id-998877",
+            "https://user:ghp_secret@github.com/acme/repo.git",
+            "person@example.com",
+            "Display Name Secret",
+            "raw-github-payload-blob",
+        ];
+
+        ProviderCapabilityDiscoveryRequest request = Request() with
+        {
+            TargetEvidence = ProviderCapabilityTestData.TargetEvidence() with
+            {
+                Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["owner"] = sentinels[0],
+                    ["repository"] = sentinels[1],
+                    ["branch"] = sentinels[2],
+                    ["installation_id"] = sentinels[3],
+                    ["clone_url"] = sentinels[4],
+                    ["email"] = sentinels[5],
+                    ["display_name"] = sentinels[6],
+                    ["raw_payload"] = sentinels[7],
+                },
+            },
+        };
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            request,
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("unsafe_github_target_metadata");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+
+        string serialized = JsonSerializer.Serialize(result);
+        foreach (string sentinel in sentinels)
+        {
+            serialized.ShouldNotContain(sentinel, Case.Sensitive);
+        }
+    }
+
+    [Theory]
+    [InlineData("ghp_123456789012345678901234567890123456")]
+    [InlineData("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dQw4w9WgXcQ")]
+    [InlineData("-----BEGIN RSA PRIVATE KEY-----MIIabc-----END RSA PRIVATE KEY-----")]
+    public async Task SensitiveTargetValuesAreRejectedWithoutLeakingSentinels(string sentinel)
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryRequest request = Request() with
+        {
+            TargetEvidence = ProviderCapabilityTestData.TargetEvidence() with
+            {
+                Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["operation_scope"] = sentinel,
+                },
+            },
+        };
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            request,
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("sensitive_provider_metadata_rejected");
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain(sentinel, Case.Sensitive);
+    }
+
+    private static async Task<string> DiscoverSafeTargetFingerprintAsync(
+        GitHubProvider provider,
+        ProviderCapabilityDiscoveryRequest request)
+    {
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            request,
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        return result.Profile.ShouldNotBeNull().TargetEvidence.Metadata["safe_target_fingerprint"];
+    }
+
+    private static ProviderTargetEvidence TargetEvidenceWithoutDeclaredFingerprint(string operationScope)
+        => ProviderCapabilityTestData.TargetEvidence() with
+        {
+            Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["operation_scope"] = operationScope,
+            },
+        };
+
+    private static ProviderCapabilityDiscoveryRequest Request(
+        IReadOnlyList<ProviderCredentialMode>? credentialModes = null,
+        string correlationId = "correlation-a",
+        ProviderTargetEvidence? targetEvidence = null)
+        => ProviderCapabilityTestData.Request() with
+        {
+            CorrelationId = correlationId,
+            TargetEvidence = targetEvidence ?? ProviderCapabilityTestData.TargetEvidence() with
+            {
+                Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["safe_target_fingerprint"] = "safe-target-a",
+                    ["operation_scope"] = "readiness",
+                },
+            },
+            CredentialModeRequirements = credentialModes ?? [ProviderCredentialMode.AppInstallationReference],
+        };
+}
+
+
+ succeeded in 935ms:
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+public sealed class GitHubProvider : IGitProvider
+{
+    private readonly IGitHubCredentialResolver _credentialResolver;
+    private readonly IGitHubApiClientFactory _apiClientFactory;
+
+    public GitHubProvider()
+        : this(new UnconfiguredGitHubCredentialResolver(), new OctokitGitHubApiClientFactory())
+    {
+    }
+
+    internal GitHubProvider(
+        IGitHubCredentialResolver credentialResolver,
+        IGitHubApiClientFactory apiClientFactory)
+    {
+        _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
+        _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
+    }
+
+    public string ProviderFamily => GitHubProviderConstants.ProviderFamily;
+
+    public string ProviderKey => GitHubProviderConstants.ProviderKey;
+
+    public async Task<ProviderCapabilityDiscoveryResult> DiscoverCapabilitiesAsync(
+        ProviderCapabilityDiscoveryRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        ProviderCapabilityDiscoveryResult? boundaryFailure = ValidateBoundary(request);
+        if (boundaryFailure is not null)
+        {
+            return boundaryFailure;
+        }
+
+        if (!GitHubCredentialModeValidator.TryGetSupportedMode(
+            request.CredentialModeRequirements,
+            out ProviderCredentialMode credentialMode,
+            out string? credentialFailure))
+        {
+            return Failure(
+                ProviderFailureCategory.ProviderValidationFailed,
+                credentialFailure ?? "unsupported_github_credential_mode",
+                request);
+        }
+
+        if (!GitHubSafeTargetFingerprint.TryCreate(request, credentialMode, out ProviderTargetEvidence? safeTargetEvidence, out string? targetFailure))
+        {
+            return Failure(
+                ProviderFailureCategory.ProviderValidationFailed,
+                targetFailure ?? "unsafe_github_target_metadata",
+                request);
+        }
+
+        GitHubCredentialResolutionResult credentialResult = await _credentialResolver.ResolveAsync(
+            new GitHubCredentialResolutionRequest(
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.ProviderBindingRef,
+                credentialMode,
+                request.AuthorizationEvidence.Fingerprint,
+                request.CorrelationId),
+            cancellationToken).ConfigureAwait(false);
+
+        if (!credentialResult.IsSuccess)
+        {
+            return Failure(
+                credentialResult.FailureCategory,
+                credentialResult.ReasonCode,
+                request,
+                credentialResult.RetryAfter);
+        }
+
+        GitHubCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
+        GitHubReadinessResult readiness;
+        try
+        {
+            IGitHubApiClient client = await _apiClientFactory.CreateAsync(
+                new GitHubApiClientRequest(
+                    GitHubProviderConstants.ProductHeader,
+                    GitHubProviderConstants.RestApiVersion,
+                    credentialMode,
+                    request.ProviderBindingRef,
+                    request.CorrelationId),
+                credential,
+                cancellationToken).ConfigureAwait(false);
+
+            readiness = await client.GetReadinessAsync(
+                new GitHubReadinessRequest(
+                    request.ManagedTenantId,
+                    request.OrganizationId,
+                    request.ProviderBindingRef,
+                    credentialMode,
+                    GitHubProviderConstants.RestApiVersion,
+                    safeTargetEvidence.Metadata["safe_target_fingerprint"],
+                    request.CorrelationId),
+                cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            await credential.DisposeAsync().ConfigureAwait(false);
+        }
+
+        if (!readiness.IsSuccess)
+        {
+            return GitHubFailureMapper.ToProviderFailure(readiness, request);
+        }
+
+        ProviderCapabilityDiscoveryRequest effectiveRequest = request with
+        {
+            ProviderFamily = ProviderFamily,
+            ProviderKey = ProviderKey,
+            ProfileSchemaVersion = "v1",
+            TargetEvidence = safeTargetEvidence,
+            CredentialModeRequirements = [credentialMode],
+        };
+
+        return ProviderCapabilityProfileFactory.Create(
+            effectiveRequest,
+            ProviderFamily,
+            ProviderKey,
+            GitHubReadinessMapper.ToOperationRows(readiness.Permissions.ShouldNotBeNullForProvider()),
+            GitHubReadinessMapper.ToRateLimit(readiness.RateLimit.ShouldNotBeNullForProvider()),
+            GitHubFailureMapper.KnownFailureMappings,
+            GitHubReadinessMapper.ToEvidence(
+                request,
+                credentialMode,
+                safeTargetEvidence.Metadata["safe_target_fingerprint"]));
+    }
+
+    public ProviderCapabilityComparisonResult CompareCapabilityProfiles(
+        ProviderCapabilityProfile current,
+        ProviderCapabilityProfile candidate)
+        => ProviderCapabilityProfileFactory.Compare(current, candidate);
+
+    private static ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
+    {
+        try
+        {
+            string providerFamily = ProviderIdentityIdentifier.Normalize(request.ProviderFamily);
+            string providerKey = ProviderIdentityIdentifier.Normalize(request.ProviderKey);
+            if (!string.Equals(providerFamily, GitHubProviderConstants.ProviderFamily, StringComparison.Ordinal)
+                || !string.Equals(providerKey, GitHubProviderConstants.ProviderKey, StringComparison.Ordinal))
+            {
+                return Failure(ProviderFailureCategory.UnsupportedProviderCapability, "unsupported_provider_family", request);
+            }
+        }
+        catch (ArgumentException)
+        {
+            return Failure(ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed", request);
+        }
+
+        if (!string.Equals(request.AuthorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase))
+        {
+            return Failure(ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale", request);
+        }
+
+        if (request.TargetEvidence.IsStale)
+        {
+            return Failure(ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale", request);
+        }
+
+        return null;
+    }
+
+    private static ProviderCapabilityDiscoveryResult Failure(
+        ProviderFailureCategory category,
+        string reasonCode,
+        ProviderCapabilityDiscoveryRequest request,
+        TimeSpan? retryAfter = null)
+        => ProviderCapabilityDiscoveryResult.Failure(
+            category,
+            reasonCode,
+            request.CorrelationId,
+            retryAfter,
+            safeRemediationCode: $"{category.ToCategoryCode()}_remediation");
+}
+
+
+ succeeded in 1111ms:
+45:- [ ] Add the concrete Forgejo provider package boundary. (AC: 1, 2, 9)
+46:  - [ ] Create `src/Hexalith.Folders/Providers/Forgejo/` with `ForgejoProvider` and one-public-type-per-file support models needed by the existing `IGitProvider` port.
+47:  - [ ] Add an adapter-internal typed HTTP seam wrapping Forgejo API calls so offline tests can exercise Forgejo responses without leaking endpoint DTOs into `IGitProvider` or public provider model
+s; keep the seam internal to the Forgejo provider assembly and expose it to tests only through approved InternalsVisibleTo or provider-level test helpers.
+48:  - [ ] Use central package management for any added HTTP, resilience, JSON, or OpenAPI tooling packages; do not place package versions directly in project files.
+49:  - [ ] Add a dependency guard test or build check proving Forgejo endpoint DTOs, snapshot models, manifest readers, readiness mappers, failure mappers, and typed HTTP seams are limited to the conc
+rete Forgejo provider implementation and Forgejo-specific tests.
+50:  - [ ] Add dependency guard tests or architecture checks proving the Forgejo provider area does not reference Forgejo/GitHub SDKs, CLI wrappers, MCP/UI/EventStore/Contract Spine packages, Aspire h
+osting, Dapr, Keycloak, Redis, or credential-store implementation projects except through approved abstractions already allowed by Story 3.2.
+51:  - [ ] Keep `src/Hexalith.Folders/Providers/Abstractions/` free of Forgejo DTOs, endpoint names, OpenAPI snapshot shapes, Forgejo-specific exception types, and Forgejo-specific package references.
+52:  - [ ] If Story 3.2 abstractions or Story 3.3 GitHub oracle behavior are not yet implemented when development begins, implement only against the approved Story 3.2 port contract and record any mis
+sing equivalence oracle gap instead of inventing a competing port shape.
+53:- [ ] Implement authorized Forgejo request construction and credential handling. (AC: 3, 4, 10, 13)
+54:  - [ ] Resolve credential references only through the approved authorized credential seam after tenant, organization, ACL, provider-binding, and target-instance authorization succeeds.
+55:  - [ ] Build typed HTTP clients from authorized binding/base-URL metadata and short-lived in-memory credential material; do not accept base URLs, owner names, repository names, or token values fro
+m untrusted request payloads as authority.
+56:  - [ ] Canonicalize authorized base URLs before request construction, reject URL userinfo and token-shaped query parameters, and treat redirects to a different origin or scheme as provider configu
+ration/readiness failures without forwarding credentials.
+57:  - [ ] Use approved `Authorization` header semantics for tokens; do not send `token` or `access_token` query parameters even though Forgejo supports them.
+58:  - [ ] Treat instance URL, owner, repository, branch/ref, token labels, and credential labels as sensitive before authorization and safe metadata only when explicitly allowed by the internal provi
+der evidence model.
+59:  - [ ] Add tests proving denied paths make zero calls to credential resolution, HTTP client factories, Forgejo API seams, repository lookup, branch lookup, snapshot selection, readiness probes, au
+dit writers, metrics, logs, diagnostics, and capability caches.
+60:  - [ ] Add request/log tests proving no `token` or `access_token` query parameters are produced and authorization values do not appear in logs, metrics, diagnostics, snapshot names, drift artifact
+s, or failure metadata.
+61:- [ ] Add supported-version snapshots and manifest validation. (AC: 5, 10, 11, 12)
+62:  - [ ] Create `tests/contracts/forgejo/supported-versions.json` with explicit version entries, support class, source URL, snapshot path, expected API compatibility posture, and owner/reviewer meta
+data.
+63:  - [ ] Include manifest integrity evidence that binds each supported version to its snapshot path, expected source, classification posture, and review metadata, then fail closed when the manifest
+hash, snapshot file, or declared version family is stale, missing, duplicated, or ambiguous.
+64:  - [ ] Add pinned `tests/contracts/forgejo/<version>/swagger.v1.json` snapshots for latest stable, latest LTS, n-1 minor, and pinned customer versions.
+65:  - [ ] Add manifest tests proving every listed snapshot exists, parses as OpenAPI/Swagger JSON, names the expected Forgejo version family, and contains the endpoint groups needed by the current pr
+ovider port.
+66:  - [ ] Add coverage matrix tests mapping each required provider operation to one or more snapshot paths and fake responses.
+67:  - [ ] Add negative tests proving request-provided version labels, untrusted binding labels, and live `/swagger.v1.json` values cannot select an unsupported snapshot or silently downgrade to a nea
+rest known version.
+68:  - [ ] Ensure snapshot updates require reviewer-visible diffs and never contain token values, private instance URLs, customer repository names, credentials, or live response payloads beyond the pu
+blic schema.
+69:  - [ ] Keep at least one checked-in manifest entry and matching pinned `swagger.v1.json` fixture in the first implementation slice before marking the adapter behavior complete.
+70:- [ ] Implement Forgejo readiness and capability evidence mapping. (AC: 6, 9, 10)
+71:  - [ ] Convert Forgejo version, token scope evidence, API settings, response limits, pagination, branch/ref behavior, file operation limits, commit/status support, and repository visibility constr
+aints into the Story 3.2 capability profile.
+72:  - [ ] Include safe metadata for Forgejo provider family/key, target product/version, snapshot version, API surface version, provider binding reference, capability profile schema/version, supporte
+d operations, unsupported or partial operations, rate-limit posture, retryability hints, and sanitized reason codes.
+73:  - [ ] Preserve Forgejo-specific capability differences as metadata consumed by downstream readiness/repository workflows instead of adding product workflow branches that assume GitHub semantics;
+parity with GitHub means equivalent canonical outcomes where product semantics match, not collapsing Forgejo-only limitations, pagination, token-scope, branch/ref, or drift evidence into GitHub-shaped
+ defaults.
+74:  - [ ] Validate required token scopes and endpoint assumptions with hermetic fake responses and snapshot fixtures.
+75:- [ ] Implement canonical result and failure mapping. (AC: 7, 8)
+76:  - [ ] Implement the Forgejo failure mapping matrix in this story and keep each mapped case covered by an offline fixture or fake seam response.
+77:  - [ ] Map HTTP status categories, Forgejo validation errors, authentication failures, permission failures, missing resources, repository conflicts, branch protection conflicts, rate limits, timeo
+uts, cancellations, 5xx failures, malformed responses, unsupported operations, version-incompatible payloads, and schema drift to canonical provider categories.
+78:  - [ ] Add precedence rules and tests for timeout after request body send, 404 repository versus 404 branch/path, 403 missing scope versus forbidden repository, 409 existing-equivalent versus real
+ conflict, 422 validation versus schema incompatibility, 301/302/307 redirects, 204 or empty bodies, invalid JSON, wrong content type, and HTML proxy error pages.
+79:  - [ ] Separate known provider failures from unknown outcomes; unknown or ambiguous mutating results must route to reconciliation metadata instead of unsafe retry.
+80:  - [ ] Retry only known idempotent read operations and known transient categories when the port provides retry permission; never automatically retry authorization failures, validation failures, no
+t-found/hidden-resource responses, unsupported capability, version drift, or unknown mutating outcomes.
+81:  - [ ] Carry only safe remediation category, retry-after metadata where safe, correlation ID, operation ID, provider binding reference, snapshot/version evidence, and sanitized reason code.
+82:- [ ] Add drift detection tooling and CI hooks. (AC: 11, 12)
+83:  - [ ] Add local test/tool configuration for schema comparison under `tests/contracts/forgejo/` or `tests/tools/forgejo-drift/` following the architecture-approved oasdiff classifier policy.
+84:  - [ ] Add a hermetic PR-gate test that compares checked-in snapshots against expected operation coverage and classification fixtures without network access.
+85:  - [ ] Classify additive field, removed field, type change, enum or new string value, nullability change, error shape change, pagination shape change, and auth/rate-limit header shape change with
+expected severity.
+86:  - [ ] Add or update `.github/workflows/nightly-drift.yml` or the existing provider-drift workflow only if it can be done without disrupting unrelated CI; otherwise record the exact workflow gap a
+s deferred implementation work in this story's dev record.
+87:  - [ ] Ensure drift reports redact private instance URLs, tokens, owner/repository names, branch names, file paths, and raw response samples.
+88:  - [ ] Keep raw schema diffs and live-drift payloads inside provider test/tooling artifacts only; PR summaries, logs, audit output, telemetry, and retained CI artifacts must expose sanitized class
+ification metadata rather than raw OpenAPI fragments or instance-specific identifiers.
+89:- [ ] Add Forgejo operation coverage behind the provider port. (AC: 1, 6, 7, 8, 9)
+90:  - [ ] Implement the Forgejo operations currently required by `IGitProvider` for readiness, repository create/bind evidence, branch/ref inspection, file mutation support, commit support, and statu
+s query.
+91:  - [ ] Keep operation implementations idempotency-aware where the port requires idempotency evidence, but leave cross-workflow orchestration, worker process managers, and reconciliation scheduling
+ to later stories unless the current port explicitly owns a narrow return model.
+92:  - [ ] Do not implement GitHub behavior, local Git working-copy behavior, webhooks, broad repair workflows, CLI/MCP commands, UI pages, or generated SDK edits in this story.
+93:- [ ] Add offline tests, snapshots, and dependency guards. (AC: 2, 3, 7, 8, 11, 13, 14)
+94:  - [ ] Add tests under `tests/Hexalith.Folders.Tests/Providers/Forgejo/` or the established provider test location using fake Forgejo seams and pinned snapshots.
+95:  - [ ] Split offline tests into deterministic groups for denied-path no-touch behavior, canonical failure mapping, redaction, dependency guards, snapshot manifest validation, schema drift classifi
+cation, pagination/limit mapping, and token-scope mapping.
+96:  - [ ] Add a fixture inventory covering repository list pagination, repository metadata, branch list, commit lookup, tree/list contents, file content, create/update/delete mutation success, unauth
+orized-hidden versus authorized-missing resources, rate-limit response, validation error, malformed payload, and schema-incompatible payload.
+97:  - [ ] Add pagination edge fixtures for partial pagination, duplicate items across pages, missing or invalid next links, and provider caps lower than requested limits.
+98:  - [ ] Cover success, equivalent existing repository, validation failure, authentication failure, permission failure, missing owner/repository, repository conflict, branch protection conflict, rat
+e limit, timeout, cancellation, 5xx, malformed response, unsupported capability, version-incompatible response, unknown outcome, and reconciliation-required cases.
+99:  - [ ] Add leakage tests using sentinel token, JWT, PEM, credential URL, embedded-credential repository URL, raw Forgejo payload, query string, authorization header, request body, response body, e
+xception message, structured log scope, activity tag, base URL, branch name with secret, file content, diff, email, display name, owner, repository, and unauthorized resource values.
+100:  - [ ] Add dependency/architecture guard tests proving only the concrete Forgejo provider area references Forgejo endpoint DTOs, OpenAPI snapshot models, and Forgejo-specific typed HTTP seams, an
+d proving offline PR-gate tests do not require live Forgejo/GitHub credentials, Aspire, Dapr, Redis, Keycloak, Docker, network access, or nested submodules.
+
+codex
+The current provider port is narrower than the story text: it only supports capability discovery and profile comparison today. I’m going to implement Forgejo against that actual Story 3.2 surface, mir
+roring the GitHub adapter pattern where product semantics already exist and keeping the broader operation items recorded as bounded by the current port.
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubCredentialResolutionRequest.cs; Get-Content -Raw src\\Hexalith.Folders\\Provider
+s\\GitHub\\GitHubCredentialResolutionResult.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubCredentialLease.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\IGitHubC
+redentialResolver.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\UnconfiguredGitHubCredentialResolver.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubReadinessRequest.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\
+GitHubReadinessResult.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubPermissionEvidence.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubRateLimitEvidence.cs;
+ Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubReadinessMapper.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\IGitHubApiClient.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\IGitHu
+bApiClientFactory.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubApiClientRequest.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\OctokitGitHubApiClientFactory.cs;
+ Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\OctokitGitHubApiClient.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw tests\\Hexalith.Folders.Tests\\Hexalith.Folders.Tests.csproj" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw tests\\Hexalith.Folders.Tests\\Providers\\GitHub\\GitHubDependencyGuardTests.cs; Get-Content -Raw tests\\Hexalith.Folders.Tests\
+\Providers\\GitHub\\RecordingGitHubCredentialResolver.cs; Get-Content -Raw tests\\Hexalith.Folders.Tests\\Providers\\GitHub\\RecordingGitHubApiClient.cs; Get-Content -Raw tests\\Hexalith.Folders.Tests
+\\Providers\\GitHub\\RecordingGitHubApiClientFactory.cs" in D:\Hexalith.Folders
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubFailureMapper.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\Git
+HubApiFailureCondition.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubProviderConstants.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubCredentialModeValidat
+or.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubSafeTargetFingerprint.cs; Get-Content -Raw src\\Hexalith.Folders\\Providers\\GitHub\\GitHubProviderNullExtensions.cs" in D:\Hexa
+lith.Folders
+ succeeded in 450ms:
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubCredentialResolutionRequest(
+    string ManagedTenantId,
+    string OrganizationId,
+    string ProviderBindingRef,
+    ProviderCredentialMode CredentialMode,
+    string AuthorizationEvidenceFingerprint,
+    string CorrelationId);
+
+
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubCredentialResolutionResult(
+    bool IsSuccess,
+    GitHubCredentialLease? Credential,
+    ProviderFailureCategory FailureCategory,
+    string ReasonCode,
+    TimeSpan? RetryAfter)
+{
+    public static GitHubCredentialResolutionResult Success(GitHubCredentialLease credential)
+    {
+        ArgumentNullException.ThrowIfNull(credential);
+        return new(true, credential, ProviderFailureCategory.None, "success", null);
+    }
+
+    public static GitHubCredentialResolutionResult Failure(
+        ProviderFailureCategory category,
+        string reasonCode,
+        TimeSpan? retryAfter = null)
+        => new(false, null, category, reasonCode, retryAfter);
+}
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed class GitHubCredentialLease : IAsyncDisposable
+{
+    private GitHubCredentialLease(string accessToken)
+    {
+        AccessToken = accessToken;
+    }
+
+    internal string AccessToken { get; private set; }
+
+    public static GitHubCredentialLease CreateForTesting(string accessToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(accessToken);
+        return new(accessToken);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        AccessToken = string.Empty;
+        return ValueTask.CompletedTask;
+    }
+}
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal interface IGitHubCredentialResolver
+{
+    ValueTask<GitHubCredentialResolutionResult> ResolveAsync(
+        GitHubCredentialResolutionRequest request,
+        CancellationToken cancellationToken = default);
+}
+
+
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed class UnconfiguredGitHubCredentialResolver : IGitHubCredentialResolver
+{
+    public ValueTask<GitHubCredentialResolutionResult> ResolveAsync(
+        GitHubCredentialResolutionRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return ValueTask.FromResult(GitHubCredentialResolutionResult.Failure(
+            ProviderFailureCategory.ProviderConfigurationMissing,
+            "github_credential_resolver_unconfigured"));
+    }
+}
+
+
+
+ succeeded in 588ms:
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubReadinessRequest(
+    string ManagedTenantId,
+    string OrganizationId,
+    string ProviderBindingRef,
+    ProviderCredentialMode CredentialMode,
+    string ApiVersion,
+    string SafeTargetFingerprint,
+    string CorrelationId);
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubReadinessResult(
+    bool IsSuccess,
+    GitHubPermissionEvidence? Permissions,
+    GitHubRateLimitEvidence? RateLimit,
+    GitHubApiFailureCondition? FailureCondition,
+    TimeSpan? RetryAfter)
+{
+    public static GitHubReadinessResult Success(
+        GitHubPermissionEvidence permissions,
+        GitHubRateLimitEvidence rateLimit)
+    {
+        ArgumentNullException.ThrowIfNull(permissions);
+        ArgumentNullException.ThrowIfNull(rateLimit);
+        return new(true, permissions, rateLimit, null, null);
+    }
+
+    public static GitHubReadinessResult Failure(
+        GitHubApiFailureCondition condition,
+        TimeSpan? retryAfter = null)
+        => new(false, null, null, condition, retryAfter);
+}
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubPermissionEvidence(
+    bool SupportsRepositoryCreation,
+    bool SupportsRepositoryBinding,
+    bool SupportsBranchRefInspection,
+    bool SupportsFileMutation,
+    bool SupportsCommit,
+    bool SupportsStatus,
+    bool SupportsMetadata);
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubRateLimitEvidence(
+    string Classification,
+    bool Retryable,
+    TimeSpan? RetryAfter);
+
+
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal static class GitHubReadinessMapper
+{
+    public static IReadOnlyList<ProviderCapabilityOperationRow> ToOperationRows(GitHubPermissionEvidence permissions)
+    {
+        ArgumentNullException.ThrowIfNull(permissions);
+
+        return
+        [
+            Operation(ProviderOperationCatalog.ReadinessValidation, true),
+            Operation(ProviderOperationCatalog.ProviderSupportEvidence, permissions.SupportsMetadata),
+            Operation(ProviderOperationCatalog.RepositoryCreation, permissions.SupportsRepositoryCreation),
+            Operation(ProviderOperationCatalog.RepositoryBinding, permissions.SupportsRepositoryBinding),
+            ProviderCapabilityOperationRow.WithDetails(
+                ProviderOperationCatalog.BranchRefInspection,
+                permissions.SupportsBranchRefInspection ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                limits: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["ref_model"] = "git_refs",
+                },
+                failureCategory: permissions.SupportsBranchRefInspection ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
+            ProviderCapabilityOperationRow.WithDetails(
+                ProviderOperationCatalog.FileMutationSupport,
+                permissions.SupportsFileMutation ? ProviderOperationSupport.Partial : ProviderOperationSupport.Unavailable,
+                constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["contents_access"] = permissions.SupportsFileMutation ? "read_write" : "missing",
+                    ["diff_storage"] = "not_persisted",
+                },
+                failureCategory: permissions.SupportsFileMutation ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
+            Operation(ProviderOperationCatalog.CommitSupport, permissions.SupportsCommit),
+            Operation(ProviderOperationCatalog.StatusQuery, permissions.SupportsStatus),
+            ProviderCapabilityOperationRow.Unsupported(ProviderOperationCatalog.CleanupExpiration),
+        ];
+    }
+
+    public static ProviderRateLimitPosture ToRateLimit(GitHubRateLimitEvidence evidence)
+    {
+        ArgumentNullException.ThrowIfNull(evidence);
+        return new(
+            evidence.Classification,
+            evidence.Retryable,
+            evidence.RetryAfter,
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["posture"] = evidence.Retryable ? "bounded_retry" : "no_retry",
+                ["provider_family"] = GitHubProviderConstants.ProviderFamily,
+                ["api_version"] = GitHubProviderConstants.RestApiVersion,
+            });
+    }
+
+    public static IReadOnlyDictionary<string, string> ToEvidence(
+        ProviderCapabilityDiscoveryRequest request,
+        ProviderCredentialMode credentialMode,
+        string safeTargetFingerprint)
+        => new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["profile_source"] = "github_octokit_seam",
+            ["github_api_version"] = GitHubProviderConstants.RestApiVersion,
+            ["github_permission_schema"] = "github-app-and-fine-grained-v1",
+            ["credential_mode"] = credentialMode.ToString().ToLowerInvariant(),
+            ["authorization_freshness"] = request.AuthorizationEvidence.FreshnessClass.ToLowerInvariant(),
+            ["safe_target_fingerprint"] = safeTargetFingerprint,
+            ["capability_profile_schema"] = "v1",
+        };
+
+    private static ProviderCapabilityOperationRow Operation(string operationId, bool supported)
+        => supported
+            ? ProviderCapabilityOperationRow.Supported(operationId)
+            : ProviderCapabilityOperationRow.WithDetails(
+                operationId,
+                ProviderOperationSupport.Unavailable,
+                failureCategory: ProviderFailureCategory.ProviderPermissionInsufficient);
+}
+
+
+
+ succeeded in 721ms:
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal interface IGitHubApiClient
+{
+    Task<GitHubReadinessResult> GetReadinessAsync(
+        GitHubReadinessRequest request,
+        CancellationToken cancellationToken = default);
+}
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal interface IGitHubApiClientFactory
+{
+    ValueTask<IGitHubApiClient> CreateAsync(
+        GitHubApiClientRequest request,
+        GitHubCredentialLease credential,
+        CancellationToken cancellationToken = default);
+}
+
+
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed record GitHubApiClientRequest(
+    string ProductHeader,
+    string ApiVersion,
+    ProviderCredentialMode CredentialMode,
+    string ProviderBindingRef,
+    string CorrelationId);
+
+
+using Octokit;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed class OctokitGitHubApiClientFactory : IGitHubApiClientFactory
+{
+    public ValueTask<IGitHubApiClient> CreateAsync(
+        GitHubApiClientRequest request,
+        GitHubCredentialLease credential,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(credential);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        GitHubClient client = new(new ProductHeaderValue(request.ProductHeader))
+        {
+            Credentials = new Credentials(credential.AccessToken),
+        };
+
+        return ValueTask.FromResult<IGitHubApiClient>(new OctokitGitHubApiClient(client));
+    }
+}
+
+
+using Octokit;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal sealed class OctokitGitHubApiClient : IGitHubApiClient
+{
+    public OctokitGitHubApiClient(GitHubClient client)
+        => ArgumentNullException.ThrowIfNull(client);
+
+    public Task<GitHubReadinessResult> GetReadinessAsync(
+        GitHubReadinessRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        // The live Octokit readiness probe is intentionally deferred to the provider
+        // contract / live-nightly drift path (AC 12). Fail loudly here so the
+        // unimplemented seam cannot masquerade as a runtime transport failure that
+        // would otherwise be mapped to unknown_provider_outcome / reconciliation.
+        throw new NotImplementedException(
+            "Live GitHub readiness probing is deferred to the provider contract/live-nightly path; "
+            + "supply an IGitHubApiClient seam for offline scenarios.");
+    }
+}
+
+
+ succeeded in 863ms:
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Hexalith.Folders\Hexalith.Folders.csproj" />
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
+
+
+ succeeded in 1083ms:
+using Shouldly;
+using Xunit;
+
+namespace Hexalith.Folders.Tests.Providers.GitHub;
+
+public sealed class GitHubDependencyGuardTests
+{
+    [Fact]
+    public void OctokitReferencesStayInsideGitHubProviderBoundary()
+    {
+        string root = FindRepositoryRoot();
+        string[] inspectedRoots =
+        [
+            Path.Combine(root, "src"),
+            Path.Combine(root, "tests"),
+        ];
+
+        string[] references = inspectedRoots
+            .SelectMany(path => Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
+            .Where(path => path.EndsWith(".cs", StringComparison.Ordinal) || path.EndsWith(".csproj", StringComparison.Ordinal))
+            .Where(path => File.ReadAllText(path).Contains("Octokit", StringComparison.Ordinal))
+            .Select(path => Path.GetRelativePath(root, path).Replace('\\', '/'))
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+        references.ShouldAllBe(path =>
+            path.StartsWith("src/Hexalith.Folders/Providers/GitHub/", StringComparison.Ordinal)
+            || string.Equals(path, "src/Hexalith.Folders/Hexalith.Folders.csproj", StringComparison.Ordinal)
+            || path.StartsWith("tests/Hexalith.Folders.Tests/Providers/GitHub/", StringComparison.Ordinal)
+            || path.StartsWith("tests/Hexalith.Folders.Tests/Providers/Abstractions/", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void CentralPackageManagementPinsOctokitVersion()
+    {
+        string root = FindRepositoryRoot();
+        string packagesProps = File.ReadAllText(Path.Combine(root, "Directory.Packages.props"));
+
+        packagesProps.ShouldContain("PackageVersion Include=\"Octokit\" Version=\"14.0.0\"", Case.Sensitive);
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        string current = AppContext.BaseDirectory;
+        while (!string.IsNullOrEmpty(current))
+        {
+            if (File.Exists(Path.Combine(current, "Hexalith.Folders.slnx")))
+            {
+                return current;
+            }
+
+            current = Directory.GetParent(current)?.FullName ?? string.Empty;
+        }
+
+        throw new InvalidOperationException("Could not locate repository root.");
+    }
+}
+
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.GitHub;
+
+namespace Hexalith.Folders.Tests.Providers.GitHub;
+
+internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResolutionResult result) : IGitHubCredentialResolver
+{
+    public int Calls { get; private set; }
+
+    public GitHubCredentialResolutionRequest? LastRequest { get; private set; }
+
+    public static RecordingGitHubCredentialResolver Success(string token)
+        => new(GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token)));
+
+    public static RecordingGitHubCredentialResolver Failure(
+        ProviderFailureCategory category,
+        string reasonCode,
+        TimeSpan? retryAfter = null)
+        => new(GitHubCredentialResolutionResult.Failure(category, reasonCode, retryAfter));
+
+    public ValueTask<GitHubCredentialResolutionResult> ResolveAsync(
+        GitHubCredentialResolutionRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Calls++;
+        LastRequest = request;
+        return ValueTask.FromResult(result);
+    }
+}
+
+using Hexalith.Folders.Providers.GitHub;
+
+namespace Hexalith.Folders.Tests.Providers.GitHub;
+
+internal sealed class RecordingGitHubApiClient(GitHubReadinessResult result) : IGitHubApiClient
+{
+    public int ReadinessCalls { get; private set; }
+
+    public GitHubReadinessRequest? LastRequest { get; private set; }
+
+    public static RecordingGitHubApiClient Success()
+        => new(GitHubReadinessResult.Success(
+            new GitHubPermissionEvidence(
+                SupportsRepositoryCreation: true,
+                SupportsRepositoryBinding: true,
+                SupportsBranchRefInspection: true,
+                SupportsFileMutation: true,
+                SupportsCommit: true,
+                SupportsStatus: true,
+                SupportsMetadata: true),
+            new GitHubRateLimitEvidence("bounded", true, TimeSpan.FromSeconds(90))));
+
+    public static RecordingGitHubApiClient Success(
+        GitHubPermissionEvidence permissions,
+        GitHubRateLimitEvidence? rateLimit = null)
+        => new(GitHubReadinessResult.Success(
+            permissions,
+            rateLimit ?? new GitHubRateLimitEvidence("bounded", true, TimeSpan.FromSeconds(90))));
+
+    public static RecordingGitHubApiClient Failure(GitHubApiFailureCondition condition)
+        => new(GitHubReadinessResult.Failure(
+            condition,
+            condition is GitHubApiFailureCondition.PrimaryRateLimit or GitHubApiFailureCondition.SecondaryRateLimit
+                ? TimeSpan.FromSeconds(120)
+                : null));
+
+    public Task<GitHubReadinessResult> GetReadinessAsync(
+        GitHubReadinessRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        ReadinessCalls++;
+        LastRequest = request;
+        return Task.FromResult(result);
+    }
+}
+
+using Hexalith.Folders.Providers.GitHub;
+
+namespace Hexalith.Folders.Tests.Providers.GitHub;
+
+internal sealed class RecordingGitHubApiClientFactory(IGitHubApiClient client) : IGitHubApiClientFactory
+{
+    public int Calls { get; private set; }
+
+    public GitHubApiClientRequest? LastRequest { get; private set; }
+
+    public bool CredentialWasAvailableAtCreation { get; private set; }
+
+    public ValueTask<IGitHubApiClient> CreateAsync(
+        GitHubApiClientRequest request,
+        GitHubCredentialLease credential,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Calls++;
+        LastRequest = request;
+        CredentialWasAvailableAtCreation = !string.IsNullOrWhiteSpace(credential.AccessToken);
+        return ValueTask.FromResult(client);
+    }
+}
+
+
+ succeeded in 1160ms:
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal static class GitHubFailureMapper
+{
+    public static IReadOnlyDictionary<string, string> KnownFailureMappings { get; } =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["success"] = ProviderFailureCategory.None.ToCategoryCode(),
+            ["existing_equivalent"] = ProviderFailureCategory.None.ToCategoryCode(),
+            ["validation"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
+            ["authentication"] = ProviderFailureCategory.ProviderAuthenticationRequired.ToCategoryCode(),
+            ["permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
+            ["hidden_or_missing"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
+            ["conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
+            ["rate_limited"] = ProviderFailureCategory.ProviderRateLimited.ToCategoryCode(),
+            ["unavailable"] = ProviderFailureCategory.ProviderUnavailable.ToCategoryCode(),
+            ["malformed"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["timeout_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["unexpected_transport"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+        };
+
+    public static ProviderCapabilityDiscoveryResult ToProviderFailure(
+        GitHubReadinessResult readiness,
+        ProviderCapabilityDiscoveryRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(readiness);
+        ArgumentNullException.ThrowIfNull(request);
+
+        (ProviderFailureCategory Category, string ReasonCode) mapped = readiness.FailureCondition switch
+        {
+            GitHubApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "github_validation_failed"),
+            GitHubApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "github_authentication_required"),
+            GitHubApiFailureCondition.PermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient"),
+            GitHubApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing"),
+            GitHubApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "github_repository_conflict"),
+            GitHubApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict"),
+            GitHubApiFailureCondition.PrimaryRateLimit => (ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited"),
+            GitHubApiFailureCondition.SecondaryRateLimit => (ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited"),
+            GitHubApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable"),
+            GitHubApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown"),
+            GitHubApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response"),
+            GitHubApiFailureCondition.UnexpectedTransportFailure => (ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown"),
+            _ => (ProviderFailureCategory.UnknownProviderOutcome, "github_unmapped_outcome"),
+        };
+
+        return ProviderCapabilityDiscoveryResult.Failure(
+            mapped.Category,
+            mapped.ReasonCode,
+            request.CorrelationId,
+            readiness.RetryAfter,
+            safeRemediationCode: mapped.Category == ProviderFailureCategory.UnknownProviderOutcome
+                ? "reconciliation_required_metadata_only"
+                : $"{mapped.Category.ToCategoryCode()}_remediation");
+    }
+}
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal enum GitHubApiFailureCondition
+{
+    ValidationFailure,
+    AuthenticationRequired,
+    PermissionInsufficient,
+    NotFoundOrHidden,
+    RepositoryConflict,
+    BranchProtectionConflict,
+    PrimaryRateLimit,
+    SecondaryRateLimit,
+    ServerUnavailable,
+    TimeoutDuringMutation,
+    MalformedResponse,
+    UnexpectedTransportFailure,
+}
+
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal static class GitHubProviderConstants
+{
+    public const string ProviderFamily = "github";
+    public const string ProviderKey = "github";
+    public const string RestApiVersion = "2022-11-28";
+    public const string ProductHeader = "Hexalith-Folders";
+}
+
+
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal static class GitHubCredentialModeValidator
+{
+    public static bool TryGetSupportedMode(
+        IReadOnlyList<ProviderCredentialMode> credentialModes,
+        out ProviderCredentialMode mode,
+        out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(credentialModes);
+
+        ProviderCredentialMode[] distinctModes = credentialModes
+            .Where(static x => x != ProviderCredentialMode.None)
+            .Distinct()
+            .Order()
+            .ToArray();
+
+        mode = ProviderCredentialMode.None;
+        failureReason = null;
+
+        if (distinctModes.Length == 0)
+        {
+            failureReason = "missing_github_credential_mode";
+            return false;
+        }
+
+        if (distinctModes.Length > 1)
+        {
+            failureReason = "ambiguous_github_credential_mode";
+            return false;
+        }
+
+        mode = distinctModes[0];
+        if (mode is ProviderCredentialMode.AppInstallationReference or ProviderCredentialMode.UserDelegatedReference)
+        {
+            return true;
+        }
+
+        failureReason = "unsupported_github_credential_mode";
+        return false;
+    }
+}
+
+
+using System.Buffers.Binary;
+using System.Security.Cryptography;
+using System.Text;
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal static class GitHubSafeTargetFingerprint
+{
+    private static readonly HashSet<string> UnsafeKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "owner",
+        "repository",
+        "repo",
+        "branch",
+        "ref",
+        "installation",
+        "installation_id",
+        "clone_url",
+        "html_url",
+        "email",
+        "display_name",
+        "raw_payload",
+    };
+
+    public static bool TryCreate(
+        ProviderCapabilityDiscoveryRequest request,
+        ProviderCredentialMode credentialMode,
+        out ProviderTargetEvidence safeTargetEvidence,
+        out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        safeTargetEvidence = request.TargetEvidence;
+        failureReason = null;
+
+        if (request.TargetEvidence.Metadata.Keys.Any(static key => UnsafeKeys.Contains(key)))
+        {
+            failureReason = "unsafe_github_target_metadata";
+            return false;
+        }
+
+        string? declaredFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? candidate)
+            && IsSafeMetadataValue(candidate)
+                ? candidate
+                : null;
+
+        string safeTargetFingerprint = ComputeFingerprint(request, credentialMode, declaredFingerprint);
+
+        Dictionary<string, string> metadata = new(StringComparer.Ordinal)
+        {
+            ["safe_target_fingerprint"] = safeTargetFingerprint,
+            ["target_fingerprint_version"] = "github-target-v1",
+            ["operation_scope"] = request.TargetEvidence.Metadata.TryGetValue("operation_scope", out string? scope) && IsSafeMetadataValue(scope)
+                ? scope
+                : "readiness",
+            ["api_version"] = GitHubProviderConstants.RestApiVersion,
+        };
+
+        safeTargetEvidence = new ProviderTargetEvidence(
+            "github",
+            "github-rest",
+            $"github-rest-{GitHubProviderConstants.RestApiVersion}",
+            "github-target-evidence-v1",
+            request.TargetEvidence.IsStale,
+            request.TargetEvidence.ObservedAt,
+            metadata);
+
+        return true;
+    }
+
+    private static string ComputeFingerprint(
+        ProviderCapabilityDiscoveryRequest request,
+        ProviderCredentialMode credentialMode,
+        string? declaredFingerprint)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, request.ManagedTenantId);
+        AppendField(hash, request.OrganizationId);
+        AppendField(hash, request.ProviderBindingRef);
+        AppendField(hash, request.ProviderFamily);
+        AppendField(hash, request.ProviderKey);
+        AppendField(hash, GitHubProviderConstants.RestApiVersion);
+        AppendField(hash, credentialMode.ToString());
+        AppendField(hash, request.AuthorizationEvidence.Fingerprint);
+        AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
+        AppendField(hash, declaredFingerprint);
+        foreach (KeyValuePair<string, string> pair in request.TargetEvidence.Metadata.OrderBy(static x => x.Key, StringComparer.Ordinal))
+        {
+            if (IsSafeMetadataValue(pair.Key) && IsSafeMetadataValue(pair.Value))
+            {
+                AppendField(hash, pair.Key);
+                AppendField(hash, pair.Value);
+            }
+        }
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static bool IsSafeMetadataValue(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+            && !value.Contains("://", StringComparison.Ordinal)
+            && !value.Contains('@', StringComparison.Ordinal)
+            && !value.Contains("secret", StringComparison.OrdinalIgnoreCase)
+            && !value.Contains("token", StringComparison.OrdinalIgnoreCase)
+            && !value.Contains("password", StringComparison.OrdinalIgnoreCase)
+            && !value.Contains("diff --git", StringComparison.OrdinalIgnoreCase);
+
+    private static void AppendField(IncrementalHash hash, string? value)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(value ?? string.Empty);
+        Span<byte> length = stackalloc byte[4];
+        BinaryPrimitives.WriteInt32LittleEndian(length, bytes.Length);
+        hash.AppendData(length);
+        hash.AppendData(bytes);
+    }
+}
+
+namespace Hexalith.Folders.Providers.GitHub;
+
+internal static class GitHubProviderNullExtensions
+{
+    public static T ShouldNotBeNullForProvider<T>(this T? value)
+        where T : class
+        => value ?? throw new InvalidOperationException("GitHub provider seam returned an inconsistent result shape.");
+}
+
+
+
+

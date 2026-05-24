@@ -1,0 +1,1098 @@
+{
+  "timestamp": "2026-05-24T07:39:16Z",
+  "epicPath": "D:\\Hexalith.Folders\\_bmad-output\\planning-artifacts\\epics.md",
+  "epicName": "Hexalith.Folders - Epic Breakdown",
+  "storyCount": 86,
+  "selectedInput": "all",
+  "selectedCount": 86,
+  "selectedIds": [
+    "1.1",
+    "1.2",
+    "1.3",
+    "1.4",
+    "1.5",
+    "1.6",
+    "1.7",
+    "1.8",
+    "1.9",
+    "1.10",
+    "1.11",
+    "1.12",
+    "1.13",
+    "1.14",
+    "1.15",
+    "1.16",
+    "2.1",
+    "2.2",
+    "2.3",
+    "2.4",
+    "2.5",
+    "2.6",
+    "2.7",
+    "2.8",
+    "2.9",
+    "3.1",
+    "3.2",
+    "3.3",
+    "3.4",
+    "3.5",
+    "3.6",
+    "3.7",
+    "3.8",
+    "3.9",
+    "4.1",
+    "4.2",
+    "4.3",
+    "4.4",
+    "4.5",
+    "4.6",
+    "4.7",
+    "4.8",
+    "4.9",
+    "4.10",
+    "4.11",
+    "4.12",
+    "4.13",
+    "4.14",
+    "4.15",
+    "4.16",
+    "4.17",
+    "5.1",
+    "5.2",
+    "5.3",
+    "5.4",
+    "5.5",
+    "5.6",
+    "5.7",
+    "6.1",
+    "6.2",
+    "6.3",
+    "6.4",
+    "6.5",
+    "6.6",
+    "6.7",
+    "6.8",
+    "6.9",
+    "6.10",
+    "6.11",
+    "7.1",
+    "7.2",
+    "7.3",
+    "7.4",
+    "7.5",
+    "7.6",
+    "7.7",
+    "7.8",
+    "7.9",
+    "7.10",
+    "7.11",
+    "7.12",
+    "7.13",
+    "7.14",
+    "7.15",
+    "7.16",
+    "7.17"
+  ],
+  "epicId": "1",
+  "stories": [
+    {
+      "storyId": "1.1",
+      "title": "Establish a consumer-buildable module scaffold",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "1.2",
+      "title": "Establish root configuration and submodule policy",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "1.3",
+      "title": "Seed minimally valid normative fixtures",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Authorization/permissions",
+          "Complex error handling",
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "1.4",
+      "title": "Author Phase 0.5 Pre-Spine Workshop deliverables",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "1.5",
+      "title": "Finalize idempotency equivalence and adapter parity rules",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "1.6",
+      "title": "Author Contract Spine foundation and shared extension vocabulary",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Backend + Frontend combined",
+          "Complex error handling",
+          "Performance optimization"
+        ]
+      }
+    },
+    {
+      "storyId": "1.7",
+      "title": "Author tenant, folder, provider, and repository-binding contract groups",
+      "complexity": {
+        "level": "Medium",
+        "score": 7,
+        "reasons": [
+          "Authorization/permissions",
+          "Backend + Frontend combined",
+          "Complex error handling",
+          "Performance optimization",
+          "Elevated AC count (7)"
+        ]
+      }
+    },
+    {
+      "storyId": "1.8",
+      "title": "Author workspace and lock contract groups",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Authorization/permissions",
+          "Backend + Frontend combined",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "1.9",
+      "title": "Author file mutation and context query contract groups",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Authorization/permissions",
+          "Complex error handling",
+          "Performance optimization",
+          "Rate limiting/throttling",
+          "Pure refactor (no behavior change)"
+        ]
+      }
+    },
+    {
+      "storyId": "1.10",
+      "title": "Author commit and workspace-status contract groups",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "1.11",
+      "title": "Author audit and ops-console query contract groups",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authorization/permissions",
+          "Performance optimization"
+        ]
+      }
+    },
+    {
+      "storyId": "1.12",
+      "title": "Wire NSwag SDK generation with idempotency helpers",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Encryption/security",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "1.13",
+      "title": "Generate the C13 parity oracle",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authorization/permissions",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "1.14",
+      "title": "Wire Contract Spine drift and generated-client CI gates",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Authorization/permissions",
+          "Breaking/migration change"
+        ]
+      }
+    },
+    {
+      "storyId": "1.15",
+      "title": "Wire safety invariant CI gates",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authorization/permissions",
+          "Accessibility requirements"
+        ]
+      }
+    },
+    {
+      "storyId": "1.16",
+      "title": "Wire exit-criteria and parity completeness gates",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Caching layer",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "2.1",
+      "title": "Stand up domain service host with Tenants integration",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "2.2",
+      "title": "Implement Organization aggregate ACL baseline",
+      "complexity": {
+        "level": "Medium",
+        "score": 6,
+        "reasons": [
+          "Real-time communication",
+          "Complex database operations",
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "2.3",
+      "title": "Create folders within a tenant",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Complex database operations",
+          "Authorization/permissions",
+          "Logging/monitoring/observability"
+        ]
+      }
+    },
+    {
+      "storyId": "2.4",
+      "title": "Grant and revoke folder access",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "2.5",
+      "title": "Inspect effective permissions",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "2.6",
+      "title": "Enforce layered authorization with safe denials",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Authentication system",
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "2.7",
+      "title": "Inspect folder lifecycle and binding status",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "2.8",
+      "title": "Archive folders with audit preservation",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "2.9",
+      "title": "React to Tenants events through Worker handlers",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Real-time communication",
+          "Authorization/permissions",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "3.1",
+      "title": "Configure provider binding and credential reference",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "3.2",
+      "title": "Define IGitProvider port and capability model",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "3.3",
+      "title": "Implement GitHub provider adapter",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "3.4",
+      "title": "Implement Forgejo provider adapter and drift detection",
+      "complexity": {
+        "level": "Medium",
+        "score": 6,
+        "reasons": [
+          "Backend + Frontend combined",
+          "Rate limiting/throttling",
+          "Integration testing required",
+          "Configuration/feature flags",
+          "Elevated AC count (9)"
+        ]
+      }
+    },
+    {
+      "storyId": "3.5",
+      "title": "Validate provider readiness with safe diagnostics",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex forms"
+        ]
+      }
+    },
+    {
+      "storyId": "3.6",
+      "title": "Create a new repository-backed folder",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Real-time communication",
+          "Authorization/permissions",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "3.7",
+      "title": "Bind an existing repository to a folder",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "3.8",
+      "title": "Define branch and ref policy",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "3.9",
+      "title": "Inspect tenant and per-provider readiness evidence",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "4.1",
+      "title": "Implement Folder aggregate state machine with C6 transition matrix",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Complex database operations",
+          "Complex state management"
+        ]
+      }
+    },
+    {
+      "storyId": "4.2",
+      "title": "Prepare workspace from a ready repository-backed folder",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Complex state management",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "4.3",
+      "title": "Acquire task-scoped workspace lock",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "4.4",
+      "title": "Inspect lock state and release the workspace lock",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "4.5",
+      "title": "Enforce workspace path policy before file mutations",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "4.6",
+      "title": "Add and change files with inline and streamed content transport",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Real-time communication",
+          "Encryption/security"
+        ]
+      }
+    },
+    {
+      "storyId": "4.7",
+      "title": "Remove files with metadata-only events and provider-safe ordering",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Infrastructure changes",
+          "Complex error handling",
+          "Accessibility requirements",
+          "Pure refactor (no behavior change)"
+        ]
+      }
+    },
+    {
+      "storyId": "4.8",
+      "title": "Query file context with policy boundaries",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "4.9",
+      "title": "Inspect workspace and projection currency",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "4.10",
+      "title": "Surface workspace cleanup status without repair automation",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "4.11",
+      "title": "Propagate idempotency keys, correlation, and task IDs",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "4.12",
+      "title": "Commit workspace changes with unknown-outcome reconciliation",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "4.13",
+      "title": "Surface canonical errors and operational evidence after failure",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authorization/permissions",
+          "Encryption/security"
+        ]
+      }
+    },
+    {
+      "storyId": "4.14",
+      "title": "Emit metadata-only audit and observability",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Encryption/security",
+          "Logging/monitoring/observability"
+        ]
+      }
+    },
+    {
+      "storyId": "4.15",
+      "title": "Validate lifecycle replay and projection determinism",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Real-time communication",
+          "Complex database operations",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "4.16",
+      "title": "Validate lifecycle security boundaries",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Authorization/permissions",
+          "Complex test setup",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "4.17",
+      "title": "Seed lifecycle capacity test harness",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "5.1",
+      "title": "Ship SDK convenience helpers, samples, and quickstart",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "5.2",
+      "title": "Implement CLI commands with behavioral-parity rules",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "5.3",
+      "title": "Implement MCP tools, resources, and failure kinds",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "5.4",
+      "title": "Consume parity oracle in CLI and MCP tests",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Real-time communication",
+          "Authorization/permissions",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "5.5",
+      "title": "Validate golden lifecycle parity across REST and SDK",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions",
+          "Complex error handling",
+          "Pure refactor (no behavior change)"
+        ]
+      }
+    },
+    {
+      "storyId": "5.6",
+      "title": "Validate behavioral parity across CLI and MCP",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "5.7",
+      "title": "Validate mixed-surface handoff scenario",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "6.1",
+      "title": "Audit and operation-timeline query endpoints",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "6.2",
+      "title": "Scaffold FrontComposer-hosted read-only operations console",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Complex database operations",
+          "Authentication system"
+        ]
+      }
+    },
+    {
+      "storyId": "6.3",
+      "title": "Render operator-disposition labels as primary visual",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "6.4",
+      "title": "Implement sensitive-metadata redaction affordance",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "6.5",
+      "title": "Author console diagnostic wireflow notes",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Complex forms",
+          "Accessibility requirements",
+          "Uncertain/research-heavy scope",
+          "Elevated AC count (9)"
+        ]
+      }
+    },
+    {
+      "storyId": "6.6",
+      "title": "Build folder and workspace diagnostic pages",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Authorization/permissions",
+          "Backend + Frontend combined"
+        ]
+      }
+    },
+    {
+      "storyId": "6.7",
+      "title": "Build provider readiness and support diagnostic pages",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Authorization/permissions",
+          "Backend + Frontend combined"
+        ]
+      }
+    },
+    {
+      "storyId": "6.8",
+      "title": "Build audit and operation-timeline diagnostic pages",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Authorization/permissions",
+          "Encryption/security",
+          "Backend + Frontend combined"
+        ]
+      }
+    },
+    {
+      "storyId": "6.9",
+      "title": "Implement incident-mode last-resort read path",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "6.10",
+      "title": "Enforce console performance and perceived-wait UX",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Performance optimization",
+          "Complex forms"
+        ]
+      }
+    },
+    {
+      "storyId": "6.11",
+      "title": "Verify no-mutation enforcement and accessibility",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Authorization/permissions",
+          "Accessibility requirements",
+          "Logging/monitoring/observability",
+          "Elevated AC count (9)"
+        ]
+      }
+    },
+    {
+      "storyId": "7.1",
+      "title": "Deploy production Dapr deny-by-default access control",
+      "complexity": {
+        "level": "Medium",
+        "score": 7,
+        "reasons": [
+          "Webhook/async processing",
+          "Authorization/permissions",
+          "Encryption/security",
+          "Infrastructure changes"
+        ]
+      }
+    },
+    {
+      "storyId": "7.2",
+      "title": "Configure production OIDC and secret store integration",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authentication system",
+          "Complex forms"
+        ]
+      }
+    },
+    {
+      "storyId": "7.3",
+      "title": "Build container images with stable Dapr app IDs",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Infrastructure changes"
+        ]
+      }
+    },
+    {
+      "storyId": "7.4",
+      "title": "Consolidate baseline build and unit CI gates",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "7.5",
+      "title": "Consolidate contract and parity CI gates",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authorization/permissions",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "7.6",
+      "title": "Consolidate security and redaction CI gates",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Caching layer",
+          "Infrastructure changes"
+        ]
+      }
+    },
+    {
+      "storyId": "7.7",
+      "title": "Add capacity-smoke CI gate",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Performance optimization"
+        ]
+      }
+    },
+    {
+      "storyId": "7.8",
+      "title": "Wire scheduled drift and policy-conformance workflows",
+      "complexity": {
+        "level": "Medium",
+        "score": 5,
+        "reasons": [
+          "Authorization/permissions",
+          "Integration testing required",
+          "Breaking/migration change"
+        ]
+      }
+    },
+    {
+      "storyId": "7.9",
+      "title": "Publish traceable NuGet release packages",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "7.10",
+      "title": "Calibrate capacity tests and pin C1/C2/C5 targets",
+      "complexity": {
+        "level": "Low",
+        "score": 1,
+        "reasons": [
+          "Performance optimization"
+        ]
+      }
+    },
+    {
+      "storyId": "7.11",
+      "title": "Enforce C3 retention and tenant-deletion behavior",
+      "complexity": {
+        "level": "Low",
+        "score": 0,
+        "reasons": [
+          "Logging/monitoring/observability",
+          "Pure refactor (no behavior change)"
+        ]
+      }
+    },
+    {
+      "storyId": "7.12",
+      "title": "Wire production observability and alerts",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Complex error handling",
+          "Logging/monitoring/observability"
+        ]
+      }
+    },
+    {
+      "storyId": "7.13",
+      "title": "Publish API, SDK, CLI, and MCP consumer references",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Backend + Frontend combined"
+        ]
+      }
+    },
+    {
+      "storyId": "7.14",
+      "title": "Publish operations and audit documentation",
+      "complexity": {
+        "level": "Low",
+        "score": 3,
+        "reasons": [
+          "Authorization/permissions",
+          "Logging/monitoring/observability"
+        ]
+      }
+    },
+    {
+      "storyId": "7.15",
+      "title": "Publish provider and error documentation",
+      "complexity": {
+        "level": "Low",
+        "score": 2,
+        "reasons": [
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "7.16",
+      "title": "Publish NFR traceability bridge",
+      "complexity": {
+        "level": "Medium",
+        "score": 6,
+        "reasons": [
+          "Authorization/permissions",
+          "Performance optimization",
+          "Accessibility requirements",
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "7.17",
+      "title": "Publish ADR set and maintenance runbooks",
+      "complexity": {
+        "level": "Medium",
+        "score": 4,
+        "reasons": [
+          "Infrastructure changes",
+          "Complex error handling",
+          "Logging/monitoring/observability"
+        ]
+      }
+    }
+  ]
+}

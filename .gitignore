@@ -440,3 +440,4 @@ _bmad-output/process-notes/predev-preflight-*Z.json
 !_bmad-output/process-notes/predev-preflight-latest.json
 .codex/
 .agents/.story-automator-active
+.agents\.story-automator-active
