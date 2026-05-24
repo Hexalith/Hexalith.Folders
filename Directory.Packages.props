@@ -3,10 +3,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup Label="Dapr">
-    <PackageVersion Include="Dapr.Client" Version="1.17.7" />
-    <PackageVersion Include="Dapr.AspNetCore" Version="1.17.7" />
-    <PackageVersion Include="Dapr.Actors" Version="1.17.7" />
-    <PackageVersion Include="Dapr.Actors.AspNetCore" Version="1.17.7" />
+    <PackageVersion Include="Dapr.Client" Version="1.17.9" />
+    <PackageVersion Include="Dapr.AspNetCore" Version="1.17.9" />
+    <PackageVersion Include="Dapr.Actors" Version="1.17.9" />
+    <PackageVersion Include="Dapr.Actors.AspNetCore" Version="1.17.9" />
   </ItemGroup>
   <ItemGroup Label="Aspire">
     <PackageVersion Include="Aspire.Hosting" Version="13.3.3" />

@@ -1,4 +1,5 @@
 using Hexalith.Folders.Contracts;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.ServiceDefaults;
 using Hexalith.Tenants.Client.Registration;
 using Hexalith.Tenants.Client.Handlers;
@@ -19,11 +20,11 @@ public static class FoldersServerModule
 
     public const string ProjectRoute = "/project";
 
-    public const string TenantEventsRoute = "/tenants/events";
+    public const string TenantEventsRoute = FoldersTenantEventSubscription.Route;
 
-    public const string TenantEventsPubSubName = "pubsub";
+    public const string TenantEventsPubSubName = FoldersTenantEventSubscription.PubSubName;
 
-    public const string TenantEventsTopicName = "system.tenants.events";
+    public const string TenantEventsTopicName = FoldersTenantEventSubscription.TopicName;
 
     public const string DomainName = "folders";
 
@@ -43,6 +44,9 @@ public static class FoldersServerModule
         services.AddDaprClient();
         services.AddFoldersEffectivePermissions();
         services.AddFoldersLifecycleStatus();
+
+        // AddFoldersEffectivePermissions -> AddFoldersTenantAccess already binds and validate-on-start's
+        // FoldersTenantEventOptions; do not rebind here.
         services.AddFoldersTenantEventProjection();
         services.AddHexalithTenants(options =>
         {

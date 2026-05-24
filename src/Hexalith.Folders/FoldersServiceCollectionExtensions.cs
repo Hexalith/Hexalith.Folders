@@ -16,11 +16,15 @@ public static class FoldersServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddOptions<TenantAccessOptions>().BindConfiguration(TenantAccessOptions.SectionName);
+        services.AddOptions<FoldersTenantEventOptions>().BindConfiguration(FoldersTenantEventOptions.SectionName).ValidateOnStart();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<FoldersTenantEventOptions>, FoldersTenantEventOptionsValidator>());
         services.TryAddSingleton<IUtcClock, SystemUtcClock>();
         services.TryAddSingleton<IFolderTenantAccessProjectionStore, InMemoryFolderTenantAccessProjectionStore>();
         services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<TenantAccessOptions>>().Value);
+        services.TryAddSingleton(static sp => sp.GetRequiredService<IOptions<FoldersTenantEventOptions>>().Value);
         services.TryAddSingleton<TenantAccessAuthorizer>();
         services.TryAddSingleton<FolderTenantAccessHandler>();
+        services.TryAddSingleton<FoldersTenantAccessEventMapper>();
 
         return services;
     }

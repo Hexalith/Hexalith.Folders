@@ -33,6 +33,18 @@ public sealed class FolderTenantAccessHandler(
                     "Optimistic concurrency conflict applying tenant event {EventKind} for tenant {TenantId}; retry {Attempt} of {Attempts}.",
                     @event.Kind, @event.TenantId, attempt + 2, attempts);
             }
+            catch (TenantAccessTransientPersistenceException) when (attempt + 1 < attempts)
+            {
+                logger?.LogDebug(
+                    "Transient persistence failure applying tenant event {EventKind} for tenant {TenantId}; retry {Attempt} of {Attempts}.",
+                    @event.Kind, @event.TenantId, attempt + 2, attempts);
+            }
+            catch (TimeoutException) when (attempt + 1 < attempts)
+            {
+                logger?.LogDebug(
+                    "Timeout applying tenant event {EventKind} for tenant {TenantId}; retry {Attempt} of {Attempts}.",
+                    @event.Kind, @event.TenantId, attempt + 2, attempts);
+            }
         }
     }
 

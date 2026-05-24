@@ -1,9 +1,13 @@
 using Hexalith.Folders;
+using Hexalith.Folders.Workers;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Services.AddFoldersTenantEventWorkers();
 
-HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddFoldersTenantAccess();
+WebApplication app = builder.Build();
 
-await builder.Build().RunAsync().ConfigureAwait(false);
+app.UseCloudEvents();
+app.MapSubscribeHandler();
+app.MapFoldersTenantEventWorkerEndpoints();
+
+await app.RunAsync().ConfigureAwait(false);

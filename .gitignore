@@ -438,3 +438,5 @@ FodyWeavers.xsd
 # cleaned up under a separate housekeeping task.
 _bmad-output/process-notes/predev-preflight-*Z.json
 !_bmad-output/process-notes/predev-preflight-latest.json
+.codex/
+.agents/.story-automator-active

@@ -5,7 +5,7 @@ using Hexalith.Tenants.Contracts.Events;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Hexalith.Folders.Server;
+namespace Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
 
 public sealed class FoldersTenantEventHandler(
     FolderTenantAccessHandler handler,
@@ -113,20 +113,12 @@ public sealed class FoldersTenantEventHandler(
             fingerprintParts: [@event.Key]), cancellationToken);
     }
 
-    public FoldersTenantEventHandler(FolderTenantAccessHandler handler)
-        : this(
-            handler,
-            new FoldersTenantAccessEventMapper(),
-            Options.Create(new FoldersTenantEventOptions { ProjectionWriter = FoldersTenantEventProjectionWriter.Server }))
-    {
-    }
-
     private Task HandleAsync(FolderTenantAccessEvent @event, CancellationToken cancellationToken)
     {
-        if (options.Value.ProjectionWriter != FoldersTenantEventProjectionWriter.Server)
+        if (options.Value.ProjectionWriter != FoldersTenantEventProjectionWriter.Workers)
         {
             logger?.LogDebug(
-                "Skipping folders tenant-event projection in Server host because ProjectionWriter={ProjectionWriter}.",
+                "Skipping folders tenant-event projection in Workers host because ProjectionWriter={ProjectionWriter}.",
                 options.Value.ProjectionWriter);
             return Task.CompletedTask;
         }
