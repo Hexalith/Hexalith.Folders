@@ -256,7 +256,7 @@ GPT-5 Codex
 
 ### Debug Log References
 
-- 2026-05-24: `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~Forgejo"` initially found one fingerprint test helper issue; fixed helper and reran successfully with 40/40 Forgejo tests passing.
+- 2026-05-24: `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~Forgejo"` initially found one fingerprint test helper issue; fixed helper, added HTTP seam coverage, and reran successfully with 42/42 Forgejo tests passing.
 - 2026-05-24: `dotnet test Hexalith.Folders.slnx --no-restore` initially exposed obsolete negative-scope exemptions and a literal GitHub SDK guard string in the Forgejo dependency guard; fixed both and reran successfully.
 - 2026-05-24: Final validation `dotnet test Hexalith.Folders.slnx --no-restore` passed all projects; UI E2E placeholder remained skipped as pre-existing scaffold behavior.
 
