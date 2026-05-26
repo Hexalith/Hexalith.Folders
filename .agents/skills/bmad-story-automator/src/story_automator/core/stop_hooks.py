@@ -270,6 +270,11 @@ def _is_story_automator_stop_hook_command(value: str) -> bool:
     if not parts:
         return False
     command_name = Path(parts[0]).name
+    if _is_powershell_command(command_name):
+        command_text = " ".join(parts[1:]).lower()
+        return "stop-hook" in command_text and (
+            "story_automator" in command_text or "story-automator" in command_text
+        )
     if command_name == "story-automator":
         return len(parts) > 1 and parts[1] == "stop-hook"
     return (
@@ -305,6 +310,10 @@ def _strip_env_prefix(parts: list[str]) -> list[str]:
 
 def _is_python_command(command_name: str) -> bool:
     return bool(re.fullmatch(r"python(?:\d+(?:\.\d+)?)?", command_name))
+
+
+def _is_powershell_command(command_name: str) -> bool:
+    return command_name.lower() in {"powershell", "powershell.exe", "pwsh", "pwsh.exe"}
 
 
 def _ensure_codex_hooks_feature(path: Path) -> HookInstallResult:
