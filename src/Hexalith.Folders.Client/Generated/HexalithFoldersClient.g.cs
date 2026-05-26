@@ -258,7 +258,7 @@ namespace Hexalith.Folders.Client.Generated
         System.Threading.Tasks.Task<ProviderSupportEvidenceList> GetProviderSupportEvidenceAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string cursor, int? limit, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Create a folder and repository binding where provider capabilities permit it.
+        /// Request repository creation for an existing folder where provider capabilities permit it.
         /// </summary>
         /// <param name="idempotency_Key">Required on mutating commands and invalid on non-mutating queries. Adapters MUST source the key from the caller and propagate it through SDK/CLI/MCP surfaces without re-encoding.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
@@ -269,7 +269,7 @@ namespace Hexalith.Folders.Client.Generated
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Create a folder and repository binding where provider capabilities permit it.
+        /// Request repository creation for an existing folder where provider capabilities permit it.
         /// </summary>
         /// <param name="idempotency_Key">Required on mutating commands and invalid on non-mutating queries. Adapters MUST source the key from the caller and propagate it through SDK/CLI/MCP surfaces without re-encoding.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
@@ -2852,7 +2852,7 @@ namespace Hexalith.Folders.Client.Generated
         }
 
         /// <summary>
-        /// Create a folder and repository binding where provider capabilities permit it.
+        /// Request repository creation for an existing folder where provider capabilities permit it.
         /// </summary>
         /// <param name="idempotency_Key">Required on mutating commands and invalid on non-mutating queries. Adapters MUST source the key from the caller and propagate it through SDK/CLI/MCP surfaces without re-encoding.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
@@ -2866,7 +2866,7 @@ namespace Hexalith.Folders.Client.Generated
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Create a folder and repository binding where provider capabilities permit it.
+        /// Request repository creation for an existing folder where provider capabilities permit it.
         /// </summary>
         /// <param name="idempotency_Key">Required on mutating commands and invalid on non-mutating queries. Adapters MUST source the key from the caller and propagate it through SDK/CLI/MCP surfaces without re-encoding.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
@@ -10214,6 +10214,9 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("requestSchemaVersion", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CreateRepositoryBackedFolderRequestRequestSchemaVersion RequestSchemaVersion { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FolderId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProviderBindingRef { get; set; }

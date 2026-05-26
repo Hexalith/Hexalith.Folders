@@ -21,6 +21,9 @@ public sealed record FolderCommandValidationResult(
         FolderArchiveReasonCode archiveReasonCode)
         => new(true, FolderResultCode.Accepted, idempotencyFingerprint, [], [], archiveReasonCode);
 
+    public static FolderCommandValidationResult AcceptedRepositoryBinding(string idempotencyFingerprint)
+        => new(true, FolderResultCode.Accepted, idempotencyFingerprint, [], [], null);
+
     public static FolderCommandValidationResult Rejected(FolderResultCode code)
         => new(false, code, null, [], [], null);
 }

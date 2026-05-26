@@ -60,6 +60,13 @@ public sealed record FolderListProjection
                         CanonicalizeTags(created.Tags),
                         created.LifecycleState,
                         created.RepositoryBindingState,
+                        RepositoryBindingId: null,
+                        ProviderBindingRef: null,
+                        RepositoryProfileRef: null,
+                        BranchRefPolicyRef: null,
+                        RepositoryBindingFailureCategory: null,
+                        RepositoryBindingOutcomeCategory: null,
+                        RepositoryBindingUpdatedAt: null,
                         ArchiveReasonCode: null,
                         ArchiveActorPrincipalId: null,
                         ArchiveCorrelationId: null,
@@ -94,6 +101,62 @@ public sealed record FolderListProjection
                     };
                     break;
 
+                case RepositoryBindingRequested requested:
+                    folders[key] = RequireCurrent(folders, key, envelope) with
+                    {
+                        RepositoryBindingState = FolderRepositoryBindingState.BindingRequested,
+                        RepositoryBindingId = requested.RepositoryBindingId,
+                        ProviderBindingRef = requested.ProviderBindingRef,
+                        RepositoryProfileRef = requested.RepositoryProfileRef,
+                        BranchRefPolicyRef = requested.BranchRefPolicyRef,
+                        RepositoryBindingFailureCategory = null,
+                        RepositoryBindingOutcomeCategory = null,
+                        RepositoryBindingUpdatedAt = requested.OccurredAt,
+                        Sequence = envelope.Sequence,
+                    };
+                    break;
+
+                case RepositoryBound bound:
+                    folders[key] = RequireCurrent(folders, key, envelope) with
+                    {
+                        RepositoryBindingState = FolderRepositoryBindingState.Bound,
+                        RepositoryBindingId = bound.RepositoryBindingId,
+                        ProviderBindingRef = bound.ProviderBindingRef,
+                        RepositoryBindingFailureCategory = null,
+                        RepositoryBindingOutcomeCategory = null,
+                        RepositoryBindingUpdatedAt = bound.OccurredAt,
+                        Sequence = envelope.Sequence,
+                    };
+                    break;
+
+                case RepositoryBindingFailed failed:
+                    folders[key] = RequireCurrent(folders, key, envelope) with
+                    {
+                        RepositoryBindingState = FolderRepositoryBindingState.Failed,
+                        RepositoryBindingId = failed.RepositoryBindingId,
+                        ProviderBindingRef = failed.ProviderBindingRef,
+                        RepositoryBindingFailureCategory = failed.FailureCategory,
+                        RepositoryBindingOutcomeCategory = null,
+                        RepositoryBindingUpdatedAt = failed.OccurredAt,
+                        Sequence = envelope.Sequence,
+                    };
+                    break;
+
+                case ProviderOutcomeUnknown unknown:
+                    folders[key] = RequireCurrent(folders, key, envelope) with
+                    {
+                        RepositoryBindingState = unknown.ReconciliationRequired
+                            ? FolderRepositoryBindingState.ReconciliationRequired
+                            : FolderRepositoryBindingState.UnknownProviderOutcome,
+                        RepositoryBindingId = unknown.RepositoryBindingId,
+                        ProviderBindingRef = unknown.ProviderBindingRef,
+                        RepositoryBindingFailureCategory = null,
+                        RepositoryBindingOutcomeCategory = unknown.OutcomeCategory,
+                        RepositoryBindingUpdatedAt = unknown.OccurredAt,
+                        Sequence = envelope.Sequence,
+                    };
+                    break;
+
                 default:
                     // Diverging from FolderStateApply (which throws on unknown event types)
                     // would let new event types replay as no-ops in the projection while the
@@ -112,6 +175,21 @@ public sealed record FolderListProjection
 
     public FolderListItem? Get(string managedTenantId, string folderId)
         => Folders.TryGetValue(Key(managedTenantId, folderId), out FolderListItem? item) ? item : null;
+
+    private static FolderListItem RequireCurrent(
+        IReadOnlyDictionary<string, FolderListItem> folders,
+        string key,
+        FolderProjectionEnvelope envelope)
+    {
+        if (folders.TryGetValue(key, out FolderListItem? current))
+        {
+            return current;
+        }
+
+        throw new InvalidOperationException(
+            $"FolderListProjection received a repository binding envelope at sequence "
+            + $"{envelope.Sequence} for {key} before any FolderCreated event.");
+    }
 
     private static bool IsEnvelopeWellFormed(FolderProjectionEnvelope envelope)
         => envelope.Event is not null

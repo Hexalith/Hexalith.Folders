@@ -10,7 +10,9 @@ using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.Folders;
+using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 
@@ -61,6 +63,70 @@ public sealed class ArchiveFolderProcessWiringTests
                 .ConfigureAwait(true);
             lifecycle.Snapshot.ShouldNotBeNull();
             lifecycle.Snapshot.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Archived);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task RepositoryBackedFolderRequestShouldRoundTripThroughProcessAndPersistRequestEvent()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using HttpRequestMessage request = CreateValidRepositoryBackedRequest();
+
+            HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            host.Gateway.LastWireEventCount.ShouldBe(0, "Folder event persistence stays inside the repository-backed gate.");
+            host.Repository.EventsAppended.ShouldBe(1);
+
+            FolderState state = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));
+            state.RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.BindingRequested);
+            state.RepositoryBindingId.ShouldBe("repository-binding-a");
+            state.ProviderBindingRef.ShouldBe("provider-binding-a");
+
+            FolderLifecycleStatusReadModelResult lifecycle = await host.LifecycleReadModel
+                .GetAsync(
+                    new FolderLifecycleStatusReadModelRequest(
+                        "tenant-a",
+                        "folder-a",
+                        "user-a",
+                        "read_metadata",
+                        TaskId: null,
+                        CorrelationId: null,
+                        AuthorizationWatermark: null,
+                        "eventually_consistent"),
+                    TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            lifecycle.Snapshot.ShouldNotBeNull();
+            lifecycle.Snapshot.BindingStatus.ShouldBe(FolderRepositoryBindingStatus.BindingRequested);
+            lifecycle.Snapshot.RepositoryBindingId.ShouldBe("repository-binding-a");
+            lifecycle.Snapshot.ProviderBindingRef.ShouldBe("provider-binding-a");
+
+            using HttpRequestMessage lifecycleRequest = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
+            lifecycleRequest.Headers.Add("X-Correlation-Id", "correlation-binding-a");
+            lifecycleRequest.Headers.Add("X-Hexalith-Task-Id", "task-binding-a");
+
+            HttpResponseMessage lifecycleResponse = await host.Client
+                .SendAsync(lifecycleRequest, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            string lifecycleJson = await lifecycleResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            lifecycleResponse.StatusCode.ShouldBe(HttpStatusCode.OK, lifecycleJson);
+            using JsonDocument lifecycleDocument = JsonDocument.Parse(
+                lifecycleJson);
+            lifecycleDocument.RootElement.GetProperty("lifecycleState").GetString().ShouldBe("requested");
+            lifecycleDocument.RootElement.GetProperty("repositoryBindingId").GetString().ShouldBe("repository-binding-a");
+            lifecycleDocument.RootElement.GetProperty("providerBindingRef").GetString().ShouldBe("provider-binding-a");
         }
         finally
         {
@@ -246,6 +312,8 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton<IEffectivePermissionsReadModel>(permissions);
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
+        builder.Services.RemoveAll<IRepositoryCreationReadinessValidator>();
+        builder.Services.AddSingleton<IRepositoryCreationReadinessValidator>(new ReadyRepositoryCreationReadinessValidator());
         builder.Services.RemoveAll<IUtcClock>();
         builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(Now));
 
@@ -269,6 +337,37 @@ public sealed class ArchiveFolderProcessWiringTests
         request.Headers.Add("Idempotency-Key", key);
         request.Headers.Add("X-Correlation-Id", $"correlation-{key}");
         request.Headers.Add("X-Hexalith-Task-Id", $"task-{key}");
+        return request;
+    }
+
+    private static HttpRequestMessage CreateValidRepositoryBackedRequest()
+    {
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/repository-backed")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                folderId = "folder-a",
+                providerBindingRef = "provider-binding-a",
+                repositoryProfileRef = "repository-profile-a",
+                folderMetadata = new
+                {
+                    displayName = "Folder",
+                    metadataClass = "tenant_sensitive",
+                },
+                branchRefPolicy = new
+                {
+                    requestSchemaVersion = "v1",
+                    repositoryBindingId = "repository-binding-a",
+                    policyRef = "branch_ref_policy_a",
+                    defaultRef = "branch_ref_primary",
+                    allowedRefPatterns = new[] { "branch_ref_feature" },
+                },
+            }),
+        };
+        request.Headers.Add("Idempotency-Key", "idempotency-binding-a");
+        request.Headers.Add("X-Correlation-Id", "correlation-binding-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-binding-a");
         return request;
     }
 
@@ -305,6 +404,18 @@ public sealed class ArchiveFolderProcessWiringTests
                     EffectivePermissionPrincipal.User(principalId),
                     "archive_folder",
                     Sequence: 1,
+                    EffectiveAt: Now.AddMinutes(-1)),
+                new(
+                    EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                    EffectivePermissionPrincipal.User(principalId),
+                    RepositoryBackedFolderCreationService.ActionToken,
+                    Sequence: 2,
+                    EffectiveAt: Now.AddMinutes(-1)),
+                new(
+                    EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                    EffectivePermissionPrincipal.User(principalId),
+                    "read_metadata",
+                    Sequence: 3,
                     EffectiveAt: Now.AddMinutes(-1)),
             ],
             new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
@@ -501,5 +612,28 @@ public sealed class ArchiveFolderProcessWiringTests
 
             return new EventStoreGatewayException(status, "Rejected", correlationId: correlationId);
         }
+    }
+
+    private sealed class ReadyRepositoryCreationReadinessValidator : IRepositoryCreationReadinessValidator
+    {
+        public Task<ProviderReadinessValidationResult> ValidateAsync(
+            ProviderReadinessValidationRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(new ProviderReadinessValidationResult(
+                ProviderReadinessResultCode.Allowed,
+                "ready",
+                "success",
+                "none",
+                Retryable: false,
+                RetryAfter: null,
+                RemediationCategory: "none",
+                CorrelationId: request.CorrelationId ?? "correlation-a",
+                ProviderReference: request.ProviderBindingRef,
+                ProviderBindingRef: request.ProviderBindingRef,
+                CapabilityProfileRef: "repository-profile-a",
+                Evidence: null,
+                new ProviderReadinessFreshness("snapshot_per_task", Now, "tenant-a:7", Stale: false),
+                ProviderFailureCategory.None,
+                "none"));
     }
 }

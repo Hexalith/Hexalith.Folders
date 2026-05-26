@@ -19,6 +19,18 @@ public sealed class FolderCommandActionTokenMapperTests
         mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
     }
 
+    [Fact]
+    public void CreateRepositoryBackedFolderCommandShouldMapToRepositoryCreationAction()
+    {
+        FolderCommandActionTokenMapper mapper = new();
+
+        FolderCommandActionMapping? mapping = mapper.Map(Command(FoldersServerModule.CreateRepositoryBackedFolderCommandType));
+
+        mapping.ShouldNotBeNull();
+        mapping.ActionToken.ShouldBe("create_repository_backed_folder");
+        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
+    }
+
     [Theory]
     [InlineData("Hexalith.Folders.Commands.GrantFolderAccess")]
     [InlineData("Hexalith.Folders.Commands.RevokeFolderAccess")]

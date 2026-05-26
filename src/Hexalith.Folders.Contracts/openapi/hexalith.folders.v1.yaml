@@ -815,7 +815,7 @@ paths:
         - folders
         - provider-readiness
       operationId: CreateRepositoryBackedFolder
-      summary: Create a folder and repository binding where provider capabilities permit it.
+      summary: Request repository creation for an existing folder where provider capabilities permit it.
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
         - $ref: "#/components/parameters/CorrelationId"
@@ -855,6 +855,8 @@ paths:
         queryBehavior: rejected-if-present
       x-hexalith-idempotency-equivalence:
         - branch_ref_policy.policy_ref
+        - branch_ref_policy.repository_binding_id
+        - folder_id
         - folder_metadata.display_name
         - provider_binding_ref
         - repository_profile_ref
@@ -865,7 +867,7 @@ paths:
         causation: eventstore-envelope-causation-reference
         adapterBehavior: caller-provided-or-generated-correlation
       x-hexalith-authorization:
-        requirement: tenant-context-folder-create-and-provider-binding-use
+        requirement: tenant-context-existing-folder-access-and-provider-binding-use
         tenantAuthority: authentication-context-and-eventstore-envelope
         safeDenial: externally-indistinguishable
       x-hexalith-canonical-error-categories:
@@ -7606,6 +7608,7 @@ components:
       additionalProperties: false
       required:
         - requestSchemaVersion
+        - folderId
         - providerBindingRef
         - repositoryProfileRef
         - folderMetadata
@@ -7615,6 +7618,8 @@ components:
           type: string
           enum:
             - v1
+        folderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
         providerBindingRef:
           $ref: "#/components/schemas/OpaqueIdentifier"
         repositoryProfileRef:

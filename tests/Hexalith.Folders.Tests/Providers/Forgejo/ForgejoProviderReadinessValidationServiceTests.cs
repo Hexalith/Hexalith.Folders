@@ -224,6 +224,14 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
             LastRequest = request;
             return Task.FromResult(_result);
         }
+
+        public Task<ForgejoRepositoryCreationResult> CreateRepositoryAsync(
+            ForgejoRepositoryCreationRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.FromResult(ForgejoRepositoryCreationResult.Success());
+        }
     }
 
     private sealed class FixedClock(DateTimeOffset now) : IUtcClock

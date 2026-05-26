@@ -22,4 +22,19 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             "Live GitHub readiness probing is deferred to the provider contract/live-nightly path; "
             + "supply an IGitHubApiClient seam for offline scenarios.");
     }
+
+    public Task<GitHubRepositoryCreationResult> CreateRepositoryAsync(
+        GitHubRepositoryCreationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        // The live repository creation call is intentionally deferred to a
+        // provider-owned runtime slice. Story 3.6 exercises the provider port
+        // through fakeable seams so PR validation remains hermetic.
+        throw new NotImplementedException(
+            "Live GitHub repository creation is deferred to the provider runtime path; "
+            + "supply an IGitHubApiClient seam for offline scenarios.");
+    }
 }

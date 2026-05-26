@@ -6,6 +6,7 @@ internal enum GitHubApiFailureCondition
     AuthenticationRequired,
     PermissionInsufficient,
     NotFoundOrHidden,
+    ExistingEquivalent,
     RepositoryConflict,
     BranchProtectionConflict,
     PrimaryRateLimit,
@@ -15,4 +16,3 @@ internal enum GitHubApiFailureCondition
     MalformedResponse,
     UnexpectedTransportFailure,
 }
-

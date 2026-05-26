@@ -144,7 +144,8 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
     {
         // Known canonical command types pass through untouched. Add to this guard when new
         // domain command types are wired through FolderDomainProcessor.
-        if (string.Equals(commandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
+        if (string.Equals(commandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal)
+            || string.Equals(commandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal))
         {
             return commandType;
         }

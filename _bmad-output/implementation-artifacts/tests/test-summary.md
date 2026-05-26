@@ -3,31 +3,33 @@
 ## Generated Tests
 
 ### API Tests
-- [x] `tests/Hexalith.Folders.Server.Tests/ProviderReadinessEndpointTests.cs` - Added provider-readiness REST guardrails for sanitized/generated correlation IDs, pre-service validation failures, provider unavailable mapping, client-controlled tenant mismatch, and freshness response metadata.
-- [x] Existing route registration, `Idempotency-Key` rejection, unsupported freshness rejection, safe denial, operator diagnostic response, and provider rate-limit tests remain covered.
+- [x] `tests/Hexalith.Folders.Server.Tests/RepositoryBackedFolderEndpointTests.cs` - Existing repository-backed REST route tests were rerun and remain green for accepted submission, required headers, malformed JSON, unsupported schema, reserved tenant, idempotency conflict, and safe provider-unavailable mapping.
+- [x] `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs` - Existing REST-to-process repository-backed request coverage was rerun and remains green for persisting the metadata-only request event and lifecycle binding projection.
 
 ### E2E Tests
-- [x] `tests/Hexalith.Folders.Tests/Providers/Readiness/ProviderReadinessValidationServiceTests.cs` - Added offline provider-readiness workflow coverage for tenant-scoped evidence records, reserved `system` tenant denial, mismatched binding reconciliation, and secret-shaped correlation redaction.
-- [x] `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderReadinessValidationServiceTests.cs` - Added boundary-safe Forgejo readiness coverage proving binding metadata feeds Forgejo target version/base URL evidence while stored attempts and diagnostics remain metadata-only.
-- [x] No browser/UI E2E tests were added because story 3.5 exposes an API/query workflow and no UI route.
+- [x] `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBackedCreationGateTests.cs` - Added offline workflow guardrails for readiness category mapping, in-progress repository-binding short-circuiting before readiness/idempotency observation, and equivalent replay before readiness observation.
+- [x] `tests/Hexalith.Folders.Workers.Tests/RepositoryProvisioningProcessManagerTests.cs` - Added worker guardrails proving provider calls receive only safe provisioning context and unavailable folder binding state does not resolve providers or append outcomes.
+- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs` - Expanded repository-creation failure mapping coverage across validation, auth, permission, hidden, conflict, rate limit, unavailable, malformed, timeout, and transport outcomes.
+- [x] `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderTests.cs` - Expanded repository-creation failure mapping coverage across validation, auth, permission, hidden, missing target, conflict, redirect, rate limit, unavailable, malformed, unsupported, reconciliation, timeout, cancellation, and transport outcomes.
+- [x] No browser/UI E2E tests were added because Story 3.6 is an API/worker/provider workflow and project context keeps UI E2E deferred until stable console routes exist.
 
 ## Coverage
 
-- Provider-readiness core focused suite: 30/30 passing.
-- Forgejo provider-readiness focused suite: 1/1 passing.
-- Provider-readiness server focused suite: 10/10 passing.
-- Full core test project: 619/619 passing.
-- Full server test project: 80/80 passing.
-- Contract Spine gate: 80/80 contract tests and 16/16 client tests passing.
-- Safety invariant gate: 10/10 contract safety tests passing after solution build.
-- Full solution test run: 877 passed, 1 existing UI E2E placeholder skipped, 0 failed.
+- Core repository-backed/provider focused suite: 116/116 passing.
+- Repository provisioning worker focused suite: 7/7 passing.
+- Repository-backed server endpoint focused suite: 10/10 passing.
+- Repository-backed integration focused test: 1/1 passing.
+- Full core test project: 679/679 passing.
+- Full server test project: 91/91 passing.
+- Full worker test project: 18/18 passing.
+- Full integration test project: 12/12 passing.
 
 ## Validation
 
-- [x] API tests generated where applicable.
-- [x] E2E-style offline workflow tests generated for the provider-readiness query path.
-- [x] Tests use xUnit v3, Shouldly, slim `WebApplication` endpoint tests, and existing fake provider seams.
-- [x] Tests cover happy path plus critical error cases: idempotency rejection, unsupported freshness, provider rate limit, provider unavailable, authorization denial, stale tenant evidence, tenant mismatch, reserved tenant, Forgejo binding metadata construction, reconciliation required, and unsafe correlation inputs.
+- [x] API tests generated/rerun where applicable.
+- [x] E2E-style offline workflow tests generated for the repository-backed creation gate, provider adapter seams, and provisioning process manager.
+- [x] Tests use xUnit v3, Shouldly, slim WebApplication endpoint tests, and existing fake provider/repository seams.
+- [x] Tests cover happy path plus critical error cases: readiness failure categories, unsupported capability, unknown provider outcome, reconciliation required, rate limit, unavailable, permission/auth failures, repository conflicts, in-progress binding mutation, idempotent replay, provider request context, and state-unavailable worker paths.
 - [x] Tests use no hardcoded waits or sleeps.
 - [x] Tests are independent and run offline without GitHub, Forgejo, provider credentials, live Tenants services, Aspire, Dapr sidecars, Redis, Keycloak, Docker, network access, or nested submodule initialization.
 - [x] Summary includes coverage metrics and validation commands.
@@ -35,13 +37,12 @@
 ## Commands Run
 
 ```text
-dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~ProviderReadinessValidationServiceTests"
-dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~ForgejoProviderReadinessValidationServiceTests"
-dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore --filter "FullyQualifiedName~ProviderReadinessEndpointTests"
-dotnet build Hexalith.Folders.slnx --no-restore
-dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore
-dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore
-pwsh -NoLogo -NoProfile -File tests\tools\run-safety-invariant-gates.ps1
-pwsh -NoLogo -NoProfile -File tests\tools\run-contract-spine-gates.ps1
-dotnet test Hexalith.Folders.slnx --no-restore
+dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --filter "FullyQualifiedName~FolderRepositoryBackedCreationGateTests|FullyQualifiedName~GitHubProviderTests|FullyQualifiedName~ForgejoProviderTests" --no-restore
+dotnet test .\tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj --filter FullyQualifiedName~RepositoryProvisioningProcessManagerTests --no-restore
+dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --filter RepositoryBackedFolderEndpointTests --no-restore
+dotnet test .\tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj --filter FullyQualifiedName~RepositoryBackedFolderRequestShouldRoundTripThroughProcessAndPersistRequestEvent --no-restore
+dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore
+dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore
+dotnet test .\tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj --no-restore
+dotnet test .\tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj --no-restore
 ```

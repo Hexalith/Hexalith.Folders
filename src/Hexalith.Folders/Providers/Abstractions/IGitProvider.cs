@@ -10,6 +10,10 @@ public interface IGitProvider
         ProviderCapabilityDiscoveryRequest request,
         CancellationToken cancellationToken = default);
 
+    Task<ProviderRepositoryCreationResult> CreateRepositoryAsync(
+        ProviderRepositoryCreationRequest request,
+        CancellationToken cancellationToken = default);
+
     ProviderCapabilityComparisonResult CompareCapabilityProfiles(
         ProviderCapabilityProfile current,
         ProviderCapabilityProfile candidate);

@@ -8,12 +8,14 @@ using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server.Authorization;
 
 namespace Hexalith.Folders.Server;
 
 public sealed partial class FolderDomainProcessor(
     FolderArchiveTenantGate archiveGate,
+    RepositoryBackedFolderCreationService repositoryBackedCreationService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -31,6 +33,8 @@ public sealed partial class FolderDomainProcessor(
     private static partial Regex CanonicalSegmentRegex();
 
     private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
+    private readonly RepositoryBackedFolderCreationService _repositoryBackedCreationService =
+        repositoryBackedCreationService ?? throw new ArgumentNullException(nameof(repositoryBackedCreationService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -47,9 +51,17 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
         }
 
-        return string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal)
-            ? await ProcessArchiveAsync(command).ConfigureAwait(false)
-            : Rejection(command, FolderResultCode.UnsupportedCommandType, null);
+        if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessArchiveAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessCreateRepositoryBackedFolderAsync(command).ConfigureAwait(false);
+        }
+
+        return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
     }
 
     private async Task<DomainResult> ProcessArchiveAsync(CommandEnvelope envelope)
@@ -128,6 +140,84 @@ public sealed partial class FolderDomainProcessor(
             // gateway response or framework 500 path. OperationCanceledException is allowed
             // to propagate so cancellation semantics are preserved if a future async
             // dependency adds them.
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
+    private async Task<DomainResult> ProcessCreateRepositoryBackedFolderAsync(CommandEnvelope envelope)
+    {
+        CreateRepositoryBackedFolderPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<CreateRepositoryBackedFolderPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || payload.FolderMetadata is null
+            || payload.BranchRefPolicy is null
+            || string.IsNullOrWhiteSpace(payload.FolderId)
+            || !string.Equals(payload.FolderId, envelope.AggregateId, StringComparison.Ordinal))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        RepositoryBackedFolderCreationRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [
+                    RepositoryBackedFolderCreationService.ActionToken,
+                    ProviderReadinessValidationService.ReadActionToken,
+                ]),
+            payload.FolderId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.RepositoryBindingId ?? payload.BranchRefPolicy.RepositoryBindingId ?? string.Empty,
+            payload.ProviderBindingRef ?? string.Empty,
+            payload.RepositoryProfileRef ?? string.Empty,
+            payload.BranchRefPolicy.PolicyRef ?? string.Empty,
+            payload.FolderMetadata.DisplayName ?? string.Empty,
+            payload.CredentialScopeClass ?? "provider_binding",
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _repositoryBackedCreationService.CreateAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
@@ -216,4 +306,26 @@ public sealed partial class FolderDomainProcessor(
     private sealed record ArchiveFolderPayload(
         [property: JsonRequired] string? RequestSchemaVersion,
         [property: JsonRequired] string? ArchiveReasonCode);
+
+    private sealed record CreateRepositoryBackedFolderPayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? FolderId,
+        [property: JsonRequired] string? RepositoryBindingId,
+        [property: JsonRequired] string? ProviderBindingRef,
+        [property: JsonRequired] string? RepositoryProfileRef,
+        [property: JsonRequired] FolderMetadataPayload? FolderMetadata,
+        [property: JsonRequired] BranchRefPolicyPayload? BranchRefPolicy,
+        [property: JsonRequired] string? CredentialScopeClass);
+
+    private sealed record FolderMetadataPayload(
+        [property: JsonRequired] string? DisplayName,
+        [property: JsonRequired] string? MetadataClass);
+
+    private sealed record BranchRefPolicyPayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? RepositoryBindingId,
+        [property: JsonRequired] string? PolicyRef,
+        string? DefaultRef,
+        IReadOnlyList<string>? AllowedRefPatterns,
+        IReadOnlyList<string>? ProtectedRefPatterns);
 }

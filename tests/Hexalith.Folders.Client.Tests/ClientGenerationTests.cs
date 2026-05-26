@@ -154,6 +154,36 @@ public sealed class ClientGenerationTests
     }
 
     [Fact]
+    public void CreateRepositoryBackedFolderHelperIncludesExistingFolderIdentity()
+    {
+        var request = new CreateRepositoryBackedFolderRequest
+        {
+            BranchRefPolicy = new BranchRefPolicyRequest
+            {
+                PolicyRef = "branch_ref_default",
+                RepositoryBindingId = "repository_binding_01HZY7Z6N7J4Q2X8Y9V0RBI001",
+            },
+            FolderId = "folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
+            FolderMetadata = new FolderMetadata
+            {
+                DisplayName = "Synthetic Folder",
+            },
+            ProviderBindingRef = "provider_binding_01HZY7Z6N7J4Q2X8Y9V0PBR001",
+            RepositoryProfileRef = "repository_profile_01HZY7Z6N7J4Q2X8Y9V0RPF001",
+            RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V1,
+        };
+
+        request.ComputeIdempotencyHash().ShouldBe(ExpectedHash(
+            "operation=CreateRepositoryBackedFolder",
+            "field=branch_ref_policy.policy_ref;present=true;value=s:branch_ref_default",
+            "field=branch_ref_policy.repository_binding_id;present=true;value=s:repository_binding_01HZY7Z6N7J4Q2X8Y9V0RBI001",
+            "field=folder_id;present=true;value=s:folder_01HZY7Z6N7J4Q2X8Y9V0FLD001",
+            "field=folder_metadata.display_name;present=true;value=s:Synthetic Folder",
+            "field=provider_binding_ref;present=true;value=s:provider_binding_01HZY7Z6N7J4Q2X8Y9V0PBR001",
+            "field=repository_profile_ref;present=true;value=s:repository_profile_01HZY7Z6N7J4Q2X8Y9V0RPF001"));
+    }
+
+    [Fact]
     public void NullAndOmittedValuesProduceDifferentCanonicalHashes()
     {
         var nullParent = new CreateFolderRequest

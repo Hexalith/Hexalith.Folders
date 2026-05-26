@@ -183,26 +183,48 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             rawObservedAt,
             (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
 
+        string? evidencePrincipalId = state.LifecycleState == FolderLifecycleState.Archived
+            ? state.ArchiveActorPrincipalId
+            : state.RepositoryBindingActorPrincipalId ?? state.ArchiveActorPrincipalId;
+        string? evidenceTaskId = state.LifecycleState == FolderLifecycleState.Archived
+            ? state.ArchiveTaskId
+            : state.RepositoryBindingTaskId ?? state.ArchiveTaskId;
+        string? evidenceCorrelationId = state.LifecycleState == FolderLifecycleState.Archived
+            ? state.ArchiveCorrelationId
+            : state.RepositoryBindingCorrelationId ?? state.ArchiveCorrelationId;
+
         _lifecycleReadModel.Save(new FolderLifecycleStatusReadModelSnapshot(
             state.ManagedTenantId,
             state.FolderId,
             state.LifecycleState == FolderLifecycleState.Archived
                 ? FolderLifecycleProjectionState.Archived
                 : FolderLifecycleProjectionState.Active,
-            FolderRepositoryBindingStatus.Unbound,
-            RepositoryBindingId: null,
-            ProviderBindingRef: null,
+            MapBindingStatus(state.RepositoryBindingState),
+            RepositoryBindingId: state.RepositoryBindingId,
+            ProviderBindingRef: state.ProviderBindingRef,
             new FolderLifecycleFreshness("eventually_consistent", clamped, "in-memory-folder-repository", Stale: false, ReasonCode: null),
             new FolderLifecycleEvidenceScope(
                 state.ManagedTenantId,
-                state.ArchiveActorPrincipalId,
+                evidencePrincipalId,
                 "read_metadata",
-                state.ArchiveTaskId,
-                state.ArchiveCorrelationId,
+                evidenceTaskId,
+                evidenceCorrelationId,
                 "in-memory-folder-repository"),
             []));
     }
 
     private static string LifecycleKey(string managedTenantId, string folderId)
         => $"{managedTenantId}|{folderId}";
+
+    private static FolderRepositoryBindingStatus MapBindingStatus(FolderRepositoryBindingState? state)
+        => state switch
+        {
+            null or FolderRepositoryBindingState.Unbound => FolderRepositoryBindingStatus.Unbound,
+            FolderRepositoryBindingState.BindingRequested => FolderRepositoryBindingStatus.BindingRequested,
+            FolderRepositoryBindingState.Bound => FolderRepositoryBindingStatus.Bound,
+            FolderRepositoryBindingState.Failed => FolderRepositoryBindingStatus.Failed,
+            FolderRepositoryBindingState.UnknownProviderOutcome => FolderRepositoryBindingStatus.UnknownProviderOutcome,
+            FolderRepositoryBindingState.ReconciliationRequired => FolderRepositoryBindingStatus.ReconciliationRequired,
+            _ => FolderRepositoryBindingStatus.Unknown,
+        };
 }

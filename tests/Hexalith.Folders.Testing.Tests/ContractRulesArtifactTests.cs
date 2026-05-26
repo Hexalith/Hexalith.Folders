@@ -11,6 +11,7 @@ public sealed class ContractRulesArtifactTests
     [
         "ValidateProviderReadiness",
         "CreateFolder",
+        "CreateRepositoryBackedFolder",
         "BindRepository",
         "PrepareWorkspace",
         "LockWorkspace",
@@ -41,6 +42,7 @@ public sealed class ContractRulesArtifactTests
     private static readonly string[] MutatingCommands =
     [
         "CreateFolder",
+        "CreateRepositoryBackedFolder",
         "BindRepository",
         "PrepareWorkspace",
         "LockWorkspace",

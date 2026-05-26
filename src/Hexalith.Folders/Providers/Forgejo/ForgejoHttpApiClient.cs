@@ -131,6 +131,21 @@ internal sealed class ForgejoHttpApiClient : IForgejoApiClient
         }
     }
 
+    public Task<ForgejoRepositoryCreationResult> CreateRepositoryAsync(
+        ForgejoRepositoryCreationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        // Live Forgejo repository creation is deferred to a provider-owned
+        // runtime slice. Story 3.6 validates the provider port through internal
+        // fakeable seams so no network or tenant seed data is required.
+        throw new NotImplementedException(
+            "Live Forgejo repository creation is deferred to the provider runtime path; "
+            + "supply an IForgejoApiClient seam for offline scenarios.");
+    }
+
     private static bool IsRedirect(HttpStatusCode statusCode)
         => statusCode is HttpStatusCode.Moved
             or HttpStatusCode.Redirect

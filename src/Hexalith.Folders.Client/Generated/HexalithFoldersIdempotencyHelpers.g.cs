@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "c65c99caab1733606fa47229b48128c88c90cee1b1389c6b32ff389e17aa81bc";
+    public const string ContractSpineSha256 = "a99a8e98afb2f7970a826af7484db8bf0c5f83f7d01d793fbc3bc88058af9da8";
     public const string GenerationConfigurationSha256 = "313de39da4e8a84e00f0c66e23f4e5240e4df8779f007e566807810219a9ae61";
-    public const string GeneratedHelpersSha256 = "63978a9ed026e2c683fa992da0759b53cff59783606f1e5416507b00d9d7faa2";
+    public const string GeneratedHelpersSha256 = "2a29595098a22f0917bf4f3982f696584a089c05b0875c0e59d805314da9aede";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -21,7 +21,7 @@ public static class HexalithFoldersGeneratedArtifacts
     // consumers can branch on it to detect positional-parameter renames. Not included in the
     // canonical hash. Round 4 review (P4) replaced the hardcoded date literal with this
     // signature-derived constant so a stable spine produces a stable version.
-    public const string HelperSchemaVersion = "8105106fa84a075e";
+    public const string HelperSchemaVersion = "ac2e839a4fc729c2";
 
     public static bool VerifyCurrent(string repositoryRoot) => VerifyCurrentDetailed(repositoryRoot).IsCurrent;
 
@@ -317,6 +317,8 @@ public partial class CreateRepositoryBackedFolderRequest
             new[]
             {
                 new IdempotencyField("branch_ref_policy.policy_ref", BranchRefPolicy is not null, BranchRefPolicy?.PolicyRef),
+                new IdempotencyField("branch_ref_policy.repository_binding_id", BranchRefPolicy is not null, BranchRefPolicy?.RepositoryBindingId),
+                new IdempotencyField("folder_id", true, FolderId),
                 new IdempotencyField("folder_metadata.display_name", FolderMetadata is not null, FolderMetadata?.DisplayName),
                 new IdempotencyField("provider_binding_ref", true, ProviderBindingRef),
                 new IdempotencyField("repository_profile_ref", true, RepositoryProfileRef),

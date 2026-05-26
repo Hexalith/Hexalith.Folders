@@ -80,6 +80,61 @@ internal static class ForgejoSafeTargetFingerprint
         return true;
     }
 
+    public static bool TryCreate(
+        ProviderRepositoryCreationRequest request,
+        ProviderCredentialMode credentialMode,
+        Uri canonicalBaseUri,
+        string snapshotVersion,
+        out ProviderTargetEvidence safeTargetEvidence,
+        out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(canonicalBaseUri);
+        ArgumentException.ThrowIfNullOrWhiteSpace(snapshotVersion);
+
+        safeTargetEvidence = request.TargetEvidence;
+        failureReason = null;
+
+        if (!TryValidateMetadata(request.TargetEvidence, out failureReason))
+        {
+            return false;
+        }
+
+        string? declaredFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? candidate)
+            && IsSafeMetadataValue(candidate)
+                ? candidate
+                : null;
+
+        string safeTargetFingerprint = ComputeFingerprint(
+            request,
+            credentialMode,
+            canonicalBaseUri,
+            snapshotVersion,
+            declaredFingerprint);
+
+        Dictionary<string, string> metadata = new(StringComparer.Ordinal)
+        {
+            ["safe_target_fingerprint"] = safeTargetFingerprint,
+            ["target_fingerprint_version"] = "forgejo-target-v1",
+            ["operation_scope"] = request.TargetEvidence.Metadata.TryGetValue("operation_scope", out string? scope) && IsSafeMetadataValue(scope)
+                ? scope
+                : "repository_creation",
+            ["api_surface_version"] = ForgejoProviderConstants.ApiSurfaceVersion,
+            ["snapshot_version"] = snapshotVersion,
+        };
+
+        safeTargetEvidence = new ProviderTargetEvidence(
+            "forgejo",
+            snapshotVersion,
+            ForgejoProviderConstants.ApiSurfaceVersion,
+            "forgejo-target-evidence-v1",
+            request.TargetEvidence.IsStale,
+            request.TargetEvidence.ObservedAt,
+            metadata);
+
+        return true;
+    }
+
     public static bool TryValidateMetadata(ProviderTargetEvidence targetEvidence, out string? failureReason)
     {
         ArgumentNullException.ThrowIfNull(targetEvidence);
@@ -113,6 +168,40 @@ internal static class ForgejoSafeTargetFingerprint
         AppendField(hash, request.AuthorizationEvidence.Fingerprint);
         AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
         AppendField(hash, CanonicalOrigin(canonicalBaseUri));
+        AppendField(hash, declaredFingerprint);
+        foreach (KeyValuePair<string, string> pair in request.TargetEvidence.Metadata.OrderBy(static x => x.Key, StringComparer.Ordinal))
+        {
+            if (IsSafeMetadataValue(pair.Key) && IsSafeMetadataValue(pair.Value))
+            {
+                AppendField(hash, pair.Key);
+                AppendField(hash, pair.Value);
+            }
+        }
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string ComputeFingerprint(
+        ProviderRepositoryCreationRequest request,
+        ProviderCredentialMode credentialMode,
+        Uri canonicalBaseUri,
+        string snapshotVersion,
+        string? declaredFingerprint)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, request.ManagedTenantId);
+        AppendField(hash, request.OrganizationId);
+        AppendField(hash, request.ProviderBindingRef);
+        AppendField(hash, request.RepositoryBindingId);
+        AppendField(hash, request.ProviderFamily);
+        AppendField(hash, request.ProviderKey);
+        AppendField(hash, ForgejoProviderConstants.ApiSurfaceVersion);
+        AppendField(hash, snapshotVersion);
+        AppendField(hash, credentialMode.ToString());
+        AppendField(hash, request.AuthorizationEvidence.Fingerprint);
+        AppendField(hash, request.AuthorizationEvidence.FreshnessClass);
+        AppendField(hash, CanonicalOrigin(canonicalBaseUri));
+        AppendField(hash, request.IdempotencyKey);
         AppendField(hash, declaredFingerprint);
         foreach (KeyValuePair<string, string> pair in request.TargetEvidence.Metadata.OrderBy(static x => x.Key, StringComparer.Ordinal))
         {

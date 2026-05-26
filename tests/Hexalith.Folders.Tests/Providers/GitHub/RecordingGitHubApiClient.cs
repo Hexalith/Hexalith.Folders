@@ -2,14 +2,24 @@ using Hexalith.Folders.Providers.GitHub;
 
 namespace Hexalith.Folders.Tests.Providers.GitHub;
 
-internal sealed class RecordingGitHubApiClient(GitHubReadinessResult result) : IGitHubApiClient
+internal sealed class RecordingGitHubApiClient(
+    GitHubReadinessResult result,
+    GitHubRepositoryCreationResult? repositoryCreationResult = null,
+    Exception? repositoryCreationException = null) : IGitHubApiClient
 {
     public int ReadinessCalls { get; private set; }
 
+    public int RepositoryCreationCalls { get; private set; }
+
     public GitHubReadinessRequest? LastRequest { get; private set; }
 
+    public GitHubRepositoryCreationRequest? LastRepositoryCreationRequest { get; private set; }
+
     public static RecordingGitHubApiClient Success()
-        => new(GitHubReadinessResult.Success(
+        => new(SuccessReadiness());
+
+    private static GitHubReadinessResult SuccessReadiness()
+        => GitHubReadinessResult.Success(
             new GitHubPermissionEvidence(
                 SupportsRepositoryCreation: true,
                 SupportsRepositoryBinding: true,
@@ -18,7 +28,7 @@ internal sealed class RecordingGitHubApiClient(GitHubReadinessResult result) : I
                 SupportsCommit: true,
                 SupportsStatus: true,
                 SupportsMetadata: true),
-            new GitHubRateLimitEvidence("bounded", true, TimeSpan.FromSeconds(90))));
+            new GitHubRateLimitEvidence("bounded", true, TimeSpan.FromSeconds(90)));
 
     public static RecordingGitHubApiClient Success(
         GitHubPermissionEvidence permissions,
@@ -34,6 +44,21 @@ internal sealed class RecordingGitHubApiClient(GitHubReadinessResult result) : I
                 ? TimeSpan.FromSeconds(120)
                 : null));
 
+    public static RecordingGitHubApiClient RepositoryCreationFailure(GitHubApiFailureCondition condition)
+        => new(
+            SuccessReadiness(),
+            GitHubRepositoryCreationResult.Failure(
+                condition,
+                condition is GitHubApiFailureCondition.PrimaryRateLimit or GitHubApiFailureCondition.SecondaryRateLimit
+                    ? TimeSpan.FromSeconds(120)
+                    : null));
+
+    public static RecordingGitHubApiClient RepositoryCreationEquivalentExisting()
+        => new(SuccessReadiness(), GitHubRepositoryCreationResult.Success(equivalentExisting: true));
+
+    public static RecordingGitHubApiClient RepositoryCreationThrows(Exception exception)
+        => new(SuccessReadiness(), repositoryCreationException: exception);
+
     public Task<GitHubReadinessResult> GetReadinessAsync(
         GitHubReadinessRequest request,
         CancellationToken cancellationToken = default)
@@ -42,5 +67,20 @@ internal sealed class RecordingGitHubApiClient(GitHubReadinessResult result) : I
         ReadinessCalls++;
         LastRequest = request;
         return Task.FromResult(result);
+    }
+
+    public Task<GitHubRepositoryCreationResult> CreateRepositoryAsync(
+        GitHubRepositoryCreationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        RepositoryCreationCalls++;
+        LastRepositoryCreationRequest = request;
+        if (repositoryCreationException is not null)
+        {
+            throw repositoryCreationException;
+        }
+
+        return Task.FromResult(repositoryCreationResult ?? GitHubRepositoryCreationResult.Success());
     }
 }

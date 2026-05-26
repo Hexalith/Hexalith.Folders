@@ -101,6 +101,22 @@ public static partial class FolderCommandValidator
                 archiveReasonCode);
         }
 
+        if (command is CreateRepositoryBackedFolder repositoryBacked)
+        {
+            if (!string.Equals(repositoryBacked.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !IsValidIdentifier(repositoryBacked.RepositoryBindingId)
+                || !IsValidIdentifier(repositoryBacked.ProviderBindingRef)
+                || !IsValidIdentifier(repositoryBacked.RepositoryProfileRef)
+                || !IsValidIdentifier(repositoryBacked.BranchRefPolicyRef)
+                || !IsValidIdentifier(repositoryBacked.CredentialScopeClass)
+                || !IsSafeMetadata(repositoryBacked.FolderMetadataDisplayName, required: true, MaxDisplayNameLength))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(repositoryBacked));
+        }
+
         if (command is not CreateFolder create)
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
@@ -193,6 +209,25 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.IdempotencyKey);
         AppendField(hash, policyVersion);
         AppendField(hash, freshnessWatermark);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string Fingerprint(CreateRepositoryBackedFolder command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.CommandType);
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.OrganizationId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.RequestSchemaVersion);
+        AppendField(hash, command.CredentialScopeClass);
+        AppendField(hash, CanonicalMetadata(command.FolderMetadataDisplayName));
+        AppendField(hash, command.ProviderBindingRef);
+        AppendField(hash, command.RepositoryBindingId);
+        AppendField(hash, command.RepositoryProfileRef);
+        AppendField(hash, command.BranchRefPolicyRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }

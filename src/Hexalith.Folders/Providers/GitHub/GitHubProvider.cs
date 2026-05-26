@@ -137,6 +137,111 @@ public sealed class GitHubProvider : IGitProvider
         ProviderCapabilityProfile candidate)
         => ProviderCapabilityProfileFactory.Compare(current, candidate);
 
+    public async Task<ProviderRepositoryCreationResult> CreateRepositoryAsync(
+        ProviderRepositoryCreationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        ProviderRepositoryCreationResult? boundaryFailure = ValidateBoundary(request);
+        if (boundaryFailure is not null)
+        {
+            return boundaryFailure;
+        }
+
+        if (!GitHubCredentialModeValidator.TryGetSupportedMode(
+            request.CredentialModeRequirements,
+            out ProviderCredentialMode credentialMode,
+            out string? credentialFailure))
+        {
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                credentialFailure ?? "unsupported_github_credential_mode");
+        }
+
+        if (!GitHubSafeTargetFingerprint.TryCreate(request, credentialMode, out ProviderTargetEvidence? safeTargetEvidence, out string? targetFailure))
+        {
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                targetFailure ?? "unsafe_github_target_metadata");
+        }
+
+        GitHubCredentialResolutionResult credentialResult = await _credentialResolver.ResolveAsync(
+            new GitHubCredentialResolutionRequest(
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.ProviderBindingRef,
+                credentialMode,
+                request.AuthorizationEvidence.Fingerprint,
+                request.CorrelationId),
+            cancellationToken).ConfigureAwait(false);
+
+        if (!credentialResult.IsSuccess)
+        {
+            return RepositoryFailure(
+                request,
+                credentialResult.FailureCategory,
+                credentialResult.ReasonCode,
+                credentialResult.RetryAfter);
+        }
+
+        GitHubCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
+        GitHubRepositoryCreationResult result;
+        try
+        {
+            IGitHubApiClient client = await _apiClientFactory.CreateAsync(
+                new GitHubApiClientRequest(
+                    GitHubProviderConstants.ProductHeader,
+                    GitHubProviderConstants.RestApiVersion,
+                    credentialMode,
+                    request.ProviderBindingRef,
+                    request.CorrelationId),
+                credential,
+                cancellationToken).ConfigureAwait(false);
+
+            result = await client.CreateRepositoryAsync(
+                new GitHubRepositoryCreationRequest(
+                    request.ManagedTenantId,
+                    request.OrganizationId,
+                    request.ProviderBindingRef,
+                    request.RepositoryBindingId,
+                    credentialMode,
+                    GitHubProviderConstants.RestApiVersion,
+                    safeTargetEvidence.Metadata["safe_target_fingerprint"],
+                    request.CorrelationId,
+                    request.IdempotencyKey),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.UnknownProviderOutcome,
+                "github_repository_creation_outcome_unknown");
+        }
+        catch (Exception)
+        {
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.UnknownProviderOutcome,
+                "github_repository_creation_outcome_unknown");
+        }
+        finally
+        {
+            await credential.DisposeAsync().ConfigureAwait(false);
+        }
+
+        return result.IsSuccess
+            ? ProviderRepositoryCreationResult.Success(
+                request,
+                result.EquivalentExisting,
+                safeTargetEvidence.Metadata["safe_target_fingerprint"])
+            : GitHubFailureMapper.ToProviderFailure(result, request);
+    }
+
     private static ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
     {
         try
@@ -167,6 +272,36 @@ public sealed class GitHubProvider : IGitProvider
         return null;
     }
 
+    private static ProviderRepositoryCreationResult? ValidateBoundary(ProviderRepositoryCreationRequest request)
+    {
+        try
+        {
+            string providerFamily = ProviderIdentityIdentifier.Normalize(request.ProviderFamily);
+            string providerKey = ProviderIdentityIdentifier.Normalize(request.ProviderKey);
+            if (!string.Equals(providerFamily, GitHubProviderConstants.ProviderFamily, StringComparison.Ordinal)
+                || !string.Equals(providerKey, GitHubProviderConstants.ProviderKey, StringComparison.Ordinal))
+            {
+                return RepositoryFailure(request, ProviderFailureCategory.UnsupportedProviderCapability, "unsupported_provider_family");
+            }
+        }
+        catch (ArgumentException)
+        {
+            return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
+        }
+
+        if (!string.Equals(request.AuthorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase))
+        {
+            return RepositoryFailure(request, ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale");
+        }
+
+        if (request.TargetEvidence.IsStale)
+        {
+            return RepositoryFailure(request, ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale");
+        }
+
+        return null;
+    }
+
     private static ProviderCapabilityDiscoveryResult Failure(
         ProviderFailureCategory category,
         string reasonCode,
@@ -178,4 +313,18 @@ public sealed class GitHubProvider : IGitProvider
             request.CorrelationId,
             retryAfter,
             safeRemediationCode: $"{category.ToCategoryCode()}_remediation");
+
+    private static ProviderRepositoryCreationResult RepositoryFailure(
+        ProviderRepositoryCreationRequest request,
+        ProviderFailureCategory category,
+        string reasonCode,
+        TimeSpan? retryAfter = null)
+        => ProviderRepositoryCreationResult.Failure(
+            request,
+            category,
+            reasonCode,
+            retryAfter,
+            safeRemediationCode: category == ProviderFailureCategory.UnknownProviderOutcome
+                ? "reconciliation_required_metadata_only"
+                : $"{category.ToCategoryCode()}_remediation");
 }

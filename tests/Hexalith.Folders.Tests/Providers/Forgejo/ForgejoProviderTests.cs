@@ -53,6 +53,110 @@ public sealed class ForgejoProviderTests
     }
 
     [Fact]
+    public async Task CreatesForgejoRepositoryThroughInternalApiSeam()
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("forgejo-token-1234567890");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        ForgejoProvider provider = new(credentialResolver, new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.RepositoryBindingId.ShouldBe("repository-binding-a");
+        result.ProviderBindingRef.ShouldBe("binding-a");
+        result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        credentialResolver.Calls.ShouldBe(1);
+        apiClient.RepositoryCreationCalls.ShouldBe(1);
+        apiClient.LastRepositoryCreationRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("15.0.2");
+        apiClient.LastRepositoryCreationRequest.ShouldNotBeNull().SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("forgejo-token-1234567890", Case.Sensitive);
+        serialized.ShouldNotContain("repo-secret", Case.Sensitive);
+        serialized.ShouldNotContain("https://", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task MapsForgejoEquivalentExistingRepositoryCreationAsSuccess()
+    {
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.RepositoryCreationEquivalentExisting();
+        ForgejoProvider provider = new(
+            RecordingForgejoCredentialResolver.Success("token"),
+            new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeTrue();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
+        apiClient.RepositoryCreationCalls.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData("ValidationFailure", ProviderFailureCategory.ProviderValidationFailed, "forgejo_validation_failed")]
+    [InlineData("AuthenticationRequired", ProviderFailureCategory.ProviderAuthenticationRequired, "forgejo_authentication_required")]
+    [InlineData("PermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_permission_insufficient")]
+    [InlineData("NotFoundOrHidden", ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_resource_hidden_or_missing")]
+    [InlineData("MissingRepository", ProviderFailureCategory.ProviderValidationFailed, "forgejo_repository_missing")]
+    [InlineData("MissingBranchOrPath", ProviderFailureCategory.ProviderValidationFailed, "forgejo_branch_or_path_missing")]
+    [InlineData("RepositoryConflict", ProviderFailureCategory.ProviderConflict, "forgejo_repository_conflict")]
+    [InlineData("BranchProtectionConflict", ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict")]
+    [InlineData("RedirectCrossOrigin", ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected")]
+    [InlineData("RateLimit", ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited")]
+    [InlineData("ServerUnavailable", ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable")]
+    [InlineData("TimeoutDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown")]
+    [InlineData("CancellationDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_cancellation_outcome_unknown")]
+    [InlineData("MalformedResponse", ProviderFailureCategory.ProviderFailureKnown, "forgejo_malformed_response")]
+    [InlineData("UnsupportedCapability", ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_capability_unsupported")]
+    [InlineData("VersionIncompatible", ProviderFailureCategory.ReconciliationRequired, "forgejo_version_incompatible")]
+    [InlineData("SchemaDriftBreaking", ProviderFailureCategory.ReconciliationRequired, "forgejo_schema_drift_breaking")]
+    [InlineData("UnexpectedTransportFailure", ProviderFailureCategory.UnknownProviderOutcome, "forgejo_transport_outcome_unknown")]
+    public async Task MapsForgejoRepositoryCreationFailures(
+        string conditionName,
+        ProviderFailureCategory expectedCategory,
+        string expectedReason)
+    {
+        ForgejoApiFailureCondition condition = Enum.Parse<ForgejoApiFailureCondition>(conditionName);
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.RepositoryCreationFailure(condition);
+        ForgejoProvider provider = new(
+            RecordingForgejoCredentialResolver.Success("token"),
+            new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+        result.SafeRemediationCode.ShouldNotContain("repository", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task MapsForgejoRepositoryCreationExceptionToUnknownOutcomeWithoutLeakingDetails()
+    {
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.RepositoryCreationThrows(
+            new TimeoutException("repo-secret-timeout"));
+        ForgejoProvider provider = new(
+            RecordingForgejoCredentialResolver.Success("token"),
+            new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        result.ReasonCode.ShouldBe("forgejo_repository_creation_outcome_unknown");
+        apiClient.RepositoryCreationCalls.ShouldBe(1);
+        JsonSerializer.Serialize(result).ShouldNotContain("repo-secret-timeout", Case.Sensitive);
+    }
+
+    [Fact]
     public async Task UnsupportedProviderIdentityFailsBeforeCredentialOrHttpConstruction()
     {
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("token");
@@ -526,6 +630,23 @@ public sealed class ForgejoProviderTests
         };
     }
 
+    private static ProviderRepositoryCreationRequest CreationRequest()
+        => new(
+            ManagedTenantId: "tenant-a",
+            OrganizationId: "organization-a",
+            ProviderBindingRef: "binding-a",
+            RepositoryBindingId: "repository-binding-a",
+            ProviderFamily: "forgejo",
+            ProviderKey: "forgejo",
+            TargetEvidence: TargetEvidence("repository_creation"),
+            CredentialModeRequirements: [ProviderCredentialMode.UserDelegatedReference],
+            AuthorizationEvidence: new ProviderAuthorizationEvidenceSnapshot(
+                "authz-snapshot-default",
+                DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
+                "fresh"),
+            CorrelationId: "correlation-a",
+            IdempotencyKey: "idempotency-binding-a");
+
     private sealed class RecordingForgejoCredentialResolver : IForgejoCredentialResolver
     {
         private readonly ForgejoCredentialResolutionResult _result;
@@ -590,15 +711,26 @@ public sealed class ForgejoProviderTests
     private sealed class RecordingForgejoApiClient : IForgejoApiClient
     {
         private readonly ForgejoReadinessResult _result;
+        private readonly Exception? _repositoryCreationException;
+        private readonly ForgejoRepositoryCreationResult? _repositoryCreationResult;
 
-        private RecordingForgejoApiClient(ForgejoReadinessResult result)
+        private RecordingForgejoApiClient(
+            ForgejoReadinessResult result,
+            ForgejoRepositoryCreationResult? repositoryCreationResult = null,
+            Exception? repositoryCreationException = null)
         {
             _result = result;
+            _repositoryCreationResult = repositoryCreationResult;
+            _repositoryCreationException = repositoryCreationException;
         }
 
         public int ReadinessCalls { get; private set; }
 
+        public int RepositoryCreationCalls { get; private set; }
+
         public ForgejoReadinessRequest? LastRequest { get; private set; }
+
+        public ForgejoRepositoryCreationRequest? LastRepositoryCreationRequest { get; private set; }
 
         public static RecordingForgejoApiClient Success(ForgejoVersionEvidence? version = null)
             => new(ForgejoReadinessResult.Success(
@@ -630,6 +762,19 @@ public sealed class ForgejoProviderTests
                 condition,
                 condition is ForgejoApiFailureCondition.RateLimit ? TimeSpan.FromSeconds(120) : null));
 
+        public static RecordingForgejoApiClient RepositoryCreationFailure(ForgejoApiFailureCondition condition)
+            => new(
+                Success()._result,
+                ForgejoRepositoryCreationResult.Failure(
+                    condition,
+                    condition is ForgejoApiFailureCondition.RateLimit ? TimeSpan.FromSeconds(120) : null));
+
+        public static RecordingForgejoApiClient RepositoryCreationEquivalentExisting()
+            => new(Success()._result, ForgejoRepositoryCreationResult.Success(equivalentExisting: true));
+
+        public static RecordingForgejoApiClient RepositoryCreationThrows(Exception exception)
+            => new(Success()._result, repositoryCreationException: exception);
+
         public Task<ForgejoReadinessResult> GetReadinessAsync(
             ForgejoReadinessRequest request,
             CancellationToken cancellationToken = default)
@@ -638,6 +783,21 @@ public sealed class ForgejoProviderTests
             ReadinessCalls++;
             LastRequest = request;
             return Task.FromResult(_result);
+        }
+
+        public Task<ForgejoRepositoryCreationResult> CreateRepositoryAsync(
+            ForgejoRepositoryCreationRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            RepositoryCreationCalls++;
+            LastRepositoryCreationRequest = request;
+            if (_repositoryCreationException is not null)
+            {
+                throw _repositoryCreationException;
+            }
+
+            return Task.FromResult(_repositoryCreationResult ?? ForgejoRepositoryCreationResult.Success());
         }
     }
 

@@ -1,5 +1,9 @@
+using Hexalith.Folders;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Workers.RepositoryProvisioning;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
 using Hexalith.Tenants.Client.Configuration;
 using Hexalith.Tenants.Client.Handlers;
@@ -46,6 +50,21 @@ public static class FoldersWorkersModule
         });
         services.AddOptions<HexalithTenantsOptions>().ValidateOnStart();
         services.AddFoldersTenantEventProjection();
+        services.AddFoldersRepositoryProvisioningWorkers();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersRepositoryProvisioningWorkers(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersProviderReadiness();
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddSingleton(static sp => new RepositoryProvisioningProcessManager(
+            sp.GetRequiredService<IFolderRepository>(),
+            sp.GetRequiredService<IProviderCapabilityResolver>(),
+            sp.GetService<TimeProvider>()));
 
         return services;
     }

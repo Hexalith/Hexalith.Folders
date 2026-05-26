@@ -209,6 +209,38 @@ public sealed class TenantFolderProviderContractGroupTests
     }
 
     [Fact]
+    public void CreateRepositoryBackedFolder_TargetsExistingFolderAndKeepsIdempotencyScoped()
+    {
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        Operation operation = EnumerateOperations(root).Single(o => o.OperationId == "CreateRepositoryBackedFolder");
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
+        YamlMappingNode request = RequiredMapping(schemas, "CreateRepositoryBackedFolderRequest");
+
+        string[] required = RequiredSequence(request, "required")
+            .OfType<YamlScalarNode>()
+            .Select(value => value.Value ?? string.Empty)
+            .ToArray();
+        string[] requestFields = RequiredMapping(request, "properties")
+            .Children
+            .Keys
+            .OfType<YamlScalarNode>()
+            .Select(value => value.Value ?? string.Empty)
+            .ToArray();
+        string[] equivalence = RequiredSequence(operation.Node, "x-hexalith-idempotency-equivalence")
+            .OfType<YamlScalarNode>()
+            .Select(value => value.Value ?? string.Empty)
+            .ToArray();
+
+        required.ShouldContain("folderId", "repository-backed creation must attach to an existing logical folder.");
+        requestFields.ShouldContain("folderId", "folder identity must be an explicit request field while the public route remains stable.");
+        string summary = GetScalar(operation.Node, "summary").ShouldNotBeNull();
+        summary.ShouldNotContain("Create a folder", Case.Sensitive);
+        equivalence.ShouldContain("folder_id", "idempotency equivalence must include the existing folder identity.");
+        equivalence.ShouldContain("branch_ref_policy.repository_binding_id", "idempotency equivalence must include repository-binding identity.");
+        equivalence.ShouldBe(equivalence.Order(StringComparer.Ordinal).ToArray(), "CreateRepositoryBackedFolder equivalence fields must stay lexicographically ordered.");
+    }
+
+    [Fact]
     public void ContractGroupOperations_SafeDenialExamplesMatchTheirHttpStatusAndAreAudiencePartitioned()
     {
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);

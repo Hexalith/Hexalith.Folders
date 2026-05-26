@@ -19,6 +19,7 @@ public static class FoldersDomainServiceEndpoints
 {
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
+    private const int MaxBranchRefPatternCount = 16;
 
     // Outbound: ignore-when-null is fine because we serialize records.
     private static readonly JsonSerializerOptions ResponseJsonOptions = new(JsonSerializerDefaults.Web)
@@ -53,6 +54,9 @@ public static class FoldersDomainServiceEndpoints
     // this broader shape so traces remain joinable across hops.
     private static readonly System.Text.RegularExpressions.Regex GatewayCorrelationRegex =
         new("^[A-Za-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private static readonly System.Text.RegularExpressions.Regex BranchRefPolicyRegex =
+        new("^branch_ref_[a-z0-9_]{3,80}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
@@ -114,6 +118,20 @@ public static class FoldersDomainServiceEndpoints
                 timeProvider,
                 cancellationToken).ConfigureAwait(false))
         .WithName("ArchiveFolder");
+
+        endpoints.MapPost("/api/v1/folders/repository-backed", async (
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await CreateRepositoryBackedFolderAsync(
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("CreateRepositoryBackedFolder");
 
         endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
             string folderId,
@@ -358,6 +376,216 @@ public static class FoldersDomainServiceEndpoints
             ResponseJsonOptions,
             statusCode: StatusCodes.Status202Accepted);
     }
+
+    private static async Task<IResult> CreateRepositoryBackedFolderAsync(
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        if (string.IsNullOrWhiteSpace(idempotencyKey)
+            || string.IsNullOrWhiteSpace(correlationId)
+            || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(idempotencyKey)
+            || !IsCanonicalIdentifier(taskId)
+            || !IsCanonicalIdentifier(correlationId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        CreateRepositoryBackedFolderHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<CreateRepositoryBackedFolderHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (!IsValidRepositoryBackedRequest(body))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        CreateRepositoryBackedFolderGatewayPayload gatewayPayload = new(
+            body.RequestSchemaVersion,
+            body.FolderId,
+            body.BranchRefPolicy!.RepositoryBindingId,
+            body.ProviderBindingRef,
+            body.RepositoryProfileRef,
+            body.FolderMetadata,
+            body.BranchRefPolicy,
+            CredentialScopeClass: "provider_binding");
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: body.FolderId!,
+                    CommandType: FoldersServerModule.CreateRepositoryBackedFolderCommandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
+    private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
+        => body is not null
+        && IsCanonicalIdentifier(body.FolderId)
+        && IsCanonicalIdentifier(body.ProviderBindingRef)
+        && IsCanonicalIdentifier(body.RepositoryProfileRef)
+        && IsValidFolderMetadata(body.FolderMetadata)
+        && IsValidBranchRefPolicy(body.BranchRefPolicy);
+
+    private static bool IsValidFolderMetadata(FolderMetadataHttpRequest? metadata)
+        => metadata is not null
+        && !string.IsNullOrWhiteSpace(metadata.DisplayName)
+        && metadata.DisplayName.Length <= 160
+        && string.Equals(metadata.MetadataClass, "tenant_sensitive", StringComparison.Ordinal);
+
+    private static bool IsValidBranchRefPolicy(BranchRefPolicyHttpRequest? policy)
+        => policy is not null
+        && string.Equals(policy.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+        && IsCanonicalIdentifier(policy.RepositoryBindingId)
+        && IsBranchRefPolicyIdentifier(policy.PolicyRef)
+        && IsBranchRefPolicyIdentifier(policy.DefaultRef)
+        && AreRequiredBranchRefPatterns(policy.AllowedRefPatterns)
+        && AreOptionalBranchRefPatterns(policy.ProtectedRefPatterns);
+
+    private static bool IsBranchRefPolicyIdentifier(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 14 and <= 91
+        && BranchRefPolicyRegex.IsMatch(value);
+
+    private static bool AreRequiredBranchRefPatterns(IReadOnlyList<string>? values)
+        => values is not null
+        && values.Count is >= 1 and <= MaxBranchRefPatternCount
+        && values.All(static value => IsBranchRefPolicyIdentifier(value));
+
+    private static bool AreOptionalBranchRefPatterns(IReadOnlyList<string>? values)
+        => values is null
+        || (values.Count <= MaxBranchRefPatternCount
+            && values.All(static value => IsBranchRefPolicyIdentifier(value)));
 
     private static bool IsCanonicalIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
@@ -766,6 +994,36 @@ public static class FoldersDomainServiceEndpoints
     private sealed record ArchiveFolderHttpRequest(
         string? RequestSchemaVersion,
         string? ArchiveReasonCode);
+
+    private sealed record CreateRepositoryBackedFolderHttpRequest(
+        string? RequestSchemaVersion,
+        string? FolderId,
+        string? ProviderBindingRef,
+        string? RepositoryProfileRef,
+        FolderMetadataHttpRequest? FolderMetadata,
+        BranchRefPolicyHttpRequest? BranchRefPolicy);
+
+    private sealed record CreateRepositoryBackedFolderGatewayPayload(
+        string? RequestSchemaVersion,
+        string? FolderId,
+        string? RepositoryBindingId,
+        string? ProviderBindingRef,
+        string? RepositoryProfileRef,
+        FolderMetadataHttpRequest? FolderMetadata,
+        BranchRefPolicyHttpRequest? BranchRefPolicy,
+        string? CredentialScopeClass);
+
+    private sealed record FolderMetadataHttpRequest(
+        string? DisplayName,
+        string? MetadataClass);
+
+    private sealed record BranchRefPolicyHttpRequest(
+        string? RequestSchemaVersion,
+        string? RepositoryBindingId,
+        string? PolicyRef,
+        string? DefaultRef,
+        IReadOnlyList<string>? AllowedRefPatterns,
+        IReadOnlyList<string>? ProtectedRefPatterns);
 
     private sealed record AcceptedCommandResponse(
         DateTimeOffset AcceptedAt,

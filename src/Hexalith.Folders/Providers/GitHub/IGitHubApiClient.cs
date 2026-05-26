@@ -5,5 +5,8 @@ internal interface IGitHubApiClient
     Task<GitHubReadinessResult> GetReadinessAsync(
         GitHubReadinessRequest request,
         CancellationToken cancellationToken = default);
-}
 
+    Task<GitHubRepositoryCreationResult> CreateRepositoryAsync(
+        GitHubRepositoryCreationRequest request,
+        CancellationToken cancellationToken = default);
+}

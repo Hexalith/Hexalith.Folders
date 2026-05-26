@@ -114,4 +114,37 @@ internal static class FolderCommandFactory
             idempotencyKey,
             payloadTenantId,
             clientTenantIds);
+
+    public static CreateRepositoryBackedFolder CreateRepositoryBackedFolder(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        string requestSchemaVersion = "v1",
+        string repositoryBindingId = "repository-binding-a",
+        string providerBindingRef = "provider-binding-a",
+        string repositoryProfileRef = "repository-profile-a",
+        string branchRefPolicyRef = "branch-ref-policy-a",
+        string folderMetadataDisplayName = "Folder A",
+        string credentialScopeClass = "tenant_installation",
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-binding-a",
+        string? payloadTenantId = null)
+        => new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            requestSchemaVersion,
+            repositoryBindingId,
+            providerBindingRef,
+            repositoryProfileRef,
+            branchRefPolicyRef,
+            folderMetadataDisplayName,
+            credentialScopeClass,
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId);
 }
