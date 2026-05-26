@@ -1,6 +1,6 @@
 # Story 3.4: Implement Forgejo provider adapter and drift detection
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -247,6 +247,7 @@ so that Forgejo support is verified against pinned API behavior.
 | 2026-05-20 | Applied party-mode review hardening for provider boundary containment, authorization-before-resolution, manifest and drift semantics, failure precedence, fixture inventory, redaction coverage, and offline guard tests. | Codex |
 | 2026-05-20 | Applied advanced elicitation hardening for manifest trust, authorized URL/redirect handling, cross-provider parity semantics, drift artifact redaction, and unsupported-version fail-closed behavior. | Codex |
 | 2026-05-24 | Implemented Forgejo provider capability adapter, pinned snapshot manifest, local drift fixtures, offline Forgejo tests, and provider boundary guard updates. | Codex |
+| 2026-05-26 | Senior review fixed fail-closed Forgejo snapshot selection, added unsupported-version coverage, added sanitized local drift report tooling, and recorded the CI workflow gate deferral. | Codex |
 
 ## Dev Agent Record
 
@@ -259,6 +260,9 @@ GPT-5 Codex
 - 2026-05-24: `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~Forgejo"` initially found one fingerprint test helper issue; fixed helper, added HTTP seam coverage, and reran successfully with 42/42 Forgejo tests passing.
 - 2026-05-24: `dotnet test Hexalith.Folders.slnx --no-restore` initially exposed obsolete negative-scope exemptions and a literal GitHub SDK guard string in the Forgejo dependency guard; fixed both and reran successfully.
 - 2026-05-24: Final validation `dotnet test Hexalith.Folders.slnx --no-restore` passed all projects; UI E2E placeholder remained skipped as pre-existing scaffold behavior.
+- 2026-05-26: Senior review ran `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~Forgejo"`; initial run exposed unsafe metadata/version guard ordering after the fail-closed version fix, then reran successfully with 47/47 Forgejo tests passing.
+- 2026-05-26: Senior review ran `pwsh tests\tools\forgejo-drift\Write-SanitizedForgejoDriftReport.ps1 -OutputPath artifacts\forgejo-drift\forgejo-drift-report.json`; sanitized local drift report generation passed.
+- 2026-05-26: Senior review ran `dotnet test Hexalith.Folders.slnx --no-restore`; initial run proved adding `.github/workflows/nightly-drift.yml` violates the existing Story 1.7 Contract Spine workflow guard, so the workflow file was removed and the allowed CI gap was recorded; final run passed all projects with the pre-existing UI E2E placeholder skipped.
 
 ### Completion Notes List
 
@@ -274,6 +278,9 @@ GPT-5 Codex
 - Added Forgejo offline tests for no-touch denial order, credential short-circuiting, canonical failure mapping, unknown-outcome reconciliation posture, capability/readiness mapping, safe target fingerprint dimensions, request construction, leakage prevention, and dependency boundaries.
 - Updated older Story 1.10/1.11 negative-scope contract tests to exempt the legitimate Story 3.3/3.4 provider adapter directories while keeping the original transport/UI/worker/generated-client prohibitions intact.
 - No public REST, SDK, CLI, MCP, UI, EventStore command, Contract Spine, provider-port model, GitHub adapter behavior, live Forgejo check, or generated SDK artifact was changed.
+- Senior review fixed unsupported Forgejo version handling so only exact pinned manifest versions select snapshots; same-family versions such as `15.0.3` now fail closed instead of silently using `15.0.2`.
+- Senior review aligned Forgejo capability target evidence with the authorized target snapshot and rejects observed snapshot mismatches after readiness.
+- Senior review added sanitized local drift report tooling under `tests/tools/forgejo-drift/`; adding `.github/workflows/nightly-drift.yml` remains deferred because the current Contract Spine negative-scope guard rejects additional workflow files until the owning CI story opens that gate.
 
 ## Party-Mode Review
 
@@ -343,3 +350,18 @@ GPT-5 Codex
 - `tests/contracts/forgejo/14.0.5/swagger.v1.json`
 - `tests/contracts/forgejo/15.0.2/swagger.v1.json`
 - `tests/tools/forgejo-drift/classification-fixtures.json`
+- `tests/tools/forgejo-drift/Write-SanitizedForgejoDriftReport.ps1`
+
+## Senior Developer Review (AI)
+
+- Reviewer: Codex on 2026-05-26
+- Final status: approved after auto-fixes; no critical issues remain.
+- Findings fixed:
+  - High: Forgejo version selection accepted any same-family version such as `15.0.3` through `VersionFamily` prefix matching, which could silently downgrade an unsupported live version to the pinned `15.0.2` snapshot. Fixed by requiring exact manifest version matches and adding fail-closed tests.
+  - Medium: Forgejo profile target evidence was always seeded from the default snapshot before readiness, so non-default pinned versions could produce mismatched capability evidence. Fixed by selecting the authorized target version before request construction and rejecting observed snapshot mismatches.
+  - Medium: Local drift tooling did not emit a sanitized report artifact. Added `Write-SanitizedForgejoDriftReport.ps1` and tests for metadata-only report semantics.
+- Deferred workflow note: a real `.github/workflows/nightly-drift.yml` cannot be added in this story without failing `TenantFolderProviderContractGroupTests.ContractGroupOperations_PreserveNegativeScope`, which currently permits only `.github/workflows/contract-spine.yml`. The exact CI wiring gap is deferred to the owning CI-gate story; local PR-gate tests and drift report tooling remain hermetic.
+- Validation:
+  - `pwsh tests\tools\forgejo-drift\Write-SanitizedForgejoDriftReport.ps1 -OutputPath artifacts\forgejo-drift\forgejo-drift-report.json` passed.
+  - `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~Forgejo"` passed: 47 passed.
+  - `dotnet test Hexalith.Folders.slnx --no-restore` passed; the UI E2E placeholder smoke test remained skipped as pre-existing scaffold behavior.

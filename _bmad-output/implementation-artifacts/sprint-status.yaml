@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-24T14:00:00+02:00
+# last_updated: 2026-05-26T18:54:40+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-24T14:00:00+02:00
+last_updated: 2026-05-26T18:54:40+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -81,7 +81,7 @@ development_status:
   3-1-configure-provider-binding-and-credential-reference: done
   3-2-define-igitprovider-port-and-capability-model: done
   3-3-implement-github-provider-adapter: done
-  3-4-implement-forgejo-provider-adapter-and-drift-detection: review
+  3-4-implement-forgejo-provider-adapter-and-drift-detection: done
   3-5-validate-provider-readiness-with-safe-diagnostics: backlog
   3-6-create-a-new-repository-backed-folder: backlog
   3-7-bind-an-existing-repository-to-a-folder: backlog

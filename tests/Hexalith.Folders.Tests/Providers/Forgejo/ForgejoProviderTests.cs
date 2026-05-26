@@ -235,6 +235,102 @@ public sealed class ForgejoProviderTests
         result.ReasonCode.ShouldBe("forgejo_snapshot_version_unsupported");
     }
 
+    [Fact]
+    public async Task UnsupportedTargetVersionFailsBeforeCredentialOrHttpConstruction()
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("token");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        ForgejoProvider provider = new(credentialResolver, new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(targetEvidence: TargetEvidence("readiness", "15.0.3")),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ReconciliationRequired);
+        result.ReasonCode.ShouldBe("forgejo_target_version_unsupported");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task UnsupportedSameFamilyLiveVersionCannotDowngradeToPinnedSnapshot()
+    {
+        StubHttpMessageHandler handler = new(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("""{"version":"15.0.3"}""", System.Text.Encoding.UTF8, "application/json"),
+        });
+        HttpClient httpClient = new(handler)
+        {
+            BaseAddress = new Uri("https://forgejo.example.test/"),
+        };
+        ForgejoHttpApiClient client = new(httpClient, httpClient.BaseAddress);
+
+        ForgejoReadinessResult result = await client.GetReadinessAsync(
+            new ForgejoReadinessRequest(
+                "tenant-a",
+                "organization-a",
+                "binding-a",
+                ProviderCredentialMode.UserDelegatedReference,
+                "forgejo-rest-v1",
+                "15.0.2",
+                "safe-target-a",
+                "correlation-a"),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.VersionIncompatible);
+    }
+
+    [Fact]
+    public async Task TargetVersionSelectsTheMatchingPinnedSnapshot()
+    {
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success(
+            version: new ForgejoVersionEvidence(
+                "11.0.14",
+                "11.0.14",
+                "forgejo-rest-v1",
+                "supported",
+                "supported"));
+        RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
+        ForgejoProvider provider = new(
+            RecordingForgejoCredentialResolver.Success("token"),
+            apiClientFactory);
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(targetEvidence: TargetEvidence("readiness", "11.0.14")),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        apiClient.LastRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("11.0.14");
+        result.Profile.ShouldNotBeNull().TargetEvidence.Metadata["snapshot_version"].ShouldBe("11.0.14");
+        result.Profile.ShouldNotBeNull().Evidence["forgejo_snapshot_version"].ShouldBe("11.0.14");
+        apiClientFactory.LastRequest.ShouldNotBeNull().BaseUri.AbsoluteUri.ShouldBe("https://forgejo.example.test/");
+    }
+
+    [Fact]
+    public async Task ObservedSnapshotMustMatchAuthorizedTargetSnapshot()
+    {
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success(
+            version: new ForgejoVersionEvidence(
+                "11.0.14",
+                "11.0.14",
+                "forgejo-rest-v1",
+                "supported",
+                "supported"));
+        ForgejoProvider provider = new(
+            RecordingForgejoCredentialResolver.Success("token"),
+            new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(targetEvidence: TargetEvidence("readiness", "15.0.2")),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ReconciliationRequired);
+        result.ReasonCode.ShouldBe("forgejo_snapshot_version_mismatch");
+    }
+
     [Theory]
     [InlineData("ValidationFailure", ProviderFailureCategory.ProviderValidationFailed, "forgejo_validation_failed", false)]
     [InlineData("AuthenticationRequired", ProviderFailureCategory.ProviderAuthenticationRequired, "forgejo_authentication_required", false)]
@@ -390,8 +486,8 @@ public sealed class ForgejoProviderTests
         return result.Profile.ShouldNotBeNull().TargetEvidence.Metadata["safe_target_fingerprint"];
     }
 
-    private static ProviderTargetEvidence TargetEvidence(string operationScope)
-        => ProviderCapabilityTestData.TargetEvidence("15.0.2") with
+    private static ProviderTargetEvidence TargetEvidence(string operationScope, string productVersion = "15.0.2")
+        => ProviderCapabilityTestData.TargetEvidence(productVersion) with
         {
             Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
             {

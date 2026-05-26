@@ -151,6 +151,21 @@ public sealed class ForgejoManifestAndDriftTests
     }
 
     [Fact]
+    public void ForgejoDriftReportScriptEmitsSanitizedMetadata()
+    {
+        string root = FindRepositoryRoot();
+        string reportScriptPath = Path.Combine(root, "tests", "tools", "forgejo-drift", "Write-SanitizedForgejoDriftReport.ps1");
+
+        File.Exists(reportScriptPath).ShouldBeTrue("Forgejo drift tooling must emit sanitized classification metadata.");
+
+        string reportScript = File.ReadAllText(reportScriptPath);
+        reportScript.ShouldContain("forgejo-drift-report-v1");
+        reportScript.ShouldContain("sanitized-metadata-only");
+        reportScript.ShouldContain("redactionScan");
+        reportScript.ShouldContain("localBuildImpact");
+    }
+
+    [Fact]
     public void ForgejoContractFixturesDoNotContainForbiddenSentinelValues()
     {
         string root = FindRepositoryRoot();

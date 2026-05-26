@@ -41,17 +41,15 @@ internal static class ForgejoSupportedVersionCatalog
 
     public static IReadOnlyList<ForgejoSupportedVersionEntry> SupportedVersions => Entries;
 
-    public static ForgejoSupportedVersionEntry SelectDefault() => Entries[0];
-
     public static bool IsSupported(string snapshotVersion)
-        => Entries.Any(entry => string.Equals(entry.Version, snapshotVersion, StringComparison.Ordinal));
+        => TryFind(snapshotVersion, out _);
 
     public static bool TryFind(string productVersion, out ForgejoSupportedVersionEntry entry)
     {
         entry = Entries[0];
+        string normalizedVersion = NormalizeVersion(productVersion);
         ForgejoSupportedVersionEntry? match = Entries.FirstOrDefault(candidate =>
-            string.Equals(candidate.Version, productVersion, StringComparison.Ordinal)
-            || productVersion.StartsWith(candidate.VersionFamily + ".", StringComparison.Ordinal));
+            string.Equals(candidate.Version, normalizedVersion, StringComparison.Ordinal));
         if (match is null)
         {
             return false;
@@ -60,4 +58,7 @@ internal static class ForgejoSupportedVersionCatalog
         entry = match;
         return true;
     }
+
+    private static string NormalizeVersion(string productVersion)
+        => string.IsNullOrWhiteSpace(productVersion) ? string.Empty : productVersion.Trim();
 }

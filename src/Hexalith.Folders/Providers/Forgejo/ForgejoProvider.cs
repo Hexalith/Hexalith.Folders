@@ -59,7 +59,24 @@ public sealed class ForgejoProvider : IGitProvider
                 request);
         }
 
-        ForgejoSupportedVersionEntry supportedVersion = ForgejoSupportedVersionCatalog.SelectDefault();
+        if (!ForgejoSafeTargetFingerprint.TryValidateMetadata(request.TargetEvidence, out string? targetMetadataFailure))
+        {
+            return Failure(
+                ProviderFailureCategory.ProviderValidationFailed,
+                targetMetadataFailure ?? "unsafe_forgejo_target_metadata",
+                request);
+        }
+
+        if (!ForgejoSupportedVersionCatalog.TryFind(
+            request.TargetEvidence.ProductVersion,
+            out ForgejoSupportedVersionEntry supportedVersion))
+        {
+            return Failure(
+                ProviderFailureCategory.ReconciliationRequired,
+                "forgejo_target_version_unsupported",
+                request);
+        }
+
         if (!ForgejoSafeTargetFingerprint.TryCreate(
             request,
             credentialMode,
@@ -131,11 +148,21 @@ public sealed class ForgejoProvider : IGitProvider
         }
 
         ForgejoVersionEvidence version = readiness.Version.ShouldNotBeNullForProvider();
-        if (!ForgejoSupportedVersionCatalog.IsSupported(version.SnapshotVersion))
+        if (!ForgejoSupportedVersionCatalog.TryFind(
+            version.SnapshotVersion,
+            out ForgejoSupportedVersionEntry observedVersion))
         {
             return Failure(
                 ProviderFailureCategory.ReconciliationRequired,
                 "forgejo_snapshot_version_unsupported",
+                request);
+        }
+
+        if (!string.Equals(observedVersion.Version, supportedVersion.Version, StringComparison.Ordinal))
+        {
+            return Failure(
+                ProviderFailureCategory.ReconciliationRequired,
+                "forgejo_snapshot_version_mismatch",
                 request);
         }
 

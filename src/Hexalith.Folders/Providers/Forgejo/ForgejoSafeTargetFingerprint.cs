@@ -40,9 +40,8 @@ internal static class ForgejoSafeTargetFingerprint
         safeTargetEvidence = request.TargetEvidence;
         failureReason = null;
 
-        if (request.TargetEvidence.Metadata.Keys.Any(static key => UnsafeKeys.Contains(key)))
+        if (!TryValidateMetadata(request.TargetEvidence, out failureReason))
         {
-            failureReason = "unsafe_forgejo_target_metadata";
             return false;
         }
 
@@ -77,6 +76,20 @@ internal static class ForgejoSafeTargetFingerprint
             request.TargetEvidence.IsStale,
             request.TargetEvidence.ObservedAt,
             metadata);
+
+        return true;
+    }
+
+    public static bool TryValidateMetadata(ProviderTargetEvidence targetEvidence, out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(targetEvidence);
+        failureReason = null;
+
+        if (targetEvidence.Metadata.Keys.Any(static key => UnsafeKeys.Contains(key)))
+        {
+            failureReason = "unsafe_forgejo_target_metadata";
+            return false;
+        }
 
         return true;
     }
