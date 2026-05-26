@@ -33,26 +33,6 @@ def _stop_hook_command(command: str, project_root: Path) -> str:
     command_parts = shlex.split(command)
     if not command_parts:
         return command
-    module_args = command_parts[1:]
-    if os.name == "nt":
-        src_path = _workflow_root() / "src"
-        ps_command = "; ".join(
-            [
-                f"$env:PROJECT_ROOT={_ps_single_quote(str(project_root))}",
-                f"$env:PYTHONPATH={_ps_single_quote(str(src_path))}",
-                "python -m story_automator " + " ".join(shlex.quote(part) for part in module_args),
-            ]
-        )
-        return " ".join(
-            [
-                "powershell",
-                "-NoProfile",
-                "-ExecutionPolicy",
-                "Bypass",
-                "-Command",
-                _ps_single_quote(ps_command),
-            ]
-        )
     candidates = [
         _workflow_root() / "scripts" / "story-automator",
         Path(shutil.which("story-automator")) if shutil.which("story-automator") else None,
@@ -63,10 +43,6 @@ def _stop_hook_command(command: str, project_root: Path) -> str:
             command_parts[0] = str(candidate.resolve())
             return shlex.join(["env", f"PROJECT_ROOT={project_root}", *command_parts])
     return shlex.join(["env", f"PROJECT_ROOT={project_root}", shutil.which("python3") or "python3", "-m", "story_automator", *command_parts[1:]])
-
-
-def _ps_single_quote(value: str) -> str:
-    return "'" + value.replace("'", "''") + "'"
 
 
 def cmd_derive_project_slug(args: list[str]) -> int:
