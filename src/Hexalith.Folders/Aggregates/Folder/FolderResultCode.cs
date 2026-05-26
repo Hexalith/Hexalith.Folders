@@ -40,6 +40,7 @@ public enum FolderResultCode
     ProviderReadinessFailed,
     UnsupportedProviderCapability,
     ProviderUnavailable,
+    ProviderRateLimited,
     ProviderPermissionInsufficient,
     RepositoryConflict,
     UnknownProviderOutcome,

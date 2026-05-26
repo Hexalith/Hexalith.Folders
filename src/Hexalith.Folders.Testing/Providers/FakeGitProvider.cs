@@ -186,6 +186,36 @@ public sealed class FakeGitProvider : IGitProvider
         return Task.FromResult(ProviderRepositoryCreationResult.Success(request, equivalentExisting: false, safeTargetFingerprint));
     }
 
+    public Task<ProviderRepositoryBindingResult> ValidateRepositoryBindingAsync(
+        ProviderRepositoryBindingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        cancellationToken.ThrowIfCancellationRequested();
+        if (_failureCategory is { } category)
+        {
+            return Task.FromResult(ProviderRepositoryBindingResult.Failure(
+                request,
+                category,
+                category.ToCategoryCode(),
+                retryAfter: category == ProviderFailureCategory.ProviderRateLimited ? TimeSpan.FromSeconds(60) : null));
+        }
+
+        if (!string.Equals(ProviderIdentityIdentifier.Normalize(request.ProviderFamily), ProviderFamily, StringComparison.Ordinal))
+        {
+            return Task.FromResult(ProviderRepositoryBindingResult.Failure(
+                request,
+                ProviderFailureCategory.UnsupportedProviderCapability,
+                "unsupported_provider_family"));
+        }
+
+        string safeTargetFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? value)
+            ? value
+            : "fake-safe-target";
+        return Task.FromResult(ProviderRepositoryBindingResult.Success(request, equivalentExisting: false, safeTargetFingerprint));
+    }
+
     public ProviderCapabilityComparisonResult CompareCapabilityProfiles(
         ProviderCapabilityProfile current,
         ProviderCapabilityProfile candidate)

@@ -146,6 +146,18 @@ internal sealed class ForgejoHttpApiClient : IForgejoApiClient
             + "supply an IForgejoApiClient seam for offline scenarios.");
     }
 
+    public Task<ForgejoRepositoryBindingResult> ValidateRepositoryBindingAsync(
+        ForgejoRepositoryBindingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        throw new NotImplementedException(
+            "Live Forgejo repository binding validation is deferred to the provider runtime path; "
+            + "supply an IForgejoApiClient seam for offline scenarios.");
+    }
+
     private static bool IsRedirect(HttpStatusCode statusCode)
         => statusCode is HttpStatusCode.Moved
             or HttpStatusCode.Redirect

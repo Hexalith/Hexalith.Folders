@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-26T21:45:17+02:00
+# last_updated: 2026-05-27T00:09:28+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-26T21:45:17+02:00
+last_updated: 2026-05-27T00:09:28+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -84,7 +84,7 @@ development_status:
   3-4-implement-forgejo-provider-adapter-and-drift-detection: done
   3-5-validate-provider-readiness-with-safe-diagnostics: done
   3-6-create-a-new-repository-backed-folder: done
-  3-7-bind-an-existing-repository-to-a-folder: backlog
+  3-7-bind-an-existing-repository-to-a-folder: done
   3-8-define-branch-and-ref-policy: backlog
   3-9-inspect-tenant-and-per-provider-readiness-evidence: backlog
   epic-3-retrospective: optional

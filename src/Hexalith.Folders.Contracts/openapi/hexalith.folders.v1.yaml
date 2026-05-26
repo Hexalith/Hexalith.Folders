@@ -945,6 +945,8 @@ paths:
           $ref: "#/components/responses/DuplicateBinding"
         "422":
           $ref: "#/components/responses/UnsupportedProviderCapability"
+        "429":
+          $ref: "#/components/responses/ProviderRateLimited"
         "503":
           $ref: "#/components/responses/ProviderUnavailable"
       x-hexalith-idempotency-key:
@@ -978,6 +980,7 @@ paths:
         - cross_tenant_access_denied
         - provider_readiness_failed
         - duplicate_binding
+        - provider_rate_limited
         - repository_conflict
         - unsupported_provider_capability
         - unknown_provider_outcome

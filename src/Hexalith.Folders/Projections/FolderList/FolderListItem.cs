@@ -15,6 +15,7 @@ public sealed record FolderListItem(
     string? RepositoryBindingId,
     string? ProviderBindingRef,
     string? RepositoryProfileRef,
+    string? ExternalRepositoryRefFingerprint,
     string? BranchRefPolicyRef,
     string? RepositoryBindingFailureCategory,
     string? RepositoryBindingOutcomeCategory,

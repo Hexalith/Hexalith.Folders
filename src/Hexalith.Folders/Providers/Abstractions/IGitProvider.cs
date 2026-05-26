@@ -14,6 +14,10 @@ public interface IGitProvider
         ProviderRepositoryCreationRequest request,
         CancellationToken cancellationToken = default);
 
+    Task<ProviderRepositoryBindingResult> ValidateRepositoryBindingAsync(
+        ProviderRepositoryBindingRequest request,
+        CancellationToken cancellationToken = default);
+
     ProviderCapabilityComparisonResult CompareCapabilityProfiles(
         ProviderCapabilityProfile current,
         ProviderCapabilityProfile candidate);

@@ -453,7 +453,8 @@ public sealed class ClientGenerationTests
         XElement target = document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersIdempotencyHelpers");
         target.Attribute("BeforeTargets")?.Value.ShouldBe("BeforeCompile");
         target.Attribute("Inputs")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
-        target.Attribute("Inputs")?.Value.ShouldContain("Generation\\Program.cs");
+        string inputs = target.Attribute("Inputs")?.Value ?? string.Empty;
+        inputs.Replace('\\', '/').ShouldContain("Generation/Program.cs");
         target.Attribute("Outputs")?.Value.ShouldBe("$(HexalithFoldersGeneratedHelpers)");
         target.Descendants("Exec").Single().Attribute("Command")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
     }

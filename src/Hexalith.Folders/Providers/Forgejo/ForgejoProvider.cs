@@ -336,6 +336,151 @@ public sealed class ForgejoProvider : IGitProvider
             : ForgejoFailureMapper.ToProviderFailure(result, request);
     }
 
+    public async Task<ProviderRepositoryBindingResult> ValidateRepositoryBindingAsync(
+        ProviderRepositoryBindingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        ProviderRepositoryBindingResult? boundaryFailure = ValidateBoundary(request);
+        if (boundaryFailure is not null)
+        {
+            return boundaryFailure;
+        }
+
+        if (!ForgejoCredentialModeValidator.TryGetSupportedMode(
+            request.CredentialModeRequirements,
+            out ProviderCredentialMode credentialMode,
+            out string? credentialFailure))
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                credentialFailure ?? "unsupported_forgejo_credential_mode");
+        }
+
+        if (!ForgejoAuthorizedBaseUrl.TryCanonicalize(
+            request.TargetEvidence.Metadata.TryGetValue("authorized_base_url", out string? baseUrl) ? baseUrl : null,
+            out Uri canonicalBaseUri,
+            out string? baseUrlFailure))
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                baseUrlFailure ?? "forgejo_base_url_invalid");
+        }
+
+        if (!ForgejoSafeTargetFingerprint.TryValidateMetadata(request.TargetEvidence, out string? targetMetadataFailure))
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                targetMetadataFailure ?? "unsafe_forgejo_target_metadata");
+        }
+
+        if (!ForgejoSupportedVersionCatalog.TryFind(
+            request.TargetEvidence.ProductVersion,
+            out ForgejoSupportedVersionEntry supportedVersion))
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ReconciliationRequired,
+                "forgejo_target_version_unsupported");
+        }
+
+        if (!ForgejoSafeTargetFingerprint.TryCreate(
+            request,
+            credentialMode,
+            canonicalBaseUri,
+            supportedVersion.Version,
+            out ProviderTargetEvidence? safeTargetEvidence,
+            out string? targetFailure))
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                targetFailure ?? "unsafe_forgejo_target_metadata");
+        }
+
+        ForgejoCredentialResolutionResult credentialResult = await _credentialResolver.ResolveAsync(
+            new ForgejoCredentialResolutionRequest(
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.ProviderBindingRef,
+                credentialMode,
+                request.AuthorizationEvidence.Fingerprint,
+                request.CorrelationId),
+            cancellationToken).ConfigureAwait(false);
+
+        if (!credentialResult.IsSuccess)
+        {
+            return RepositoryBindingFailure(
+                request,
+                credentialResult.FailureCategory,
+                credentialResult.ReasonCode,
+                credentialResult.RetryAfter);
+        }
+
+        ForgejoCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
+        ForgejoRepositoryBindingResult result;
+        try
+        {
+            IForgejoApiClient client = await _apiClientFactory.CreateAsync(
+                new ForgejoApiClientRequest(
+                    ForgejoProviderConstants.ProductHeader,
+                    canonicalBaseUri,
+                    ForgejoProviderConstants.ApiSurfaceVersion,
+                    credentialMode,
+                    request.ProviderBindingRef,
+                    request.CorrelationId),
+                credential,
+                cancellationToken).ConfigureAwait(false);
+
+            result = await client.ValidateRepositoryBindingAsync(
+                new ForgejoRepositoryBindingRequest(
+                    request.ManagedTenantId,
+                    request.OrganizationId,
+                    request.ProviderBindingRef,
+                    request.RepositoryBindingId,
+                    request.ExternalRepositoryRef,
+                    request.ExternalRepositoryRefFingerprint,
+                    request.BranchRefPolicyRef,
+                    credentialMode,
+                    ForgejoProviderConstants.ApiSurfaceVersion,
+                    supportedVersion.Version,
+                    safeTargetEvidence.Metadata["safe_target_fingerprint"],
+                    request.CorrelationId,
+                    request.IdempotencyKey),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.UnknownProviderOutcome,
+                "forgejo_repository_binding_outcome_unknown");
+        }
+        catch (Exception)
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.UnknownProviderOutcome,
+                "forgejo_repository_binding_outcome_unknown");
+        }
+        finally
+        {
+            await credential.DisposeAsync().ConfigureAwait(false);
+        }
+
+        return result.IsSuccess
+            ? ProviderRepositoryBindingResult.Success(
+                request,
+                result.EquivalentExisting,
+                safeTargetEvidence.Metadata["safe_target_fingerprint"])
+            : ForgejoFailureMapper.ToProviderFailure(result, request);
+    }
+
     private static ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
     {
         try
@@ -396,6 +541,36 @@ public sealed class ForgejoProvider : IGitProvider
         return null;
     }
 
+    private static ProviderRepositoryBindingResult? ValidateBoundary(ProviderRepositoryBindingRequest request)
+    {
+        try
+        {
+            string providerFamily = ProviderIdentityIdentifier.Normalize(request.ProviderFamily);
+            string providerKey = ProviderIdentityIdentifier.Normalize(request.ProviderKey);
+            if (!string.Equals(providerFamily, ForgejoProviderConstants.ProviderFamily, StringComparison.Ordinal)
+                || !string.Equals(providerKey, ForgejoProviderConstants.ProviderKey, StringComparison.Ordinal))
+            {
+                return RepositoryBindingFailure(request, ProviderFailureCategory.UnsupportedProviderCapability, "unsupported_provider_family");
+            }
+        }
+        catch (ArgumentException)
+        {
+            return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed");
+        }
+
+        if (!string.Equals(request.AuthorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase))
+        {
+            return RepositoryBindingFailure(request, ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale");
+        }
+
+        if (request.TargetEvidence.IsStale)
+        {
+            return RepositoryBindingFailure(request, ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale");
+        }
+
+        return null;
+    }
+
     private static ProviderCapabilityDiscoveryResult Failure(
         ProviderFailureCategory category,
         string reasonCode,
@@ -416,6 +591,20 @@ public sealed class ForgejoProvider : IGitProvider
         string reasonCode,
         TimeSpan? retryAfter = null)
         => ProviderRepositoryCreationResult.Failure(
+            request,
+            category,
+            reasonCode,
+            retryAfter,
+            safeRemediationCode: category == ProviderFailureCategory.UnknownProviderOutcome
+                ? "reconciliation_required_metadata_only"
+                : $"{category.ToCategoryCode()}_remediation");
+
+    private static ProviderRepositoryBindingResult RepositoryBindingFailure(
+        ProviderRepositoryBindingRequest request,
+        ProviderFailureCategory category,
+        string reasonCode,
+        TimeSpan? retryAfter = null)
+        => ProviderRepositoryBindingResult.Failure(
             request,
             category,
             reasonCode,

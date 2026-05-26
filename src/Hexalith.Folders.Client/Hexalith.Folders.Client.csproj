@@ -23,32 +23,32 @@
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>
   <PropertyGroup>
-    <HexalithFoldersContractSpine>$(MSBuildProjectDirectory)\..\Hexalith.Folders.Contracts\openapi\hexalith.folders.v1.yaml</HexalithFoldersContractSpine>
-    <HexalithFoldersGeneratedClient>$(MSBuildProjectDirectory)\Generated\HexalithFoldersClient.g.cs</HexalithFoldersGeneratedClient>
-    <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)\Generated\HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
-    <HexalithFoldersHelperGeneratorProject>$(MSBuildProjectDirectory)\Generation\Hexalith.Folders.Client.Generation.csproj</HexalithFoldersHelperGeneratorProject>
+    <HexalithFoldersContractSpine>$(MSBuildProjectDirectory)/../Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml</HexalithFoldersContractSpine>
+    <HexalithFoldersGeneratedClient>$(MSBuildProjectDirectory)/Generated/HexalithFoldersClient.g.cs</HexalithFoldersGeneratedClient>
+    <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)/Generated/HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
+    <HexalithFoldersHelperGeneratorProject>$(MSBuildProjectDirectory)/Generation/Hexalith.Folders.Client.Generation.csproj</HexalithFoldersHelperGeneratorProject>
   </PropertyGroup>
   <Target Name="GenerateHexalithFoldersClient"
           BeforeTargets="BeforeCompile"
-          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json"
           Outputs="$(HexalithFoldersGeneratedClient)"
           Condition="'$(DesignTimeBuild)' != 'true'">
-    <MakeDir Directories="$(MSBuildProjectDirectory)\Generated" />
+    <MakeDir Directories="$(MSBuildProjectDirectory)/Generated" />
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="$(NSwagExe_Net90) run nswag.json /variables:Configuration=$(Configuration)" />
+          Command="$(NSwagExe_Net100) run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
   <Target Name="GenerateHexalithFoldersIdempotencyHelpers"
           BeforeTargets="BeforeCompile"
-          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)\Generation\Program.cs"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersHelperGeneratorProject);$(MSBuildProjectDirectory)/Generation/Program.cs"
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -- --repository-root &quot;$(MSBuildProjectDirectory)\..\..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)\nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot;" />
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot;" />
   </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           BeforeTargets="CoreCompile"
           DependsOnTargets="GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers"
-          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)\nswag.json;$(HexalithFoldersGeneratedHelpers)"
+          Inputs="$(HexalithFoldersContractSpine);$(MSBuildProjectDirectory)/nswag.json;$(HexalithFoldersGeneratedHelpers)"
           Outputs="$(IntermediateOutputPath)HexalithFoldersGeneratedArtifacts.stamp"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Error Condition="!Exists('$(HexalithFoldersGeneratedHelpers)')"

@@ -16,6 +16,7 @@ namespace Hexalith.Folders.Server;
 public sealed partial class FolderDomainProcessor(
     FolderArchiveTenantGate archiveGate,
     RepositoryBackedFolderCreationService repositoryBackedCreationService,
+    RepositoryBindingService repositoryBindingService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -35,6 +36,8 @@ public sealed partial class FolderDomainProcessor(
     private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
     private readonly RepositoryBackedFolderCreationService _repositoryBackedCreationService =
         repositoryBackedCreationService ?? throw new ArgumentNullException(nameof(repositoryBackedCreationService));
+    private readonly RepositoryBindingService _repositoryBindingService =
+        repositoryBindingService ?? throw new ArgumentNullException(nameof(repositoryBindingService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -59,6 +62,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal))
         {
             return await ProcessCreateRepositoryBackedFolderAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.BindRepositoryCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessBindRepositoryAsync(command).ConfigureAwait(false);
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
@@ -224,6 +232,80 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
+    private async Task<DomainResult> ProcessBindRepositoryAsync(CommandEnvelope envelope)
+    {
+        BindRepositoryPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<BindRepositoryPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || payload.BranchRefPolicy is null
+            || string.IsNullOrWhiteSpace(envelope.AggregateId))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        BindRepositoryRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [
+                    RepositoryBindingService.ActionToken,
+                    ProviderReadinessValidationService.ReadActionToken,
+                ]),
+            envelope.AggregateId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.ProviderBindingRef ?? string.Empty,
+            payload.ExternalRepositoryRef ?? string.Empty,
+            payload.BranchRefPolicy.PolicyRef ?? string.Empty,
+            "provider_binding",
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _repositoryBindingService.BindAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
     private static string TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
     {
         if (extensions is null
@@ -328,4 +410,10 @@ public sealed partial class FolderDomainProcessor(
         string? DefaultRef,
         IReadOnlyList<string>? AllowedRefPatterns,
         IReadOnlyList<string>? ProtectedRefPatterns);
+
+    private sealed record BindRepositoryPayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? ProviderBindingRef,
+        [property: JsonRequired] string? ExternalRepositoryRef,
+        [property: JsonRequired] BranchRefPolicyPayload? BranchRefPolicy);
 }

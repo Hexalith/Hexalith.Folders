@@ -37,4 +37,16 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             "Live GitHub repository creation is deferred to the provider runtime path; "
             + "supply an IGitHubApiClient seam for offline scenarios.");
     }
+
+    public Task<GitHubRepositoryBindingResult> ValidateRepositoryBindingAsync(
+        GitHubRepositoryBindingRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        throw new NotImplementedException(
+            "Live GitHub repository binding validation is deferred to the provider runtime path; "
+            + "supply an IGitHubApiClient seam for offline scenarios.");
+    }
 }

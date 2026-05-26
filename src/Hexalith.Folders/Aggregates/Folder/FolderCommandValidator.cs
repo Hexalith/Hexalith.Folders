@@ -117,6 +117,21 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(repositoryBacked));
         }
 
+        if (command is BindRepository bindRepository)
+        {
+            if (!string.Equals(bindRepository.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !IsValidIdentifier(bindRepository.RepositoryBindingId)
+                || !IsValidIdentifier(bindRepository.ProviderBindingRef)
+                || !IsValidIdentifier(bindRepository.ExternalRepositoryRef)
+                || !IsValidIdentifier(bindRepository.BranchRefPolicyRef)
+                || !IsValidIdentifier(bindRepository.CredentialScopeClass))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(bindRepository));
+        }
+
         if (command is not CreateFolder create)
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
@@ -228,6 +243,56 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.RepositoryBindingId);
         AppendField(hash, command.RepositoryProfileRef);
         AppendField(hash, command.BranchRefPolicyRef);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    internal static string DeriveRepositoryBindingId(
+        string managedTenantId,
+        string folderId,
+        string providerBindingRef,
+        string externalRepositoryRef,
+        string branchRefPolicyRef)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "repository-binding-id-v1");
+        AppendField(hash, managedTenantId);
+        AppendField(hash, folderId);
+        AppendField(hash, providerBindingRef);
+        AppendField(hash, externalRepositoryRef);
+        AppendField(hash, branchRefPolicyRef);
+
+        string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+        return $"repository_binding_{digest[..32]}";
+    }
+
+    internal static string ExternalRepositoryRefFingerprint(BindRepository command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "external-repository-ref-v1");
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.ProviderBindingRef);
+        AppendField(hash, command.ExternalRepositoryRef);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string Fingerprint(BindRepository command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.CommandType);
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.OrganizationId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.RequestSchemaVersion);
+        AppendField(hash, command.BranchRefPolicyRef);
+        AppendField(hash, command.CredentialScopeClass);
+        AppendField(hash, command.ExternalRepositoryRef);
+        AppendField(hash, command.ProviderBindingRef);
+        AppendField(hash, command.RepositoryBindingId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }

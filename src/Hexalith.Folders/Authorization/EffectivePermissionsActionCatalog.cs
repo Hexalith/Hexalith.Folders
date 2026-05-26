@@ -5,6 +5,7 @@ public static class EffectivePermissionsActionCatalog
     private static readonly string[] OrderedActions =
     [
         "configure_provider_binding",
+        "bind_repository",
         "create_repository_backed_folder",
         "provider_readiness_read",
         "manage_folder_access",
@@ -35,6 +36,7 @@ public static class EffectivePermissionsActionCatalog
         ["archive_folder"] = EffectivePermissionLevel.Administer,
         ["manage_folder_access"] = EffectivePermissionLevel.Administer,
         ["configure_provider_binding"] = EffectivePermissionLevel.Administer,
+        ["bind_repository"] = EffectivePermissionLevel.Write,
         ["create_repository_backed_folder"] = EffectivePermissionLevel.Write,
         ["provider_readiness_read"] = EffectivePermissionLevel.Read,
         ["create_folder"] = EffectivePermissionLevel.Administer,

@@ -221,6 +221,7 @@
       - 'failed_operation'
       - 'idempotency_conflict'
       - 'internal_error'
+      - 'provider_rate_limited'
       - 'provider_readiness_failed'
       - 'reconciliation_required'
       - 'repository_conflict'
@@ -275,6 +276,10 @@
     - canonical_error_category: 'provider_readiness_failed'
       cli_exit_code: 70
       mcp_failure_kind: 'provider_readiness_failed'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_rate_limited'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_rate_limited'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'reconciliation_required'
       cli_exit_code: 72

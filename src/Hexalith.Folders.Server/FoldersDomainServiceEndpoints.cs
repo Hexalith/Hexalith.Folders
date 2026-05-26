@@ -133,6 +133,22 @@ public static class FoldersDomainServiceEndpoints
                 cancellationToken).ConfigureAwait(false))
         .WithName("CreateRepositoryBackedFolder");
 
+        endpoints.MapPost("/api/v1/folders/{folderId}/repository-bindings", async (
+            string folderId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await BindRepositoryAsync(
+                folderId,
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("BindRepository");
+
         endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
             string folderId,
             HttpContext httpContext,
@@ -549,12 +565,182 @@ public static class FoldersDomainServiceEndpoints
             statusCode: StatusCodes.Status202Accepted);
     }
 
+    private static async Task<IResult> BindRepositoryAsync(
+        string folderId,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        if (string.IsNullOrWhiteSpace(idempotencyKey)
+            || string.IsNullOrWhiteSpace(correlationId)
+            || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(idempotencyKey)
+            || !IsCanonicalIdentifier(taskId)
+            || !IsCanonicalIdentifier(correlationId)
+            || !IsCanonicalIdentifier(folderId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        BindRepositoryHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<BindRepositoryHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (!IsValidBindRepositoryRequest(body))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: FoldersServerModule.BindRepositoryCommandType,
+                    Payload: JsonSerializer.SerializeToElement(body, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
         && IsCanonicalIdentifier(body.FolderId)
         && IsCanonicalIdentifier(body.ProviderBindingRef)
         && IsCanonicalIdentifier(body.RepositoryProfileRef)
         && IsValidFolderMetadata(body.FolderMetadata)
+        && IsValidBranchRefPolicy(body.BranchRefPolicy);
+
+    private static bool IsValidBindRepositoryRequest(BindRepositoryHttpRequest? body)
+        => body is not null
+        && IsCanonicalIdentifier(body.ProviderBindingRef)
+        && IsCanonicalIdentifier(body.ExternalRepositoryRef)
         && IsValidBranchRefPolicy(body.BranchRefPolicy);
 
     private static bool IsValidFolderMetadata(FolderMetadataHttpRequest? metadata)
@@ -629,6 +815,51 @@ public static class FoldersDomainServiceEndpoints
         string safeCorrelationId = IsSafeGatewayCorrelationId(exception.CorrelationId)
             ? exception.CorrelationId!
             : correlationId;
+        string? reasonCode = SafeGatewayReasonCode(exception.ReasonCode);
+
+        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "duplicate_binding")
+        {
+            return SafeProblem(
+                StatusCodes.Status409Conflict,
+                category: "duplicate_binding",
+                code: "duplicate_binding",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status429TooManyRequests && reasonCode == "provider_rate_limited")
+        {
+            return SafeProblem(
+                StatusCodes.Status429TooManyRequests,
+                category: "provider_rate_limited",
+                code: "provider_rate_limited",
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable && reasonCode == "provider_unavailable")
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "provider_unavailable",
+                code: "provider_unavailable",
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "provider_readiness_failed")
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: "provider_readiness_failed",
+                code: "provider_readiness_failed",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
 
         return exception.StatusCode switch
         {
@@ -660,6 +891,13 @@ public static class FoldersDomainServiceEndpoints
                 retryable: false,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
+            StatusCodes.Status429TooManyRequests => SafeProblem(
+                StatusCodes.Status429TooManyRequests,
+                category: "provider_rate_limited",
+                code: "provider_rate_limited",
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId),
             StatusCodes.Status503ServiceUnavailable => SafeProblem(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
@@ -686,6 +924,17 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId),
         };
     }
+
+    private static string? SafeGatewayReasonCode(string? reasonCode)
+        => reasonCode switch
+        {
+            "duplicate_binding" => "duplicate_binding",
+            "ProviderRateLimited" => "provider_rate_limited",
+            "provider_rate_limited" => "provider_rate_limited",
+            "provider_readiness_failed" => "provider_readiness_failed",
+            "provider_unavailable" => "provider_unavailable",
+            _ => null,
+        };
 
     private static IResult ToHttpResult(HttpContext httpContext, FolderLifecycleStatusQueryResult result, string? correlationId, string? taskId)
     {
@@ -1001,6 +1250,12 @@ public static class FoldersDomainServiceEndpoints
         string? ProviderBindingRef,
         string? RepositoryProfileRef,
         FolderMetadataHttpRequest? FolderMetadata,
+        BranchRefPolicyHttpRequest? BranchRefPolicy);
+
+    private sealed record BindRepositoryHttpRequest(
+        string? RequestSchemaVersion,
+        string? ProviderBindingRef,
+        string? ExternalRepositoryRef,
         BranchRefPolicyHttpRequest? BranchRefPolicy);
 
     private sealed record CreateRepositoryBackedFolderGatewayPayload(

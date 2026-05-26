@@ -281,6 +281,11 @@ public sealed class RepositoryProvisioningProcessManagerTests
             return Task.FromResult(result ?? ProviderRepositoryCreationResult.Success(request, equivalentExisting: false, "safe-target-a"));
         }
 
+        public Task<ProviderRepositoryBindingResult> ValidateRepositoryBindingAsync(
+            ProviderRepositoryBindingRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(ProviderRepositoryBindingResult.Success(request, equivalentExisting: false, "safe-target-a"));
+
         public ProviderCapabilityComparisonResult CompareCapabilityProfiles(
             ProviderCapabilityProfile current,
             ProviderCapabilityProfile candidate)

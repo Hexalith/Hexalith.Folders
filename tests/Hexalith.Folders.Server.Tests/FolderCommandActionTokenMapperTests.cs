@@ -31,6 +31,18 @@ public sealed class FolderCommandActionTokenMapperTests
         mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
     }
 
+    [Fact]
+    public void BindRepositoryCommandShouldMapToRepositoryBindingAction()
+    {
+        FolderCommandActionTokenMapper mapper = new();
+
+        FolderCommandActionMapping? mapping = mapper.Map(Command(FoldersServerModule.BindRepositoryCommandType));
+
+        mapping.ShouldNotBeNull();
+        mapping.ActionToken.ShouldBe("bind_repository");
+        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
+    }
+
     [Theory]
     [InlineData("Hexalith.Folders.Commands.GrantFolderAccess")]
     [InlineData("Hexalith.Folders.Commands.RevokeFolderAccess")]

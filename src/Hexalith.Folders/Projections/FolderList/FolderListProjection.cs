@@ -63,6 +63,7 @@ public sealed record FolderListProjection
                         RepositoryBindingId: null,
                         ProviderBindingRef: null,
                         RepositoryProfileRef: null,
+                        ExternalRepositoryRefFingerprint: null,
                         BranchRefPolicyRef: null,
                         RepositoryBindingFailureCategory: null,
                         RepositoryBindingOutcomeCategory: null,
@@ -108,6 +109,23 @@ public sealed record FolderListProjection
                         RepositoryBindingId = requested.RepositoryBindingId,
                         ProviderBindingRef = requested.ProviderBindingRef,
                         RepositoryProfileRef = requested.RepositoryProfileRef,
+                        ExternalRepositoryRefFingerprint = null,
+                        BranchRefPolicyRef = requested.BranchRefPolicyRef,
+                        RepositoryBindingFailureCategory = null,
+                        RepositoryBindingOutcomeCategory = null,
+                        RepositoryBindingUpdatedAt = requested.OccurredAt,
+                        Sequence = envelope.Sequence,
+                    };
+                    break;
+
+                case ExistingRepositoryBindingRequested requested:
+                    folders[key] = RequireCurrent(folders, key, envelope) with
+                    {
+                        RepositoryBindingState = FolderRepositoryBindingState.BindingRequested,
+                        RepositoryBindingId = requested.RepositoryBindingId,
+                        ProviderBindingRef = requested.ProviderBindingRef,
+                        RepositoryProfileRef = null,
+                        ExternalRepositoryRefFingerprint = requested.ExternalRepositoryRefFingerprint,
                         BranchRefPolicyRef = requested.BranchRefPolicyRef,
                         RepositoryBindingFailureCategory = null,
                         RepositoryBindingOutcomeCategory = null,

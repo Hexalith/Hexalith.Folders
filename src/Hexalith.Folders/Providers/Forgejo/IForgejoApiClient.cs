@@ -9,4 +9,8 @@ internal interface IForgejoApiClient
     Task<ForgejoRepositoryCreationResult> CreateRepositoryAsync(
         ForgejoRepositoryCreationRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<ForgejoRepositoryBindingResult> ValidateRepositoryBindingAsync(
+        ForgejoRepositoryBindingRequest request,
+        CancellationToken cancellationToken = default);
 }

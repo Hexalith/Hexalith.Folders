@@ -73,6 +73,33 @@ public sealed class GitHubProviderTests
     }
 
     [Fact]
+    public async Task ValidatesGitHubExistingRepositoryBindingThroughInternalApiSeam()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("ghp_123456789012345678901234567890123456");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.RepositoryBindingId.ShouldBe("repository-binding-a");
+        result.ProviderBindingRef.ShouldBe("binding-a");
+        result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        credentialResolver.Calls.ShouldBe(1);
+        apiClient.RepositoryBindingCalls.ShouldBe(1);
+        apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRef.ShouldBe("external-repository-a");
+        apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRefFingerprint.ShouldBe("external-ref-fingerprint-a");
+        apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("ghp_123456789012345678901234567890123456", Case.Sensitive);
+        serialized.ShouldNotContain("repository-secret", Case.Sensitive);
+        serialized.ShouldNotContain("https://", Case.Sensitive);
+    }
+
+    [Fact]
     public async Task MapsGitHubEquivalentExistingRepositoryCreationAsSuccess()
     {
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryCreationEquivalentExisting();
@@ -88,6 +115,24 @@ public sealed class GitHubProviderTests
         result.EquivalentExisting.ShouldBeTrue();
         result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
         apiClient.RepositoryCreationCalls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task MapsGitHubEquivalentExistingRepositoryBindingAsSuccess()
+    {
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryBindingEquivalentExisting();
+        GitHubProvider provider = new(
+            RecordingGitHubCredentialResolver.Success("token"),
+            new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeTrue();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
+        apiClient.RepositoryBindingCalls.ShouldBe(1);
     }
 
     [Theory]
@@ -124,6 +169,40 @@ public sealed class GitHubProviderTests
         result.SafeRemediationCode.ShouldNotContain("repository", Case.Sensitive);
     }
 
+    [Theory]
+    [InlineData("ValidationFailure", ProviderFailureCategory.ProviderValidationFailed, "github_validation_failed")]
+    [InlineData("AuthenticationRequired", ProviderFailureCategory.ProviderAuthenticationRequired, "github_authentication_required")]
+    [InlineData("PermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient")]
+    [InlineData("NotFoundOrHidden", ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing")]
+    [InlineData("RepositoryConflict", ProviderFailureCategory.ProviderConflict, "github_repository_conflict")]
+    [InlineData("BranchProtectionConflict", ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict")]
+    [InlineData("PrimaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited")]
+    [InlineData("SecondaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited")]
+    [InlineData("ServerUnavailable", ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable")]
+    [InlineData("TimeoutDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown")]
+    [InlineData("MalformedResponse", ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response")]
+    [InlineData("UnexpectedTransportFailure", ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown")]
+    public async Task MapsGitHubRepositoryBindingFailures(
+        string conditionName,
+        ProviderFailureCategory expectedCategory,
+        string expectedReason)
+    {
+        GitHubApiFailureCondition condition = Enum.Parse<GitHubApiFailureCondition>(conditionName);
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryBindingFailure(condition);
+        GitHubProvider provider = new(
+            RecordingGitHubCredentialResolver.Success("token"),
+            new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+        result.SafeRemediationCode.ShouldNotContain("repository", Case.Sensitive);
+    }
+
     [Fact]
     public async Task MapsGitHubRepositoryCreationExceptionToUnknownOutcomeWithoutLeakingDetails()
     {
@@ -141,6 +220,26 @@ public sealed class GitHubProviderTests
         result.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
         result.ReasonCode.ShouldBe("github_repository_creation_outcome_unknown");
         apiClient.RepositoryCreationCalls.ShouldBe(1);
+        JsonSerializer.Serialize(result).ShouldNotContain("repository-secret-timeout", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task MapsGitHubRepositoryBindingExceptionToUnknownOutcomeWithoutLeakingDetails()
+    {
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryBindingThrows(
+            new TimeoutException("repository-secret-timeout"));
+        GitHubProvider provider = new(
+            RecordingGitHubCredentialResolver.Success("token"),
+            new RecordingGitHubApiClientFactory(apiClient));
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        result.ReasonCode.ShouldBe("github_repository_binding_outcome_unknown");
+        apiClient.RepositoryBindingCalls.ShouldBe(1);
         JsonSerializer.Serialize(result).ShouldNotContain("repository-secret-timeout", Case.Sensitive);
     }
 
@@ -599,6 +698,33 @@ public sealed class GitHubProviderTests
                 {
                     ["safe_target_fingerprint"] = "safe-target-a",
                     ["operation_scope"] = "repository_creation",
+                },
+            },
+            CredentialModeRequirements: [ProviderCredentialMode.AppInstallationReference],
+            AuthorizationEvidence: new ProviderAuthorizationEvidenceSnapshot(
+                "authz-snapshot-default",
+                DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
+                "fresh"),
+            CorrelationId: "correlation-a",
+            IdempotencyKey: "idempotency-binding-a");
+
+    private static ProviderRepositoryBindingRequest BindingRequest()
+        => new(
+            ManagedTenantId: "tenant-a",
+            OrganizationId: "organization-a",
+            ProviderBindingRef: "binding-a",
+            RepositoryBindingId: "repository-binding-a",
+            ExternalRepositoryRef: "external-repository-a",
+            ExternalRepositoryRefFingerprint: "external-ref-fingerprint-a",
+            BranchRefPolicyRef: "branch-ref-policy-a",
+            ProviderFamily: "github",
+            ProviderKey: "github",
+            TargetEvidence: ProviderCapabilityTestData.TargetEvidence() with
+            {
+                Metadata = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["safe_target_fingerprint"] = "safe-target-a",
+                    ["operation_scope"] = "existing_repository_binding",
                 },
             },
             CredentialModeRequirements: [ProviderCredentialMode.AppInstallationReference],

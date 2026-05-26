@@ -600,6 +600,7 @@ public sealed class ArchiveFolderProcessWiringTests
             {
                 nameof(FolderResultCode.IdempotencyConflict) => 409,
                 nameof(FolderResultCode.FolderNotFound) => 404,
+                nameof(FolderResultCode.ProviderRateLimited) => 429,
                 nameof(FolderResultCode.ValidationFailed)
                     or nameof(FolderResultCode.MalformedJsonPayload)
                     or nameof(FolderResultCode.InvalidFolderId)

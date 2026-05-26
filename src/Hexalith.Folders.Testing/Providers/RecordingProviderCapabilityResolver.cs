@@ -42,6 +42,14 @@ public sealed class RecordingProviderCapabilityResolver(IGitProvider provider) :
             return await inner.CreateRepositoryAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<ProviderRepositoryBindingResult> ValidateRepositoryBindingAsync(
+            ProviderRepositoryBindingRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            owner.ProviderCalls++;
+            return await inner.ValidateRepositoryBindingAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
         public ProviderCapabilityComparisonResult CompareCapabilityProfiles(
             ProviderCapabilityProfile current,
             ProviderCapabilityProfile candidate)

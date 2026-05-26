@@ -2673,17 +2673,6 @@ namespace Hexalith.Folders.Client.Generated
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
-                        else
-                        if (status_ == 429)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider readiness or repository operation is rate limited.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 503)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3181,6 +3170,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Requested provider capability is not supported by the bound provider profile.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Provider readiness or repository operation is rate limited.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)

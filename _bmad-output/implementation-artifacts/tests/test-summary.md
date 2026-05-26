@@ -3,46 +3,47 @@
 ## Generated Tests
 
 ### API Tests
-- [x] `tests/Hexalith.Folders.Server.Tests/RepositoryBackedFolderEndpointTests.cs` - Existing repository-backed REST route tests were rerun and remain green for accepted submission, required headers, malformed JSON, unsupported schema, reserved tenant, idempotency conflict, and safe provider-unavailable mapping.
-- [x] `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs` - Existing REST-to-process repository-backed request coverage was rerun and remains green for persisting the metadata-only request event and lifecycle binding projection.
+- [x] `tests/Hexalith.Folders.Server.Tests/RepositoryBackedFolderEndpointTests.cs` - Added bind-repository invalid branch/ref policy coverage for missing default ref, empty allowed refs, and invalid policy identifiers before gateway submission.
+- [x] Existing bind-repository endpoint tests cover accepted submission, required headers, unsupported schema version, malformed JSON, reserved `system` tenant denial before body parsing, unknown field rejection, safe gateway failure mapping, and metadata-only problem responses.
 
 ### E2E Tests
-- [x] `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBackedCreationGateTests.cs` - Added offline workflow guardrails for readiness category mapping, in-progress repository-binding short-circuiting before readiness/idempotency observation, and equivalent replay before readiness observation.
-- [x] `tests/Hexalith.Folders.Workers.Tests/RepositoryProvisioningProcessManagerTests.cs` - Added worker guardrails proving provider calls receive only safe provisioning context and unavailable folder binding state does not resolve providers or append outcomes.
-- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs` - Expanded repository-creation failure mapping coverage across validation, auth, permission, hidden, conflict, rate limit, unavailable, malformed, timeout, and transport outcomes.
-- [x] `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderTests.cs` - Expanded repository-creation failure mapping coverage across validation, auth, permission, hidden, missing target, conflict, redirect, rate limit, unavailable, malformed, unsupported, reconciliation, timeout, cancellation, and transport outcomes.
-- [x] No browser/UI E2E tests were added because Story 3.6 is an API/worker/provider workflow and project context keeps UI E2E deferred until stable console routes exist.
+- [x] `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBindingGateTests.cs` - Added offline workflow guardrails proving archived folders and already-bound folders short-circuit before idempotency, readiness, provider binding reads, provider resolution, provider calls, or appends.
+- [x] `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBindingGateTests.cs` - Added readiness failure mapping coverage for stale/unavailable projections, read-model unavailable, auth failures, unsupported capability, unknown outcome, reconciliation required, unavailable/rate-limited/transient provider states, permission failures, and repository conflicts.
+- [x] Existing Story 3.7 tests cover aggregate accept/replay/conflict/missing/archived/in-progress/bound cases, provider GitHub/Forgejo existing-repository binding success/equivalent/failure mappings, projection replay, metadata-only evidence, and bind endpoint safe responses.
+- [x] No browser/UI E2E tests were added because Story 3.7 is an API/domain/provider workflow and project context keeps UI E2E deferred until stable read-only console routes exist.
 
 ## Coverage
 
-- Core repository-backed/provider focused suite: 116/116 passing.
-- Repository provisioning worker focused suite: 7/7 passing.
-- Repository-backed server endpoint focused suite: 10/10 passing.
-- Repository-backed integration focused test: 1/1 passing.
-- Full core test project: 679/679 passing.
-- Full server test project: 91/91 passing.
-- Full worker test project: 18/18 passing.
-- Full integration test project: 12/12 passing.
+- API endpoint scenarios added: 3 bind branch/ref validation cases.
+- Domain workflow scenarios added: 2 short-circuit ordering cases plus 13 readiness mapping cases.
+- Story 3.7 relevant lanes now include API endpoint, aggregate/domain gate, provider adapter seam, and projection replay coverage.
+- Live external dependencies required: 0. The generated tests are hermetic by design and use xUnit v3, Shouldly, TestServer, recording fakes, and fake providers.
 
 ## Validation
 
-- [x] API tests generated/rerun where applicable.
-- [x] E2E-style offline workflow tests generated for the repository-backed creation gate, provider adapter seams, and provisioning process manager.
-- [x] Tests use xUnit v3, Shouldly, slim WebApplication endpoint tests, and existing fake provider/repository seams.
-- [x] Tests cover happy path plus critical error cases: readiness failure categories, unsupported capability, unknown provider outcome, reconciliation required, rate limit, unavailable, permission/auth failures, repository conflicts, in-progress binding mutation, idempotent replay, provider request context, and state-unavailable worker paths.
+- [x] API tests generated where applicable.
+- [x] E2E-style offline workflow tests generated for the bind-repository service gate.
+- [x] Tests use standard project test APIs and existing fake/recording seams.
+- [x] Tests cover happy path through existing coverage and critical error cases through the new readiness and validation cases.
 - [x] Tests use no hardcoded waits or sleeps.
-- [x] Tests are independent and run offline without GitHub, Forgejo, provider credentials, live Tenants services, Aspire, Dapr sidecars, Redis, Keycloak, Docker, network access, or nested submodule initialization.
-- [x] Summary includes coverage metrics and validation commands.
+- [x] Tests are independent and do not require live GitHub, Forgejo, provider credentials, tenant seed data, Aspire, Dapr sidecars, Redis, Keycloak, Docker, network access, or nested submodule initialization.
+- [x] Summary includes coverage metrics.
+- [ ] Test execution completed: blocked by restore/build environment.
 
 ## Commands Run
 
 ```text
-dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --filter "FullyQualifiedName~FolderRepositoryBackedCreationGateTests|FullyQualifiedName~GitHubProviderTests|FullyQualifiedName~ForgejoProviderTests" --no-restore
-dotnet test .\tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj --filter FullyQualifiedName~RepositoryProvisioningProcessManagerTests --no-restore
-dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --filter RepositoryBackedFolderEndpointTests --no-restore
-dotnet test .\tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj --filter FullyQualifiedName~RepositoryBackedFolderRequestShouldRoundTripThroughProcessAndPersistRequestEvent --no-restore
-dotnet test .\tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore
-dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore
-dotnet test .\tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj --no-restore
-dotnet test .\tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj --no-restore
+dotnet --info
+DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBinding|FullyQualifiedName~GitHubProviderTests|FullyQualifiedName~ForgejoProviderTests"
+DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-restore --filter "FullyQualifiedName~RepositoryBackedFolderEndpointTests"
+DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --verbosity minimal
+DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 NUGET_PACKAGES=/tmp/hexalith-dotnet-home/.nuget/packages dotnet restore src/Hexalith.Folders/Hexalith.Folders.csproj --ignore-failed-sources --verbosity normal
 ```
+
+## Validation Blocker
+
+- The installed SDK is `10.0.300`.
+- Initial test execution failed the .NET first-time-use path because `/home/administrator/.dotnet/10.0.300.toolpath.sentinel` is read-only.
+- Re-running with writable `DOTNET_CLI_HOME` cleared that blocker.
+- A direct build then failed because existing `obj/project.assets.json` files were restored on Windows and reference the unavailable fallback folder `C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages`.
+- Attempted Linux restore is blocked by restricted network access to `https://api.nuget.org/v3/index.json`, producing `NU1801` and `NU1101` for packages such as `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Logging.Abstractions`, `Microsoft.Extensions.Options`, `Microsoft.Extensions.Options.ConfigurationExtensions`, and `Octokit`.
