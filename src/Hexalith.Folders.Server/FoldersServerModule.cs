@@ -44,6 +44,7 @@ public static class FoldersServerModule
         services.AddDaprClient();
         services.AddFoldersEffectivePermissions();
         services.AddFoldersLifecycleStatus();
+        services.AddFoldersProviderReadiness();
 
         // AddFoldersEffectivePermissions -> AddFoldersTenantAccess already binds and validate-on-start's
         // FoldersTenantEventOptions; do not rebind here.
@@ -80,6 +81,7 @@ public static class FoldersServerModule
         endpoints.MapDefaultEndpoints();
         endpoints.MapGet("/", () => Description);
         endpoints.MapFoldersDomainServiceEndpoints();
+        endpoints.MapProviderReadinessEndpoints();
         endpoints.MapTenantEventSubscription();
 
         return endpoints;

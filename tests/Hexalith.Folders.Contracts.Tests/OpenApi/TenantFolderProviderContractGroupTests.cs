@@ -255,10 +255,25 @@ public sealed class TenantFolderProviderContractGroupTests
 
         YamlMappingNode operatorExample = RequiredMapping(RequiredMapping(examples, "ProviderReadinessOperatorDiagnostic"), "value");
         GetScalar(operatorExample, "audience").ShouldBe("authorized_operator");
+        GetScalar(operatorExample, "safeReasonCode").ShouldNotBeNullOrWhiteSpace("Operator diagnostics must carry Story 3.5 safe reason code.");
+        GetScalar(operatorExample, "remediationCategory").ShouldNotBeNullOrWhiteSpace("Operator diagnostics must carry Story 3.5 remediation category.");
+        GetScalar(operatorExample, "providerReference").ShouldNotBeNullOrWhiteSpace("Operator diagnostics must carry Story 3.5 opaque provider reference.");
+        GetScalar(operatorExample, "correlationId").ShouldNotBeNullOrWhiteSpace("Operator diagnostics must carry Story 3.5 correlation ID.");
+        operatorExample.Children.ContainsKey(new YamlScalarNode("retryable")).ShouldBeTrue("Operator diagnostics must carry Story 3.5 retryability.");
         string operatorSerialized = SerializeYaml(operatorExample);
         operatorSerialized.ShouldNotContain("token", Case.Insensitive);
         operatorSerialized.ShouldNotContain("secret", Case.Insensitive);
         operatorSerialized.ShouldNotContain("installation", Case.Insensitive);
+
+        YamlMappingNode providerReadinessOperator = RequiredMapping(
+            RequiredMapping(RequiredMapping(root, "components"), "schemas"),
+            "ProviderReadinessOperator");
+        YamlMappingNode operatorProperties = RequiredMapping(providerReadinessOperator, "properties");
+        operatorProperties.Children.ContainsKey(new YamlScalarNode("safeReasonCode")).ShouldBeTrue();
+        operatorProperties.Children.ContainsKey(new YamlScalarNode("retryable")).ShouldBeTrue();
+        operatorProperties.Children.ContainsKey(new YamlScalarNode("remediationCategory")).ShouldBeTrue();
+        operatorProperties.Children.ContainsKey(new YamlScalarNode("providerReference")).ShouldBeTrue();
+        operatorProperties.Children.ContainsKey(new YamlScalarNode("correlationId")).ShouldBeTrue();
     }
 
     [Fact]

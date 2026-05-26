@@ -1,7 +1,11 @@
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.Forgejo;
+using Hexalith.Folders.Providers.GitHub;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
+using Hexalith.Folders.Queries.ProviderReadiness;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -63,6 +67,24 @@ public static class FoldersServiceCollectionExtensions
         services.AddFoldersLayeredAuthorization();
         services.TryAddSingleton<IFolderLifecycleStatusReadModel, InMemoryFolderLifecycleStatusReadModel>();
         services.TryAddSingleton<FolderLifecycleStatusQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersProviderReadiness(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersTenantAccess();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProvider>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
+        services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
+        services.TryAddSingleton<IProviderCapabilityResolver, DefaultProviderCapabilityResolver>();
+        services.TryAddSingleton<IProviderCapabilityEvidenceStore, InMemoryProviderCapabilityEvidenceStore>();
+        services.TryAddSingleton<ProviderCapabilityDiscoveryService>();
+        services.TryAddSingleton<IProviderReadinessBindingReader, InMemoryProviderReadinessBindingReadModel>();
+        services.TryAddSingleton<IProviderReadinessEvidenceStore, InMemoryProviderReadinessEvidenceStore>();
+        services.TryAddSingleton<ProviderReadinessValidationService>();
 
         return services;
     }

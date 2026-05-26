@@ -10071,11 +10071,48 @@ namespace Hexalith.Folders.Client.Generated
         public string CapabilityProfileRef { get; set; }
 
         [Newtonsoft.Json.JsonProperty("evidence", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ProviderCapabilityEvidence Evidence { get; set; } = new ProviderCapabilityEvidence();
+        public ProviderCapabilityEvidence Evidence { get; set; }
 
         [Newtonsoft.Json.JsonProperty("sanitizedErrorCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory SanitizedErrorCategory { get; set; }
+
+        /// <summary>
+        /// Stable metadata-only remediation code derived from canonical provider failure categories.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("safeRemediationCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SafeRemediationCode { get; set; }
+
+        /// <summary>
+        /// Stable metadata-only provider readiness reason code. Never raw provider text.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("safeReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SafeReasonCode { get; set; }
+
+        /// <summary>
+        /// Whether retry is safe according to canonical provider failure semantics.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        /// <summary>
+        /// Safe bounded retry-after hint in seconds. Omitted when no retry hint is safe.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("retryAfterSeconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int RetryAfterSeconds { get; set; }
+
+        /// <summary>
+        /// Bounded safe action category. It never embeds provider payloads or secret-bearing values.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("remediationCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ProviderReadinessOperatorRemediationCategory RemediationCategory { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("providerReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ProviderReference { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CorrelationId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
@@ -12425,6 +12462,30 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"authorized_operator")]
         Authorized_operator = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ProviderReadinessOperatorRemediationCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"none")]
+        None = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry_later")]
+        Retry_later = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contact_operator")]
+        Contact_operator = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"fix_credential_reference")]
+        Fix_credential_reference = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"fix_provider_configuration")]
+        Fix_provider_configuration = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 5,
 
     }
 

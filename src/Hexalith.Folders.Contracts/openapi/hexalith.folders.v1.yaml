@@ -5368,6 +5368,13 @@ components:
           providerErrors: supported
           failureBehavior: retry_after_backoff
         sanitizedErrorCategory: provider_rate_limited
+        safeRemediationCode: provider_rate_limited_remediation
+        safeReasonCode: provider_rate_limited
+        retryable: true
+        retryAfterSeconds: 60
+        remediationCategory: retry_later
+        providerReference: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C7
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C9
         freshness:
           readConsistency: snapshot_per_task
           observedAt: "2026-05-12T12:34:56Z"
@@ -7408,8 +7415,12 @@ components:
         - audience
         - providerBindingRef
         - status
-        - capabilityProfileRef
-        - evidence
+        - safeRemediationCode
+        - safeReasonCode
+        - retryable
+        - remediationCategory
+        - providerReference
+        - correlationId
         - freshness
       properties:
         audience:
@@ -7426,6 +7437,39 @@ components:
           $ref: "#/components/schemas/ProviderCapabilityEvidence"
         sanitizedErrorCategory:
           $ref: "#/components/schemas/CanonicalErrorCategory"
+        safeRemediationCode:
+          type: string
+          minLength: 1
+          maxLength: 96
+          pattern: "^[a-z][a-z0-9_]{0,95}$"
+          description: Stable metadata-only remediation code derived from canonical provider failure categories.
+        safeReasonCode:
+          type: string
+          minLength: 1
+          maxLength: 96
+          pattern: "^[a-z][a-z0-9_]{0,95}$"
+          description: Stable metadata-only provider readiness reason code. Never raw provider text.
+        retryable:
+          type: boolean
+          description: Whether retry is safe according to canonical provider failure semantics.
+        retryAfterSeconds:
+          type: integer
+          minimum: 0
+          description: Safe bounded retry-after hint in seconds. Omitted when no retry hint is safe.
+        remediationCategory:
+          type: string
+          enum:
+            - none
+            - retry_later
+            - contact_operator
+            - fix_credential_reference
+            - fix_provider_configuration
+            - reconciliation_required
+          description: Bounded safe action category. It never embeds provider payloads or secret-bearing values.
+        providerReference:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
     ProviderReadiness:

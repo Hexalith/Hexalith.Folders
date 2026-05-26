@@ -6,6 +6,7 @@ public static class OrganizationAclAction
     {
         "create_folder",
         "configure_provider_binding",
+        "provider_readiness_read",
         "manage_folder_access",
         "prepare_workspace",
         "lock_workspace",
