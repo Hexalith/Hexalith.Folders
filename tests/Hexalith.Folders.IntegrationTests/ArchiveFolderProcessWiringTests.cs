@@ -286,7 +286,8 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         InMemoryEffectivePermissionsReadModel permissions = new();
         InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
-        InMemoryFolderRepository repository = new(lifecycleReadModel);
+        TimeProvider timeProvider = new FixedTimeProvider(Now);
+        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider);
         Uri? hostUri = null;
         InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
 
@@ -316,6 +317,8 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton<IRepositoryCreationReadinessValidator>(new ReadyRepositoryCreationReadinessValidator());
         builder.Services.RemoveAll<IUtcClock>();
         builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(Now));
+        builder.Services.RemoveAll<TimeProvider>();
+        builder.Services.AddSingleton(timeProvider);
 
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
@@ -635,5 +638,10 @@ public sealed class ArchiveFolderProcessWiringTests
                 new ProviderReadinessFreshness("snapshot_per_task", Now, "tenant-a:7", Stale: false),
                 ProviderFailureCategory.None,
                 "none"));
+    }
+
+    private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
     }
 }

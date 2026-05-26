@@ -4,7 +4,7 @@ baseline_commit: 2c3f116d8b153dbd74c5e6879c8e0cd94931d8b7
 
 # Story 3.6: Create a new repository-backed folder
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -251,6 +251,7 @@ so that a tenant folder can become repository-backed through a controlled provis
 | 2026-05-26 | Added repository provisioning process-manager behavior for C6 success/failure/unknown outcome recording. | Codex |
 | 2026-05-26 | Wired the repository-backed REST endpoint, command authorization mapping, and EventStore domain processor path. | Codex |
 | 2026-05-26 | Added lifecycle/read-model replay coverage for repository-binding request state and tightened repository-binding idempotency equivalence. | Codex |
+| 2026-05-26 | Senior review fixed lifecycle evidence/freshness compatibility, branch-ref contract validation, and unknown provider outcome handling; focused validations passed. | Codex |
 
 ## Dev Agent Record
 
@@ -300,6 +301,10 @@ TBD by dev-story worker.
 - `dotnet test .\tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore` passed with 91 tests.
 - `dotnet test .\tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj --no-restore` passed with 18 tests.
 - `dotnet test .\tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj --no-restore` passed with 12 tests.
+- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~FolderRepositoryBackedAggregateTests|FullyQualifiedName~GitHubProviderTests|FullyQualifiedName~ForgejoProviderTests"` passed with 106 tests during senior review.
+- `dotnet test tests\Hexalith.Folders.Workers.Tests\Hexalith.Folders.Workers.Tests.csproj --no-restore --filter "FullyQualifiedName~RepositoryProvisioningProcessManagerTests"` passed with 8 tests during senior review.
+- `dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore --filter "FullyQualifiedName~RepositoryBackedFolderEndpointTests"` passed with 13 tests during senior review.
+- `dotnet test tests\Hexalith.Folders.IntegrationTests\Hexalith.Folders.IntegrationTests.csproj --no-restore --filter "FullyQualifiedName~ArchiveFolderProcessWiringTests"` initially exposed lifecycle-status evidence/freshness incompatibility, then passed with 8 tests after senior-review fixes.
 
 ### Completion Notes List
 
@@ -318,6 +323,24 @@ TBD by dev-story worker.
 - Idempotency equivalence was tightened so `repositoryBindingId` participates in the public helper hash and aggregate fingerprint, causing same-key repository-binding identity changes to return `idempotency_conflict`.
 - QA automation added Story 3.6 guardrails for readiness category mapping, in-progress binding short-circuiting, equivalent replay before readiness observation, repository-creation provider failure mappings, provisioning provider-request context, and state-unavailable worker behavior.
 - Repository-backed creation service now preflights pure aggregate state before provider-readiness validation so equivalent replay and already-in-progress binding states do not probe provider readiness or append/idempotency seams.
+- Senior review completed with no remaining critical findings. Fixes covered repository-binding lifecycle evidence/freshness compatibility, unknown provider outcome exception handling, and branch-ref policy validation parity. MCP documentation search was performed against official Microsoft Learn for ASP.NET Core minimal API validation/Problem Details patterns.
+
+### Senior Developer Review (AI)
+
+Reviewer: Codex
+Date: 2026-05-26
+Final Status: Pass - story accepted; no critical issues remain.
+
+#### Findings Fixed
+
+- [Fixed][High] Repository-binding lifecycle snapshots could fail authorized status reads because binding actor/correlation/task evidence was not preserved consistently through state replay and projection evidence.
+- [Fixed][High] Repository provisioning/provider creation exception paths could escape as raw failures instead of recording a metadata-only `ProviderOutcomeUnknown` result.
+- [Fixed][Medium] REST branch-ref policy validation accepted incomplete or malformed branch/ref policies that did not match the Contract Spine shape.
+- [Fixed][Medium] In-memory lifecycle snapshots wrote an incompatible authorization watermark and could use wall-clock freshness instead of repository-binding event time, causing valid fixed-clock lifecycle reads to fail closed.
+
+#### Action Items
+
+- None.
 
 ### Implementation Plan
 

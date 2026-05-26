@@ -169,10 +169,12 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             return;
         }
 
-        // For an archived folder we know exactly when the transition occurred; for any
-        // other state we use the caller-supplied observation time so the projection's
-        // freshness reflects actual write time rather than a sentinel epoch zero.
-        DateTimeOffset rawObservedAt = state.ArchivedAt ?? observedAt;
+        // For persisted lifecycle and repository-binding transitions, use the event
+        // timestamp. Otherwise use the caller-supplied observation time so unbound active
+        // snapshots still reflect write time rather than a sentinel epoch zero.
+        DateTimeOffset rawObservedAt = state.ArchivedAt
+            ?? state.RepositoryBindingUpdatedAt
+            ?? observedAt;
 
         // Clamp per-folder so a slow clock or a test-time fake cannot move the watermark
         // backwards across concurrent writers. The monotonic guarantee is per-stream, not
@@ -209,7 +211,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 "read_metadata",
                 evidenceTaskId,
                 evidenceCorrelationId,
-                "in-memory-folder-repository"),
+                AuthorizationWatermark: null),
             []));
     }
 
