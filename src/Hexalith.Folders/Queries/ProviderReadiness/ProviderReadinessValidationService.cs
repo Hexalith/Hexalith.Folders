@@ -111,7 +111,7 @@ public sealed partial class ProviderReadinessValidationService(
                 freshness);
         }
 
-        TenantAccessAuthorizationResult tenantAccess = await _tenantAccessAuthorizer.AuthorizeDiagnosticReadAsync(
+        TenantAccessAuthorizationResult tenantAccess = await _tenantAccessAuthorizer.AuthorizeMutationAsync(
             new TenantAccessAuthorizationContext(managedTenantId, principalId, RequestedTenantId: managedTenantId),
             cancellationToken).ConfigureAwait(false);
 
@@ -240,7 +240,7 @@ public sealed partial class ProviderReadinessValidationService(
             binding.ProviderKind,
             ProviderProfileSchemaVersion,
             BuildTargetEvidence(binding),
-            [ProviderCredentialMode.AppInstallationReference],
+            CredentialModes(binding),
             new ProviderAuthorizationEvidenceSnapshot(
                 AuthorizationFingerprint(binding, tenantAccess, principalId),
                 tenantAccess.LastEventTimestamp ?? binding.OccurredAt,
@@ -252,7 +252,7 @@ public sealed partial class ProviderReadinessValidationService(
         Dictionary<string, string> metadata = new(StringComparer.Ordinal)
         {
             ["binding_status"] = SafeToken(binding.ConfiguredStatus),
-            ["credential_mode"] = "app_installation_reference",
+            ["credential_mode"] = CredentialModes(binding)[0].ToString().ToLowerInvariant(),
             ["naming_policy_fingerprint"] = PolicyFingerprint(binding.NamingPolicy),
             ["branch_policy_fingerprint"] = PolicyFingerprint(binding.BranchPolicy),
         };
@@ -261,10 +261,11 @@ public sealed partial class ProviderReadinessValidationService(
         AddPolicyRef(metadata, "branch_policy_ref", binding.BranchPolicy.PolicyRef);
         AddSafeMetadataFlag(metadata, "naming_policy_metadata_present", binding.NamingPolicy.Metadata);
         AddSafeMetadataFlag(metadata, "branch_policy_metadata_present", binding.BranchPolicy.Metadata);
+        AddAllowedTargetMetadata(metadata, binding);
 
         return new ProviderTargetEvidence(
             Product: SafeToken(binding.ProviderKind),
-            ProductVersion: "provider_binding_v1",
+            ProductVersion: TargetProductVersion(binding),
             ApiSurfaceVersion: "provider_api_metadata_only",
             EvidenceVersion: "provider_readiness_v1",
             IsStale: !string.Equals(binding.ConfiguredStatus, "configured", StringComparison.Ordinal),
@@ -308,6 +309,11 @@ public sealed partial class ProviderReadinessValidationService(
         }
 
         string status = failed ? Failed : degraded ? Degraded : Ready;
+        if (status == Ready && !HasSafeRateLimitPosture(profile.RateLimit))
+        {
+            status = Failed;
+        }
+
         ProviderFailureCategory category = status switch
         {
             Ready => ProviderFailureCategory.None,
@@ -318,6 +324,7 @@ public sealed partial class ProviderReadinessValidationService(
         {
             Ready => "success",
             Degraded => "required_capability_degraded",
+            _ when !HasSafeRateLimitPosture(profile.RateLimit) => "rate_limit_posture_missing",
             _ => "unsupported_provider_capability",
         };
 
@@ -521,6 +528,118 @@ public sealed partial class ProviderReadinessValidationService(
             _ => "contact_operator",
         };
 
+    private static IReadOnlyList<ProviderCredentialMode> CredentialModes(OrganizationProviderBinding binding)
+        => string.Equals(binding.ProviderKind, "forgejo", StringComparison.Ordinal)
+            ? [ProviderCredentialMode.UserDelegatedReference]
+            : [ProviderCredentialMode.AppInstallationReference];
+
+    private static string TargetProductVersion(OrganizationProviderBinding binding)
+    {
+        foreach (string key in new[] { "provider_product_version", "product_version", "snapshot_version", "forgejo_snapshot_version" })
+        {
+            if (TryGetSafePolicyMetadata(binding, key, out string? value))
+            {
+                return value!;
+            }
+        }
+
+        return "provider_binding_v1";
+    }
+
+    private static void AddAllowedTargetMetadata(Dictionary<string, string> metadata, OrganizationProviderBinding binding)
+    {
+        AddAllowedTargetMetadata(metadata, binding, "safe_target_fingerprint");
+        AddAllowedTargetMetadata(metadata, binding, "operation_scope");
+
+        if (string.Equals(binding.ProviderKind, "forgejo", StringComparison.Ordinal))
+        {
+            AddAllowedTargetMetadata(metadata, binding, "authorized_base_url");
+        }
+    }
+
+    private static void AddAllowedTargetMetadata(
+        Dictionary<string, string> metadata,
+        OrganizationProviderBinding binding,
+        string key)
+    {
+        if (TryGetSafePolicyMetadata(binding, key, out string? value))
+        {
+            metadata[key] = value!;
+        }
+    }
+
+    private static bool TryGetSafePolicyMetadata(
+        OrganizationProviderBinding binding,
+        string key,
+        out string? value)
+    {
+        if (TryGetSafePolicyMetadata(binding.NamingPolicy.Metadata, key, out value)
+            || TryGetSafePolicyMetadata(binding.BranchPolicy.Metadata, key, out value))
+        {
+            return true;
+        }
+
+        value = null;
+        return false;
+    }
+
+    private static bool TryGetSafePolicyMetadata(
+        IReadOnlyDictionary<string, string> metadata,
+        string key,
+        out string? value)
+    {
+        if (metadata.TryGetValue(key, out string? candidate)
+            && IsSafeTargetMetadataValue(key, candidate))
+        {
+            value = candidate.Trim();
+            return true;
+        }
+
+        value = null;
+        return false;
+    }
+
+    private static bool HasSafeRateLimitPosture(ProviderRateLimitPosture rateLimit)
+        => IsSafeTargetMetadataValue("rate_limit_classification", rateLimit.Classification);
+
+    private static bool IsSafeTargetMetadataValue(string key, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        string trimmed = value.Trim();
+        if (trimmed.Length > 256)
+        {
+            return false;
+        }
+
+        return key == "authorized_base_url"
+            ? Uri.TryCreate(trimmed, UriKind.Absolute, out Uri? uri)
+                && string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.Ordinal)
+                && string.IsNullOrEmpty(uri.UserInfo)
+                && string.IsNullOrEmpty(uri.Query)
+                && string.IsNullOrEmpty(uri.Fragment)
+            : !ContainsUnsafeTargetMetadataValue(trimmed)
+                && (CanonicalIdentifierPattern().IsMatch(trimmed)
+                || SafeMetadataTokenPattern().IsMatch(trimmed));
+    }
+
+    private static bool ContainsUnsafeTargetMetadataValue(string value)
+        => value.Contains("token", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("secret", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("password", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("://", StringComparison.Ordinal)
+            || value.Contains("@", StringComparison.Ordinal)
+            || value.Contains("diff --git", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("providerpayload", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("privatekey", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("private key", StringComparison.OrdinalIgnoreCase)
+            || ProviderTokenPattern().IsMatch(value)
+            || JwtPattern().IsMatch(value)
+            || PemPattern().IsMatch(value);
+
     private static bool IsClaimTransformEvidenceValid(
         EventStoreClaimTransformEvidence evidence,
         string authoritativeTenantId,
@@ -595,7 +714,7 @@ public sealed partial class ProviderReadinessValidationService(
 
     private static string SafeCorrelationId(string? value)
     {
-        if (IsCanonicalIdentifier(value))
+        if (IsCanonicalIdentifier(value) && !IsSensitiveDiagnosticValue(value))
         {
             return value!.Trim();
         }
@@ -631,9 +750,48 @@ public sealed partial class ProviderReadinessValidationService(
         && value.Length <= 256
         && CanonicalIdentifierPattern().IsMatch(value);
 
+    private static bool IsSensitiveDiagnosticValue(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        string canonical = value.Trim().ToLowerInvariant();
+        return canonical.Contains("token", StringComparison.Ordinal)
+            || canonical.Contains("secret", StringComparison.Ordinal)
+            || canonical.Contains("password", StringComparison.Ordinal)
+            || canonical.Contains("credential", StringComparison.Ordinal)
+            || canonical.Contains("repository", StringComparison.Ordinal)
+            || canonical.Contains("repo_", StringComparison.Ordinal)
+            || canonical.Contains("repo-", StringComparison.Ordinal)
+            || canonical.Contains("://", StringComparison.Ordinal)
+            || canonical.Contains("@", StringComparison.Ordinal)
+            || canonical.Contains("diff --git", StringComparison.Ordinal)
+            || canonical.Contains("providerpayload", StringComparison.Ordinal)
+            || canonical.Contains("privatekey", StringComparison.Ordinal)
+            || canonical.Contains("private key", StringComparison.Ordinal)
+            || canonical.Contains("installation", StringComparison.Ordinal)
+            || ProviderTokenPattern().IsMatch(value)
+            || JwtPattern().IsMatch(value)
+            || PemPattern().IsMatch(value);
+    }
+
     private static string Sha256(string value)
         => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
 
     [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();
+
+    [GeneratedRegex("^[a-z0-9][a-z0-9._:/-]{0,255}$", RegexOptions.CultureInvariant)]
+    private static partial Regex SafeMetadataTokenPattern();
+
+    [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]
+    private static partial Regex ProviderTokenPattern();
+
+    [GeneratedRegex("eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{5,}\\.[a-zA-Z0-9_-]{5,}", RegexOptions.CultureInvariant)]
+    private static partial Regex JwtPattern();
+
+    [GeneratedRegex("-----BEGIN [A-Z ]*PRIVATE KEY-----", RegexOptions.CultureInvariant)]
+    private static partial Regex PemPattern();
 }

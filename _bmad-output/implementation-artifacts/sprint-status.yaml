@@ -82,7 +82,7 @@ development_status:
   3-2-define-igitprovider-port-and-capability-model: done
   3-3-implement-github-provider-adapter: done
   3-4-implement-forgejo-provider-adapter-and-drift-detection: done
-  3-5-validate-provider-readiness-with-safe-diagnostics: review
+  3-5-validate-provider-readiness-with-safe-diagnostics: done
   3-6-create-a-new-repository-backed-folder: backlog
   3-7-bind-an-existing-repository-to-a-folder: backlog
   3-8-define-branch-and-ref-policy: backlog

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server.Authentication;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace Hexalith.Folders.Server;
 
-public static class ProviderReadinessEndpoints
+public static partial class ProviderReadinessEndpoints
 {
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string SnapshotPerTask = "snapshot_per_task";
@@ -217,12 +218,13 @@ public static class ProviderReadinessEndpoints
         string? correlationId,
         TimeSpan? retryAfter = null)
     {
+        string safeCorrelationId = SafeCorrelationId(correlationId);
         Dictionary<string, object?> extensions = new()
         {
             ["category"] = category,
             ["code"] = code,
             ["message"] = MessageFor(category),
-            ["correlationId"] = correlationId,
+            ["correlationId"] = safeCorrelationId,
             ["retryable"] = retryable,
             ["clientAction"] = retryable ? "retry" : "no_action",
             ["details"] = new Dictionary<string, object?>
@@ -323,6 +325,42 @@ public static class ProviderReadinessEndpoints
     private static bool IsSafeHeaderValue(string value)
         => !value.Any(static c => c == '\r' || c == '\n' || char.IsControl(c));
 
+    private static string SafeCorrelationId(string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value)
+            && value.Length <= 256
+            && IsSafeHeaderValue(value)
+            && CanonicalIdentifierPattern().IsMatch(value)
+            && !IsSensitiveDiagnosticValue(value))
+        {
+            return value.Trim();
+        }
+
+        return $"correlation_{Guid.NewGuid():N}";
+    }
+
+    private static bool IsSensitiveDiagnosticValue(string value)
+    {
+        string canonical = value.Trim().ToLowerInvariant();
+        return canonical.Contains("token", StringComparison.Ordinal)
+            || canonical.Contains("secret", StringComparison.Ordinal)
+            || canonical.Contains("password", StringComparison.Ordinal)
+            || canonical.Contains("credential", StringComparison.Ordinal)
+            || canonical.Contains("repository", StringComparison.Ordinal)
+            || canonical.Contains("repo_", StringComparison.Ordinal)
+            || canonical.Contains("repo-", StringComparison.Ordinal)
+            || canonical.Contains("://", StringComparison.Ordinal)
+            || canonical.Contains("@", StringComparison.Ordinal)
+            || canonical.Contains("diff --git", StringComparison.Ordinal)
+            || canonical.Contains("providerpayload", StringComparison.Ordinal)
+            || canonical.Contains("privatekey", StringComparison.Ordinal)
+            || canonical.Contains("private key", StringComparison.Ordinal)
+            || canonical.Contains("installation", StringComparison.Ordinal)
+            || ProviderTokenPattern().IsMatch(value)
+            || JwtPattern().IsMatch(value)
+            || PemPattern().IsMatch(value);
+    }
+
     private static string MessageFor(string category)
         => category switch
         {
@@ -353,4 +391,16 @@ public static class ProviderReadinessEndpoints
         string? ProviderReference,
         string CorrelationId,
         ProviderReadinessFreshness Freshness);
+
+    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
+    private static partial Regex CanonicalIdentifierPattern();
+
+    [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]
+    private static partial Regex ProviderTokenPattern();
+
+    [GeneratedRegex("eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{5,}\\.[a-zA-Z0-9_-]{5,}", RegexOptions.CultureInvariant)]
+    private static partial Regex JwtPattern();
+
+    [GeneratedRegex("-----BEGIN [A-Z ]*PRIVATE KEY-----", RegexOptions.CultureInvariant)]
+    private static partial Regex PemPattern();
 }

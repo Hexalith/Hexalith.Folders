@@ -4,7 +4,7 @@ baseline_commit: b0c5efabcef94cfbfefe281dec33a3a82807df85
 
 # Story 3.5: Validate provider readiness with safe diagnostics
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -221,6 +221,8 @@ so that configuration failures are caught before workspace tasks begin.
 |---|---|---|
 | 2026-05-26 | Created story with provider-readiness validation route, authorization-before-observation, safe diagnostics mapping, existing provider capability reuse, Contract Spine drift handling, offline tests, and strict scope boundaries. | Codex |
 | 2026-05-26 | Implemented provider-readiness validation query service, REST route, safe diagnostics, Contract Spine/generated client updates, parity refresh, and offline tests. | Codex |
+| 2026-05-26 | QA automation added provider-readiness guardrail tests for sanitized correlation, tenant mismatch, provider unavailable, scoped evidence, reserved tenant denial, and reconciliation diagnostics. | Codex |
+| 2026-05-26 | Senior review fixed stale tenant-evidence no-touch enforcement, Forgejo binding metadata discovery, sanitized capability evidence attempts, and updated story status to done. | Codex |
 
 ## Dev Agent Record
 
@@ -234,6 +236,10 @@ GPT-5 Codex
 - 2026-05-26: Dev-story workflow activation resolved with no prepend/append steps; baseline commit recorded as `b0c5efabcef94cfbfefe281dec33a3a82807df85`; sprint status moved to `in-progress`.
 - 2026-05-26: Red/green implementation completed for core provider-readiness validation tests, endpoint tests, Contract Spine diagnostic-field test, and generated SDK/parity updates.
 - 2026-05-26: Validation completed with focused tests, serial full solution build, full solution test pass, Contract Spine gate under PowerShell 7, safety invariant gate, and governance completeness gate.
+- 2026-05-26: QA-generate-e2e-tests workflow resolved with no prepend/append steps; added focused provider-readiness core/server guardrail coverage and sanitized secret-shaped correlation IDs before readiness diagnostics or pre-service Problem Details can echo them.
+- 2026-05-26: QA validation completed with focused provider-readiness core/server suites, full core/server test projects, and the safety invariant gate.
+- 2026-05-26: Senior review completed against current `862b3c9` HEAD plus worktree changes; fixes applied for stale authorization evidence ordering, Forgejo readiness request construction, metadata-only capability evidence storage, and boundary-safe Forgejo coverage.
+- 2026-05-26: Review validation completed with focused core/server/Forgejo tests, full solution build, full solution test pass, Contract Spine gate, and safety invariant gate.
 
 ### Completion Notes List
 
@@ -247,10 +253,16 @@ GPT-5 Codex
 - Wired `POST /api/v1/provider-readiness/validations` through `ProviderReadinessEndpoints`, rejecting `Idempotency-Key`, enforcing `snapshot_per_task` freshness, echoing sanitized correlation, and mapping rate-limit/unavailable outcomes to safe Problem Details.
 - Updated the Contract Spine authorized-operator readiness schema/example with safe reason code, retryability, remediation category, provider reference, and correlation ID; regenerated NSwag client output and parity oracle rows.
 - Added offline core, endpoint, contract, leakage, and generated-artifact coverage; no live provider, Aspire, Dapr, Docker, network, or nested submodule initialization was required.
+- QA automation added offline guardrails for tenant-scoped readiness evidence, reserved `system` tenant denial, mismatched binding reconciliation, provider unavailable Problem Details, client-controlled tenant mismatch, generated/sanitized correlation IDs, and pre-service validation error leakage.
+- Updated the BMAD QA test summary at `_bmad-output/implementation-artifacts/tests/test-summary.md`.
+- Senior review fixed a no-touch ordering gap where bounded-stale tenant evidence could reach provider binding observation before being rejected.
+- Senior review fixed Forgejo readiness construction so authorized binding metadata can carry safe target version/base URL evidence internally, select the Forgejo-supported credential mode, and keep capability evidence attempts metadata-only.
+- Microsoft Learn documentation search was performed for ASP.NET Core Minimal API response/header behavior while reviewing endpoint response handling.
 
 ### File List
 
 - `_bmad-output/implementation-artifacts/3-5-validate-provider-readiness-with-safe-diagnostics.md`
+- `_bmad-output/implementation-artifacts/tests/test-summary.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
 - `docs/contract/tenant-folder-provider-repository-contract-groups.md`
 - `src/Hexalith.Folders/Aggregates/Organization/OrganizationAclAction.cs`
@@ -279,5 +291,34 @@ GPT-5 Codex
 - `src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs`
 - `tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs`
 - `tests/Hexalith.Folders.Server.Tests/ProviderReadinessEndpointTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderReadinessValidationServiceTests.cs`
 - `tests/Hexalith.Folders.Tests/Providers/Readiness/ProviderReadinessValidationServiceTests.cs`
 - `tests/fixtures/parity-contract.yaml`
+
+## Senior Developer Review (AI)
+
+### Review Status
+
+Approved. Story 3.5 is `done`; no critical issues remain.
+
+### Issues Fixed
+
+- [HIGH] Bounded-stale tenant access evidence used the diagnostic-read path and could reach provider binding observation before being rejected by provider capability authorization. Fixed by requiring fresh tenant authorization before binding/provider/evidence observation and adding no-touch coverage.
+- [HIGH] Forgejo readiness discovery could not be built from authorized binding metadata because readiness always used GitHub App credential mode and stripped Forgejo target metadata needed by the Forgejo adapter. Fixed by selecting Forgejo-supported credential mode, allowlisting safe target metadata from binding policy metadata, and adding Forgejo readiness coverage under the Forgejo test boundary.
+- [MEDIUM] Capability discovery attempts could retain raw target metadata such as authorized base URLs in the in-memory evidence store. Fixed by sanitizing stored attempt metadata and testing that Forgejo base URLs do not appear in stored attempts or readiness diagnostics.
+
+### Validation
+
+- `dotnet build Hexalith.Folders.slnx --no-restore` - passed.
+- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter FullyQualifiedName~ProviderReadinessValidationServiceTests` - passed, 30/30.
+- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore --filter FullyQualifiedName~ForgejoProviderReadinessValidationServiceTests` - passed, 1/1.
+- `dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore --filter FullyQualifiedName~ProviderReadinessEndpointTests` - passed, 10/10.
+- `dotnet test tests\Hexalith.Folders.Tests\Hexalith.Folders.Tests.csproj --no-restore` - passed, 619/619.
+- `dotnet test tests\Hexalith.Folders.Server.Tests\Hexalith.Folders.Server.Tests.csproj --no-restore` - passed, 80/80.
+- `pwsh -NoLogo -NoProfile -File tests\tools\run-safety-invariant-gates.ps1` - passed, 10/10 contract safety tests after solution build.
+- `pwsh -NoLogo -NoProfile -File tests\tools\run-contract-spine-gates.ps1` - passed, 80/80 contract tests and 16/16 client tests.
+- `dotnet test Hexalith.Folders.slnx --no-restore` - passed, 877 passed, 1 existing UI E2E placeholder skipped.
+
+### Action Items
+
+- None.

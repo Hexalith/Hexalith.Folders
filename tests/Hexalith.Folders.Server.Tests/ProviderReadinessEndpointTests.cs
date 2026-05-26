@@ -67,6 +67,8 @@ public sealed class ProviderReadinessEndpointTests
         response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
         response.Headers.TryGetValues("X-Correlation-Id", out IEnumerable<string>? correlationHeaders).ShouldBeTrue();
         correlationHeaders.ShouldNotBeNull().ShouldContain("corr-ready");
+        response.Headers.TryGetValues("X-Hexalith-Freshness", out IEnumerable<string>? freshnessHeaders).ShouldBeTrue();
+        freshnessHeaders.ShouldNotBeNull().ShouldContain("snapshot_per_task");
         document.RootElement.GetProperty("audience").GetString().ShouldBe("authorized_operator");
         document.RootElement.GetProperty("status").GetString().ShouldBe("ready");
         document.RootElement.GetProperty("safeReasonCode").GetString().ShouldBe("success");
@@ -94,6 +96,30 @@ public sealed class ProviderReadinessEndpointTests
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         json.ShouldContain("\"category\":\"validation_error\"");
         json.ShouldContain("\"code\":\"idempotency_key_not_accepted\"");
+        bindingReader.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProviderReadinessRouteShouldSanitizeUnsafeCorrelationOnPreServiceValidationFailure()
+    {
+        const string unsafeCorrelation = "https://user:pass@example.invalid/repo.git";
+        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = Request(correlationId: null);
+        request.Headers.TryAddWithoutValidation("X-Correlation-Id", unsafeCorrelation).ShouldBeTrue();
+        request.Headers.Add("Idempotency-Key", "idempotency-should-not-be-accepted");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"idempotency_key_not_accepted\"");
+        json.ShouldNotContain(unsafeCorrelation, Case.Sensitive);
+        document.RootElement.GetProperty("correlationId").GetString().ShouldStartWith("correlation_");
         bindingReader.Calls.ShouldBe(0);
     }
 
@@ -134,6 +160,75 @@ public sealed class ProviderReadinessEndpointTests
         json.ShouldContain("\"code\":\"provider_rate_limited\"");
         json.ShouldContain("\"retryable\":true");
         json.ShouldContain("\"correlationId\":\"corr-rate\"");
+    }
+
+    [Fact]
+    public async Task ProviderReadinessRouteShouldMapProviderUnavailableToCanonicalProblemDetails()
+    {
+        await using WebApplication app = BuildApp(FakeGitProvider.Failing(ProviderFailureCategory.ProviderUnavailable));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = Request("corr-unavailable");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+        json.ShouldContain("\"category\":\"provider_unavailable\"");
+        json.ShouldContain("\"code\":\"provider_unavailable\"");
+        json.ShouldContain("\"retryable\":true");
+        json.ShouldContain("\"correlationId\":\"corr-unavailable\"");
+    }
+
+    [Fact]
+    public async Task ProviderReadinessRouteShouldGenerateSafeCorrelationWhenHeaderIsMissingOrUnsafe()
+    {
+        const string unsafeCorrelation = "ghp_abcdefghijklmnopqrstuvwxyz123456";
+        await using WebApplication app = BuildApp(FakeGitProvider.WithOperationRows(
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ReadinessValidation),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.RepositoryCreation),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.RepositoryBinding),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.BranchRefInspection),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.FileMutationSupport),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.CommitSupport),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.StatusQuery),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence)));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = Request(correlationId: null);
+        request.Headers.TryAddWithoutValidation("X-Correlation-Id", unsafeCorrelation).ShouldBeTrue();
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        json.ShouldNotContain(unsafeCorrelation, Case.Sensitive);
+        document.RootElement.GetProperty("correlationId").GetString().ShouldStartWith("correlation_");
+        response.Headers.GetValues("X-Correlation-Id").Single().ShouldBe(document.RootElement.GetProperty("correlationId").GetString());
+    }
+
+    [Fact]
+    public async Task ProviderReadinessRouteShouldDenyClientTenantMismatchBeforeObservation()
+    {
+        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpRequestMessage request = Request("corr-tenant-mismatch");
+        request.RequestUri = new Uri("/api/v1/provider-readiness/validations?tenantId=tenant-other", UriKind.Relative);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        json.ShouldContain("\"category\":\"authorization_denied\"");
+        json.ShouldContain("\"code\":\"provider_readiness_read_denied\"");
+        json.ShouldNotContain("tenant-other", Case.Sensitive);
+        bindingReader.Calls.ShouldBe(0);
     }
 
     [Fact]
@@ -192,10 +287,14 @@ public sealed class ProviderReadinessEndpointTests
         return app;
     }
 
-    private static HttpRequestMessage Request(string correlationId, string providerBindingRef = "binding-a")
+    private static HttpRequestMessage Request(string? correlationId, string providerBindingRef = "binding-a")
     {
         HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/provider-readiness/validations");
-        request.Headers.Add("X-Correlation-Id", correlationId);
+        if (correlationId is not null)
+        {
+            request.Headers.Add("X-Correlation-Id", correlationId);
+        }
+
         request.Headers.Add("X-Hexalith-Freshness", "snapshot_per_task");
         request.Content = new StringContent(
             $$"""{"providerBindingRef":"{{providerBindingRef}}","requestedCapability":"repository_creation"}""",

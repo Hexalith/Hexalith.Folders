@@ -291,6 +291,36 @@ public sealed class ProviderReadinessValidationServiceTests
     }
 
     [Fact]
+    public async Task ValidateAsync_ShouldDenyBoundedStaleTenantEvidenceBeforeBindingObservation()
+    {
+        RecordingProviderReadinessBindingReader bindingReader = new(Binding());
+        RecordingProviderReadinessEvidenceStore readinessStore = new();
+        RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
+        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
+        RecordingProviderCapabilityEvidenceStore capabilityEvidence = new();
+        ProviderReadinessValidationService service = Service(
+            bindingReader,
+            readinessStore,
+            capabilityAuthorizer,
+            resolver,
+            capabilityEvidence,
+            tenantStore: TenantStore(TenantAccessOutcome.Allowed, lastEventTimestamp: Now - TimeSpan.FromMinutes(10)));
+
+        ProviderReadinessValidationResult result = await service.ValidateAsync(
+            Request(correlationId: "corr-bounded-stale"),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ProviderReadinessResultCode.ProjectionStale);
+        result.ReasonCode.ShouldBe("projection_stale");
+        result.ProviderBindingRef.ShouldBeNull();
+        bindingReader.Calls.ShouldBe(0);
+        readinessStore.Calls.ShouldBe(0);
+        capabilityAuthorizer.Calls.ShouldBe(0);
+        resolver.Calls.ShouldBe(0);
+        capabilityEvidence.Calls.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ValidateAsync_ShouldDenyReservedSystemTenantBeforeObservation()
     {
         RecordingProviderReadinessBindingReader bindingReader = new(Binding());
@@ -543,7 +573,9 @@ public sealed class ProviderReadinessValidationServiceTests
             ConfiguredStatus: "configured",
             OccurredAt: Now);
 
-    private static IFolderTenantAccessProjectionStore TenantStore(TenantAccessOutcome outcome)
+    private static IFolderTenantAccessProjectionStore TenantStore(
+        TenantAccessOutcome outcome,
+        DateTimeOffset? lastEventTimestamp = null)
     {
         InMemoryFolderTenantAccessProjectionStore store = new();
         if (outcome == TenantAccessOutcome.UnknownTenant)
@@ -565,7 +597,7 @@ public sealed class ProviderReadinessValidationServiceTests
             ProjectionWatermark = "tenant-a:42",
             LastEventTimestamp = outcome is TenantAccessOutcome.MalformedEvidence
                 ? null
-                : Now,
+                : lastEventTimestamp ?? Now,
             ReplayConflict = outcome == TenantAccessOutcome.ReplayConflict,
             MalformedEvidence = outcome == TenantAccessOutcome.MalformedEvidence,
         };
@@ -626,4 +658,5 @@ public sealed class ProviderReadinessValidationServiceTests
     {
         public DateTimeOffset UtcNow => now;
     }
+
 }
