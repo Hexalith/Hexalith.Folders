@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import os
-import re
 import shlex
-import tempfile
 import time
 from pathlib import Path
 
@@ -86,7 +84,20 @@ def cmd_tmux_wrapper(args: list[str]) -> int:
         print(agent_type())
         return 0
     if action == "agent-cli":
-        print(agent_cli(agent_type()))
+        rest = args[1:]
+        model = ""
+        idx = 0
+        while idx < len(rest):
+            if rest[idx] == "--model":
+                try:
+                    model = _flag_value(rest, idx, "--model")
+                except PolicyError as exc:
+                    print(str(exc), file=__import__("sys").stderr)
+                    return 1
+                idx += 2
+                continue
+            idx += 1
+        print(agent_cli(agent_type(), model))
         return 0
     if action == "skill-prefix":
         print(skill_prefix(agent_type()))
@@ -105,7 +116,7 @@ def _usage(code: int) -> int:
     print("  kill <session_name>", file=target)
     print("  kill-all [--project-only]", file=target)
     print("  exists <session_name>", file=target)
-    print("  build-cmd <step> <story_id> [--agent TYPE] [--state-file PATH] [extra_instruction]", file=target)
+    print("  build-cmd <step> <story_id> [--agent TYPE] [--model ID] [--state-file PATH] [extra_instruction]", file=target)
     print("  project-slug", file=target)
     print("  project-hash", file=target)
     print("  story-suffix <story_id>", file=target)
@@ -157,10 +168,15 @@ def _build_cmd(args: list[str]) -> int:
     tail = args[2:]
     idx = 0
     state_file = ""
+    model = ""
     try:
         while idx < len(tail):
             if tail[idx] == "--agent":
                 agent = _flag_value(tail, idx, "--agent")
+                idx += 2
+                continue
+            if tail[idx] == "--model":
+                model = _flag_value(tail, idx, "--model")
                 idx += 2
                 continue
             if tail[idx] == "--state-file":
@@ -187,38 +203,19 @@ def _build_cmd(args: list[str]) -> int:
     if ai_command and not os.environ.get("AI_AGENT"):
         cli = ai_command
     elif agent != "codex":
-        cli = agent_cli(agent)
+        cli = agent_cli(agent, model)
     else:
         cli = "codex exec"
     quoted_prompt = shlex.quote(prompt)
-    if agent == "codex" and not ai_command and os.name == "nt":
-        prompt_file = _write_codex_prompt_file(root, step, story_prefix, prompt)
-        ps_command = (
-            f"Set-Location -LiteralPath {_ps_single_quote(str(root))}; "
-            f"$prompt = Get-Content -Raw -LiteralPath {_ps_single_quote(str(prompt_file))}; "
-            "codex exec -s danger-full-access "
-            "-c 'approval_policy=\"never\"' "
-            "-c 'model_reasoning_effort=\"high\"' "
-            "--disable plugins --disable sqlite --disable shell_snapshot $prompt"
-        )
-        print(f"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command {shlex.quote(ps_command)}")
-    elif agent == "claude" and not ai_command and os.name == "nt":
-        prompt_file = _write_codex_prompt_file(root, step, story_prefix, prompt)
-        ps_command = (
-            f"Set-Location -LiteralPath {_ps_single_quote(str(root))}; "
-            "$env:CLAUDECODE = $null; "
-            f"$prompt = Get-Content -Raw -LiteralPath {_ps_single_quote(str(prompt_file))}; "
-            "claude -p --dangerously-skip-permissions $prompt"
-        )
-        print(f"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command {shlex.quote(ps_command)}")
-    elif agent == "codex" and not ai_command:
+    if agent == "codex" and not ai_command:
         codex_home = f"/tmp/sa-codex-home-{project_hash(root)}"
-        auth_src = _bash_path(os.path.expanduser("~/.codex/auth.json"))
+        auth_src = os.path.expanduser("~/.codex/auth.json")
+        model_flag = f" --model {shlex.quote(model)}" if model else ""
         print(
             f'mkdir -p "{codex_home}"'
             + f' && if [ -f "{auth_src}" ]; then ln -sf "{auth_src}" "{codex_home}/auth.json"; fi'
-            + f' && CODEX_HOME="{codex_home}" codex exec -s danger-full-access -c \'approval_policy="never"\''
-            + f' -c \'model_reasoning_effort="high"\''
+            + f' && CODEX_HOME="{codex_home}" codex exec -s workspace-write -c \'approval_policy="never"\''
+            + f' -c \'model_reasoning_effort="high"\'{model_flag}'
             + f" --disable plugins --disable sqlite --disable shell_snapshot {quoted_prompt}"
         )
     else:
@@ -248,28 +245,6 @@ def _render_step_prompt(contract: dict[str, object], story_id: str, story_prefix
 
 def _prompt_line(prefix: str, value: str) -> str:
     return f"{prefix}: {value}\n" if value else ""
-
-
-def _bash_path(path: str) -> str:
-    if os.name != "nt":
-        return path
-    match = re.match(r"^([A-Za-z]):[\\/](.*)$", path)
-    if not match:
-        return path
-    drive = match.group(1).lower()
-    rest = match.group(2).replace("\\", "/")
-    return f"/mnt/{drive}/{rest}"
-
-
-def _write_codex_prompt_file(root: str, step: str, story_prefix: str, prompt: str) -> Path:
-    safe = re.sub(r"[^A-Za-z0-9_.-]+", "-", f"{project_hash(root)}-{step}-{story_prefix}-{int(time.time())}")
-    path = Path(tempfile.gettempdir()) / f"sa-codex-prompt-{safe}.txt"
-    path.write_text(prompt, encoding="utf-8")
-    return path
-
-
-def _ps_single_quote(value: str) -> str:
-    return "'" + value.replace("'", "''") + "'"
 
 
 def cmd_heartbeat_check(args: list[str]) -> int:

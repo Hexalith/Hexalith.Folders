@@ -85,8 +85,15 @@ def agent_type() -> str:
     return runtime_provider()
 
 
-def agent_cli(agent: str) -> str:
-    return "codex exec" if agent == "codex" else "claude --dangerously-skip-permissions"
+def agent_cli(agent: str, model: str = "") -> str:
+    model = (model or "").strip()
+    if agent == "codex":
+        base = "codex exec"
+    else:
+        base = "claude --dangerously-skip-permissions"
+    if model:
+        base = f"{base} --model {shlex.quote(model)}"
+    return base
 
 
 def skill_prefix(agent: str) -> str:
@@ -386,7 +393,6 @@ def _spawn_runner(session: str, command: str, selected_agent: str, project_root:
 
     _write_private_text(paths.command, _command_file_content(command), 0o700)
     _write_private_text(paths.runner, _runner_file_content(paths, bash_path, command_shell, str(root)), 0o700)
-    start_directory = "." if os.name == "nt" else str(root)
 
     create_out, create_code = run_cmd(
         "tmux",
@@ -399,7 +405,7 @@ def _spawn_runner(session: str, command: str, selected_agent: str, project_root:
         "-y",
         str(DEFAULT_HEIGHT),
         "-c",
-        start_directory,
+        str(root),
         "-e",
         "STORY_AUTOMATOR_CHILD=true",
         "-e",
@@ -408,7 +414,7 @@ def _spawn_runner(session: str, command: str, selected_agent: str, project_root:
         "CLAUDECODE=",
         "-e",
         "BASH_ENV=",
-        *_interactive_shell_command(),
+        *PLACEHOLDER_COMMAND,
     )
     if create_code != 0:
         cleanup_runtime_artifacts(session, str(root))
@@ -454,11 +460,27 @@ def _spawn_runner(session: str, command: str, selected_agent: str, project_root:
         },
     )
 
-    runner_command = _shell_command_for_tmux(bash_path, _bash_path(str(paths.runner)))
-    send_out, send_code = run_cmd("tmux", "send-keys", "-t", session, runner_command, "Enter")
-    if send_code != 0:
+    respawn_out, respawn_code = run_cmd("tmux", "respawn-pane", "-k", "-t", pane_id, bash_path, str(paths.runner))
+    if respawn_code != 0:
         tmux_kill_session(session, str(root))
-        return (send_out, send_code)
+        return (respawn_out, respawn_code)
+
+    deadline = time.time() + 1.0
+    respawned_pane_pid = 0
+    while time.time() < deadline:
+        respawned_pane_pid = _safe_int(tmux_display(session, "#{pane_pid}"))
+        if respawned_pane_pid > 0:
+            break
+        time.sleep(0.05)
+    if respawned_pane_pid <= 0:
+        tmux_kill_session(session, str(root))
+        return ("failed to resolve respawned tmux pane pid\n", 1)
+
+    update_session_state(
+        paths.state,
+        paneId=pane_id,
+        panePid=respawned_pane_pid,
+    )
     return ("", 0)
 
 
@@ -466,7 +488,6 @@ def _spawn_legacy(session: str, command: str, selected_agent: str, project_root:
     if not command_exists("tmux"):
         return ("tmux not found\n", 1)
     root = project_root or get_project_root()
-    start_directory = "." if os.name == "nt" else root
     paths = session_paths(session, root)
     paths.state.unlink(missing_ok=True)
     output, code = run_cmd(
@@ -480,7 +501,7 @@ def _spawn_legacy(session: str, command: str, selected_agent: str, project_root:
         "-y",
         str(DEFAULT_HEIGHT),
         "-c",
-        start_directory,
+        root,
         "-e",
         "STORY_AUTOMATOR_CHILD=true",
         "-e",
@@ -944,11 +965,11 @@ def _resolve_spawn_mode(mode: str | None) -> str:
 
 
 def _runner_file_content(paths: SessionPaths, bash_path: str, command_shell: str, project_root: str) -> str:
-    state_file = shlex.quote(_bash_path(str(paths.state)))
-    command_file = shlex.quote(_bash_path(str(paths.command)))
-    resolved_command_shell = shlex.quote(_bash_shell_path(command_shell))
-    root = shlex.quote(_bash_path(project_root))
-    python_bin = shlex.quote("python3" if os.name == "nt" else sys.executable)
+    state_file = shlex.quote(str(paths.state))
+    command_file = shlex.quote(str(paths.command))
+    resolved_command_shell = shlex.quote(command_shell)
+    root = shlex.quote(project_root)
+    python_bin = shlex.quote(sys.executable)
     return f"""#!/usr/bin/env bash
 set -euo pipefail
 
@@ -1081,43 +1102,8 @@ def _command_file_content(command: str) -> str:
     return command.rstrip() + "\n"
 
 
-def _placeholder_command() -> tuple[str, ...]:
-    if os.name == "nt":
-        return ("cmd.exe", "/c", "timeout /t 86400 /nobreak >nul")
-    return PLACEHOLDER_COMMAND
-
-
-def _interactive_shell_command() -> tuple[str, ...]:
-    if os.name == "nt":
-        return ("cmd.exe", "/k")
-    return ()
-
-
-def _shell_command_for_tmux(executable: str, script_path: str) -> str:
-    if os.name == "nt":
-        return f'"{executable}" "{script_path}"'
-    return f"{shlex.quote(executable)} {shlex.quote(script_path)}"
-
-
-def _bash_path(path: str) -> str:
-    if os.name != "nt":
-        return path
-    match = re.match(r"^([A-Za-z]):[\\/](.*)$", path)
-    if not match:
-        return path
-    drive = match.group(1).lower()
-    rest = match.group(2).replace("\\", "/")
-    return f"/mnt/{drive}/{rest}"
-
-
-def _bash_shell_path(path: str) -> str:
-    if os.name == "nt" and Path(path).name.lower() in {"bash.exe", "bash"}:
-        return "/bin/bash"
-    return _bash_path(path)
-
-
 def _write_private_text(path: Path, data: str, mode: int) -> None:
-    atomic_write(path, data.encode("utf-8"))
+    atomic_write(path, data)
     path.chmod(mode)
 
 

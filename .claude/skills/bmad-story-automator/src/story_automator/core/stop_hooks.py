@@ -327,10 +327,12 @@ def _prepare_codex_hooks_feature(path: Path) -> HookFileUpdate:
         features = {}
     if not isinstance(features, dict):
         raise HookConfigError("invalid_features_table", path)
+    # Already correct only when the current key is enabled AND no deprecated
+    # `codex_hooks` lingers (a leftover legacy key still triggers Codex warnings).
     if features.get("hooks") is True and "codex_hooks" not in features:
         return HookFileUpdate(result=HookInstallResult(changed=False, reason="already_enabled", path=path))
 
-    updated = _set_features_codex_hooks(text)
+    updated = _set_features_hooks(text)
     _parse_toml(updated, path)
     return HookFileUpdate(
         result=HookInstallResult(changed=True, reason="hooks_enabled", path=path, written=True),
@@ -368,76 +370,42 @@ def _codex_project_is_trusted(config_path: Path, project_root: Path) -> bool:
     return False
 
 
-def _set_features_codex_hooks(text: str) -> str:
+def _set_features_hooks(text: str) -> str:
     lines = text.splitlines()
     if not lines:
         return "[features]\nhooks = true\n"
 
     table_start = _find_table_start(lines, "features")
     if table_start is None:
-        return _set_top_level_features_codex_hooks(text, lines)
+        return _set_top_level_features_hooks(text, lines)
 
     table_end = _find_table_end(lines, table_start)
-    hooks_pattern = re.compile(r"^(\s*)hooks\s*=.*$")
-    legacy_pattern = re.compile(r"^(\s*)codex_hooks\s*=.*$")
+    hooks_pattern = re.compile(r"^\s*hooks\s*=.*$")
+    legacy_pattern = re.compile(r"^\s*codex_hooks\s*=.*$")
     hooks_index: int | None = None
-    legacy_indices: list[int] = []
-    legacy_indent = ""
+    legacy_index: int | None = None
     for index in range(table_start + 1, table_end):
-        match = hooks_pattern.match(lines[index])
-        if match:
+        if hooks_index is None and hooks_pattern.match(lines[index]):
             hooks_index = index
-            hooks_indent = match.group(1)
-            continue
-        match = legacy_pattern.match(lines[index])
-        if match:
-            legacy_indices.append(index)
-            if not legacy_indent:
-                legacy_indent = match.group(1)
+        elif legacy_index is None and legacy_pattern.match(lines[index]):
+            legacy_index = index
 
-    if hooks_index is not None:
-        lines[hooks_index] = f"{hooks_indent}hooks = true"
-    else:
-        insert_index = legacy_indices[0] if legacy_indices else table_start + 1
-        lines.insert(insert_index, f"{legacy_indent}hooks = true")
-
-    table_end = _find_table_end(lines, table_start)
-    for index in range(table_end - 1, table_start, -1):
-        if legacy_pattern.match(lines[index]):
-            del lines[index]
-
-    return "\n".join(lines) + "\n"
+    return _apply_feature_hooks(lines, table_start, hooks_index, legacy_index, key="hooks")
 
 
-def _set_top_level_features_codex_hooks(text: str, lines: list[str]) -> str:
+def _set_top_level_features_hooks(text: str, lines: list[str]) -> str:
     root_end = _find_first_table_start(lines)
-    exact_hooks = re.compile(r"^(\s*)features\.hooks\s*=.*$")
-    exact_legacy = re.compile(r"^(\s*)features\.codex_hooks\s*=.*$")
+    hooks_dotted = re.compile(r"^\s*features\.hooks\s*=.*$")
+    legacy_dotted = re.compile(r"^\s*features\.codex_hooks\s*=.*$")
     hooks_index: int | None = None
-    legacy_indices: list[int] = []
-    legacy_indent = ""
+    legacy_index: int | None = None
     for index, line in enumerate(lines[:root_end]):
-        match = exact_hooks.match(line)
-        if match:
+        if hooks_index is None and hooks_dotted.match(line):
             hooks_index = index
-            hooks_indent = match.group(1)
-            continue
-        match = exact_legacy.match(line)
-        if match:
-            legacy_indices.append(index)
-            if not legacy_indent:
-                legacy_indent = match.group(1)
-
-    if hooks_index is not None:
-        lines[hooks_index] = f"{hooks_indent}features.hooks = true"
-        for index in reversed(legacy_indices):
-            del lines[index]
-        return "\n".join(lines) + "\n"
-    if legacy_indices:
-        lines[legacy_indices[0]] = f"{legacy_indent}features.hooks = true"
-        for index in reversed(legacy_indices[1:]):
-            del lines[index]
-        return "\n".join(lines) + "\n"
+        elif legacy_index is None and legacy_dotted.match(line):
+            legacy_index = index
+    if hooks_index is not None or legacy_index is not None:
+        return _apply_feature_hooks(lines, root_end, hooks_index, legacy_index, key="features.hooks")
 
     inline_features = re.compile(r"^(\s*)features\s*=\s*\{(.*)\}\s*(#.*)?$")
     for index, line in enumerate(lines[:root_end]):
@@ -459,6 +427,32 @@ def _set_top_level_features_codex_hooks(text: str, lines: list[str]) -> str:
     return f"{text}{separator}[features]\nhooks = true\n"
 
 
+def _apply_feature_hooks(
+    lines: list[str],
+    insert_after: int,
+    hooks_index: int | None,
+    legacy_index: int | None,
+    *,
+    key: str,
+) -> str:
+    if hooks_index is not None:
+        # Enable the existing hooks key and drop any leftover deprecated key so
+        # the rewritten config never carries both (which would also be a dup key).
+        lines[hooks_index] = f"{_leading_whitespace(lines[hooks_index])}{key} = true"
+        if legacy_index is not None:
+            del lines[legacy_index]
+    elif legacy_index is not None:
+        # Migrate the deprecated key in place, preserving its indentation.
+        lines[legacy_index] = f"{_leading_whitespace(lines[legacy_index])}{key} = true"
+    else:
+        lines.insert(insert_after + 1, f"{key} = true")
+    return "\n".join(lines) + "\n"
+
+
+def _leading_whitespace(line: str) -> str:
+    return line[: len(line) - len(line.lstrip())]
+
+
 def _find_first_table_start(lines: list[str]) -> int:
     table_pattern = re.compile(r"^\s*\[.+\]\s*(?:#.*)?$")
     for index, line in enumerate(lines):
@@ -470,17 +464,22 @@ def _find_first_table_start(lines: list[str]) -> int:
 def _set_inline_features_table_line(match: re.Match[str]) -> str:
     indent, inner, comment = match.group(1), match.group(2), match.group(3) or ""
     items = [item.strip() for item in _split_inline_table_items(inner) if item.strip()]
+    hooks_present = any(re.match(r"^hooks\s*=", item) for item in items)
     updated_items: list[str] = []
-    has_hooks = False
+    added = False
     for item in items:
-        if re.match(r"^codex_hooks\s*=", item):
-            continue
         if re.match(r"^hooks\s*=", item):
             updated_items.append("hooks = true")
-            has_hooks = True
+            added = True
+        elif re.match(r"^codex_hooks\s*=", item):
+            # Drop the deprecated key if a current one exists; otherwise migrate it.
+            if hooks_present:
+                continue
+            updated_items.append("hooks = true")
+            added = True
         else:
             updated_items.append(item)
-    if not has_hooks:
+    if not added:
         updated_items.append("hooks = true")
     return f"{indent}features = {{ {', '.join(updated_items)} }}{comment}"
 
