@@ -468,13 +468,19 @@ public sealed partial class ProviderReadinessValidationService(
             ProviderOperationCatalog.ProviderSupportEvidence,
         ];
 
-        if (requestedCapability == ProviderReadinessRequestedCapability.ExistingRepositoryBinding)
+        switch (requestedCapability)
         {
-            required.Add(ProviderOperationCatalog.RepositoryBinding);
-        }
-        else
-        {
-            required.Add(ProviderOperationCatalog.RepositoryCreation);
+            case ProviderReadinessRequestedCapability.ExistingRepositoryBinding:
+                required.Add(ProviderOperationCatalog.RepositoryBinding);
+                break;
+            case ProviderReadinessRequestedCapability.RepositoryCreation:
+                required.Add(ProviderOperationCatalog.RepositoryCreation);
+                break;
+            case ProviderReadinessRequestedCapability.BranchRefPolicy:
+                break;
+            default:
+                required.Add(ProviderOperationCatalog.RepositoryCreation);
+                break;
         }
 
         return required;

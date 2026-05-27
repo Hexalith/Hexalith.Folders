@@ -121,6 +121,26 @@ public sealed record FolderResult(
             events);
     }
 
+    public static FolderResult Accepted(ConfigureBranchRefPolicy command, IReadOnlyList<IFolderEvent> events)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(events);
+
+        return new(
+            FolderResultCode.Accepted,
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
+            null,
+            null,
+            null,
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey,
+            events);
+    }
+
     // Validation-rejection paths can carry malformed bytes (the validator may itself
     // be rejecting because an identifier is malformed). Funnel command fields through
     // `SafePassthrough` so a result for `MalformedEvidence` cannot echo the unsafe value.

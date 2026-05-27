@@ -24,6 +24,64 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class RepositoryBackedFolderEndpointTests
 {
     [Fact]
+    public async Task ConfigureBranchRefPolicyEndpointShouldSubmitCommandAndReturnAcceptedShape()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidBranchRefPolicyRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.Tenant.ShouldBe("tenant-a");
+            submitted.Domain.ShouldBe("folders");
+            submitted.AggregateId.ShouldBe("folder-a");
+            submitted.CommandType.ShouldBe(FoldersServerModule.ConfigureBranchRefPolicyCommandType);
+            submitted.Extensions.ShouldNotBeNull()["taskId"].ShouldBe("task-a");
+            submitted.Payload.GetProperty("requestSchemaVersion").GetString().ShouldBe("v1");
+            submitted.Payload.GetProperty("repositoryBindingId").GetString().ShouldBe("repository-binding-a");
+            submitted.Payload.GetProperty("policyRef").GetString().ShouldBe("opaque-policy-a");
+            submitted.Payload.GetProperty("defaultRef").GetString().ShouldBe("branch_ref_primary");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task GetBranchRefPolicyEndpointShouldRejectIdempotencyKeyBeforeReadModel()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/branch-ref-policy");
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("code").GetString().ShouldBe("idempotency_key_not_allowed");
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task BindRepositoryEndpointShouldSubmitBindRepositoryCommandAndReturnAcceptedShape()
     {
         RecordingEventStoreGatewayClient gateway = new();
@@ -183,8 +241,8 @@ public sealed class RepositoryBackedFolderEndpointTests
                 {
                     requestSchemaVersion = "v1",
                     repositoryBindingId = "binding-a",
-                    policyRef = "branch-ref-policy-a",
-                    defaultRef = "branch_ref_primary",
+                    policyRef = "opaque-policy-a",
+                    defaultRef = "feature/raw",
                     allowedRefPatterns = new[] { "branch_ref_feature" },
                 },
             };
@@ -497,8 +555,8 @@ public sealed class RepositoryBackedFolderEndpointTests
                 {
                     requestSchemaVersion = "v1",
                     repositoryBindingId = "binding-a",
-                    policyRef = "branch-ref-policy-a",
-                    defaultRef = "branch_ref_primary",
+                    policyRef = "opaque-policy-a",
+                    defaultRef = "feature/raw",
                     allowedRefPatterns = new[] { "branch_ref_feature" },
                 },
             };
@@ -677,6 +735,24 @@ public sealed class RepositoryBackedFolderEndpointTests
                     defaultRef = "branch_ref_primary",
                     allowedRefPatterns = new[] { "branch_ref_feature" },
                 },
+            }),
+        };
+        AddHeaders(request);
+        return request;
+    }
+
+    private static HttpRequestMessage CreateValidBranchRefPolicyRequest()
+    {
+        HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/folders/folder-a/branch-ref-policy")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                repositoryBindingId = "repository-binding-a",
+                policyRef = "opaque-policy-a",
+                defaultRef = "branch_ref_primary",
+                allowedRefPatterns = new[] { "branch_ref_feature" },
+                protectedRefPatterns = new[] { "branch_ref_release" },
             }),
         };
         AddHeaders(request);

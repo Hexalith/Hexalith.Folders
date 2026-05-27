@@ -149,6 +149,76 @@ public static class FoldersDomainServiceEndpoints
                 cancellationToken).ConfigureAwait(false))
         .WithName("BindRepository");
 
+        endpoints.MapPut("/api/v1/folders/{folderId}/branch-ref-policy", async (
+            string folderId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await ConfigureBranchRefPolicyAsync(
+                folderId,
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("ConfigureBranchRefPolicy");
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
+            string folderId,
+            HttpContext httpContext,
+            BranchRefPolicyQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            if (idempotencyKey is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Operation supports eventually_consistent only.");
+            }
+
+            BranchRefPolicyQueryResult result = await handler.HandleAsync(
+                new BranchRefPolicyQuery(
+                    folderId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence("read_branch_ref_policy"),
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("GetBranchRefPolicy");
+
         endpoints.MapGet("/api/v1/folders/{folderId}/lifecycle-status", async (
             string folderId,
             HttpContext httpContext,
@@ -729,6 +799,170 @@ public static class FoldersDomainServiceEndpoints
             statusCode: StatusCodes.Status202Accepted);
     }
 
+    private static async Task<IResult> ConfigureBranchRefPolicyAsync(
+        string folderId,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        if (string.IsNullOrWhiteSpace(idempotencyKey)
+            || string.IsNullOrWhiteSpace(correlationId)
+            || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(idempotencyKey)
+            || !IsCanonicalIdentifier(taskId)
+            || !IsCanonicalIdentifier(correlationId)
+            || !IsCanonicalIdentifier(folderId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        BranchRefPolicyHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<BranchRefPolicyHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (!IsValidBranchRefPolicy(body))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: FoldersServerModule.ConfigureBranchRefPolicyCommandType,
+                    Payload: JsonSerializer.SerializeToElement(body, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
         && IsCanonicalIdentifier(body.FolderId)
@@ -753,10 +987,13 @@ public static class FoldersDomainServiceEndpoints
         => policy is not null
         && string.Equals(policy.RequestSchemaVersion, "v1", StringComparison.Ordinal)
         && IsCanonicalIdentifier(policy.RepositoryBindingId)
-        && IsBranchRefPolicyIdentifier(policy.PolicyRef)
+        && IsCanonicalIdentifier(policy.PolicyRef)
         && IsBranchRefPolicyIdentifier(policy.DefaultRef)
         && AreRequiredBranchRefPatterns(policy.AllowedRefPatterns)
-        && AreOptionalBranchRefPatterns(policy.ProtectedRefPatterns);
+        && AreOptionalBranchRefPatterns(policy.ProtectedRefPatterns)
+        && !HasDuplicateBranchRefPatterns(policy.AllowedRefPatterns)
+        && !HasDuplicateBranchRefPatterns(policy.ProtectedRefPatterns)
+        && !HasDuplicateBranchRefPatterns(policy.AllowedRefPatterns, policy.ProtectedRefPatterns);
 
     private static bool IsBranchRefPolicyIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
@@ -772,6 +1009,15 @@ public static class FoldersDomainServiceEndpoints
         => values is null
         || (values.Count <= MaxBranchRefPatternCount
             && values.All(static value => IsBranchRefPolicyIdentifier(value)));
+
+    private static bool HasDuplicateBranchRefPatterns(IReadOnlyList<string>? values)
+        => values is not null
+        && values.Distinct(StringComparer.Ordinal).Count() != values.Count;
+
+    private static bool HasDuplicateBranchRefPatterns(IReadOnlyList<string>? allowed, IReadOnlyList<string>? protectedPatterns)
+        => allowed is not null
+        && protectedPatterns is not null
+        && allowed.Intersect(protectedPatterns, StringComparer.Ordinal).Any();
 
     private static bool IsCanonicalIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
@@ -1044,6 +1290,104 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static IResult ToHttpResult(HttpContext httpContext, BranchRefPolicyQueryResult result, string? correlationId, string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case BranchRefPolicyQueryResultCode.Allowed:
+                if (string.IsNullOrWhiteSpace(result.FolderId)
+                    || string.IsNullOrWhiteSpace(result.RepositoryBindingId)
+                    || string.IsNullOrWhiteSpace(result.PolicyRef)
+                    || string.IsNullOrWhiteSpace(result.DefaultRef)
+                    || result.AllowedRefPatterns.Count == 0)
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                AddBranchRefPolicySuccessHeaders(httpContext, result);
+                return Results.Json(
+                    new BranchRefPolicyResponse(
+                        "v1",
+                        result.RepositoryBindingId,
+                        result.PolicyRef,
+                        result.DefaultRef,
+                        result.AllowedRefPatterns,
+                        result.ProtectedRefPatterns.Count == 0 ? null : result.ProtectedRefPatterns,
+                        new FreshnessMetadataResponse(
+                            result.Freshness.ReadConsistency,
+                            result.Freshness.ObservedAt,
+                            result.Freshness.ProjectionWatermark,
+                            result.Freshness.Stale)),
+                    ResponseJsonOptions);
+
+            case BranchRefPolicyQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case BranchRefPolicyQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case BranchRefPolicyQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case BranchRefPolicyQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case BranchRefPolicyQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case BranchRefPolicyQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
     private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
         => result.Code switch
         {
@@ -1185,6 +1529,21 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static void AddBranchRefPolicySuccessHeaders(HttpContext httpContext, BranchRefPolicyQueryResult result)
+    {
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId)
+            && !ContainsControlChars(result.CorrelationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
+            && !ContainsControlChars(result.Freshness.ReadConsistency))
+        {
+            httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+        }
+    }
+
     private static string? ReadHeader(HttpContext httpContext, string name)
         => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
 
@@ -1299,6 +1658,15 @@ public static class FoldersDomainServiceEndpoints
         bool Archived,
         string? RepositoryBindingId,
         string? ProviderBindingRef,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record BranchRefPolicyResponse(
+        string RequestSchemaVersion,
+        string RepositoryBindingId,
+        string PolicyRef,
+        string DefaultRef,
+        IReadOnlyList<string> AllowedRefPatterns,
+        IReadOnlyList<string>? ProtectedRefPatterns,
         FreshnessMetadataResponse Freshness);
 
     private sealed record FreshnessMetadataResponse(

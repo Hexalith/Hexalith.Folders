@@ -243,6 +243,61 @@ public static class FolderAggregate
         return FolderResult.Accepted(command, [requested]);
     }
 
+    public static FolderResult Handle(FolderState state, ConfigureBranchRefPolicy command, DateTimeOffset occurredAt)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(command);
+
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return FolderResult.Rejected(command, validation.Code);
+        }
+
+        if (!state.IsCreated)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+        }
+
+        FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.BranchRef);
+        if (activeMutationGuard != FolderResultCode.Accepted)
+        {
+            return FolderResult.Rejected(command, activeMutationGuard);
+        }
+
+        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
+            || string.IsNullOrWhiteSpace(state.RepositoryBindingId)
+            || !string.Equals(state.RepositoryBindingId, command.RepositoryBindingId, StringComparison.Ordinal))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
+        BranchRefPolicyConfigured configured = new(
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
+            command.RepositoryBindingId,
+            command.PolicyRef,
+            command.DefaultRef,
+            command.AllowedRefPatterns.ToArray(),
+            command.ProtectedRefPatterns?.ToArray() ?? [],
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey,
+            validation.IdempotencyFingerprint!,
+            occurredAt);
+
+        return FolderResult.Accepted(command, [configured]);
+    }
+
     // Convenience overloads for tests that do not care about deterministic timestamps.
     // Production callers must always supply OccurredAt from the gate's TimeProvider so
     // events carry real wall-clock evidence rather than DateTimeOffset.MinValue.
@@ -259,6 +314,9 @@ public static class FolderAggregate
         => Handle(state, command, DateTimeOffset.MinValue);
 
     public static FolderResult Handle(FolderState state, BindRepository command)
+        => Handle(state, command, DateTimeOffset.MinValue);
+
+    public static FolderResult Handle(FolderState state, ConfigureBranchRefPolicy command)
         => Handle(state, command, DateTimeOffset.MinValue);
 
     // Grant emits events per operation, skipping tuples that are already granted. Revoke

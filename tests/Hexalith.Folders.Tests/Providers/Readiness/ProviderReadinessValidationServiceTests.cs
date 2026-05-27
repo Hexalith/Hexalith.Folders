@@ -64,6 +64,36 @@ public sealed class ProviderReadinessValidationServiceTests
     }
 
     [Fact]
+    public async Task ValidateAsync_ShouldNotRequireRepositoryCreationForBranchRefPolicy()
+    {
+        RecordingProviderReadinessEvidenceStore readinessStore = new();
+        ProviderReadinessValidationService service = Service(
+            new RecordingProviderReadinessBindingReader(Binding()),
+            readinessStore,
+            RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh"),
+            new RecordingProviderCapabilityResolver(FakeGitProvider.WithOperationRows(
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ReadinessValidation),
+                ProviderCapabilityOperationRow.Unsupported(ProviderOperationCatalog.RepositoryCreation),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.RepositoryBinding),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.BranchRefInspection),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.FileMutationSupport),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.CommitSupport),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.StatusQuery),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence))),
+            new RecordingProviderCapabilityEvidenceStore());
+
+        ProviderReadinessValidationResult result = await service.ValidateAsync(
+            Request(requestedCapability: ProviderReadinessRequestedCapability.BranchRefPolicy),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ProviderReadinessResultCode.Allowed);
+        result.Status.ShouldBe("ready");
+        result.Evidence.ShouldNotBeNull().RepositoryCreation.ShouldBe("unsupported");
+        result.Evidence.BranchRefPolicy.ShouldBe("supported");
+        readinessStore.Calls.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task ValidateAsync_ShouldStoreTenantScopedMetadataOnlyEvidence()
     {
         RecordingProviderReadinessEvidenceStore readinessStore = new();

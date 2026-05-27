@@ -34,6 +34,8 @@ public static class FoldersServerModule
 
     public const string BindRepositoryCommandType = "Hexalith.Folders.Commands.BindRepository";
 
+    public const string ConfigureBranchRefPolicyCommandType = "Hexalith.Folders.Commands.ConfigureBranchRefPolicy";
+
     // Maximum length for canonical identifiers (correlation id, task id, idempotency key,
     // folder id, taskId extension). Shared between the REST endpoint regex, the processor
     // extension reader, and the rejection-event canonicalizer so a length bump cannot drift.

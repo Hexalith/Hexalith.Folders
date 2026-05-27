@@ -3,47 +3,48 @@
 ## Generated Tests
 
 ### API Tests
-- [x] `tests/Hexalith.Folders.Server.Tests/RepositoryBackedFolderEndpointTests.cs` - Added bind-repository invalid branch/ref policy coverage for missing default ref, empty allowed refs, and invalid policy identifiers before gateway submission.
-- [x] Existing bind-repository endpoint tests cover accepted submission, required headers, unsupported schema version, malformed JSON, reserved `system` tenant denial before body parsing, unknown field rejection, safe gateway failure mapping, and metadata-only problem responses.
+- [x] `tests/Hexalith.Folders.Server.Tests/BranchRefPolicyEndpointTests.cs` - Added standalone branch/ref policy PUT and GET endpoint coverage for route registration, accepted read-model response shape, later authorized reads with new request scope, required command headers, unsupported schema version, unknown-field rejection, unsafe ref rejection, duplicate pattern rejection, pattern count limits, safe readiness-failure mapping, unsupported freshness rejection, safe tenant mismatch denial, and unavailable read-model mapping.
+- [x] `tests/Hexalith.Folders.Tests/Authorization/BranchRefPolicyActionCatalogTests.cs` - Added action-catalog coverage proving `configure_branch_ref_policy` and `read_branch_ref_policy` are supported by effective-permissions authorization.
 
 ### E2E Tests
-- [x] `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBindingGateTests.cs` - Added offline workflow guardrails proving archived folders and already-bound folders short-circuit before idempotency, readiness, provider binding reads, provider resolution, provider calls, or appends.
-- [x] `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBindingGateTests.cs` - Added readiness failure mapping coverage for stale/unavailable projections, read-model unavailable, auth failures, unsupported capability, unknown outcome, reconciliation required, unavailable/rate-limited/transient provider states, permission failures, and repository conflicts.
-- [x] Existing Story 3.7 tests cover aggregate accept/replay/conflict/missing/archived/in-progress/bound cases, provider GitHub/Forgejo existing-repository binding success/equivalent/failure mappings, projection replay, metadata-only evidence, and bind endpoint safe responses.
-- [x] No browser/UI E2E tests were added because Story 3.7 is an API/domain/provider workflow and project context keeps UI E2E deferred until stable read-only console routes exist.
+- [x] No browser/UI E2E tests were added because Story 3.8 is an API/domain branch-ref policy workflow. The project context keeps the Playwright UI lane deferred until Epic 6 supplies stable read-only console routes and selectors.
+- [x] The generated API tests use ASP.NET TestServer and seeded read models as the hermetic E2E-style boundary for this story.
 
 ## Coverage
 
-- API endpoint scenarios added: 3 bind branch/ref validation cases.
-- Domain workflow scenarios added: 2 short-circuit ordering cases plus 13 readiness mapping cases.
-- Story 3.7 relevant lanes now include API endpoint, aggregate/domain gate, provider adapter seam, and projection replay coverage.
-- Live external dependencies required: 0. The generated tests are hermetic by design and use xUnit v3, Shouldly, TestServer, recording fakes, and fake providers.
+- API endpoints covered for Story 3.8: `PUT /api/v1/folders/{folderId}/branch-ref-policy` and `GET /api/v1/folders/{folderId}/branch-ref-policy`.
+- New API scenarios added: 12 focused endpoint cases.
+- New authorization catalog scenarios added: 2 action-token cases.
+- Live external dependencies required: 0. The tests use xUnit v3, Shouldly, TestServer, in-memory read models, and recording fakes.
 
 ## Validation
 
 - [x] API tests generated where applicable.
-- [x] E2E-style offline workflow tests generated for the bind-repository service gate.
-- [x] Tests use standard project test APIs and existing fake/recording seams.
-- [x] Tests cover happy path through existing coverage and critical error cases through the new readiness and validation cases.
+- [x] E2E-style API boundary tests generated for the implemented branch/ref policy workflow.
+- [x] Tests use standard project APIs and semantic HTTP assertions.
+- [x] Tests cover happy path and critical error cases.
 - [x] Tests use no hardcoded waits or sleeps.
 - [x] Tests are independent and do not require live GitHub, Forgejo, provider credentials, tenant seed data, Aspire, Dapr sidecars, Redis, Keycloak, Docker, network access, or nested submodule initialization.
 - [x] Summary includes coverage metrics.
-- [ ] Test execution completed: blocked by restore/build environment.
+- [x] Focused `dotnet test --no-build` commands returned exit code `0` in this sandbox.
 
 ## Commands Run
 
 ```text
-dotnet --info
-DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBinding|FullyQualifiedName~GitHubProviderTests|FullyQualifiedName~ForgejoProviderTests"
-DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-restore --filter "FullyQualifiedName~RepositoryBackedFolderEndpointTests"
-DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --verbosity minimal
-DOTNET_CLI_HOME=/tmp/hexalith-dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 NUGET_PACKAGES=/tmp/hexalith-dotnet-home/.nuget/packages dotnet restore src/Hexalith.Folders/Hexalith.Folders.csproj --ignore-failed-sources --verbosity normal
+dotnet --version
+dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-restore -m:1 -v:minimal
+dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore -m:1 -v:minimal
+dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-build -m:1 --filter "BranchRefPolicy"
+dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-build -m:1 --filter "BranchRefPolicy"
+dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-build --filter FullyQualifiedName~GetBranchRefPolicyShouldAllowLaterAuthorizedReadsWithNewRequestScope --logger "console;verbosity=normal"
+dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-build --filter FullyQualifiedName~BranchRefPolicy --logger "console;verbosity=normal"
+dotnet vstest tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll --TestCaseFilter:BranchRefPolicy --logger:console;verbosity=normal
+git diff --check -- tests/Hexalith.Folders.Server.Tests/BranchRefPolicyEndpointTests.cs tests/Hexalith.Folders.Tests/Authorization/BranchRefPolicyActionCatalogTests.cs src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
 ```
 
-## Validation Blocker
+## Validation Result
 
-- The installed SDK is `10.0.300`.
-- Initial test execution failed the .NET first-time-use path because `/home/administrator/.dotnet/10.0.300.toolpath.sentinel` is read-only.
-- Re-running with writable `DOTNET_CLI_HOME` cleared that blocker.
-- A direct build then failed because existing `obj/project.assets.json` files were restored on Windows and reference the unavailable fallback folder `C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages`.
-- Attempted Linux restore is blocked by restricted network access to `https://api.nuget.org/v3/index.json`, producing `NU1801` and `NU1101` for packages such as `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Logging.Abstractions`, `Microsoft.Extensions.Options`, `Microsoft.Extensions.Options.ConfigurationExtensions`, and `Octokit`.
+- SDK: `10.0.300`.
+- Build: passed for both focused projects with `-m:1`.
+- Parallel MSBuild: fails in this sandbox with `Build FAILED` and 0 diagnostics; serialized MSBuild succeeds.
+- Focused `dotnet test --no-build` commands returned exit code `0`. Earlier direct `dotnet vstest` execution was blocked by VSTest socket creation denial: `System.Net.Sockets.SocketException (13): Permission denied`.

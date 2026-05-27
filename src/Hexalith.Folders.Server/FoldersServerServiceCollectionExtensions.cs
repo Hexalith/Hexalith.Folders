@@ -33,11 +33,13 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<IFolderArchivePolicyEvidenceProvider, BaselineFolderArchivePolicyEvidenceProvider>();
         services.TryAddScoped<IRepositoryCreationReadinessValidator, ProviderReadinessRepositoryCreationValidator>();
         services.TryAddScoped<IRepositoryBindingReadinessValidator, ProviderReadinessRepositoryBindingValidator>();
+        services.TryAddScoped<IBranchRefPolicyReadinessValidator, ProviderReadinessBranchRefPolicyValidator>();
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddScoped<FolderArchiveTenantGate>();
         services.TryAddScoped<FolderAccessTenantGate>();
         services.TryAddScoped<RepositoryBackedFolderCreationService>();
         services.TryAddScoped<RepositoryBindingService>();
+        services.TryAddScoped<BranchRefPolicyConfigurationService>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());

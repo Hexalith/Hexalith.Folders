@@ -17,6 +17,7 @@ public sealed partial class FolderDomainProcessor(
     FolderArchiveTenantGate archiveGate,
     RepositoryBackedFolderCreationService repositoryBackedCreationService,
     RepositoryBindingService repositoryBindingService,
+    BranchRefPolicyConfigurationService branchRefPolicyConfigurationService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -38,6 +39,8 @@ public sealed partial class FolderDomainProcessor(
         repositoryBackedCreationService ?? throw new ArgumentNullException(nameof(repositoryBackedCreationService));
     private readonly RepositoryBindingService _repositoryBindingService =
         repositoryBindingService ?? throw new ArgumentNullException(nameof(repositoryBindingService));
+    private readonly BranchRefPolicyConfigurationService _branchRefPolicyConfigurationService =
+        branchRefPolicyConfigurationService ?? throw new ArgumentNullException(nameof(branchRefPolicyConfigurationService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -67,6 +70,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.BindRepositoryCommandType, StringComparison.Ordinal))
         {
             return await ProcessBindRepositoryAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.ConfigureBranchRefPolicyCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessConfigureBranchRefPolicyAsync(command).ConfigureAwait(false);
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
@@ -297,6 +305,79 @@ public sealed partial class FolderDomainProcessor(
         try
         {
             result = await _repositoryBindingService.BindAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
+    private async Task<DomainResult> ProcessConfigureBranchRefPolicyAsync(CommandEnvelope envelope)
+    {
+        BranchRefPolicyPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<BranchRefPolicyPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null || string.IsNullOrWhiteSpace(envelope.AggregateId))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        BranchRefPolicyConfigurationRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [
+                    BranchRefPolicyConfigurationService.ActionToken,
+                    ProviderReadinessValidationService.ReadActionToken,
+                ]),
+            envelope.AggregateId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.RepositoryBindingId ?? string.Empty,
+            payload.PolicyRef ?? string.Empty,
+            payload.DefaultRef ?? string.Empty,
+            payload.AllowedRefPatterns ?? [],
+            payload.ProtectedRefPatterns,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _branchRefPolicyConfigurationService.ConfigureAsync(request, CancellationToken.None).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {

@@ -11,6 +11,7 @@ public static partial class FolderCommandValidator
 {
     internal const int MaxIdentifierLength = FolderStreamName.MaxSegmentLength;
     internal const int MaxTagCount = 32;
+    internal const int MaxBranchRefPatternCount = 16;
     private const int MaxDisplayNameLength = 128;
     private const int MaxDescriptionLength = 512;
 
@@ -130,6 +131,24 @@ public static partial class FolderCommandValidator
             }
 
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(bindRepository));
+        }
+
+        if (command is ConfigureBranchRefPolicy branchRefPolicy)
+        {
+            if (!string.Equals(branchRefPolicy.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !IsValidIdentifier(branchRefPolicy.RepositoryBindingId)
+                || !IsValidIdentifier(branchRefPolicy.PolicyRef)
+                || !IsValidBranchRefToken(branchRefPolicy.DefaultRef)
+                || !AreValidBranchRefPatterns(branchRefPolicy.AllowedRefPatterns, required: true)
+                || !AreValidBranchRefPatterns(branchRefPolicy.ProtectedRefPatterns, required: false)
+                || HasDuplicateBranchRefPatterns(branchRefPolicy.AllowedRefPatterns)
+                || HasDuplicateBranchRefPatterns(branchRefPolicy.ProtectedRefPatterns)
+                || HasDuplicateBranchRefPatterns(branchRefPolicy.AllowedRefPatterns, branchRefPolicy.ProtectedRefPatterns))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(branchRefPolicy));
         }
 
         if (command is not CreateFolder create)
@@ -292,6 +311,33 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.CredentialScopeClass);
         AppendField(hash, command.ExternalRepositoryRef);
         AppendField(hash, command.ProviderBindingRef);
+        AppendField(hash, command.RepositoryBindingId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string Fingerprint(ConfigureBranchRefPolicy command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendInt32(hash, command.AllowedRefPatterns.Count);
+        foreach (string pattern in command.AllowedRefPatterns)
+        {
+            AppendField(hash, pattern);
+        }
+
+        AppendField(hash, command.DefaultRef);
+        AppendField(hash, command.PolicyRef);
+        AppendInt32(hash, command.ProtectedRefPatterns?.Count ?? -1);
+        if (command.ProtectedRefPatterns is not null)
+        {
+            foreach (string pattern in command.ProtectedRefPatterns)
+            {
+                AppendField(hash, pattern);
+            }
+        }
+
+        AppendField(hash, command.FolderId);
         AppendField(hash, command.RepositoryBindingId);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
@@ -510,6 +556,34 @@ public static partial class FolderCommandValidator
         return true;
     }
 
+    internal static bool IsValidBranchRefToken(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 14 and <= 91
+        && BranchRefTokenPattern().IsMatch(value);
+
+    internal static bool AreValidBranchRefPatterns(IReadOnlyList<string>? values, bool required)
+    {
+        if (values is null)
+        {
+            return !required;
+        }
+
+        if ((required && values.Count == 0) || values.Count > MaxBranchRefPatternCount)
+        {
+            return false;
+        }
+
+        return values.All(static value => IsValidBranchRefToken(value));
+    }
+
+    internal static bool HasDuplicateBranchRefPatterns(IReadOnlyList<string>? values)
+        => values is not null
+        && values.Distinct(StringComparer.Ordinal).Count() != values.Count;
+
+    internal static bool HasDuplicateBranchRefPatterns(IReadOnlyList<string> allowed, IReadOnlyList<string>? protectedPatterns)
+        => protectedPatterns is not null
+        && allowed.Intersect(protectedPatterns, StringComparer.Ordinal).Any();
+
     private static readonly char[] IdentifierWordSeparators = ['-', '_', '.'];
 
     private static bool IsSafeMetadata(string? value, bool required, int maxLength)
@@ -550,4 +624,7 @@ public static partial class FolderCommandValidator
 
     [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();
+
+    [GeneratedRegex("^branch_ref_[a-z0-9_]{3,80}$", RegexOptions.CultureInvariant)]
+    private static partial Regex BranchRefTokenPattern();
 }

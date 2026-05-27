@@ -15,11 +15,13 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly ConcurrentDictionary<string, FolderState> _states = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, DateTimeOffset> _lastObservedAt = new(StringComparer.Ordinal);
     private readonly object _gate = new();
+    private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
     private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
     private readonly TimeProvider _timeProvider;
 
     public InMemoryFolderRepository(
         IFolderLifecycleStatusReadModel? lifecycleReadModel = null,
+        IBranchRefPolicyReadModel? branchRefPolicyReadModel = null,
         TimeProvider? timeProvider = null)
     {
         // Lifecycle snapshot writes go through the concrete in-memory read-model. Fail loud
@@ -32,6 +34,14 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 nameof(lifecycleReadModel));
         }
 
+        if (branchRefPolicyReadModel is not null && branchRefPolicyReadModel is not InMemoryBranchRefPolicyReadModel)
+        {
+            throw new ArgumentException(
+                $"InMemoryFolderRepository requires {nameof(InMemoryBranchRefPolicyReadModel)}; received {branchRefPolicyReadModel.GetType().Name}.",
+                nameof(branchRefPolicyReadModel));
+        }
+
+        _branchRefPolicyReadModel = (InMemoryBranchRefPolicyReadModel?)branchRefPolicyReadModel;
         _lifecycleReadModel = (InMemoryFolderLifecycleStatusReadModel?)lifecycleReadModel;
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
@@ -91,6 +101,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             _idempotencyFingerprints[ledgerKey] = fingerprint;
             EventsAppended += events.Count;
             SaveLifecycleSnapshot(next, observedAt);
+            SaveBranchRefPolicySnapshot(next, observedAt);
             return FolderAppendOutcome.Appended;
         }
     }
@@ -148,6 +159,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             }
 
             SaveLifecycleSnapshot(seeded, observedAt);
+            SaveBranchRefPolicySnapshot(seeded, observedAt);
         }
     }
 
@@ -213,6 +225,43 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 evidenceCorrelationId,
                 AuthorizationWatermark: null),
             []));
+    }
+
+    private void SaveBranchRefPolicySnapshot(FolderState state, DateTimeOffset observedAt)
+    {
+        if (_branchRefPolicyReadModel is null
+            || !state.IsCreated
+            || state.BranchRefPolicy is null
+            || string.IsNullOrWhiteSpace(state.ManagedTenantId)
+            || string.IsNullOrWhiteSpace(state.FolderId))
+        {
+            return;
+        }
+
+        BranchRefPolicyMetadata policy = state.BranchRefPolicy;
+        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
+        DateTimeOffset rawObservedAt = policy.ConfiguredAt > observedAt ? policy.ConfiguredAt : observedAt;
+        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
+            folderKey,
+            rawObservedAt,
+            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+
+        _branchRefPolicyReadModel.Save(new BranchRefPolicyReadModelSnapshot(
+            state.ManagedTenantId,
+            state.FolderId,
+            policy.RepositoryBindingId,
+            policy.PolicyRef,
+            policy.DefaultRef,
+            policy.AllowedRefPatterns,
+            policy.ProtectedRefPatterns,
+            new FolderLifecycleFreshness("eventually_consistent", clamped, "in-memory-folder-repository", Stale: false, ReasonCode: null),
+            new FolderLifecycleEvidenceScope(
+                state.ManagedTenantId,
+                policy.ActorPrincipalId,
+                "read_branch_ref_policy",
+                policy.TaskId,
+                policy.CorrelationId,
+                AuthorizationWatermark: null)));
     }
 
     private static string LifecycleKey(string managedTenantId, string folderId)

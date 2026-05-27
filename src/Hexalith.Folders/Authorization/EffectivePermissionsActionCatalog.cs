@@ -5,6 +5,7 @@ public static class EffectivePermissionsActionCatalog
     private static readonly string[] OrderedActions =
     [
         "configure_provider_binding",
+        "configure_branch_ref_policy",
         "bind_repository",
         "create_repository_backed_folder",
         "provider_readiness_read",
@@ -12,6 +13,7 @@ public static class EffectivePermissionsActionCatalog
         "prepare_workspace",
         "lock_workspace",
         "archive_folder",
+        "read_branch_ref_policy",
         "read_metadata",
         "read_file_content",
         "mutate_files",
@@ -36,9 +38,11 @@ public static class EffectivePermissionsActionCatalog
         ["archive_folder"] = EffectivePermissionLevel.Administer,
         ["manage_folder_access"] = EffectivePermissionLevel.Administer,
         ["configure_provider_binding"] = EffectivePermissionLevel.Administer,
+        ["configure_branch_ref_policy"] = EffectivePermissionLevel.Administer,
         ["bind_repository"] = EffectivePermissionLevel.Write,
         ["create_repository_backed_folder"] = EffectivePermissionLevel.Write,
         ["provider_readiness_read"] = EffectivePermissionLevel.Read,
+        ["read_branch_ref_policy"] = EffectivePermissionLevel.Read,
         ["create_folder"] = EffectivePermissionLevel.Administer,
     };
 
