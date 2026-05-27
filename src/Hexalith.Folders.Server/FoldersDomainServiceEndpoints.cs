@@ -276,6 +276,76 @@ public static class FoldersDomainServiceEndpoints
         })
         .WithName("GetWorkspaceLock");
 
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/status", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            if (idempotencyKey is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            if (!IsCanonicalIdentifier(folderId)
+                || !IsCanonicalIdentifier(workspaceId)
+                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Operation supports read_your_writes only.");
+            }
+
+            WorkspaceStatusQueryResult result = await handler.HandleAsync(
+                new WorkspaceStatusQuery(
+                    folderId,
+                    workspaceId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(WorkspaceStatusQueryHandler.ActionToken),
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("GetWorkspaceStatus");
+
         endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release", async (
             string folderId,
             string workspaceId,
@@ -3287,6 +3357,118 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static IResult ToHttpResult(HttpContext httpContext, WorkspaceStatusQueryResult result, string? correlationId, string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case WorkspaceStatusQueryResultCode.Allowed:
+                if (string.IsNullOrWhiteSpace(result.FolderId)
+                    || string.IsNullOrWhiteSpace(result.WorkspaceId)
+                    || result.ProjectedState is null
+                    || result.ProviderOutcome is null)
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                AddWorkspaceStatusSuccessHeaders(httpContext, result);
+                return Results.Json(
+                    new WorkspaceStatusResponse(
+                        result.FolderId,
+                        result.WorkspaceId,
+                        result.CurrentState,
+                        result.AcceptedCommandState,
+                        result.ProjectedState,
+                        new WorkspaceProviderOutcomeResponse(
+                            result.ProviderOutcome.OperationId,
+                            result.ProviderOutcome.State,
+                            result.ProviderOutcome.SanitizedStatusClass,
+                            result.ProviderOutcome.ProviderCorrelationReference,
+                            result.ProviderOutcome.RetryEligibility,
+                            result.ProviderOutcome.RetryAfter,
+                            new FreshnessMetadataResponse(
+                                result.ProviderOutcome.Freshness.ReadConsistency,
+                                result.ProviderOutcome.Freshness.ObservedAt,
+                                result.ProviderOutcome.Freshness.ProjectionWatermark,
+                                result.ProviderOutcome.Freshness.Stale)),
+                        result.RetryEligibility,
+                        result.RetryAfter,
+                        new FreshnessMetadataResponse(
+                            result.Freshness.ReadConsistency,
+                            result.Freshness.ObservedAt,
+                            result.Freshness.ProjectionWatermark,
+                            result.Freshness.Stale),
+                        result.ProjectionLag,
+                        result.LastFailureCategory),
+                    ResponseJsonOptions);
+
+            case WorkspaceStatusQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceStatusQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceStatusQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceStatusQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceStatusQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceStatusQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
     private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
         => result.Code switch
         {
@@ -3479,6 +3661,21 @@ public static class FoldersDomainServiceEndpoints
     }
 
     private static void AddWorkspaceLockSuccessHeaders(HttpContext httpContext, WorkspaceLockStatusQueryResult result)
+    {
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId)
+            && !ContainsControlChars(result.CorrelationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
+            && !ContainsControlChars(result.Freshness.ReadConsistency))
+        {
+            httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+        }
+    }
+
+    private static void AddWorkspaceStatusSuccessHeaders(HttpContext httpContext, WorkspaceStatusQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
             && !ContainsControlChars(result.CorrelationId))
@@ -3778,6 +3975,28 @@ public static class FoldersDomainServiceEndpoints
         string? CorrelationId,
         string? TaskId,
         string CurrentState,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record WorkspaceStatusResponse(
+        string FolderId,
+        string WorkspaceId,
+        string CurrentState,
+        WorkspaceAcceptedCommandState? AcceptedCommandState,
+        WorkspaceProjectedState ProjectedState,
+        WorkspaceProviderOutcomeResponse ProviderOutcome,
+        WorkspaceStatusRetryEligibility RetryEligibility,
+        WorkspaceStatusRetryAfter? RetryAfter,
+        FreshnessMetadataResponse Freshness,
+        WorkspaceProjectionLag ProjectionLag,
+        string? LastFailureCategory);
+
+    private sealed record WorkspaceProviderOutcomeResponse(
+        string OperationId,
+        string State,
+        string SanitizedStatusClass,
+        string ProviderCorrelationReference,
+        WorkspaceStatusRetryEligibility RetryEligibility,
+        WorkspaceStatusRetryAfter? RetryAfter,
         FreshnessMetadataResponse Freshness);
 
     private sealed record BranchRefPolicyResponse(

@@ -18,13 +18,15 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
     private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
     private readonly InMemoryWorkspaceLockStatusReadModel? _workspaceLockStatusReadModel;
+    private readonly InMemoryWorkspaceStatusReadModel? _workspaceStatusReadModel;
     private readonly TimeProvider _timeProvider;
 
     public InMemoryFolderRepository(
         IFolderLifecycleStatusReadModel? lifecycleReadModel = null,
         IBranchRefPolicyReadModel? branchRefPolicyReadModel = null,
         TimeProvider? timeProvider = null,
-        IWorkspaceLockStatusReadModel? workspaceLockStatusReadModel = null)
+        IWorkspaceLockStatusReadModel? workspaceLockStatusReadModel = null,
+        IWorkspaceStatusReadModel? workspaceStatusReadModel = null)
     {
         // Lifecycle snapshot writes go through the concrete in-memory read-model. Fail loud
         // if a different IFolderLifecycleStatusReadModel implementation was injected so the
@@ -50,9 +52,17 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 nameof(workspaceLockStatusReadModel));
         }
 
+        if (workspaceStatusReadModel is not null && workspaceStatusReadModel is not InMemoryWorkspaceStatusReadModel)
+        {
+            throw new ArgumentException(
+                $"InMemoryFolderRepository requires {nameof(InMemoryWorkspaceStatusReadModel)}; received {workspaceStatusReadModel.GetType().Name}.",
+                nameof(workspaceStatusReadModel));
+        }
+
         _branchRefPolicyReadModel = (InMemoryBranchRefPolicyReadModel?)branchRefPolicyReadModel;
         _lifecycleReadModel = (InMemoryFolderLifecycleStatusReadModel?)lifecycleReadModel;
         _workspaceLockStatusReadModel = (InMemoryWorkspaceLockStatusReadModel?)workspaceLockStatusReadModel;
+        _workspaceStatusReadModel = (InMemoryWorkspaceStatusReadModel?)workspaceStatusReadModel;
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
@@ -113,6 +123,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             SaveLifecycleSnapshot(next, observedAt);
             SaveBranchRefPolicySnapshot(next, observedAt);
             SaveWorkspaceLockStatusSnapshot(next, observedAt);
+            SaveWorkspaceStatusSnapshot(next, observedAt);
             return FolderAppendOutcome.Appended;
         }
     }
@@ -172,6 +183,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             SaveLifecycleSnapshot(seeded, observedAt);
             SaveBranchRefPolicySnapshot(seeded, observedAt);
             SaveWorkspaceLockStatusSnapshot(seeded, observedAt);
+            SaveWorkspaceStatusSnapshot(seeded, observedAt);
         }
     }
 
@@ -319,6 +331,72 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 AuthorizationWatermark: null)));
     }
 
+    private void SaveWorkspaceStatusSnapshot(FolderState state, DateTimeOffset observedAt)
+    {
+        if (_workspaceStatusReadModel is null
+            || !state.IsCreated
+            || string.IsNullOrWhiteSpace(state.ManagedTenantId)
+            || string.IsNullOrWhiteSpace(state.FolderId)
+            || string.IsNullOrWhiteSpace(state.WorkspaceId)
+            || state.WorkspaceLifecycleState is null)
+        {
+            return;
+        }
+
+        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
+        DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
+        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
+            folderKey,
+            rawObservedAt,
+            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+
+        string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
+        FolderLifecycleFreshness freshness = new(
+            "read_your_writes",
+            clamped,
+            "in-memory-folder-repository",
+            Stale: false,
+            ReasonCode: null);
+        WorkspaceStatusRetryEligibility retryEligibility = RetryEligibilityFor(currentState);
+        string operationId = string.IsNullOrWhiteSpace(state.WorkspaceOperationId)
+            ? "workspace_status_operation"
+            : state.WorkspaceOperationId;
+        WorkspaceAcceptedCommandState? acceptedCommandState =
+            !string.IsNullOrWhiteSpace(state.WorkspaceTaskId)
+            && !string.IsNullOrWhiteSpace(operationId)
+            && state.WorkspaceLifecycleUpdatedAt is not null
+                ? new(state.WorkspaceTaskId, operationId, AcceptedStateFor(currentState), state.WorkspaceLifecycleUpdatedAt.Value)
+                : null;
+
+        _workspaceStatusReadModel.Save(new WorkspaceStatusReadModelSnapshot(
+            state.ManagedTenantId,
+            state.FolderId,
+            state.WorkspaceId,
+            currentState,
+            acceptedCommandState,
+            new WorkspaceProjectedState(currentState, "projection", clamped),
+            new WorkspaceProviderOutcome(
+                operationId,
+                ProviderOutcomeStateFor(currentState),
+                ProviderOutcomeCategoryFor(currentState, state.RepositoryBindingFailureCategory),
+                "provref_workspace_status",
+                retryEligibility,
+                null,
+                freshness),
+            retryEligibility,
+            null,
+            freshness,
+            new WorkspaceProjectionLag(0, "projection"),
+            LastFailureCategoryFor(currentState, state.RepositoryBindingFailureCategory),
+            new FolderLifecycleEvidenceScope(
+                state.ManagedTenantId,
+                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                WorkspaceStatusQueryHandler.ActionToken,
+                state.WorkspaceTaskId,
+                state.WorkspaceCorrelationId,
+                AuthorizationWatermark: null)));
+    }
+
     private static string LifecycleKey(string managedTenantId, string folderId)
         => $"{managedTenantId}|{folderId}";
 
@@ -333,4 +411,44 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             FolderRepositoryBindingState.ReconciliationRequired => FolderRepositoryBindingStatus.ReconciliationRequired,
             _ => FolderRepositoryBindingStatus.Unknown,
         };
+
+    private static WorkspaceStatusRetryEligibility RetryEligibilityFor(string currentState)
+        => currentState switch
+        {
+            "dirty" => new(true, "dirty_workspace"),
+            "failed" => new(true, "failed_operation"),
+            "unknown_provider_outcome" => new(true, "unknown_provider_outcome"),
+            "reconciliation_required" => new(true, "reconciliation_required"),
+            "locked" => new(false, "workspace_locked"),
+            "inaccessible" => new(false, "tenant_access_denied"),
+            _ => new(false, "retry_not_required"),
+        };
+
+    private static string AcceptedStateFor(string currentState)
+        => currentState is "failed" or "inaccessible" ? "failed" : currentState == "committed" ? "completed" : "accepted";
+
+    private static string ProviderOutcomeStateFor(string currentState)
+        => currentState switch
+        {
+            "requested" or "preparing" => "pending",
+            "failed" or "inaccessible" => "known_failure",
+            "unknown_provider_outcome" => "unknown_provider_outcome",
+            "reconciliation_required" => "reconciliation_required",
+            _ => "known_success",
+        };
+
+    private static string ProviderOutcomeCategoryFor(string currentState, string? failureCategory)
+        => currentState switch
+        {
+            "failed" => string.IsNullOrWhiteSpace(failureCategory) ? "failed_operation" : failureCategory,
+            "inaccessible" => "tenant_access_denied",
+            "unknown_provider_outcome" => "unknown_provider_outcome",
+            "reconciliation_required" => "reconciliation_required",
+            _ => "success",
+        };
+
+    private static string? LastFailureCategoryFor(string currentState, string? failureCategory)
+        => currentState is "failed" or "inaccessible" or "unknown_provider_outcome" or "reconciliation_required"
+            ? ProviderOutcomeCategoryFor(currentState, failureCategory)
+            : null;
 }

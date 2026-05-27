@@ -10,6 +10,7 @@ public static class FolderAccessAction
         "prepare_workspace",
         "lock_workspace",
         "read_workspace_lock",
+        "read_workspace_status",
         "read_metadata",
         "read_file_content",
         "mutate_files",

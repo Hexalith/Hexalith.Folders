@@ -31,4 +31,16 @@ public sealed class WorkspaceLockActionCatalogTests
 
         levels.ShouldBe([EffectivePermissionLevel.Read]);
     }
+
+    [Fact]
+    public void ReadWorkspaceStatusActionShouldRequireReadPermission()
+    {
+        EffectivePermissionsActionCatalog.IsSupported(WorkspaceStatusQueryHandler.ActionToken).ShouldBeTrue();
+        FolderAccessAction.IsSupported(WorkspaceStatusQueryHandler.ActionToken).ShouldBeTrue();
+
+        IReadOnlyList<EffectivePermissionLevel> levels =
+            EffectivePermissionsActionCatalog.ToPermissionLevels([WorkspaceStatusQueryHandler.ActionToken]);
+
+        levels.ShouldBe([EffectivePermissionLevel.Read]);
+    }
 }
