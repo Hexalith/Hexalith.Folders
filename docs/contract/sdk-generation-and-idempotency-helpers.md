@@ -80,4 +80,11 @@ Story 1.14 owns CI golden-file and drift gate wiring.
 
 Epic 4 owns runtime idempotency persistence and lifecycle behavior.
 
-Epic 5 owns SDK convenience helpers, CLI wrappers, and MCP wrappers, including any future `UploadFileAsync(stream)` convenience API.
+Epic 5 owns SDK convenience helpers, CLI wrappers, and MCP wrappers. Story 5.1 delivered the SDK convenience
+helpers this generation note previously deferred — the upload convenience (`FileUpload` /
+`UploadFileAsync`/`UploadStreamedFileAsync`, replacing the deferred `UploadFileAsync(stream)` placeholder),
+idempotency-key sourcing guidance over the generated `ComputeIdempotencyHash()`, and correlation/task-ID
+sourcing (`CorrelationAndTaskId`) — all hand-written under `src/Hexalith.Folders.Client/Convenience/` (outside
+`Generated/`) and parity-preserving (no lifecycle semantics beyond the Contract Spine). See the
+[SDK quickstart](../sdk/quickstart.md). CLI wrappers (Story 5.2) and MCP wrappers (Story 5.3) remain
+downstream.
