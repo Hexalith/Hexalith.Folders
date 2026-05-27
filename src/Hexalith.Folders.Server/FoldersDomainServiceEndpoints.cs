@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
 
@@ -20,6 +21,7 @@ public static class FoldersDomainServiceEndpoints
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
     private const string ReadYourWrites = "read_your_writes";
+    private const string SnapshotPerTask = "snapshot_per_task";
     private const int InlineContentByteLimit = 262144;
     private const int StreamContentMinimumBytes = 262145;
     private const int MaxBranchRefPatternCount = 16;
@@ -348,6 +350,226 @@ public static class FoldersDomainServiceEndpoints
                 timeProvider,
                 cancellationToken).ConfigureAwait(false))
         .WithName("RemoveWorkspaceFile");
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceFileContextQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            => await FileContextQueryAsync(
+                WorkspaceFileContextQueryKind.Tree,
+                folderId,
+                workspaceId,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                paths: null,
+                queryText: null,
+                globPattern: null,
+                startOffset: null,
+                endOffset: null,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("ListFolderFiles");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceFileContextQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            FileMetadataContextHttpRequest? body = await ReadContextBodyAsync<FileMetadataContextHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
+            if (body is null || !IsSchemaVersionV1(body.RequestSchemaVersion))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+            }
+
+            return await FileContextQueryAsync(
+                WorkspaceFileContextQueryKind.Metadata,
+                folderId,
+                workspaceId,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                body.Paths,
+                queryText: null,
+                globPattern: null,
+                startOffset: null,
+                endOffset: null,
+                cancellationToken).ConfigureAwait(false);
+        })
+        .WithName("GetFolderFileMetadata");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceFileContextQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            FileSearchContextHttpRequest? body = await ReadContextBodyAsync<FileSearchContextHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
+            if (body is null
+                || !IsSchemaVersionV1(body.RequestSchemaVersion)
+                || !string.Equals(body.QueryFamily, "search", StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+            }
+
+            return await FileContextQueryAsync(
+                WorkspaceFileContextQueryKind.Search,
+                folderId,
+                workspaceId,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                body.RequestedPaths,
+                body.QueryText,
+                globPattern: null,
+                startOffset: null,
+                endOffset: null,
+                cancellationToken,
+                requestLimit: body.Limit,
+                requestCursor: body.Cursor).ConfigureAwait(false);
+        })
+        .WithName("SearchFolderFiles");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceFileContextQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            FileGlobContextHttpRequest? body = await ReadContextBodyAsync<FileGlobContextHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
+            if (body is null
+                || !IsSchemaVersionV1(body.RequestSchemaVersion)
+                || !string.Equals(body.QueryFamily, "glob", StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+            }
+
+            return await FileContextQueryAsync(
+                WorkspaceFileContextQueryKind.Glob,
+                folderId,
+                workspaceId,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                body.RequestedPaths,
+                queryText: null,
+                body.GlobPattern,
+                startOffset: null,
+                endOffset: null,
+                cancellationToken,
+                requestLimit: body.Limit,
+                requestCursor: body.Cursor).ConfigureAwait(false);
+        })
+        .WithName("GlobFolderFiles");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceFileContextQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            FileRangeReadContextHttpRequest? body = await ReadContextBodyAsync<FileRangeReadContextHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
+            if (body is null || !IsSchemaVersionV1(body.RequestSchemaVersion) || body.Path is null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+            }
+
+            return await FileContextQueryAsync(
+                WorkspaceFileContextQueryKind.Range,
+                folderId,
+                workspaceId,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                [body.Path],
+                queryText: null,
+                globPattern: null,
+                body.StartOffset,
+                body.EndOffset,
+                cancellationToken).ConfigureAwait(false);
+        })
+        .WithName("ReadFileRange");
 
         endpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
             string folderId,
@@ -2503,6 +2725,356 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static async Task<IResult> FileContextQueryAsync(
+        WorkspaceFileContextQueryKind kind,
+        string folderId,
+        string workspaceId,
+        HttpContext httpContext,
+        WorkspaceFileContextQueryHandler handler,
+        ITenantContextAccessor tenantContext,
+        IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+        IReadOnlyList<PathMetadata>? paths,
+        string? queryText,
+        string? globPattern,
+        long? startOffset,
+        long? endOffset,
+        CancellationToken cancellationToken,
+        int? requestLimit = null,
+        string? requestCursor = null)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(handler);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(claimTransformEvidence);
+
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        IResult? envelopeFailure = ValidateContextQueryEnvelope(
+            folderId,
+            workspaceId,
+            httpContext,
+            correlationId,
+            taskId);
+        if (envelopeFailure is not null)
+        {
+            return envelopeFailure;
+        }
+
+        int? limit = requestLimit ?? ReadOptionalIntQuery(httpContext, "limit");
+        string? cursor = requestCursor ?? ReadQuery(httpContext, "cursor");
+        string actionToken = kind == WorkspaceFileContextQueryKind.Range
+            ? WorkspaceFileContextQueryHandler.ContentActionToken
+            : WorkspaceFileContextQueryHandler.MetadataActionToken;
+
+        WorkspaceFileContextQueryResult result = await handler.HandleAsync(
+            new WorkspaceFileContextQuery(
+                kind,
+                folderId,
+                workspaceId,
+                tenantContext.AuthoritativeTenantId,
+                tenantContext.PrincipalId,
+                claimTransformEvidence.GetEvidence(actionToken),
+                correlationId,
+                taskId,
+                ClientTenantIds(httpContext),
+                ClientPrincipalIds(httpContext),
+                paths,
+                queryText,
+                globPattern,
+                limit,
+                cursor,
+                startOffset,
+                endOffset),
+            cancellationToken).ConfigureAwait(false);
+
+        return ToHttpResult(httpContext, result, correlationId, taskId);
+    }
+
+    private static IResult? ValidateContextQueryEnvelope(
+        string folderId,
+        string workspaceId,
+        HttpContext httpContext,
+        string? correlationId,
+        string? taskId)
+    {
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        if (idempotencyKey is not null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "Idempotency-Key is not accepted on read operations.");
+        }
+
+        if (!IsCanonicalIdentifier(folderId)
+            || !IsCanonicalIdentifier(workspaceId)
+            || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+            || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+        }
+
+        string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+        if (requestedFreshness is not null
+            && !string.Equals(requestedFreshness, SnapshotPerTask, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_read_consistency",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "Operation supports snapshot_per_task only.");
+        }
+
+        string? limit = ReadQuery(httpContext, "limit");
+        if (limit is not null && ReadOptionalIntQuery(httpContext, "limit") is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string? cursor = ReadQuery(httpContext, "cursor");
+        if (cursor is { Length: > 256 })
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: "input_limit_exceeded",
+                code: "input_limit_exceeded",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        return null;
+    }
+
+    private static async Task<T?> ReadContextBodyAsync<T>(HttpContext httpContext, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await httpContext.Request
+                .ReadFromJsonAsync<T>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return default;
+        }
+    }
+
+    private static bool IsSchemaVersionV1(string? requestSchemaVersion)
+        => string.Equals(requestSchemaVersion, "v1", StringComparison.Ordinal);
+
+    private static int? ReadOptionalIntQuery(HttpContext httpContext, string name)
+    {
+        string? raw = ReadQuery(httpContext, name);
+        return raw is null
+            ? null
+            : int.TryParse(raw, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int value)
+                ? value
+                : null;
+    }
+
+    private static IResult ToHttpResult(HttpContext httpContext, WorkspaceFileContextQueryResult result, string? correlationId, string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case WorkspaceFileContextResultCode.Allowed:
+                AddFileContextSuccessHeaders(httpContext, result);
+                if (result.Kind == WorkspaceFileContextQueryKind.Range)
+                {
+                    if (result.RangePath is null || result.Range is null || result.ContentBytes is null)
+                    {
+                        return SafeProblem(
+                            StatusCodes.Status503ServiceUnavailable,
+                            category: "read_model_unavailable",
+                            code: "read_model_unavailable",
+                            retryable: true,
+                            correlationId: correlationId,
+                            taskId: taskId);
+                    }
+
+                    return Results.Json(
+                        new FileRangeReadResultResponse(
+                            result.RangePath,
+                            result.Range,
+                            result.ContentBytes,
+                            result.Limits,
+                            ToFreshnessResponse(result.Freshness)),
+                        options: ResponseJsonOptions,
+                        statusCode: result.Range.Partial ? StatusCodes.Status206PartialContent : StatusCodes.Status200OK);
+                }
+
+                if (result.Kind == WorkspaceFileContextQueryKind.Metadata)
+                {
+                    return Results.Json(
+                        new FileMetadataResultResponse(
+                            result.Items,
+                            result.Limits,
+                            ToFreshnessResponse(result.Freshness)),
+                        ResponseJsonOptions);
+                }
+
+                return Results.Json(
+                    new FileTreeResultResponse(
+                        result.Items,
+                        result.Page ?? new WorkspaceFileContextPage(null, result.Limits.ConfiguredLimit, false, null),
+                        result.Limits,
+                        ToFreshnessResponse(result.Freshness)),
+                    ResponseJsonOptions);
+
+            case WorkspaceFileContextResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.ValidationFailed:
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.PathValidationFailed:
+                return SafeProblem(
+                    StatusCodes.Status422UnprocessableEntity,
+                    category: "path_validation_failed",
+                    code: "path_validation_failed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.InputLimitExceeded:
+                return SafeProblem(
+                    StatusCodes.Status422UnprocessableEntity,
+                    category: "input_limit_exceeded",
+                    code: "input_limit_exceeded",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.ResponseLimitExceeded:
+                return SafeProblem(
+                    StatusCodes.Status413PayloadTooLarge,
+                    category: "response_limit_exceeded",
+                    code: "response_limit_exceeded",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.QueryTimeout:
+                return SafeProblem(
+                    StatusCodes.Status408RequestTimeout,
+                    category: "query_timeout",
+                    code: "query_timeout",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.Redacted:
+                return SafeProblem(
+                    result.Kind == WorkspaceFileContextQueryKind.Range
+                        ? StatusCodes.Status416RangeNotSatisfiable
+                        : StatusCodes.Status404NotFound,
+                    category: "redacted",
+                    code: "redacted",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.RangeUnsatisfiable:
+                return SafeProblem(
+                    StatusCodes.Status416RangeNotSatisfiable,
+                    category: "range_unsatisfiable",
+                    code: "range_unsatisfiable",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceFileContextResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
+    private static FreshnessMetadataResponse ToFreshnessResponse(FolderLifecycleFreshness freshness)
+        => new(
+            freshness.ReadConsistency,
+            freshness.ObservedAt,
+            freshness.ProjectionWatermark,
+            freshness.Stale);
+
     private static IResult ToHttpResult(HttpContext httpContext, BranchRefPolicyQueryResult result, string? correlationId, string? taskId)
     {
         if (result.AuthorizationDenial is not null)
@@ -2787,13 +3359,16 @@ public static class FoldersDomainServiceEndpoints
             type: $"https://hexalith.dev/errors/folders/{code}",
             title: statusCode switch
             {
-                StatusCodes.Status400BadRequest => "Validation failure.",
-                StatusCodes.Status401Unauthorized => "Authentication required.",
-                StatusCodes.Status404NotFound => "Resource not available.",
-                StatusCodes.Status409Conflict => "Idempotency conflict.",
-                StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
-                StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
-                _ => "Authorization denied.",
+            StatusCodes.Status400BadRequest => "Validation failure.",
+            StatusCodes.Status401Unauthorized => "Authentication required.",
+            StatusCodes.Status404NotFound => "Resource not available.",
+            StatusCodes.Status408RequestTimeout => "Query timeout.",
+            StatusCodes.Status409Conflict => "Idempotency conflict.",
+            StatusCodes.Status413PayloadTooLarge => "Response limit exceeded.",
+            StatusCodes.Status416RangeNotSatisfiable => "Range not satisfiable.",
+            StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
+            StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
+            _ => "Authorization denied.",
             },
             statusCode: statusCode,
             extensions: extensions);
@@ -2808,6 +3383,8 @@ public static class FoldersDomainServiceEndpoints
             "lock_conflict" or "workspace_locked" => "retry_after_release",
             "lock_expired" => "retry",
             "lock_not_owned" or "path_policy_denied" or "path_validation_failed" => "revise_request",
+            "input_limit_exceeded" or "response_limit_exceeded" or "range_unsatisfiable" => "revise_request",
+            "query_timeout" => "retry",
             _ => retryable ? "retry" : "no_action",
         };
 
@@ -2828,7 +3405,12 @@ public static class FoldersDomainServiceEndpoints
         "lock_not_owned" => "Workspace lock is not owned by this task scope.",
         "lock_expired" => "The workspace lock lease is no longer active.",
         "path_policy_denied" => "Path policy denied the requested file operation.",
-        "path_validation_failed" => "Path validation failed for the requested file operation.",
+        "path_validation_failed" => "Path validation failed for the requested operation.",
+        "input_limit_exceeded" => "The request exceeds configured input limits.",
+        "response_limit_exceeded" => "The query exceeds configured response limits.",
+        "query_timeout" => "The context query timed out. Retry later.",
+        "redacted" => "The requested context is not available to the caller.",
+        "range_unsatisfiable" => "The requested byte range cannot be satisfied.",
         "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
         "reconciliation_required" => "Reconciliation is required before this operation can continue.",
         "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",
@@ -2897,6 +3479,21 @@ public static class FoldersDomainServiceEndpoints
     }
 
     private static void AddWorkspaceLockSuccessHeaders(HttpContext httpContext, WorkspaceLockStatusQueryResult result)
+    {
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId)
+            && !ContainsControlChars(result.CorrelationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
+            && !ContainsControlChars(result.Freshness.ReadConsistency))
+        {
+            httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+        }
+    }
+
+    private static void AddFileContextSuccessHeaders(HttpContext httpContext, WorkspaceFileContextQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
             && !ContainsControlChars(result.CorrelationId))
@@ -3103,6 +3700,32 @@ public static class FoldersDomainServiceEndpoints
         IReadOnlyList<string>? AllowedRefPatterns,
         IReadOnlyList<string>? ProtectedRefPatterns);
 
+    private sealed record FileMetadataContextHttpRequest(
+        string? RequestSchemaVersion,
+        IReadOnlyList<PathMetadata>? Paths);
+
+    private sealed record FileSearchContextHttpRequest(
+        string? RequestSchemaVersion,
+        string? QueryFamily,
+        string? QueryText,
+        IReadOnlyList<PathMetadata>? RequestedPaths,
+        int? Limit,
+        string? Cursor);
+
+    private sealed record FileGlobContextHttpRequest(
+        string? RequestSchemaVersion,
+        string? QueryFamily,
+        string? GlobPattern,
+        IReadOnlyList<PathMetadata>? RequestedPaths,
+        int? Limit,
+        string? Cursor);
+
+    private sealed record FileRangeReadContextHttpRequest(
+        string? RequestSchemaVersion,
+        PathMetadata? Path,
+        long? StartOffset,
+        long? EndOffset);
+
     private sealed record AcceptedCommandResponse(
         DateTimeOffset AcceptedAt,
         string CorrelationId,
@@ -3164,6 +3787,24 @@ public static class FoldersDomainServiceEndpoints
         string DefaultRef,
         IReadOnlyList<string> AllowedRefPatterns,
         IReadOnlyList<string>? ProtectedRefPatterns,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record FileTreeResultResponse(
+        IReadOnlyList<WorkspaceFileContextItem> Items,
+        WorkspaceFileContextPage Page,
+        WorkspaceFileContextLimits Limits,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record FileMetadataResultResponse(
+        IReadOnlyList<WorkspaceFileContextItem> Items,
+        WorkspaceFileContextLimits Limits,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record FileRangeReadResultResponse(
+        PathMetadata Path,
+        WorkspaceFileContextRange Range,
+        string ContentBytes,
+        WorkspaceFileContextLimits Limits,
         FreshnessMetadataResponse Freshness);
 
     private sealed record FreshnessMetadataResponse(

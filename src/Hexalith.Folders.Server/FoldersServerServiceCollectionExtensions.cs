@@ -1,6 +1,7 @@
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 
@@ -48,6 +49,9 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<IWorkspaceFileContentStore, UnavailableWorkspaceFileContentStore>();
         services.TryAddScoped<IWorkspaceFileDeleteOperationStore, UnavailableWorkspaceFileDeleteOperationStore>();
         services.TryAddScoped<WorkspaceFileMutationService>();
+        services.TryAddScoped<IWorkspaceFileSensitivityClassifier, WorkspaceFileSensitivityClassifier>();
+        services.TryAddScoped<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
+        services.TryAddScoped<WorkspaceFileContextQueryHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());

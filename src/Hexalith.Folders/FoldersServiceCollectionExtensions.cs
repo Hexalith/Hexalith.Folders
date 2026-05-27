@@ -4,6 +4,7 @@ using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Providers.GitHub;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
 
@@ -71,6 +72,18 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<BranchRefPolicyQueryHandler>();
         services.TryAddSingleton<IWorkspaceLockStatusReadModel, InMemoryWorkspaceLockStatusReadModel>();
         services.TryAddSingleton<WorkspaceLockStatusQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersFileContextQueries(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddSingleton<IWorkspaceFileSensitivityClassifier, WorkspaceFileSensitivityClassifier>();
+        services.TryAddSingleton<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
+        services.TryAddSingleton<WorkspaceFileContextQueryHandler>();
 
         return services;
     }

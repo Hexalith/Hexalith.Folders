@@ -59,6 +59,7 @@ public static class FoldersServerModule
         services.AddDaprClient();
         services.AddFoldersEffectivePermissions();
         services.AddFoldersLifecycleStatus();
+        services.AddFoldersFileContextQueries();
         services.AddFoldersProviderReadiness();
 
         // AddFoldersEffectivePermissions -> AddFoldersTenantAccess already binds and validate-on-start's

@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-27T08:01:38+02:00
+last_updated: 2026-05-27T08:46:36+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -98,7 +98,7 @@ development_status:
   4-5-enforce-workspace-path-policy-before-file-mutations: done
   4-6-add-and-change-files-with-inline-and-streamed-content-transport: done
   4-7-remove-files-with-metadata-only-events-and-provider-safe-ordering: done
-  4-8-query-file-context-with-policy-boundaries: backlog
+  4-8-query-file-context-with-policy-boundaries: done
   4-9-inspect-workspace-and-projection-currency: backlog
   4-10-surface-workspace-cleanup-status-without-repair-automation: backlog
   4-11-propagate-idempotency-keys-correlation-and-task-ids: backlog
