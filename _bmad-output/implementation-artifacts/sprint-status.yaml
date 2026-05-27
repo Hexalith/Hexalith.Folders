@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-27T03:39:13+02:00
+# last_updated: 2026-05-27T04:24:08+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-27T03:39:13+02:00
+last_updated: 2026-05-27T04:24:08+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -92,7 +92,7 @@ development_status:
   # Epic 4: Repository-Backed Workspace Task Lifecycle
   epic-4: in-progress
   4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: done
-  4-2-prepare-workspace-from-a-ready-repository-backed-folder: backlog
+  4-2-prepare-workspace-from-a-ready-repository-backed-folder: done
   4-3-acquire-task-scoped-workspace-lock: backlog
   4-4-inspect-lock-state-and-release-the-workspace-lock: backlog
   4-5-enforce-workspace-path-policy-before-file-mutations: backlog

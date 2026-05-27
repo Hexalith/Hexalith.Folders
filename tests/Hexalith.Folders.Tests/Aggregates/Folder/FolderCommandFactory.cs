@@ -178,4 +178,33 @@ internal static class FolderCommandFactory
             taskId,
             idempotencyKey,
             payloadTenantId);
+
+    public static PrepareWorkspace PrepareWorkspace(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        string requestSchemaVersion = "v1",
+        string workspaceId = "workspace-a",
+        string repositoryBindingId = "repository-binding-a",
+        string branchRefPolicyRef = "branch-ref-policy-a",
+        string workspacePolicyRef = "workspace-policy-a",
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-workspace-a",
+        string? payloadTenantId = null)
+        => new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            requestSchemaVersion,
+            workspaceId,
+            repositoryBindingId,
+            branchRefPolicyRef,
+            workspacePolicyRef,
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId);
 }

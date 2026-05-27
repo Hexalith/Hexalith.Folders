@@ -165,6 +165,24 @@ public static class FoldersDomainServiceEndpoints
                 cancellationToken).ConfigureAwait(false))
         .WithName("ConfigureBranchRefPolicy");
 
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await PrepareWorkspaceAsync(
+                folderId,
+                workspaceId,
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("PrepareWorkspace");
+
         endpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
             string folderId,
             HttpContext httpContext,
@@ -963,6 +981,179 @@ public static class FoldersDomainServiceEndpoints
             statusCode: StatusCodes.Status202Accepted);
     }
 
+    private static async Task<IResult> PrepareWorkspaceAsync(
+        string folderId,
+        string workspaceId,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        if (string.IsNullOrWhiteSpace(idempotencyKey)
+            || string.IsNullOrWhiteSpace(correlationId)
+            || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(idempotencyKey)
+            || !IsCanonicalIdentifier(taskId)
+            || !IsCanonicalIdentifier(correlationId)
+            || !IsCanonicalIdentifier(folderId)
+            || !IsCanonicalIdentifier(workspaceId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        PrepareWorkspaceHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<PrepareWorkspaceHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (!IsValidPrepareWorkspaceRequest(body))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        PrepareWorkspaceGatewayPayload gatewayPayload = new(
+            body.RequestSchemaVersion,
+            workspaceId,
+            body.RepositoryBindingId,
+            body.BranchRefPolicyRef,
+            body.WorkspacePolicyRef);
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: FoldersServerModule.PrepareWorkspaceCommandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
         && IsCanonicalIdentifier(body.FolderId)
@@ -976,6 +1167,12 @@ public static class FoldersDomainServiceEndpoints
         && IsCanonicalIdentifier(body.ProviderBindingRef)
         && IsCanonicalIdentifier(body.ExternalRepositoryRef)
         && IsValidBranchRefPolicy(body.BranchRefPolicy);
+
+    private static bool IsValidPrepareWorkspaceRequest(PrepareWorkspaceHttpRequest? body)
+        => body is not null
+        && IsCanonicalIdentifier(body.RepositoryBindingId)
+        && IsCanonicalIdentifier(body.BranchRefPolicyRef)
+        && IsCanonicalIdentifier(body.WorkspacePolicyRef);
 
     private static bool IsValidFolderMetadata(FolderMetadataHttpRequest? metadata)
         => metadata is not null
@@ -1107,6 +1304,40 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity
+            && reasonCode is "workspace_preparation_failed" or "workspace_transition_invalid")
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: reasonCode,
+                code: reasonCode,
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable && reasonCode == "unknown_provider_outcome")
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "unknown_provider_outcome",
+                code: "unknown_provider_outcome",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "reconciliation_required")
+        {
+            return SafeProblem(
+                StatusCodes.Status409Conflict,
+                category: "reconciliation_required",
+                code: "reconciliation_required",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         return exception.StatusCode switch
         {
             StatusCodes.Status400BadRequest => SafeProblem(
@@ -1178,6 +1409,10 @@ public static class FoldersDomainServiceEndpoints
             "ProviderRateLimited" => "provider_rate_limited",
             "provider_rate_limited" => "provider_rate_limited",
             "provider_readiness_failed" => "provider_readiness_failed",
+            "workspace_preparation_failed" => "workspace_preparation_failed",
+            "workspace_transition_invalid" => "workspace_transition_invalid",
+            "unknown_provider_outcome" => "unknown_provider_outcome",
+            "reconciliation_required" => "reconciliation_required",
             "provider_unavailable" => "provider_unavailable",
             _ => null,
         };
@@ -1444,7 +1679,7 @@ public static class FoldersDomainServiceEndpoints
             ["message"] = message ?? MessageFor(category),
             ["correlationId"] = correlationId,
             ["retryable"] = retryable,
-            ["clientAction"] = retryable ? "retry" : "no_action",
+            ["clientAction"] = ClientActionFor(category, retryable),
             ["details"] = new Dictionary<string, object?>
             {
                 ["visibility"] = "metadata_only",
@@ -1464,12 +1699,22 @@ public static class FoldersDomainServiceEndpoints
                 StatusCodes.Status401Unauthorized => "Authentication required.",
                 StatusCodes.Status404NotFound => "Resource not available.",
                 StatusCodes.Status409Conflict => "Idempotency conflict.",
+                StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
                 StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
                 _ => "Authorization denied.",
             },
             statusCode: statusCode,
             extensions: extensions);
     }
+
+    private static string ClientActionFor(string category, bool retryable)
+        => category switch
+        {
+            "unknown_provider_outcome" or "reconciliation_required" => "wait_for_reconciliation",
+            "provider_readiness_failed" => "contact_operator",
+            "workspace_preparation_failed" or "workspace_transition_invalid" => "revise_request",
+            _ => retryable ? "retry" : "no_action",
+        };
 
     private static string MessageFor(string category) => category switch
     {
@@ -1480,6 +1725,12 @@ public static class FoldersDomainServiceEndpoints
         "not_found" => "The requested resource is not available to the caller.",
         "validation_error" => "Request validation failed.",
         "internal_error" => "The operation cannot be completed in this configuration.",
+        "provider_readiness_failed" => "Provider readiness could not be established for this operation.",
+        "workspace_preparation_failed" => "Workspace preparation could not be accepted.",
+        "workspace_transition_invalid" => "Workspace lifecycle transition is not valid for this operation.",
+        "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
+        "reconciliation_required" => "Reconciliation is required before this operation can continue.",
+        "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",
         _ => "Access is denied. The caller is not authorized for this operation or resource.",
     };
 
@@ -1617,6 +1868,12 @@ public static class FoldersDomainServiceEndpoints
         string? ExternalRepositoryRef,
         BranchRefPolicyHttpRequest? BranchRefPolicy);
 
+    private sealed record PrepareWorkspaceHttpRequest(
+        string? RequestSchemaVersion,
+        string? RepositoryBindingId,
+        string? BranchRefPolicyRef,
+        string? WorkspacePolicyRef);
+
     private sealed record CreateRepositoryBackedFolderGatewayPayload(
         string? RequestSchemaVersion,
         string? FolderId,
@@ -1626,6 +1883,13 @@ public static class FoldersDomainServiceEndpoints
         FolderMetadataHttpRequest? FolderMetadata,
         BranchRefPolicyHttpRequest? BranchRefPolicy,
         string? CredentialScopeClass);
+
+    private sealed record PrepareWorkspaceGatewayPayload(
+        string? RequestSchemaVersion,
+        string WorkspaceId,
+        string? RepositoryBindingId,
+        string? BranchRefPolicyRef,
+        string? WorkspacePolicyRef);
 
     private sealed record FolderMetadataHttpRequest(
         string? DisplayName,

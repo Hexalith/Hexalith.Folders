@@ -56,6 +56,326 @@ public sealed class RepositoryBackedFolderEndpointTests
     }
 
     [Fact]
+    public async Task PrepareWorkspaceEndpointShouldSubmitCommandAndReturnAcceptedShape()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidPrepareWorkspaceRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            response.Headers.GetValues("X-Correlation-Id").Single().ShouldBe("correlation-a");
+            response.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe("task-a");
+
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.Tenant.ShouldBe("tenant-a");
+            submitted.Domain.ShouldBe("folders");
+            submitted.AggregateId.ShouldBe("folder-a");
+            submitted.CommandType.ShouldBe(FoldersServerModule.PrepareWorkspaceCommandType);
+            submitted.Extensions.ShouldNotBeNull()["taskId"].ShouldBe("task-a");
+            submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+            submitted.Payload.GetProperty("repositoryBindingId").GetString().ShouldBe("repository-binding-a");
+            submitted.Payload.GetProperty("branchRefPolicyRef").GetString().ShouldBe("branch-ref-policy-a");
+            submitted.Payload.GetProperty("workspacePolicyRef").GetString().ShouldBe("workspace-policy-a");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldUseRouteWorkspaceIdAsAuthoritative()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-route/preparation")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    repositoryBindingId = "repository-binding-a",
+                    branchRefPolicyRef = "branch-ref-policy-a",
+                    workspacePolicyRef = "workspace-policy-a",
+                }),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.AggregateId.ShouldBe("folder-a");
+            submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-route");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldUseAuthenticatedTenantDespiteClientTenantHeaders()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidPrepareWorkspaceRequest();
+            request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-b");
+            request.Headers.Add("X-Tenant-Id", "tenant-b");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.Tenant.ShouldBe("tenant-a");
+            submitted.AggregateId.ShouldBe("folder-a");
+            submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("Idempotency-Key")]
+    [InlineData("X-Correlation-Id")]
+    [InlineData("X-Hexalith-Task-Id")]
+    public async Task PrepareWorkspaceEndpointShouldRejectMissingRequiredHeadersBeforeGatewaySubmit(string headerName)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidPrepareWorkspaceRequest();
+            request.Headers.Remove(headerName);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldRejectUnsupportedSchemaVersionBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidPrepareWorkspaceRequest(requestSchemaVersion: "v2");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            using JsonDocument document = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            document.RootElement.GetProperty("code").GetString().ShouldBe("unsupported_request_schema_version");
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldRejectInvalidPayloadBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/preparation")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    branchRefPolicyRef = "branch-ref-policy-a",
+                    workspacePolicyRef = "workspace-policy-a",
+                }),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldRejectUnknownFieldsBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/preparation")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    repositoryBindingId = "repository-binding-a",
+                    branchRefPolicyRef = "branch-ref-policy-a",
+                    workspacePolicyRef = "workspace-policy-a",
+                    repositoryUrl = "https://provider.example.test/owner/repository-secret",
+                }),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            json.ShouldNotContain("repository-secret", Case.Sensitive);
+            json.ShouldNotContain("https://provider.example.test", Case.Sensitive);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldRejectMalformedJsonBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/preparation")
+            {
+                Content = new StringContent("{ nope", System.Text.Encoding.UTF8, "application/json"),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task PrepareWorkspaceEndpointShouldRejectReservedSystemTenantBeforeBodyParsing()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "system", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/preparation")
+            {
+                Content = new StringContent("{ nope", System.Text.Encoding.UTF8, "application/json"),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "idempotency_conflict", "idempotency_conflict")]
+    [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "reconciliation_required", "reconciliation_required")]
+    [InlineData(StatusCodes.Status422UnprocessableEntity, HttpStatusCode.UnprocessableEntity, "provider_readiness_failed", "provider_readiness_failed")]
+    [InlineData(StatusCodes.Status422UnprocessableEntity, HttpStatusCode.UnprocessableEntity, "workspace_transition_invalid", "workspace_transition_invalid")]
+    [InlineData(StatusCodes.Status422UnprocessableEntity, HttpStatusCode.UnprocessableEntity, "workspace_preparation_failed", "workspace_preparation_failed")]
+    [InlineData(StatusCodes.Status503ServiceUnavailable, HttpStatusCode.ServiceUnavailable, "provider_unavailable", "provider_unavailable")]
+    [InlineData(StatusCodes.Status503ServiceUnavailable, HttpStatusCode.ServiceUnavailable, "unknown_provider_outcome", "unknown_provider_outcome")]
+    public async Task PrepareWorkspaceEndpointShouldMapGatewayFailuresToSafeProblems(
+        int gatewayStatus,
+        HttpStatusCode expectedStatus,
+        string expectedCategory,
+        string expectedCode)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                gatewayStatus,
+                "workspace failure for https://provider.example.test/owner/repository-secret",
+                correlationId: "correlation-gateway",
+                reasonCode: expectedCode),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidPrepareWorkspaceRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(expectedStatus);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe(expectedCategory);
+            document.RootElement.GetProperty("code").GetString().ShouldBe(expectedCode);
+            document.RootElement.GetProperty("retryable").GetBoolean().ShouldBe(expectedCategory == "provider_unavailable");
+            document.RootElement.GetProperty("clientAction").GetString().ShouldBe(expectedCategory switch
+            {
+                "unknown_provider_outcome" or "reconciliation_required" => "wait_for_reconciliation",
+                "provider_readiness_failed" => "contact_operator",
+                "workspace_preparation_failed" or "workspace_transition_invalid" => "revise_request",
+                "provider_unavailable" => "retry",
+                _ => "no_action",
+            });
+            json.ShouldNotContain("repository-secret", Case.Sensitive);
+            json.ShouldNotContain("https://provider.example.test", Case.Sensitive);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task GetBranchRefPolicyEndpointShouldRejectIdempotencyKeyBeforeReadModel()
     {
         RecordingEventStoreGatewayClient gateway = new();
@@ -753,6 +1073,22 @@ public sealed class RepositoryBackedFolderEndpointTests
                 defaultRef = "branch_ref_primary",
                 allowedRefPatterns = new[] { "branch_ref_feature" },
                 protectedRefPatterns = new[] { "branch_ref_release" },
+            }),
+        };
+        AddHeaders(request);
+        return request;
+    }
+
+    private static HttpRequestMessage CreateValidPrepareWorkspaceRequest(string requestSchemaVersion = "v1")
+    {
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/preparation")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion,
+                repositoryBindingId = "repository-binding-a",
+                branchRefPolicyRef = "branch-ref-policy-a",
+                workspacePolicyRef = "workspace-policy-a",
             }),
         };
         AddHeaders(request);

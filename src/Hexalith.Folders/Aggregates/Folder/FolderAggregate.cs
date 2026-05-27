@@ -298,6 +298,71 @@ public static class FolderAggregate
         return FolderResult.Accepted(command, [configured]);
     }
 
+    public static FolderResult Handle(FolderState state, PrepareWorkspace command, DateTimeOffset occurredAt)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(command);
+
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return FolderResult.Rejected(command, validation.Code);
+        }
+
+        if (!state.IsCreated)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+        }
+
+        FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.Workspace);
+        if (activeMutationGuard != FolderResultCode.Accepted)
+        {
+            return FolderResult.Rejected(command, activeMutationGuard);
+        }
+
+        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
+            || !string.Equals(state.RepositoryBindingId, command.RepositoryBindingId, StringComparison.Ordinal)
+            || !string.Equals(state.BranchRefPolicyRef, command.BranchRefPolicyRef, StringComparison.Ordinal)
+            || state.BranchRefPolicy is null
+            || !string.Equals(state.BranchRefPolicy.RepositoryBindingId, command.RepositoryBindingId, StringComparison.Ordinal)
+            || !string.Equals(state.BranchRefPolicy.PolicyRef, command.BranchRefPolicyRef, StringComparison.Ordinal))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.WorkspacePrepared);
+        if (!transition.IsAccepted)
+        {
+            return FolderResult.Rejected(command, transition.Code);
+        }
+
+        WorkspacePreparationRequested requested = new(
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
+            command.WorkspaceId,
+            command.RepositoryBindingId,
+            command.BranchRefPolicyRef,
+            command.WorkspacePolicyRef,
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey,
+            validation.IdempotencyFingerprint!,
+            occurredAt);
+
+        return FolderResult.Accepted(command, [requested]);
+    }
+
     // Convenience overloads for tests that do not care about deterministic timestamps.
     // Production callers must always supply OccurredAt from the gate's TimeProvider so
     // events carry real wall-clock evidence rather than DateTimeOffset.MinValue.
@@ -317,6 +382,9 @@ public static class FolderAggregate
         => Handle(state, command, DateTimeOffset.MinValue);
 
     public static FolderResult Handle(FolderState state, ConfigureBranchRefPolicy command)
+        => Handle(state, command, DateTimeOffset.MinValue);
+
+    public static FolderResult Handle(FolderState state, PrepareWorkspace command)
         => Handle(state, command, DateTimeOffset.MinValue);
 
     // Grant emits events per operation, skipping tuples that are already granted. Revoke

@@ -49,6 +49,7 @@ public static class FolderStateApply
                 WorkspaceLifecycleState = null,
                 WorkspaceOperatorDisposition = null,
                 WorkspaceId = null,
+                WorkspacePolicyRef = null,
                 WorkspaceLifecycleEvent = null,
                 WorkspaceOperationId = null,
                 WorkspaceCorrelationId = null,
@@ -114,6 +115,7 @@ public static class FolderStateApply
             },
             RepositoryBindingFailed failed => ApplyRepositoryBindingFailed(state, failed),
             ProviderOutcomeUnknown unknown => ApplyProviderOutcomeUnknown(state, unknown),
+            WorkspacePreparationRequested requested => ApplyWorkspacePreparationRequested(state, requested),
             FolderWorkspaceLifecycleEventRecorded recorded => ApplyWorkspaceLifecycleEvent(state, recorded),
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
@@ -284,6 +286,20 @@ public static class FolderStateApply
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, recorded),
         };
     }
+
+    private static FolderState ApplyWorkspacePreparationRequested(
+        FolderState state,
+        WorkspacePreparationRequested requested)
+        => state with
+        {
+            WorkspaceId = requested.WorkspaceId,
+            WorkspacePolicyRef = requested.WorkspacePolicyRef,
+            WorkspaceOperationId = requested.WorkspaceId,
+            WorkspaceCorrelationId = requested.CorrelationId,
+            WorkspaceTaskId = requested.TaskId,
+            WorkspaceLifecycleUpdatedAt = requested.OccurredAt,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
+        };
 
     private static FolderState WithWorkspaceTransition(
         FolderState state,

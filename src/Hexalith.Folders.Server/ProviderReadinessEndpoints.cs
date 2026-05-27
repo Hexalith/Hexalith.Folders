@@ -421,6 +421,7 @@ public static partial class ProviderReadinessEndpoints
             "repository_creation" => ProviderReadinessRequestedCapability.RepositoryCreation,
             "existing_repository_binding" => ProviderReadinessRequestedCapability.ExistingRepositoryBinding,
             "branch_ref_policy" => ProviderReadinessRequestedCapability.BranchRefPolicy,
+            "workspace_preparation" => ProviderReadinessRequestedCapability.WorkspacePreparation,
             "file_operations" => ProviderReadinessRequestedCapability.FileOperations,
             "commit_status" => ProviderReadinessRequestedCapability.CommitStatus,
             "provider_errors" => ProviderReadinessRequestedCapability.ProviderErrors,

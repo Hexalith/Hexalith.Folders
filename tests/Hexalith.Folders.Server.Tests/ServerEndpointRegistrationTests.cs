@@ -48,6 +48,7 @@ public sealed class ServerEndpointRegistrationTests
         routes.ShouldContain("/process");
         routes.ShouldContain("/project");
         routes.ShouldContain("/api/v1/folders/{folderId}/archive");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation");
         routes.ShouldContain("/tenants/events");
         routes.ShouldContain("dapr/subscribe");
     }

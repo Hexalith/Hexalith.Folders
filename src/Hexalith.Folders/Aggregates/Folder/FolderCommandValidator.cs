@@ -151,6 +151,20 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(branchRefPolicy));
         }
 
+        if (command is PrepareWorkspace prepareWorkspace)
+        {
+            if (!string.Equals(prepareWorkspace.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !IsValidIdentifier(prepareWorkspace.WorkspaceId)
+                || !IsValidIdentifier(prepareWorkspace.RepositoryBindingId)
+                || !IsValidIdentifier(prepareWorkspace.BranchRefPolicyRef)
+                || !IsValidIdentifier(prepareWorkspace.WorkspacePolicyRef))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(prepareWorkspace));
+        }
+
         if (command is not CreateFolder create)
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
@@ -339,6 +353,20 @@ public static partial class FolderCommandValidator
 
         AppendField(hash, command.FolderId);
         AppendField(hash, command.RepositoryBindingId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string Fingerprint(PrepareWorkspace command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.BranchRefPolicyRef);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.RepositoryBindingId);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, command.WorkspaceId);
+        AppendField(hash, command.WorkspacePolicyRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }

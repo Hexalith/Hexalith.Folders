@@ -478,6 +478,9 @@ public sealed partial class ProviderReadinessValidationService(
                 break;
             case ProviderReadinessRequestedCapability.BranchRefPolicy:
                 break;
+            case ProviderReadinessRequestedCapability.WorkspacePreparation:
+                required.Add(ProviderOperationCatalog.WorkspacePreparation);
+                break;
             default:
                 required.Add(ProviderOperationCatalog.RepositoryCreation);
                 break;
