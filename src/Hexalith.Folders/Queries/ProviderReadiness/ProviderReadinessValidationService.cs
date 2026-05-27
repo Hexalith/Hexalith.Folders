@@ -481,6 +481,11 @@ public sealed partial class ProviderReadinessValidationService(
             case ProviderReadinessRequestedCapability.WorkspacePreparation:
                 required.Add(ProviderOperationCatalog.WorkspacePreparation);
                 break;
+            case ProviderReadinessRequestedCapability.FileOperations:
+            case ProviderReadinessRequestedCapability.CommitStatus:
+            case ProviderReadinessRequestedCapability.ProviderErrors:
+            case ProviderReadinessRequestedCapability.FailureBehavior:
+                break;
             default:
                 required.Add(ProviderOperationCatalog.RepositoryCreation);
                 break;

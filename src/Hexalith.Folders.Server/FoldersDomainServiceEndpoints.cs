@@ -63,6 +63,18 @@ public static class FoldersDomainServiceEndpoints
     private static readonly System.Text.RegularExpressions.Regex BranchRefPolicyRegex =
         new("^branch_ref_[a-z0-9_]{3,80}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
+    private static readonly System.Text.RegularExpressions.Regex CommitAuthorMetadataReferenceRegex =
+        new("^authorref_[A-Za-z0-9_-]{6,118}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private static readonly System.Text.RegularExpressions.Regex CommitBranchRefTargetRegex =
+        new("^branchref_[A-Za-z0-9_-]{6,118}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private static readonly System.Text.RegularExpressions.Regex CommitChangedPathMetadataDigestRegex =
+        new("^digest_[A-Za-z0-9_-]{9,121}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private static readonly System.Text.RegularExpressions.Regex CommitMessageClassificationRegex =
+        new("^[a-z][a-z0-9_]{0,79}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
@@ -490,6 +502,24 @@ public static class FoldersDomainServiceEndpoints
                 timeProvider,
                 cancellationToken).ConfigureAwait(false))
         .WithName("RemoveWorkspaceFile");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await CommitWorkspaceAsync(
+                folderId,
+                workspaceId,
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("CommitWorkspace");
 
         endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree", async (
             string folderId,
@@ -1969,6 +1999,131 @@ public static class FoldersDomainServiceEndpoints
             statusCode: StatusCodes.Status202Accepted);
     }
 
+    private static async Task<IResult> CommitWorkspaceAsync(
+        string folderId,
+        string workspaceId,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
+        {
+            return envelopeFailure;
+        }
+
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
+
+        CommitWorkspaceHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<CommitWorkspaceHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!IsValidCommitWorkspaceRequest(body, taskId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        CommitWorkspaceGatewayPayload gatewayPayload = new(
+            body!.RequestSchemaVersion,
+            workspaceId,
+            body.OperationId,
+            body.TaskId,
+            body.BranchRefTarget,
+            body.ChangedPathMetadataDigest,
+            body.AuthorMetadataReference,
+            body.CommitMessageClassification,
+            body.AuditMetadataKeys);
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: envelope.TenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: FoldersServerModule.CommitWorkspaceCommandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
         && IsCanonicalIdentifier(body.FolderId)
@@ -2004,6 +2159,40 @@ public static class FoldersDomainServiceEndpoints
             or "authorization_revoked"
             or "task_cancelled"
             or "lock_revoked";
+
+    private static bool IsValidCommitWorkspaceRequest(CommitWorkspaceHttpRequest? body, string taskId)
+        => body is not null
+        && string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+        && IsCanonicalIdentifier(body.OperationId)
+        && string.Equals(body.TaskId, taskId, StringComparison.Ordinal)
+        && IsCommitAuthorMetadataReference(body.AuthorMetadataReference)
+        && IsCommitBranchRefTarget(body.BranchRefTarget)
+        && IsCommitChangedPathMetadataDigest(body.ChangedPathMetadataDigest)
+        && IsCommitMessageClassification(body.CommitMessageClassification)
+        && body.AuditMetadataKeys is not null
+        && body.AuditMetadataKeys.Count is >= 1 and <= 24
+        && body.AuditMetadataKeys.Distinct(StringComparer.Ordinal).Count() == body.AuditMetadataKeys.Count
+        && body.AuditMetadataKeys.All(IsCommitMessageClassification);
+
+    private static bool IsCommitAuthorMetadataReference(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= FoldersServerModule.MaxCanonicalIdentifierLength
+        && CommitAuthorMetadataReferenceRegex.IsMatch(value);
+
+    private static bool IsCommitBranchRefTarget(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= FoldersServerModule.MaxCanonicalIdentifierLength
+        && CommitBranchRefTargetRegex.IsMatch(value);
+
+    private static bool IsCommitChangedPathMetadataDigest(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= FoldersServerModule.MaxCanonicalIdentifierLength
+        && CommitChangedPathMetadataDigestRegex.IsMatch(value);
+
+    private static bool IsCommitMessageClassification(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length <= 80
+        && CommitMessageClassificationRegex.IsMatch(value);
 
     private static FileMutationTransportValidation ValidateFileMutationRequest(FileMutationHttpRequest? body)
     {
@@ -2420,6 +2609,17 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "unsupported_provider_capability")
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: "unsupported_provider_capability",
+                code: "unsupported_provider_capability",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         if (exception.StatusCode == StatusCodes.Status409Conflict
             && reasonCode is "lock_conflict" or "workspace_locked")
         {
@@ -2569,6 +2769,9 @@ public static class FoldersDomainServiceEndpoints
             "file_operation_failed" => "file_operation_failed",
             "file-operation-failed" => "file_operation_failed",
             "FileOperationFailed" => "file_operation_failed",
+            "unsupported_provider_capability" => "unsupported_provider_capability",
+            "unsupported-provider-capability" => "unsupported_provider_capability",
+            "UnsupportedProviderCapability" => "unsupported_provider_capability",
             "provider_unavailable" => "provider_unavailable",
             "provider-unavailable" => "provider_unavailable",
             _ => null,
@@ -3545,7 +3748,7 @@ public static class FoldersDomainServiceEndpoints
         => category switch
         {
             "unknown_provider_outcome" or "reconciliation_required" => "wait_for_reconciliation",
-            "provider_readiness_failed" => "contact_operator",
+            "provider_readiness_failed" or "unsupported_provider_capability" => "contact_operator",
             "workspace_preparation_failed" or "workspace_transition_invalid" => "revise_request",
             "lock_conflict" or "workspace_locked" => "retry_after_release",
             "lock_expired" => "retry",
@@ -3565,6 +3768,7 @@ public static class FoldersDomainServiceEndpoints
         "validation_error" => "Request validation failed.",
         "internal_error" => "The operation cannot be completed in this configuration.",
         "provider_readiness_failed" => "Provider readiness could not be established for this operation.",
+        "unsupported_provider_capability" => "Provider capability is not available for this operation.",
         "workspace_preparation_failed" => "Workspace preparation could not be accepted.",
         "workspace_transition_invalid" => "Workspace lifecycle transition is not valid for this operation.",
         "lock_conflict" => "Workspace lock is held by another operation.",
@@ -3842,6 +4046,16 @@ public static class FoldersDomainServiceEndpoints
         JsonElement? InlineContent,
         JsonElement? StreamDescriptor);
 
+    private sealed record CommitWorkspaceHttpRequest(
+        string? RequestSchemaVersion,
+        string? OperationId,
+        string? TaskId,
+        string? BranchRefTarget,
+        string? ChangedPathMetadataDigest,
+        string? AuthorMetadataReference,
+        string? CommitMessageClassification,
+        IReadOnlyList<string>? AuditMetadataKeys);
+
     private sealed record CreateRepositoryBackedFolderGatewayPayload(
         string? RequestSchemaVersion,
         string? FolderId,
@@ -3884,6 +4098,17 @@ public static class FoldersDomainServiceEndpoints
         string? MediaType,
         string? TransportEvidenceKind,
         long? ObservedByteLength);
+
+    private sealed record CommitWorkspaceGatewayPayload(
+        string? RequestSchemaVersion,
+        string WorkspaceId,
+        string? OperationId,
+        string? TaskId,
+        string? BranchRefTarget,
+        string? ChangedPathMetadataDigest,
+        string? AuthorMetadataReference,
+        string? CommitMessageClassification,
+        IReadOnlyList<string>? AuditMetadataKeys);
 
     private sealed record FolderMetadataHttpRequest(
         string? DisplayName,
@@ -3929,6 +4154,22 @@ public static class FoldersDomainServiceEndpoints
         string TaskId,
         string Status,
         bool IdempotentReplay);
+
+    private sealed record CommitWorkspaceAcceptedResponse(
+        DateTimeOffset AcceptedAt,
+        string CorrelationId,
+        string TaskId,
+        string Status,
+        bool IdempotentReplay,
+        string OperationId,
+        string AcceptedCommandState,
+        string ProviderOutcomeState,
+        RetryEligibilityResponse RetryEligibility);
+
+    private sealed record RetryEligibilityResponse(
+        bool Eligible,
+        string ReasonCode,
+        bool AdvisoryOnly);
 
     private readonly record struct MutationCommandEnvelope(
         string IdempotencyKey,

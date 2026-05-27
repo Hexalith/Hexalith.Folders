@@ -45,6 +45,8 @@ public static class FoldersServerModule
 
     public const string MutateFilesCommandType = MutateWorkspaceFile.CommandTypeName;
 
+    public const string CommitWorkspaceCommandType = CommitWorkspace.CommandTypeName;
+
     // Maximum length for canonical identifiers (correlation id, task id, idempotency key,
     // folder id, taskId extension). Shared between the REST endpoint regex, the processor
     // extension reader, and the rejection-event canonicalizer so a length bump cannot drift.

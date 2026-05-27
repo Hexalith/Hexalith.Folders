@@ -36,6 +36,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<IRepositoryBindingReadinessValidator, ProviderReadinessRepositoryBindingValidator>();
         services.TryAddScoped<IBranchRefPolicyReadinessValidator, ProviderReadinessBranchRefPolicyValidator>();
         services.TryAddScoped<IWorkspacePreparationReadinessValidator, ProviderReadinessWorkspacePreparationValidator>();
+        services.TryAddScoped<IWorkspaceCommitReadinessValidator, ProviderReadinessWorkspaceCommitValidator>();
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddScoped<FolderArchiveTenantGate>();
         services.TryAddScoped<FolderAccessTenantGate>();
@@ -49,6 +50,8 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<IWorkspaceFileContentStore, UnavailableWorkspaceFileContentStore>();
         services.TryAddScoped<IWorkspaceFileDeleteOperationStore, UnavailableWorkspaceFileDeleteOperationStore>();
         services.TryAddScoped<WorkspaceFileMutationService>();
+        services.TryAddScoped<IWorkspaceCommitExecutor, UnavailableWorkspaceCommitExecutor>();
+        services.TryAddScoped<WorkspaceCommitService>();
         services.TryAddScoped<IWorkspaceFileSensitivityClassifier, WorkspaceFileSensitivityClassifier>();
         services.TryAddScoped<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
         services.TryAddScoped<WorkspaceFileContextQueryHandler>();

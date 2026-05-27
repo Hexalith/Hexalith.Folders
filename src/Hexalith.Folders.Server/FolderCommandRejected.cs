@@ -151,7 +151,8 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
             || string.Equals(commandType, FoldersServerModule.PrepareWorkspaceCommandType, StringComparison.Ordinal)
             || string.Equals(commandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal)
             || string.Equals(commandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal)
-            || string.Equals(commandType, FoldersServerModule.MutateFilesCommandType, StringComparison.Ordinal))
+            || string.Equals(commandType, FoldersServerModule.MutateFilesCommandType, StringComparison.Ordinal)
+            || string.Equals(commandType, FoldersServerModule.CommitWorkspaceCommandType, StringComparison.Ordinal))
         {
             return commandType;
         }

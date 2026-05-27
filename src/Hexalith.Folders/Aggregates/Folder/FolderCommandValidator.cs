@@ -210,6 +210,16 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(mutateWorkspaceFile));
         }
 
+        if (command is CommitWorkspace commitWorkspace)
+        {
+            if (!IsValidCommitWorkspaceCommand(commitWorkspace))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(commitWorkspace));
+        }
+
         if (command is not CreateFolder create)
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
@@ -497,6 +507,84 @@ public static partial class FolderCommandValidator
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
+
+    private static string Fingerprint(CommitWorkspace command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.CommandType);
+        AppendField(hash, command.AuthorMetadataReference);
+        AppendField(hash, command.BranchRefTarget);
+        AppendField(hash, command.ChangedPathMetadataDigest);
+        AppendField(hash, command.CommitMessageClassification);
+        AppendField(hash, command.OperationId);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, command.WorkspaceId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static bool IsValidCommitWorkspaceCommand(CommitWorkspace command)
+        => string.Equals(command.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+        && IsValidIdentifier(command.WorkspaceId)
+        && IsValidIdentifier(command.OperationId)
+        && IsValidAuthorMetadataReference(command.AuthorMetadataReference)
+        && IsValidBranchRefTarget(command.BranchRefTarget)
+        && IsValidCommitMessageClassification(command.CommitMessageClassification)
+        && IsValidChangedPathMetadataDigest(command.ChangedPathMetadataDigest);
+
+    internal static bool IsValidCommitReference(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= MaxIdentifierLength
+        && CommitReferencePattern().IsMatch(value);
+
+    internal static bool IsValidCommitReconciliationReference(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= MaxIdentifierLength
+        && CommitReconciliationReferencePattern().IsMatch(value);
+
+    internal static bool IsValidCommitOutcomeCategory(string? value)
+        => IsValidLowerSnakeMetadata(value, 80);
+
+    internal static string DeriveCommitReconciliationReference(CommitWorkspace command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "commit-reconciliation-v1");
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.WorkspaceId);
+        AppendField(hash, command.OperationId);
+        AppendField(hash, command.CorrelationId);
+        AppendField(hash, command.TaskId);
+
+        string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+        return $"reconcile_{digest[..32]}";
+    }
+
+    private static bool IsValidAuthorMetadataReference(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= MaxIdentifierLength
+        && AuthorMetadataReferencePattern().IsMatch(value);
+
+    private static bool IsValidBranchRefTarget(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= MaxIdentifierLength
+        && BranchRefTargetPattern().IsMatch(value);
+
+    private static bool IsValidChangedPathMetadataDigest(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length is >= 16 and <= MaxIdentifierLength
+        && ChangedPathMetadataDigestPattern().IsMatch(value);
+
+    private static bool IsValidCommitMessageClassification(string? value)
+        => IsValidLowerSnakeMetadata(value, 80);
+
+    private static bool IsValidLowerSnakeMetadata(string? value, int maxLength)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length <= maxLength
+        && LowerSnakeMetadataPattern().IsMatch(value);
 
     private static bool IsValidFileMutationCommand(MutateWorkspaceFile command)
     {
@@ -866,4 +954,22 @@ public static partial class FolderCommandValidator
 
     [GeneratedRegex("^branch_ref_[a-z0-9_]{3,80}$", RegexOptions.CultureInvariant)]
     private static partial Regex BranchRefTokenPattern();
+
+    [GeneratedRegex("^authorref_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    private static partial Regex AuthorMetadataReferencePattern();
+
+    [GeneratedRegex("^branchref_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    private static partial Regex BranchRefTargetPattern();
+
+    [GeneratedRegex("^digest_[A-Za-z0-9_-]{9,121}$", RegexOptions.CultureInvariant)]
+    private static partial Regex ChangedPathMetadataDigestPattern();
+
+    [GeneratedRegex("^[a-z][a-z0-9_]{0,79}$", RegexOptions.CultureInvariant)]
+    private static partial Regex LowerSnakeMetadataPattern();
+
+    [GeneratedRegex("^commitref_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    private static partial Regex CommitReferencePattern();
+
+    [GeneratedRegex("^reconcile_[A-Za-z0-9_-]{6,118}$", RegexOptions.CultureInvariant)]
+    private static partial Regex CommitReconciliationReferencePattern();
 }

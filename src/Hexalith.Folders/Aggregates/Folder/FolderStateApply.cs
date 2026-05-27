@@ -77,6 +77,15 @@ public static class FolderStateApply
                 RepositoryBindingTaskId = null,
                 RepositoryBindingIdempotencyKey = null,
                 RepositoryBindingIdempotencyFingerprint = null,
+                WorkspaceCommitReference = null,
+                WorkspaceCommitFailureCategory = null,
+                WorkspaceCommitOutcomeCategory = null,
+                WorkspaceCommitAuthorMetadataReference = null,
+                WorkspaceCommitBranchRefTarget = null,
+                WorkspaceCommitMessageClassification = null,
+                WorkspaceCommitChangedPathMetadataDigest = null,
+                WorkspaceCommitReconciliationReference = null,
+                WorkspaceCommitReconciliationRequired = false,
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
             FolderAccessGranted granted => state with
@@ -128,6 +137,9 @@ public static class FolderStateApply
             WorkspaceLockAcquired acquired => ApplyWorkspaceLockAcquired(state, acquired),
             WorkspaceLockReleased released => ApplyWorkspaceLockReleased(state, released),
             WorkspaceFileMutationAccepted accepted => ApplyWorkspaceFileMutationAccepted(state, accepted),
+            WorkspaceCommitSucceeded succeeded => ApplyWorkspaceCommitSucceeded(state, succeeded),
+            WorkspaceCommitFailed failed => ApplyWorkspaceCommitFailed(state, failed),
+            WorkspaceCommitOutcomeUnknown unknown => ApplyWorkspaceCommitOutcomeUnknown(state, unknown),
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(
@@ -359,6 +371,81 @@ public static class FolderStateApply
         return WithWorkspaceTransition(state, accepted, transition, accepted.WorkspaceId, accepted.OperationId) with
         {
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, accepted),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceCommitSucceeded(FolderState state, WorkspaceCommitSucceeded succeeded)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            succeeded.WorkspaceLifecycleEvent);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, succeeded, transition, succeeded.WorkspaceId, succeeded.OperationId) with
+        {
+            WorkspaceCommitReference = succeeded.CommitReference,
+            WorkspaceCommitFailureCategory = null,
+            WorkspaceCommitOutcomeCategory = succeeded.ProviderOutcomeCategory,
+            WorkspaceCommitAuthorMetadataReference = succeeded.AuthorMetadataReference,
+            WorkspaceCommitBranchRefTarget = succeeded.BranchRefTarget,
+            WorkspaceCommitMessageClassification = succeeded.CommitMessageClassification,
+            WorkspaceCommitChangedPathMetadataDigest = succeeded.ChangedPathMetadataDigest,
+            WorkspaceCommitReconciliationReference = null,
+            WorkspaceCommitReconciliationRequired = false,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, succeeded),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceCommitFailed(FolderState state, WorkspaceCommitFailed failed)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            failed.WorkspaceLifecycleEvent);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, failed, transition, failed.WorkspaceId, failed.OperationId) with
+        {
+            WorkspaceCommitReference = null,
+            WorkspaceCommitFailureCategory = failed.FailureCategory,
+            WorkspaceCommitOutcomeCategory = failed.ProviderOutcomeCategory,
+            WorkspaceCommitAuthorMetadataReference = failed.AuthorMetadataReference,
+            WorkspaceCommitBranchRefTarget = failed.BranchRefTarget,
+            WorkspaceCommitMessageClassification = failed.CommitMessageClassification,
+            WorkspaceCommitChangedPathMetadataDigest = failed.ChangedPathMetadataDigest,
+            WorkspaceCommitReconciliationReference = null,
+            WorkspaceCommitReconciliationRequired = false,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, failed),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceCommitOutcomeUnknown(FolderState state, WorkspaceCommitOutcomeUnknown unknown)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            unknown.WorkspaceLifecycleEvent);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, unknown, transition, unknown.WorkspaceId, unknown.OperationId) with
+        {
+            WorkspaceCommitReference = null,
+            WorkspaceCommitFailureCategory = null,
+            WorkspaceCommitOutcomeCategory = unknown.ProviderOutcomeCategory,
+            WorkspaceCommitAuthorMetadataReference = unknown.AuthorMetadataReference,
+            WorkspaceCommitBranchRefTarget = unknown.BranchRefTarget,
+            WorkspaceCommitMessageClassification = unknown.CommitMessageClassification,
+            WorkspaceCommitChangedPathMetadataDigest = unknown.ChangedPathMetadataDigest,
+            WorkspaceCommitReconciliationReference = unknown.ReconciliationReference,
+            WorkspaceCommitReconciliationRequired = unknown.ReconciliationRequired,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, unknown),
         };
     }
 

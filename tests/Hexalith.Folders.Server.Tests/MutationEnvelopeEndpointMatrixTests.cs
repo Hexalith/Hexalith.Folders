@@ -32,6 +32,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
             "add_workspace_file",
             "change_workspace_file",
             "remove_workspace_file",
+            "commit_workspace",
         };
 
     [Theory]
@@ -62,6 +63,67 @@ public sealed class MutationEnvelopeEndpointMatrixTests
 
             gateway.Requests.ShouldBeEmpty($"{routeName}:{fault.Name}");
         }
+    }
+
+    [Fact]
+    public async Task CommitEndpointShouldRejectMalformedBodyBeforeGatewaySubmitWithoutLeakingRawMetadata()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidRequest("commit_workspace");
+        request.Content = JsonContent.Create(new
+        {
+            requestSchemaVersion = "v1",
+            operationId = "operation-a",
+            taskId = "task-a",
+            branchRefTarget = "branchref_primary",
+            changedPathMetadataDigest = "digest_workspace_a",
+            authorMetadataReference = "authorref_service",
+            commitMessageClassification = "generated_summary",
+            auditMetadataKeys = new[] { "operation_id" },
+            rawCommitMessage = "FILE_CONTENT_SYNTHETIC_NEVER_ECHO",
+        });
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, json);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldContain("\"code\":\"validation_error\"");
+        json.ShouldNotContain("FILE_CONTENT_SYNTHETIC_NEVER_ECHO", Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task CommitEndpointShouldSubmitRouteAuthoritativeWorkspacePayload()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidRequest("commit_workspace");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.CommandType.ShouldBe(FoldersServerModule.CommitWorkspaceCommandType);
+        submitted.AggregateId.ShouldBe("folder-a");
+        submitted.MessageId.ShouldBe("idempotency-a");
+        submitted.CorrelationId.ShouldBe("correlation-a");
+        submitted.Extensions.ShouldNotBeNull();
+        submitted.Extensions["taskId"].ShouldBe("task-a");
+        submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+        submitted.Payload.GetProperty("operationId").GetString().ShouldBe("operation-a");
+        submitted.Payload.GetProperty("taskId").GetString().ShouldBe("task-a");
+        submitted.Payload.GetProperty("branchRefTarget").GetString().ShouldBe("branchref_primary");
+        submitted.Payload.GetProperty("changedPathMetadataDigest").GetString().ShouldBe("digest_workspace_a");
+        submitted.Payload.GetProperty("authorMetadataReference").GetString().ShouldBe("authorref_service");
+        submitted.Payload.GetProperty("commitMessageClassification").GetString().ShouldBe("generated_summary");
     }
 
     private static WebApplication BuildApp(RecordingEventStoreGatewayClient gateway)
@@ -192,6 +254,20 @@ public sealed class MutationEnvelopeEndpointMatrixTests
                     fileOperationKind = "remove",
                     transportOperation = "metadataOnlyRemoval",
                     pathMetadata = PathMetadata(),
+                }),
+            },
+            "commit_workspace" => new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/commits")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    operationId = "operation-a",
+                    taskId = "task-a",
+                    branchRefTarget = "branchref_primary",
+                    changedPathMetadataDigest = "digest_workspace_a",
+                    authorMetadataReference = "authorref_service",
+                    commitMessageClassification = "generated_summary",
+                    auditMetadataKeys = new[] { "operation_id" },
                 }),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(routeName), routeName, "Unknown mutating route."),

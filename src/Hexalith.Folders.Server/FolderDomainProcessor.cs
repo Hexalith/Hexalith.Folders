@@ -22,6 +22,7 @@ public sealed partial class FolderDomainProcessor(
     WorkspaceLockAcquisitionService workspaceLockAcquisitionService,
     WorkspaceLockReleaseService workspaceLockReleaseService,
     WorkspaceFileMutationService workspaceFileMutationService,
+    WorkspaceCommitService workspaceCommitService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -53,6 +54,8 @@ public sealed partial class FolderDomainProcessor(
         workspaceLockReleaseService ?? throw new ArgumentNullException(nameof(workspaceLockReleaseService));
     private readonly WorkspaceFileMutationService _workspaceFileMutationService =
         workspaceFileMutationService ?? throw new ArgumentNullException(nameof(workspaceFileMutationService));
+    private readonly WorkspaceCommitService _workspaceCommitService =
+        workspaceCommitService ?? throw new ArgumentNullException(nameof(workspaceCommitService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -112,6 +115,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.MutateFilesCommandType, StringComparison.Ordinal))
         {
             return await ProcessMutateFilesAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.CommitWorkspaceCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessCommitWorkspaceAsync(command).ConfigureAwait(false);
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
@@ -723,6 +731,84 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
+    private async Task<DomainResult> ProcessCommitWorkspaceAsync(CommandEnvelope envelope)
+    {
+        CommitWorkspacePayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<CommitWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || string.IsNullOrWhiteSpace(envelope.AggregateId)
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = ReadRequiredTaskId(envelope);
+        if (!string.Equals(payload.TaskId, taskId, StringComparison.Ordinal))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        WorkspaceCommitRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [WorkspaceCommitService.ActionToken]),
+            envelope.AggregateId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.WorkspaceId ?? string.Empty,
+            payload.OperationId ?? string.Empty,
+            payload.AuthorMetadataReference ?? string.Empty,
+            payload.BranchRefTarget ?? string.Empty,
+            payload.CommitMessageClassification ?? string.Empty,
+            payload.ChangedPathMetadataDigest ?? string.Empty,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _workspaceCommitService.CommitAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
     private static string ReadRequiredTaskId(CommandEnvelope envelope)
         => TryReadCanonicalExtension(envelope.Extensions, "taskId")!;
 
@@ -840,7 +926,8 @@ public sealed partial class FolderDomainProcessor(
         if (code == FolderResultCode.StateTransitionInvalid
             && (string.Equals(envelope.CommandType, FoldersServerModule.PrepareWorkspaceCommandType, StringComparison.Ordinal)
                 || string.Equals(envelope.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal)
-                || string.Equals(envelope.CommandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal)))
+                || string.Equals(envelope.CommandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal)
+                || string.Equals(envelope.CommandType, FoldersServerModule.CommitWorkspaceCommandType, StringComparison.Ordinal)))
         {
             return WorkspaceTransitionInvalidRejected.Create(envelope.CommandType, correlationId, taskId, idempotencyKey);
         }
@@ -939,4 +1026,15 @@ public sealed partial class FolderDomainProcessor(
         string? MediaType,
         string? TransportEvidenceKind,
         long? ObservedByteLength);
+
+    private sealed record CommitWorkspacePayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? WorkspaceId,
+        [property: JsonRequired] string? OperationId,
+        [property: JsonRequired] string? TaskId,
+        [property: JsonRequired] string? BranchRefTarget,
+        [property: JsonRequired] string? ChangedPathMetadataDigest,
+        [property: JsonRequired] string? AuthorMetadataReference,
+        [property: JsonRequired] string? CommitMessageClassification,
+        [property: JsonRequired] IReadOnlyList<string>? AuditMetadataKeys);
 }

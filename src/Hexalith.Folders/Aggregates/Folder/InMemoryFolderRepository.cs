@@ -390,7 +390,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             new WorkspaceProviderOutcome(
                 operationId,
                 ProviderOutcomeStateFor(currentState),
-                ProviderOutcomeCategoryFor(currentState, state.RepositoryBindingFailureCategory),
+                ProviderOutcomeCategoryFor(currentState, state.WorkspaceCommitOutcomeCategory ?? state.RepositoryBindingFailureCategory),
                 "provref_workspace_status",
                 retryEligibility,
                 null,
@@ -399,7 +399,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             null,
             freshness,
             new WorkspaceProjectionLag(0, "projection"),
-            LastFailureCategoryFor(currentState, state.RepositoryBindingFailureCategory),
+            LastFailureCategoryFor(currentState, state.WorkspaceCommitFailureCategory ?? state.RepositoryBindingFailureCategory),
             new FolderLifecycleEvidenceScope(
                 state.ManagedTenantId,
                 state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,

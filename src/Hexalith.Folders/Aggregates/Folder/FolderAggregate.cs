@@ -633,6 +633,144 @@ public static class FolderAggregate
         return FolderResult.Accepted(command, [accepted]);
     }
 
+    public static FolderResult ValidateCommitPreconditions(FolderState state, CommitWorkspace command, DateTimeOffset occurredAt)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(command);
+
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return FolderResult.Rejected(command, validation.Code);
+        }
+
+        if (!state.IsCreated)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+        }
+
+        FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.Workspace);
+        if (activeMutationGuard != FolderResultCode.Accepted)
+        {
+            return FolderResult.Rejected(command, activeMutationGuard);
+        }
+
+        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
+            || string.IsNullOrWhiteSpace(state.WorkspaceId)
+            || !string.Equals(state.WorkspaceId, command.WorkspaceId, StringComparison.Ordinal)
+            || state.WorkspaceLifecycleState != FolderWorkspaceLifecycleState.ChangesStaged)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
+        if (string.IsNullOrWhiteSpace(state.WorkspaceLockId)
+            || string.IsNullOrWhiteSpace(state.WorkspaceLockHolderTaskId)
+            || !string.Equals(state.WorkspaceLockHolderTaskId, command.TaskId, StringComparison.Ordinal))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.LockNotOwned);
+        }
+
+        if (state.WorkspaceLockExpiresAt is null || state.WorkspaceLockExpiresAt.Value <= occurredAt)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.LockExpired);
+        }
+
+        return FolderResult.Accepted(command, []);
+    }
+
+    public static FolderResult Handle(
+        FolderState state,
+        CommitWorkspace command,
+        WorkspaceCommitExecutionResult execution,
+        DateTimeOffset occurredAt)
+    {
+        ArgumentNullException.ThrowIfNull(execution);
+
+        FolderResult preconditions = ValidateCommitPreconditions(state, command, occurredAt);
+        if (preconditions.Code != FolderResultCode.Accepted)
+        {
+            return preconditions;
+        }
+
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        if (!IsValidCommitExecution(execution))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.MalformedEvidence);
+        }
+
+        IFolderEvent folderEvent = execution.Status switch
+        {
+            WorkspaceCommitExecutionStatus.Succeeded => new WorkspaceCommitSucceeded(
+                command.ManagedTenantId,
+                command.OrganizationId,
+                command.FolderId,
+                command.WorkspaceId,
+                FolderWorkspaceLifecycleEvent.CommitSucceeded,
+                command.OperationId,
+                execution.CommitReference!,
+                execution.ProviderOutcomeCategory,
+                command.AuthorMetadataReference,
+                command.BranchRefTarget,
+                command.CommitMessageClassification,
+                command.ChangedPathMetadataDigest,
+                command.ActorPrincipalId,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey,
+                validation.IdempotencyFingerprint!,
+                occurredAt),
+            WorkspaceCommitExecutionStatus.KnownFailure => new WorkspaceCommitFailed(
+                command.ManagedTenantId,
+                command.OrganizationId,
+                command.FolderId,
+                command.WorkspaceId,
+                FolderWorkspaceLifecycleEvent.CommitFailed,
+                command.OperationId,
+                execution.FailureCategory!,
+                execution.ProviderOutcomeCategory,
+                command.AuthorMetadataReference,
+                command.BranchRefTarget,
+                command.CommitMessageClassification,
+                command.ChangedPathMetadataDigest,
+                command.ActorPrincipalId,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey,
+                validation.IdempotencyFingerprint!,
+                occurredAt),
+            WorkspaceCommitExecutionStatus.UnknownOutcome or WorkspaceCommitExecutionStatus.ReconciliationRequired => new WorkspaceCommitOutcomeUnknown(
+                command.ManagedTenantId,
+                command.OrganizationId,
+                command.FolderId,
+                command.WorkspaceId,
+                FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown,
+                command.OperationId,
+                execution.ProviderOutcomeCategory,
+                FolderCommandValidator.DeriveCommitReconciliationReference(command),
+                execution.Status == WorkspaceCommitExecutionStatus.ReconciliationRequired,
+                command.AuthorMetadataReference,
+                command.BranchRefTarget,
+                command.CommitMessageClassification,
+                command.ChangedPathMetadataDigest,
+                command.ActorPrincipalId,
+                command.CorrelationId,
+                command.TaskId,
+                command.IdempotencyKey,
+                validation.IdempotencyFingerprint!,
+                occurredAt),
+            _ => throw new ArgumentOutOfRangeException(nameof(execution), execution.Status, "Unknown commit execution status."),
+        };
+
+        return FolderResult.Accepted(command, [folderEvent]);
+    }
+
     // Convenience overloads for tests that do not care about deterministic timestamps.
     // Production callers must always supply OccurredAt from the gate's TimeProvider so
     // events carry real wall-clock evidence rather than DateTimeOffset.MinValue.
@@ -665,6 +803,30 @@ public static class FolderAggregate
 
     public static FolderResult Handle(FolderState state, MutateWorkspaceFile command)
         => Handle(state, command, DateTimeOffset.MinValue);
+
+    public static FolderResult Handle(
+        FolderState state,
+        CommitWorkspace command,
+        WorkspaceCommitExecutionResult execution)
+        => Handle(state, command, execution, DateTimeOffset.MinValue);
+
+    private static bool IsValidCommitExecution(WorkspaceCommitExecutionResult execution)
+        => execution.Status switch
+        {
+            WorkspaceCommitExecutionStatus.Succeeded =>
+                FolderCommandValidator.IsValidCommitReference(execution.CommitReference)
+                && FolderCommandValidator.IsValidCommitOutcomeCategory(execution.ProviderOutcomeCategory),
+            WorkspaceCommitExecutionStatus.KnownFailure =>
+                FolderCommandValidator.IsValidCommitOutcomeCategory(execution.FailureCategory)
+                && string.Equals(execution.FailureCategory, execution.ProviderOutcomeCategory, StringComparison.Ordinal),
+            WorkspaceCommitExecutionStatus.UnknownOutcome =>
+                string.Equals(execution.ProviderOutcomeCategory, "unknown_provider_outcome", StringComparison.Ordinal)
+                && FolderCommandValidator.IsValidCommitReconciliationReference(execution.ReconciliationReference),
+            WorkspaceCommitExecutionStatus.ReconciliationRequired =>
+                string.Equals(execution.ProviderOutcomeCategory, "reconciliation_required", StringComparison.Ordinal)
+                && FolderCommandValidator.IsValidCommitReconciliationReference(execution.ReconciliationReference),
+            _ => false,
+        };
 
     // Grant emits events per operation, skipping tuples that are already granted. Revoke
     // mirrors this per-op semantics: it emits revoke events for present tuples, skips
