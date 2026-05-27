@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-27T17:04:34+02:00
+# last_updated: 2026-05-27T17:35:00+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-27T17:04:34+02:00
+last_updated: 2026-05-27T17:56:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -107,7 +107,7 @@ development_status:
   4-14-emit-metadata-only-audit-and-observability: done
   4-15-validate-lifecycle-replay-and-projection-determinism: done
   4-16-validate-lifecycle-security-boundaries: done
-  4-17-seed-lifecycle-capacity-test-harness: backlog
+  4-17-seed-lifecycle-capacity-test-harness: done
   epic-4-retrospective: optional
 
   # Epic 5: Cross-Surface Workflow Parity

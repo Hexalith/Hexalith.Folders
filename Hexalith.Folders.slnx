@@ -30,6 +30,8 @@
     <Project Path="src/Hexalith.Folders/Hexalith.Folders.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/load/Hexalith.Folders.LoadTests.csproj" />
+    <Project Path="tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj" />
     <Project Path="tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj" />

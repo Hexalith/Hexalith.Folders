@@ -1,5 +1,37 @@
 # Test Automation Summary
 
+## Story 4.17 Lifecycle Capacity Harness
+
+### Generated Tests
+
+- [x] `tests/Hexalith.Folders.LoadTests.Tests/LifecycleCapacityHarnessTests.cs` - Covers direct prepare, lock, mutate, and commit driver execution through the production lifecycle services.
+- [x] The harness tests verify safe synthetic identifiers, unique mutating idempotency keys, tenant-scoped recorder counts for overlapping identifiers, metadata-only reference-pending evidence shape, and fail-fast invalid profile/ordinal handling.
+- [x] Review coverage verifies generated NBomber log files do not retain local absolute report-folder paths after the harness run.
+
+### Validation
+
+- [x] Focused load harness test project restore passed.
+- [x] Focused load harness test project build passed with 0 warnings and 0 errors.
+- [x] xUnit v3 in-process harness tests passed: 5 total, 0 failed.
+- [x] Load harness self-check passed.
+- [x] Quick NBomber lifecycle run passed: 3 full-lifecycle iterations, 0 failures, `thresholds: reference_pending`, 12 measured operations, and 12 idempotency keys.
+- [x] Generated report/log redaction scan passed for `/mnt/`, `/home/`, `C:\`, and `Users` path markers.
+- [x] `git diff --check` passed; Git reported line-ending warnings for existing CRLF-normalized files only.
+
+### Commands Run
+
+```text
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 PATH=/home/administrator/.dotnet:$PATH dotnet restore tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj --tlp:off -v:minimal /nr:false
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 PATH=/home/administrator/.dotnet:$PATH dotnet build tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj --no-restore --tlp:off -v:minimal /nr:false /m:1
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 PATH=/home/administrator/.dotnet:$PATH dotnet tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.LoadTests.Tests.dll
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 PATH=/home/administrator/.dotnet:$PATH dotnet run --project tests/load/Hexalith.Folders.LoadTests.csproj --no-build -- --self-check --profile quick --report-folder /tmp/hexalith-folders-load-self-check-final
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 PATH=/home/administrator/.dotnet:$PATH dotnet run --project tests/load/Hexalith.Folders.LoadTests.csproj --no-build -- --profile quick --report-folder /tmp/hexalith-folders-load-reports-final --run-id story-4-17-validation-final
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 NUGET_FALLBACK_PACKAGES= PATH=/home/administrator/.dotnet:$PATH dotnet test tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj --no-build --tlp:off -v:minimal /nr:false /m:1
+DOTNET_ROOT=/home/administrator/.dotnet DOTNET_CLI_HOME=/tmp DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 NUGET_FALLBACK_PACKAGES= PATH=/home/administrator/.dotnet:$PATH dotnet run --project tests/load/Hexalith.Folders.LoadTests.csproj --no-build -- --profile quick --report-folder artifacts/load-reports/quick --run-id story-4-17-review-sanitized
+rg -n "/mnt/|/home/|C:\\|Users" artifacts/load-reports/quick tests/load/bin/Debug/net10.0/artifacts/load-reports/quick
+git diff --check
+```
+
 ## Generated Tests
 
 ### API Tests
