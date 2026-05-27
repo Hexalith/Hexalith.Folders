@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-27T18:45:00+02:00
+# last_updated: 2026-05-27T05:58:06+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-27T18:45:00+02:00
+last_updated: 2026-05-27T05:58:06+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -94,7 +94,7 @@ development_status:
   4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: done
   4-2-prepare-workspace-from-a-ready-repository-backed-folder: done
   4-3-acquire-task-scoped-workspace-lock: done
-  4-4-inspect-lock-state-and-release-the-workspace-lock: backlog
+  4-4-inspect-lock-state-and-release-the-workspace-lock: done
   4-5-enforce-workspace-path-policy-before-file-mutations: backlog
   4-6-add-and-change-files-with-inline-and-streamed-content-transport: backlog
   4-7-remove-files-with-metadata-only-events-and-provider-safe-ordering: backlog

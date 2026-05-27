@@ -126,6 +126,7 @@ public static class FolderStateApply
             WorkspacePreparationRequested requested => ApplyWorkspacePreparationRequested(state, requested),
             FolderWorkspaceLifecycleEventRecorded recorded => ApplyWorkspaceLifecycleEvent(state, recorded),
             WorkspaceLockAcquired acquired => ApplyWorkspaceLockAcquired(state, acquired),
+            WorkspaceLockReleased released => ApplyWorkspaceLockReleased(state, released),
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(
@@ -317,6 +318,30 @@ public static class FolderStateApply
             WorkspaceLockExpiresAt = acquired.ExpiresAt,
             WorkspaceLockRetryEligibilityBasis = acquired.RetryEligibilityBasis,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, acquired),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceLockReleased(FolderState state, WorkspaceLockReleased released)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            released.WorkspaceLifecycleEvent);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, released, transition, released.WorkspaceId, released.LockId) with
+        {
+            WorkspaceLockId = null,
+            WorkspaceLockIntent = null,
+            WorkspaceLockRequestedLeaseSeconds = null,
+            WorkspaceLockHolderTaskId = null,
+            WorkspaceLockAcquiredAt = null,
+            WorkspaceLockEffectiveAt = null,
+            WorkspaceLockExpiresAt = null,
+            WorkspaceLockRetryEligibilityBasis = null,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, released),
         };
     }
 

@@ -234,4 +234,51 @@ internal static class FolderCommandFactory
             taskId,
             idempotencyKey,
             payloadTenantId);
+
+    public static ReleaseWorkspaceLock ReleaseWorkspaceLock(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        string requestSchemaVersion = "v1",
+        string workspaceId = "workspace-a",
+        string? lockId = null,
+        string? lockOwnershipProof = null,
+        string releaseReasonCode = "caller_completed",
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-release-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-release-a",
+        string? payloadTenantId = null)
+    {
+        string resolvedLockId = lockId ?? DefaultLockId();
+        string resolvedProof = lockOwnershipProof
+            ?? FolderCommandValidator.DeriveWorkspaceLockOwnershipProof(
+                managedTenantId,
+                folderId,
+                workspaceId,
+                taskId,
+                resolvedLockId);
+
+        return new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            requestSchemaVersion,
+            workspaceId,
+            resolvedLockId,
+            resolvedProof,
+            releaseReasonCode,
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId);
+    }
+
+    public static string DefaultLockId()
+    {
+        LockWorkspace command = LockWorkspace();
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        return FolderCommandValidator.DeriveWorkspaceLockId(command, validation.IdempotencyFingerprint!);
+    }
 }

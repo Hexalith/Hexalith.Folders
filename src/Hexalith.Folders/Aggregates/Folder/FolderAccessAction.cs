@@ -9,6 +9,7 @@ public static class FolderAccessAction
         "archive_folder",
         "prepare_workspace",
         "lock_workspace",
+        "read_workspace_lock",
         "read_metadata",
         "read_file_content",
         "mutate_files",

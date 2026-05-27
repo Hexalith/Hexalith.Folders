@@ -43,6 +43,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<BranchRefPolicyConfigurationService>();
         services.TryAddScoped<WorkspacePreparationService>();
         services.TryAddScoped<WorkspaceLockAcquisitionService>();
+        services.TryAddScoped<WorkspaceLockReleaseService>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());

@@ -180,6 +180,20 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(lockWorkspace));
         }
 
+        if (command is ReleaseWorkspaceLock releaseWorkspaceLock)
+        {
+            if (!string.Equals(releaseWorkspaceLock.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !IsValidIdentifier(releaseWorkspaceLock.WorkspaceId)
+                || !IsValidIdentifier(releaseWorkspaceLock.LockId)
+                || !IsValidIdentifier(releaseWorkspaceLock.LockOwnershipProof)
+                || !IsValidReleaseReasonCode(releaseWorkspaceLock.ReleaseReasonCode))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(releaseWorkspaceLock));
+        }
+
         if (command is not CreateFolder create)
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
@@ -415,6 +429,46 @@ public static partial class FolderCommandValidator
         string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
         return $"workspace_lock_{digest[..32]}";
     }
+
+    internal static string DeriveWorkspaceLockOwnershipProof(
+        string managedTenantId,
+        string folderId,
+        string workspaceId,
+        string taskId,
+        string lockId)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "workspace-lock-ownership-proof-v1");
+        AppendField(hash, managedTenantId);
+        AppendField(hash, folderId);
+        AppendField(hash, workspaceId);
+        AppendField(hash, taskId);
+        AppendField(hash, lockId);
+
+        string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+        return $"lock_proof_{digest[..32]}";
+    }
+
+    private static string Fingerprint(ReleaseWorkspaceLock command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.LockId);
+        AppendField(hash, command.LockOwnershipProof);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, command.WorkspaceId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static bool IsValidReleaseReasonCode(string? value)
+        => value is "caller_completed"
+            or "caller_abandoned"
+            or "operator_requested"
+            or "authorization_revoked"
+            or "task_cancelled"
+            or "lock_revoked";
 
     private static string Fingerprint(IFolderAccessCommand command, IReadOnlyList<FolderAccessOperation> operations)
     {

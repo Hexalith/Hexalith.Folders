@@ -20,6 +20,7 @@ public sealed partial class FolderDomainProcessor(
     BranchRefPolicyConfigurationService branchRefPolicyConfigurationService,
     WorkspacePreparationService workspacePreparationService,
     WorkspaceLockAcquisitionService workspaceLockAcquisitionService,
+    WorkspaceLockReleaseService workspaceLockReleaseService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -47,6 +48,8 @@ public sealed partial class FolderDomainProcessor(
         workspacePreparationService ?? throw new ArgumentNullException(nameof(workspacePreparationService));
     private readonly WorkspaceLockAcquisitionService _workspaceLockAcquisitionService =
         workspaceLockAcquisitionService ?? throw new ArgumentNullException(nameof(workspaceLockAcquisitionService));
+    private readonly WorkspaceLockReleaseService _workspaceLockReleaseService =
+        workspaceLockReleaseService ?? throw new ArgumentNullException(nameof(workspaceLockReleaseService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -91,6 +94,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal))
         {
             return await ProcessLockWorkspaceAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessReleaseWorkspaceLockAsync(command).ConfigureAwait(false);
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
@@ -547,6 +555,79 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
+    private async Task<DomainResult> ProcessReleaseWorkspaceLockAsync(CommandEnvelope envelope)
+    {
+        ReleaseWorkspaceLockPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<ReleaseWorkspaceLockPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || string.IsNullOrWhiteSpace(envelope.AggregateId)
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId)
+            || string.IsNullOrWhiteSpace(payload.LockId)
+            || string.IsNullOrWhiteSpace(payload.LockOwnershipProof))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        WorkspaceLockReleaseRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [WorkspaceLockReleaseService.ActionToken]),
+            envelope.AggregateId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.WorkspaceId ?? string.Empty,
+            payload.LockId ?? string.Empty,
+            payload.LockOwnershipProof ?? string.Empty,
+            payload.ReleaseReasonCode ?? string.Empty,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _workspaceLockReleaseService.ReleaseAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
     private static string TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
     {
         if (extensions is null
@@ -629,9 +710,25 @@ public sealed partial class FolderDomainProcessor(
             return DuplicateWorkspaceLockRejected.Create(envelope.CommandType, correlationId, taskId, idempotencyKey);
         }
 
+        if ((code is FolderResultCode.LockNotOwned or FolderResultCode.LockExpired)
+            && string.Equals(envelope.CommandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal))
+        {
+            return FolderCommandRejected.Create(
+                code: code.ToString(),
+                commandType: envelope.CommandType,
+                managedTenantId: result?.ManagedTenantId,
+                organizationId: result?.OrganizationId,
+                folderId: result?.FolderId,
+                actorPrincipalId: result?.ActorPrincipalId,
+                correlationId: correlationId,
+                taskId: taskId,
+                idempotencyKey: idempotencyKey);
+        }
+
         if (code == FolderResultCode.StateTransitionInvalid
             && (string.Equals(envelope.CommandType, FoldersServerModule.PrepareWorkspaceCommandType, StringComparison.Ordinal)
-                || string.Equals(envelope.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal)))
+                || string.Equals(envelope.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal)
+                || string.Equals(envelope.CommandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal)))
         {
             return WorkspaceTransitionInvalidRejected.Create(envelope.CommandType, correlationId, taskId, idempotencyKey);
         }
@@ -692,4 +789,11 @@ public sealed partial class FolderDomainProcessor(
         [property: JsonRequired] string? WorkspaceId,
         [property: JsonRequired] string? LockIntent,
         [property: JsonRequired] int? RequestedLeaseSeconds);
+
+    private sealed record ReleaseWorkspaceLockPayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? WorkspaceId,
+        [property: JsonRequired] string? LockId,
+        [property: JsonRequired] string? LockOwnershipProof,
+        [property: JsonRequired] string? ReleaseReasonCode);
 }

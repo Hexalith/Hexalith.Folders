@@ -17,12 +17,14 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly object _gate = new();
     private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
     private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
+    private readonly InMemoryWorkspaceLockStatusReadModel? _workspaceLockStatusReadModel;
     private readonly TimeProvider _timeProvider;
 
     public InMemoryFolderRepository(
         IFolderLifecycleStatusReadModel? lifecycleReadModel = null,
         IBranchRefPolicyReadModel? branchRefPolicyReadModel = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null,
+        IWorkspaceLockStatusReadModel? workspaceLockStatusReadModel = null)
     {
         // Lifecycle snapshot writes go through the concrete in-memory read-model. Fail loud
         // if a different IFolderLifecycleStatusReadModel implementation was injected so the
@@ -41,8 +43,16 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 nameof(branchRefPolicyReadModel));
         }
 
+        if (workspaceLockStatusReadModel is not null && workspaceLockStatusReadModel is not InMemoryWorkspaceLockStatusReadModel)
+        {
+            throw new ArgumentException(
+                $"InMemoryFolderRepository requires {nameof(InMemoryWorkspaceLockStatusReadModel)}; received {workspaceLockStatusReadModel.GetType().Name}.",
+                nameof(workspaceLockStatusReadModel));
+        }
+
         _branchRefPolicyReadModel = (InMemoryBranchRefPolicyReadModel?)branchRefPolicyReadModel;
         _lifecycleReadModel = (InMemoryFolderLifecycleStatusReadModel?)lifecycleReadModel;
+        _workspaceLockStatusReadModel = (InMemoryWorkspaceLockStatusReadModel?)workspaceLockStatusReadModel;
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
@@ -102,6 +112,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             EventsAppended += events.Count;
             SaveLifecycleSnapshot(next, observedAt);
             SaveBranchRefPolicySnapshot(next, observedAt);
+            SaveWorkspaceLockStatusSnapshot(next, observedAt);
             return FolderAppendOutcome.Appended;
         }
     }
@@ -160,6 +171,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
             SaveLifecycleSnapshot(seeded, observedAt);
             SaveBranchRefPolicySnapshot(seeded, observedAt);
+            SaveWorkspaceLockStatusSnapshot(seeded, observedAt);
         }
     }
 
@@ -261,6 +273,49 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 "read_branch_ref_policy",
                 policy.TaskId,
                 policy.CorrelationId,
+                AuthorizationWatermark: null)));
+    }
+
+    private void SaveWorkspaceLockStatusSnapshot(FolderState state, DateTimeOffset observedAt)
+    {
+        if (_workspaceLockStatusReadModel is null
+            || !state.IsCreated
+            || string.IsNullOrWhiteSpace(state.ManagedTenantId)
+            || string.IsNullOrWhiteSpace(state.FolderId)
+            || string.IsNullOrWhiteSpace(state.WorkspaceId)
+            || state.WorkspaceLifecycleState is null)
+        {
+            return;
+        }
+
+        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
+        DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
+        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
+            folderKey,
+            rawObservedAt,
+            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+
+        _workspaceLockStatusReadModel.Save(new WorkspaceLockStatusReadModelSnapshot(
+            state.ManagedTenantId,
+            state.FolderId,
+            state.WorkspaceId,
+            FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value),
+            string.IsNullOrWhiteSpace(state.WorkspaceLockId) ? "unlocked" : "locked",
+            state.WorkspaceLockId,
+            state.WorkspaceLockHolderTaskId,
+            state.WorkspaceLockAcquiredAt,
+            state.WorkspaceLockEffectiveAt,
+            state.WorkspaceLockExpiresAt,
+            state.WorkspaceLockRetryEligibilityBasis,
+            state.WorkspaceCorrelationId,
+            state.WorkspaceTaskId,
+            new FolderLifecycleFreshness("read_your_writes", clamped, "in-memory-folder-repository", Stale: false, ReasonCode: null),
+            new FolderLifecycleEvidenceScope(
+                state.ManagedTenantId,
+                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                WorkspaceLockStatusQueryHandler.ActionToken,
+                state.WorkspaceTaskId,
+                state.WorkspaceCorrelationId,
                 AuthorizationWatermark: null)));
     }
 

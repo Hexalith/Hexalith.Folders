@@ -55,6 +55,18 @@ public sealed class FolderCommandActionTokenMapperTests
         mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
     }
 
+    [Fact]
+    public void ReleaseWorkspaceLockCommandShouldMapToWorkspaceLockAction()
+    {
+        FolderCommandActionTokenMapper mapper = new();
+
+        FolderCommandActionMapping? mapping = mapper.Map(Command(FoldersServerModule.ReleaseWorkspaceLockCommandType));
+
+        mapping.ShouldNotBeNull();
+        mapping.ActionToken.ShouldBe("lock_workspace");
+        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.FolderAggregate);
+    }
+
     [Theory]
     [InlineData("Hexalith.Folders.Commands.GrantFolderAccess")]
     [InlineData("Hexalith.Folders.Commands.RevokeFolderAccess")]

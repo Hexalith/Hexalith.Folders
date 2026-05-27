@@ -44,6 +44,8 @@ public enum FolderResultCode
     ProviderPermissionInsufficient,
     RepositoryConflict,
     LockConflict,
+    LockNotOwned,
+    LockExpired,
     UnknownProviderOutcome,
     ReconciliationRequired,
     FolderNotFound,
