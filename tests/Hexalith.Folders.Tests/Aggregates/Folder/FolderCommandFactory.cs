@@ -207,4 +207,31 @@ internal static class FolderCommandFactory
             taskId,
             idempotencyKey,
             payloadTenantId);
+
+    public static LockWorkspace LockWorkspace(
+        string managedTenantId = "tenant-a",
+        string organizationId = "organization-a",
+        string folderId = "folder-a",
+        string requestSchemaVersion = "v1",
+        string workspaceId = "workspace-a",
+        string lockIntent = "exclusive_write",
+        int requestedLeaseSeconds = 3600,
+        string actorPrincipalId = "principal-a",
+        string correlationId = "correlation-a",
+        string taskId = "task-a",
+        string idempotencyKey = "idempotency-lock-a",
+        string? payloadTenantId = null)
+        => new(
+            managedTenantId,
+            organizationId,
+            folderId,
+            requestSchemaVersion,
+            workspaceId,
+            lockIntent,
+            requestedLeaseSeconds,
+            actorPrincipalId,
+            correlationId,
+            taskId,
+            idempotencyKey,
+            payloadTenantId);
 }

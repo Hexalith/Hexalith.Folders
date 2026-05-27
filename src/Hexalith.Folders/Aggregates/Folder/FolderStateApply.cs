@@ -55,6 +55,14 @@ public static class FolderStateApply
                 WorkspaceCorrelationId = null,
                 WorkspaceTaskId = null,
                 WorkspaceLifecycleUpdatedAt = null,
+                WorkspaceLockId = null,
+                WorkspaceLockIntent = null,
+                WorkspaceLockRequestedLeaseSeconds = null,
+                WorkspaceLockHolderTaskId = null,
+                WorkspaceLockAcquiredAt = null,
+                WorkspaceLockEffectiveAt = null,
+                WorkspaceLockExpiresAt = null,
+                WorkspaceLockRetryEligibilityBasis = null,
                 RepositoryBindingId = null,
                 ProviderBindingRef = null,
                 RepositoryProfileRef = null,
@@ -117,6 +125,7 @@ public static class FolderStateApply
             ProviderOutcomeUnknown unknown => ApplyProviderOutcomeUnknown(state, unknown),
             WorkspacePreparationRequested requested => ApplyWorkspacePreparationRequested(state, requested),
             FolderWorkspaceLifecycleEventRecorded recorded => ApplyWorkspaceLifecycleEvent(state, recorded),
+            WorkspaceLockAcquired acquired => ApplyWorkspaceLockAcquired(state, acquired),
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(
@@ -284,6 +293,30 @@ public static class FolderStateApply
         return WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
         {
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, recorded),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceLockAcquired(FolderState state, WorkspaceLockAcquired acquired)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            acquired.WorkspaceLifecycleEvent);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, acquired, transition, acquired.WorkspaceId, acquired.LockId) with
+        {
+            WorkspaceLockId = acquired.LockId,
+            WorkspaceLockIntent = acquired.LockIntent,
+            WorkspaceLockRequestedLeaseSeconds = acquired.RequestedLeaseSeconds,
+            WorkspaceLockHolderTaskId = acquired.HolderTaskId,
+            WorkspaceLockAcquiredAt = acquired.AcquiredAt,
+            WorkspaceLockEffectiveAt = acquired.EffectiveAt,
+            WorkspaceLockExpiresAt = acquired.ExpiresAt,
+            WorkspaceLockRetryEligibilityBasis = acquired.RetryEligibilityBasis,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, acquired),
         };
     }
 

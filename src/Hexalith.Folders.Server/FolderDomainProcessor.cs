@@ -19,6 +19,7 @@ public sealed partial class FolderDomainProcessor(
     RepositoryBindingService repositoryBindingService,
     BranchRefPolicyConfigurationService branchRefPolicyConfigurationService,
     WorkspacePreparationService workspacePreparationService,
+    WorkspaceLockAcquisitionService workspaceLockAcquisitionService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -44,6 +45,8 @@ public sealed partial class FolderDomainProcessor(
         branchRefPolicyConfigurationService ?? throw new ArgumentNullException(nameof(branchRefPolicyConfigurationService));
     private readonly WorkspacePreparationService _workspacePreparationService =
         workspacePreparationService ?? throw new ArgumentNullException(nameof(workspacePreparationService));
+    private readonly WorkspaceLockAcquisitionService _workspaceLockAcquisitionService =
+        workspaceLockAcquisitionService ?? throw new ArgumentNullException(nameof(workspaceLockAcquisitionService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -83,6 +86,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.PrepareWorkspaceCommandType, StringComparison.Ordinal))
         {
             return await ProcessPrepareWorkspaceAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessLockWorkspaceAsync(command).ConfigureAwait(false);
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
@@ -469,6 +477,76 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
+    private async Task<DomainResult> ProcessLockWorkspaceAsync(CommandEnvelope envelope)
+    {
+        LockWorkspacePayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<LockWorkspacePayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || string.IsNullOrWhiteSpace(envelope.AggregateId)
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        WorkspaceLockAcquisitionRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [WorkspaceLockAcquisitionService.ActionToken]),
+            envelope.AggregateId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.WorkspaceId ?? string.Empty,
+            payload.LockIntent ?? string.Empty,
+            payload.RequestedLeaseSeconds ?? 0,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _workspaceLockAcquisitionService.AcquireAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
     private static string TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
     {
         if (extensions is null
@@ -534,18 +612,40 @@ public sealed partial class FolderDomainProcessor(
         // fail the canonical filter are dropped to null and a metadata-only trace tag is
         // stamped so operators can correlate the dropped-value case without identifier text
         // leaking through the payload.
-        IRejectionEvent rejection = FolderCommandRejected.Create(
+        IRejectionEvent rejection = CreateRejectionEvent(envelope, code, result);
+
+        return DomainResult.Rejection([rejection]);
+    }
+
+    private static IRejectionEvent CreateRejectionEvent(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
+    {
+        string correlationId = result?.CorrelationId ?? envelope.CorrelationId;
+        string? taskId = result?.TaskId;
+        string idempotencyKey = result?.IdempotencyKey ?? envelope.MessageId;
+
+        if (code == FolderResultCode.LockConflict
+            && string.Equals(envelope.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal))
+        {
+            return DuplicateWorkspaceLockRejected.Create(envelope.CommandType, correlationId, taskId, idempotencyKey);
+        }
+
+        if (code == FolderResultCode.StateTransitionInvalid
+            && (string.Equals(envelope.CommandType, FoldersServerModule.PrepareWorkspaceCommandType, StringComparison.Ordinal)
+                || string.Equals(envelope.CommandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal)))
+        {
+            return WorkspaceTransitionInvalidRejected.Create(envelope.CommandType, correlationId, taskId, idempotencyKey);
+        }
+
+        return FolderCommandRejected.Create(
             code: code.ToString(),
             commandType: envelope.CommandType,
             managedTenantId: result?.ManagedTenantId,
             organizationId: result?.OrganizationId,
             folderId: result?.FolderId,
             actorPrincipalId: result?.ActorPrincipalId,
-            correlationId: result?.CorrelationId ?? envelope.CorrelationId,
-            taskId: result?.TaskId,
-            idempotencyKey: result?.IdempotencyKey ?? envelope.MessageId);
-
-        return DomainResult.Rejection([rejection]);
+            correlationId: correlationId,
+            taskId: taskId,
+            idempotencyKey: idempotencyKey);
     }
 
     private sealed record ArchiveFolderPayload(
@@ -586,4 +686,10 @@ public sealed partial class FolderDomainProcessor(
         [property: JsonRequired] string? RepositoryBindingId,
         [property: JsonRequired] string? BranchRefPolicyRef,
         [property: JsonRequired] string? WorkspacePolicyRef);
+
+    private sealed record LockWorkspacePayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? WorkspaceId,
+        [property: JsonRequired] string? LockIntent,
+        [property: JsonRequired] int? RequestedLeaseSeconds);
 }

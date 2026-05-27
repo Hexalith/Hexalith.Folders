@@ -38,6 +38,8 @@ public static class FoldersServerModule
 
     public const string PrepareWorkspaceCommandType = "Hexalith.Folders.Commands.PrepareWorkspace";
 
+    public const string LockWorkspaceCommandType = "Hexalith.Folders.Commands.LockWorkspace";
+
     // Maximum length for canonical identifiers (correlation id, task id, idempotency key,
     // folder id, taskId extension). Shared between the REST endpoint regex, the processor
     // extension reader, and the rejection-event canonicalizer so a length bump cannot drift.

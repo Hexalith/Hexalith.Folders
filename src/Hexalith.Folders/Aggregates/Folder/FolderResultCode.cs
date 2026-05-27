@@ -43,6 +43,7 @@ public enum FolderResultCode
     ProviderRateLimited,
     ProviderPermissionInsufficient,
     RepositoryConflict,
+    LockConflict,
     UnknownProviderOutcome,
     ReconciliationRequired,
     FolderNotFound,

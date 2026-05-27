@@ -125,6 +125,326 @@ public sealed class RepositoryBackedFolderEndpointTests
     }
 
     [Fact]
+    public async Task LockWorkspaceEndpointShouldSubmitCommandAndReturnAcceptedShape()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidLockWorkspaceRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            response.Headers.GetValues("X-Correlation-Id").Single().ShouldBe("correlation-a");
+            response.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe("task-a");
+
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.Tenant.ShouldBe("tenant-a");
+            submitted.Domain.ShouldBe("folders");
+            submitted.AggregateId.ShouldBe("folder-a");
+            submitted.CommandType.ShouldBe(FoldersServerModule.LockWorkspaceCommandType);
+            submitted.Extensions.ShouldNotBeNull()["taskId"].ShouldBe("task-a");
+            submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+            submitted.Payload.GetProperty("lockIntent").GetString().ShouldBe("exclusive_write");
+            submitted.Payload.GetProperty("requestedLeaseSeconds").GetInt32().ShouldBe(3600);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task LockWorkspaceEndpointShouldUseRouteWorkspaceIdAsAuthoritative()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-route/lock")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    lockIntent = "exclusive_write",
+                    requestedLeaseSeconds = 3600,
+                }),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-route");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task LockWorkspaceEndpointShouldUseAuthenticatedTenantDespiteClientTenantHeaders()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidLockWorkspaceRequest();
+            request.Headers.Add("X-Hexalith-Tenant-Id", "tenant-b");
+            request.Headers.Add("X-Tenant-Id", "tenant-b");
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+            submitted.Tenant.ShouldBe("tenant-a");
+            submitted.AggregateId.ShouldBe("folder-a");
+            submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("Idempotency-Key")]
+    [InlineData("X-Correlation-Id")]
+    [InlineData("X-Hexalith-Task-Id")]
+    public async Task LockWorkspaceEndpointShouldRejectMissingRequiredHeadersBeforeGatewaySubmit(string headerName)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidLockWorkspaceRequest();
+            request.Headers.Remove(headerName);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("/api/v1/folders/Folder-A/workspaces/workspace-a/lock")]
+    [InlineData("/api/v1/folders/folder-a/workspaces/workspace%40secret/lock")]
+    public async Task LockWorkspaceEndpointShouldRejectInvalidRouteIdentifiersBeforeGatewaySubmit(string route)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, route)
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    lockIntent = "exclusive_write",
+                    requestedLeaseSeconds = 3600,
+                }),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("v2", "exclusive_write", 3600, "unsupported_request_schema_version")]
+    [InlineData("v1", "shared_read", 3600, "validation_error")]
+    [InlineData("v1", "exclusive_write", 0, "validation_error")]
+    [InlineData("v1", "exclusive_write", 86401, "validation_error")]
+    public async Task LockWorkspaceEndpointShouldRejectInvalidBodyBeforeGatewaySubmit(
+        string requestSchemaVersion,
+        string lockIntent,
+        int requestedLeaseSeconds,
+        string expectedCode)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidLockWorkspaceRequest(
+                requestSchemaVersion,
+                lockIntent,
+                requestedLeaseSeconds);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            using JsonDocument document = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            document.RootElement.GetProperty("code").GetString().ShouldBe(expectedCode);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task LockWorkspaceEndpointShouldRejectUnknownFieldsBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/lock")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    lockIntent = "exclusive_write",
+                    requestedLeaseSeconds = 3600,
+                    repositoryUrl = "https://provider.example.test/owner/repository-secret",
+                }),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            json.ShouldNotContain("repository-secret", Case.Sensitive);
+            json.ShouldNotContain("https://provider.example.test", Case.Sensitive);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task LockWorkspaceEndpointShouldRejectMalformedJsonBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/lock")
+            {
+                Content = new StringContent("{ nope", System.Text.Encoding.UTF8, "application/json"),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task LockWorkspaceEndpointShouldRejectReservedSystemTenantBeforeBodyParsing()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "system", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/lock")
+            {
+                Content = new StringContent("{ nope", System.Text.Encoding.UTF8, "application/json"),
+            };
+            AddHeaders(request);
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            gateway.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("lock_conflict", "lock_conflict", HttpStatusCode.Conflict)]
+    [InlineData("duplicate-workspace-lock-rejected", "lock_conflict", HttpStatusCode.Conflict)]
+    [InlineData("workspace_locked", "workspace_locked", HttpStatusCode.Conflict)]
+    [InlineData("workspace-already-locked-rejected", "workspace_locked", HttpStatusCode.Conflict)]
+    [InlineData("workspace_transition_invalid", "workspace_transition_invalid", HttpStatusCode.UnprocessableEntity)]
+    [InlineData("workspace-transition-invalid-rejected", "workspace_transition_invalid", HttpStatusCode.UnprocessableEntity)]
+    public async Task LockWorkspaceEndpointShouldMapGatewayFailuresToSafeProblems(
+        string reasonCode,
+        string expectedCategory,
+        HttpStatusCode expectedStatusCode)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                expectedStatusCode == HttpStatusCode.UnprocessableEntity
+                    ? StatusCodes.Status422UnprocessableEntity
+                    : StatusCodes.Status409Conflict,
+                "lock failure for https://provider.example.test/owner/repository-secret",
+                correlationId: "correlation-gateway",
+                reasonCode: reasonCode),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidLockWorkspaceRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(expectedStatusCode);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe(expectedCategory);
+            document.RootElement.GetProperty("code").GetString().ShouldBe(expectedCategory);
+            json.ShouldNotContain("repository-secret", Case.Sensitive);
+            json.ShouldNotContain("https://provider.example.test", Case.Sensitive);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task PrepareWorkspaceEndpointShouldUseAuthenticatedTenantDespiteClientTenantHeaders()
     {
         RecordingEventStoreGatewayClient gateway = new();
@@ -1089,6 +1409,24 @@ public sealed class RepositoryBackedFolderEndpointTests
                 repositoryBindingId = "repository-binding-a",
                 branchRefPolicyRef = "branch-ref-policy-a",
                 workspacePolicyRef = "workspace-policy-a",
+            }),
+        };
+        AddHeaders(request);
+        return request;
+    }
+
+    private static HttpRequestMessage CreateValidLockWorkspaceRequest(
+        string requestSchemaVersion = "v1",
+        string lockIntent = "exclusive_write",
+        int requestedLeaseSeconds = 3600)
+    {
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/lock")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion,
+                lockIntent,
+                requestedLeaseSeconds,
             }),
         };
         AddHeaders(request);

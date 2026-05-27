@@ -363,6 +363,80 @@ public static class FolderAggregate
         return FolderResult.Accepted(command, [requested]);
     }
 
+    public static FolderResult Handle(FolderState state, LockWorkspace command, DateTimeOffset occurredAt)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(command);
+
+        FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return FolderResult.Rejected(command, validation.Code);
+        }
+
+        if (!state.IsCreated)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
+        }
+
+        FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.Workspace);
+        if (activeMutationGuard != FolderResultCode.Accepted)
+        {
+            return FolderResult.Rejected(command, activeMutationGuard);
+        }
+
+        if (state.IdempotencyFingerprints.TryGetValue(command.IdempotencyKey, out string? priorFingerprint))
+        {
+            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
+                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
+                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
+            || string.IsNullOrWhiteSpace(state.WorkspaceId)
+            || !string.Equals(state.WorkspaceId, command.WorkspaceId, StringComparison.Ordinal))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
+        if (state.WorkspaceLifecycleState == FolderWorkspaceLifecycleState.Locked)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.LockConflict);
+        }
+
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.WorkspaceLocked);
+        if (!transition.IsAccepted)
+        {
+            return FolderResult.Rejected(command, transition.Code);
+        }
+
+        DateTimeOffset expiresAt = occurredAt.AddSeconds(command.RequestedLeaseSeconds);
+        WorkspaceLockAcquired acquired = new(
+            command.ManagedTenantId,
+            command.OrganizationId,
+            command.FolderId,
+            command.WorkspaceId,
+            FolderWorkspaceLifecycleEvent.WorkspaceLocked,
+            FolderCommandValidator.DeriveWorkspaceLockId(command, validation.IdempotencyFingerprint!),
+            command.LockIntent,
+            command.RequestedLeaseSeconds,
+            command.TaskId,
+            AcquiredAt: occurredAt,
+            EffectiveAt: occurredAt,
+            ExpiresAt: expiresAt,
+            RetryEligibilityBasis: "lease_until_expiry",
+            command.ActorPrincipalId,
+            command.CorrelationId,
+            command.TaskId,
+            command.IdempotencyKey,
+            validation.IdempotencyFingerprint!,
+            occurredAt);
+
+        return FolderResult.Accepted(command, [acquired]);
+    }
+
     // Convenience overloads for tests that do not care about deterministic timestamps.
     // Production callers must always supply OccurredAt from the gate's TimeProvider so
     // events carry real wall-clock evidence rather than DateTimeOffset.MinValue.
@@ -385,6 +459,9 @@ public static class FolderAggregate
         => Handle(state, command, DateTimeOffset.MinValue);
 
     public static FolderResult Handle(FolderState state, PrepareWorkspace command)
+        => Handle(state, command, DateTimeOffset.MinValue);
+
+    public static FolderResult Handle(FolderState state, LockWorkspace command)
         => Handle(state, command, DateTimeOffset.MinValue);
 
     // Grant emits events per operation, skipping tuples that are already granted. Revoke

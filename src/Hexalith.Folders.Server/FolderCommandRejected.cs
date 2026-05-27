@@ -104,11 +104,11 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
         // path is legitimately invoked with arbitrary caller-supplied command types. Use the
         // canonical safe-identifier filter; replace unknown shapes with a fixed sentinel so
         // the wire payload never carries arbitrary strings that downstream systems may key on.
-        string normalizedCommandType = NormalizeCommandType(commandType);
+        string normalizedCommandType = NormalizeCommandTypeForRejection(commandType);
 
-        string? canonicalCorrelationId = Canonical(correlationId);
-        string? canonicalTaskId = Canonical(taskId);
-        string? canonicalIdempotencyKey = Canonical(idempotencyKey);
+        string? canonicalCorrelationId = CanonicalIdentifierOrNull(correlationId);
+        string? canonicalTaskId = CanonicalIdentifierOrNull(taskId);
+        string? canonicalIdempotencyKey = CanonicalIdentifierOrNull(idempotencyKey);
 
         // Emit a metadata-only trace tag when an identifier was supplied but failed the
         // canonical filter. Operators reading the trace can correlate the dropped-value
@@ -131,21 +131,25 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
         return new FolderCommandRejected(
             code: code,
             commandType: normalizedCommandType,
-            managedTenantId: Canonical(managedTenantId),
-            organizationId: Canonical(organizationId),
-            folderId: Canonical(folderId),
-            actorPrincipalId: Canonical(actorPrincipalId),
+            managedTenantId: CanonicalIdentifierOrNull(managedTenantId),
+            organizationId: CanonicalIdentifierOrNull(organizationId),
+            folderId: CanonicalIdentifierOrNull(folderId),
+            actorPrincipalId: CanonicalIdentifierOrNull(actorPrincipalId),
             correlationId: canonicalCorrelationId,
             taskId: canonicalTaskId,
             idempotencyKey: canonicalIdempotencyKey);
     }
 
-    private static string NormalizeCommandType(string commandType)
+    internal static string NormalizeCommandTypeForRejection(string commandType)
     {
         // Known canonical command types pass through untouched. Add to this guard when new
         // domain command types are wired through FolderDomainProcessor.
         if (string.Equals(commandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal)
-            || string.Equals(commandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal))
+            || string.Equals(commandType, FoldersServerModule.CreateRepositoryBackedFolderCommandType, StringComparison.Ordinal)
+            || string.Equals(commandType, FoldersServerModule.BindRepositoryCommandType, StringComparison.Ordinal)
+            || string.Equals(commandType, FoldersServerModule.ConfigureBranchRefPolicyCommandType, StringComparison.Ordinal)
+            || string.Equals(commandType, FoldersServerModule.PrepareWorkspaceCommandType, StringComparison.Ordinal)
+            || string.Equals(commandType, FoldersServerModule.LockWorkspaceCommandType, StringComparison.Ordinal))
         {
             return commandType;
         }
@@ -168,7 +172,7 @@ public sealed partial record FolderCommandRejected : IRejectionEvent
     [GeneratedRegex("^[A-Za-z0-9._-]+$", RegexOptions.Compiled)]
     private static partial Regex CommandTypeRegex();
 
-    private static string? Canonical(string? value)
+    internal static string? CanonicalIdentifierOrNull(string? value)
     {
         if (string.IsNullOrWhiteSpace(value)
             || value.Length > MaxIdentifierLength

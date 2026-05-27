@@ -14,6 +14,8 @@ public static partial class FolderCommandValidator
     internal const int MaxBranchRefPatternCount = 16;
     private const int MaxDisplayNameLength = 128;
     private const int MaxDescriptionLength = 512;
+    private const int MinimumWorkspaceLockLeaseSeconds = 1;
+    private const int MaximumWorkspaceLockLeaseSeconds = 86400;
 
     // Two-tier blocklist: substring terms catch payload-shaped leakage (URLs, paths, mail
     // addresses, diff bodies) inside free-form metadata fields like DisplayName/Description;
@@ -163,6 +165,19 @@ public static partial class FolderCommandValidator
             }
 
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(prepareWorkspace));
+        }
+
+        if (command is LockWorkspace lockWorkspace)
+        {
+            if (!string.Equals(lockWorkspace.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+                || !string.Equals(lockWorkspace.LockIntent, "exclusive_write", StringComparison.Ordinal)
+                || !IsValidIdentifier(lockWorkspace.WorkspaceId)
+                || lockWorkspace.RequestedLeaseSeconds is < MinimumWorkspaceLockLeaseSeconds or > MaximumWorkspaceLockLeaseSeconds)
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(lockWorkspace));
         }
 
         if (command is not CreateFolder create)
@@ -369,6 +384,36 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.WorkspacePolicyRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static string Fingerprint(LockWorkspace command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.LockIntent);
+        AppendInt32(hash, command.RequestedLeaseSeconds);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, command.WorkspaceId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    internal static string DeriveWorkspaceLockId(LockWorkspace command, string idempotencyFingerprint)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyFingerprint);
+
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "workspace-lock-id-v1");
+        AppendField(hash, command.ManagedTenantId);
+        AppendField(hash, command.FolderId);
+        AppendField(hash, command.WorkspaceId);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, idempotencyFingerprint);
+
+        string digest = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+        return $"workspace_lock_{digest[..32]}";
     }
 
     private static string Fingerprint(IFolderAccessCommand command, IReadOnlyList<FolderAccessOperation> operations)
