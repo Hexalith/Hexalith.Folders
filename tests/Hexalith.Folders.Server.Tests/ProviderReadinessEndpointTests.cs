@@ -12,6 +12,7 @@ using Hexalith.Folders.Testing.Providers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 using Shouldly;
@@ -41,6 +42,7 @@ public sealed class ProviderReadinessEndpointTests
             .ToArray();
 
         routes.ShouldContain("/api/v1/provider-readiness/validations");
+        routes.ShouldContain("/api/v1/provider-readiness/support-evidence");
     }
 
     [Fact]
@@ -57,7 +59,7 @@ public sealed class ProviderReadinessEndpointTests
             ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence)));
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-ready");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -86,7 +88,7 @@ public sealed class ProviderReadinessEndpointTests
         await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-idempotency");
         request.Headers.Add("Idempotency-Key", "idempotency-should-not-be-accepted");
 
@@ -107,7 +109,7 @@ public sealed class ProviderReadinessEndpointTests
         await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request(correlationId: null);
         request.Headers.TryAddWithoutValidation("X-Correlation-Id", unsafeCorrelation).ShouldBeTrue();
         request.Headers.Add("Idempotency-Key", "idempotency-should-not-be-accepted");
@@ -130,8 +132,9 @@ public sealed class ProviderReadinessEndpointTests
         await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-freshness");
+        request.Headers.Remove("X-Hexalith-Freshness");
         request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -149,7 +152,7 @@ public sealed class ProviderReadinessEndpointTests
         await using WebApplication app = BuildApp(FakeGitProvider.Failing(ProviderFailureCategory.ProviderRateLimited));
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-rate");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -168,7 +171,7 @@ public sealed class ProviderReadinessEndpointTests
         await using WebApplication app = BuildApp(FakeGitProvider.Failing(ProviderFailureCategory.ProviderUnavailable));
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-unavailable");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -196,7 +199,7 @@ public sealed class ProviderReadinessEndpointTests
             ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence)));
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request(correlationId: null);
         request.Headers.TryAddWithoutValidation("X-Correlation-Id", unsafeCorrelation).ShouldBeTrue();
 
@@ -217,7 +220,7 @@ public sealed class ProviderReadinessEndpointTests
         await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), bindingReader: bindingReader);
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-tenant-mismatch");
         request.RequestUri = new Uri("/api/v1/provider-readiness/validations?tenantId=tenant-other", UriKind.Relative);
 
@@ -242,7 +245,7 @@ public sealed class ProviderReadinessEndpointTests
             claimTransform: new StaticClaimTransformEvidenceAccessor("tenant-a", "user-a", ["read_metadata"]));
 
         await app.StartAsync(TestContext.Current.CancellationToken);
-        using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = Request("corr-denied", providerBindingRef: "binding-secret-victim");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
@@ -255,17 +258,234 @@ public sealed class ProviderReadinessEndpointTests
         bindingReader.Calls.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldReturnAuthorizedEvidenceList()
+    {
+        InMemoryProviderReadinessEvidenceStore evidenceStore = new(new FixedUtcClock(Now));
+        await evidenceStore.StoreAsync(
+            SupportRecord("tenant-a", "profile_aaaaaaaaaaaaaaaa", """{"evidence":{"repositoryCreation":"supported","existingRepositoryBinding":"supported","branchRefPolicy":"supported","fileOperations":"supported","commitStatus":"supported","providerErrors":"temporarily_unavailable","failureBehavior":"documented"}}"""),
+            TestContext.Current.CancellationToken);
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), evidenceStore: evidenceStore);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence?limit=10");
+        request.Headers.Add("X-Correlation-Id", "corr-support");
+        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        response.Headers.GetValues("X-Correlation-Id").ShouldContain("corr-support");
+        response.Headers.GetValues("X-Hexalith-Freshness").ShouldContain("eventually_consistent");
+        document.RootElement.GetProperty("items").GetArrayLength().ShouldBe(7);
+        document.RootElement.GetProperty("items")[0].GetProperty("capabilityProfileRef").GetString().ShouldBe("profile_aaaaaaaaaaaaaaaa");
+        document.RootElement.GetProperty("items")[0].GetProperty("capability").GetString().ShouldBe("repository_creation");
+        document.RootElement.GetProperty("items")[0].GetProperty("supportState").GetString().ShouldBe("supported");
+        document.RootElement.GetProperty("page").GetProperty("limit").GetInt32().ShouldBe(10);
+        document.RootElement.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
+        json.ShouldNotContain("diagnostic", Case.Insensitive);
+        json.ShouldNotContain("binding-a", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldReturnSafeEmptyListForAuthorizedTenantWithoutEvidence()
+    {
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike());
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence");
+        request.Headers.Add("X-Correlation-Id", "corr-empty");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        document.RootElement.GetProperty("items").GetArrayLength().ShouldBe(0);
+        document.RootElement.GetProperty("page").GetProperty("limit").GetInt32().ShouldBe(50);
+        document.RootElement.GetProperty("page").GetProperty("isTruncated").GetBoolean().ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldClampContractAllowedLimitToEffectiveServerMaximum()
+    {
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike());
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence?limit=500");
+        request.Headers.Add("X-Correlation-Id", "corr-limit-clamp");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        document.RootElement.GetProperty("page").GetProperty("limit").GetInt32().ShouldBe(100);
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldRejectPreAuthorizationHeadersBeforeReadModelObservation()
+    {
+        CountingProviderSupportEvidenceReadModel readModel = new();
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), supportReadModel: readModel);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence?limit=10");
+        request.Headers.Add("X-Correlation-Id", "corr-support-idempotency");
+        request.Headers.Add("Idempotency-Key", "idempotency-not-accepted");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"idempotency_key_not_accepted\"");
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldRejectUnsupportedFreshnessBeforeReadModelObservation()
+    {
+        CountingProviderSupportEvidenceReadModel readModel = new();
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), supportReadModel: readModel);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence");
+        request.Headers.Add("X-Correlation-Id", "corr-support-freshness");
+        request.Headers.Add("X-Hexalith-Freshness", "snapshot_per_task");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldContain("\"code\":\"unsupported_read_consistency\"");
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData("/api/v1/provider-readiness/support-evidence?limit=0", "invalid_pagination")]
+    [InlineData("/api/v1/provider-readiness/support-evidence?limit=1001", "invalid_pagination")]
+    [InlineData("/api/v1/provider-readiness/support-evidence?cursor=tenant-a:secret", "invalid_pagination")]
+    public async Task ProviderSupportEvidenceRouteShouldRejectInvalidPaginationBeforeReadModelObservation(
+        string uri,
+        string expectedCode)
+    {
+        CountingProviderSupportEvidenceReadModel readModel = new();
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), supportReadModel: readModel);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, uri);
+        request.Headers.Add("X-Correlation-Id", "corr-support-pagination");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain($"\"code\":\"{expectedCode}\"");
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldRejectUnsafeCorrelationBeforeReadModelObservation()
+    {
+        CountingProviderSupportEvidenceReadModel readModel = new();
+        await using WebApplication app = BuildApp(FakeGitProvider.GitHubLike(), supportReadModel: readModel);
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence");
+        request.Headers.TryAddWithoutValidation("X-Correlation-Id", "https://provider.example.test/owner/repository-secret").ShouldBeTrue();
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"unsafe_correlation_id\"");
+        json.ShouldNotContain("repository-secret", Case.Sensitive);
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProviderSupportEvidenceRouteShouldDenyMissingProviderSupportAuthorityBeforeReadModelObservation()
+    {
+        CountingProviderSupportEvidenceReadModel readModel = new();
+        await using WebApplication app = BuildApp(
+            FakeGitProvider.GitHubLike(),
+            supportReadModel: readModel,
+            claimTransform: new StaticClaimTransformEvidenceAccessor(
+                "tenant-a",
+                "user-a",
+                [ProviderReadinessValidationService.ReadActionToken]));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence");
+        request.Headers.Add("X-Correlation-Id", "corr-support-denied");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        json.ShouldContain("\"category\":\"authorization_denied\"");
+        json.ShouldContain("\"code\":\"provider_support_read_denied\"");
+        json.ShouldNotContain("binding-a", Case.Sensitive);
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(ProviderSupportEvidenceReadModelStatus.Stale, HttpStatusCode.ServiceUnavailable, "projection_stale", "projection_stale")]
+    [InlineData(ProviderSupportEvidenceReadModelStatus.Unavailable, HttpStatusCode.ServiceUnavailable, "provider_unavailable", "provider_unavailable")]
+    [InlineData(ProviderSupportEvidenceReadModelStatus.Malformed, HttpStatusCode.ServiceUnavailable, "read_model_unavailable", "projection_malformed")]
+    public async Task ProviderSupportEvidenceRouteShouldMapReadModelFailuresToSafeProblemDetails(
+        ProviderSupportEvidenceReadModelStatus status,
+        HttpStatusCode expectedStatus,
+        string expectedCategory,
+        string expectedCode)
+    {
+        await using WebApplication app = BuildApp(
+            FakeGitProvider.GitHubLike(),
+            supportReadModel: new StatusProviderSupportEvidenceReadModel(status));
+
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/provider-readiness/support-evidence");
+        request.Headers.Add("X-Correlation-Id", "corr-support-readmodel");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(expectedStatus);
+        json.ShouldContain($"\"category\":\"{expectedCategory}\"");
+        json.ShouldContain($"\"code\":\"{expectedCode}\"");
+        json.ShouldContain("\"retryable\":true");
+        json.ShouldContain("\"correlationId\":\"corr-support-readmodel\"");
+        json.ShouldNotContain("binding-a", Case.Sensitive);
+        json.ShouldNotContain("diagnostic", Case.Insensitive);
+    }
+
     private static WebApplication BuildApp(
         IGitProvider provider,
         IProviderReadinessBindingReader? bindingReader = null,
         ITenantContextAccessor? tenantContext = null,
-        IEventStoreClaimTransformEvidenceAccessor? claimTransform = null)
+        IEventStoreClaimTransformEvidenceAccessor? claimTransform = null,
+        InMemoryProviderReadinessEvidenceStore? evidenceStore = null,
+        IProviderSupportEvidenceReadModel? supportReadModel = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.WebHost.UseTestServer();
+        builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(Now));
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore());
         RecordingProviderReadinessBindingReader reader = bindingReader as RecordingProviderReadinessBindingReader
             ?? new RecordingProviderReadinessBindingReader(Binding());
@@ -274,12 +494,15 @@ public sealed class ProviderReadinessEndpointTests
         builder.Services.AddSingleton<IProviderCapabilityAuthorizer>(RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh"));
         builder.Services.AddSingleton<IProviderCapabilityResolver>(new RecordingProviderCapabilityResolver(provider));
         builder.Services.AddSingleton<IProviderCapabilityEvidenceStore, RecordingProviderCapabilityEvidenceStore>();
-        builder.Services.AddSingleton<IProviderReadinessEvidenceStore, InMemoryProviderReadinessEvidenceStore>();
+        InMemoryProviderReadinessEvidenceStore readinessEvidenceStore = evidenceStore ?? new InMemoryProviderReadinessEvidenceStore(new FixedUtcClock(Now));
+        builder.Services.AddSingleton(readinessEvidenceStore);
+        builder.Services.AddSingleton<IProviderReadinessEvidenceStore>(readinessEvidenceStore);
+        builder.Services.AddSingleton<IProviderSupportEvidenceReadModel>(supportReadModel ?? readinessEvidenceStore);
         builder.Services.AddSingleton(tenantContext ?? new StaticTenantContextAccessor("tenant-a", "user-a"));
         builder.Services.AddSingleton(claimTransform ?? new StaticClaimTransformEvidenceAccessor(
             "tenant-a",
             "user-a",
-            [ProviderReadinessValidationService.ReadActionToken]));
+            [ProviderReadinessValidationService.ReadActionToken, ProviderSupportEvidenceQueryHandler.ReadActionToken]));
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
@@ -319,6 +542,26 @@ public sealed class ProviderReadinessEndpointTests
             ConfiguredStatus: "configured",
             OccurredAt: Now);
 
+    private static ProviderReadinessEvidenceRecord SupportRecord(
+        string tenantId,
+        string capabilityProfileRef,
+        string diagnosticJson)
+        => new(
+            tenantId,
+            "organization-a",
+            "binding-a",
+            "github",
+            "github",
+            capabilityProfileRef,
+            "ready",
+            "success",
+            Retryable: false,
+            "none",
+            Now.AddMinutes(-1),
+            "tenant-a:7",
+            "corr-support-evidence",
+            diagnosticJson);
+
     private static InMemoryFolderTenantAccessProjectionStore TenantStore()
     {
         InMemoryFolderTenantAccessProjectionStore store = new();
@@ -332,7 +575,7 @@ public sealed class ProviderReadinessEndpointTests
             },
             Watermark = 7,
             ProjectionWatermark = "tenant-a:7",
-            LastEventTimestamp = DateTimeOffset.UtcNow,
+            LastEventTimestamp = Now.AddMinutes(-1),
         }).GetAwaiter().GetResult();
         return store;
     }
@@ -365,5 +608,36 @@ public sealed class ProviderReadinessEndpointTests
     {
         public EventStoreClaimTransformEvidence GetEvidence(string actionToken)
             => EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, permissions);
+    }
+
+    private sealed class CountingProviderSupportEvidenceReadModel : IProviderSupportEvidenceReadModel
+    {
+        public int Calls { get; private set; }
+
+        public Task<ProviderSupportEvidenceReadModelResult> QueryAsync(
+            ProviderSupportEvidenceReadModelRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            Calls++;
+            return Task.FromResult(ProviderSupportEvidenceReadModelResult.Available([], request.EmptyFreshness(), null));
+        }
+    }
+
+    private sealed class StatusProviderSupportEvidenceReadModel(ProviderSupportEvidenceReadModelStatus status) : IProviderSupportEvidenceReadModel
+    {
+        public Task<ProviderSupportEvidenceReadModelResult> QueryAsync(
+            ProviderSupportEvidenceReadModelRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            ProviderSupportEvidenceReadModelResult result = status switch
+            {
+                ProviderSupportEvidenceReadModelStatus.Stale => ProviderSupportEvidenceReadModelResult.Stale(request.EmptyFreshness()),
+                ProviderSupportEvidenceReadModelStatus.Unavailable => ProviderSupportEvidenceReadModelResult.Unavailable(request.EmptyFreshness()),
+                ProviderSupportEvidenceReadModelStatus.Malformed => ProviderSupportEvidenceReadModelResult.Malformed(request.EmptyFreshness()),
+                _ => ProviderSupportEvidenceReadModelResult.Available([], request.EmptyFreshness(), null),
+            };
+
+            return Task.FromResult(result);
+        }
     }
 }

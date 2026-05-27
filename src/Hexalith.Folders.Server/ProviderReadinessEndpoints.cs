@@ -15,6 +15,10 @@ public static partial class ProviderReadinessEndpoints
 {
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string SnapshotPerTask = "snapshot_per_task";
+    private const string EventuallyConsistent = "eventually_consistent";
+    private const int DefaultSupportEvidenceLimit = 50;
+    private const int MaxSupportEvidenceLimit = 100;
+    private const int OpenApiPageLimitCeiling = 1000;
 
     private static readonly JsonSerializerOptions RequestJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -45,7 +49,88 @@ public static partial class ProviderReadinessEndpoints
                 cancellationToken).ConfigureAwait(false))
         .WithName("ValidateProviderReadiness");
 
+        endpoints.MapGet("/api/v1/provider-readiness/support-evidence", async (
+            HttpContext httpContext,
+            ProviderSupportEvidenceQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            => await GetProviderSupportEvidenceAsync(
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("GetProviderSupportEvidence");
+
         return endpoints;
+    }
+
+    private static async Task<IResult> GetProviderSupportEvidenceAsync(
+        HttpContext httpContext,
+        ProviderSupportEvidenceQueryHandler handler,
+        ITenantContextAccessor tenantContext,
+        IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(handler);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(claimTransformEvidence);
+
+        if (!TryReadSupportEvidenceCorrelation(httpContext, out string? correlationId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "unsafe_correlation_id",
+                retryable: false,
+                correlationId: null);
+        }
+
+        if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "idempotency_key_not_accepted",
+                retryable: false,
+                correlationId);
+        }
+
+        string? freshness = ReadHeader(httpContext, FreshnessHeaderName);
+        if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "unsupported_read_consistency",
+                retryable: false,
+                correlationId);
+        }
+
+        if (!TryReadSupportEvidencePagination(httpContext, out string? cursor, out int limit))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "invalid_pagination",
+                retryable: false,
+                correlationId);
+        }
+
+        ProviderSupportEvidenceQueryResult result = await handler.HandleAsync(
+            new ProviderSupportEvidenceQuery(
+                tenantContext.AuthoritativeTenantId,
+                tenantContext.PrincipalId,
+                claimTransformEvidence.GetEvidence(ProviderSupportEvidenceQueryHandler.ReadActionToken),
+                correlationId,
+                cursor,
+                limit,
+                ClientTenantIds(httpContext)),
+            cancellationToken).ConfigureAwait(false);
+
+        return ToHttpResult(httpContext, result);
     }
 
     private static async Task<IResult> ValidateProviderReadinessAsync(
@@ -210,6 +295,63 @@ public static partial class ProviderReadinessEndpoints
             ResponseJsonOptions);
     }
 
+    private static IResult ToHttpResult(HttpContext httpContext, ProviderSupportEvidenceQueryResult result)
+    {
+        switch (result.Code)
+        {
+            case ProviderSupportEvidenceQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    "authentication_failure",
+                    "authentication_failure",
+                    retryable: false,
+                    result.CorrelationId);
+            case ProviderSupportEvidenceQueryResultCode.AuthorizationDenied:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    "authorization_denied",
+                    result.ReasonCode,
+                    retryable: false,
+                    result.CorrelationId);
+            case ProviderSupportEvidenceQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "projection_stale",
+                    "projection_stale",
+                    retryable: true,
+                    result.CorrelationId);
+            case ProviderSupportEvidenceQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "projection_unavailable",
+                    "projection_unavailable",
+                    retryable: true,
+                    result.CorrelationId);
+            case ProviderSupportEvidenceQueryResultCode.ProviderUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "provider_unavailable",
+                    "provider_unavailable",
+                    retryable: true,
+                    result.CorrelationId);
+            case ProviderSupportEvidenceQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "read_model_unavailable",
+                    result.ReasonCode,
+                    retryable: true,
+                    result.CorrelationId);
+        }
+
+        AddSuccessHeaders(httpContext, result.CorrelationId, result.Freshness.ReadConsistency);
+        return Results.Json(
+            new ProviderSupportEvidenceListHttpResponse(
+                result.Items,
+                result.Page,
+                result.Freshness),
+            ResponseJsonOptions);
+    }
+
     private static IResult SafeProblem(
         int statusCode,
         string category,
@@ -262,6 +404,16 @@ public static partial class ProviderReadinessEndpoints
         httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
     }
 
+    private static void AddSuccessHeaders(HttpContext httpContext, string correlationId, string freshness)
+    {
+        if (IsSafeHeaderValue(correlationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = correlationId;
+        }
+
+        httpContext.Response.Headers[FreshnessHeaderName] = freshness;
+    }
+
     private static bool TryParseCapability(string? value, out ProviderReadinessRequestedCapability capability)
     {
         capability = value switch
@@ -294,6 +446,72 @@ public static partial class ProviderReadinessEndpoints
             ["header_tenant_id"] = ReadHeader(httpContext, "X-Tenant-Id"),
             ["forwarded_tenant_id"] = ReadHeader(httpContext, "X-Forwarded-Tenant"),
         };
+
+    private static bool TryReadSupportEvidencePagination(
+        HttpContext httpContext,
+        out string? cursor,
+        out int limit)
+    {
+        cursor = null;
+        limit = DefaultSupportEvidenceLimit;
+
+        string? rawCursor = ReadQuery(httpContext, "cursor");
+        if (rawCursor is not null)
+        {
+            if (!CursorPattern().IsMatch(rawCursor))
+            {
+                return false;
+            }
+
+            cursor = rawCursor;
+        }
+
+        string? rawLimit = ReadQuery(httpContext, "limit");
+        if (rawLimit is null)
+        {
+            return true;
+        }
+
+        if (!int.TryParse(rawLimit, out int requestedLimit)
+            || requestedLimit is < 1 or > OpenApiPageLimitCeiling)
+        {
+            return false;
+        }
+
+        limit = Math.Min(requestedLimit, MaxSupportEvidenceLimit);
+        return true;
+    }
+
+    private static bool TryReadSupportEvidenceCorrelation(HttpContext httpContext, out string? correlationId)
+    {
+        correlationId = null;
+        if (!httpContext.Request.Headers.TryGetValue("X-Correlation-Id", out StringValues values))
+        {
+            return true;
+        }
+
+        foreach (string? raw in values)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                continue;
+            }
+
+            string candidate = raw.Trim();
+            if (!IsSafeHeaderValue(candidate)
+                || candidate.Length > 256
+                || !CanonicalIdentifierPattern().IsMatch(candidate)
+                || IsSensitiveDiagnosticValue(candidate))
+            {
+                return false;
+            }
+
+            correlationId = candidate;
+            return true;
+        }
+
+        return true;
+    }
 
     private static string? ReadHeader(HttpContext httpContext, string name)
         => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
@@ -392,8 +610,16 @@ public static partial class ProviderReadinessEndpoints
         string CorrelationId,
         ProviderReadinessFreshness Freshness);
 
+    private sealed record ProviderSupportEvidenceListHttpResponse(
+        IReadOnlyList<ProviderSupportEvidenceItem> Items,
+        ProviderSupportEvidencePage Page,
+        ProviderReadinessFreshness Freshness);
+
     [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();
+
+    [GeneratedRegex("^cursor_[0-9]{1,6}$", RegexOptions.CultureInvariant)]
+    private static partial Regex CursorPattern();
 
     [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]
     private static partial Regex ProviderTokenPattern();

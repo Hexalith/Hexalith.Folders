@@ -85,8 +85,11 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IProviderCapabilityEvidenceStore, InMemoryProviderCapabilityEvidenceStore>();
         services.TryAddSingleton<ProviderCapabilityDiscoveryService>();
         services.TryAddSingleton<IProviderReadinessBindingReader, InMemoryProviderReadinessBindingReadModel>();
-        services.TryAddSingleton<IProviderReadinessEvidenceStore, InMemoryProviderReadinessEvidenceStore>();
+        services.TryAddSingleton<InMemoryProviderReadinessEvidenceStore>();
+        services.TryAddSingleton<IProviderReadinessEvidenceStore>(static sp => sp.GetRequiredService<InMemoryProviderReadinessEvidenceStore>());
+        services.TryAddSingleton<IProviderSupportEvidenceReadModel>(static sp => sp.GetRequiredService<InMemoryProviderReadinessEvidenceStore>());
         services.TryAddSingleton<ProviderReadinessValidationService>();
+        services.TryAddSingleton<ProviderSupportEvidenceQueryHandler>();
 
         return services;
     }
