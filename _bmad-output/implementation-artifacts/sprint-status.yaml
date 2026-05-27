@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-27T19:45:00+02:00
+last_updated: 2026-05-27T23:15:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -113,7 +113,7 @@ development_status:
   # Epic 5: Cross-Surface Workflow Parity
   epic-5: in-progress
   5-1-ship-sdk-convenience-helpers-samples-and-quickstart: done
-  5-2-implement-cli-commands-with-behavioral-parity-rules: backlog
+  5-2-implement-cli-commands-with-behavioral-parity-rules: done
   5-3-implement-mcp-tools-resources-and-failure-kinds: backlog
   5-4-consume-parity-oracle-in-cli-and-mcp-tests: backlog
   5-5-validate-golden-lifecycle-parity-across-rest-and-sdk: backlog
