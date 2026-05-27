@@ -182,7 +182,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             }
 
             FolderState seeded = FolderState.Empty.Apply(events, streamName);
-            _states[streamName.Value] = seeded;
+            Dictionary<string, string> seedLedgerEntries = new(StringComparer.Ordinal);
             foreach (IFolderEvent folderEvent in events)
             {
                 if (string.IsNullOrWhiteSpace(folderEvent.IdempotencyKey))
@@ -192,14 +192,23 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
                 string ledgerKey = LedgerKey(streamName, folderEvent.IdempotencyKey);
                 // Silent overwrite of an existing ledger entry would mask real idempotency
-                // races; require seed callers to use unique keys per stream.
-                if (_idempotencyFingerprints.ContainsKey(ledgerKey))
+                // races; require seed callers to use unique keys per stream. Validate the
+                // whole seed batch before mutating repository state so fail-loud remains
+                // atomic from the caller's perspective.
+                if (_idempotencyFingerprints.ContainsKey(ledgerKey)
+                    || seedLedgerEntries.ContainsKey(ledgerKey))
                 {
                     throw new InvalidOperationException(
                         $"Seed would overwrite an existing idempotency ledger entry for stream '{streamName.Value}' and key '{folderEvent.IdempotencyKey}'.");
                 }
 
-                _idempotencyFingerprints[ledgerKey] = folderEvent.IdempotencyFingerprint;
+                seedLedgerEntries[ledgerKey] = folderEvent.IdempotencyFingerprint;
+            }
+
+            _states[streamName.Value] = seeded;
+            foreach (KeyValuePair<string, string> entry in seedLedgerEntries)
+            {
+                _idempotencyFingerprints[entry.Key] = entry.Value;
             }
 
             SaveLifecycleSnapshot(seeded, observedAt);
