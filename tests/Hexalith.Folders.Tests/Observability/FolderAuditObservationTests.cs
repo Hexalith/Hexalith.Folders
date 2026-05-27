@@ -1,6 +1,8 @@
 using System.Text.Json;
 
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Observability;
+using Hexalith.Folders.Tests.Aggregates.Folder;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -84,6 +86,96 @@ public sealed class FolderAuditObservationTests
         observation.ToString().ShouldNotContain(sentinel, Case.Sensitive);
         observation.Duration.ShouldBe(TimeSpan.Zero);
         observation.DurationEvidence.ShouldBe("0ms");
+    }
+
+    [Theory]
+    [MemberData(nameof(ForbiddenSentinelValues))]
+    public void LifecycleSecurityOutputsShouldNotSerializeForbiddenSentinels(string sentinel)
+    {
+        object[] outputs =
+        [
+            FolderLifecycleReplayFixture.SuccessfulLifecycle(),
+            FolderResult.Rejected(
+                FolderResultCode.PathPolicyDenied,
+                sentinel,
+                sentinel,
+                sentinel,
+                sentinel,
+                sentinel,
+                sentinel,
+                sentinel),
+            new FolderAuditObservationBuilder
+            {
+                OperationKind = FolderAuditOperationKind.RestMutation,
+                Result = FolderAuditResult.Denied,
+                TenantId = sentinel,
+                ActorReference = sentinel,
+                TaskId = sentinel,
+                OperationId = sentinel,
+                CorrelationId = sentinel,
+                FolderId = sentinel,
+                WorkspaceId = sentinel,
+                Timestamp = DateTimeOffset.Parse("2026-05-27T12:00:00Z"),
+                RedactionState = FolderAuditRedactionState.Redacted,
+                SanitizedCategory = sentinel,
+            }.Build(),
+        ];
+
+        foreach (object output in outputs)
+        {
+            string serialized = JsonSerializer.Serialize(output);
+            serialized.ShouldNotContain(sentinel, Case.Sensitive);
+            (output.ToString() ?? string.Empty).ShouldNotContain(sentinel, Case.Sensitive);
+        }
+    }
+
+    [Theory]
+    [InlineData("authorization_denied")]
+    [InlineData("folder_acl_denied")]
+    [InlineData("path_policy_denied")]
+    [InlineData("projection_stale")]
+    [InlineData("lock_not_owned")]
+    [InlineData("state_transition_invalid")]
+    [InlineData("idempotency_conflict")]
+    [InlineData("content_store_unavailable")]
+    [InlineData("delete_order_unavailable")]
+    [InlineData("provider_unavailable")]
+    [InlineData("read_model_unavailable")]
+    public void DeniedAuditObservationsShouldStayBoundedAndMetadataOnly(string category)
+    {
+        FolderAuditObservation observation = new FolderAuditObservationBuilder
+        {
+            OperationKind = FolderAuditOperationKind.RestMutation,
+            Result = FolderAuditResult.Denied,
+            TenantId = "tenant-a",
+            ActorReference = "actor_present",
+            TaskId = "task-a",
+            OperationId = "operation-a",
+            CorrelationId = "correlation-a",
+            FolderId = "folder-a",
+            WorkspaceId = "workspace-a",
+            Timestamp = DateTimeOffset.Parse("2026-05-27T12:00:00Z"),
+            Duration = TimeSpan.FromMilliseconds(42),
+            RedactionState = FolderAuditRedactionState.Redacted,
+            SanitizedCategory = category,
+            IsRetry = false,
+            IsIdempotentReplay = false,
+            IsDuplicate = false,
+        }.AddClassification("result.category", category)
+            .AddClassification("redaction.state", "metadata_only")
+            .Build();
+
+        observation.IsFailure.ShouldBeTrue();
+        observation.SanitizedCategory.ShouldBe(category);
+        observation.Classifications["result.category"].ShouldBe(category);
+        string serialized = JsonSerializer.Serialize(observation);
+        serialized.ShouldContain(category);
+        serialized.ShouldNotContain("://", Case.Sensitive);
+        serialized.ShouldNotContain("/", Case.Sensitive);
+        serialized.ShouldNotContain("payload", Case.Insensitive);
+        serialized.ShouldNotContain("secret", Case.Insensitive);
+        observation.ToString().ShouldNotContain("folder-a", Case.Sensitive);
+        observation.ToString().ShouldNotContain("workspace-a", Case.Sensitive);
     }
 
     [Fact]

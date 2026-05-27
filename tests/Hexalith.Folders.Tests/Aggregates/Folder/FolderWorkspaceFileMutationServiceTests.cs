@@ -46,6 +46,82 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     }
 
     [Theory]
+    [InlineData("../secret.txt")]
+    [InlineData("/absolute.txt")]
+    [InlineData("docs\\mixed.txt")]
+    [InlineData("docs/%2e%2e/secret.txt")]
+    [InlineData("docs%2fsecret.txt")]
+    [InlineData("docs/NUL.md")]
+    [InlineData("docs/")]
+    [InlineData("docs/name .txt")]
+    [InlineData("docs/readme\u200b.md")]
+    [InlineData("docs/cafe\u0301.txt")]
+    public async Task UnsafePathInputsShouldDenyBeforeLifecycleSideEffectsAndNotEchoPath(string normalizedPath)
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new();
+        RecordingDeleteOperationStore deleteStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore, deleteStore);
+
+        FolderResult result = await service.MutateAsync(
+            Request(normalizedPath: normalizedPath),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.PathPolicyDenied);
+        evidence.Requests.ShouldBe(0);
+        contentStore.Requests.ShouldBeEmpty();
+        deleteStore.Requests.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+        result.ToString().ShouldNotContain(normalizedPath, Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task MalformedIdempotencyKeyShouldFailBeforePathEvidenceAndSideEffects()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
+
+        FolderResult result = await service.MutateAsync(
+            Request(idempotencyKey: "synthetic-key-\u0001"),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.MalformedEvidence);
+        evidence.Requests.ShouldBe(0);
+        contentStore.Requests.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task PayloadTenantMismatchShouldDenyBeforePathEvidenceAndRepositoryObservation()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
+
+        FolderResult result = await service.MutateAsync(
+            Request(payloadTenantId: "tenant-b"),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.TenantAccessDenied);
+        evidence.Requests.ShouldBe(0);
+        contentStore.Requests.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Theory]
     [InlineData(WorkspacePathPolicyEvidenceDecision.SymlinkEscape, FolderResultCode.PathPolicyDenied)]
     [InlineData(WorkspacePathPolicyEvidenceDecision.Unavailable, FolderResultCode.PolicyEvidenceUnavailable)]
     public async Task EvidenceDenialsShouldRejectBeforeStreamLoadAndAppend(
@@ -353,7 +429,9 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         string fileOperationKind = "add",
         string? transportOperation = null,
         string? contentHashReference = null,
-        long? byteLength = null)
+        long? byteLength = null,
+        string idempotencyKey = "idempotency-file-a",
+        string? payloadTenantId = null)
     {
         transportOperation ??= fileOperationKind == "remove" ? "metadataOnlyRemoval" : "PutFileInline";
         contentHashReference ??= fileOperationKind == "remove" ? null : "hashref-a";
@@ -379,8 +457,8 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             ObservedByteLength: fileOperationKind is "add" or "change" ? byteLength : null,
             CorrelationId: "correlation-file-a",
             TaskId: taskId,
-            IdempotencyKey: "idempotency-file-a",
-            PayloadTenantId: null,
+            IdempotencyKey: idempotencyKey,
+            PayloadTenantId: payloadTenantId,
             ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal),
             ClientControlledPrincipalValues: new Dictionary<string, string?>(StringComparer.Ordinal));
     }

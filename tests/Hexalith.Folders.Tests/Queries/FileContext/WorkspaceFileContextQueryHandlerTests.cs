@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -42,6 +44,35 @@ public sealed class WorkspaceFileContextQueryHandlerTests
         result.Code.ShouldBe(WorkspaceFileContextResultCode.PathValidationFailed);
         sensitivity.Requests.ShouldBeEmpty();
         source.Requests.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("../secret.txt")]
+    [InlineData("/absolute.txt")]
+    [InlineData("docs\\mixed.txt")]
+    [InlineData("docs/%2e%2e/secret.txt")]
+    [InlineData("docs%2fsecret.txt")]
+    [InlineData("docs/NUL.md")]
+    [InlineData("docs/readme\u200d.md")]
+    [InlineData("docs/cafe\u0301.txt")]
+    public async Task UnsafeContextPathsShouldDenyBeforeSourceAndNeverEchoPath(string normalizedPath)
+    {
+        ArgumentNullException.ThrowIfNull(normalizedPath);
+
+        RecordingContextSource source = new();
+        RecordingSensitivityClassifier sensitivity = new(WorkspacePathSensitivityResult.Allowed());
+        WorkspaceFileContextQueryHandler handler = Handler(source, sensitivityClassifier: sensitivity);
+
+        WorkspaceFileContextQueryResult result = await handler.HandleAsync(
+            Query(paths: [Path(normalizedPath)]),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(WorkspaceFileContextResultCode.PathValidationFailed);
+        sensitivity.Requests.ShouldBeEmpty();
+        source.Requests.ShouldBeEmpty();
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain(normalizedPath, Case.Sensitive);
     }
 
     [Fact]

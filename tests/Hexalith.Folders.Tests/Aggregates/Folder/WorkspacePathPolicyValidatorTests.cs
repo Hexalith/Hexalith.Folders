@@ -32,9 +32,16 @@ public sealed class WorkspacePathPolicyValidatorTests
     [InlineData("docs//readme.md", WorkspacePathPolicyDecision.EmptySegment)]
     [InlineData("docs/./readme.md", WorkspacePathPolicyDecision.DotSegment)]
     [InlineData("docs/%2e%2e/secret.txt", WorkspacePathPolicyDecision.PercentDotSegmentSmuggling)]
+    [InlineData("docs/%2E/secret.txt", WorkspacePathPolicyDecision.PercentDotSegmentSmuggling)]
+    [InlineData("docs%2fsecret.txt", WorkspacePathPolicyDecision.WorkspaceRootEscape)]
     [InlineData("docs/con.txt", WorkspacePathPolicyDecision.ReservedPlatformName)]
+    [InlineData("docs/NUL.md", WorkspacePathPolicyDecision.ReservedPlatformName)]
+    [InlineData("docs/lpt9", WorkspacePathPolicyDecision.ReservedPlatformName)]
     [InlineData("docs/name .txt", WorkspacePathPolicyDecision.TrailingSpaceOrDotAmbiguity)]
     [InlineData("docs/name./file.txt", WorkspacePathPolicyDecision.TrailingSpaceOrDotAmbiguity)]
+    [InlineData("docs/", WorkspacePathPolicyDecision.EmptySegment)]
+    [InlineData("docs/secret\u0001.txt", WorkspacePathPolicyDecision.ControlCharacter)]
+    [InlineData("docs/Ａ-folder.txt", WorkspacePathPolicyDecision.UnicodeNormalizationAmbiguity)]
     public void UnsafeNormalizedPathShouldBeDeniedWithoutPathEcho(
         string normalizedPath,
         WorkspacePathPolicyDecision expectedDecision)
@@ -48,6 +55,23 @@ public sealed class WorkspacePathPolicyValidatorTests
 
         result.IsAccepted.ShouldBeFalse();
         result.Decision.ShouldBe(expectedDecision);
+        result.UnsafePath.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData("safe/name.txt")]
+    [InlineData("safe\\name.txt")]
+    [InlineData("safe\u200dname.txt")]
+    public void UnsafeDisplayNameShouldBeDeniedWithoutPathEcho(string displayName)
+    {
+        WorkspacePathPolicyResult result = WorkspacePathPolicyValidator.Validate(
+            new PathMetadata(
+                "docs/readme.md",
+                displayName,
+                "tenant_sensitive_document",
+                "NFC"));
+
+        result.IsAccepted.ShouldBeFalse();
         result.UnsafePath.ShouldBeNull();
     }
 
