@@ -11,6 +11,7 @@ public static class FolderAccessAction
         "lock_workspace",
         "read_workspace_lock",
         "read_workspace_status",
+        "read_workspace_cleanup_status",
         "read_metadata",
         "read_file_content",
         "mutate_files",

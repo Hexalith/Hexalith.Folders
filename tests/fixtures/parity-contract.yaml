@@ -1,5 +1,5 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: a99a8e98afb2f7970a826af7484db8bf0c5f83f7d01d793fbc3bc88058af9da8
+# contract_spine_sha256: f2242cda6101550c35f2586512ec92ca7f8522c1556611dcc0350835750c784e
 # parity_schema_sha256: f9c0c3a3d0d74bd6062ca18299f35e25301b0c545b4bed4746e214154b716fca
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
@@ -273,13 +273,13 @@
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
       pre_sdk_error_class: 'none'
-    - canonical_error_category: 'provider_readiness_failed'
-      cli_exit_code: 70
-      mcp_failure_kind: 'provider_readiness_failed'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'provider_rate_limited'
       cli_exit_code: 70
       mcp_failure_kind: 'provider_rate_limited'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'provider_readiness_failed'
+      cli_exit_code: 70
+      mcp_failure_kind: 'provider_readiness_failed'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'reconciliation_required'
       cli_exit_code: 72
@@ -2706,6 +2706,93 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'not_found'
+      cli_exit_code: 73
+      mcp_failure_kind: 'not_found'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_stale'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_stale'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'projection_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+  adapter_expectations:
+    - 'cli'
+    - 'mcp'
+    - 'rest'
+    - 'sdk'
+  ownership:
+    owner_workstream: 'C13 parity oracle generation'
+    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+    known_omissions:
+      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
+    mutation_rules:
+      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
+    non_policy_placeholder: true
+    synthetic_data_only: true
+- operation_id: 'GetWorkspaceCleanupStatus'
+  operation_family: 'query_status'
+  read_consistency_class: 'read-your-writes'
+  transport_parity:
+    auth_outcome_class: 'folder_acl_denied'
+    error_code_set:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
+    audit_metadata_keys:
+      - 'cleanup_status'
+      - 'correlation_id'
+      - 'folder_id'
+      - 'projection_watermark'
+      - 'reason_code'
+      - 'retryability'
+      - 'task_id'
+      - 'workspace_id'
+    correlation_field_path: 'headers.X-Correlation-Id'
+    terminal_states:
+      - 'projected'
+  behavioral_parity:
+    pre_sdk_error_class: 'none'
+    idempotency_key_sourcing: 'not_accepted'
+    correlation_id_sourcing: 'caller_provided'
+    task_id_sourcing: 'caller_provided'
+    credential_sourcing: 'sdk_configuration'
+    cli_exit_code: 0
+    mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'

@@ -15,6 +15,7 @@ public sealed class CommitStatusContractGroupTests
     [
         "CommitWorkspace",
         "GetWorkspaceStatus",
+        "GetWorkspaceCleanupStatus",
         "GetTaskStatus",
         "GetCommitEvidence",
         "GetProviderOutcome",
@@ -24,6 +25,7 @@ public sealed class CommitStatusContractGroupTests
     private static readonly string[] QueryOperationIds =
     [
         "GetWorkspaceStatus",
+        "GetWorkspaceCleanupStatus",
         "GetTaskStatus",
         "GetCommitEvidence",
         "GetProviderOutcome",
@@ -43,6 +45,7 @@ public sealed class CommitStatusContractGroupTests
         {
             ["CommitWorkspace"] = ("post", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits"),
             ["GetWorkspaceStatus"] = ("get", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/status"),
+            ["GetWorkspaceCleanupStatus"] = ("get", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status"),
             ["GetTaskStatus"] = ("get", "/api/v1/tasks/{taskId}/status"),
             ["GetCommitEvidence"] = ("get", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence"),
             ["GetProviderOutcome"] = ("get", "/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome"),
@@ -153,6 +156,8 @@ public sealed class CommitStatusContractGroupTests
 
         YamlMappingNode workspaceConsistency = RequiredMapping(operations.Single(o => o.OperationId == "GetWorkspaceStatus").Node, "x-hexalith-read-consistency");
         GetScalar(workspaceConsistency, "class").ShouldBe("read_your_writes");
+        YamlMappingNode cleanupConsistency = RequiredMapping(operations.Single(o => o.OperationId == "GetWorkspaceCleanupStatus").Node, "x-hexalith-read-consistency");
+        GetScalar(cleanupConsistency, "class").ShouldBe("read_your_writes");
     }
 
     [Fact]
@@ -162,7 +167,7 @@ public sealed class CommitStatusContractGroupTests
         YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
-        foreach (string schemaName in new[] { "CommitWorkspaceRequest", "CommitWorkspaceAccepted", "WorkspaceStatus", "TaskStatus", "CommitEvidence", "ProviderOutcome", "RetryEligibility", "ReconciliationStatus" })
+        foreach (string schemaName in new[] { "CommitWorkspaceRequest", "CommitWorkspaceAccepted", "WorkspaceStatus", "WorkspaceCleanupStatus", "CleanupStatus", "TaskStatus", "CommitEvidence", "ProviderOutcome", "RetryEligibility", "ReconciliationStatus" })
         {
             RequiredMapping(schemas, schemaName);
         }
@@ -174,6 +179,7 @@ public sealed class CommitStatusContractGroupTests
         }
         RequiredEnumValues(schemas, "ProviderOutcomeState").ShouldBe(["pending", "known_success", "known_failure", "unknown_provider_outcome", "reconciliation_required"]);
         RequiredEnumValues(schemas, "ReconciliationState").ShouldBe(["not_required", "required", "in_progress", "completed_clean", "completed_dirty", "failed"]);
+        RequiredEnumValues(schemas, "CleanupStatus").ShouldBe(["pending", "succeeded", "failed", "status_only"]);
 
         string[] story110Examples =
         [
@@ -181,6 +187,7 @@ public sealed class CommitStatusContractGroupTests
             "CommitWorkspaceAccepted",
             "WorkspaceStatusCommitted",
             "WorkspaceStatusUnknownProviderOutcome",
+            "WorkspaceCleanupStatusOnly",
             "TaskStatusFailed",
             "CommitEvidenceRedacted",
             "ProviderOutcomeKnownFailure",

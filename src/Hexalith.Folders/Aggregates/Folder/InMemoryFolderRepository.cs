@@ -19,6 +19,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
     private readonly InMemoryWorkspaceLockStatusReadModel? _workspaceLockStatusReadModel;
     private readonly InMemoryWorkspaceStatusReadModel? _workspaceStatusReadModel;
+    private readonly InMemoryWorkspaceCleanupStatusReadModel? _workspaceCleanupStatusReadModel;
     private readonly TimeProvider _timeProvider;
 
     public InMemoryFolderRepository(
@@ -26,7 +27,8 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         IBranchRefPolicyReadModel? branchRefPolicyReadModel = null,
         TimeProvider? timeProvider = null,
         IWorkspaceLockStatusReadModel? workspaceLockStatusReadModel = null,
-        IWorkspaceStatusReadModel? workspaceStatusReadModel = null)
+        IWorkspaceStatusReadModel? workspaceStatusReadModel = null,
+        IWorkspaceCleanupStatusReadModel? workspaceCleanupStatusReadModel = null)
     {
         // Lifecycle snapshot writes go through the concrete in-memory read-model. Fail loud
         // if a different IFolderLifecycleStatusReadModel implementation was injected so the
@@ -59,10 +61,18 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 nameof(workspaceStatusReadModel));
         }
 
+        if (workspaceCleanupStatusReadModel is not null && workspaceCleanupStatusReadModel is not InMemoryWorkspaceCleanupStatusReadModel)
+        {
+            throw new ArgumentException(
+                $"InMemoryFolderRepository requires {nameof(InMemoryWorkspaceCleanupStatusReadModel)}; received {workspaceCleanupStatusReadModel.GetType().Name}.",
+                nameof(workspaceCleanupStatusReadModel));
+        }
+
         _branchRefPolicyReadModel = (InMemoryBranchRefPolicyReadModel?)branchRefPolicyReadModel;
         _lifecycleReadModel = (InMemoryFolderLifecycleStatusReadModel?)lifecycleReadModel;
         _workspaceLockStatusReadModel = (InMemoryWorkspaceLockStatusReadModel?)workspaceLockStatusReadModel;
         _workspaceStatusReadModel = (InMemoryWorkspaceStatusReadModel?)workspaceStatusReadModel;
+        _workspaceCleanupStatusReadModel = (InMemoryWorkspaceCleanupStatusReadModel?)workspaceCleanupStatusReadModel;
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
@@ -124,6 +134,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             SaveBranchRefPolicySnapshot(next, observedAt);
             SaveWorkspaceLockStatusSnapshot(next, observedAt);
             SaveWorkspaceStatusSnapshot(next, observedAt);
+            SaveWorkspaceCleanupStatusSnapshot(next, observedAt);
             return FolderAppendOutcome.Appended;
         }
     }
@@ -184,6 +195,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             SaveBranchRefPolicySnapshot(seeded, observedAt);
             SaveWorkspaceLockStatusSnapshot(seeded, observedAt);
             SaveWorkspaceStatusSnapshot(seeded, observedAt);
+            SaveWorkspaceCleanupStatusSnapshot(seeded, observedAt);
         }
     }
 
@@ -397,6 +409,55 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 AuthorizationWatermark: null)));
     }
 
+    private void SaveWorkspaceCleanupStatusSnapshot(FolderState state, DateTimeOffset observedAt)
+    {
+        if (_workspaceCleanupStatusReadModel is null
+            || !state.IsCreated
+            || string.IsNullOrWhiteSpace(state.ManagedTenantId)
+            || string.IsNullOrWhiteSpace(state.FolderId)
+            || string.IsNullOrWhiteSpace(state.WorkspaceId)
+            || state.WorkspaceLifecycleState is null)
+        {
+            return;
+        }
+
+        string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
+        DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
+        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
+            folderKey,
+            rawObservedAt,
+            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+
+        string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
+        (string cleanupStatus, string reasonCode, WorkspaceStatusRetryEligibility retryEligibility) = CleanupVisibilityFor(currentState);
+        FolderLifecycleFreshness freshness = new(
+            "read_your_writes",
+            clamped,
+            "in-memory-folder-repository",
+            Stale: false,
+            ReasonCode: null);
+
+        _workspaceCleanupStatusReadModel.Save(new WorkspaceCleanupStatusReadModelSnapshot(
+            state.ManagedTenantId,
+            state.FolderId,
+            state.WorkspaceId,
+            state.WorkspaceTaskId,
+            cleanupStatus,
+            reasonCode,
+            retryEligibility,
+            freshness,
+            state.WorkspaceCorrelationId,
+            clamped,
+            currentState is "requested" or "preparing" ? null : clamped,
+            new FolderLifecycleEvidenceScope(
+                state.ManagedTenantId,
+                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                WorkspaceCleanupStatusQueryHandler.ActionToken,
+                state.WorkspaceTaskId,
+                state.WorkspaceCorrelationId,
+                AuthorizationWatermark: null)));
+    }
+
     private static string LifecycleKey(string managedTenantId, string folderId)
         => $"{managedTenantId}|{folderId}";
 
@@ -422,6 +483,21 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             "locked" => new(false, "workspace_locked"),
             "inaccessible" => new(false, "tenant_access_denied"),
             _ => new(false, "retry_not_required"),
+        };
+
+    private static (string Status, string ReasonCode, WorkspaceStatusRetryEligibility RetryEligibility) CleanupVisibilityFor(string currentState)
+        => currentState switch
+        {
+            "requested" or "preparing" => ("pending", "workspace_lifecycle_in_progress", new(false, "cleanup_not_applicable")),
+            "committed" => ("succeeded", "workspace_committed", new(false, "retry_not_required")),
+            "failed" => ("failed", "failed_operation", new(true, "failed_operation")),
+            "dirty" => ("status_only", "dirty_workspace", new(true, "dirty_workspace")),
+            "locked" => ("status_only", "workspace_locked", new(false, "workspace_locked")),
+            "changes_staged" => ("status_only", "changes_staged", new(false, "cleanup_not_applicable")),
+            "unknown_provider_outcome" => ("status_only", "unknown_provider_outcome", new(true, "unknown_provider_outcome")),
+            "reconciliation_required" => ("status_only", "reconciliation_required", new(true, "reconciliation_required")),
+            "inaccessible" => ("status_only", "tenant_access_denied", new(false, "tenant_access_denied")),
+            _ => ("status_only", "cleanup_status_only", new(false, "cleanup_not_applicable")),
         };
 
     private static string AcceptedStateFor(string currentState)

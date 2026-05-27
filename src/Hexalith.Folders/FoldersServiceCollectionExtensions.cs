@@ -74,6 +74,8 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<WorkspaceLockStatusQueryHandler>();
         services.TryAddSingleton<IWorkspaceStatusReadModel, InMemoryWorkspaceStatusReadModel>();
         services.TryAddSingleton<WorkspaceStatusQueryHandler>();
+        services.TryAddSingleton<IWorkspaceCleanupStatusReadModel, InMemoryWorkspaceCleanupStatusReadModel>();
+        services.TryAddSingleton<WorkspaceCleanupStatusQueryHandler>();
 
         return services;
     }

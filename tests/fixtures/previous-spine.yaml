@@ -16,7 +16,8 @@ ownership:
 # Operation IDs added to the Contract Spine AFTER the captured baseline. Each entry is a deliberate
 # acknowledgment that the addition is intentional — the generator and the focused inventory test
 # both fail closed on unlisted additions to surface accidental scope creep.
-approved_additions: []
+approved_additions:
+  - 'GetWorkspaceCleanupStatus'
 operations:
   - operation_id: 'AddFile'
     method: 'post'
@@ -105,6 +106,9 @@ operations:
   - operation_id: 'GetTaskStatus'
     method: 'get'
     path: '/api/v1/tasks/{taskId}/status'
+  - operation_id: 'GetWorkspaceCleanupStatus'
+    method: 'get'
+    path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
   - operation_id: 'GetWorkspaceLock'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'

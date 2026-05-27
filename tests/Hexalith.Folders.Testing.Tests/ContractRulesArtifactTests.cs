@@ -21,6 +21,7 @@ public sealed class ContractRulesArtifactTests
         "RemoveFile",
         "CommitWorkspace",
         "GetWorkspaceStatus",
+        "GetWorkspaceCleanupStatus",
         "ListFolderFiles",
         "SearchFolderFiles",
         "ReadFileRange",
@@ -58,6 +59,7 @@ public sealed class ContractRulesArtifactTests
     [
         "ValidateProviderReadiness",
         "GetWorkspaceStatus",
+        "GetWorkspaceCleanupStatus",
         "ListFolderFiles",
         "SearchFolderFiles",
         "ReadFileRange",

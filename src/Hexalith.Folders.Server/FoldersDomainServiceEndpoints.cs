@@ -346,6 +346,76 @@ public static class FoldersDomainServiceEndpoints
         })
         .WithName("GetWorkspaceStatus");
 
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceCleanupStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            if (idempotencyKey is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            if (!IsCanonicalIdentifier(folderId)
+                || !IsCanonicalIdentifier(workspaceId)
+                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Operation supports read_your_writes only.");
+            }
+
+            WorkspaceCleanupStatusQueryResult result = await handler.HandleAsync(
+                new WorkspaceCleanupStatusQuery(
+                    folderId,
+                    workspaceId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(WorkspaceCleanupStatusQueryHandler.ActionToken),
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("GetWorkspaceCleanupStatus");
+
         endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release", async (
             string folderId,
             string workspaceId,
@@ -3469,6 +3539,104 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static IResult ToHttpResult(HttpContext httpContext, WorkspaceCleanupStatusQueryResult result, string? correlationId, string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case WorkspaceCleanupStatusQueryResultCode.Allowed:
+                if (string.IsNullOrWhiteSpace(result.FolderId)
+                    || string.IsNullOrWhiteSpace(result.WorkspaceId))
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                AddWorkspaceCleanupStatusSuccessHeaders(httpContext, result);
+                return Results.Json(
+                    new WorkspaceCleanupStatusResponse(
+                        result.FolderId,
+                        result.WorkspaceId,
+                        result.TaskId,
+                        result.Status,
+                        result.ReasonCode,
+                        result.RetryEligibility,
+                        new FreshnessMetadataResponse(
+                            result.Freshness.ReadConsistency,
+                            result.Freshness.ObservedAt,
+                            result.Freshness.ProjectionWatermark,
+                            result.Freshness.Stale),
+                        result.CorrelationId,
+                        result.ObservedAt,
+                        result.LastAttemptedAt),
+                    ResponseJsonOptions);
+
+            case WorkspaceCleanupStatusQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceCleanupStatusQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceCleanupStatusQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceCleanupStatusQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceCleanupStatusQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
     private static IResult ToHttpResult(EffectivePermissionsQueryResult result, string? correlationId)
         => result.Code switch
         {
@@ -3676,6 +3844,21 @@ public static class FoldersDomainServiceEndpoints
     }
 
     private static void AddWorkspaceStatusSuccessHeaders(HttpContext httpContext, WorkspaceStatusQueryResult result)
+    {
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId)
+            && !ContainsControlChars(result.CorrelationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
+            && !ContainsControlChars(result.Freshness.ReadConsistency))
+        {
+            httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+        }
+    }
+
+    private static void AddWorkspaceCleanupStatusSuccessHeaders(HttpContext httpContext, WorkspaceCleanupStatusQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
             && !ContainsControlChars(result.CorrelationId))
@@ -3998,6 +4181,18 @@ public static class FoldersDomainServiceEndpoints
         WorkspaceStatusRetryEligibility RetryEligibility,
         WorkspaceStatusRetryAfter? RetryAfter,
         FreshnessMetadataResponse Freshness);
+
+    private sealed record WorkspaceCleanupStatusResponse(
+        string FolderId,
+        string WorkspaceId,
+        string? TaskId,
+        string Status,
+        string ReasonCode,
+        WorkspaceStatusRetryEligibility RetryEligibility,
+        FreshnessMetadataResponse Freshness,
+        string? CorrelationId,
+        DateTimeOffset? ObservedAt,
+        DateTimeOffset? LastAttemptedAt);
 
     private sealed record BranchRefPolicyResponse(
         string RequestSchemaVersion,

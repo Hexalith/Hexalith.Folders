@@ -44,6 +44,7 @@ public sealed class TenantFolderProviderContractGroupTests
         "ReadFileRange",
         "CommitWorkspace",
         "GetWorkspaceStatus",
+        "GetWorkspaceCleanupStatus",
         "GetTaskStatus",
         "GetCommitEvidence",
         "GetProviderOutcome",

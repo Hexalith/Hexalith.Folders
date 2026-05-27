@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "830c43384bd5f0072047f7ec73b769b21242d4d4ac8700a78f4f17c572a36322";
+    public const string ContractSpineSha256 = "f2242cda6101550c35f2586512ec92ca7f8522c1556611dcc0350835750c784e";
     public const string GenerationConfigurationSha256 = "9e125282c0394f9862d0c7b7b54fbb0ec79480a1d995655dd7538b775b549f1d";
-    public const string GeneratedHelpersSha256 = "7a1e2ae2e90e9bdbe67aaed0ef889eb32741ff7a591357be358fada7c1d36765";
+    public const string GeneratedHelpersSha256 = "6db13368905e885dfb0805aa592e4dfc550d0c452e8795029d2ab89c686c5f1b";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per

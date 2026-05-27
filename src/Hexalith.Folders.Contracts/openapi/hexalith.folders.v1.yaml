@@ -3425,6 +3425,112 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status:
+    get:
+      tags:
+        - query-status
+      operationId: GetWorkspaceCleanupStatus
+      summary: Read workspace cleanup status without repair automation.
+      description: >
+        Returns authorized metadata-only workspace cleanup visibility after
+        authorization-before-observation. This query never performs repair,
+        discard, unlock, cleanup request, provider write, Git, filesystem,
+        scheduler, or hidden mutation behavior.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Authorized metadata-only cleanup status.
+          headers:
+            X-Correlation-Id:
+              $ref: "#/components/headers/CorrelationId"
+            X-Hexalith-Freshness:
+              $ref: "#/components/headers/Freshness"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceCleanupStatus"
+              examples:
+                statusOnly:
+                  $ref: "#/components/examples/WorkspaceCleanupStatusOnly"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: read_your_writes
+        freshnessBehavior: reports-cleanup-status-reason-retryability-projection-watermark-and-observation-timestamps
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: authorization-before-observation tenant access, folder ACL, workspace scope, task/correlation scope, then cleanup projection
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable safe-denial for wrong-tenant hidden wrong-folder wrong-workspace task-incompatible stale malformed and projection-unavailable cases
+        order:
+          - tenant_access
+          - folder_acl
+          - workspace_scope
+          - task_correlation_scope
+          - cleanup_status_projection
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - projection_stale
+        - projection_unavailable
+        - not_found
+        - redacted
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: task_id
+          sensitivity: tenant_sensitive
+          description: Optional task reference used for task-scoped cleanup visibility.
+        - name: cleanup_status
+          sensitivity: public_metadata
+          description: Cleanup visibility class only.
+        - name: reason_code
+          sensitivity: public_metadata
+          description: Sanitized cleanup-status reason code.
+        - name: retryability
+          sensitivity: public_metadata
+          description: Advisory retry eligibility only; it does not schedule or trigger repair.
+        - name: projection_watermark
+          sensitivity: tenant_sensitive
+          description: Opaque projection watermark.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+        behavioralParity:
+          - read_consistency
+          - cleanup_status_visibility
+          - no_repair_or_hidden_mutation
+          - safe_denial
+          - authorization_before_observation
+        adapterStages:
+          - pre-sdk
+          - post-sdk
   /api/v1/tasks/{taskId}/status:
     get:
       tags:
@@ -5877,6 +5983,26 @@ components:
         projectionLag:
           ageMilliseconds: 30000
           stateSource: projection
+    WorkspaceCleanupStatusOnly:
+      summary: Authorized metadata-only cleanup status without repair controls.
+      value:
+        folderId: opaque_01HZY7Z6N7J4Q2X8Y9V0FOL001
+        workspaceId: opaque_01HZY7Z6N7J4Q2X8Y9V0WSP001
+        taskId: opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001
+        status: status_only
+        reasonCode: dirty_workspace
+        retryEligibility:
+          eligible: true
+          reasonCode: dirty_workspace
+          advisoryOnly: true
+        freshness:
+          readConsistency: read_your_writes
+          observedAt: "2026-05-12T12:41:00Z"
+          projectionWatermark: opaque_01HZY7Z6N7J4Q2X8Y9V0PWM003
+          stale: false
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        observedAt: "2026-05-12T12:41:00Z"
+        lastAttemptedAt: "2026-05-12T12:41:00Z"
     TaskStatusFailed:
       summary: Authorized task status with terminal failure metadata only.
       value:
@@ -8558,6 +8684,47 @@ components:
           $ref: "#/components/schemas/ProjectionLagMetadata"
         lastFailureCategory:
           $ref: "#/components/schemas/CanonicalErrorCategory"
+    WorkspaceCleanupStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - folderId
+        - workspaceId
+        - status
+        - reasonCode
+        - retryEligibility
+        - freshness
+      properties:
+        folderId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        workspaceId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        taskId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        status:
+          $ref: "#/components/schemas/CleanupStatus"
+        reasonCode:
+          type: string
+          minLength: 1
+          maxLength: 80
+          pattern: "^[a-z][a-z0-9_]{0,79}$"
+        retryEligibility:
+          $ref: "#/components/schemas/RetryEligibility"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        observedAt:
+          $ref: "#/components/schemas/UtcDateTime"
+        lastAttemptedAt:
+          $ref: "#/components/schemas/UtcDateTime"
+    CleanupStatus:
+      type: string
+      enum:
+        - pending
+        - succeeded
+        - failed
+        - status_only
     AcceptedCommandState:
       type: object
       additionalProperties: false
