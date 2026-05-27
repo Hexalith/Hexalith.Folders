@@ -48,6 +48,8 @@ The order is contract-binding. Implementations MUST evaluate stages in this sequ
 
 The request-side header `X-Hexalith-Retry-As: [caller, operator]` signals retry allocation. The response-side header `X-Hexalith-Retry-Transport: [stream]` signals transport substitution and is emitted with `413 Payload Too Large` on inline file mutations. The names are deliberately disjoint so a caller echoing back a response value cannot trip request-side validation. `FileInlineTooLargeProblem` carries the canonical category only; the configured byte limit is not surfaced in the response body to keep 413 disclosure safe for pre-authentication callers.
 
+`PutFileStream` requests must carry observed transient staging evidence. A descriptor with only declared length and media type is not sufficient runtime evidence for add/change mutation acceptance.
+
 ## Range-read safe-denial routing (deferred)
 
 `ReadFileRange` currently surfaces sensitivity-denied paths under `416` with `category: redacted` and unsatisfiable byte ranges under `416` with `category: range_unsatisfiable`. The final safe-denial routing between `416 redacted` and `404 SafeAuthorizationDenial` is `TODO(reference-pending)` against the safe-denial-matrix follow-up story. Until that story lands, downstream adapters MUST treat both `416 redacted` and `404` as externally-indistinguishable from an unauthorized-existence-disclosure standpoint.

@@ -26,6 +26,11 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         accepted.PathMetadataDigest.ShouldNotContain("docs/readme.md", Case.Sensitive);
         accepted.FileOperationKind.ShouldBe("add");
         accepted.PathPolicyClass.ShouldBe("tenant_sensitive_document");
+        accepted.ContentHashReference.ShouldBe("hashref-a");
+        accepted.ByteLength.ShouldBe(12);
+        accepted.MediaType.ShouldBe("text/plain");
+        accepted.TransportEvidenceKind.ShouldBe("inline_decoded");
+        accepted.ObservedByteLength.ShouldBe(12);
 
         FolderState applied = locked.Apply(result.Events, streamName);
         applied.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.ChangesStaged);
@@ -178,6 +183,27 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
     }
 
     [Theory]
+    [InlineData("text/plain;charset=utf-8", "inline_decoded", 12)]
+    [InlineData("text/plain", "stream_observed", 12)]
+    [InlineData("text/plain", "inline_decoded", 13)]
+    public void MutationShouldRejectInvalidTransportEvidence(
+        string mediaType,
+        string transportEvidenceKind,
+        int observedByteLength)
+    {
+        FolderResult result = FolderAggregate.Handle(
+            LockedState(FolderStreamName.Create("tenant-a", "folder-a")),
+            Mutation(
+                mediaType: mediaType,
+                transportEvidenceKind: transportEvidenceKind,
+                observedByteLength: observedByteLength),
+            Now);
+
+        result.Code.ShouldBe(FolderResultCode.ValidationFailed);
+        result.Events.ShouldBeEmpty();
+    }
+
+    [Theory]
     [MemberData(nameof(NonMutableStates))]
     public void MutationShouldRejectNonMutableStates(FolderState state, FolderResultCode expectedCode)
     {
@@ -213,6 +239,9 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         string transportOperation = "PutFileInline",
         string? contentHashReference = "hashref-a",
         int? byteLength = 12,
+        string? mediaType = null,
+        string? transportEvidenceKind = null,
+        int? observedByteLength = null,
         string taskId = "task-a",
         string idempotencyKey = "idempotency-file-a",
         string requestSchemaVersion = "v1")
@@ -228,6 +257,9 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
             new PathMetadata("docs/readme.md", "readme.md", "tenant_sensitive_document", "NFC"),
             contentHashReference,
             ByteLength: byteLength,
+            MediaType: mediaType ?? (fileOperationKind is "add" or "change" ? "text/plain" : null),
+            TransportEvidenceKind: transportEvidenceKind ?? (transportOperation == "PutFileInline" ? "inline_decoded" : transportOperation == "PutFileStream" ? "stream_observed" : null),
+            ObservedByteLength: observedByteLength ?? byteLength,
             "principal-a",
             "correlation-file-a",
             taskId,

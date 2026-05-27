@@ -6,7 +6,8 @@ public sealed class WorkspaceFileMutationService(
     LayeredFolderAuthorizationService authorizationService,
     IFolderRepository repository,
     IWorkspacePathPolicyEvidenceProvider pathPolicyEvidenceProvider,
-    TimeProvider? timeProvider = null)
+    TimeProvider? timeProvider = null,
+    IWorkspaceFileContentStore? contentStore = null)
 {
     public const string ActionToken = "mutate_files";
 
@@ -16,6 +17,7 @@ public sealed class WorkspaceFileMutationService(
     private readonly IWorkspacePathPolicyEvidenceProvider _pathPolicyEvidenceProvider =
         pathPolicyEvidenceProvider ?? throw new ArgumentNullException(nameof(pathPolicyEvidenceProvider));
     private readonly TimeProvider _timeProvider = timeProvider ?? TimeProvider.System;
+    private readonly IWorkspaceFileContentStore _contentStore = contentStore ?? new UnavailableWorkspaceFileContentStore();
 
     public async Task<FolderResult> MutateAsync(
         WorkspaceFileMutationRequest request,
@@ -81,6 +83,9 @@ public sealed class WorkspaceFileMutationService(
             request.PathMetadata,
             request.ContentHashReference,
             request.ByteLength,
+            request.MediaType,
+            request.TransportEvidenceKind,
+            request.ObservedByteLength,
             allowed.ActorSafeIdentifier,
             request.CorrelationId,
             request.TaskId,
@@ -144,6 +149,30 @@ public sealed class WorkspaceFileMutationService(
         if (lookup == FolderIdempotencyLookupResult.Unavailable)
         {
             return FolderResult.Rejected(command, FolderResultCode.IdempotencyUnavailable);
+        }
+
+        if (command.FileOperationKind is "add" or "change")
+        {
+            WorkspaceFileContentStoreResult contentResult = await _contentStore.StageAsync(
+                new WorkspaceFileContentStoreRequest(
+                    command.ManagedTenantId,
+                    command.FolderId,
+                    command.WorkspaceId,
+                    command.TaskId,
+                    command.OperationId,
+                    command.FileOperationKind,
+                    command.TransportOperation,
+                    command.ContentHashReference!,
+                    command.ByteLength!.Value,
+                    command.MediaType!,
+                    command.TransportEvidenceKind!,
+                    command.ObservedByteLength!.Value),
+                cancellationToken).ConfigureAwait(false);
+
+            if (!contentResult.Accepted)
+            {
+                return FolderResult.Rejected(command, FolderResultCode.FileOperationFailed);
+            }
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(

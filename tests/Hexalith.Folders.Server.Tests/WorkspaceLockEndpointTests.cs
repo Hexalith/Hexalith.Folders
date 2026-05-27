@@ -428,11 +428,15 @@ public sealed class WorkspaceLockEndpointTests
         submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
         submitted.Payload.GetProperty("fileOperationKind").GetString().ShouldBe("add");
         submitted.Payload.GetProperty("pathMetadata").GetProperty("normalizedPath").GetString().ShouldBe("docs/readme.md");
+        submitted.Payload.GetProperty("mediaType").GetString().ShouldBe("text/plain");
+        submitted.Payload.GetProperty("transportEvidenceKind").GetString().ShouldBe("inline_decoded");
+        submitted.Payload.GetProperty("observedByteLength").GetInt64().ShouldBe(12);
+        submitted.Payload.TryGetProperty("inlineContent", out _).ShouldBeFalse();
     }
 
     [Theory]
     [InlineData("POST", "/api/v1/folders/folder-a/workspaces/workspace-a/files/add", "add", "PutFileInline", "hashref-a", 12L)]
-    [InlineData("PUT", "/api/v1/folders/folder-a/workspaces/workspace-a/files/change", "change", "PutFileStream", "hashref-change-a", 262145L)]
+    [InlineData("PUT", "/api/v1/folders/folder-a/workspaces/workspace-a/files/change", "change", "PutFileStream", "hashref-a", 262145L)]
     [InlineData("POST", "/api/v1/folders/folder-a/workspaces/workspace-a/files/remove", "remove", "metadataOnlyRemoval", null, null)]
     public async Task FileMutationShouldSubmitSupportedRoutePayloads(
         string method,
@@ -491,6 +495,283 @@ public sealed class WorkspaceLockEndpointTests
             JsonElement submittedByteLength = submitted.Payload.GetProperty("byteLength");
             submittedByteLength.GetInt64().ShouldBe(byteLength.Value);
         }
+    }
+
+    [Fact]
+    public async Task FileMutationShouldAcceptZeroByteInlineContent()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateInlineFileMutationRequest(byteLength: 0, contentBytes: string.Empty);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.Payload.GetProperty("observedByteLength").GetInt64().ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task FileMutationShouldAcceptInlineContentAtBoundary()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateInlineFileMutationRequest(
+            byteLength: 262144,
+            contentBytes: Convert.ToBase64String(new byte[262144]));
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.Payload.GetProperty("observedByteLength").GetInt64().ShouldBe(262144);
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectOverBoundaryInlineContentWithRetryTransportHeader()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        string contentBytes = Convert.ToBase64String(new byte[262145]);
+        using HttpRequestMessage request = CreateInlineFileMutationRequest(byteLength: 262145, contentBytes: contentBytes);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.RequestEntityTooLarge);
+        response.Headers.TryGetValues("X-Hexalith-Retry-Transport", out IEnumerable<string>? values).ShouldBeTrue();
+        values.ShouldContain("stream");
+        json.ShouldContain("\"category\":\"input_limit_exceeded\"");
+        json.ShouldNotContain(contentBytes, Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("not-base64", "text/plain", 12L)]
+    [InlineData("aGVsbG8gd29ybGQh", "text/plain;charset=utf-8", 12L)]
+    [InlineData("aGVsbG8=", "text/plain", 12L)]
+    public async Task FileMutationShouldRejectInvalidInlineTransportBeforeGatewaySubmit(
+        string contentBytes,
+        string mediaType,
+        long byteLength)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateInlineFileMutationRequest(byteLength, contentBytes, mediaType);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldNotContain(contentBytes, Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectMissingInlineContentBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/add")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                operationId = "operation-a",
+                fileOperationKind = "add",
+                transportOperation = "PutFileInline",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference = "hashref-a",
+                byteLength = 12,
+            }),
+        };
+        AddFileMutationHeaders(request);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectStreamDescriptorLengthMismatchBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateStreamFileMutationRequest(byteLength: 262145, declaredLength: 262146);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectStreamDescriptorWithoutObservedStagingEvidenceBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateStreamFileMutationRequest(
+            byteLength: 262145,
+            declaredLength: 262145,
+            includeObservedEvidence: false);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldAcceptStreamedChangeAtMinimumBoundary()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateStreamFileMutationRequest(byteLength: 262145, declaredLength: 262145);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.Payload.GetProperty("transportOperation").GetString().ShouldBe("PutFileStream");
+        submitted.Payload.GetProperty("mediaType").GetString().ShouldBe("application/octet-stream");
+        submitted.Payload.GetProperty("transportEvidenceKind").GetString().ShouldBe("stream_observed");
+        submitted.Payload.GetProperty("observedByteLength").GetInt64().ShouldBe(262145);
+        submitted.Payload.TryGetProperty("streamDescriptor", out _).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(262144, 262144, "application/octet-stream")]
+    [InlineData(262145, 262145, "application/octet-stream;charset=utf-8")]
+    public async Task FileMutationShouldRejectInvalidStreamTransportBeforeGatewaySubmit(
+        long byteLength,
+        long declaredLength,
+        string mediaType)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateStreamFileMutationRequest(byteLength, declaredLength, mediaType);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldNotContain(mediaType, Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectMissingStreamDescriptorBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/folders/folder-a/workspaces/workspace-a/files/change")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                operationId = "operation-a",
+                fileOperationKind = "change",
+                transportOperation = "PutFileStream",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference = "hashref-a",
+                byteLength = 262145,
+            }),
+        };
+        AddFileMutationHeaders(request);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectBodyWorkspaceMismatchBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/add")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                workspaceId = "workspace-b",
+                operationId = "operation-a",
+                fileOperationKind = "add",
+                transportOperation = "PutFileInline",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference = "hashref-a",
+                byteLength = 12,
+                inlineContent = new
+                {
+                    mediaType = "text/plain",
+                    contentBytes = "aGVsbG8gd29ybGQh",
+                },
+            }),
+        };
+        AddFileMutationHeaders(request);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldNotContain("workspace-b", Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
     }
 
     [Theory]
@@ -754,6 +1035,24 @@ public sealed class WorkspaceLockEndpointTests
         transportOperation ??= fileOperationKind == "remove" ? "metadataOnlyRemoval" : "PutFileInline";
         contentHashReference ??= fileOperationKind == "remove" ? null : "hashref-a";
         byteLength ??= fileOperationKind == "remove" ? null : 12;
+        object? inlineContent = fileOperationKind == "remove" || transportOperation == "PutFileStream"
+            ? null
+            : new
+            {
+                mediaType = "text/plain",
+                contentBytes = "aGVsbG8gd29ybGQh",
+            };
+        object? streamDescriptor = transportOperation == "PutFileStream"
+            ? new
+            {
+                mediaType = "application/octet-stream",
+                declaredLength = byteLength,
+                observedLength = byteLength,
+                stagingReference = "staged-content-a",
+                observedContentHashReference = contentHashReference,
+                uploadMode = "request_body_stream",
+            }
+            : null;
         HttpRequestMessage request = new(method, uri)
         {
             Content = JsonContent.Create(new
@@ -771,18 +1070,93 @@ public sealed class WorkspaceLockEndpointTests
                 },
                 contentHashReference,
                 byteLength,
-                inlineContent = fileOperationKind == "remove"
-                    ? null
-                    : new
-                    {
-                        mediaType = "text/plain",
-                        contentBytes = "aGVsbG8=",
-                    },
+                inlineContent,
+                streamDescriptor,
             }),
         };
         request.Headers.Add("Idempotency-Key", "idempotency-file-a");
         request.Headers.Add("X-Correlation-Id", "correlation-a");
         request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        return request;
+    }
+
+    private static HttpRequestMessage CreateInlineFileMutationRequest(
+        long byteLength,
+        string contentBytes,
+        string mediaType = "text/plain")
+    {
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/add")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                operationId = "operation-a",
+                fileOperationKind = "add",
+                transportOperation = "PutFileInline",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference = "hashref-a",
+                byteLength,
+                inlineContent = new
+                {
+                    mediaType,
+                    contentBytes,
+                },
+            }),
+        };
+        AddFileMutationHeaders(request);
+        return request;
+    }
+
+    private static HttpRequestMessage CreateStreamFileMutationRequest(
+        long byteLength,
+        long declaredLength,
+        string mediaType = "application/octet-stream",
+        bool includeObservedEvidence = true)
+    {
+        object streamDescriptor = includeObservedEvidence
+            ? new
+            {
+                mediaType,
+                declaredLength,
+                observedLength = byteLength,
+                stagingReference = "staged-content-a",
+                observedContentHashReference = "hashref-a",
+                uploadMode = "request_body_stream",
+            }
+            : new
+            {
+                mediaType,
+                declaredLength,
+                uploadMode = "request_body_stream",
+            };
+
+        HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/folders/folder-a/workspaces/workspace-a/files/change")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                operationId = "operation-a",
+                fileOperationKind = "change",
+                transportOperation = "PutFileStream",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference = "hashref-a",
+                byteLength,
+                streamDescriptor,
+            }),
+        };
+        AddFileMutationHeaders(request);
         return request;
     }
 

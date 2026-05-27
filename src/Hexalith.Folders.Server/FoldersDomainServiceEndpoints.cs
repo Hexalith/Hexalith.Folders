@@ -20,6 +20,8 @@ public static class FoldersDomainServiceEndpoints
     private const string FreshnessHeaderName = "X-Hexalith-Freshness";
     private const string EventuallyConsistent = "eventually_consistent";
     private const string ReadYourWrites = "read_your_writes";
+    private const int InlineContentByteLimit = 262144;
+    private const int StreamContentMinimumBytes = 262145;
     private const int MaxBranchRefPatternCount = 16;
 
     // Outbound: ignore-when-null is fine because we serialize records.
@@ -1753,14 +1755,25 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
-        FileMutationRequestValidationResult validation = ValidateFileMutationRequest(body);
-        if (validation != FileMutationRequestValidationResult.Accepted)
+        FileMutationTransportValidation validation = ValidateFileMutationRequest(body);
+        if (!validation.IsAccepted)
         {
-            string category = validation == FileMutationRequestValidationResult.PathValidationFailed
-                ? "path_validation_failed"
-                : "validation_error";
+            string category = validation.Result switch
+            {
+                FileMutationRequestValidationResult.PathValidationFailed => "path_validation_failed",
+                FileMutationRequestValidationResult.InputLimitExceeded => "input_limit_exceeded",
+                _ => "validation_error",
+            };
+            int statusCode = validation.Result == FileMutationRequestValidationResult.InputLimitExceeded
+                ? StatusCodes.Status413PayloadTooLarge
+                : StatusCodes.Status400BadRequest;
+            if (validation.Result == FileMutationRequestValidationResult.InputLimitExceeded)
+            {
+                httpContext.Response.Headers["X-Hexalith-Retry-Transport"] = "stream";
+            }
+
             return SafeProblem(
-                StatusCodes.Status400BadRequest,
+                statusCode,
                 category: category,
                 code: category,
                 retryable: false,
@@ -1776,7 +1789,10 @@ public static class FoldersDomainServiceEndpoints
             body.TransportOperation,
             body.PathMetadata,
             body.ContentHashReference,
-            body.ByteLength);
+            body.ByteLength,
+            validation.MediaType,
+            validation.TransportEvidenceKind,
+            validation.ObservedByteLength);
 
         SubmitCommandResponse submitted;
         try
@@ -1870,15 +1886,15 @@ public static class FoldersDomainServiceEndpoints
             or "task_cancelled"
             or "lock_revoked";
 
-    private static FileMutationRequestValidationResult ValidateFileMutationRequest(FileMutationHttpRequest? body)
+    private static FileMutationTransportValidation ValidateFileMutationRequest(FileMutationHttpRequest? body)
     {
         if (body is null
             || !IsCanonicalIdentifier(body.OperationId)
             || body.PathMetadata is null)
         {
-            return body?.PathMetadata is null
+            return FileMutationTransportValidation.Rejected(body?.PathMetadata is null
                 ? FileMutationRequestValidationResult.PathValidationFailed
-                : FileMutationRequestValidationResult.ValidationFailed;
+                : FileMutationRequestValidationResult.ValidationFailed);
         }
 
         WorkspacePathPolicyResult pathPolicy = WorkspacePathPolicyValidator.Validate(new PathMetadata(
@@ -1888,26 +1904,166 @@ public static class FoldersDomainServiceEndpoints
             body.PathMetadata.UnicodeNormalization ?? string.Empty));
         if (!pathPolicy.IsAccepted)
         {
-            return FileMutationRequestValidationResult.PathValidationFailed;
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.PathValidationFailed);
         }
 
-        bool transportAccepted = body.FileOperationKind switch
+        return body.FileOperationKind switch
         {
-            "add" or "change" => body.TransportOperation is "PutFileInline" or "PutFileStream"
-                && IsCanonicalIdentifier(body.ContentHashReference)
-                && body.ByteLength is not null
-                && (string.Equals(body.TransportOperation, "PutFileInline", StringComparison.Ordinal)
-                    ? body.ByteLength is >= 0 and <= 262144
-                    : body.ByteLength >= 262145),
+            "add" or "change" => ValidateAddOrChangeFileMutationRequest(body),
             "remove" => string.Equals(body.TransportOperation, "metadataOnlyRemoval", StringComparison.Ordinal)
                 && body.ContentHashReference is null
-                && body.ByteLength is null,
-            _ => false,
+                && body.ByteLength is null
+                && body.InlineContent is null
+                && body.StreamDescriptor is null
+                    ? FileMutationTransportValidation.Accepted(null, null, null)
+                    : FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed),
+            _ => FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed),
         };
+    }
 
-        return transportAccepted
-            ? FileMutationRequestValidationResult.Accepted
-            : FileMutationRequestValidationResult.ValidationFailed;
+    private static FileMutationTransportValidation ValidateAddOrChangeFileMutationRequest(FileMutationHttpRequest body)
+    {
+        if (!IsCanonicalIdentifier(body.ContentHashReference) || body.ByteLength is null)
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        return body.TransportOperation switch
+        {
+            "PutFileInline" => ValidateInlineContent(body),
+            "PutFileStream" => ValidateStreamContent(body),
+            _ => FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed),
+        };
+    }
+
+    private static FileMutationTransportValidation ValidateInlineContent(FileMutationHttpRequest body)
+    {
+        if (body.InlineContent is null || body.StreamDescriptor is not null)
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        JsonElement inline = body.InlineContent.Value;
+        if (inline.ValueKind != JsonValueKind.Object
+            || !TryGetStringProperty(inline, "mediaType", out string? mediaType)
+            || !IsValidMediaType(mediaType)
+            || !TryGetStringProperty(inline, "contentBytes", out string? contentBytes)
+            || contentBytes is null
+            || string.IsNullOrWhiteSpace(contentBytes) && body.ByteLength != 0
+            || HasWhitespace(contentBytes))
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        byte[] decoded;
+        try
+        {
+            decoded = Convert.FromBase64String(contentBytes);
+        }
+        catch (FormatException)
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        if (decoded.LongLength != body.ByteLength)
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        return decoded.LongLength > InlineContentByteLimit
+            ? FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.InputLimitExceeded)
+            : FileMutationTransportValidation.Accepted(mediaType, "inline_decoded", decoded.LongLength);
+    }
+
+    private static FileMutationTransportValidation ValidateStreamContent(FileMutationHttpRequest body)
+    {
+        if (body.StreamDescriptor is null || body.InlineContent is not null)
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        JsonElement stream = body.StreamDescriptor.Value;
+        if (stream.ValueKind != JsonValueKind.Object
+            || !TryGetStringProperty(stream, "mediaType", out string? mediaType)
+            || !IsValidMediaType(mediaType)
+            || !TryGetInt64Property(stream, "declaredLength", out long declaredLength)
+            || !TryGetInt64Property(stream, "observedLength", out long observedLength)
+            || !TryGetStringProperty(stream, "stagingReference", out string? stagingReference)
+            || !IsCanonicalIdentifier(stagingReference)
+            || !TryGetStringProperty(stream, "observedContentHashReference", out string? observedContentHashReference)
+            || !string.Equals(observedContentHashReference, body.ContentHashReference, StringComparison.Ordinal)
+            || !TryGetStringProperty(stream, "uploadMode", out string? uploadMode)
+            || !string.Equals(uploadMode, "request_body_stream", StringComparison.Ordinal)
+            || declaredLength < StreamContentMinimumBytes
+            || declaredLength != body.ByteLength
+            || observedLength != body.ByteLength)
+        {
+            return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
+        }
+
+        return FileMutationTransportValidation.Accepted(mediaType, "stream_observed", observedLength);
+    }
+
+    private static bool TryGetStringProperty(JsonElement element, string propertyName, out string? value)
+    {
+        value = null;
+        if (!element.TryGetProperty(propertyName, out JsonElement property) || property.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        value = property.GetString();
+        return value is not null;
+    }
+
+    private static bool TryGetInt64Property(JsonElement element, string propertyName, out long value)
+    {
+        value = 0;
+        return element.TryGetProperty(propertyName, out JsonElement property)
+            && property.ValueKind == JsonValueKind.Number
+            && property.TryGetInt64(out value);
+    }
+
+    private static bool IsValidMediaType(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length > 128)
+        {
+            return false;
+        }
+
+        int slash = value.IndexOf('/');
+        return slash > 0
+            && slash < value.Length - 1
+            && IsMediaToken(value[..slash])
+            && IsMediaToken(value[(slash + 1)..]);
+    }
+
+    private static bool IsMediaToken(string value)
+    {
+        foreach (char c in value)
+        {
+            bool accepted = char.IsAsciiLetterOrDigit(c)
+                || c is '!' or '#' or '$' or '&' or '^' or '_' or '.' or '+' or '-';
+            if (!accepted)
+            {
+                return false;
+            }
+        }
+
+        return value.Length > 0;
+    }
+
+    private static bool HasWhitespace(string value)
+    {
+        foreach (char c in value)
+        {
+            if (char.IsWhiteSpace(c))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool IsValidFolderMetadata(FolderMetadataHttpRequest? metadata)
@@ -2074,6 +2230,17 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "file_operation_failed")
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: "file_operation_failed",
+                code: "file_operation_failed",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         if (exception.StatusCode == StatusCodes.Status409Conflict
             && reasonCode is "lock_conflict" or "workspace_locked")
         {
@@ -2220,6 +2387,9 @@ public static class FoldersDomainServiceEndpoints
             "unknown-provider-outcome" => "unknown_provider_outcome",
             "reconciliation_required" => "reconciliation_required",
             "reconciliation-required" => "reconciliation_required",
+            "file_operation_failed" => "file_operation_failed",
+            "file-operation-failed" => "file_operation_failed",
+            "FileOperationFailed" => "file_operation_failed",
             "provider_unavailable" => "provider_unavailable",
             "provider-unavailable" => "provider_unavailable",
             _ => null,
@@ -2801,6 +2971,29 @@ public static class FoldersDomainServiceEndpoints
         Accepted,
         ValidationFailed,
         PathValidationFailed,
+        InputLimitExceeded,
+    }
+
+    private sealed record FileMutationTransportValidation(
+        FileMutationRequestValidationResult Result,
+        string? MediaType,
+        string? TransportEvidenceKind,
+        long? ObservedByteLength)
+    {
+        public bool IsAccepted => Result == FileMutationRequestValidationResult.Accepted;
+
+        public static FileMutationTransportValidation Accepted(
+            string? mediaType,
+            string? transportEvidenceKind,
+            long? observedByteLength)
+            => new(
+                FileMutationRequestValidationResult.Accepted,
+                mediaType,
+                transportEvidenceKind,
+                observedByteLength);
+
+        public static FileMutationTransportValidation Rejected(FileMutationRequestValidationResult result)
+            => new(result, null, null, null);
     }
 
     private sealed record ArchiveFolderHttpRequest(
@@ -2893,7 +3086,10 @@ public static class FoldersDomainServiceEndpoints
         string? TransportOperation,
         PathMetadataHttpRequest? PathMetadata,
         string? ContentHashReference,
-        long? ByteLength);
+        long? ByteLength,
+        string? MediaType,
+        string? TransportEvidenceKind,
+        long? ObservedByteLength);
 
     private sealed record FolderMetadataHttpRequest(
         string? DisplayName,

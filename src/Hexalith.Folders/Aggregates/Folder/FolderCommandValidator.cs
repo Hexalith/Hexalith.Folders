@@ -519,11 +519,48 @@ public static partial class FolderCommandValidator
 
     private static bool IsValidAddOrChangeMutation(MutateWorkspaceFile command)
         => IsValidIdentifier(command.ContentHashReference)
+        && IsValidMediaType(command.MediaType)
+        && IsValidTransportEvidenceKind(command.TransportEvidenceKind, command.TransportOperation)
         && command.TransportOperation is "PutFileInline" or "PutFileStream"
         && command.ByteLength is not null
+        && command.ObservedByteLength == command.ByteLength
         && (string.Equals(command.TransportOperation, "PutFileInline", StringComparison.Ordinal)
             ? command.ByteLength is >= 0 and <= 262144
             : command.ByteLength >= 262145);
+
+    private static bool IsValidMediaType(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length > 128)
+        {
+            return false;
+        }
+
+        int slash = value.IndexOf('/');
+        return slash > 0
+            && slash < value.Length - 1
+            && IsMediaToken(value[..slash])
+            && IsMediaToken(value[(slash + 1)..]);
+    }
+
+    private static bool IsMediaToken(string value)
+    {
+        foreach (char c in value)
+        {
+            bool accepted = char.IsAsciiLetterOrDigit(c)
+                || c is '!' or '#' or '$' or '&' or '^' or '_' or '.' or '+' or '-';
+            if (!accepted)
+            {
+                return false;
+            }
+        }
+
+        return value.Length > 0;
+    }
+
+    private static bool IsValidTransportEvidenceKind(string? value, string transportOperation)
+        => string.Equals(transportOperation, "PutFileInline", StringComparison.Ordinal)
+            ? string.Equals(value, "inline_decoded", StringComparison.Ordinal)
+            : string.Equals(value, "stream_observed", StringComparison.Ordinal);
 
     private static string ToFileMutationOperationId(string fileOperationKind)
         => fileOperationKind switch

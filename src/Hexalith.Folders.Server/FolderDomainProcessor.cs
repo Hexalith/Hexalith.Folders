@@ -692,6 +692,9 @@ public sealed partial class FolderDomainProcessor(
                 payload.PathMetadata.UnicodeNormalization ?? string.Empty),
             payload.ContentHashReference,
             payload.ByteLength,
+            payload.MediaType,
+            payload.TransportEvidenceKind,
+            payload.ObservedByteLength,
             envelope.CorrelationId,
             taskId,
             envelope.MessageId,
@@ -898,5 +901,8 @@ public sealed partial class FolderDomainProcessor(
         [property: JsonRequired] string? TransportOperation,
         [property: JsonRequired] PathMetadataPayload? PathMetadata,
         string? ContentHashReference,
-        long? ByteLength);
+        long? ByteLength,
+        string? MediaType,
+        string? TransportEvidenceKind,
+        long? ObservedByteLength);
 }

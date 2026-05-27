@@ -6061,6 +6061,9 @@ components:
         streamDescriptor:
           mediaType: application/octet-stream
           declaredLength: 262145
+          observedLength: 262145
+          stagingReference: staged-content-a
+          observedContentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002
           uploadMode: request_body_stream
     RemoveFileRequest:
       summary: Synthetic metadata-only file removal request.
@@ -8116,6 +8119,9 @@ components:
       required:
         - mediaType
         - declaredLength
+        - observedLength
+        - stagingReference
+        - observedContentHashReference
         - uploadMode
       properties:
         mediaType:
@@ -8126,6 +8132,16 @@ components:
         declaredLength:
           type: integer
           minimum: 262145
+        observedLength:
+          type: integer
+          minimum: 262145
+          description: Observed byte length from the transient content staging boundary. Descriptor-only stream requests are not valid evidence.
+        stagingReference:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+          description: Tenant-scoped transient content staging reference. It is metadata only and never a caller-supplied local path.
+        observedContentHashReference:
+          $ref: "#/components/schemas/ContentHashReference"
+          description: Content hash reference observed by the transient staging boundary; it must match the top-level contentHashReference.
         uploadMode:
           type: string
           enum:

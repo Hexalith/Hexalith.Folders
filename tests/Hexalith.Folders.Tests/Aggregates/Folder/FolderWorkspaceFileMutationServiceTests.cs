@@ -54,12 +54,14 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     {
         RecordingFolderRepository repository = LockedRepository();
         RecordingPathPolicyEvidenceProvider evidence = new(decision);
-        WorkspaceFileMutationService service = Service(repository, evidence);
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
 
         FolderResult result = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(expectedCode);
         repository.StreamsLoaded.ShouldBe(1);
+        contentStore.Requests.ShouldBeEmpty();
         repository.AppendsAttempted.ShouldBe(0);
     }
 
@@ -68,15 +70,20 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     {
         RecordingFolderRepository repository = LockedRepository();
         RecordingPathPolicyEvidenceProvider evidence = new();
-        WorkspaceFileMutationService service = Service(repository, evidence);
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
 
         FolderResult result = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
         evidence.Requests.ShouldBe(1);
+        contentStore.Requests.Count.ShouldBe(1);
         repository.IdempotencyLookups.ShouldBe(1);
         repository.AppendsAttempted.ShouldBe(1);
-        repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceFileMutationAccepted>();
+        WorkspaceFileMutationAccepted accepted = repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceFileMutationAccepted>();
+        accepted.MediaType.ShouldBe("text/plain");
+        accepted.TransportEvidenceKind.ShouldBe("inline_decoded");
+        accepted.ObservedByteLength.ShouldBe(12);
     }
 
     [Theory]
@@ -86,7 +93,8 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     {
         RecordingFolderRepository repository = LockedRepository();
         RecordingPathPolicyEvidenceProvider evidence = new();
-        WorkspaceFileMutationService service = Service(repository, evidence);
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
 
         FolderResult result = await service.MutateAsync(
             Request(workspaceId: workspaceId, taskId: taskId),
@@ -94,6 +102,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
 
         result.Code.ShouldBe(expectedCode);
         evidence.Requests.ShouldBe(0);
+        contentStore.Requests.ShouldBeEmpty();
         repository.AppendsAttempted.ShouldBe(0);
     }
 
@@ -102,7 +111,8 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     {
         RecordingFolderRepository repository = LockedRepository();
         RecordingPathPolicyEvidenceProvider evidence = new();
-        WorkspaceFileMutationService service = Service(repository, evidence);
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
 
         FolderResult first = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
         evidence.Decision = WorkspacePathPolicyEvidenceDecision.Unavailable;
@@ -112,17 +122,57 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         first.Code.ShouldBe(FolderResultCode.Accepted);
         replay.Code.ShouldBe(FolderResultCode.IdempotentReplay);
         evidence.Requests.ShouldBe(1);
+        contentStore.Requests.Count.ShouldBe(1);
         repository.AppendsAttempted.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task IdempotencyConflictShouldReturnBeforeContentStaging()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
+
+        FolderResult first = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
+
+        FolderResult conflict = await service.MutateAsync(
+            Request(operationId: "operation-b"),
+            TestContext.Current.CancellationToken);
+
+        first.Code.ShouldBe(FolderResultCode.Accepted);
+        conflict.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        evidence.Requests.ShouldBe(1);
+        contentStore.Requests.Count.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task ContentStoreUnavailableShouldFailBeforeAppend()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new() { Accepted = false };
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore);
+
+        FolderResult result = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FileOperationFailed);
+        evidence.Requests.ShouldBe(1);
+        contentStore.Requests.Count.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(0);
     }
 
     private static WorkspaceFileMutationService Service(
         IFolderRepository repository,
-        IWorkspacePathPolicyEvidenceProvider evidence)
-        => new(AuthorizationService(), repository, evidence, new FixedTimeProvider(Now));
+        IWorkspacePathPolicyEvidenceProvider evidence,
+        IWorkspaceFileContentStore? contentStore = null)
+        => new(AuthorizationService(), repository, evidence, new FixedTimeProvider(Now), contentStore ?? new RecordingContentStore());
 
     private static WorkspaceFileMutationRequest Request(
         string? authoritativeTenantId = "tenant-a",
         string workspaceId = "workspace-a",
+        string operationId = "operation-a",
         string taskId = "task-a",
         string normalizedPath = "docs/readme.md")
         => new(
@@ -134,12 +184,15 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             FolderId: "folder-a",
             RequestSchemaVersion: "v1",
             WorkspaceId: workspaceId,
-            OperationId: "operation-a",
+            OperationId: operationId,
             FileOperationKind: "add",
             TransportOperation: "PutFileInline",
             new PathMetadata(normalizedPath, "readme.md", "tenant_sensitive_document", "NFC"),
             ContentHashReference: "hashref-a",
             ByteLength: 12,
+            MediaType: "text/plain",
+            TransportEvidenceKind: "inline_decoded",
+            ObservedByteLength: 12,
             CorrelationId: "correlation-file-a",
             TaskId: taskId,
             IdempotencyKey: "idempotency-file-a",
@@ -281,6 +334,24 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         {
             Requests++;
             return Task.FromResult(new WorkspacePathPolicyEvidenceResult(Decision));
+        }
+    }
+
+    private sealed class RecordingContentStore : IWorkspaceFileContentStore
+    {
+        public bool Accepted { get; init; } = true;
+
+        public List<WorkspaceFileContentStoreRequest> Requests { get; } = [];
+
+        public Task<WorkspaceFileContentStoreResult> StageAsync(
+            WorkspaceFileContentStoreRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            Requests.Add(request);
+            return Task.FromResult(Accepted
+                ? WorkspaceFileContentStoreResult.Succeeded
+                : WorkspaceFileContentStoreResult.Failed);
         }
     }
 
