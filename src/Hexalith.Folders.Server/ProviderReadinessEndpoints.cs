@@ -47,7 +47,8 @@ public static partial class ProviderReadinessEndpoints
                 tenantContext,
                 claimTransformEvidence,
                 cancellationToken).ConfigureAwait(false))
-        .WithName("ValidateProviderReadiness");
+        .WithName("ValidateProviderReadiness")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
 
         endpoints.MapGet("/api/v1/provider-readiness/support-evidence", async (
             HttpContext httpContext,
@@ -61,7 +62,8 @@ public static partial class ProviderReadinessEndpoints
                 tenantContext,
                 claimTransformEvidence,
                 cancellationToken).ConfigureAwait(false))
-        .WithName("GetProviderSupportEvidence");
+        .WithName("GetProviderSupportEvidence")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
 
         return endpoints;
     }

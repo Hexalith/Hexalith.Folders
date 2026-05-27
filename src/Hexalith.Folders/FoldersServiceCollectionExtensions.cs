@@ -3,6 +3,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Providers.GitHub;
+using Hexalith.Folders.Observability;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
@@ -99,6 +100,7 @@ public static class FoldersServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddFoldersTenantAccess();
+        services.AddFoldersObservability();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProvider>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
         services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
@@ -111,6 +113,16 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IProviderSupportEvidenceReadModel>(static sp => sp.GetRequiredService<InMemoryProviderReadinessEvidenceStore>());
         services.TryAddSingleton<ProviderReadinessValidationService>();
         services.TryAddSingleton<ProviderSupportEvidenceQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersObservability(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IFolderAuditObserver, NoOpFolderAuditObserver>());
+        services.TryAddSingleton<IFolderTelemetryEmitter, FolderTelemetryEmitter>();
 
         return services;
     }

@@ -12,7 +12,12 @@
     ".github/workflows/contract-spine.yml",
     "tests/tools/run-contract-spine-gates.ps1",
     "tests/tools/run-safety-invariant-gates.ps1",
-    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs"
+    "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs",
+    "src/Hexalith.Folders/Observability",
+    "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs",
+    "src/Hexalith.Folders.ServiceDefaults/Extensions.cs",
+    "tests/Hexalith.Folders.Tests/Observability",
+    "tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs"
   ],
   "structured_exclusions": [
     ".git/**",
@@ -151,124 +156,158 @@
     {
       "channel": "logs",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in source exists for this output channel until the owning story lands."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+        "tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 structured logging emits metadata-only operation kind, result, category, correlation reference, task reference, and redaction state through named placeholders only.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "traces",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in source exists for this output channel until the owning story lands."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+        "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs",
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 registers a folders-owned ActivitySource and emits low-cardinality trace attributes for operation/result/category/redaction and presence flags.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "span-names",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 span names are stable constants and exclude tenant, folder, file, commit, provider, path, token, and payload values.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "metric-names",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 metric names are stable folders-owned constants and do not encode request identifiers or sensitive values.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "event-names",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderAuditOperationKind.cs",
+        "src/Hexalith.Folders/Observability/FolderAuditResult.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 event-like audit operation/result vocabulary is bounded by enums rather than caller-provided names.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "counters",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+        "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 counters and histograms use low-cardinality operation/result/category/redaction labels only.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "exception-metadata",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs",
+        "src/Hexalith.Folders/Observability/FolderAuditObservation.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 exception paths emit a redacted category/result without exception message or stack content.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "baggage",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 telemetry does not write baggage; the emitter source is scanned to keep that absence deterministic.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "metric-labels",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+        "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs",
+        "tests/Hexalith.Folders.Tests/Observability/FolderAuditObservationTests.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 metric labels are limited to operation kind, result, category, and redaction state.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "telemetry-attributes",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Re-evaluated current repository telemetry artifacts; AC 17 requires this surface as a distinct scan channel once observability examples land.",
-      "absence_reason": "Re-evaluated current repository artifacts; no deterministic checked-in telemetry source exists for this surface until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+        "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs",
+        "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs",
+        "tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 trace attributes use stable low-cardinality tags and presence booleans rather than raw scoped identifiers.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "events",
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
-      "artifact_sources": [],
-      "prerequisite_status": "prerequisite-drift",
-      "diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "scan_forbidden_values": false,
-      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Initial Story 1.15 inventory entry; re-evaluated during review follow-up for bounded metadata-only safety scanning.",
-      "last_evaluated_at": "2026-05-18",
-      "absence_reason": "Re-evaluated current OpenAPI, fixtures, and generated artifacts; runtime event emission examples are not checked in until Story 4-14 owns observability evidence."
+      "artifact_sources": [
+        "src/Hexalith.Folders/Observability/FolderAuditObservation.cs",
+        "src/Hexalith.Folders/Observability/FolderAuditOperationKind.cs",
+        "src/Hexalith.Folders/Observability/FolderAuditResult.cs"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "covered",
+      "coverage_notes": "Story 4.14 runtime audit observations provide bounded metadata-only operation evidence without domain event duplication.",
+      "last_evaluated_at": "2026-05-27"
     },
     {
       "channel": "audit-records",

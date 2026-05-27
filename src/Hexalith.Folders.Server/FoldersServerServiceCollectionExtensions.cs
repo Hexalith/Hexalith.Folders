@@ -1,5 +1,6 @@
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Handlers;
+using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
@@ -21,6 +22,7 @@ public static class FoldersServerServiceCollectionExtensions
 
         services.AddEventStore(typeof(FoldersModule).Assembly);
         services.AddEventStoreGatewayClient();
+        services.AddFoldersObservability();
         services.AddHttpContextAccessor();
         services.AddOptions<TenantContextOptions>();
         // Register the authentication core services so the validator can introspect scheme registrations.

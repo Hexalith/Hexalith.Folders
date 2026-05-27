@@ -273,14 +273,49 @@ public sealed class SafetyInvariantGateTests
 
         JsonElement events = channels["events"];
         AssertLastEvaluatedAt(RequiredString(events, "last_evaluated_at"), "events");
-        RequiredString(events, "safe_absence_diagnostic").ShouldBe("SAFETY-PREREQUISITE-DRIFT");
+        RequiredString(events, "safe_absence_diagnostic").ShouldBeOneOf("covered", "SAFETY-PREREQUISITE-DRIFT");
+    }
+
+    [Fact]
+    public void StoryFourteenTelemetryChannelsAreCoveredByRuntimeArtifacts()
+    {
+        using JsonDocument inventory = JsonDocument.Parse(ReadRequiredFile(InventoryPath));
+        Dictionary<string, JsonElement> channels = RequiredArray(inventory.RootElement, "channels")
+            .EnumerateArray()
+            .ToDictionary(channel => RequiredString(channel, "channel"), StringComparer.Ordinal);
+
+        string[] storyFourteenChannels =
+        [
+            "logs",
+            "traces",
+            "span-names",
+            "metric-labels",
+            "metric-names",
+            "event-names",
+            "counters",
+            "telemetry-attributes",
+            "exception-metadata",
+            "baggage",
+            "events",
+        ];
+
+        foreach (string channelName in storyFourteenChannels)
+        {
+            JsonElement channel = channels[channelName];
+            RequiredString(channel, "owning_story").ShouldBe("4-14-emit-metadata-only-audit-and-observability");
+            RequiredString(channel, "prerequisite_status").ShouldBe("covered", $"{channelName} is now owned by Story 4.14 runtime artifacts and must not remain drift.");
+            RequiredString(channel, "diagnostic").ShouldBe("covered", channelName);
+            RequiredString(channel, "safe_absence_diagnostic").ShouldBe("covered", channelName);
+            RequiredBoolean(channel, "scan_forbidden_values").ShouldBeTrue(channelName);
+            RequiredArray(channel, "artifact_sources").GetArrayLength().ShouldBeGreaterThan(0, channelName);
+            AssertLastEvaluatedAt(RequiredString(channel, "last_evaluated_at"), channelName);
+        }
     }
 
     [Fact]
     public void MissingChannelDiagnosticsAreEmittedAsBoundedRuntimeEvidence()
     {
         SafetyManifestDiagnostic[] diagnostics = BuildMissingChannelDiagnostics();
-        diagnostics.ShouldNotBeEmpty();
 
         foreach (SafetyManifestDiagnostic diagnostic in diagnostics)
         {

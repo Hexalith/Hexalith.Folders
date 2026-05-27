@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -8,6 +9,7 @@ using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Observability;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server.Authorization;
 
@@ -25,7 +27,8 @@ public sealed partial class FolderDomainProcessor(
     WorkspaceCommitService workspaceCommitService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
-    IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
+    IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider,
+    IFolderTelemetryEmitter telemetryEmitter) : IDomainProcessor
 {
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -62,8 +65,21 @@ public sealed partial class FolderDomainProcessor(
         archiveAclEvidenceProvider ?? throw new ArgumentNullException(nameof(archiveAclEvidenceProvider));
     private readonly IFolderArchivePolicyEvidenceProvider _archivePolicyEvidenceProvider =
         archivePolicyEvidenceProvider ?? throw new ArgumentNullException(nameof(archivePolicyEvidenceProvider));
+    private readonly IFolderTelemetryEmitter _telemetryEmitter =
+        telemetryEmitter ?? throw new ArgumentNullException(nameof(telemetryEmitter));
 
     public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+    {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        DomainResult result = await ProcessCoreAsync(command, currentState).ConfigureAwait(false);
+        stopwatch.Stop();
+
+        await EmitProcessObservationAsync(command, result, stopwatch.Elapsed).ConfigureAwait(false);
+
+        return result;
+    }
+
+    private async Task<DomainResult> ProcessCoreAsync(CommandEnvelope command, object? currentState)
     {
         ArgumentNullException.ThrowIfNull(command);
 
@@ -838,6 +854,71 @@ public sealed partial class FolderDomainProcessor(
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
         && CanonicalSegmentRegex().IsMatch(value);
+
+    private async ValueTask EmitProcessObservationAsync(CommandEnvelope command, DomainResult result, TimeSpan duration)
+    {
+        bool replay = IsIdempotentReplay(result.ResultPayload);
+        string? taskId = TryReadCanonicalExtension(command.Extensions, "taskId");
+        FolderAuditObservation observation = new FolderAuditObservationBuilder
+        {
+            OperationKind = FolderAuditOperationKind.ProcessCommand,
+            Result = result.IsRejection
+                ? FolderAuditResult.Rejected
+                : replay ? FolderAuditResult.Replayed : FolderAuditResult.Success,
+            TenantId = command.TenantId,
+            ActorReference = command.UserId,
+            TaskId = taskId,
+            OperationId = command.MessageId,
+            CorrelationId = command.CorrelationId,
+            FolderId = command.AggregateId,
+            Timestamp = DateTimeOffset.UtcNow,
+            Duration = duration,
+            RedactionState = FolderAuditRedactionState.MetadataOnly,
+            SanitizedCategory = result.IsRejection
+                ? "domain_rejection"
+                : replay ? "idempotent_replay" : "accepted",
+            IsRetry = false,
+            IsIdempotentReplay = replay,
+            IsDuplicate = false,
+        }.AddClassification("command.type", CommandTypeClassification(command.CommandType))
+            .Build();
+
+        await _telemetryEmitter.EmitAsync(observation).ConfigureAwait(false);
+    }
+
+    private static bool IsIdempotentReplay(string? resultPayload)
+    {
+        if (string.IsNullOrWhiteSpace(resultPayload))
+        {
+            return false;
+        }
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(resultPayload);
+            return document.RootElement.TryGetProperty("idempotentReplay", out JsonElement replay)
+                && replay.ValueKind == JsonValueKind.True;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static string CommandTypeClassification(string? commandType)
+        => commandType switch
+        {
+            FoldersServerModule.ArchiveFolderCommandType => "archive_folder",
+            FoldersServerModule.CreateRepositoryBackedFolderCommandType => "create_repository_backed_folder",
+            FoldersServerModule.BindRepositoryCommandType => "bind_repository",
+            FoldersServerModule.ConfigureBranchRefPolicyCommandType => "configure_branch_ref_policy",
+            FoldersServerModule.PrepareWorkspaceCommandType => "prepare_workspace",
+            FoldersServerModule.LockWorkspaceCommandType => "lock_workspace",
+            FoldersServerModule.ReleaseWorkspaceLockCommandType => "release_workspace_lock",
+            FoldersServerModule.MutateFilesCommandType => "mutate_files",
+            FoldersServerModule.CommitWorkspaceCommandType => "commit_workspace",
+            _ => "unsupported_command",
+        };
 
     // Caller (ProcessArchiveAsync) already guards against null `allowed` before calling this
     // method, so the parameter is non-nullable. The dead null arm was removed to avoid
