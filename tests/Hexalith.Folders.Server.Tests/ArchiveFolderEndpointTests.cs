@@ -73,24 +73,19 @@ public sealed class ArchiveFolderEndpointTests
         }
     }
 
-    [Fact]
-    public async Task ArchiveFolderEndpointShouldRejectMissingIdempotencyKeyBeforeGatewaySubmit()
+    [Theory]
+    [InlineData("Idempotency-Key")]
+    [InlineData("X-Correlation-Id")]
+    [InlineData("X-Hexalith-Task-Id")]
+    public async Task ArchiveFolderEndpointShouldRejectMissingRequiredHeadersBeforeGatewaySubmit(string headerName)
     {
         RecordingEventStoreGatewayClient gateway = new();
         WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
         try
         {
             using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
-            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
-            {
-                Content = JsonContent.Create(new
-                {
-                    requestSchemaVersion = "v1",
-                    archiveReasonCode = "caller_requested",
-                }),
-            };
-            request.Headers.Add("X-Correlation-Id", "correlation-a");
-            request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+            request.Headers.Remove(headerName);
 
             HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
 

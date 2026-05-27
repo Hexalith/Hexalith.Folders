@@ -69,6 +69,11 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
         }
 
+        if (!IsValidProcessEnvelope(command))
+        {
+            return Rejection(command, FolderResultCode.ValidationFailed, null);
+        }
+
         if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
         {
             return await ProcessArchiveAsync(command).ConfigureAwait(false);
@@ -146,7 +151,7 @@ public sealed partial class FolderDomainProcessor(
 
         // taskId is a /process extension; sanitize the bytes that came over the wire before
         // they end up in command/event metadata or audit subjects.
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
 
         ArchiveFolder command = new(
             // Source tenant/actor/organization from the verified layered-auth context, not the
@@ -224,7 +229,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -300,7 +305,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -372,7 +377,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -447,7 +452,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -521,7 +526,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -593,7 +598,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -665,7 +670,7 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
 
-        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        string taskId = ReadRequiredTaskId(envelope);
         Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
         if (!string.IsNullOrWhiteSpace(envelope.UserId))
         {
@@ -718,30 +723,35 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
-    private static string TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
+    private static string ReadRequiredTaskId(CommandEnvelope envelope)
+        => TryReadCanonicalExtension(envelope.Extensions, "taskId")!;
+
+    private static bool IsValidProcessEnvelope(CommandEnvelope envelope)
+        => IsCanonicalIdentifier(envelope.MessageId)
+        && IsCanonicalIdentifier(envelope.CorrelationId)
+        && IsCanonicalIdentifier(envelope.TenantId)
+        && IsCanonicalIdentifier(envelope.AggregateId)
+        && IsCanonicalIdentifier(envelope.UserId)
+        && TryReadCanonicalExtension(envelope.Extensions, "taskId") is not null;
+
+    private static string? TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
     {
         if (extensions is null
             || !extensions.TryGetValue(key, out string? value)
             || string.IsNullOrWhiteSpace(value)
             || value.Length > FoldersServerModule.MaxCanonicalIdentifierLength
-            || !CanonicalSegmentRegex().IsMatch(value)
-            || HasPathTraversalShape(value))
+            || !CanonicalSegmentRegex().IsMatch(value))
         {
-            return string.Empty;
+            return null;
         }
 
         return value;
     }
 
-    private static bool HasPathTraversalShape(string value) =>
-        // CanonicalSegmentRegex permits `.` and `-`, so "..", "..." and leading/trailing
-        // dots/dashes pass the regex. These shapes are too close to filesystem traversal
-        // tokens to safely propagate into audit subjects or diagnostic scopes.
-        value.Contains("..", StringComparison.Ordinal)
-        || value.StartsWith('.')
-        || value.EndsWith('.')
-        || value.StartsWith('-')
-        || value.EndsWith('-');
+    private static bool IsCanonicalIdentifier(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
+        && CanonicalSegmentRegex().IsMatch(value);
 
     // Caller (ProcessArchiveAsync) already guards against null `allowed` before calling this
     // method, so the parameter is non-nullable. The dead null arm was removed to avoid
@@ -771,9 +781,21 @@ public sealed partial class FolderDomainProcessor(
             FolderResultCode.Accepted
                 or FolderResultCode.Created
                 or FolderResultCode.IdempotentReplay
-                or FolderResultCode.AlreadyApplied => DomainResult.NoOp(),
+                or FolderResultCode.AlreadyApplied => AcceptedNoOp(result),
             _ => Rejection(envelope, result.Code, result),
         };
+
+    private static DomainResult AcceptedNoOp(FolderResult result)
+    {
+        FolderProcessResultPayload payload = new(
+            Status: "accepted",
+            IdempotentReplay: result.Code == FolderResultCode.IdempotentReplay,
+            CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
+            TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
+            IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null);
+
+        return new PayloadNoOpDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions));
+    }
 
     private static DomainResult Rejection(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
     {
@@ -791,7 +813,7 @@ public sealed partial class FolderDomainProcessor(
     private static IRejectionEvent CreateRejectionEvent(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
     {
         string correlationId = result?.CorrelationId ?? envelope.CorrelationId;
-        string? taskId = result?.TaskId;
+        string? taskId = result?.TaskId ?? TryReadCanonicalExtension(envelope.Extensions, "taskId");
         string idempotencyKey = result?.IdempotencyKey ?? envelope.MessageId;
 
         if (code == FolderResultCode.LockConflict
@@ -834,6 +856,18 @@ public sealed partial class FolderDomainProcessor(
             taskId: taskId,
             idempotencyKey: idempotencyKey);
     }
+
+    private sealed record PayloadNoOpDomainResult(string Payload) : DomainResult([])
+    {
+        public override string? ResultPayload => Payload;
+    }
+
+    private sealed record FolderProcessResultPayload(
+        string Status,
+        bool IdempotentReplay,
+        string? CorrelationId,
+        string? TaskId,
+        string? IdempotencyKey);
 
     private sealed record ArchiveFolderPayload(
         [property: JsonRequired] string? RequestSchemaVersion,

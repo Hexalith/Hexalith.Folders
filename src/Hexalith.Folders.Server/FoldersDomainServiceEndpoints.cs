@@ -836,64 +836,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        // Validate envelope first: idempotency key, correlation/task identifiers.
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        // folderId: validate canonical segment shape before any downstream use.
-        if (string.IsNullOrWhiteSpace(folderId) || !IsCanonicalIdentifier(folderId))
-        {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        // Authenticate before parsing the body so unauthenticated callers cannot probe
-        // JSON parsing/validation feedback or consume CPU on body deserialization.
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        // Reserved-tenant rejection at the edge — never let a "system" tenant context
-        // reach the command pipeline.
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         ArchiveFolderHttpRequest? body;
         try
@@ -953,7 +909,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.ArchiveFolderCommandType,
@@ -1021,47 +977,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId: null,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         CreateRepositoryBackedFolderHttpRequest? body;
         try
@@ -1131,7 +1060,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: body.FolderId!,
                     CommandType: FoldersServerModule.CreateRepositoryBackedFolderCommandType,
@@ -1194,48 +1123,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(folderId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         BindRepositoryHttpRequest? body;
         try
@@ -1295,7 +1196,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.BindRepositoryCommandType,
@@ -1358,48 +1259,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(folderId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         BranchRefPolicyHttpRequest? body;
         try
@@ -1459,7 +1332,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.ConfigureBranchRefPolicyCommandType,
@@ -1523,49 +1396,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(folderId)
-            || !IsCanonicalIdentifier(workspaceId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         PrepareWorkspaceHttpRequest? body;
         try
@@ -1632,7 +1476,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.PrepareWorkspaceCommandType,
@@ -1696,49 +1540,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(folderId)
-            || !IsCanonicalIdentifier(workspaceId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         LockWorkspaceHttpRequest? body;
         try
@@ -1804,7 +1619,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.LockWorkspaceCommandType,
@@ -1868,49 +1683,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(folderId)
-            || !IsCanonicalIdentifier(workspaceId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         ReleaseWorkspaceLockHttpRequest? body;
         try
@@ -1977,7 +1763,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.ReleaseWorkspaceLockCommandType,
@@ -2042,49 +1828,20 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-
-        if (string.IsNullOrWhiteSpace(idempotencyKey)
-            || string.IsNullOrWhiteSpace(correlationId)
-            || string.IsNullOrWhiteSpace(taskId)
-            || !IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(taskId)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(folderId)
-            || !IsCanonicalIdentifier(workspaceId))
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
         {
-            return SafeProblem(
-                StatusCodes.Status400BadRequest,
-                category: "validation_error",
-                code: "validation_error",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
+            return envelopeFailure;
         }
 
-        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
-        {
-            return SafeProblem(
-                StatusCodes.Status401Unauthorized,
-                category: "authentication_failure",
-                code: "authentication_failure",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
-
-        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "tenant_access_denied",
-                code: "denied_safe",
-                retryable: false,
-                correlationId: correlationId,
-                taskId: taskId);
-        }
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
 
         FileMutationHttpRequest? body;
         try
@@ -2162,7 +1919,7 @@ public static class FoldersDomainServiceEndpoints
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
                     MessageId: idempotencyKey,
-                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
                     CommandType: FoldersServerModule.MutateFilesCommandType,
@@ -2472,13 +2229,73 @@ public static class FoldersDomainServiceEndpoints
 
     private static bool IsCanonicalIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
-        && value.Length <= 128
+        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
         && CanonicalSegmentRegex.IsMatch(value);
 
     private static bool IsSafeGatewayCorrelationId(string? value)
         => !string.IsNullOrWhiteSpace(value)
-        && value.Length <= 128
+        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
         && GatewayCorrelationRegex.IsMatch(value);
+
+    private static IResult? ValidateMutationEnvelope(
+        HttpContext httpContext,
+        ITenantContextAccessor tenantContext,
+        string? folderId,
+        string? workspaceId,
+        out MutationCommandEnvelope envelope)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        envelope = new MutationCommandEnvelope(string.Empty, string.Empty, string.Empty, string.Empty);
+
+        if (!IsCanonicalIdentifier(idempotencyKey)
+            || !IsCanonicalIdentifier(correlationId)
+            || !IsCanonicalIdentifier(taskId)
+            || (folderId is not null && !IsCanonicalIdentifier(folderId))
+            || (workspaceId is not null && !IsCanonicalIdentifier(workspaceId)))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        envelope = new MutationCommandEnvelope(
+            idempotencyKey!,
+            correlationId!,
+            taskId!,
+            tenantContext.AuthoritativeTenantId!);
+        return null;
+    }
 
     private static bool IsIdempotentReplay(JsonElement? resultPayload)
     {
@@ -4112,6 +3929,12 @@ public static class FoldersDomainServiceEndpoints
         string TaskId,
         string Status,
         bool IdempotentReplay);
+
+    private readonly record struct MutationCommandEnvelope(
+        string IdempotencyKey,
+        string CorrelationId,
+        string TaskId,
+        string TenantId);
 
     private sealed record EffectivePermissionsResponse(
         string FolderId,

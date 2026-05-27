@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-27T10:32:20+02:00
+# last_updated: 2026-05-27T11:07:57+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-27T10:32:20+02:00
+last_updated: 2026-05-27T11:07:57+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -101,7 +101,7 @@ development_status:
   4-8-query-file-context-with-policy-boundaries: done
   4-9-inspect-workspace-and-projection-currency: done
   4-10-surface-workspace-cleanup-status-without-repair-automation: done
-  4-11-propagate-idempotency-keys-correlation-and-task-ids: backlog
+  4-11-propagate-idempotency-keys-correlation-and-task-ids: done
   4-12-commit-workspace-changes-with-unknown-outcome-reconciliation: backlog
   4-13-surface-canonical-errors-and-operational-evidence-after-failure: backlog
   4-14-emit-metadata-only-audit-and-observability: backlog

@@ -1,5 +1,6 @@
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
+using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -104,7 +105,99 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
         problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
         problem.ProblemDetails.Extensions["code"].ShouldBe("folder_acl_denied");
+        problem.ProblemDetails.Extensions["taskId"].ShouldBe("task-a");
         processor.ProcessCalls.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData("messageId")]
+    [InlineData("correlationId")]
+    [InlineData("aggregateId")]
+    [InlineData("userId")]
+    [InlineData("taskId")]
+    public async Task ProcessShouldRejectMalformedEnvelopeBeforeDomainProcessor(string malformedField)
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CountingDomainProcessor processor = new();
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([processor], authorizer, tenantContext);
+
+        IResult result = await handler.ProcessAsync(
+            CreateRequest("tenant-a", "user-a", malformedField: malformedField),
+            TestContext.Current.CancellationToken);
+
+        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("validation_error");
+        processor.ProcessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProcessShouldRejectMissingTaskExtensionBeforeDomainProcessor()
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CountingDomainProcessor processor = new();
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+        FoldersDomainServiceRequestHandler handler = CreateHandler([processor], authorizer, tenantContext);
+
+        IResult result = await handler.ProcessAsync(
+            CreateRequest("tenant-a", "user-a", includeTaskExtension: false),
+            TestContext.Current.CancellationToken);
+
+        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("validation_error");
+        processor.ProcessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ProcessShouldRejectMalformedEnvelopeBeforeUnsupportedCommandMapping()
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+        FoldersDomainServiceRequestHandler handler = new(
+            [],
+            authorizer,
+            tenantContext,
+            new StubClaimTransformEvidenceAccessor("tenant-a", "user-a"),
+            new FolderCommandActionTokenMapper(new Dictionary<string, FolderCommandActionMapping>(StringComparer.Ordinal)),
+            new ScopedLayeredFolderAuthorizationResultAccessor());
+
+        IResult result = await handler.ProcessAsync(
+            CreateRequest("tenant-a", "user-a", malformedField: "correlationId"),
+            TestContext.Current.CancellationToken);
+
+        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        problem.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("validation_error");
+        problem.ProblemDetails.Extensions.ShouldNotContainKey("correlationId");
+    }
+
+    [Fact]
+    public async Task ProcessShouldPreserveNoOpResultPayloadForReplayEvidence()
+    {
+        FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true, principals: ["user-a"]), TestContext.Current.CancellationToken);
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store);
+        FoldersDomainServiceRequestHandler handler = CreateHandler(
+            [new PayloadNoOpDomainProcessor("{\"status\":\"accepted\",\"idempotentReplay\":true}")],
+            authorizer,
+            tenantContext);
+
+        IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
+
+        Ok<DomainServiceWireResult> ok = result.ShouldBeOfType<Ok<DomainServiceWireResult>>();
+        ok.Value.ShouldNotBeNull();
+        ok.Value.IsRejection.ShouldBeFalse();
+        ok.Value.Events.ShouldBeEmpty();
+        ok.Value.ResultPayload.ShouldBe("{\"status\":\"accepted\",\"idempotentReplay\":true}");
     }
 
     [Fact]
@@ -197,20 +290,39 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         };
     }
 
-    private static DomainServiceRequest CreateRequest(string commandTenantId, string userId)
-        => new(
+    private static DomainServiceRequest CreateRequest(
+        string commandTenantId,
+        string userId,
+        bool includeTaskExtension = true,
+        string? malformedField = null)
+    {
+        string messageId = malformedField == "messageId" ? "bad message" : "01j00000000000000000000001";
+        string tenantId = commandTenantId;
+        string aggregateId = malformedField == "aggregateId" ? "Agg-1" : "agg-1";
+        string correlationId = malformedField == "correlationId" ? "corr secret" : "corr-1";
+        string envelopeUserId = malformedField == "userId" ? "user secret" : userId;
+        string taskId = malformedField == "taskId" ? "task secret" : "task-a";
+        Dictionary<string, string>? extensions = includeTaskExtension
+            ? new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["taskId"] = taskId,
+            }
+            : null;
+
+        return new(
             new CommandEnvelope(
-                MessageId: "01J00000000000000000000001",
-                TenantId: commandTenantId,
+                MessageId: messageId,
+                TenantId: tenantId,
                 Domain: FoldersServerModule.DomainName,
-                AggregateId: "agg-1",
+                AggregateId: aggregateId,
                 CommandType: "Hexalith.Folders.Commands.TestCommand",
                 Payload: [0x01],
-                CorrelationId: "corr-1",
+                CorrelationId: correlationId,
                 CausationId: null,
-                UserId: userId,
-                Extensions: null),
+                UserId: envelopeUserId,
+                Extensions: extensions),
             CurrentState: null);
+    }
 
     private sealed class FakeTenantContextAccessor(string? authoritativeTenantId, string? principalId) : ITenantContextAccessor
     {
@@ -249,6 +361,17 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             ProcessCalls++;
             return Task.FromResult(DomainResult.NoOp());
         }
+    }
+
+    private sealed class PayloadNoOpDomainProcessor(string resultPayload) : IDomainProcessor
+    {
+        public Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
+            => Task.FromResult<DomainResult>(new PayloadNoOpDomainResult(resultPayload));
+    }
+
+    private sealed record PayloadNoOpDomainResult(string Payload) : DomainResult(Array.Empty<IEventPayload>())
+    {
+        public override string? ResultPayload => Payload;
     }
 
     private sealed class AllowingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider

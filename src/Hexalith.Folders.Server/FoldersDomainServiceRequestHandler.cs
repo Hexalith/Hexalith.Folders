@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Results;
@@ -19,9 +21,29 @@ public sealed class FoldersDomainServiceRequestHandler(
 {
     private const string OrganizationBaselineScope = "organization_baseline";
 
+    private static readonly Regex CanonicalIdentifierRegex =
+        new("^[a-z0-9._-]+$", RegexOptions.Compiled);
+
     public async Task<IResult> ProcessAsync(DomainServiceRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+
+        if (!TryValidateProcessEnvelope(request.Command, out string? taskId))
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                extensions: new Dictionary<string, object?>
+                {
+                    ["category"] = "validation_error",
+                    ["code"] = "validation_error",
+                    ["retryable"] = false,
+                    ["clientAction"] = "correct_request",
+                    ["details"] = new Dictionary<string, object?>
+                    {
+                        ["visibility"] = "metadata_only",
+                    },
+                });
+        }
 
         FolderCommandActionMapping? mapping = actionTokenMapper.Map(request.Command);
         if (mapping is null)
@@ -49,7 +71,7 @@ public sealed class FoldersDomainServiceRequestHandler(
                 ClaimTransformEvidence: claimTransform,
                 OperationScope: operationScope,
                 CorrelationId: request.Command.CorrelationId,
-                TaskId: null,
+                TaskId: taskId,
                 ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
                 {
                     ["eventstore_envelope_tenant"] = request.Command.TenantId,
@@ -104,15 +126,31 @@ public sealed class FoldersDomainServiceRequestHandler(
         };
 
     private static string? ValidateFolderAggregateId(string? aggregateId)
+        => IsCanonicalIdentifier(aggregateId) ? aggregateId : null;
+
+    private static bool TryValidateProcessEnvelope(CommandEnvelope command, out string? taskId)
     {
-        if (string.IsNullOrWhiteSpace(aggregateId))
+        taskId = null;
+        if (!IsCanonicalIdentifier(command.MessageId)
+            || !IsCanonicalIdentifier(command.CorrelationId)
+            || !IsCanonicalIdentifier(command.TenantId)
+            || !IsCanonicalIdentifier(command.AggregateId)
+            || !IsCanonicalIdentifier(command.UserId)
+            || command.Extensions is null
+            || !command.Extensions.TryGetValue("taskId", out string? extensionTaskId)
+            || !IsCanonicalIdentifier(extensionTaskId))
         {
-            return null;
+            return false;
         }
 
-        string trimmed = aggregateId.Trim();
-        return trimmed.Length is > 0 and <= 128 ? trimmed : null;
+        taskId = extensionTaskId;
+        return true;
     }
+
+    private static bool IsCanonicalIdentifier(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
+        && CanonicalIdentifierRegex.IsMatch(value);
 
     private static LayeredFolderAuthorizationResult BuildUnsupportedCommandDenial(CommandEnvelope command)
         => LayeredFolderAuthorizationResult.Denied(
@@ -123,7 +161,7 @@ public sealed class FoldersDomainServiceRequestHandler(
                 FreshnessClass: "malformed",
                 FreshnessWatermark: null,
                 CorrelationId: command.CorrelationId,
-                TaskId: null,
+                TaskId: TryReadCanonicalTaskId(command),
                 ActorSafeIdentifier: "actor_present",
                 OperationPolicyClass: "mutation",
                 TimingBucket: "not_recorded",
@@ -139,10 +177,17 @@ public sealed class FoldersDomainServiceRequestHandler(
                 FreshnessClass: "malformed",
                 FreshnessWatermark: null,
                 CorrelationId: command.CorrelationId,
-                TaskId: null,
+                TaskId: TryReadCanonicalTaskId(command),
                 ActorSafeIdentifier: "actor_present",
                 OperationPolicyClass: "mutation",
                 TimingBucket: "not_recorded",
                 DecidedAt: DateTimeOffset.UtcNow),
             [AuthorizationLayer.JwtValidation, AuthorizationLayer.EventStoreClaimTransform, AuthorizationLayer.TenantAccessFreshness, AuthorizationLayer.FolderAcl]);
+
+    private static string? TryReadCanonicalTaskId(CommandEnvelope command)
+        => command.Extensions is not null
+        && command.Extensions.TryGetValue("taskId", out string? taskId)
+        && IsCanonicalIdentifier(taskId)
+            ? taskId
+            : null;
 }
