@@ -7,7 +7,8 @@ public sealed class WorkspaceFileMutationService(
     IFolderRepository repository,
     IWorkspacePathPolicyEvidenceProvider pathPolicyEvidenceProvider,
     TimeProvider? timeProvider = null,
-    IWorkspaceFileContentStore? contentStore = null)
+    IWorkspaceFileContentStore? contentStore = null,
+    IWorkspaceFileDeleteOperationStore? deleteOperationStore = null)
 {
     public const string ActionToken = "mutate_files";
 
@@ -18,6 +19,8 @@ public sealed class WorkspaceFileMutationService(
         pathPolicyEvidenceProvider ?? throw new ArgumentNullException(nameof(pathPolicyEvidenceProvider));
     private readonly TimeProvider _timeProvider = timeProvider ?? TimeProvider.System;
     private readonly IWorkspaceFileContentStore _contentStore = contentStore ?? new UnavailableWorkspaceFileContentStore();
+    private readonly IWorkspaceFileDeleteOperationStore _deleteOperationStore =
+        deleteOperationStore ?? new UnavailableWorkspaceFileDeleteOperationStore();
 
     public async Task<FolderResult> MutateAsync(
         WorkspaceFileMutationRequest request,
@@ -170,6 +173,26 @@ public sealed class WorkspaceFileMutationService(
                 cancellationToken).ConfigureAwait(false);
 
             if (!contentResult.Accepted)
+            {
+                return FolderResult.Rejected(command, FolderResultCode.FileOperationFailed);
+            }
+        }
+        else if (command.FileOperationKind is "remove")
+        {
+            WorkspaceFileDeleteOperationStoreResult deleteResult = await _deleteOperationStore.StageAsync(
+                new WorkspaceFileDeleteOperationStoreRequest(
+                    command.ManagedTenantId,
+                    command.FolderId,
+                    command.WorkspaceId,
+                    command.TaskId,
+                    command.OperationId,
+                    command.FileOperationKind,
+                    command.TransportOperation,
+                    pathPolicy.PathMetadataDigest!,
+                    pathPolicy.PathPolicyClass!),
+                cancellationToken).ConfigureAwait(false);
+
+            if (!deleteResult.Accepted)
             {
                 return FolderResult.Rejected(command, FolderResultCode.FileOperationFailed);
             }

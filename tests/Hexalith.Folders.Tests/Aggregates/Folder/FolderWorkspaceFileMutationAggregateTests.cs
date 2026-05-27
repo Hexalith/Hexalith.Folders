@@ -155,6 +155,19 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
             Now);
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
+        WorkspaceFileMutationAccepted accepted = result.Events.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceFileMutationAccepted>();
+        accepted.FileOperationKind.ShouldBe("remove");
+        accepted.TransportOperation.ShouldBe("metadataOnlyRemoval");
+        accepted.PathMetadataDigest.ShouldNotBeNullOrWhiteSpace();
+        accepted.ContentHashReference.ShouldBeNull();
+        accepted.ByteLength.ShouldBeNull();
+        accepted.MediaType.ShouldBeNull();
+        accepted.TransportEvidenceKind.ShouldBeNull();
+        accepted.ObservedByteLength.ShouldBeNull();
+
+        FolderState applied = LockedState(FolderStreamName.Create("tenant-a", "folder-a"))
+            .Apply(result.Events, FolderStreamName.Create("tenant-a", "folder-a"));
+        applied.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.ChangesStaged);
     }
 
     [Theory]
@@ -176,6 +189,31 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
                 contentHashReference: contentHashReference,
                 byteLength: byteLength,
                 requestSchemaVersion: schemaVersion),
+            Now);
+
+        result.Code.ShouldBe(FolderResultCode.ValidationFailed);
+        result.Events.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("text/plain", null, null)]
+    [InlineData(null, "inline_decoded", null)]
+    [InlineData(null, null, 12)]
+    public void RemoveMutationShouldRejectAddChangeTransportEvidence(
+        string? mediaType,
+        string? transportEvidenceKind,
+        int? observedByteLength)
+    {
+        FolderResult result = FolderAggregate.Handle(
+            LockedState(FolderStreamName.Create("tenant-a", "folder-a")),
+            Mutation(
+                fileOperationKind: "remove",
+                transportOperation: "metadataOnlyRemoval",
+                contentHashReference: null,
+                byteLength: null,
+                mediaType: mediaType,
+                transportEvidenceKind: transportEvidenceKind,
+                observedByteLength: observedByteLength),
             Now);
 
         result.Code.ShouldBe(FolderResultCode.ValidationFailed);

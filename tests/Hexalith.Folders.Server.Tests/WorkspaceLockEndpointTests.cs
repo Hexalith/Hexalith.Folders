@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
@@ -489,12 +490,113 @@ public sealed class WorkspaceLockEndpointTests
         if (byteLength is null)
         {
             submitted.Payload.TryGetProperty("byteLength", out _).ShouldBeFalse();
+            submitted.Payload.TryGetProperty("mediaType", out _).ShouldBeFalse();
+            submitted.Payload.TryGetProperty("transportEvidenceKind", out _).ShouldBeFalse();
+            submitted.Payload.TryGetProperty("observedByteLength", out _).ShouldBeFalse();
         }
         else
         {
             JsonElement submittedByteLength = submitted.Payload.GetProperty("byteLength");
             submittedByteLength.GetInt64().ShouldBe(byteLength.Value);
         }
+    }
+
+    [Fact]
+    public async Task RemoveWorkspaceFileShouldRejectContentPayloadBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/remove")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                operationId = "operation-a",
+                fileOperationKind = "remove",
+                transportOperation = "metadataOnlyRemoval",
+                pathMetadata = new
+                {
+                    normalizedPath = "docs/readme.md",
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference = "hashref-a",
+                byteLength = 12,
+                inlineContent = new
+                {
+                    mediaType = "text/plain",
+                    contentBytes = "aGVsbG8gd29ybGQh",
+                },
+                streamDescriptor = new
+                {
+                    mediaType = "application/octet-stream",
+                    declaredLength = 262145,
+                    observedLength = 262145,
+                    stagingReference = "staged-content-a",
+                    observedContentHashReference = "hashref-a",
+                    uploadMode = "request_body_stream",
+                },
+            }),
+        };
+        AddFileMutationHeaders(request);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldNotContain("hashref-a", Case.Sensitive);
+        json.ShouldNotContain("aGVsbG8gd29ybGQh", Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("mediaType", "text/plain")]
+    [InlineData("transportEvidenceKind", "inline_decoded")]
+    [InlineData("observedByteLength", 12)]
+    public async Task RemoveWorkspaceFileShouldRejectTopLevelTransportEvidenceBeforeGatewaySubmit(
+        string forbiddenPropertyName,
+        object forbiddenPropertyValue)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        Dictionary<string, object?> body = new(StringComparer.Ordinal)
+        {
+            ["requestSchemaVersion"] = "v1",
+            ["operationId"] = "operation-a",
+            ["fileOperationKind"] = "remove",
+            ["transportOperation"] = "metadataOnlyRemoval",
+            ["pathMetadata"] = new
+            {
+                normalizedPath = "docs/readme.md",
+                displayName = "readme.md",
+                pathPolicyClass = "tenant_sensitive_document",
+                unicodeNormalization = "NFC",
+            },
+            [forbiddenPropertyName] = forbiddenPropertyValue,
+        };
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/remove")
+        {
+            Content = JsonContent.Create(body),
+        };
+        AddFileMutationHeaders(request);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldNotContain(forbiddenPropertyName, Case.Sensitive);
+        string forbiddenPropertyText = Convert.ToString(forbiddenPropertyValue, CultureInfo.InvariantCulture) ?? string.Empty;
+        json.ShouldNotContain(forbiddenPropertyText, Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
     }
 
     [Fact]

@@ -163,19 +163,203 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         repository.AppendsAttempted.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task RemoveShouldOrderDeleteOperationAfterEvidenceAndIdempotencyLookupBeforeAppend()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new();
+        RecordingDeleteOperationStore deleteStore = new(() => repository.IdempotencyLookups);
+        WorkspaceFileMutationService service = Service(repository, evidence, contentStore, deleteStore);
+
+        FolderResult result = await service.MutateAsync(
+            Request(fileOperationKind: "remove"),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        evidence.Requests.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(1);
+        contentStore.Requests.ShouldBeEmpty();
+        WorkspaceFileDeleteOperationStoreRequest deleteRequest = deleteStore.Requests.ShouldHaveSingleItem();
+        deleteStore.LookupCountsAtRequest.ShouldHaveSingleItem().ShouldBe(1);
+        deleteRequest.ManagedTenantId.ShouldBe("tenant-a");
+        deleteRequest.FolderId.ShouldBe("folder-a");
+        deleteRequest.WorkspaceId.ShouldBe("workspace-a");
+        deleteRequest.TaskId.ShouldBe("task-a");
+        deleteRequest.OperationId.ShouldBe("operation-a");
+        deleteRequest.FileOperationKind.ShouldBe("remove");
+        deleteRequest.TransportOperation.ShouldBe("metadataOnlyRemoval");
+        deleteRequest.PathMetadataDigest.ShouldNotBeNullOrWhiteSpace();
+        deleteRequest.PathPolicyClass.ShouldBe("tenant_sensitive_document");
+        repository.AppendsAttempted.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task RemoveEquivalentReplayShouldReturnBeforeDuplicateDeleteOrdering()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingDeleteOperationStore deleteStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, deleteOperationStore: deleteStore);
+
+        FolderResult first = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+        evidence.Decision = WorkspacePathPolicyEvidenceDecision.Unavailable;
+
+        FolderResult replay = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+
+        first.Code.ShouldBe(FolderResultCode.Accepted);
+        replay.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        evidence.Requests.ShouldBe(1);
+        deleteStore.Requests.Count.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task RemoveIdempotencyConflictShouldReturnBeforeDeleteOrdering()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingDeleteOperationStore deleteStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, deleteOperationStore: deleteStore);
+
+        FolderResult first = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+
+        FolderResult conflict = await service.MutateAsync(
+            Request(fileOperationKind: "remove", operationId: "operation-b"),
+            TestContext.Current.CancellationToken);
+
+        first.Code.ShouldBe(FolderResultCode.Accepted);
+        conflict.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        evidence.Requests.ShouldBe(1);
+        deleteStore.Requests.Count.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task RemoveDeleteOrderUnavailableShouldFailBeforeAppend()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingDeleteOperationStore deleteStore = new() { Accepted = false };
+        WorkspaceFileMutationService service = Service(repository, evidence, deleteOperationStore: deleteStore);
+
+        FolderResult result = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FileOperationFailed);
+        deleteStore.Requests.Count.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RemoveDefaultDeleteOrderBoundaryShouldFailClosedBeforeAppend()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        WorkspaceFileMutationService service = new(
+            AuthorizationService(),
+            repository,
+            evidence,
+            new FixedTimeProvider(Now),
+            new RecordingContentStore());
+
+        FolderResult result = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FileOperationFailed);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(WorkspacePathPolicyEvidenceDecision.SymlinkEscape, FolderResultCode.PathPolicyDenied)]
+    [InlineData(WorkspacePathPolicyEvidenceDecision.Unavailable, FolderResultCode.PolicyEvidenceUnavailable)]
+    public async Task RemovePathEvidenceDenialShouldNotOrderDeleteOrAppend(
+        WorkspacePathPolicyEvidenceDecision decision,
+        FolderResultCode expectedCode)
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new(decision);
+        RecordingDeleteOperationStore deleteStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, deleteOperationStore: deleteStore);
+
+        FolderResult result = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(expectedCode);
+        deleteStore.Requests.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RemoveIdempotencyUnavailableShouldNotOrderDeleteOrAppend()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        repository.IdempotencyUnavailable = true;
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingDeleteOperationStore deleteStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, deleteOperationStore: deleteStore);
+
+        FolderResult result = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
+        deleteStore.Requests.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(null, "workspace-a", "task-a", FolderResultCode.MissingAuthoritativeTenant)]
+    [InlineData("tenant-a", "workspace-b", "task-a", FolderResultCode.StateTransitionInvalid)]
+    [InlineData("tenant-a", "workspace-a", "task-b", FolderResultCode.LockNotOwned)]
+    public async Task RemoveDenialsShouldNotOrderDeleteOrAppend(
+        string? authoritativeTenantId,
+        string workspaceId,
+        string taskId,
+        FolderResultCode expectedCode)
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingDeleteOperationStore deleteStore = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, deleteOperationStore: deleteStore);
+
+        FolderResult result = await service.MutateAsync(
+            Request(
+                authoritativeTenantId: authoritativeTenantId,
+                workspaceId: workspaceId,
+                taskId: taskId,
+                fileOperationKind: "remove"),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(expectedCode);
+        deleteStore.Requests.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
     private static WorkspaceFileMutationService Service(
         IFolderRepository repository,
         IWorkspacePathPolicyEvidenceProvider evidence,
-        IWorkspaceFileContentStore? contentStore = null)
-        => new(AuthorizationService(), repository, evidence, new FixedTimeProvider(Now), contentStore ?? new RecordingContentStore());
+        IWorkspaceFileContentStore? contentStore = null,
+        IWorkspaceFileDeleteOperationStore? deleteOperationStore = null)
+        => new(
+            AuthorizationService(),
+            repository,
+            evidence,
+            new FixedTimeProvider(Now),
+            contentStore ?? new RecordingContentStore(),
+            deleteOperationStore ?? new RecordingDeleteOperationStore());
 
     private static WorkspaceFileMutationRequest Request(
         string? authoritativeTenantId = "tenant-a",
         string workspaceId = "workspace-a",
         string operationId = "operation-a",
         string taskId = "task-a",
-        string normalizedPath = "docs/readme.md")
-        => new(
+        string normalizedPath = "docs/readme.md",
+        string fileOperationKind = "add",
+        string? transportOperation = null,
+        string? contentHashReference = null,
+        long? byteLength = null)
+    {
+        transportOperation ??= fileOperationKind == "remove" ? "metadataOnlyRemoval" : "PutFileInline";
+        contentHashReference ??= fileOperationKind == "remove" ? null : "hashref-a";
+        byteLength ??= fileOperationKind == "remove" ? null : 12;
+
+        return new(
             authoritativeTenantId ?? string.Empty,
             PrincipalId: "user-a",
             string.IsNullOrWhiteSpace(authoritativeTenantId)
@@ -185,20 +369,21 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             RequestSchemaVersion: "v1",
             WorkspaceId: workspaceId,
             OperationId: operationId,
-            FileOperationKind: "add",
-            TransportOperation: "PutFileInline",
+            FileOperationKind: fileOperationKind,
+            TransportOperation: transportOperation,
             new PathMetadata(normalizedPath, "readme.md", "tenant_sensitive_document", "NFC"),
-            ContentHashReference: "hashref-a",
-            ByteLength: 12,
-            MediaType: "text/plain",
-            TransportEvidenceKind: "inline_decoded",
-            ObservedByteLength: 12,
+            ContentHashReference: contentHashReference,
+            ByteLength: byteLength,
+            MediaType: fileOperationKind is "add" or "change" ? "text/plain" : null,
+            TransportEvidenceKind: fileOperationKind is "add" or "change" ? "inline_decoded" : null,
+            ObservedByteLength: fileOperationKind is "add" or "change" ? byteLength : null,
             CorrelationId: "correlation-file-a",
             TaskId: taskId,
             IdempotencyKey: "idempotency-file-a",
             PayloadTenantId: null,
             ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal),
             ClientControlledPrincipalValues: new Dictionary<string, string?>(StringComparer.Ordinal));
+    }
 
     private static RecordingFolderRepository LockedRepository()
     {
@@ -352,6 +537,27 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             return Task.FromResult(Accepted
                 ? WorkspaceFileContentStoreResult.Succeeded
                 : WorkspaceFileContentStoreResult.Failed);
+        }
+    }
+
+    private sealed class RecordingDeleteOperationStore(Func<int>? idempotencyLookupCount = null) : IWorkspaceFileDeleteOperationStore
+    {
+        public bool Accepted { get; init; } = true;
+
+        public List<WorkspaceFileDeleteOperationStoreRequest> Requests { get; } = [];
+
+        public List<int> LookupCountsAtRequest { get; } = [];
+
+        public Task<WorkspaceFileDeleteOperationStoreResult> StageAsync(
+            WorkspaceFileDeleteOperationStoreRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            Requests.Add(request);
+            LookupCountsAtRequest.Add(idempotencyLookupCount?.Invoke() ?? -1);
+            return Task.FromResult(Accepted
+                ? WorkspaceFileDeleteOperationStoreResult.Succeeded
+                : WorkspaceFileDeleteOperationStoreResult.Failed);
         }
     }
 

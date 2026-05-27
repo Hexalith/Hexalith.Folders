@@ -512,7 +512,10 @@ public static partial class FolderCommandValidator
             "add" or "change" => IsValidAddOrChangeMutation(command),
             "remove" => string.Equals(command.TransportOperation, "metadataOnlyRemoval", StringComparison.Ordinal)
                 && command.ContentHashReference is null
-                && command.ByteLength is null,
+                && command.ByteLength is null
+                && command.MediaType is null
+                && command.TransportEvidenceKind is null
+                && command.ObservedByteLength is null,
             _ => false,
         };
     }
