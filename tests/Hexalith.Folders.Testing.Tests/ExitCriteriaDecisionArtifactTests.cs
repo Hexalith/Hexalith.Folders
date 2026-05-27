@@ -196,8 +196,11 @@ public sealed class ExitCriteriaDecisionArtifactTests
             SpineContractAssertions.AssertNoDownstreamOperationGroups(spine);
         }
 
-        File.Exists(Path.Combine(root, "src", "Hexalith.Folders", "Aggregates", "Folder", "FolderStateTransitions.cs"))
-            .ShouldBeFalse("Story 1.4 documents the C6 mapping but must not implement FolderStateTransitions.cs.");
+        string c6Mapping = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "c6-transition-matrix-mapping.md"));
+        c6Mapping.ShouldContain(
+            "FolderStateTransitions.cs",
+            Case.Sensitive,
+            "The C6 mapping document must keep pointing implementers to the aggregate transition matrix source.");
     }
 
     [Fact]

@@ -133,6 +133,10 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         RecordingFolderRepository repository = new();
         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
+        FolderResult requested = FolderAggregate.Handle(
+            FolderState.Empty.Apply(created.Events, streamName),
+            FolderCommandFactory.CreateRepositoryBackedFolder(),
+            Now);
         RepositoryBound bound = new(
             "tenant-a",
             "organization-a",
@@ -144,7 +148,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             "idempotency-bound-a",
             "fingerprint-bound-a",
             Now);
-        repository.Seed(streamName, [.. created.Events, bound]);
+        repository.Seed(streamName, [.. created.Events, .. requested.Events, bound]);
         return repository;
     }
 
@@ -152,6 +156,10 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
     {
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
+        FolderResult requested = FolderAggregate.Handle(
+            FolderState.Empty.Apply(created.Events, streamName),
+            FolderCommandFactory.CreateRepositoryBackedFolder(),
+            Now);
         RepositoryBound boundEvent = new(
             "tenant-a",
             "organization-a",
@@ -163,7 +171,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             "idempotency-bound-a",
             "fingerprint-bound-a",
             Now);
-        FolderState bound = FolderState.Empty.Apply([.. created.Events, boundEvent], streamName);
+        FolderState bound = FolderState.Empty.Apply([.. created.Events, .. requested.Events, boundEvent], streamName);
         FolderResult configured = FolderAggregate.Handle(
             bound,
             new ConfigureBranchRefPolicy(
@@ -183,7 +191,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
                 PayloadTenantId: null),
             Now);
         RecordingFolderRepository repository = new();
-        repository.Seed(streamName, [.. created.Events, boundEvent, .. configured.Events]);
+        repository.Seed(streamName, [.. created.Events, .. requested.Events, boundEvent, .. configured.Events]);
         return repository;
     }
 

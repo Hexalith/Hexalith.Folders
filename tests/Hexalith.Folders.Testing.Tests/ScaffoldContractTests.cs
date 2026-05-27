@@ -399,7 +399,7 @@ public sealed class ScaffoldContractTests
     {
         XDocument project = XDocument.Load(projectPath);
         return DescendantsByLocalName(project, "ProjectReference")
-            .Select(reference => Path.GetFileNameWithoutExtension((string?)reference.Attribute("Include") ?? string.Empty))
+            .Select(reference => Path.GetFileNameWithoutExtension(Normalize((string?)reference.Attribute("Include") ?? string.Empty)))
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Order(StringComparer.Ordinal)
             .ToArray();

@@ -138,6 +138,7 @@ public sealed class FolderBranchRefPolicyAggregateTests
 
     private static FolderState BoundState(FolderStreamName streamName)
     {
+        FolderState requested = BindingRequestedState(streamName);
         RepositoryBound bound = new(
             "tenant-a",
             "organization-a",
@@ -149,7 +150,7 @@ public sealed class FolderBranchRefPolicyAggregateTests
             "idempotency-bound-a",
             "fingerprint-bound-a",
             Now);
-        return CreatedState(streamName).Apply([bound], streamName);
+        return requested.Apply([bound], streamName);
     }
 
     private static FolderState ConfiguredState(FolderStreamName streamName)

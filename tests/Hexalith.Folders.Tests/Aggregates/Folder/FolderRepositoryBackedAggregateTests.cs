@@ -105,18 +105,30 @@ public sealed class FolderRepositoryBackedAggregateTests
             streamName);
 
         bound.RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.Bound);
+        bound.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.Preparing);
+        bound.WorkspaceOperatorDisposition.ShouldBe(FolderOperatorDisposition.AutoRecovering);
+        bound.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.RepositoryBound);
         bound.RepositoryBindingActorPrincipalId.ShouldBe("principal-a");
         bound.RepositoryBindingCorrelationId.ShouldBe("correlation-a");
         bound.RepositoryBindingTaskId.ShouldBe("task-a");
         bound.RepositoryBindingIdempotencyKey.ShouldBe("idempotency-bound-a");
         failed.RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.Failed);
+        failed.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.Failed);
+        failed.WorkspaceOperatorDisposition.ShouldBe(FolderOperatorDisposition.TerminalUntilIntervention);
+        failed.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.RepositoryBindingFailed);
         failed.RepositoryBindingFailureCategory.ShouldBe("repository_conflict");
         failed.RepositoryBindingActorPrincipalId.ShouldBe("principal-a");
         failed.RepositoryBindingIdempotencyKey.ShouldBe("idempotency-failed-a");
         unknown.RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.UnknownProviderOutcome);
+        unknown.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.UnknownProviderOutcome);
+        unknown.WorkspaceOperatorDisposition.ShouldBe(FolderOperatorDisposition.AwaitingHuman);
+        unknown.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
         unknown.RepositoryBindingActorPrincipalId.ShouldBe("principal-a");
         unknown.RepositoryBindingIdempotencyKey.ShouldBe("idempotency-unknown-a");
         reconciliation.RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.ReconciliationRequired);
+        reconciliation.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.UnknownProviderOutcome);
+        reconciliation.WorkspaceOperatorDisposition.ShouldBe(FolderOperatorDisposition.AwaitingHuman);
+        reconciliation.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
     }
 
     [Fact]

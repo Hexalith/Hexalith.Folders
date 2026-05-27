@@ -287,7 +287,7 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryEffectivePermissionsReadModel permissions = new();
         InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
         TimeProvider timeProvider = new FixedTimeProvider(Now);
-        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider);
+        InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
         Uri? hostUri = null;
         InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
 

@@ -22,6 +22,10 @@ public sealed class BranchRefPolicyReadModelTests
             timeProvider: new FixedTimeProvider(Now));
         FolderStreamName streamName = repository.CreateStreamName("tenant-a", "folder-a");
         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
+        FolderResult requested = FolderAggregate.Handle(
+            FolderState.Empty.Apply(created.Events, streamName),
+            FolderCommandFactory.CreateRepositoryBackedFolder(),
+            Now);
         RepositoryBound bound = new(
             "tenant-a",
             "organization-a",
@@ -33,7 +37,7 @@ public sealed class BranchRefPolicyReadModelTests
             "idempotency-bound-a",
             "fingerprint-bound-a",
             Now);
-        repository.Seed(streamName, [.. created.Events, bound]);
+        repository.Seed(streamName, [.. created.Events, .. requested.Events, bound]);
         FolderResult configured = FolderAggregate.Handle(
             repository.Load(streamName),
             new ConfigureBranchRefPolicy(
@@ -90,6 +94,10 @@ public sealed class BranchRefPolicyReadModelTests
             timeProvider);
         FolderStreamName streamName = repository.CreateStreamName("tenant-a", "folder-a");
         FolderResult created = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());
+        FolderResult requested = FolderAggregate.Handle(
+            FolderState.Empty.Apply(created.Events, streamName),
+            FolderCommandFactory.CreateRepositoryBackedFolder(),
+            Now);
         RepositoryBound bound = new(
             "tenant-a",
             "organization-a",
@@ -101,7 +109,7 @@ public sealed class BranchRefPolicyReadModelTests
             "idempotency-bound-a",
             "fingerprint-bound-a",
             Now);
-        repository.Seed(streamName, [.. created.Events, bound]);
+        repository.Seed(streamName, [.. created.Events, .. requested.Events, bound]);
 
         timeProvider.UtcNow = Now.AddMinutes(2);
         FolderResult configured = FolderAggregate.Handle(

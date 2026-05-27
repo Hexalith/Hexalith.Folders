@@ -46,6 +46,14 @@ public static class FolderStateApply
                 Tags = CanonicalizeTags(created.Tags),
                 LifecycleState = created.LifecycleState,
                 RepositoryBindingState = created.RepositoryBindingState,
+                WorkspaceLifecycleState = null,
+                WorkspaceOperatorDisposition = null,
+                WorkspaceId = null,
+                WorkspaceLifecycleEvent = null,
+                WorkspaceOperationId = null,
+                WorkspaceCorrelationId = null,
+                WorkspaceTaskId = null,
+                WorkspaceLifecycleUpdatedAt = null,
                 RepositoryBindingId = null,
                 ProviderBindingRef = null,
                 RepositoryProfileRef = null,
@@ -85,58 +93,9 @@ public static class FolderStateApply
                 ArchivedAt = archived.OccurredAt,
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
-            RepositoryBindingRequested requested => state with
-            {
-                RepositoryBindingState = FolderRepositoryBindingState.BindingRequested,
-                RepositoryBindingId = requested.RepositoryBindingId,
-                ProviderBindingRef = requested.ProviderBindingRef,
-                RepositoryProfileRef = requested.RepositoryProfileRef,
-                ExternalRepositoryRefFingerprint = null,
-                BranchRefPolicyRef = requested.BranchRefPolicyRef,
-                BranchRefPolicy = null,
-                RepositoryBindingFailureCategory = null,
-                RepositoryBindingOutcomeCategory = null,
-                RepositoryBindingUpdatedAt = requested.OccurredAt,
-                RepositoryBindingActorPrincipalId = requested.ActorPrincipalId,
-                RepositoryBindingCorrelationId = requested.CorrelationId,
-                RepositoryBindingTaskId = requested.TaskId,
-                RepositoryBindingIdempotencyKey = requested.IdempotencyKey,
-                RepositoryBindingIdempotencyFingerprint = requested.IdempotencyFingerprint,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
-            },
-            ExistingRepositoryBindingRequested requested => state with
-            {
-                RepositoryBindingState = FolderRepositoryBindingState.BindingRequested,
-                RepositoryBindingId = requested.RepositoryBindingId,
-                ProviderBindingRef = requested.ProviderBindingRef,
-                RepositoryProfileRef = null,
-                ExternalRepositoryRefFingerprint = requested.ExternalRepositoryRefFingerprint,
-                BranchRefPolicyRef = requested.BranchRefPolicyRef,
-                BranchRefPolicy = null,
-                RepositoryBindingFailureCategory = null,
-                RepositoryBindingOutcomeCategory = null,
-                RepositoryBindingUpdatedAt = requested.OccurredAt,
-                RepositoryBindingActorPrincipalId = requested.ActorPrincipalId,
-                RepositoryBindingCorrelationId = requested.CorrelationId,
-                RepositoryBindingTaskId = requested.TaskId,
-                RepositoryBindingIdempotencyKey = requested.IdempotencyKey,
-                RepositoryBindingIdempotencyFingerprint = requested.IdempotencyFingerprint,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
-            },
-            RepositoryBound bound => state with
-            {
-                RepositoryBindingState = FolderRepositoryBindingState.Bound,
-                RepositoryBindingId = bound.RepositoryBindingId,
-                ProviderBindingRef = bound.ProviderBindingRef,
-                RepositoryBindingFailureCategory = null,
-                RepositoryBindingOutcomeCategory = null,
-                RepositoryBindingUpdatedAt = bound.OccurredAt,
-                RepositoryBindingCorrelationId = bound.CorrelationId,
-                RepositoryBindingTaskId = bound.TaskId,
-                RepositoryBindingIdempotencyKey = bound.IdempotencyKey,
-                RepositoryBindingIdempotencyFingerprint = bound.IdempotencyFingerprint,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
-            },
+            RepositoryBindingRequested requested => ApplyRepositoryBindingRequested(state, requested),
+            ExistingRepositoryBindingRequested requested => ApplyExistingRepositoryBindingRequested(state, requested),
+            RepositoryBound bound => ApplyRepositoryBound(state, bound),
             BranchRefPolicyConfigured configured => state with
             {
                 BranchRefPolicy = new BranchRefPolicyMetadata(
@@ -153,42 +112,196 @@ public static class FolderStateApply
                     configured.OccurredAt),
                 IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
             },
-            RepositoryBindingFailed failed => state with
-            {
-                RepositoryBindingState = FolderRepositoryBindingState.Failed,
-                RepositoryBindingId = failed.RepositoryBindingId,
-                ProviderBindingRef = failed.ProviderBindingRef,
-                RepositoryBindingFailureCategory = failed.FailureCategory,
-                RepositoryBindingOutcomeCategory = null,
-                RepositoryBindingUpdatedAt = failed.OccurredAt,
-                RepositoryBindingCorrelationId = failed.CorrelationId,
-                RepositoryBindingTaskId = failed.TaskId,
-                RepositoryBindingIdempotencyKey = failed.IdempotencyKey,
-                RepositoryBindingIdempotencyFingerprint = failed.IdempotencyFingerprint,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
-            },
-            ProviderOutcomeUnknown unknown => state with
-            {
-                RepositoryBindingState = unknown.ReconciliationRequired
-                    ? FolderRepositoryBindingState.ReconciliationRequired
-                    : FolderRepositoryBindingState.UnknownProviderOutcome,
-                RepositoryBindingId = unknown.RepositoryBindingId,
-                ProviderBindingRef = unknown.ProviderBindingRef,
-                RepositoryBindingFailureCategory = null,
-                RepositoryBindingOutcomeCategory = unknown.OutcomeCategory,
-                RepositoryBindingUpdatedAt = unknown.OccurredAt,
-                RepositoryBindingCorrelationId = unknown.CorrelationId,
-                RepositoryBindingTaskId = unknown.TaskId,
-                RepositoryBindingIdempotencyKey = unknown.IdempotencyKey,
-                RepositoryBindingIdempotencyFingerprint = unknown.IdempotencyFingerprint,
-                IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, folderEvent),
-            },
+            RepositoryBindingFailed failed => ApplyRepositoryBindingFailed(state, failed),
+            ProviderOutcomeUnknown unknown => ApplyProviderOutcomeUnknown(state, unknown),
+            FolderWorkspaceLifecycleEventRecorded recorded => ApplyWorkspaceLifecycleEvent(state, recorded),
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(
                 $"Unhandled folder event type: result code {FolderResultCode.StateTransitionInvalid}."),
         };
     }
+
+    private static FolderState ApplyRepositoryBindingRequested(FolderState state, RepositoryBindingRequested requested)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.RepositoryBindingRequested);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, requested, transition, null, requested.RepositoryBindingId) with
+        {
+            RepositoryBindingState = FolderRepositoryBindingState.BindingRequested,
+            RepositoryBindingId = requested.RepositoryBindingId,
+            ProviderBindingRef = requested.ProviderBindingRef,
+            RepositoryProfileRef = requested.RepositoryProfileRef,
+            ExternalRepositoryRefFingerprint = null,
+            BranchRefPolicyRef = requested.BranchRefPolicyRef,
+            BranchRefPolicy = null,
+            RepositoryBindingFailureCategory = null,
+            RepositoryBindingOutcomeCategory = null,
+            RepositoryBindingUpdatedAt = requested.OccurredAt,
+            RepositoryBindingActorPrincipalId = requested.ActorPrincipalId,
+            RepositoryBindingCorrelationId = requested.CorrelationId,
+            RepositoryBindingTaskId = requested.TaskId,
+            RepositoryBindingIdempotencyKey = requested.IdempotencyKey,
+            RepositoryBindingIdempotencyFingerprint = requested.IdempotencyFingerprint,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
+        };
+    }
+
+    private static FolderState ApplyExistingRepositoryBindingRequested(
+        FolderState state,
+        ExistingRepositoryBindingRequested requested)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.RepositoryBindingRequested);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, requested, transition, null, requested.RepositoryBindingId) with
+        {
+            RepositoryBindingState = FolderRepositoryBindingState.BindingRequested,
+            RepositoryBindingId = requested.RepositoryBindingId,
+            ProviderBindingRef = requested.ProviderBindingRef,
+            RepositoryProfileRef = null,
+            ExternalRepositoryRefFingerprint = requested.ExternalRepositoryRefFingerprint,
+            BranchRefPolicyRef = requested.BranchRefPolicyRef,
+            BranchRefPolicy = null,
+            RepositoryBindingFailureCategory = null,
+            RepositoryBindingOutcomeCategory = null,
+            RepositoryBindingUpdatedAt = requested.OccurredAt,
+            RepositoryBindingActorPrincipalId = requested.ActorPrincipalId,
+            RepositoryBindingCorrelationId = requested.CorrelationId,
+            RepositoryBindingTaskId = requested.TaskId,
+            RepositoryBindingIdempotencyKey = requested.IdempotencyKey,
+            RepositoryBindingIdempotencyFingerprint = requested.IdempotencyFingerprint,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
+        };
+    }
+
+    private static FolderState ApplyRepositoryBound(FolderState state, RepositoryBound bound)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.RepositoryBound);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, bound, transition, state.WorkspaceId, bound.RepositoryBindingId) with
+        {
+            RepositoryBindingState = FolderRepositoryBindingState.Bound,
+            RepositoryBindingId = bound.RepositoryBindingId,
+            ProviderBindingRef = bound.ProviderBindingRef,
+            RepositoryBindingFailureCategory = null,
+            RepositoryBindingOutcomeCategory = null,
+            RepositoryBindingUpdatedAt = bound.OccurredAt,
+            RepositoryBindingCorrelationId = bound.CorrelationId,
+            RepositoryBindingTaskId = bound.TaskId,
+            RepositoryBindingIdempotencyKey = bound.IdempotencyKey,
+            RepositoryBindingIdempotencyFingerprint = bound.IdempotencyFingerprint,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, bound),
+        };
+    }
+
+    private static FolderState ApplyRepositoryBindingFailed(FolderState state, RepositoryBindingFailed failed)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.RepositoryBindingFailed);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, failed, transition, state.WorkspaceId, failed.RepositoryBindingId) with
+        {
+            RepositoryBindingState = FolderRepositoryBindingState.Failed,
+            RepositoryBindingId = failed.RepositoryBindingId,
+            ProviderBindingRef = failed.ProviderBindingRef,
+            RepositoryBindingFailureCategory = failed.FailureCategory,
+            RepositoryBindingOutcomeCategory = null,
+            RepositoryBindingUpdatedAt = failed.OccurredAt,
+            RepositoryBindingCorrelationId = failed.CorrelationId,
+            RepositoryBindingTaskId = failed.TaskId,
+            RepositoryBindingIdempotencyKey = failed.IdempotencyKey,
+            RepositoryBindingIdempotencyFingerprint = failed.IdempotencyFingerprint,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, failed),
+        };
+    }
+
+    private static FolderState ApplyProviderOutcomeUnknown(FolderState state, ProviderOutcomeUnknown unknown)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, unknown, transition, state.WorkspaceId, unknown.RepositoryBindingId) with
+        {
+            RepositoryBindingState = unknown.ReconciliationRequired
+                ? FolderRepositoryBindingState.ReconciliationRequired
+                : FolderRepositoryBindingState.UnknownProviderOutcome,
+            RepositoryBindingId = unknown.RepositoryBindingId,
+            ProviderBindingRef = unknown.ProviderBindingRef,
+            RepositoryBindingFailureCategory = null,
+            RepositoryBindingOutcomeCategory = unknown.OutcomeCategory,
+            RepositoryBindingUpdatedAt = unknown.OccurredAt,
+            RepositoryBindingCorrelationId = unknown.CorrelationId,
+            RepositoryBindingTaskId = unknown.TaskId,
+            RepositoryBindingIdempotencyKey = unknown.IdempotencyKey,
+            RepositoryBindingIdempotencyFingerprint = unknown.IdempotencyFingerprint,
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, unknown),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceLifecycleEvent(
+        FolderState state,
+        FolderWorkspaceLifecycleEventRecorded recorded)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            recorded.WorkspaceLifecycleEvent,
+            recorded.DirtyResolution);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
+        {
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, recorded),
+        };
+    }
+
+    private static FolderState WithWorkspaceTransition(
+        FolderState state,
+        IFolderEvent folderEvent,
+        FolderWorkspaceTransitionResult transition,
+        string? workspaceId,
+        string? operationId)
+        => state with
+        {
+            WorkspaceLifecycleState = transition.NextState,
+            WorkspaceOperatorDisposition = transition.OperatorDisposition,
+            WorkspaceId = string.IsNullOrWhiteSpace(workspaceId) ? state.WorkspaceId : workspaceId,
+            WorkspaceLifecycleEvent = transition.AttemptedEvent,
+            WorkspaceOperationId = string.IsNullOrWhiteSpace(operationId) ? state.WorkspaceOperationId : operationId,
+            WorkspaceCorrelationId = folderEvent.CorrelationId,
+            WorkspaceTaskId = folderEvent.TaskId,
+            WorkspaceLifecycleUpdatedAt = folderEvent.OccurredAt,
+        };
 
     private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> RecordGrant(
         IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> current,
