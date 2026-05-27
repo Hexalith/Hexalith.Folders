@@ -7,4 +7,7 @@ public sealed record WorkspaceProviderOutcome(
     string ProviderCorrelationReference,
     WorkspaceStatusRetryEligibility RetryEligibility,
     WorkspaceStatusRetryAfter? RetryAfter,
-    FolderLifecycleFreshness Freshness);
+    FolderLifecycleFreshness Freshness,
+    string? ChangedPathMetadataDigest = null,
+    string? CommitReferenceClassification = null,
+    string? ReconciliationReference = null);

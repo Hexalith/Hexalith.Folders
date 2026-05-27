@@ -40,6 +40,10 @@ public sealed class WorkspaceStatusEndpointTests
             .ToArray();
 
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/status");
+        routes.ShouldContain("/api/v1/tasks/{taskId}/status");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status");
     }
 
     [Fact]
@@ -79,8 +83,8 @@ public sealed class WorkspaceStatusEndpointTests
     [InlineData("changes_staged", "accepted", "known_success", false, "retry_not_required", null)]
     [InlineData("failed", "failed", "known_failure", true, "failed_operation", "failed_operation")]
     [InlineData("inaccessible", "failed", "known_failure", false, "tenant_access_denied", "tenant_access_denied")]
-    [InlineData("unknown_provider_outcome", "accepted", "unknown_provider_outcome", true, "unknown_provider_outcome", "unknown_provider_outcome")]
-    [InlineData("reconciliation_required", "accepted", "reconciliation_required", true, "reconciliation_required", "reconciliation_required")]
+    [InlineData("unknown_provider_outcome", "accepted", "unknown_provider_outcome", false, "unknown_provider_outcome", "unknown_provider_outcome")]
+    [InlineData("reconciliation_required", "accepted", "reconciliation_required", false, "reconciliation_required", "reconciliation_required")]
     public async Task GetWorkspaceStatusShouldReturnContractShapeForWorkspaceStates(
         string state,
         string acceptedState,
@@ -266,8 +270,165 @@ public sealed class WorkspaceStatusEndpointTests
         }
     }
 
+    [Fact]
+    public async Task EvidenceEndpointsShouldRejectIdempotencyKeyBeforeReadModelAccess()
+    {
+        CountingWorkspaceStatusReadModel readModel = new(StatusReadModel());
+        CountingTaskStatusReadModel taskReadModel = new(TaskStatusReadModel("failed"));
+        await using WebApplication app = BuildApp(readModel, taskStatusReadModel: taskReadModel);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        string[] uris =
+        [
+            "/api/v1/tasks/task-a/status",
+            "/api/v1/folders/folder-a/workspaces/workspace-a/commits/workspace_status_operation/evidence",
+            "/api/v1/folders/folder-a/workspaces/workspace-a/commits/workspace_status_operation/provider-outcome",
+            "/api/v1/folders/folder-a/workspaces/workspace-a/reconciliation/reconciliation-a/status",
+        ];
+
+        foreach (string uri in uris)
+        {
+            using HttpRequestMessage request = CreateEvidenceRequest(uri);
+            request.Headers.Add("Idempotency-Key", "idempotency-a");
+
+            using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, uri);
+            json.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
+            json.ShouldContain("\"visibility\":\"metadata_only\"");
+        }
+
+        readModel.Calls.ShouldBe(0);
+        taskReadModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task GetProviderOutcomeShouldReturnUnknownOutcomeWithoutBlindRetry()
+    {
+        await using WebApplication app = BuildApp(StatusReadModel("unknown_provider_outcome"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateEvidenceRequest(
+            "/api/v1/folders/folder-a/workspaces/workspace-a/commits/workspace_status_operation/provider-outcome");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        JsonElement root = document.RootElement;
+        root.GetProperty("operationId").GetString().ShouldBe("workspace_status_operation");
+        root.GetProperty("state").GetString().ShouldBe("unknown_provider_outcome");
+        root.GetProperty("sanitizedStatusClass").GetString().ShouldBe("unknown_provider_outcome");
+        root.GetProperty("retryEligibility").GetProperty("eligible").GetBoolean().ShouldBeFalse();
+        root.GetProperty("retryEligibility").GetProperty("reasonCode").GetString().ShouldBe("unknown_provider_outcome");
+        root.TryGetProperty("retryAfter", out _).ShouldBeFalse();
+        json.ShouldNotContain("commit message", Case.Insensitive);
+        json.ShouldNotContain("refs/heads", Case.Sensitive);
+        json.ShouldNotContain("https://", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task GetCommitEvidenceShouldReturnMetadataOnlyEvidence()
+    {
+        await using WebApplication app = BuildApp(StatusReadModel("failed"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateEvidenceRequest(
+            "/api/v1/folders/folder-a/workspaces/workspace-a/commits/workspace_status_operation/evidence");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        JsonElement root = document.RootElement;
+        root.GetProperty("operationId").GetString().ShouldBe("workspace_status_operation");
+        root.GetProperty("commitResultStatus").GetString().ShouldBe("failed");
+        root.GetProperty("commitReferenceClassification").GetString().ShouldBe("unavailable");
+        root.GetProperty("changedPathMetadataDigest").GetString().ShouldBe("digest_workspace_status");
+        root.GetProperty("providerCorrelationReference").GetString().ShouldStartWith("provref_");
+        root.GetProperty("redaction").GetProperty("visibility").GetString().ShouldBe("metadata_only");
+        root.GetProperty("auditMetadataKeys").GetArrayLength().ShouldBeGreaterThan(0);
+        json.ShouldNotContain("commit message", Case.Insensitive);
+        json.ShouldNotContain("refs/heads", Case.Sensitive);
+        json.ShouldNotContain("https://", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task GetReconciliationStatusShouldReturnWaitEvidenceWithoutRetry()
+    {
+        await using WebApplication app = BuildApp(StatusReadModel("reconciliation_required"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateEvidenceRequest(
+            "/api/v1/folders/folder-a/workspaces/workspace-a/reconciliation/reconciliation-a/status");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        JsonElement root = document.RootElement;
+        root.GetProperty("reconciliationId").GetString().ShouldBe("reconciliation-a");
+        root.GetProperty("operationId").GetString().ShouldBe("workspace_status_operation");
+        root.GetProperty("state").GetString().ShouldBe("required");
+        root.GetProperty("finalStateEvidence").GetString().ShouldBe("pending");
+        root.GetProperty("escalationRequired").GetBoolean().ShouldBeTrue();
+        root.GetProperty("retryEligibility").GetProperty("eligible").GetBoolean().ShouldBeFalse();
+        root.GetProperty("retryEligibility").GetProperty("reasonCode").GetString().ShouldBe("reconciliation_required");
+    }
+
+    [Fact]
+    public async Task GetReconciliationStatusShouldNotEchoUnknownReconciliationReferences()
+    {
+        await using WebApplication app = BuildApp(StatusReadModel("reconciliation_required"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateEvidenceRequest(
+            "/api/v1/folders/folder-a/workspaces/workspace-a/reconciliation/reconciliation-b/status");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound, json);
+        json.ShouldContain("\"code\":\"not_found\"");
+        json.ShouldNotContain("reconciliation-b", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task GetTaskStatusShouldReturnAuthorizedTaskEvidence()
+    {
+        await using WebApplication app = BuildApp(StatusReadModel("failed"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateEvidenceRequest("/api/v1/tasks/task-a/status");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        JsonElement root = document.RootElement;
+        root.GetProperty("taskId").GetString().ShouldBe("task-a");
+        root.GetProperty("currentState").GetString().ShouldBe("failed");
+        root.GetProperty("terminalState").GetString().ShouldBe("failed");
+        root.GetProperty("lastOperationId").GetString().ShouldBe("workspace_status_operation");
+        root.GetProperty("lastFailureCategory").GetString().ShouldBe("failed_operation");
+        root.GetProperty("retryEligibility").GetProperty("eligible").GetBoolean().ShouldBeTrue();
+        root.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
+    }
+
     private static WebApplication BuildApp(
         IWorkspaceStatusReadModel statusReadModel,
+        ITaskStatusReadModel? taskStatusReadModel = null,
         string? tenantId = "tenant-a",
         string? principalId = "user-a")
     {
@@ -295,6 +456,8 @@ public sealed class WorkspaceStatusEndpointTests
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
         builder.Services.RemoveAll<IWorkspaceStatusReadModel>();
         builder.Services.AddSingleton(statusReadModel);
+        builder.Services.RemoveAll<ITaskStatusReadModel>();
+        builder.Services.AddSingleton(taskStatusReadModel ?? TaskStatusReadModel("failed"));
 
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
@@ -306,6 +469,15 @@ public sealed class WorkspaceStatusEndpointTests
         HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/status");
         request.Headers.Add("X-Correlation-Id", "correlation-a");
         request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        return request;
+    }
+
+    private static HttpRequestMessage CreateEvidenceRequest(string uri)
+    {
+        HttpRequestMessage request = new(HttpMethod.Get, uri);
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
         return request;
     }
 
@@ -357,6 +529,24 @@ public sealed class WorkspaceStatusEndpointTests
         return readModel;
     }
 
+    private static InMemoryTaskStatusReadModel TaskStatusReadModel(string state)
+    {
+        InMemoryTaskStatusReadModel readModel = new(new FixedUtcClock(Now));
+        WorkspaceStatusReadModelSnapshot snapshot = StatusSnapshot(state);
+        readModel.Save(new TaskStatusReadModelSnapshot(
+            ManagedTenantId: snapshot.ManagedTenantId,
+            TaskId: snapshot.AcceptedCommandState?.TaskId ?? "task-a",
+            CurrentState: snapshot.CurrentState,
+            TerminalState: snapshot.CurrentState is "committed" or "failed" or "inaccessible" ? snapshot.CurrentState : null,
+            LastOperationId: snapshot.AcceptedCommandState?.OperationId,
+            LastFailureCategory: snapshot.LastFailureCategory,
+            RetryEligibility: snapshot.RetryEligibility,
+            RetryAfter: snapshot.RetryAfter,
+            Freshness: snapshot.Freshness with { ReadConsistency = "eventually_consistent" },
+            EvidenceScope: snapshot.EvidenceScope with { ActionToken = TaskStatusQueryHandler.ActionToken }));
+        return readModel;
+    }
+
     private static WorkspaceStatusReadModelResult ReadModelOutcome(string outcome)
         => outcome switch
         {
@@ -379,8 +569,8 @@ public sealed class WorkspaceStatusEndpointTests
         {
             "dirty" => new(true, "dirty_workspace"),
             "failed" => new(true, "failed_operation"),
-            "unknown_provider_outcome" => new(true, "unknown_provider_outcome"),
-            "reconciliation_required" => new(true, "reconciliation_required"),
+            "unknown_provider_outcome" => new(false, "unknown_provider_outcome"),
+            "reconciliation_required" => new(false, "reconciliation_required"),
             "locked" => new(false, "workspace_locked"),
             "inaccessible" => new(false, "tenant_access_denied"),
             _ => new(false, "retry_not_required"),
@@ -420,7 +610,10 @@ public sealed class WorkspaceStatusEndpointTests
                 "provref_workspace_status",
                 retry,
                 RetryAfter: null,
-                Freshness: freshness),
+                Freshness: freshness,
+                ChangedPathMetadataDigest: "digest_workspace_status",
+                CommitReferenceClassification: state == "committed" ? "opaque_reference" : null,
+                ReconciliationReference: state is "unknown_provider_outcome" or "reconciliation_required" ? "reconciliation-a" : null),
             RetryEligibility: retry,
             RetryAfter: null,
             Freshness: freshness,
@@ -502,6 +695,19 @@ public sealed class WorkspaceStatusEndpointTests
 
         public Task<WorkspaceStatusReadModelResult> GetAsync(
             WorkspaceStatusReadModelRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            Calls++;
+            return inner.GetAsync(request, cancellationToken);
+        }
+    }
+
+    private sealed class CountingTaskStatusReadModel(ITaskStatusReadModel inner) : ITaskStatusReadModel
+    {
+        public int Calls { get; private set; }
+
+        public Task<TaskStatusReadModelResult> GetAsync(
+            TaskStatusReadModelRequest request,
             CancellationToken cancellationToken = default)
         {
             Calls++;

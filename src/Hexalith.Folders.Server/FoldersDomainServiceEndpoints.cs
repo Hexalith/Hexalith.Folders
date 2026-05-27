@@ -358,6 +358,107 @@ public static class FoldersDomainServiceEndpoints
         })
         .WithName("GetWorkspaceStatus");
 
+        endpoints.MapGet("/api/v1/tasks/{taskId}/status", async (
+            string taskId,
+            HttpContext httpContext,
+            TaskStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+                httpContext,
+                correlationId,
+                null,
+                [taskId],
+                requireEventuallyConsistent: true);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            TaskStatusQueryResult result = await handler.HandleAsync(
+                new TaskStatusQuery(
+                    taskId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(TaskStatusQueryHandler.ActionToken),
+                    correlationId,
+                    ClientTenantIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToHttpResult(httpContext, result, correlationId);
+        })
+        .WithName("GetTaskStatus");
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence", async (
+            string folderId,
+            string workspaceId,
+            string operationId,
+            HttpContext httpContext,
+            WorkspaceStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            => await WorkspaceEvidenceQueryAsync(
+                WorkspaceEvidenceKind.CommitEvidence,
+                folderId,
+                workspaceId,
+                operationId,
+                null,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("GetCommitEvidence");
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome", async (
+            string folderId,
+            string workspaceId,
+            string operationId,
+            HttpContext httpContext,
+            WorkspaceStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            => await WorkspaceEvidenceQueryAsync(
+                WorkspaceEvidenceKind.ProviderOutcome,
+                folderId,
+                workspaceId,
+                operationId,
+                null,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("GetProviderOutcome");
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status", async (
+            string folderId,
+            string workspaceId,
+            string reconciliationId,
+            HttpContext httpContext,
+            WorkspaceStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            => await WorkspaceEvidenceQueryAsync(
+                WorkspaceEvidenceKind.ReconciliationStatus,
+                folderId,
+                workspaceId,
+                null,
+                reconciliationId,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("GetReconciliationStatus");
+
         endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status", async (
             string folderId,
             string workspaceId,
@@ -2609,6 +2710,41 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity
+            && reasonCode is "commit_failed" or "provider_failure_known")
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: reasonCode,
+                code: reasonCode,
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "idempotency_conflict")
+        {
+            return SafeProblem(
+                StatusCodes.Status409Conflict,
+                category: "idempotency_conflict",
+                code: "idempotency_conflict",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
+        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable
+            && reasonCode is "read_model_unavailable" or "projection_stale" or "projection_unavailable")
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: reasonCode,
+                code: reasonCode,
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "unsupported_provider_capability")
         {
             return SafeProblem(
@@ -2769,6 +2905,21 @@ public static class FoldersDomainServiceEndpoints
             "file_operation_failed" => "file_operation_failed",
             "file-operation-failed" => "file_operation_failed",
             "FileOperationFailed" => "file_operation_failed",
+            "commit_failed" => "commit_failed",
+            "commit-failed" => "commit_failed",
+            "CommitFailed" => "commit_failed",
+            "provider_failure_known" => "provider_failure_known",
+            "provider-failure-known" => "provider_failure_known",
+            "ProviderFailureKnown" => "provider_failure_known",
+            "idempotency_conflict" => "idempotency_conflict",
+            "idempotency-conflict" => "idempotency_conflict",
+            "IdempotencyConflict" => "idempotency_conflict",
+            "read_model_unavailable" => "read_model_unavailable",
+            "read-model-unavailable" => "read_model_unavailable",
+            "projection_stale" => "projection_stale",
+            "projection-stale" => "projection_stale",
+            "projection_unavailable" => "projection_unavailable",
+            "projection-unavailable" => "projection_unavailable",
             "unsupported_provider_capability" => "unsupported_provider_capability",
             "unsupported-provider-capability" => "unsupported_provider_capability",
             "UnsupportedProviderCapability" => "unsupported_provider_capability",
@@ -3559,6 +3710,216 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static async Task<IResult> WorkspaceEvidenceQueryAsync(
+        WorkspaceEvidenceKind kind,
+        string folderId,
+        string workspaceId,
+        string? operationId,
+        string? secondaryId,
+        HttpContext httpContext,
+        WorkspaceStatusQueryHandler handler,
+        ITenantContextAccessor tenantContext,
+        IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(handler);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(claimTransformEvidence);
+
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string[] identifiers = operationId is null
+            ? [folderId, workspaceId, secondaryId ?? string.Empty]
+            : [folderId, workspaceId, operationId];
+        IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+            httpContext,
+            correlationId,
+            taskId,
+            identifiers,
+            requireEventuallyConsistent: true);
+        if (envelopeFailure is not null)
+        {
+            return envelopeFailure;
+        }
+
+        WorkspaceStatusQueryResult result = await handler.HandleAsync(
+            new WorkspaceStatusQuery(
+                folderId,
+                workspaceId,
+                tenantContext.AuthoritativeTenantId,
+                tenantContext.PrincipalId,
+                claimTransformEvidence.GetEvidence(WorkspaceStatusQueryHandler.ActionToken),
+                correlationId,
+                taskId,
+                ClientTenantIds(httpContext),
+                ClientPrincipalIds(httpContext)),
+            cancellationToken).ConfigureAwait(false);
+
+        if (result.Code != WorkspaceStatusQueryResultCode.Allowed)
+        {
+            return ToHttpResult(httpContext, result, correlationId, taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(result.FolderId)
+            || string.IsNullOrWhiteSpace(result.WorkspaceId)
+            || result.ProviderOutcome is null
+            || (operationId is not null && !string.Equals(result.ProviderOutcome.OperationId, operationId, StringComparison.Ordinal))
+            || (kind == WorkspaceEvidenceKind.ReconciliationStatus && !string.Equals(result.ProviderOutcome.ReconciliationReference, secondaryId, StringComparison.Ordinal)))
+        {
+            return SafeProblem(
+                StatusCodes.Status404NotFound,
+                category: "not_found",
+                code: "not_found",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        AddEvidenceSuccessHeaders(httpContext, correlationId);
+        return kind switch
+        {
+            WorkspaceEvidenceKind.CommitEvidence => Results.Json(
+                new CommitEvidenceResponse(
+                    result.ProviderOutcome.OperationId,
+                    result.CurrentState,
+                    result.ProviderOutcome.CommitReferenceClassification ?? CommitReferenceClassification(result.CurrentState),
+                    result.ProviderOutcome.ChangedPathMetadataDigest ?? "digest_unavailable",
+                    result.ProviderOutcome.ProviderCorrelationReference,
+                    new RedactionMetadataResponse("metadata_only", "not_redacted"),
+                    [
+                        "folder_id",
+                        "workspace_id",
+                        "operation_id",
+                        "changed_path_metadata_digest",
+                        "provider_correlation_reference",
+                        "sensitive_metadata_tier",
+                        "correlation_id",
+                    ],
+                    ToEventuallyConsistentFreshness(result.Freshness)),
+                ResponseJsonOptions),
+            WorkspaceEvidenceKind.ProviderOutcome => Results.Json(
+                new WorkspaceProviderOutcomeResponse(
+                    result.ProviderOutcome.OperationId,
+                    result.ProviderOutcome.State,
+                    result.ProviderOutcome.SanitizedStatusClass,
+                    result.ProviderOutcome.ProviderCorrelationReference,
+                    result.ProviderOutcome.RetryEligibility,
+                    result.ProviderOutcome.RetryAfter,
+                    ToEventuallyConsistentFreshness(result.ProviderOutcome.Freshness)),
+                ResponseJsonOptions),
+            WorkspaceEvidenceKind.ReconciliationStatus => Results.Json(
+                new ReconciliationStatusResponse(
+                    secondaryId ?? "reconciliation_status",
+                    result.ProviderOutcome.OperationId,
+                    ReconciliationStateFor(result.CurrentState),
+                    FinalStateEvidenceFor(result.CurrentState),
+                    EscalationRequiredFor(result.CurrentState),
+                    result.RetryEligibility,
+                    result.RetryAfter,
+                    ToEventuallyConsistentFreshness(result.Freshness)),
+                ResponseJsonOptions),
+            _ => SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "internal_error",
+                code: "read_model_unavailable",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId),
+        };
+    }
+
+    private static IResult ToHttpResult(HttpContext httpContext, TaskStatusQueryResult result, string? correlationId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return TenantAccessDenialToProblem(result.AuthorizationDenial, correlationId);
+        }
+
+        switch (result.Code)
+        {
+            case TaskStatusQueryResultCode.Allowed:
+                if (string.IsNullOrWhiteSpace(result.TaskId))
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: null);
+                }
+
+                AddEvidenceSuccessHeaders(httpContext, result.CorrelationId);
+                return Results.Json(
+                    new TaskStatusResponse(
+                        result.TaskId,
+                        result.CurrentState,
+                        result.TerminalState,
+                        result.LastOperationId,
+                        result.LastFailureCategory,
+                        result.RetryEligibility,
+                        result.RetryAfter,
+                        ToEventuallyConsistentFreshness(result.Freshness)),
+                    ResponseJsonOptions);
+
+            case TaskStatusQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case TaskStatusQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case TaskStatusQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case TaskStatusQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case TaskStatusQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case TaskStatusQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null);
+        }
+    }
+
     private static IResult ToHttpResult(HttpContext httpContext, WorkspaceCleanupStatusQueryResult result, string? correlationId, string? taskId)
     {
         if (result.AuthorizationDenial is not null)
@@ -3706,6 +4067,24 @@ public static class FoldersDomainServiceEndpoints
         string? taskId,
         string? message = null)
     {
+        Dictionary<string, object?> details = new()
+        {
+            ["visibility"] = "metadata_only",
+            ["retryReasonCode"] = code,
+            ["reasonCategory"] = category,
+            ["evidenceSource"] = "http_boundary",
+        };
+
+        if (!string.IsNullOrWhiteSpace(taskId) && IsCanonicalIdentifier(taskId))
+        {
+            details["taskId"] = taskId;
+        }
+
+        if (category is "unknown_provider_outcome" or "reconciliation_required")
+        {
+            details["finalState"] = category;
+        }
+
         Dictionary<string, object?> extensions = new()
         {
             ["category"] = category,
@@ -3714,10 +4093,7 @@ public static class FoldersDomainServiceEndpoints
             ["correlationId"] = correlationId,
             ["retryable"] = retryable,
             ["clientAction"] = ClientActionFor(category, retryable),
-            ["details"] = new Dictionary<string, object?>
-            {
-                ["visibility"] = "metadata_only",
-            },
+            ["details"] = details,
         };
 
         if (!string.IsNullOrWhiteSpace(taskId))
@@ -3744,19 +4120,144 @@ public static class FoldersDomainServiceEndpoints
             extensions: extensions);
     }
 
-    private static string ClientActionFor(string category, bool retryable)
-        => category switch
+    private static IResult? ValidateEvidenceQueryEnvelope(
+        HttpContext httpContext,
+        string? correlationId,
+        string? taskId,
+        IReadOnlyList<string> identifiers,
+        bool requireEventuallyConsistent)
+    {
+        if (ReadHeader(httpContext, "Idempotency-Key") is not null)
         {
-            "unknown_provider_outcome" or "reconciliation_required" => "wait_for_reconciliation",
-            "provider_readiness_failed" or "unsupported_provider_capability" => "contact_operator",
-            "workspace_preparation_failed" or "workspace_transition_invalid" => "revise_request",
-            "lock_conflict" or "workspace_locked" => "retry_after_release",
-            "lock_expired" => "retry",
-            "lock_not_owned" or "path_policy_denied" or "path_validation_failed" => "revise_request",
-            "input_limit_exceeded" or "response_limit_exceeded" or "range_unsatisfiable" => "revise_request",
-            "query_timeout" => "retry",
-            _ => retryable ? "retry" : "no_action",
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "Idempotency-Key is not accepted on read operations.");
+        }
+
+        if (identifiers.Any(static identifier => !IsCanonicalIdentifier(identifier))
+            || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+            || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+        }
+
+        string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string expectedFreshness = requireEventuallyConsistent ? EventuallyConsistent : ReadYourWrites;
+        if (requestedFreshness is not null
+            && !string.Equals(requestedFreshness, expectedFreshness, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_read_consistency",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: $"Operation supports {expectedFreshness} only.");
+        }
+
+        return null;
+    }
+
+    private static IResult TenantAccessDenialToProblem(TenantAccessAuthorizationResult denial, string? correlationId)
+        => denial.Outcome switch
+        {
+            TenantAccessOutcome.MissingAuthoritativeTenant => SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: null),
+            TenantAccessOutcome.StaleProjection => SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "projection_stale",
+                code: "projection_stale",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: null),
+            TenantAccessOutcome.UnavailableProjection or TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict => SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "read_model_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: null),
+            TenantAccessOutcome.UnknownTenant or TenantAccessOutcome.DisabledTenant or TenantAccessOutcome.Denied => SafeProblem(
+                StatusCodes.Status404NotFound,
+                category: "not_found",
+                code: "not_found",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: null),
+            _ => SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: null),
         };
+
+    private static FreshnessMetadataResponse ToEventuallyConsistentFreshness(FolderLifecycleFreshness freshness)
+        => new(
+            EventuallyConsistent,
+            freshness.ObservedAt,
+            freshness.ProjectionWatermark,
+            freshness.Stale);
+
+    private static void AddEvidenceSuccessHeaders(
+        HttpContext httpContext,
+        string? correlationId)
+    {
+        if (!string.IsNullOrWhiteSpace(correlationId) && !ContainsControlChars(correlationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = correlationId;
+        }
+
+        httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
+    }
+
+    private static string CommitReferenceClassification(string currentState)
+        => currentState == "committed" ? "opaque_reference" : "unavailable";
+
+    private static string ReconciliationStateFor(string currentState)
+        => currentState switch
+        {
+            "reconciliation_required" => "required",
+            "unknown_provider_outcome" => "in_progress",
+            "committed" => "completed_clean",
+            "dirty" => "completed_dirty",
+            "failed" or "inaccessible" => "failed",
+            _ => "not_required",
+        };
+
+    private static string FinalStateEvidenceFor(string currentState)
+        => currentState switch
+        {
+            "committed" => "committed",
+            "dirty" => "dirty",
+            "failed" or "inaccessible" => "failed",
+            "reconciliation_required" or "unknown_provider_outcome" => "pending",
+            _ => "pending",
+        };
+
+    private static bool EscalationRequiredFor(string currentState)
+        => currentState is "reconciliation_required" or "failed" or "inaccessible";
+
+    private static string ClientActionFor(string category, bool retryable)
+        => FolderCanonicalErrorMapper.ClientActionFor(category, retryable);
 
     private static string MessageFor(string category) => category switch
     {
@@ -3782,6 +4283,9 @@ public static class FoldersDomainServiceEndpoints
         "query_timeout" => "The context query timed out. Retry later.",
         "redacted" => "The requested context is not available to the caller.",
         "range_unsatisfiable" => "The requested byte range cannot be satisfied.",
+        "commit_failed" => "Commit failed with a known final outcome.",
+        "provider_failure_known" => "Provider failure was observed with a known final outcome.",
+        "idempotency_conflict" => "Idempotency key conflicts with a prior operation.",
         "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
         "reconciliation_required" => "Reconciliation is required before this operation can continue.",
         "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",
@@ -4246,6 +4750,36 @@ public static class FoldersDomainServiceEndpoints
         WorkspaceStatusRetryAfter? RetryAfter,
         FreshnessMetadataResponse Freshness);
 
+    private sealed record TaskStatusResponse(
+        string TaskId,
+        string CurrentState,
+        string? TerminalState,
+        string? LastOperationId,
+        string? LastFailureCategory,
+        WorkspaceStatusRetryEligibility RetryEligibility,
+        WorkspaceStatusRetryAfter? RetryAfter,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record CommitEvidenceResponse(
+        string OperationId,
+        string CommitResultStatus,
+        string CommitReferenceClassification,
+        string ChangedPathMetadataDigest,
+        string ProviderCorrelationReference,
+        RedactionMetadataResponse Redaction,
+        IReadOnlyList<string> AuditMetadataKeys,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record ReconciliationStatusResponse(
+        string ReconciliationId,
+        string OperationId,
+        string State,
+        string FinalStateEvidence,
+        bool EscalationRequired,
+        WorkspaceStatusRetryEligibility RetryEligibility,
+        WorkspaceStatusRetryAfter? RetryAfter,
+        FreshnessMetadataResponse Freshness);
+
     private sealed record WorkspaceCleanupStatusResponse(
         string FolderId,
         string WorkspaceId,
@@ -4290,4 +4824,11 @@ public static class FoldersDomainServiceEndpoints
         DateTimeOffset ObservedAt,
         string? ProjectionWatermark,
         bool Stale);
+
+    private enum WorkspaceEvidenceKind
+    {
+        CommitEvidence,
+        ProviderOutcome,
+        ReconciliationStatus,
+    }
 }

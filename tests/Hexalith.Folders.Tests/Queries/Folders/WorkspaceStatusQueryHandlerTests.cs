@@ -18,8 +18,8 @@ public sealed class WorkspaceStatusQueryHandlerTests
     [InlineData("changes_staged", "accepted", "known_success", false, "retry_not_required", null)]
     [InlineData("failed", "failed", "known_failure", true, "failed_operation", "failed_operation")]
     [InlineData("inaccessible", "failed", "known_failure", false, "tenant_access_denied", "tenant_access_denied")]
-    [InlineData("unknown_provider_outcome", "accepted", "unknown_provider_outcome", true, "unknown_provider_outcome", "unknown_provider_outcome")]
-    [InlineData("reconciliation_required", "accepted", "reconciliation_required", true, "reconciliation_required", "reconciliation_required")]
+    [InlineData("unknown_provider_outcome", "accepted", "unknown_provider_outcome", false, "unknown_provider_outcome", "unknown_provider_outcome")]
+    [InlineData("reconciliation_required", "accepted", "reconciliation_required", false, "reconciliation_required", "reconciliation_required")]
     public async Task SuccessfulSnapshotsShouldReturnContractShapedMetadataOnlyStatus(
         string state,
         string acceptedState,
@@ -302,8 +302,8 @@ public sealed class WorkspaceStatusQueryHandlerTests
         {
             "dirty" => new(true, "dirty_workspace"),
             "failed" => new(true, "failed_operation"),
-            "unknown_provider_outcome" => new(true, "unknown_provider_outcome"),
-            "reconciliation_required" => new(true, "reconciliation_required"),
+            "unknown_provider_outcome" => new(false, "unknown_provider_outcome"),
+            "reconciliation_required" => new(false, "reconciliation_required"),
             "locked" => new(false, "workspace_locked"),
             "inaccessible" => new(false, "tenant_access_denied"),
             _ => new(false, "retry_not_required"),
@@ -342,7 +342,10 @@ public sealed class WorkspaceStatusQueryHandlerTests
                 "provref_workspace_status",
                 retryEligibility,
                 RetryAfter: null,
-                Freshness: Freshness()),
+                Freshness: Freshness(),
+                ChangedPathMetadataDigest: "digest_workspace_status",
+                CommitReferenceClassification: state == "committed" ? "opaque_reference" : null,
+                ReconciliationReference: state is "unknown_provider_outcome" or "reconciliation_required" ? "reconciliation-a" : null),
             RetryEligibility: retryEligibility,
             RetryAfter: null,
             Freshness: Freshness(),

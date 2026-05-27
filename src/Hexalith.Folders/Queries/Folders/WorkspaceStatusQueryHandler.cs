@@ -479,6 +479,9 @@ public sealed class WorkspaceStatusQueryHandler(
         if (outcome.RetryEligibility is null
             || !IsRetryEligibility(outcome.RetryEligibility, out reasonCode)
             || !IsRetryAfter(outcome.RetryAfter, out reasonCode)
+            || !IsChangedPathMetadataDigest(outcome.ChangedPathMetadataDigest, out reasonCode)
+            || !IsCommitReferenceClassification(outcome.CommitReferenceClassification, out reasonCode)
+            || !IsOptionalCanonicalIdentifier(outcome.ReconciliationReference, out reasonCode)
             || outcome.Freshness is null
             || !IsReadYourWritesFreshness(outcome.Freshness, now, out reasonCode))
         {
@@ -616,6 +619,57 @@ public sealed class WorkspaceStatusQueryHandler(
         }
 
         return true;
+    }
+
+    private static bool IsChangedPathMetadataDigest(string? value, out string reasonCode)
+    {
+        if (value is null)
+        {
+            reasonCode = string.Empty;
+            return true;
+        }
+
+        if (value.Length is < 16 or > 128 || !value.StartsWith("digest_", StringComparison.Ordinal))
+        {
+            reasonCode = "changed_path_digest_invalid";
+            return false;
+        }
+
+        foreach (char tailCharacter in value.AsSpan("digest_".Length))
+        {
+            if (!IsProviderReferenceTailChar(tailCharacter))
+            {
+                reasonCode = "changed_path_digest_invalid";
+                return false;
+            }
+        }
+
+        reasonCode = string.Empty;
+        return true;
+    }
+
+    private static bool IsCommitReferenceClassification(string? value, out string reasonCode)
+    {
+        if (value is null or "opaque_reference" or "redacted" or "unavailable")
+        {
+            reasonCode = string.Empty;
+            return true;
+        }
+
+        reasonCode = "commit_reference_classification_invalid";
+        return false;
+    }
+
+    private static bool IsOptionalCanonicalIdentifier(string? value, out string reasonCode)
+    {
+        if (value is null || IsCanonicalIdentifier(value))
+        {
+            reasonCode = string.Empty;
+            return true;
+        }
+
+        reasonCode = "reconciliation_reference_invalid";
+        return false;
     }
 
     private static bool IsReasonCode(string? value)

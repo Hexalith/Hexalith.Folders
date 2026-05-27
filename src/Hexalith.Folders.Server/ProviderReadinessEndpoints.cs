@@ -372,6 +372,9 @@ public static partial class ProviderReadinessEndpoints
             ["details"] = new Dictionary<string, object?>
             {
                 ["visibility"] = "metadata_only",
+                ["retryReasonCode"] = code,
+                ["reasonCategory"] = category,
+                ["evidenceSource"] = "provider_readiness",
             },
         };
 

@@ -34,6 +34,9 @@ public static class FolderAuthorizationDenialMapper
                 ["details"] = new Dictionary<string, object?>
                 {
                     ["visibility"] = "metadata_only",
+                    ["retryReasonCode"] = decision.OutcomeCode,
+                    ["reasonCategory"] = category,
+                    ["evidenceSource"] = "authorization_decision",
                     ["layer"] = decision.TerminalLayer.ToString(),
                     ["policyClass"] = decision.OperationPolicyClass,
                     ["freshnessClass"] = decision.FreshnessClass,
