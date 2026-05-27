@@ -18,6 +18,12 @@ namespace Hexalith.Folders.Mcp.Tests;
 /// independently from the SDK enum's <see cref="EnumMemberAttribute"/>, so this is a real cross-check of the
 /// explicit switch, not a tautology.
 /// </summary>
+/// <remarks>
+/// Retained as defense-in-depth (Story 5.4 AC #8): this enum-derived restatement cross-checks
+/// <see cref="FailureKindProjection"/> from a source <b>other</b> than the oracle, so an erroneous oracle edit
+/// is caught here while an erroneous projection edit is caught by the oracle-driven
+/// <see cref="ParityOracleConformanceTests"/>. Keep both.
+/// </remarks>
 public sealed class FailureKindProjectionTests
 {
     public static TheoryData<CanonicalErrorCategory> AllCategories()

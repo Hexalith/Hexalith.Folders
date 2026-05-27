@@ -1,4 +1,65 @@
-# Test Automation Summary — Story 5.3 (MCP tools, resources, failure kinds)
+# Test Automation Summary — Story 5.4 (Consume parity oracle in CLI and MCP tests)
+
+**Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-28 · **Engineer:** QA automation (Jerome) — tests only, no code review/story validation
+**Framework:** xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` + YamlDotNet `18.0.0` (project's existing stack; central package management)
+**Test command:** `dotnet.exe test tests/Hexalith.Folders.{Cli,Mcp}.Tests` (Windows SDK 10.0.300 per `global.json`, run from WSL)
+**Result:** ✅ CLI **691 passed**, MCP **646 passed** — 0 failed, 0 skipped. **Build:** both projects 0 warnings / 0 errors (warnings-as-errors).
+
+> **No E2E/UI lane applies.** Story 5.4 is a **test-only** conformance story: it makes the CLI and MCP test
+> suites *consume* the committed behavioral-parity oracle (`tests/fixtures/parity-contract.yaml`) so adapter
+> projections + pre-SDK/sourcing behavior are proven against the contract's own columns, with drift failing the
+> build. "E2E" here = oracle-driven behavioral conformance over a fake `IClient`/`HttpMessageHandler`. Hermetic:
+> no live server, Dapr, Keycloak, Redis, network, credentials, or nested submodule init.
+
+---
+
+## Validation outcome
+
+All 9 decomposed acceptance criteria are exercised by the implemented suite and the workflow checklist passes.
+The implementation (4 tasks, shared linked oracle reader + CLI/MCP conformance suites + retained restatements)
+was verified end-to-end: full builds 0/0, CLI 691/0, MCP 646/0.
+
+### Coverage vs. acceptance criteria
+
+| AC | Dimension | Status |
+| --- | --- | --- |
+| #1 | Tests read the oracle directly (no forked copy) | ✅ shared `tests/shared/Parity/ParityOracle.cs` read in place |
+| #2 | CLI post-SDK exit-code conformance, every `outcome_mapping` entry | ✅ `[Theory]` over all 529 entries + success→0 |
+| #3 | MCP post-SDK failure-kind conformance, every entry | ✅ `[Theory]` over all 529 + kind==category invariant + `none` marker |
+| #4 | Pre-SDK sourcing (idempotency/task-id/credential), both adapters, no HTTP call | ✅ CLI repr. commands + MCP 47-tool reflection + repr. tool; **+ gap applied (see below)** |
+| #5 | Correlation sourcing (echo + fresh ULID), oracle-gated | ✅ both adapters |
+| #6 | Completeness & drift guards (rows, categories both directions, vocabulary) | ✅ 47 rows, 43 categories, canonical exit-code set, EnumMember vocabulary |
+| #7 | Shared scenarios reused across CLI and MCP (one loader) | ✅ `tests/shared/Parity/*` linked into both projects |
+| #8 | Independent restatements preserved | ✅ `ErrorProjectionTests`/`FailureKindProjectionTests` kept + cross-referenced |
+| #9 | Hermetic, additive, test-only (only the 2 csproj + new tests) | ✅ verified via `git diff` — only YamlDotNet + linked compile added |
+
+## Gap discovered & auto-applied
+
+| Gap | AC | Action |
+| --- | -- | ------ |
+| `EveryToolDeclaresIdempotencyKeyIffItsOracleRowIsMutating` asserted only the **presence** of the `idempotencyKey` parameter, while AC #4 requires mutating MCP tools to declare a **required** idempotencyKey input. A future default value would make the key optional in the MCP schema (allowing an absent / MCP-generated key) yet still pass the old check. | #4 | Added `idempotencyKeyParameter.HasDefaultValue.ShouldBeFalse(...)` for mutating rows in `tests/Hexalith.Folders.Mcp.Tests/ParityOracleConformanceTests.cs`. Test-only (AC #9-compliant); passes against current code — all 14 mutating tools declare `string idempotencyKey` with no default. MCP suite re-run: 646/0. |
+
+No other coverage gaps found. The CLI representative-command map vs. MCP per-tool oracle binding asymmetry is
+AC-sanctioned (CLI command names are not kebab-case of `operation_id`); credential/correlation are shared-pipeline
+behaviors adequately covered by representative tests.
+
+## Checklist (`bmad-qa-generate-e2e-tests/checklist.md`)
+- [x] API/behavioral-conformance tests generated; E2E/UI lane N/A (documented above)
+- [x] Standard framework APIs (xUnit v3 / Shouldly / NSubstitute / YamlDotNet)
+- [x] Happy path (success marker → 0 / `none`) + critical error cases (every category projection; pre-SDK `64`/`65`/`usage_error`/`credential_missing`)
+- [x] All tests pass (CLI 691/691, MCP 646/646)
+- [x] Semantic locators (operation ids, tool names via attributes, typed enum EnumMember values, wire headers)
+- [x] Clear descriptions; no hardcoded waits/sleeps; tests independent; hermetic (read committed fixture, no network)
+- [x] Summary created; tests under `tests/shared/Parity` + the two adapter test projects
+
+## Next steps
+- Run in CI via the existing focused gate lanes (no new gate script needed; both adapter test projects already participate).
+- Story 5.5 — golden lifecycle parity across REST and SDK. Story 5.6 — a single test exercising CLI **and** MCP projections together (cross-adapter equality; deferred because the projections are `internal` to their own assemblies). Story 5.7 — mixed-surface handoff.
+
+---
+---
+
+# (Previous run) Test Automation Summary — Story 5.3 (MCP tools, resources, failure kinds)
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-27 · **Engineer:** QA automation (Jerome) — tests only, no code review/story validation
 **Framework:** xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` (project's existing stack)

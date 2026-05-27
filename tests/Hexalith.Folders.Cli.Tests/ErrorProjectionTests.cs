@@ -14,6 +14,11 @@ namespace Hexalith.Folders.Cli.Tests;
 /// <see cref="CanonicalErrorCategory"/> enum. Expected values are restated independently from the parity
 /// oracle's <c>outcome_mapping</c> (Story 5.4 proves the map against that oracle).
 /// </summary>
+/// <remarks>
+/// Retained as defense-in-depth (Story 5.4 AC #8): this hand-typed table cross-checks <see cref="ErrorProjection"/>
+/// from a source <b>other</b> than the oracle, so an erroneous oracle edit is caught here while an erroneous
+/// projection edit is caught by the oracle-driven <see cref="ParityOracleConformanceTests"/>. Keep both.
+/// </remarks>
 public sealed class ErrorProjectionTests
 {
     [Theory]
