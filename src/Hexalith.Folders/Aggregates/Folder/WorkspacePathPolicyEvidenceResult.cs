@@ -1,0 +1,3 @@
+namespace Hexalith.Folders.Aggregates.Folder;
+
+public sealed record WorkspacePathPolicyEvidenceResult(WorkspacePathPolicyEvidenceDecision Decision);

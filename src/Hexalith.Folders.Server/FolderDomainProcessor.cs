@@ -21,6 +21,7 @@ public sealed partial class FolderDomainProcessor(
     WorkspacePreparationService workspacePreparationService,
     WorkspaceLockAcquisitionService workspaceLockAcquisitionService,
     WorkspaceLockReleaseService workspaceLockReleaseService,
+    WorkspaceFileMutationService workspaceFileMutationService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider) : IDomainProcessor
@@ -50,6 +51,8 @@ public sealed partial class FolderDomainProcessor(
         workspaceLockAcquisitionService ?? throw new ArgumentNullException(nameof(workspaceLockAcquisitionService));
     private readonly WorkspaceLockReleaseService _workspaceLockReleaseService =
         workspaceLockReleaseService ?? throw new ArgumentNullException(nameof(workspaceLockReleaseService));
+    private readonly WorkspaceFileMutationService _workspaceFileMutationService =
+        workspaceFileMutationService ?? throw new ArgumentNullException(nameof(workspaceFileMutationService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -99,6 +102,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.ReleaseWorkspaceLockCommandType, StringComparison.Ordinal))
         {
             return await ProcessReleaseWorkspaceLockAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.MutateFilesCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessMutateFilesAsync(command).ConfigureAwait(false);
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
@@ -628,6 +636,85 @@ public sealed partial class FolderDomainProcessor(
         return ToDomainResult(envelope, result);
     }
 
+    private async Task<DomainResult> ProcessMutateFilesAsync(CommandEnvelope envelope)
+    {
+        FileMutationPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<FileMutationPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || payload.PathMetadata is null
+            || string.IsNullOrWhiteSpace(envelope.AggregateId)
+            || string.IsNullOrWhiteSpace(payload.WorkspaceId))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = TryReadCanonicalExtension(envelope.Extensions, "taskId");
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        WorkspaceFileMutationRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [WorkspaceFileMutationService.ActionToken]),
+            envelope.AggregateId,
+            payload.RequestSchemaVersion ?? string.Empty,
+            payload.WorkspaceId ?? string.Empty,
+            payload.OperationId ?? string.Empty,
+            payload.FileOperationKind ?? string.Empty,
+            payload.TransportOperation ?? string.Empty,
+            new PathMetadata(
+                payload.PathMetadata.NormalizedPath ?? string.Empty,
+                payload.PathMetadata.DisplayName ?? string.Empty,
+                payload.PathMetadata.PathPolicyClass ?? string.Empty,
+                payload.PathMetadata.UnicodeNormalization ?? string.Empty),
+            payload.ContentHashReference,
+            payload.ByteLength,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _workspaceFileMutationService.MutateAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
     private static string TryReadCanonicalExtension(IReadOnlyDictionary<string, string>? extensions, string key)
     {
         if (extensions is null
@@ -796,4 +883,20 @@ public sealed partial class FolderDomainProcessor(
         [property: JsonRequired] string? LockId,
         [property: JsonRequired] string? LockOwnershipProof,
         [property: JsonRequired] string? ReleaseReasonCode);
+
+    private sealed record PathMetadataPayload(
+        [property: JsonRequired] string? NormalizedPath,
+        [property: JsonRequired] string? DisplayName,
+        [property: JsonRequired] string? PathPolicyClass,
+        [property: JsonRequired] string? UnicodeNormalization);
+
+    private sealed record FileMutationPayload(
+        [property: JsonRequired] string? RequestSchemaVersion,
+        [property: JsonRequired] string? WorkspaceId,
+        [property: JsonRequired] string? OperationId,
+        [property: JsonRequired] string? FileOperationKind,
+        [property: JsonRequired] string? TransportOperation,
+        [property: JsonRequired] PathMetadataPayload? PathMetadata,
+        string? ContentHashReference,
+        long? ByteLength);
 }

@@ -43,6 +43,9 @@ public sealed class WorkspaceLockEndpointTests
 
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock");
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove");
     }
 
     [Fact]
@@ -402,6 +405,280 @@ public sealed class WorkspaceLockEndpointTests
         json.ShouldContain($"\"category\":\"{expectedCategory}\"");
     }
 
+    [Fact]
+    public async Task AddWorkspaceFileShouldSubmitRouteAuthoritativeWorkspacePayload()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/files/add",
+            "add");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.CommandType.ShouldBe(FoldersServerModule.MutateFilesCommandType);
+        submitted.AggregateId.ShouldBe("folder-a");
+        submitted.MessageId.ShouldBe("idempotency-file-a");
+        submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+        submitted.Payload.GetProperty("fileOperationKind").GetString().ShouldBe("add");
+        submitted.Payload.GetProperty("pathMetadata").GetProperty("normalizedPath").GetString().ShouldBe("docs/readme.md");
+    }
+
+    [Theory]
+    [InlineData("POST", "/api/v1/folders/folder-a/workspaces/workspace-a/files/add", "add", "PutFileInline", "hashref-a", 12L)]
+    [InlineData("PUT", "/api/v1/folders/folder-a/workspaces/workspace-a/files/change", "change", "PutFileStream", "hashref-change-a", 262145L)]
+    [InlineData("POST", "/api/v1/folders/folder-a/workspaces/workspace-a/files/remove", "remove", "metadataOnlyRemoval", null, null)]
+    public async Task FileMutationShouldSubmitSupportedRoutePayloads(
+        string method,
+        string uri,
+        string fileOperationKind,
+        string transportOperation,
+        string? contentHashReference,
+        long? byteLength)
+    {
+        ArgumentNullException.ThrowIfNull(method);
+        ArgumentNullException.ThrowIfNull(uri);
+        ArgumentNullException.ThrowIfNull(fileOperationKind);
+        ArgumentNullException.ThrowIfNull(transportOperation);
+
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            new HttpMethod(method),
+            uri,
+            fileOperationKind,
+            transportOperation: transportOperation,
+            contentHashReference: contentHashReference,
+            byteLength: byteLength);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.CommandType.ShouldBe(FoldersServerModule.MutateFilesCommandType);
+        submitted.AggregateId.ShouldBe("folder-a");
+        submitted.MessageId.ShouldBe("idempotency-file-a");
+        submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
+        submitted.Payload.GetProperty("fileOperationKind").GetString().ShouldBe(fileOperationKind);
+        submitted.Payload.GetProperty("transportOperation").GetString().ShouldBe(transportOperation);
+        submitted.Payload.GetProperty("pathMetadata").GetProperty("normalizedPath").GetString().ShouldBe("docs/readme.md");
+
+        if (contentHashReference is null)
+        {
+            submitted.Payload.TryGetProperty("contentHashReference", out _).ShouldBeFalse();
+        }
+        else
+        {
+            JsonElement contentHash = submitted.Payload.GetProperty("contentHashReference");
+            contentHash.GetString().ShouldBe(contentHashReference);
+        }
+
+        if (byteLength is null)
+        {
+            submitted.Payload.TryGetProperty("byteLength", out _).ShouldBeFalse();
+        }
+        else
+        {
+            JsonElement submittedByteLength = submitted.Payload.GetProperty("byteLength");
+            submittedByteLength.GetInt64().ShouldBe(byteLength.Value);
+        }
+    }
+
+    [Theory]
+    [InlineData("Idempotency-Key")]
+    [InlineData("X-Correlation-Id")]
+    [InlineData("X-Hexalith-Task-Id")]
+    public async Task FileMutationShouldRejectMissingRequiredHeadersBeforeGatewaySubmit(string headerName)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/files/add",
+            "add");
+        request.Headers.Remove(headerName);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectUnauthenticatedCallerBeforeGatewaySubmitWithoutPathEcho()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(
+            gateway,
+            LockReadModel(),
+            tenantId: null,
+            principalId: null);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/files/add",
+            "add",
+            normalizedPath: "../secret.txt");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        json.ShouldContain("\"category\":\"authentication_failure\"");
+        json.ShouldNotContain("../secret.txt", Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectPathPolicyDenialBeforeGatewaySubmitWithoutPathEcho()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/files/add",
+            "add",
+            normalizedPath: "../secret.txt");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"path_validation_failed\"");
+        json.ShouldNotContain("../secret.txt", Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectMalformedJsonBeforeGatewaySubmit()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/folder-a/workspaces/workspace-a/files/add")
+        {
+            Content = new StringContent("{\"requestSchemaVersion\":\"v1\",", Encoding.UTF8, "application/json"),
+        };
+        AddFileMutationHeaders(request);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldRejectUnknownFieldsWithoutUnsafePathEcho()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/files/add",
+            "add");
+        request.Content = JsonContent.Create(new
+        {
+            requestSchemaVersion = "v1",
+            operationId = "operation-a",
+            fileOperationKind = "add",
+            transportOperation = "PutFileInline",
+            pathMetadata = new
+            {
+                normalizedPath = "docs/readme.md",
+                displayName = "readme.md",
+                pathPolicyClass = "tenant_sensitive_document",
+                unicodeNormalization = "NFC",
+            },
+            contentHashReference = "hashref-a",
+            byteLength = 12,
+            providerPayload = "secret-provider-payload",
+        });
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldNotContain("secret-provider-payload", Case.Sensitive);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("/api/v1/folders/folder-a/workspaces/workspace-a/files/add", "change")]
+    [InlineData("/api/v1/folders/folder-a/workspaces/workspace-a/files/change", "remove")]
+    [InlineData("/api/v1/folders/folder-a/workspaces/workspace-a/files/remove", "add")]
+    public async Task FileMutationShouldRejectOperationKindRouteMismatchBeforeGatewaySubmit(
+        string uri,
+        string fileOperationKind)
+    {
+        ArgumentNullException.ThrowIfNull(uri);
+        ArgumentNullException.ThrowIfNull(fileOperationKind);
+
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            uri.Contains("/change", StringComparison.Ordinal) ? HttpMethod.Put : HttpMethod.Post,
+            uri,
+            fileOperationKind);
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        gateway.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task FileMutationShouldNormalizePathPolicyGatewayReasonWithoutUnsafePathEcho()
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                StatusCodes.Status422UnprocessableEntity,
+                "unsafe path ../secret.txt",
+                correlationId: "correlation-gateway",
+                reasonCode: "PathPolicyDenied"),
+        };
+        await using WebApplication app = BuildApp(gateway, LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidFileMutationRequest(
+            HttpMethod.Post,
+            "/api/v1/folders/folder-a/workspaces/workspace-a/files/add",
+            "add");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe((HttpStatusCode)422);
+        json.ShouldContain("\"category\":\"path_policy_denied\"");
+        json.ShouldNotContain("../secret.txt", Case.Sensitive);
+    }
+
     private static WebApplication BuildApp(
         RecordingEventStoreGatewayClient gateway,
         IWorkspaceLockStatusReadModel lockReadModel,
@@ -465,6 +742,57 @@ public sealed class WorkspaceLockEndpointTests
         request.Headers.Add("X-Hexalith-Task-Id", "task-a");
     }
 
+    private static HttpRequestMessage CreateValidFileMutationRequest(
+        HttpMethod method,
+        string uri,
+        string fileOperationKind,
+        string normalizedPath = "docs/readme.md",
+        string? transportOperation = null,
+        string? contentHashReference = null,
+        long? byteLength = null)
+    {
+        transportOperation ??= fileOperationKind == "remove" ? "metadataOnlyRemoval" : "PutFileInline";
+        contentHashReference ??= fileOperationKind == "remove" ? null : "hashref-a";
+        byteLength ??= fileOperationKind == "remove" ? null : 12;
+        HttpRequestMessage request = new(method, uri)
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                operationId = "operation-a",
+                fileOperationKind,
+                transportOperation,
+                pathMetadata = new
+                {
+                    normalizedPath,
+                    displayName = "readme.md",
+                    pathPolicyClass = "tenant_sensitive_document",
+                    unicodeNormalization = "NFC",
+                },
+                contentHashReference,
+                byteLength,
+                inlineContent = fileOperationKind == "remove"
+                    ? null
+                    : new
+                    {
+                        mediaType = "text/plain",
+                        contentBytes = "aGVsbG8=",
+                    },
+            }),
+        };
+        request.Headers.Add("Idempotency-Key", "idempotency-file-a");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        return request;
+    }
+
+    private static void AddFileMutationHeaders(HttpRequestMessage request)
+    {
+        request.Headers.Add("Idempotency-Key", "idempotency-file-a");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+    }
+
     private static InMemoryFolderTenantAccessProjectionStore TenantStore()
     {
         InMemoryFolderTenantAccessProjectionStore store = new();
@@ -495,6 +823,7 @@ public sealed class WorkspaceLockEndpointTests
             [
                 new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), "read_workspace_lock", Sequence: 1, EffectiveAt: Now),
                 new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), "lock_workspace", Sequence: 2, EffectiveAt: Now),
+                new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), "mutate_files", Sequence: 3, EffectiveAt: Now),
             ],
             Freshness: new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",

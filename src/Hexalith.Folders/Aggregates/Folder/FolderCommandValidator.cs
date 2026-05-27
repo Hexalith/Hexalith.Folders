@@ -194,6 +194,22 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(releaseWorkspaceLock));
         }
 
+        if (command is MutateWorkspaceFile mutateWorkspaceFile)
+        {
+            if (!IsValidFileMutationCommand(mutateWorkspaceFile))
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
+            }
+
+            WorkspacePathPolicyResult pathPolicy = WorkspacePathPolicyValidator.Validate(mutateWorkspaceFile.PathMetadata);
+            if (!pathPolicy.IsAccepted)
+            {
+                return FolderCommandValidationResult.Rejected(FolderResultCode.PathPolicyDenied);
+            }
+
+            return FolderCommandValidationResult.AcceptedRepositoryBinding(Fingerprint(mutateWorkspaceFile));
+        }
+
         if (command is not CreateFolder create)
         {
             return FolderCommandValidationResult.Rejected(FolderResultCode.ValidationFailed);
@@ -461,6 +477,62 @@ public static partial class FolderCommandValidator
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
+
+    private static string Fingerprint(MutateWorkspaceFile command)
+    {
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        AppendField(hash, ToFileMutationOperationId(command.FileOperationKind));
+        if (command.FileOperationKind is "add" or "change")
+        {
+            AppendField(hash, command.ContentHashReference);
+        }
+
+        AppendField(hash, command.FileOperationKind);
+        AppendField(hash, command.OperationId);
+        AppendField(hash, WorkspacePathPolicyValidator.CanonicalPathMetadataFingerprint(command.PathMetadata));
+        AppendField(hash, command.PathMetadata.PathPolicyClass);
+        AppendField(hash, command.TaskId);
+        AppendField(hash, command.WorkspaceId);
+
+        return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
+    }
+
+    private static bool IsValidFileMutationCommand(MutateWorkspaceFile command)
+    {
+        if (!string.Equals(command.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+            || !IsValidIdentifier(command.WorkspaceId)
+            || !IsValidIdentifier(command.OperationId))
+        {
+            return false;
+        }
+
+        return command.FileOperationKind switch
+        {
+            "add" or "change" => IsValidAddOrChangeMutation(command),
+            "remove" => string.Equals(command.TransportOperation, "metadataOnlyRemoval", StringComparison.Ordinal)
+                && command.ContentHashReference is null
+                && command.ByteLength is null,
+            _ => false,
+        };
+    }
+
+    private static bool IsValidAddOrChangeMutation(MutateWorkspaceFile command)
+        => IsValidIdentifier(command.ContentHashReference)
+        && command.TransportOperation is "PutFileInline" or "PutFileStream"
+        && command.ByteLength is not null
+        && (string.Equals(command.TransportOperation, "PutFileInline", StringComparison.Ordinal)
+            ? command.ByteLength is >= 0 and <= 262144
+            : command.ByteLength >= 262145);
+
+    private static string ToFileMutationOperationId(string fileOperationKind)
+        => fileOperationKind switch
+        {
+            "add" => "AddFile",
+            "change" => "ChangeFile",
+            "remove" => "RemoveFile",
+            _ => string.Empty,
+        };
 
     private static bool IsValidReleaseReasonCode(string? value)
         => value is "caller_completed"

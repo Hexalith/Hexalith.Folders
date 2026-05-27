@@ -46,6 +46,8 @@ public enum FolderResultCode
     LockConflict,
     LockNotOwned,
     LockExpired,
+    PathPolicyDenied,
+    PathValidationFailed,
     UnknownProviderOutcome,
     ReconciliationRequired,
     FolderNotFound,

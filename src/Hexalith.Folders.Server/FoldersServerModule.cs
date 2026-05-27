@@ -1,4 +1,5 @@
 using Hexalith.Folders.Contracts;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.ServiceDefaults;
 using Hexalith.Tenants.Client.Registration;
@@ -41,6 +42,8 @@ public static class FoldersServerModule
     public const string LockWorkspaceCommandType = "Hexalith.Folders.Commands.LockWorkspace";
 
     public const string ReleaseWorkspaceLockCommandType = "Hexalith.Folders.Commands.ReleaseWorkspaceLock";
+
+    public const string MutateFilesCommandType = MutateWorkspaceFile.CommandTypeName;
 
     // Maximum length for canonical identifiers (correlation id, task id, idempotency key,
     // folder id, taskId extension). Shared between the REST endpoint regex, the processor

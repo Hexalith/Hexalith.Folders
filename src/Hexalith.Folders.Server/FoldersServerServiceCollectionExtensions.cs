@@ -44,6 +44,8 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<WorkspacePreparationService>();
         services.TryAddScoped<WorkspaceLockAcquisitionService>();
         services.TryAddScoped<WorkspaceLockReleaseService>();
+        services.TryAddScoped<IWorkspacePathPolicyEvidenceProvider, UnavailableWorkspacePathPolicyEvidenceProvider>();
+        services.TryAddScoped<WorkspaceFileMutationService>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());

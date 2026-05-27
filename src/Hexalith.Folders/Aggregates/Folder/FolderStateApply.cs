@@ -127,6 +127,7 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEventRecorded recorded => ApplyWorkspaceLifecycleEvent(state, recorded),
             WorkspaceLockAcquired acquired => ApplyWorkspaceLockAcquired(state, acquired),
             WorkspaceLockReleased released => ApplyWorkspaceLockReleased(state, released),
+            WorkspaceFileMutationAccepted accepted => ApplyWorkspaceFileMutationAccepted(state, accepted),
             // Unknown event types fail loudly. Silently no-op'ing would let a future event
             // type poison the idempotency ledger on cold replay against an older code path.
             _ => throw new InvalidOperationException(
@@ -342,6 +343,22 @@ public static class FolderStateApply
             WorkspaceLockExpiresAt = null,
             WorkspaceLockRetryEligibilityBasis = null,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, released),
+        };
+    }
+
+    private static FolderState ApplyWorkspaceFileMutationAccepted(FolderState state, WorkspaceFileMutationAccepted accepted)
+    {
+        FolderWorkspaceTransitionResult transition = FolderStateTransitions.Transition(
+            state.WorkspaceLifecycleState,
+            accepted.WorkspaceLifecycleEvent);
+        if (!transition.IsAccepted)
+        {
+            return state;
+        }
+
+        return WithWorkspaceTransition(state, accepted, transition, accepted.WorkspaceId, accepted.OperationId) with
+        {
+            IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, accepted),
         };
     }
 

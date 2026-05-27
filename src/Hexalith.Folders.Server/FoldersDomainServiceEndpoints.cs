@@ -290,6 +290,63 @@ public static class FoldersDomainServiceEndpoints
                 cancellationToken).ConfigureAwait(false))
         .WithName("ReleaseWorkspaceLock");
 
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await FileMutationAsync(
+                folderId,
+                workspaceId,
+                expectedFileOperationKind: "add",
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("AddWorkspaceFile");
+
+        endpoints.MapPut("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await FileMutationAsync(
+                folderId,
+                workspaceId,
+                expectedFileOperationKind: "change",
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("ChangeWorkspaceFile");
+
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await FileMutationAsync(
+                folderId,
+                workspaceId,
+                expectedFileOperationKind: "remove",
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("RemoveWorkspaceFile");
+
         endpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
             string folderId,
             HttpContext httpContext,
@@ -1606,6 +1663,177 @@ public static class FoldersDomainServiceEndpoints
             statusCode: StatusCodes.Status202Accepted);
     }
 
+    private static async Task<IResult> FileMutationAsync(
+        string folderId,
+        string workspaceId,
+        string expectedFileOperationKind,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+
+        if (string.IsNullOrWhiteSpace(idempotencyKey)
+            || string.IsNullOrWhiteSpace(correlationId)
+            || string.IsNullOrWhiteSpace(taskId)
+            || !IsCanonicalIdentifier(idempotencyKey)
+            || !IsCanonicalIdentifier(taskId)
+            || !IsCanonicalIdentifier(correlationId)
+            || !IsCanonicalIdentifier(folderId)
+            || !IsCanonicalIdentifier(workspaceId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
+        {
+            return SafeProblem(
+                StatusCodes.Status401Unauthorized,
+                category: "authentication_failure",
+                code: "authentication_failure",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "tenant_access_denied",
+                code: "denied_safe",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        FileMutationHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<FileMutationHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null
+            || !string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
+            || !string.Equals(body.FileOperationKind, expectedFileOperationKind, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        FileMutationRequestValidationResult validation = ValidateFileMutationRequest(body);
+        if (validation != FileMutationRequestValidationResult.Accepted)
+        {
+            string category = validation == FileMutationRequestValidationResult.PathValidationFailed
+                ? "path_validation_failed"
+                : "validation_error";
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: category,
+                code: category,
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        FileMutationGatewayPayload gatewayPayload = new(
+            body.RequestSchemaVersion,
+            workspaceId,
+            body.OperationId,
+            body.FileOperationKind,
+            body.TransportOperation,
+            body.PathMetadata,
+            body.ContentHashReference,
+            body.ByteLength);
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: tenantContext.AuthoritativeTenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: FoldersServerModule.MutateFilesCommandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
         && IsCanonicalIdentifier(body.FolderId)
@@ -1641,6 +1869,46 @@ public static class FoldersDomainServiceEndpoints
             or "authorization_revoked"
             or "task_cancelled"
             or "lock_revoked";
+
+    private static FileMutationRequestValidationResult ValidateFileMutationRequest(FileMutationHttpRequest? body)
+    {
+        if (body is null
+            || !IsCanonicalIdentifier(body.OperationId)
+            || body.PathMetadata is null)
+        {
+            return body?.PathMetadata is null
+                ? FileMutationRequestValidationResult.PathValidationFailed
+                : FileMutationRequestValidationResult.ValidationFailed;
+        }
+
+        WorkspacePathPolicyResult pathPolicy = WorkspacePathPolicyValidator.Validate(new PathMetadata(
+            body.PathMetadata.NormalizedPath ?? string.Empty,
+            body.PathMetadata.DisplayName ?? string.Empty,
+            body.PathMetadata.PathPolicyClass ?? string.Empty,
+            body.PathMetadata.UnicodeNormalization ?? string.Empty));
+        if (!pathPolicy.IsAccepted)
+        {
+            return FileMutationRequestValidationResult.PathValidationFailed;
+        }
+
+        bool transportAccepted = body.FileOperationKind switch
+        {
+            "add" or "change" => body.TransportOperation is "PutFileInline" or "PutFileStream"
+                && IsCanonicalIdentifier(body.ContentHashReference)
+                && body.ByteLength is not null
+                && (string.Equals(body.TransportOperation, "PutFileInline", StringComparison.Ordinal)
+                    ? body.ByteLength is >= 0 and <= 262144
+                    : body.ByteLength >= 262145),
+            "remove" => string.Equals(body.TransportOperation, "metadataOnlyRemoval", StringComparison.Ordinal)
+                && body.ContentHashReference is null
+                && body.ByteLength is null,
+            _ => false,
+        };
+
+        return transportAccepted
+            ? FileMutationRequestValidationResult.Accepted
+            : FileMutationRequestValidationResult.ValidationFailed;
+    }
 
     private static bool IsValidFolderMetadata(FolderMetadataHttpRequest? metadata)
         => metadata is not null
@@ -1840,6 +2108,18 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity
+            && reasonCode is "path_policy_denied" or "path_validation_failed")
+        {
+            return SafeProblem(
+                StatusCodes.Status422UnprocessableEntity,
+                category: reasonCode,
+                code: reasonCode,
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         return exception.StatusCode switch
         {
             StatusCodes.Status400BadRequest => SafeProblem(
@@ -1926,6 +2206,12 @@ public static class FoldersDomainServiceEndpoints
             "lock_expired" => "lock_expired",
             "lock-expired" => "lock_expired",
             "LockExpired" => "lock_expired",
+            "path_policy_denied" => "path_policy_denied",
+            "path-policy-denied" => "path_policy_denied",
+            "PathPolicyDenied" => "path_policy_denied",
+            "path_validation_failed" => "path_validation_failed",
+            "path-validation-failed" => "path_validation_failed",
+            "PathValidationFailed" => "path_validation_failed",
             "workspace_locked" => "workspace_locked",
             "workspace-locked" => "workspace_locked",
             "workspace-already-locked" => "workspace_locked",
@@ -2351,7 +2637,7 @@ public static class FoldersDomainServiceEndpoints
             "workspace_preparation_failed" or "workspace_transition_invalid" => "revise_request",
             "lock_conflict" or "workspace_locked" => "retry_after_release",
             "lock_expired" => "retry",
-            "lock_not_owned" => "revise_request",
+            "lock_not_owned" or "path_policy_denied" or "path_validation_failed" => "revise_request",
             _ => retryable ? "retry" : "no_action",
         };
 
@@ -2371,6 +2657,8 @@ public static class FoldersDomainServiceEndpoints
         "workspace_locked" => "Workspace is already locked.",
         "lock_not_owned" => "Workspace lock is not owned by this task scope.",
         "lock_expired" => "The workspace lock lease is no longer active.",
+        "path_policy_denied" => "Path policy denied the requested file operation.",
+        "path_validation_failed" => "Path validation failed for the requested file operation.",
         "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
         "reconciliation_required" => "Reconciliation is required before this operation can continue.",
         "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",
@@ -2508,6 +2796,13 @@ public static class FoldersDomainServiceEndpoints
         return false;
     }
 
+    private enum FileMutationRequestValidationResult
+    {
+        Accepted,
+        ValidationFailed,
+        PathValidationFailed,
+    }
+
     private sealed record ArchiveFolderHttpRequest(
         string? RequestSchemaVersion,
         string? ArchiveReasonCode);
@@ -2543,6 +2838,23 @@ public static class FoldersDomainServiceEndpoints
         string? LockOwnershipProof,
         string? ReleaseReasonCode);
 
+    private sealed record PathMetadataHttpRequest(
+        string? NormalizedPath,
+        string? DisplayName,
+        string? PathPolicyClass,
+        string? UnicodeNormalization);
+
+    private sealed record FileMutationHttpRequest(
+        string? RequestSchemaVersion,
+        string? OperationId,
+        string? FileOperationKind,
+        string? TransportOperation,
+        PathMetadataHttpRequest? PathMetadata,
+        string? ContentHashReference,
+        long? ByteLength,
+        JsonElement? InlineContent,
+        JsonElement? StreamDescriptor);
+
     private sealed record CreateRepositoryBackedFolderGatewayPayload(
         string? RequestSchemaVersion,
         string? FolderId,
@@ -2572,6 +2884,16 @@ public static class FoldersDomainServiceEndpoints
         string? LockId,
         string? LockOwnershipProof,
         string? ReleaseReasonCode);
+
+    private sealed record FileMutationGatewayPayload(
+        string? RequestSchemaVersion,
+        string WorkspaceId,
+        string? OperationId,
+        string? FileOperationKind,
+        string? TransportOperation,
+        PathMetadataHttpRequest? PathMetadata,
+        string? ContentHashReference,
+        long? ByteLength);
 
     private sealed record FolderMetadataHttpRequest(
         string? DisplayName,

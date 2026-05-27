@@ -19,7 +19,7 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
             ["Hexalith.Folders.Commands.PrepareWorkspace"] = new("prepare_workspace", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.LockWorkspace"] = new("lock_workspace", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.ReleaseWorkspaceLockCommandType] = new("lock_workspace", FolderCommandOperationScopeKind.FolderAggregate),
-            ["Hexalith.Folders.Commands.MutateFiles"] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
+            [FoldersServerModule.MutateFilesCommandType] = new("mutate_files", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.CommitWorkspace"] = new("commit", FolderCommandOperationScopeKind.FolderAggregate),
         };
 
