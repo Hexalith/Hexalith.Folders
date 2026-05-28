@@ -6,7 +6,13 @@ using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.Folders;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Parity.Testing;
+using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Queries.FileContext;
+using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 
@@ -269,6 +275,39 @@ public sealed class TransportParityConformanceTests
         gateway.Requests.ShouldBeEmpty("authentication denial must precede any gateway submit.");
     }
 
+    [Fact]
+    public async Task ReservedSystemTenantRequestSurfacesCanonicalTenantAccessDeniedWithinTheOracleErrorCodeSet()
+    {
+        // Second representative AC #5 negative (covers the auth_outcome_class side that the unauthenticated
+        // case does not). Driving the request with tenantId == "system" (the reserved tenant) provokes the
+        // tenant_access_denied envelope-validation branch; the wire category must be the oracle-listed
+        // 'tenant_access_denied' (which IS in ArchiveFolder.error_code_set) with the canonical RFC 9457
+        // metadata-only shape and status 403.
+        ParityRow row = ParityScenarios.Row("ArchiveFolder");
+        row.Transport.ErrorCodeSet.ShouldContain("tenant_access_denied");
+
+        RecordingEventStoreGatewayClient gateway = new();
+        await RunAgainstHostAsync(gateway, tenantId: "system", principalId: "principal-a", async client =>
+        {
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+            using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            JsonElement root = document.RootElement;
+            string category = root.GetProperty("category").GetString()!;
+
+            category.ShouldBe("tenant_access_denied");
+            row.Transport.ErrorCodeSet.ShouldContain(
+                category,
+                $"ArchiveFolder emitted category '{category}' is outside its oracle error_code_set.");
+            AssertCanonicalProblemShape(root, expectCorrelation: "correlation-a");
+        }).ConfigureAwait(true);
+
+        gateway.Requests.ShouldBeEmpty("tenant_access_denied envelope rejection must precede any gateway submit.");
+    }
+
     // ---------------------------------------------------------------------------------------------------
     // AC #6 — Terminal transport state class per family (mutating → accepted/202).
     // ---------------------------------------------------------------------------------------------------
@@ -293,6 +332,44 @@ public sealed class TransportParityConformanceTests
             document.RootElement.GetProperty("status").GetString().ShouldBe("accepted",
                 "mutating_command transport-terminal class is 'accepted' (202 + status='accepted').");
         }).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task ContextQueryFamilyEndpointReturnsContextReturnedTransportTerminalClass()
+    {
+        // ListFolderFiles oracle row: operation_family == 'context_query', terminal_states ∋ 'context_returned' (HTTP 200).
+        // Drives the in-process file-context source with an allowing tenant/permission stack so the query
+        // reaches the 200 success path (not 4xx safe-denial). This is the second of the five
+        // FamilyToTerminalState classes exercised on the REST surface (paired with 'accepted' above; the
+        // remaining three — 'projected', 'audit_returned', 'projection_returned' — are exercised on REST
+        // by GoldenLifecycleParityTests / are part of the documented REST surface gap respectively).
+        ParityRow context = ParityScenarios.Row("ListFolderFiles");
+        context.OperationFamily.ShouldBe("context_query");
+        context.Transport.TerminalStates.ShouldContain("context_returned");
+        ParityScenarios.FamilyToTerminalState[context.OperationFamily].ShouldBe("context_returned");
+
+        RecordingFileContextSource source = new();
+        await RunAgainstContextHostAsync(source, "tenant-a", "user-a", async client =>
+        {
+            using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/context/tree?limit=10");
+            request.Headers.Add("X-Correlation-Id", "correlation-context");
+            request.Headers.Add("X-Hexalith-Task-Id", "task-context");
+            request.Headers.Add("X-Hexalith-Freshness", "snapshot_per_task");
+
+            using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(
+                HttpStatusCode.OK,
+                "context_query transport-terminal class is 'context_returned' (HTTP 200 with metadata-only items).");
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(body);
+            document.RootElement.GetProperty("items").GetArrayLength().ShouldBeGreaterThan(0,
+                "context_returned terminal class surfaces metadata-only items in the response body.");
+            body.ShouldNotContain("contentBytes", Case.Sensitive,
+                "context_query metadata response must remain metadata-only (no contentBytes).");
+        }).ConfigureAwait(true);
+
+        source.Requests.Count.ShouldBe(1, "successful context_query reaches the source exactly once.");
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -438,11 +515,144 @@ public sealed class TransportParityConformanceTests
         return request;
     }
 
+    /// <summary>Starts the in-process host wired with an allowing tenant/permission stack and a stub
+    /// <see cref="IWorkspaceFileContextSource"/>, runs <paramref name="body"/> against it, and tears the host
+    /// down. Mirrors <see cref="RunAgainstHostAsync"/> but layers the additional file-context dependencies
+    /// the <c>/api/v1/.../context/...</c> endpoints require so the query reaches its <c>context_returned</c>
+    /// transport-terminal class (HTTP 200) rather than a safe-denial 4xx.</summary>
+    /// <param name="source">The recording file-context source stub.</param>
+    /// <param name="tenantId">The tenant id.</param>
+    /// <param name="principalId">The principal id.</param>
+    /// <param name="body">The test body, called with an HttpClient bound to the host's loopback URI.</param>
+    private static async Task RunAgainstContextHostAsync(
+        RecordingFileContextSource source,
+        string tenantId,
+        string principalId,
+        Func<HttpClient, Task> body)
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
+        });
+        builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServer();
+        builder.Services.AddInMemoryFolderRepository();
+        builder.Services.RemoveAll<ITenantContextAccessor>();
+        builder.Services.AddSingleton<ITenantContextAccessor>(new FixedTenantContextAccessor(tenantId, principalId));
+        builder.Services.RemoveAll<IEventStoreClaimTransformEvidenceAccessor>();
+        builder.Services.AddSingleton<IEventStoreClaimTransformEvidenceAccessor>(new StaticClaimTransformEvidenceAccessor(tenantId, principalId));
+        builder.Services.RemoveAll<IUtcClock>();
+        builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(new DateTimeOffset(2026, 5, 28, 12, 0, 0, TimeSpan.Zero)));
+        builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
+        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(BuildAllowingTenantStore(tenantId, principalId));
+        builder.Services.RemoveAll<IFolderPermissionEvidenceProvider>();
+        builder.Services.AddSingleton<IFolderPermissionEvidenceProvider>(new AllowingFolderPermissionEvidenceProvider());
+        builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
+        builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
+        builder.Services.RemoveAll<IDaprPolicyEvidenceProvider>();
+        builder.Services.AddSingleton<IDaprPolicyEvidenceProvider>(new AllowingDaprPolicyEvidenceProvider());
+        builder.Services.RemoveAll<IWorkspaceFileContextSource>();
+        builder.Services.AddSingleton<IWorkspaceFileContextSource>(source);
+
+        WebApplication app = builder.Build();
+        app.MapFoldersServerEndpoints();
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            await body(client).ConfigureAwait(true);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private static IFolderTenantAccessProjectionStore BuildAllowingTenantStore(string tenantId, string principalId)
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        store.SaveAsync(new FolderTenantAccessProjection
+        {
+            TenantId = tenantId,
+            Enabled = true,
+            Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
+            {
+                [principalId] = new(principalId, "Member"),
+            },
+            Watermark = 1,
+            LastEventTimestamp = new DateTimeOffset(2026, 5, 28, 11, 59, 0, TimeSpan.Zero),
+            ProjectionWatermark = "tenant_watermark_v1",
+        }).GetAwaiter().GetResult();
+        return store;
+    }
+
     private sealed class FixedTenantContextAccessor(string? tenantId, string? principalId) : ITenantContextAccessor
     {
         public string? AuthoritativeTenantId { get; } = tenantId;
 
         public string? PrincipalId { get; } = principalId;
+    }
+
+    private sealed class StaticClaimTransformEvidenceAccessor(string? tenantId, string? principalId)
+        : IEventStoreClaimTransformEvidenceAccessor
+    {
+        public EventStoreClaimTransformEvidence GetEvidence(string actionToken)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(actionToken);
+            return string.IsNullOrWhiteSpace(tenantId) || string.IsNullOrWhiteSpace(principalId)
+                ? EventStoreClaimTransformEvidence.Missing()
+                : EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [actionToken]);
+        }
+    }
+
+    private sealed class AllowingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(FolderPermissionEvidenceResult.Allowed("permission_watermark_v1"));
+    }
+
+    private sealed class AllowingDaprPolicyEvidenceProvider : IDaprPolicyEvidenceProvider
+    {
+        public Task<DaprPolicyEvidenceResult> GetEvidenceAsync(
+            DaprPolicyEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1"));
+    }
+
+    private sealed class RecordingFileContextSource : IWorkspaceFileContextSource
+    {
+        public List<WorkspaceFileContextSourceRequest> Requests { get; } = [];
+
+        public Task<WorkspaceFileContextSourceResult> QueryAsync(
+            WorkspaceFileContextSourceRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            Requests.Add(request);
+            DateTimeOffset now = new(2026, 5, 28, 12, 0, 0, TimeSpan.Zero);
+            WorkspaceFileContextLimits limits = new(
+                "tree",
+                request.Limit,
+                1,
+                128,
+                1,
+                false,
+                "not_truncated");
+            FolderLifecycleFreshness freshness = new("snapshot_per_task", now, "context_watermark_v1", Stale: false, ReasonCode: null);
+            PathMetadata path = new("docs/readme.md", "readme.md", "tenant_sensitive_document", "NFC");
+
+            return Task.FromResult(new WorkspaceFileContextSourceResult(
+                WorkspaceFileContextSourceStatus.Available,
+                [new WorkspaceFileContextItem(path, "file", 1, "tenant_sensitive", "not_redacted")],
+                null,
+                null,
+                null,
+                new WorkspaceFileContextPage(null, request.Limit, false, null),
+                limits,
+                freshness));
+        }
     }
 
     private sealed class RecordingEventStoreGatewayClient : IEventStoreGatewayClient
