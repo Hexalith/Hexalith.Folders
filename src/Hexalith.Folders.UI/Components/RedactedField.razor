@@ -1,0 +1,24 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Icons
+@using Hexalith.FrontComposer.Contracts.Rendering
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<span data-testid="redacted-field"
+      data-fc-disclosure="@_disclosureToken"
+      aria-label="@_ariaLabel"
+      class="@AdditionalCssClass">
+    @if (IsRedacted)
+    {
+        <FluentIcon Value="@FoldersConsoleIcons.LockClosed16()" aria-hidden="true" />
+    }
+    @if (Disclosure == Hexalith.Folders.UI.Services.FieldDisclosure.Visible)
+    {
+        <span>@_displayText</span>
+    }
+    else
+    {
+        <FluentText Size="@Typography.Secondary.Size"
+                    Weight="@Typography.Secondary.Weight"
+                    As="@Typography.Secondary.Tag">@_displayText</FluentText>
+    }
+</span>

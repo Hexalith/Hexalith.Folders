@@ -1,0 +1,40 @@
+@page "/dev/redaction-gallery"
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Services
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<PageTitle>Redaction Gallery — Hexalith Folders</PageTitle>
+
+<div data-testid="console-page-redaction-gallery-root">
+    <h1>Redaction Gallery</h1>
+    <p>Read-only enumeration of every <code>FieldDisclosure</code> state rendered through <code>RedactedField</code>, so redacted-vs-unknown-vs-missing is eyeballable. Development surface only.</p>
+
+    <FluentDataGrid Items="@_rows.AsQueryable()" GridTemplateColumns="1fr 2fr">
+        <TemplateColumn Title="Disclosure state">
+            <span>@context.Disclosure</span>
+        </TemplateColumn>
+        <TemplateColumn Title="Rendered field">
+            <RedactedField Disclosure="@context.Disclosure" Value="@context.SampleValue" ColumnHeader="Example" />
+        </TemplateColumn>
+    </FluentDataGrid>
+</div>
+
+@code {
+    private readonly List<GalleryRow> _rows = BuildRows();
+
+    private static List<GalleryRow> BuildRows()
+    {
+        List<GalleryRow> rows = [];
+        foreach (FieldDisclosure disclosure in Enum.GetValues<FieldDisclosure>())
+        {
+            // The disclosed path is only meaningful for the Visible row; the redacted row's value
+            // must never appear, so a sample is supplied to prove the redacted-implies-no-value rule.
+            string sampleValue = disclosure == FieldDisclosure.Visible ? "acme/widgets" : "example/value";
+            rows.Add(new GalleryRow(disclosure, sampleValue));
+        }
+
+        return rows;
+    }
+
+    private sealed record GalleryRow(FieldDisclosure Disclosure, string SampleValue);
+}

@@ -111,6 +111,26 @@ public sealed class ShellCompositionTests
         rendered.Markup.ShouldNotContain("/dev/state-label-gallery");
     }
 
+    [Fact]
+    public void Home_RendersRedactionGalleryLink_InDevelopmentOnly()
+    {
+        using BunitContext ctx = CreateHomeContext(Environments.Development);
+        IRenderedComponent<Home> rendered = ctx.Render<Home>();
+
+        rendered.Find("[data-testid=\"console-page-home-dev-redaction-gallery-link\"]").ShouldNotBeNull();
+        rendered.Markup.ShouldContain("/dev/redaction-gallery");
+    }
+
+    [Fact]
+    public void Home_HidesRedactionGalleryLink_InProduction()
+    {
+        using BunitContext ctx = CreateHomeContext(Environments.Production);
+        IRenderedComponent<Home> rendered = ctx.Render<Home>();
+
+        rendered.FindAll("[data-testid=\"console-page-home-dev-redaction-gallery-link\"]").ShouldBeEmpty();
+        rendered.Markup.ShouldNotContain("/dev/redaction-gallery");
+    }
+
     private static BunitContext CreateHomeContext(string environmentName)
     {
         BunitContext ctx = new();
