@@ -23,6 +23,13 @@
     <Compile Include="..\shared\Parity\GoldenLifecycle.cs">
       <Link>Parity\GoldenLifecycle.cs</Link>
     </Compile>
+    <!-- Story 5.7: mixed-surface handoff scenario step list (linked, not copied). The new
+         tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/ suite consumes this scenario to drive
+         one logical task lifecycle whose steps are split across REST / SDK / CLI / MCP against the same
+         in-process host. -->
+    <Compile Include="..\shared\Parity\MixedSurfaceScenario.cs">
+      <Link>Parity\MixedSurfaceScenario.cs</Link>
+    </Compile>
   </ItemGroup>
   <!-- Story 5.6: link (not copy) the CLI test harness and the MCP test support so the cross-adapter
        behavioral-parity tests drive the *same* surface the per-adapter test suites already prove. The linked
