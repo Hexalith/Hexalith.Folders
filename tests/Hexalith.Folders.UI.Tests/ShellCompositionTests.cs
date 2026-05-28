@@ -11,6 +11,7 @@ using Hexalith.FrontComposer.Shell.State.Theme;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 using NSubstitute;
@@ -77,7 +78,7 @@ public sealed class ShellCompositionTests
     [Fact]
     public void Home_RendersWithoutMutationControls()
     {
-        using BunitContext ctx = new();
+        using BunitContext ctx = CreateHomeContext(Environments.Production);
         IRenderedComponent<Home> rendered = ctx.Render<Home>();
 
         rendered.Find("h1").ShouldNotBeNull();
@@ -88,6 +89,35 @@ public sealed class ShellCompositionTests
         rendered.FindAll("fluentdialog").ShouldBeEmpty();
         rendered.FindAll("[data-fc-command]").ShouldBeEmpty();
         rendered.FindAll("[data-fc-mutation]").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Home_RendersDevGalleryLink_InDevelopmentOnly()
+    {
+        using BunitContext ctx = CreateHomeContext(Environments.Development);
+        IRenderedComponent<Home> rendered = ctx.Render<Home>();
+
+        rendered.Find("[data-testid=\"console-page-home-dev-gallery-link\"]").ShouldNotBeNull();
+        rendered.Markup.ShouldContain("/dev/state-label-gallery");
+    }
+
+    [Fact]
+    public void Home_HidesDevGalleryLink_InProduction()
+    {
+        using BunitContext ctx = CreateHomeContext(Environments.Production);
+        IRenderedComponent<Home> rendered = ctx.Render<Home>();
+
+        rendered.FindAll("[data-testid=\"console-page-home-dev-gallery-link\"]").ShouldBeEmpty();
+        rendered.Markup.ShouldNotContain("/dev/state-label-gallery");
+    }
+
+    private static BunitContext CreateHomeContext(string environmentName)
+    {
+        BunitContext ctx = new();
+        IHostEnvironment env = Substitute.For<IHostEnvironment>();
+        env.EnvironmentName.Returns(environmentName);
+        ctx.Services.AddSingleton(env);
+        return ctx;
     }
 
     [Fact]

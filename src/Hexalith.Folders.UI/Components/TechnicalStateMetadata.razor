@@ -1,0 +1,12 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.FrontComposer.Contracts.Rendering
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<span data-testid="technical-state-metadata"
+      data-fc-technical-state="@_wireName"
+      aria-label="@_ariaLabel">
+    <FluentText Size="@Typography.Secondary.Size"
+                Weight="@Typography.Secondary.Weight"
+                As="@Typography.Secondary.Tag">@_displayText</FluentText>
+</span>

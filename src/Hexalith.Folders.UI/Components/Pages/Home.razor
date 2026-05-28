@@ -1,8 +1,15 @@
 @page "/"
+@inject Microsoft.Extensions.Hosting.IHostEnvironment Env
 
 <PageTitle>Hexalith Folders — Operations Console</PageTitle>
 
 <div data-testid="console-page-home-root">
     <h1>Hexalith Folders — Operations Console</h1>
     <p>Read-only diagnostic surface. Mutation flows are not exposed here.</p>
+    @if (Env.IsDevelopment())
+    {
+        <p data-testid="console-page-home-dev-gallery-link">
+            <a href="/dev/state-label-gallery">State Label Gallery (development only)</a>
+        </p>
+    }
 </div>

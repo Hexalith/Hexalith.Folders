@@ -1,0 +1,57 @@
+@page "/dev/state-label-gallery"
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Contracts.Attributes
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<PageTitle>State Label Gallery — Hexalith Folders</PageTitle>
+
+<div data-testid="console-page-state-label-gallery-root">
+    <h1>State Label Gallery</h1>
+    <p>Read-only enumeration of every <code>LifecycleState</code> with its resolved operator disposition and slot. Development surface only.</p>
+
+    <FluentDataGrid Items="@_rows.AsQueryable()" GridTemplateColumns="1fr 1fr 1fr">
+        <TemplateColumn Title="Technical state">
+            <TechnicalStateMetadata State="@context.State" ColumnHeader="State" />
+        </TemplateColumn>
+        <TemplateColumn Title="Operator disposition">
+            <OperatorDispositionBadge Disposition="@context.Disposition" ColumnHeader="Status" />
+        </TemplateColumn>
+        <TemplateColumn Title="Badge slot">
+            <span>@context.Slot</span>
+        </TemplateColumn>
+    </FluentDataGrid>
+</div>
+
+@code {
+    private readonly List<GalleryRow> _rows = BuildRows();
+
+    private static List<GalleryRow> BuildRows()
+    {
+        List<GalleryRow> rows = [];
+        foreach (LifecycleState state in Enum.GetValues<LifecycleState>())
+        {
+            if (state == LifecycleState.Ready)
+            {
+                rows.Add(CreateRow(state, hasProjectionLagEvidence: false));
+                rows.Add(CreateRow(state, hasProjectionLagEvidence: true));
+            }
+            else
+            {
+                rows.Add(CreateRow(state, hasProjectionLagEvidence: false));
+            }
+        }
+
+        return rows;
+    }
+
+    private static GalleryRow CreateRow(LifecycleState state, bool hasProjectionLagEvidence)
+    {
+        OperatorDispositionLabel disposition = DispositionLabelMapper.ResolveDisposition(state, hasProjectionLagEvidence);
+        BadgeSlot slot = DispositionLabelMapper.ResolveSlot(disposition);
+        return new GalleryRow(state, disposition, slot);
+    }
+
+    private sealed record GalleryRow(LifecycleState State, OperatorDispositionLabel Disposition, BadgeSlot Slot);
+}

@@ -1,3 +1,75 @@
+# Test Automation Summary — Story 6.3 (Operator disposition labels)
+
+**Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-28 · **Engineer:** QA automation (Jerome) — tests only, no code review/story validation
+**Framework:** xUnit v3 + Shouldly + Microsoft.Playwright in `tests/Hexalith.Folders.UI.E2E.Tests`
+**Generated tests:** browser-level Playwright coverage for the Story 6.3 state-label gallery.
+**Validation status:** blocked by local SDK/WSL environment; see "Validation" below.
+
+## Generated Tests
+
+### API Tests
+- [x] N/A — Story 6.3 adds UI renderers and a local enum-fed development gallery; it does not add API endpoints or SDK calls.
+
+### E2E Tests
+- [x] `tests/Hexalith.Folders.UI.E2E.Tests/StateLabels/StateLabelGalleryE2ETests.cs` — verifies `/dev/state-label-gallery` loads, exposes the page-root selector, renders one `technical-state-metadata` and one `operator-disposition-badge` per lifecycle row, exercises the `Ready` projection-lag branch, and remains read-only.
+- [x] `tests/Hexalith.Folders.UI.E2E.Tests/Routes/ConsoleRoutes.cs` — adds the route constant required by the e2e route contract.
+
+## Coverage
+- API endpoints: N/A
+- UI features: 1/1 Story 6.3 browser surface covered (`StateLabelGallery`)
+- Happy path: gallery loads and exposes reusable status selectors.
+- Critical negative cases: read-only/no mutation affordances; non-development test host does not advertise the dev gallery from Home.
+
+## Validation
+
+- [x] Existing framework detected: Playwright-on-.NET UI E2E lane.
+- [x] Tests use standard project APIs: xUnit v3, Shouldly, Microsoft.Playwright locators.
+- [x] Tests use stable `data-testid` / `data-fc-*` selectors; no CSS class selectors, sleeps, or order dependency.
+- [ ] Tests run successfully — blocked locally.
+
+Attempted commands:
+
+```text
+/mnt/c/Program Files/dotnet/dotnet.exe --version
+```
+
+Blocked by WSL interop before the SDK could start:
+
+```text
+WSL (2 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1
+```
+
+Fallback attempt with native Linux SDK from `/tmp`:
+
+```text
+DOTNET_CLI_HOME=/tmp/dotnet-cli-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 dotnet build /mnt/d/Hexalith.Folders/tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj --no-restore --verbosity minimal
+```
+
+Blocked before compilation because the existing restore assets were generated on Windows and include a missing Windows fallback package folder:
+
+```text
+MSB4018: The "ResolvePackageAssets" task failed unexpectedly.
+NuGet.Packaging.Core.PackagingException: Unable to find fallback package folder 'C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages'.
+```
+
+## Checklist (`bmad-qa-generate-e2e-tests/checklist.md`)
+
+- [x] API tests generated if applicable (N/A documented)
+- [x] E2E tests generated for UI
+- [x] Tests use standard test framework APIs
+- [x] Tests cover happy path
+- [x] Tests cover critical negative cases
+- [ ] All generated tests run successfully (blocked by SDK/restore environment)
+- [x] Tests use semantic/stable locators
+- [x] Tests have clear descriptions
+- [x] No hardcoded waits or sleeps
+- [x] Tests are independent
+- [x] Test summary created
+- [x] Tests saved to appropriate directories
+- [x] Summary includes coverage metrics
+
+---
+
 # Test Automation Summary — Story 5.4 (Consume parity oracle in CLI and MCP tests)
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-28 · **Engineer:** QA automation (Jerome) — tests only, no code review/story validation
