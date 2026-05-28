@@ -4,14 +4,30 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+  </ItemGroup>
+  <!-- Story 5.5: shared, test-only parity oracle (transport columns) + golden-lifecycle step list linked
+       (not copied). The dual-surface end-to-end run consumes the golden lifecycle as its single ordered
+       conformance fixture for both REST (raw HttpClient) and SDK (IClient) runs against one in-process host. -->
+  <ItemGroup>
+    <Compile Include="..\shared\Parity\ParityOracle.cs">
+      <Link>Parity\ParityOracle.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\Parity\ParityScenarios.cs">
+      <Link>Parity\ParityScenarios.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\Parity\GoldenLifecycle.cs">
+      <Link>Parity\GoldenLifecycle.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="YamlDotNet" />
     <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
