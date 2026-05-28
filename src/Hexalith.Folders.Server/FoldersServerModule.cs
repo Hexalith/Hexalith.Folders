@@ -61,6 +61,7 @@ public static class FoldersServerModule
         services.AddDaprClient();
         services.AddFoldersEffectivePermissions();
         services.AddFoldersLifecycleStatus();
+        services.AddFoldersAuditQueries();
         services.AddFoldersFileContextQueries();
         services.AddFoldersProviderReadiness();
 
@@ -100,6 +101,7 @@ public static class FoldersServerModule
         endpoints.MapGet("/", () => Description);
         endpoints.MapFoldersDomainServiceEndpoints();
         endpoints.MapProviderReadinessEndpoints();
+        endpoints.MapAuditEndpoints();
         endpoints.MapTenantEventSubscription();
 
         return endpoints;

@@ -5,6 +5,7 @@ using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Providers.GitHub;
 using Hexalith.Folders.Observability;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
@@ -79,6 +80,27 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<WorkspaceCleanupStatusQueryHandler>();
         services.TryAddSingleton<ITaskStatusReadModel, InMemoryTaskStatusReadModel>();
         services.TryAddSingleton<TaskStatusQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersAuditQueries(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddSingleton<InMemoryAuditTrailReadModel>();
+        services.TryAddSingleton<IAuditTrailReadModel>(static sp => sp.GetRequiredService<InMemoryAuditTrailReadModel>());
+        services.TryAddSingleton<AuditTrailQueryHandler>();
+        services.TryAddSingleton<InMemoryAuditRecordReadModel>();
+        services.TryAddSingleton<IAuditRecordReadModel>(static sp => sp.GetRequiredService<InMemoryAuditRecordReadModel>());
+        services.TryAddSingleton<AuditRecordQueryHandler>();
+        services.TryAddSingleton<InMemoryOperationTimelineReadModel>();
+        services.TryAddSingleton<IOperationTimelineReadModel>(static sp => sp.GetRequiredService<InMemoryOperationTimelineReadModel>());
+        services.TryAddSingleton<OperationTimelineQueryHandler>();
+        services.TryAddSingleton<InMemoryOperationTimelineEntryReadModel>();
+        services.TryAddSingleton<IOperationTimelineEntryReadModel>(static sp => sp.GetRequiredService<InMemoryOperationTimelineEntryReadModel>());
+        services.TryAddSingleton<OperationTimelineEntryQueryHandler>();
 
         return services;
     }

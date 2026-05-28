@@ -1,0 +1,31 @@
+namespace Hexalith.Folders.Queries.Audit;
+
+public sealed record OperationTimelineEntryReadModelResult(
+    AuditReadModelStatus Status,
+    OperationTimelineEntryReadModelSnapshot? Snapshot,
+    AuditFreshness Freshness)
+{
+    public static OperationTimelineEntryReadModelResult Available(OperationTimelineEntryReadModelSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        return new(AuditReadModelStatus.Available, snapshot, snapshot.Freshness);
+    }
+
+    public static OperationTimelineEntryReadModelResult Stale(OperationTimelineEntryReadModelSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        return new(AuditReadModelStatus.Stale, snapshot, snapshot.Freshness with { Stale = true });
+    }
+
+    public static OperationTimelineEntryReadModelResult NotFound(AuditFreshness freshness)
+    {
+        ArgumentNullException.ThrowIfNull(freshness);
+        return new(AuditReadModelStatus.NotFound, null, freshness);
+    }
+
+    public static OperationTimelineEntryReadModelResult Unavailable(string reasonCode, DateTimeOffset observedAt)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(reasonCode);
+        return new(AuditReadModelStatus.Unavailable, null, AuditFreshness.SafeUnavailable(observedAt, reasonCode));
+    }
+}

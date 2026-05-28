@@ -39,7 +39,7 @@ namespace Hexalith.Folders.Server.Tests;
 /// <para><b>Drift-aware REST coverage.</b> The contract spine declares all 47 operation ids and the SDK
 /// is generated from it, so the SDK exposes all 47 methods. The current REST server implementation
 /// registers <see cref="ImplementedRestOperationCount"/> of those 47 as <c>/api/v1</c> endpoints; the
-/// remaining 19 (audit, ACL, several queries, a few mutators, diagnostics) are <c>rest</c>-expected by
+/// remaining 15 (ACL, several queries, a few mutators, diagnostics) are <c>rest</c>-expected by
 /// the oracle but have no server endpoint yet. Per Story 5.5's "surface drift in Dev Notes, do not edit
 /// production code or oracle" directive, the coverage guard here:
 /// <list type="bullet">
@@ -56,7 +56,7 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class TransportParityConformanceTests
 {
     /// <summary>The count of oracle operations the REST server currently implements as <c>/api/v1</c> endpoints.</summary>
-    public const int ImplementedRestOperationCount = 28;
+    public const int ImplementedRestOperationCount = 32;
 
     /// <summary>
     /// Documented endpoint-name aliases where the ASP.NET <c>.WithName(...)</c> diverges from the contract
@@ -71,7 +71,7 @@ public sealed class TransportParityConformanceTests
     };
 
     /// <summary>
-    /// The 19 oracle operations that are <c>rest</c>-expected but have no registered <c>/api/v1</c>
+    /// The 15 oracle operations that are <c>rest</c>-expected but have no registered <c>/api/v1</c>
     /// endpoint in the current server. Enumerated explicitly so a NEW unimplemented row (or a silently
     /// filled gap) fails the surface-gap guard. Recorded in Story 5.5 Dev Notes as the known REST gap.
     /// </summary>
@@ -83,12 +83,6 @@ public sealed class TransportParityConformanceTests
         "GetWorkspaceRetryEligibility",
         "GetWorkspaceTransitionEvidence",
         "GetProjectionFreshness",
-
-        // Audit-family operations (no /api/v1/audit-trail route).
-        "GetAuditRecord",
-        "GetOperationTimelineEntry",
-        "ListAuditTrail",
-        "ListOperationTimeline",
 
         // ACL.
         "ListFolderAclEntries",

@@ -314,28 +314,31 @@
       "owning_story": "1-11-author-audit-and-ops-console-query-contract-groups",
       "artifact_sources": [
         "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
-        "src/Hexalith.Folders.Client/Generated"
+        "src/Hexalith.Folders.Client/Generated",
+        "src/Hexalith.Folders.Server/AuditEndpoints.cs",
+        "src/Hexalith.Folders.Contracts/Projections/Audit"
       ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
-      "last_evaluated_at": "2026-05-18"
+      "coverage_notes": "Story 6.1 added ListAuditTrail, GetAuditRecord, ListOperationTimeline, GetOperationTimelineEntry REST endpoints; their response bodies and Problem Details envelopes are swept here.",
+      "last_evaluated_at": "2026-05-28"
     },
     {
       "channel": "projections",
       "owning_story": "4-15-validate-lifecycle-replay-and-projection-determinism",
       "artifact_sources": [
         "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
-        "src/Hexalith.Folders.Client/Generated"
+        "src/Hexalith.Folders.Client/Generated",
+        "src/Hexalith.Folders/Queries/Audit"
       ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
-      "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
-      "last_evaluated_at": "2026-05-18"
+      "coverage_notes": "Story 6.1 added in-memory audit projections (AuditTrail, AuditRecord, OperationTimeline, OperationTimelineEntry) under Queries/Audit; their snapshots are swept here.",
+      "last_evaluated_at": "2026-05-28"
     },
     {
       "channel": "provider-diagnostics",
