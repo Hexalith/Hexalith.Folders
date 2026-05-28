@@ -12,6 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Cli.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.IntegrationTests" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />

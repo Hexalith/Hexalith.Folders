@@ -4,7 +4,9 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Cli\Hexalith.Folders.Cli.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Mcp\Hexalith.Folders.Mcp.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
   </ItemGroup>
@@ -22,8 +24,31 @@
       <Link>Parity\GoldenLifecycle.cs</Link>
     </Compile>
   </ItemGroup>
+  <!-- Story 5.6: link (not copy) the CLI test harness and the MCP test support so the cross-adapter
+       behavioral-parity tests drive the *same* surface the per-adapter test suites already prove. The linked
+       sources reference internal adapter types; that compiles because both adapter csproj declare
+       <InternalsVisibleTo Include="Hexalith.Folders.IntegrationTests"/>. Hexalith.Folders.slnx is unchanged. -->
+  <ItemGroup>
+    <Compile Include="..\Hexalith.Folders.Cli.Tests\TestSupport\CliTestHarness.cs">
+      <Link>AdapterParity\TestSupport\CliTestHarness.cs</Link>
+    </Compile>
+    <Compile Include="..\Hexalith.Folders.Cli.Tests\TestSupport\TestCliConsole.cs">
+      <Link>AdapterParity\TestSupport\TestCliConsole.cs</Link>
+    </Compile>
+    <Compile Include="..\Hexalith.Folders.Cli.Tests\TestSupport\CapturingHttpHandler.cs">
+      <Link>AdapterParity\TestSupport\CapturingHttpHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Hexalith.Folders.Cli.Tests\TestSupport\TestData.cs">
+      <Link>AdapterParity\TestSupport\TestData.cs</Link>
+    </Compile>
+    <Compile Include="..\Hexalith.Folders.Mcp.Tests\TestSupport.cs">
+      <Link>AdapterParity\TestSupport\McpTestSupport.cs</Link>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NSubstitute" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio" />
