@@ -11,8 +11,10 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.UI.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.UI.E2E.Tests" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
+    <ProjectReference Include="..\..\Hexalith.FrontComposer\src\Hexalith.FrontComposer.Shell\Hexalith.FrontComposer.Shell.csproj" />
   </ItemGroup>
 </Project>

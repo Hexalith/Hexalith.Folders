@@ -103,7 +103,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
-        AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client"]);
+        AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client", "Hexalith.FrontComposer.Shell"]);
         AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Tenants"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
@@ -117,7 +117,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Mcp.Tests", ["Hexalith.Folders.Mcp", "Hexalith.Folders.Testing"]);
-        AssertReferences(references, "Hexalith.Folders.UI.E2E.Tests", ["Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.UI.E2E.Tests", ["Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);

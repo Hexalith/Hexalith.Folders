@@ -1,0 +1,115 @@
+using Bunit;
+using Bunit.TestDoubles;
+
+using Hexalith.Folders.UI.Components.Layout;
+using Hexalith.Folders.UI.Components.Pages;
+using Hexalith.FrontComposer.Contracts.Rendering;
+using Hexalith.FrontComposer.Contracts.Storage;
+using Hexalith.FrontComposer.Shell.Extensions;
+using Hexalith.FrontComposer.Shell.State.Theme;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.FluentUI.AspNetCore.Components;
+
+using NSubstitute;
+
+using Shouldly;
+
+using Xunit;
+
+namespace Hexalith.Folders.UI.Tests;
+
+public sealed class ShellCompositionTests
+{
+    [Fact]
+    public async Task MainLayout_RendersFrontComposerShell()
+    {
+        BunitContext ctx = new();
+        try
+        {
+            ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+            ctx.Services.AddLogging();
+            ctx.Services.AddFluentUIComponents();
+            ctx.Services.AddHexalithFrontComposerQuickstart();
+            ctx.Services.Replace(ServiceDescriptor.Scoped<IStorageService, InMemoryStorageService>());
+            ctx.Services.Replace(ServiceDescriptor.Scoped<IUserContextAccessor>(_ =>
+            {
+                IUserContextAccessor accessor = Substitute.For<IUserContextAccessor>();
+                accessor.TenantId.Returns("test-tenant");
+                accessor.UserId.Returns("test-user");
+                return accessor;
+            }));
+            ctx.Services.Replace(ServiceDescriptor.Scoped<IThemeService>(_ => Substitute.For<IThemeService>()));
+
+            // Stub the JS modules the shell loads on first render so bUnit's loose runtime resolves them.
+            ctx.JSInterop.SetupModule("./_content/Hexalith.FrontComposer.Shell/js/fc-beforeunload.js");
+            ctx.JSInterop.SetupModule("./_content/Hexalith.FrontComposer.Shell/js/fc-prefers-color-scheme.js");
+            ctx.JSInterop.SetupModule("./_content/Hexalith.FrontComposer.Shell/js/fc-keyboard.js");
+            ctx.JSInterop.SetupModule("./_content/Hexalith.FrontComposer.Shell/js/fc-focus.js");
+
+            RenderFragment childContent = builder =>
+            {
+                builder.OpenElement(0, "p");
+                builder.AddAttribute(1, "data-testid", "inside-shell");
+                builder.AddContent(2, "X");
+                builder.CloseElement();
+            };
+
+            IRenderedComponent<MainLayout> rendered = ctx.Render<MainLayout>(parameters => parameters
+                .Add(p => p.Body, childContent));
+
+            rendered.WaitForAssertion(() =>
+            {
+                rendered.Markup.ShouldContain("fc-shell-root");
+                rendered.Find("[data-testid=\"inside-shell\"]").ShouldNotBeNull();
+            });
+        }
+        finally
+        {
+            // FluentUI's DataGridFocusScope is IAsyncDisposable only; the default sync Dispose
+            // on the bUnit service provider would throw. Drain via DisposeAsync explicitly.
+            await ctx.DisposeAsync();
+        }
+    }
+
+    [Fact]
+    public void Home_RendersWithoutMutationControls()
+    {
+        using BunitContext ctx = new();
+        IRenderedComponent<Home> rendered = ctx.Render<Home>();
+
+        rendered.Find("h1").ShouldNotBeNull();
+        rendered.Find("[data-testid=\"console-page-home-root\"]").ShouldNotBeNull();
+
+        rendered.FindAll("form").ShouldBeEmpty();
+        rendered.FindAll("fluentinputform").ShouldBeEmpty();
+        rendered.FindAll("fluentdialog").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-command]").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-mutation]").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Composition_DoesNotResolveAnyServerOnlyType()
+    {
+        (IServiceCollection services, _, _) = CompositionRootFactory.Build(
+            CompositionRootFactory.WithAuthority("https://example.invalid/realm"));
+
+        // No descriptor's service-type or implementation-type may carry server-only namespace prefixes.
+        // We assert at the descriptor list level — provider build introspection isn't required, and a
+        // server-only registration would surface here regardless of whether anything resolved it.
+        IEnumerable<string> registeredTypeNames = services
+            .SelectMany(d => new[] { d.ServiceType.FullName, d.ImplementationType?.FullName })
+            .Where(name => name is not null)
+            .Cast<string>();
+
+        foreach (string name in registeredTypeNames)
+        {
+            name.ShouldNotStartWith("Hexalith.Folders.Server.");
+            name.ShouldNotStartWith("Hexalith.Folders.Aggregates.");
+            name.ShouldNotStartWith("Hexalith.Folders.Domain.");
+            name.ShouldNotStartWith("Hexalith.Folders.Workers.");
+        }
+    }
+}
