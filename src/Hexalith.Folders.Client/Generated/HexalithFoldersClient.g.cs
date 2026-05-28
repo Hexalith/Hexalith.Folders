@@ -1417,7 +1417,7 @@ namespace Hexalith.Folders.Client.Generated
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-
+                
                     // Operation Path: "api/v1/folders"
                     urlBuilder_.Append("api/v1/folders");
 
@@ -6967,7 +6967,7 @@ namespace Hexalith.Folders.Client.Generated
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-
+                
                     // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status"
                     urlBuilder_.Append("api/v1/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
