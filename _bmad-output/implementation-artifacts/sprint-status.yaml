@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-28T19:00:00+02:00
+last_updated: 2026-05-28T20:30:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -119,7 +119,7 @@ development_status:
   5-5-validate-golden-lifecycle-parity-across-rest-and-sdk: done
   5-6-validate-behavioral-parity-across-cli-and-mcp: done
   5-7-validate-mixed-surface-handoff-scenario: done
-  epic-5-retrospective: optional
+  epic-5-retrospective: done
 
   # Epic 6: Read-Only Workspace Trust Console And Audit Review
   epic-6: backlog

@@ -522,14 +522,14 @@ The SDK-as-canonical reframe (per §"Project Context Analysis → Scale & Comple
 | 68 | `idempotency_conflict` | Same key, different payload — caller bug |
 | 69 | `validation_error` | Server-side input validation failed |
 | 70 | `provider_failure_known` | Provider returned categorized failure (timeout / 4xx / 5xx) |
-| 71 | `provider_outcome_unknown` | Provider call did not confirm; reconciliation entered |
+| 71 | `unknown_provider_outcome` | Provider call did not confirm; reconciliation entered |
 | 72 | `reconciliation_required` | Workspace in `reconciliation_required` state; not retryable until cleared |
 | 73 | `not_found` | Resource not found within tenant scope |
 | 74 | `state_transition_invalid` | Operation not valid in current workspace state (per C6 matrix) |
 | 75 | `redacted` | Field redacted by tenant policy (informational; not a hard failure for diagnostic commands) |
 | 1 | `internal_error` | Catch-all for unmapped server exceptions; correlation ID always emitted to stderr |
 
-**MCP failure-kind mapping (canonical, asserted by C13 oracle):** every MCP tool failure result includes `kind ∈ {usage_error, credential_missing, tenant_access_denied, workspace_locked, idempotency_conflict, validation_error, provider_failure_known, provider_outcome_unknown, reconciliation_required, not_found, state_transition_invalid, redacted, internal_error}` plus `correlationId`, `code`, `retryable`, `clientAction`. The `kind` set is identical to the canonical category set (one-to-one mapping); never collapse multiple categories into a single `kind` for MCP convenience.
+**MCP failure-kind mapping (canonical, asserted by C13 oracle):** every MCP tool failure result includes `kind ∈ {usage_error, credential_missing, tenant_access_denied, workspace_locked, idempotency_conflict, validation_error, provider_failure_known, unknown_provider_outcome, reconciliation_required, not_found, state_transition_invalid, redacted, internal_error}` plus `correlationId`, `code`, `retryable`, `clientAction`. The `kind` set is identical to the canonical category set (one-to-one mapping); never collapse multiple categories into a single `kind` for MCP convenience. **Note:** the abridged set above is illustrative; the authoritative `kind` vocabulary is the full `CanonicalErrorCategory` enum (43 post-SDK members) as published in `tests/fixtures/parity-contract.yaml` and validated by `tests/fixtures/parity-contract.schema.json`. Assert against the oracle file, not this prose.
 
 **Cross-adapter invariants (asserted by parity tests):**
 
@@ -707,7 +707,8 @@ Most rules cascade from decisions in §"Core Architectural Decisions"; this sect
 | `Idempotency-Key` | request | yes for mutating ops | per A-9; opaque ≤ 128 chars |
 | `X-Correlation-Id` | request + response | yes | ULID; propagated end-to-end per concern #15 |
 | `X-Hexalith-Task-Id` | request + response | yes for task-scoped ops | ULID; propagated alongside correlation |
-| `X-Hexalith-Retry-As` | response | conditional | Set to `stream` on `413` from `PutFileInline` (per D-9) |
+| `X-Hexalith-Retry-Transport` | response | conditional | Set to `stream` on `413` from inline file mutations (per D-9); transport-substitution hint, distinct from the request-side `X-Hexalith-Retry-As` (retry-allocation `[caller, operator]`) — names kept disjoint to avoid round-trip echo conflicts |
+| `X-Hexalith-Retry-As` | request | conditional | Retry-allocation hint `[caller, operator]` on file mutations |
 | `X-Hexalith-Freshness` | response | conditional | Reports staleness for snapshot-or-eventually-consistent reads (per C8) |
 | Content negotiation | request | yes | `application/json` for inline; `multipart/form-data` for streaming uploads; `application/problem+json` always accepted for errors |
 
