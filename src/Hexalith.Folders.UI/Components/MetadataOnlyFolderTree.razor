@@ -1,0 +1,79 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<div data-testid="metadata-only-folder-tree" class="fc-folder-tree">
+    @if (!_hasWorkspaceContext)
+    {
+        <div data-testid="metadata-only-folder-tree-no-context" data-fc-empty-reason="no_workspace_bound_content" role="note">
+            <strong>No workspace-bound content</strong>
+            <p>Folder metadata is available only within a workspace context. Open a workspace to inspect its metadata-only file tree.</p>
+        </div>
+    }
+    else if (_sorted.Count == 0)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.NoMatches" />
+    }
+    else
+    {
+        <table class="fc-folder-tree-table">
+            <caption>Metadata-only folder tree (read-only; no file contents, diffs, or downloads).</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Path</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Size class</th>
+                    <th scope="col">Last op</th>
+                    <th scope="col">Changed</th>
+                    <th scope="col">Access</th>
+                    <th scope="col">Redaction</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (FileMetadataItem item in _sorted)
+                {
+                    // Defence-in-depth: the path of a redacted or excluded entry is withheld even if the
+                    // server (contract: omits path for excluded) ever leaks one. Binary-disallowed keeps
+                    // its path — only its content is disallowed. The path column never carries a value for
+                    // a withheld entry, neither in the cell nor in the tooltip.
+                    bool pathWithheld = item.Redaction is FileMetadataItemRedaction.Redacted or FileMetadataItemRedaction.Excluded;
+                    FieldDisclosure pathDisclosure = item.Redaction switch
+                    {
+                        FileMetadataItemRedaction.Redacted => FieldDisclosure.Redacted,
+                        FileMetadataItemRedaction.Excluded => FieldDisclosure.Missing,
+                        _ => FieldDisclosure.Visible,
+                    };
+                    string? displayName = pathWithheld ? null : item.Path?.DisplayName;
+                    string? fullPath = pathWithheld ? null : item.Path?.NormalizedPath;
+                    bool isDirectory = item.Kind == FileMetadataItemKind.Directory;
+                    // Size is only reliable for a fully-permitted file; a withheld/excluded byte length must
+                    // not be presented as a real "empty" size (fabricated metadata).
+                    bool sizeKnown = item.Redaction == FileMetadataItemRedaction.Not_redacted && !isDirectory;
+                    long? sizeBytes = sizeKnown ? item.ByteLength : null;
+                    FieldDisclosure redactionDisclosure = RedactionDisclosureMapper.FromFileMetadataRedaction(item.Redaction);
+
+                    <tr data-testid="metadata-only-folder-tree-row">
+                        <td style="@($"padding-left:{DepthOf(item)}rem")">
+                            <span title="@fullPath">
+                                <RedactedField Disclosure="@pathDisclosure" Value="@displayName" ColumnHeader="Path" />
+                            </span>
+                        </td>
+                        <td>@ConsoleStatusText.ResolveFileKindLabel(item.Kind)</td>
+                        <td>@ConsoleStatusText.ResolveSizeClass(sizeBytes)</td>
+                        <td><RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Last op" /></td>
+                        <td><RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Changed" /></td>
+                        <td>
+                            <FcStatusBadge Slot="@ConsoleStatusText.ResolveFileAccessSlot(item.Redaction)"
+                                           Label="@ConsoleStatusText.ResolveFileAccessLabel(item.Redaction)"
+                                           ColumnHeader="Access" />
+                        </td>
+                        <td>
+                            <RedactedField Disclosure="@redactionDisclosure" Value="Not redacted" ColumnHeader="Redaction" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

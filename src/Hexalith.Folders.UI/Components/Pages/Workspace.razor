@@ -1,0 +1,136 @@
+@page "/folders/{FolderId}/workspaces/{WorkspaceId}"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<PageTitle>Hexalith Folders — Workspace @WorkspaceId</PageTitle>
+
+@* Workspace view (§3.2): banner → h1 → trust summary → predictable UX-DR18 sections → trust matrix.
+   Strictly read-only: no file open/content/diff/download, no repair/retry/release/discard control. *@
+<div data-testid="console-page-workspace-root">
+    <TenantScopeBanner Permissions="@_permissions" />
+    <h1>Workspace @WorkspaceId</h1>
+
+    @if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_loading)
+    {
+        <p data-testid="console-page-workspace-loading" aria-busy="true">Loading workspace diagnostics…</p>
+    }
+    else if (_summary is not null && _status is not null)
+    {
+        <section id="console-page-workspace-section-overview" aria-label="Overview" data-testid="console-page-workspace-section-overview">
+            <h2>Overview</h2>
+            <WorkspaceTrustSummary Model="@_summary" />
+        </section>
+
+        <section id="console-page-workspace-section-folder-metadata" aria-label="Folder metadata" data-testid="console-page-workspace-section-folder-metadata">
+            <h2>Folder metadata</h2>
+            <MetadataOnlyFolderTree FolderId="@FolderId" WorkspaceId="@WorkspaceId" TaskId="@_taskId" Items="@_fileItems" />
+        </section>
+
+        <section id="console-page-workspace-section-diagnosis" aria-label="Diagnosis" data-testid="console-page-workspace-section-diagnosis">
+            <h2>Diagnosis</h2>
+            <dl>
+                <dt>Dirty state</dt>
+                <dd>
+                    @if (_dirty is not null)
+                    {
+                        <OperatorDispositionBadge Disposition="@_dirty.Disposition" ColumnHeader="Dirty disposition" />
+                        <span>@_dirty.Status</span>
+                    }
+                    else
+                    {
+                        <span>Unknown</span>
+                    }
+                </dd>
+                <dt>Latest reason category</dt>
+                <dd><code>@ConsoleStatusText.ResolveErrorReasonToken(_status.LastFailureCategory)</code></dd>
+                <dt>Retry eligibility</dt>
+                <dd>
+                    @* Advisory display only — never a retry action (read-only console). *@
+                    <span data-testid="console-page-workspace-retry-advisory">
+                        @(_status.RetryEligibility?.Eligible == true ? "Eligible (advisory)" : "Not eligible (advisory)")
+                    </span>
+                </dd>
+            </dl>
+        </section>
+
+        <section id="console-page-workspace-section-audit-trail" aria-label="Audit trail" data-testid="console-page-workspace-section-audit-trail">
+            <h2>Audit trail</h2>
+            <p>Audit trail and operation timeline diagnostics ship with Story 6.8.</p>
+            <p><span aria-disabled="true" data-testid="console-page-workspace-audit-trail-pending">Audit trail (available in Story 6.8)</span></p>
+        </section>
+
+        <section id="console-page-workspace-section-provider-readiness" aria-label="Provider readiness" data-testid="console-page-workspace-section-provider-readiness">
+            <h2>Provider readiness</h2>
+            <p>Provider readiness and support diagnostics ship with Story 6.7.</p>
+            <p><span aria-disabled="true" data-testid="console-page-workspace-provider-pending">Provider readiness (available in Story 6.7)</span></p>
+        </section>
+
+        <section id="console-page-workspace-section-lock-task-history" aria-label="Lock and task history" data-testid="console-page-workspace-section-lock-task-history">
+            <h2>Lock/task history</h2>
+            <dl>
+                <dt>Lock state</dt>
+                <dd>
+                    @if (_lock is not null)
+                    {
+                        <FcStatusBadge Slot="@ConsoleStatusText.ResolveLockSlot(_lock.LockState)"
+                                       Label="@ConsoleStatusText.ResolveLockLabel(_lock.LockState)"
+                                       ColumnHeader="Lock state" />
+                    }
+                    else
+                    {
+                        <span>Unknown</span>
+                    }
+                </dd>
+                @if (_lock?.Lease is { } lease)
+                {
+                    <dt>Lease</dt>
+                    <dd>
+                        <span>@lease.LeaseStatus</span>,
+                        acquired <time>@lease.AcquiredAt.ToString("u", CultureInfo.InvariantCulture)</time>,
+                        expires <time>@lease.ExpiresAt.ToString("u", CultureInfo.InvariantCulture)</time>
+                    </dd>
+                }
+                <dt>Task</dt>
+                <dd><code>@(_taskId ?? "Unknown")</code></dd>
+                <dt>Cleanup</dt>
+                <dd>
+                    @if (_cleanup is not null)
+                    {
+                        <FcStatusBadge Slot="@ConsoleStatusText.ResolveCleanupSlot(_cleanup.Status)"
+                                       Label="@ConsoleStatusText.ResolveCleanupLabel(_cleanup.Status)"
+                                       ColumnHeader="Cleanup" />
+                    }
+                    else
+                    {
+                        <span>Not available</span>
+                    }
+                </dd>
+            </dl>
+        </section>
+
+        <section id="console-page-workspace-section-access-evidence" aria-label="Access evidence" data-testid="console-page-workspace-section-access-evidence">
+            <h2>Access evidence</h2>
+            @if (_permissions is not null)
+            {
+                <p>Effective folder permissions: <code>@string.Join(", ", _permissions.Permissions?.Select(static p => p.ToString()) ?? Enumerable.Empty<string>())</code></p>
+            }
+            else
+            {
+                <p>Authorization evidence is not available for this scope.</p>
+            }
+        </section>
+
+        <TrustMatrix Cells="@_trustCells" />
+    }
+    else
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+</div>

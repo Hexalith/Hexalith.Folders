@@ -1,0 +1,125 @@
+@page "/folders/{FolderId}"
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+@inject IClient Client
+@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
+
+<PageTitle>Hexalith Folders — Folder @FolderId</PageTitle>
+
+@* Folder view (§3.1): scope-before-evidence. The metadata-only tree renders only within a workspace
+   context; on this folder-only route it shows the "no workspace-bound content" state (AC #4). *@
+<div data-testid="console-page-folder-detail-root">
+    <TenantScopeBanner Permissions="@_permissions" />
+    <h1>Folder @FolderId</h1>
+
+    @if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_loading)
+    {
+        <p data-testid="console-page-folder-detail-loading" aria-busy="true">Loading folder diagnostics…</p>
+    }
+    else if (_lifecycle is not null)
+    {
+        <section aria-label="Folder identity" data-testid="console-page-folder-detail-identity">
+            <dl>
+                <dt>Folder</dt>
+                <dd><SafeCopyId Value="@FolderId" ColumnHeader="Folder" /></dd>
+                <dt>Disposition</dt>
+                <dd>
+                    <OperatorDispositionBadge Disposition="@_disposition" ColumnHeader="Disposition" />
+                    <TechnicalStateMetadata State="@_lifecycle.LifecycleState" ColumnHeader="State" />
+                </dd>
+                <dt>Archived</dt>
+                <dd>@(_lifecycle.Archived ? "Yes" : "No")</dd>
+                <dt>Repository binding</dt>
+                <dd><code>@DisplayOrUnknown(_lifecycle.RepositoryBindingId)</code></dd>
+                <dt>Provider binding</dt>
+                <dd><code>@DisplayOrUnknown(_lifecycle.ProviderBindingRef)</code></dd>
+            </dl>
+        </section>
+
+        <section aria-label="Workspaces" data-testid="console-page-folder-detail-workspaces">
+            <h2>Workspaces</h2>
+            <p>Open a workspace by its identifier to inspect its trust summary and metadata-only file tree.</p>
+            <div class="fc-folder-nav">
+                <label for="console-page-folder-detail-workspace-input">Workspace identifier</label>
+                <input id="console-page-folder-detail-workspace-input" @bind="_workspaceId" data-testid="console-page-folder-detail-workspace-input" />
+                <button type="button" @onclick="OpenWorkspace" data-testid="console-page-folder-detail-open-workspace">Open workspace</button>
+            </div>
+            <MetadataOnlyFolderTree FolderId="@FolderId" />
+        </section>
+    }
+    else
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+</div>
+
+@code {
+    /// <summary>The folder identifier from the route.</summary>
+    [Parameter]
+    public string FolderId { get; set; } = default!;
+
+    private EffectivePermissions? _permissions;
+    private FolderLifecycleStatus? _lifecycle;
+    private ConsoleErrorView? _error;
+    private OperatorDispositionLabel _disposition;
+    private bool _loading = true;
+    private string _workspaceId = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _loading = true;
+        _error = null;
+        _permissions = null;
+        _lifecycle = null;
+
+        string correlationId = Guid.NewGuid().ToString();
+        ReadConsistencyClass freshness = ReadConsistencyClass.Eventually_consistent;
+
+        try
+        {
+            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, correlationId, freshness).ConfigureAwait(false);
+        }
+        catch (HexalithFoldersApiException)
+        {
+            // Advisory for the banner; a genuine denial still surfaces on the lifecycle read below.
+            _permissions = null;
+        }
+
+        try
+        {
+            _lifecycle = await Client.GetFolderLifecycleStatusAsync(FolderId, correlationId, freshness).ConfigureAwait(false);
+            if (_lifecycle is not null)
+            {
+                _disposition = DispositionLabelMapper.ResolveDisposition(
+                    _lifecycle.LifecycleState,
+                    _lifecycle.Freshness?.Stale ?? false);
+            }
+        }
+        catch (HexalithFoldersApiException ex)
+        {
+            _error = ConsoleErrorPresenter.FromException(ex, correlationId);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void OpenWorkspace()
+    {
+        if (!string.IsNullOrWhiteSpace(_workspaceId))
+        {
+            Navigation.NavigateTo(
+                $"/folders/{Uri.EscapeDataString(FolderId)}/workspaces/{Uri.EscapeDataString(_workspaceId.Trim())}");
+        }
+    }
+
+    private static string DisplayOrUnknown(string? value)
+        => string.IsNullOrWhiteSpace(value) ? "Unknown" : value;
+}

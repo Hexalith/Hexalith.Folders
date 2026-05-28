@@ -1,0 +1,29 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<section data-testid="tenant-scope-banner" aria-label="Tenant scope" class="fc-tenant-scope-banner">
+    <div class="fc-tenant-scope-row">
+        <span class="fc-tenant-scope-key">Tenant</span>
+        <code data-testid="tenant-scope-tenant-id">@_tenantId</code>
+    </div>
+    <div class="fc-tenant-scope-row">
+        <span class="fc-tenant-scope-key">Effective access</span>
+        <FcStatusBadge Slot="@_accessSlot" Label="@_accessLabel" ColumnHeader="Effective access" />
+    </div>
+    <div class="fc-tenant-scope-row">
+        <span class="fc-tenant-scope-key">Principal</span>
+        <code data-testid="tenant-scope-principal">@_principal</code>
+    </div>
+    <div class="fc-tenant-scope-row">
+        <span class="fc-tenant-scope-key">Delegated actor</span>
+        <span data-testid="tenant-scope-delegated-actor">@_delegatedActor</span>
+    </div>
+    <div class="fc-tenant-scope-row">
+        <span class="fc-tenant-scope-key">Policy scope</span>
+        <span data-testid="tenant-scope-policy">@_policyScope</span>
+    </div>
+    <div class="fc-tenant-scope-row">
+        <span class="fc-tenant-scope-key">Last authorization check</span>
+        <span data-testid="tenant-scope-last-auth-check">@_lastAuthCheck</span>
+    </div>
+</section>

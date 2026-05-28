@@ -1,0 +1,47 @@
+@namespace Hexalith.Folders.UI.Components
+@using System.Globalization
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Shell.Components.Badges
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<section data-testid="trust-matrix" aria-label="Trust matrix" class="fc-trust-matrix">
+    <table class="fc-trust-matrix-table">
+        <caption>Trust matrix — six trust dimensions as grouped evidence.</caption>
+        <thead>
+            <tr>
+                <th scope="col">Dimension</th>
+                <th scope="col">State</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Last updated</th>
+                <th scope="col">Evidence</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (TrustMatrixCell cell in Cells)
+            {
+                <tr data-testid="trust-matrix-cell" data-fc-dimension-state="@cell.State">
+                    <th scope="row">@cell.Dimension</th>
+                    <td>
+                        <FluentIcon Value="@ResolveIcon(cell.State)" aria-hidden="true" />
+                        <FcStatusBadge Slot="@TrustDimensionStateMapper.ResolveSlot(cell.State)"
+                                       Label="@TrustDimensionStateMapper.ResolveLabel(cell.State)"
+                                       ColumnHeader="@cell.Dimension" />
+                    </td>
+                    <td>@cell.ReasonSummary</td>
+                    <td>@(cell.LastUpdated is { } updated ? updated.ToString("u", CultureInfo.InvariantCulture) : "Unknown")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(cell.EvidenceHref))
+                        {
+                            <a href="@cell.EvidenceHref">@(cell.EvidenceLabel ?? "View evidence")</a>
+                        }
+                        else
+                        {
+                            <span>Not available</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

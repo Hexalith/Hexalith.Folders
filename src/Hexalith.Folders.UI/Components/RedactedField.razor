@@ -13,7 +13,14 @@
     }
     @if (Disclosure == Hexalith.Folders.UI.Services.FieldDisclosure.Visible)
     {
-        <span>@_displayText</span>
+        @if (Monospace)
+        {
+            <code>@_displayText</code>
+        }
+        else
+        {
+            <span>@_displayText</span>
+        }
     }
     else
     {

@@ -6,6 +6,11 @@
 <div data-testid="console-page-home-root">
     <h1>Hexalith Folders — Operations Console</h1>
     <p>Read-only diagnostic surface. Mutation flows are not exposed here.</p>
+    <nav aria-label="Diagnostic workflows">
+        <p data-testid="console-page-home-folders-link">
+            <a href="/folders">Folders — folder &amp; workspace diagnostics</a>
+        </p>
+    </nav>
     @if (Env.IsDevelopment())
     {
         <p data-testid="console-page-home-dev-gallery-link">

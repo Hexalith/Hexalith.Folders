@@ -1,0 +1,35 @@
+@page "/folders"
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Services
+@inject Microsoft.AspNetCore.Components.NavigationManager Navigation
+
+<PageTitle>Hexalith Folders — Folders</PageTitle>
+
+@* Discovery entry (Journey 1 B→C→E). The SDK exposes per-folder GET only — there is no tenant-wide
+   folder-list endpoint — so discovery is by folder identifier. The navigation field is a read-only
+   search/navigate affordance (UX-DR23), not a mutation. *@
+<div data-testid="console-page-folders-root">
+    <TenantScopeBanner />
+    <h1>Folders</h1>
+    <p>Read-only folder orientation for your authenticated tenant. Open a folder by its identifier to inspect its lifecycle, readiness, and metadata-only evidence.</p>
+
+    <div class="fc-folder-nav">
+        <label for="console-page-folders-id-input">Folder identifier</label>
+        <input id="console-page-folders-id-input" @bind="_folderId" data-testid="console-page-folders-id-input" />
+        <button type="button" @onclick="OpenFolder" data-testid="console-page-folders-open">Open folder</button>
+    </div>
+
+    <ConsoleEmptyState Reason="EmptyStateReason.InsufficientFilterScope" />
+</div>
+
+@code {
+    private string _folderId = string.Empty;
+
+    private void OpenFolder()
+    {
+        if (!string.IsNullOrWhiteSpace(_folderId))
+        {
+            Navigation.NavigateTo($"/folders/{Uri.EscapeDataString(_folderId.Trim())}");
+        }
+    }
+}

@@ -1,0 +1,46 @@
+@namespace Hexalith.Folders.UI.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime Js
+
+@* Story 6.6 / UX-DR27 / AC #9 — a safe identifier: monospace value plus a read-only copy-to-clipboard
+   affordance. There is no editable field and no mutation: the button only copies the displayed value to
+   the clipboard, so it never trips the 5-selector command-suppression guard. *@
+<span class="fc-safe-copy" data-testid="safe-copy">
+    <code data-testid="@CodeTestId">@Value</code>
+    <button type="button"
+            class="fc-safe-copy-button"
+            data-testid="safe-copy-button"
+            aria-label="@_copyLabel"
+            title="@_copyLabel"
+            @onclick="CopyAsync">Copy</button>
+</span>
+
+@code {
+    /// <summary>Gets or sets the identifier value to display (monospace) and copy.</summary>
+    [Parameter]
+    [EditorRequired]
+    public string? Value { get; set; }
+
+    /// <summary>Gets or sets the accessible column header; drives the copy button's <c>aria-label</c>.</summary>
+    [Parameter]
+    public string? ColumnHeader { get; set; }
+
+    /// <summary>Gets or sets an optional <c>data-testid</c> applied to the monospace value element.</summary>
+    [Parameter]
+    public string? CodeTestId { get; set; }
+
+    private string _copyLabel = "Copy identifier";
+
+    /// <inheritdoc />
+    protected override void OnParametersSet()
+        => _copyLabel = string.IsNullOrWhiteSpace(ColumnHeader) ? "Copy identifier" : $"Copy {ColumnHeader}";
+
+    private async Task CopyAsync()
+    {
+        if (!string.IsNullOrEmpty(Value))
+        {
+            // Read-only clipboard copy of an already-displayed safe identifier — no server mutation.
+            await Js.InvokeVoidAsync("navigator.clipboard.writeText", Value).ConfigureAwait(false);
+        }
+    }
+}

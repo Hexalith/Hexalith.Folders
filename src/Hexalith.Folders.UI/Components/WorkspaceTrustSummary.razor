@@ -1,0 +1,106 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Icons
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Contracts.Attributes
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<section data-testid="workspace-trust-summary" aria-label="Workspace trust summary" class="fc-workspace-trust-summary">
+    <div class="fc-trust-headline" data-testid="workspace-trust-disposition">
+        @* F-4: operator disposition is the primary visual; technical state is secondary muted metadata. *@
+        <OperatorDispositionBadge Disposition="@_disposition" ColumnHeader="Disposition" />
+        <TechnicalStateMetadata State="@Model.CurrentState" ColumnHeader="State" />
+    </div>
+
+    <dl class="fc-trust-fields">
+        <dt>Tenant</dt>
+        <dd><SafeCopyId Value="@Model.Tenant" ColumnHeader="Tenant" /></dd>
+
+        <dt>Folder</dt>
+        <dd><SafeCopyId Value="@Model.Folder" ColumnHeader="Folder" /></dd>
+
+        <dt>Workspace</dt>
+        <dd><SafeCopyId Value="@Model.WorkspaceId" ColumnHeader="Workspace" /></dd>
+
+        <dt>Repository binding</dt>
+        <dd><RedactedField Disclosure="@Model.RepositoryBindingDisclosure" Value="@Model.RepositoryBinding" ColumnHeader="Repository binding" Monospace="true" /></dd>
+
+        <dt>Provider</dt>
+        <dd><RedactedField Disclosure="@Model.ProviderDisclosure" Value="@Model.Provider" ColumnHeader="Provider" Monospace="true" /></dd>
+
+        <dt>Task</dt>
+        <dd><SafeCopyId Value="@Model.TaskId" ColumnHeader="Task" /></dd>
+
+        <dt>Correlation</dt>
+        <dd><SafeCopyId Value="@Model.CorrelationId" ColumnHeader="Correlation" CodeTestId="workspace-trust-correlation" /></dd>
+
+        <dt>Authorization posture</dt>
+        <dd><FcStatusBadge Slot="@_authorizationSlot" Label="@_authorizationLabel" ColumnHeader="Authorization posture" /></dd>
+
+        <dt>Lock state</dt>
+        <dd>
+            @if (Model.LockState is { } lockState)
+            {
+                <FcStatusBadge Slot="@ConsoleStatusText.ResolveLockSlot(lockState)"
+                               Label="@ConsoleStatusText.ResolveLockLabel(lockState)"
+                               ColumnHeader="Lock state" />
+            }
+            else
+            {
+                @* UX-DR14: unknown is still a status indicator — neutral badge (icon/shape + colour + label), not bare text. *@
+                <span data-testid="workspace-trust-lock-unknown">
+                    <FcStatusBadge Slot="BadgeSlot.Neutral" Label="Unknown" ColumnHeader="Lock state" />
+                </span>
+            }
+        </dd>
+
+        <dt>Dirty state</dt>
+        <dd>
+            @if (Model.DirtyDisposition is { } dirtyDisposition)
+            {
+                @* The dirty-state disposition badge is the status indicator; the short status text is supplementary. *@
+                <OperatorDispositionBadge Disposition="@dirtyDisposition" ColumnHeader="Dirty state" />
+                <span data-testid="workspace-trust-dirty">@Model.DirtyState</span>
+            }
+            else
+            {
+                <span data-testid="workspace-trust-dirty">
+                    <FcStatusBadge Slot="BadgeSlot.Neutral" Label="Unknown" ColumnHeader="Dirty state" />
+                </span>
+            }
+        </dd>
+
+        <dt>Commit reference</dt>
+        <dd><RedactedField Disclosure="@Model.CommitReferenceDisclosure" Value="@Model.CommitReferenceText" ColumnHeader="Commit reference" /></dd>
+
+        <dt>Latest reason category</dt>
+        <dd><code data-testid="workspace-trust-reason-category">@_reasonCategoryToken</code></dd>
+    </dl>
+
+    <div class="fc-trust-freshness" data-testid="workspace-trust-freshness">
+        @if (Model.FreshnessStale)
+        {
+            <FluentIcon Value="@FoldersConsoleIcons.Clock16()" aria-hidden="true" />
+            <span data-fc-freshness="stale">Stale</span>
+        }
+        else
+        {
+            <span data-fc-freshness="current">Current</span>
+        }
+        @if (Model.FreshnessObservedAt is not null)
+        {
+            <span>as of <time datetime="@_freshnessObservedAtMachine">@_freshnessObservedAt</time></span>
+        }
+        else
+        {
+            <span>as of Unknown</span>
+        }
+        @if (!string.IsNullOrEmpty(Model.ProjectionWatermark))
+        {
+            <span>· watermark <code>@Model.ProjectionWatermark</code></span>
+        }
+        @if (!string.IsNullOrEmpty(Model.FreshnessReasonCode))
+        {
+            <span data-testid="workspace-trust-freshness-reason">· @Model.FreshnessReasonCode</span>
+        }
+    </div>
+</section>

@@ -1,0 +1,9 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.FrontComposer.Shell.Components.Icons
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<div data-testid="console-empty-state" data-fc-empty-reason="@_reasonToken" role="note">
+    <FluentIcon Value="@FcFluentIcons.DocumentSearch48()" aria-hidden="true" />
+    <strong>@_heading</strong>
+    <p>@_body</p>
+</div>

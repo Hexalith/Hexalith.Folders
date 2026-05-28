@@ -63,6 +63,14 @@ public partial class RedactedField : ComponentBase
     [Parameter]
     public string? AdditionalCssClass { get; set; }
 
+    /// <summary>
+    /// Gets or sets whether a <see cref="FieldDisclosure.Visible"/> value renders as monospace
+    /// (<c>&lt;code&gt;</c>) — used for safe identifiers (UX-DR27). Defaults to <see langword="false"/>
+    /// so non-identifier phrases (e.g. "Not redacted") keep body typography.
+    /// </summary>
+    [Parameter]
+    public bool Monospace { get; set; }
+
     private bool IsRedacted => Disclosure == FieldDisclosure.Redacted;
 
     /// <inheritdoc />

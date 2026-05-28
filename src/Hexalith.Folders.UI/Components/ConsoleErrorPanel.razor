@@ -1,0 +1,27 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Icons
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<div data-testid="console-error-panel" data-fc-error-category="@Error.ReasonToken" role="alert">
+    <p>
+        <FluentIcon Value="@FoldersConsoleIcons.Warning16()" aria-hidden="true" />
+        <strong>Reason category:</strong>
+        <code data-testid="console-error-category">@Error.ReasonToken</code>
+    </p>
+    <p data-testid="console-error-explanation">@Error.SafeExplanation</p>
+    <p>
+        <strong>Correlation:</strong>
+        <SafeCopyId Value="@Error.CorrelationId" ColumnHeader="Correlation ID" CodeTestId="console-error-correlation" />
+    </p>
+    <p data-testid="console-error-escalation">
+        @if (Error.Retryable is bool retryable)
+        {
+            <span>Retryable: @(retryable ? "yes" : "no").</span>
+        }
+        @if (!string.IsNullOrEmpty(Error.ClientAction))
+        {
+            <span>Suggested action: @Error.ClientAction.</span>
+        }
+        <span>Escalate with the correlation ID above.</span>
+    </p>
+</div>
