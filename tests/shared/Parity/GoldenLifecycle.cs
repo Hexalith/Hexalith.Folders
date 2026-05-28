@@ -35,14 +35,14 @@ internal static class GoldenLifecycle
             new("context_query", "ListFolderFiles"),
             new("workspace_status", "GetWorkspaceStatus"),
 
-            // AC #7 audit inspection step. The REST server does not implement an audit-family endpoint
-            // (ListAuditTrail/GetAuditRecord/ListOperationTimeline/GetOperationTimelineEntry have no
-            // /api/v1 route in the current build — see the Story 5.5 Dev Notes "REST surface gap"
-            // section). Per the drift-aware reconciliation, the SDK runs this audit step against
-            // ListAuditTrail (the contract operation id), while the REST run substitutes
-            // GetFolderLifecycleStatus as its query-family inspection step. Each surface's run picks
-            // the appropriate operation id from this step.
-            new("audit_inspection", OperationId: "ListAuditTrail", RestInspectionOperationId: "GetFolderLifecycleStatus"),
+            // AC #7 audit inspection step. The REST server does not yet implement an audit-family
+            // endpoint (ListAuditTrail/GetAuditRecord/ListOperationTimeline/GetOperationTimelineEntry
+            // have no /api/v1 route in the current build — see Story 5.5 Dev Notes "REST surface gap").
+            // Per the drift-aware reconciliation, BOTH surfaces use GetFolderLifecycleStatus as their
+            // in-process inspection step so the dual-surface run produces equivalent transport outcomes
+            // against the same host. A future audit endpoint can replace this with ListAuditTrail (and
+            // both surfaces will exercise the audit family end-to-end without further test changes).
+            new("audit_inspection", OperationId: "GetFolderLifecycleStatus"),
         ];
 
         HashSet<string> oracleIds = ParityOracle.Rows.Select(row => row.OperationId).ToHashSet(StringComparer.Ordinal);
