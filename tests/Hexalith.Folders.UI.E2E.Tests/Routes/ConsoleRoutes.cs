@@ -43,4 +43,8 @@ public static class ConsoleRoutes
     /// <summary>Builds the folder-scoped operation-timeline route (Story 6.8 Diagnostic Timeline, §3.4).</summary>
     public static string OperationTimeline(string folderId)
         => string.Create(CultureInfo.InvariantCulture, $"/folders/{folderId}/operation-timeline");
+
+    /// <summary>Builds the incident-mode last-resort read-path route (Story 6.9 Incident-mode view, §3.5, F-6).</summary>
+    public static string IncidentStream(string folderId)
+        => string.Create(CultureInfo.InvariantCulture, $"/_admin/incident-stream?folder={folderId}");
 }

@@ -1,0 +1,47 @@
+@namespace Hexalith.Folders.UI.Components
+@using System.Globalization
+@using Microsoft.JSInterop
+@inject IJSRuntime Js
+
+@* Story 6.9 / F-6 guardrail 3 — a one-click, READ-ONLY clipboard copy of a metadata-only incident handoff:
+   the page-read correlation id plus the UTC timestamp window of the currently-shown events. Modelled on
+   SafeCopyId: there is no editable field and no mutation — the button only copies an already-composed
+   string, so it never trips the 5-selector command-suppression guard (no form / fluentinputform /
+   fluentdialog / [data-fc-command] / [data-fc-mutation]). The payload carries ONLY the correlation id and
+   UTC timestamps — never secrets, paths, file contents, or provider payloads. *@
+<span class="fc-correlation-copy @AdditionalCssClass" data-testid="incident-correlation-copy-wrapper">
+    <span data-testid="incident-correlation-copy-label">Copy correlation + time window</span>
+    <button type="button"
+            class="fc-safe-copy-button"
+            data-testid="incident-correlation-copy"
+            aria-label="@CopyLabel"
+            title="@CopyLabel"
+            @onclick="CopyAsync">Copy</button>
+</span>
+
+@code {
+    private const string CopyLabel = "Copy correlation id and time window";
+
+    /// <summary>Gets or sets the page-read correlation id to copy (always present on a real read).</summary>
+    [Parameter]
+    [EditorRequired]
+    public string CorrelationId { get; set; } = default!;
+
+    /// <summary>Gets or sets the pre-formatted "minTs..maxTs" UTC window, or null when none is computable.</summary>
+    [Parameter]
+    public string? TimeWindow { get; set; }
+
+    /// <summary>Gets or sets an optional extra CSS class.</summary>
+    [Parameter]
+    public string? AdditionalCssClass { get; set; }
+
+    /// <summary>The composed, metadata-only handoff payload — correlation id plus the UTC time window.</summary>
+    private string Payload
+        => string.Create(
+            CultureInfo.InvariantCulture,
+            $"correlationId={CorrelationId}; window={(string.IsNullOrWhiteSpace(TimeWindow) ? "unknown" : TimeWindow)}");
+
+    private async Task CopyAsync()
+        // Read-only clipboard copy of an already-composed metadata-only string — no server mutation.
+        => await Js.InvokeVoidAsync("navigator.clipboard.writeText", Payload).ConfigureAwait(false);
+}

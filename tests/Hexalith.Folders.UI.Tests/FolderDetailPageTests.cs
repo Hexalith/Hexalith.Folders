@@ -107,6 +107,26 @@ public sealed class FolderDetailPageTests
             .GetAttribute("href").ShouldBe("/folders/folder-1/operation-timeline");
     }
 
+    [Fact]
+    public void FolderDetail_RendersIncidentStreamLink_WithFolderQuery()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+            .Returns(Lifecycle());
+
+        IRenderedComponent<FolderDetail> rendered = ctx.Render<FolderDetail>(p => p.Add(d => d.FolderId, "folder-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-folder-detail-identity\"]").ShouldNotBeNull());
+
+        // Story 6.9 / AC #13 / UX-DR19: the Folder view links out to the F-6 incident-mode last-resort read
+        // path, supplying the folder as the ?folder= query (the only incident-stream data source is folder-scoped).
+        rendered.Find("[data-testid=\"console-page-folder-detail-incident-stream-link\"]")
+            .GetAttribute("href").ShouldBe("/_admin/incident-stream?folder=folder-1");
+    }
+
     private static readonly IReadOnlyDictionary<string, IEnumerable<string>> EmptyHeaders =
         new Dictionary<string, IEnumerable<string>>();
 

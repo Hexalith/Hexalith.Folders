@@ -1,0 +1,30 @@
+@namespace Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Icons
+@using Microsoft.FluentUI.AspNetCore.Components
+
+@* Story 6.9 / F-6 guardrail 1 — the persistent degraded-mode banner. It is rendered UNCONDITIONALLY on
+   the incident-stream page (this IS the degraded-mode surface reached via a runbook link), in every branch
+   including loading / denial / empty / unavailable. A dumb presentational component fed by the page (no
+   IClient injection) so it stays reusable/testable. Status is conveyed by text + icon + colour, never
+   colour alone (UX-DR14); the "Last projection checkpoint" is freshness-honest — an absent value renders
+   "unknown", never a fabricated 0001-01-01 nor "Current" (UX-DR26). *@
+<section data-testid="incident-degraded-mode-banner"
+         role="status"
+         aria-label="Degraded mode notice"
+         class="fc-degraded-mode-banner fc-color-danger">
+    <FluentIcon Value="@FoldersConsoleIcons.ErrorCircle16()" aria-hidden="true" />
+    <strong data-testid="incident-degraded-mode-text">DEGRADED MODE — events shown may be incomplete or out of order.</strong>
+    <span data-testid="incident-degraded-mode-checkpoint">Last projection checkpoint: @CheckpointDisplay</span>
+</section>
+
+@code {
+    /// <summary>
+    /// Gets or sets the already-formatted UTC checkpoint string (the timeline read's freshness observed-at).
+    /// A null/blank value renders as "unknown" — never a fabricated timestamp (UX-DR26).
+    /// </summary>
+    [Parameter]
+    public string? LastCheckpointUtc { get; set; }
+
+    private string CheckpointDisplay
+        => string.IsNullOrWhiteSpace(LastCheckpointUtc) ? "unknown" : LastCheckpointUtc;
+}

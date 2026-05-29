@@ -46,6 +46,10 @@
                 <dd>
                     <a href="@($"/folders/{FolderId}/audit-trail")" data-testid="console-page-folder-detail-audit-trail-link">Audit trail</a>
                     <a href="@($"/folders/{FolderId}/operation-timeline")" data-testid="console-page-folder-detail-operation-timeline-link">Operation timeline</a>
+                    @* Connected evidence (UX-DR19): the F-6 incident-mode last-resort read path (Story 6.9).
+                       Escape the folder query value to match the incident page's own NextPageHref discipline
+                       (robust against query-reserved characters in folder identifiers). *@
+                    <a href="@($"/_admin/incident-stream?folder={Uri.EscapeDataString(FolderId)}")" data-testid="console-page-folder-detail-incident-stream-link">Incident stream (last resort)</a>
                 </dd>
             </dl>
         </section>

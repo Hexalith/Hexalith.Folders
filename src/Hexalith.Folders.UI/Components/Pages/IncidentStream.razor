@@ -1,0 +1,176 @@
+@page "/_admin/incident-stream"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+
+<PageTitle>Hexalith Folders — Incident stream @Folder</PageTitle>
+
+@* Incident-mode view (§3.5) — the F-6 last-resort read path reached via a runbook link when projections
+   are degraded. Built on the existing folder-scoped operation-timeline read (Story 6.1): each entry is a
+   raw incident event row. The three F-6 guardrails are load-bearing: (1) a PERSISTENT degraded-mode banner
+   rendered in every branch, (2) the operator disposition BESIDE the raw technical state transition, and
+   (3) a one-click correlation + time-window copy affordance. Strictly read-only and metadata-only: no
+   mutation affordance, no filter UI (C4 rejection-only), no file contents / raw diffs / raw paths /
+   secrets. Redaction does NOT relax because projections are degraded (§3.6 / F-5). *@
+<div data-testid="console-page-incident-stream-root">
+    <TenantScopeBanner Permissions="@_permissions" />
+    <DegradedModeBanner LastCheckpointUtc="@CheckpointLabel()" />
+    <h1>Incident stream · @(Folder ?? "no folder selected")</h1>
+
+    @if (_timeline is not null && _error is null && !_folderless)
+    {
+        @* A read happened: offer the metadata-only incident handoff (correlation id + UTC time window). *@
+        <CorrelationCopyButton CorrelationId="@_correlationId" TimeWindow="@TimeWindowLabel()" />
+    }
+
+    @if (_loading)
+    {
+        @* F-7 perceived-wait UX (skeleton / still-loading-cancel) is Story 6.10 — a simple labelled
+           aria-busy paragraph only here. *@
+        <p data-testid="console-page-incident-stream-loading" aria-busy="true">Loading incident stream…</p>
+    }
+    else if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_folderless)
+    {
+        @* No ?folder= supplied — guide the operator to open the stream for a specific folder. Never an
+           error, never a fabricated event list (AC #9a). *@
+        <ConsoleEmptyState Reason="EmptyStateReason.InsufficientFilterScope" />
+    }
+    else if (_unavailable || _timeline is null)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+    else if (_timeline.Entries is null || _timeline.Entries.Count == 0)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.NoMatches" />
+    }
+    else
+    {
+        <table data-testid="console-page-incident-stream-table">
+            <caption>
+                Incident event stream (metadata-only), newest first as returned by the tenant-scoped
+                projection. Events shown may be incomplete or out of order while projections are degraded.
+                The operator disposition is rendered beside the raw technical from→to lifecycle transition;
+                retryability is advisory only.
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Entry</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Task</th>
+                    <th scope="col">Correlation</th>
+                    <th scope="col">Workspace</th>
+                    <th scope="col">Disposition &amp; raw event</th>
+                    <th scope="col">Result</th>
+                    <th scope="col">Retryable (advisory)</th>
+                    <th scope="col">Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (OperationTimelineEntry entry in _timeline.Entries)
+                {
+                    OperationTimelineEntryView row = OperationTimelineEntryView.Create(entry);
+                    <tr data-testid="console-page-incident-stream-row">
+                        <td>
+                            @if (row.TimelineEntryId is not null)
+                            {
+                                <SafeCopyId Value="@row.TimelineEntryId" ColumnHeader="Timeline entry" CodeTestId="console-page-incident-stream-entry-id" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Timeline entry" />
+                            }
+                        </td>
+                        <td>
+                            <span data-testid="console-page-incident-stream-timestamp">@row.Timestamp</span>
+                        </td>
+                        <td>
+                            @if (row.OperationId is not null)
+                            {
+                                <SafeCopyId Value="@row.OperationId" ColumnHeader="Operation" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Operation" />
+                            }
+                        </td>
+                        <td>
+                            @if (row.TaskId is not null)
+                            {
+                                <SafeCopyId Value="@row.TaskId" ColumnHeader="Task" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Task" />
+                            }
+                        </td>
+                        <td>
+                            @if (row.CorrelationId is not null)
+                            {
+                                <SafeCopyId Value="@row.CorrelationId" ColumnHeader="Correlation" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Correlation" />
+                            }
+                        </td>
+                        <td>
+                            <RedactedField Disclosure="@row.WorkspaceDisclosure" Value="@row.Workspace" Monospace="true" ColumnHeader="Workspace" />
+                        </td>
+                        <td data-testid="console-page-incident-stream-transition">
+                            @* F-6 guardrail 2: the Story 6.3 operator disposition rendered BESIDE the raw
+                               technical from→to lifecycle so operators don't switch vocabularies mid-incident.
+                               The disposition is the server-computed value passed through verbatim. *@
+                            <OperatorDispositionBadge Disposition="@row.Disposition" ColumnHeader="Disposition" />
+                            <TechnicalStateMetadata State="@row.FromState" IncludePrefix="false" ColumnHeader="From" />
+                            <TechnicalStateMetadata State="@row.ToState" IncludePrefix="false" ColumnHeader="To" />
+                        </td>
+                        <td>
+                            <span data-testid="console-page-incident-stream-result">@ConsoleStatusText.ResolveReasonCategoryLabel(row.SanitizedResult)</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-incident-stream-retryable">@(row.Retryable ? "Yes" : "No")</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-incident-stream-duration">@(row.DurationMilliseconds.ToString(CultureInfo.InvariantCulture)) ms</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <nav aria-label="Incident stream pagination" data-testid="console-page-incident-stream-pagination">
+            @{
+                string? nextHref = NextPageHref();
+            }
+            @if (nextHref is not null)
+            {
+                <a href="@nextHref" data-testid="console-page-incident-stream-next">Next page</a>
+            }
+            else
+            {
+                <span data-testid="console-page-incident-stream-end">End of results</span>
+            }
+        </nav>
+
+        <p data-testid="console-page-incident-stream-freshness">
+            <span>Evidence freshness:</span>
+            <span>@FreshnessLabel() · observed @ObservedAtLabel()</span>
+        </p>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Folder))
+    {
+        @* Connected evidence (UX-DR19): cross-link back to the folder's authoritative diagnostic views. *@
+        <p data-testid="console-page-incident-stream-back-links">
+            <a href="@($"/folders/{Folder}/operation-timeline")" data-testid="console-page-incident-stream-operation-timeline-link">Operation timeline</a>
+            <a href="@($"/folders/{Folder}/audit-trail")" data-testid="console-page-incident-stream-audit-trail-link">Audit trail</a>
+        </p>
+    }
+</div>
