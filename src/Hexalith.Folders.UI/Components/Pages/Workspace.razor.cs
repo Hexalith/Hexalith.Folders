@@ -180,8 +180,8 @@ public partial class Workspace : ComponentBase
         ProviderOutcomeState? providerOutcome = _status.ProviderOutcome?.State;
 
         // UX-DR19 connected-evidence: every cell links to its supporting evidence. Most are same-page
-        // fragment anchors (the sections already exist); the provider-readiness cell now links out to the
-        // dedicated provider page shipped by Story 6.7 (the audit page remains a 6.8 in-page summary).
+        // fragment anchors (the sections already exist); the provider-readiness and audit-traceability
+        // cells link out to the dedicated pages shipped by Stories 6.7 and 6.8 respectively.
         return
         [
             new TrustMatrixCell(
@@ -222,10 +222,10 @@ public partial class Workspace : ComponentBase
             new TrustMatrixCell(
                 "Audit traceability",
                 TrustDimensionState.Unknown,
-                "Audit trail and operation timeline ship with Story 6.8.",
+                "Metadata-only audit trail and operation timeline for this folder.",
                 null,
-                "#console-page-workspace-section-audit-trail",
-                "Audit trail section"),
+                $"/folders/{FolderId}/audit-trail",
+                "Audit trail page"),
         ];
     }
 

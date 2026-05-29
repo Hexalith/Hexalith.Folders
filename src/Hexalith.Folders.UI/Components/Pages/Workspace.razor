@@ -62,8 +62,9 @@
 
         <section id="console-page-workspace-section-audit-trail" aria-label="Audit trail" data-testid="console-page-workspace-section-audit-trail">
             <h2>Audit trail</h2>
-            <p>Audit trail and operation timeline diagnostics ship with Story 6.8.</p>
-            <p><span aria-disabled="true" data-testid="console-page-workspace-audit-trail-pending">Audit trail (available in Story 6.8)</span></p>
+            <p>Metadata-only audit-trail and operation-timeline evidence for this folder (read-only).</p>
+            <p><a href="@($"/folders/{FolderId}/audit-trail")" data-testid="console-page-workspace-audit-trail-link">Open audit trail</a></p>
+            <p><a href="@($"/folders/{FolderId}/operation-timeline")" data-testid="console-page-workspace-operation-timeline-link">Open operation timeline</a></p>
         </section>
 
         <section id="console-page-workspace-section-provider-readiness" aria-label="Provider readiness" data-testid="console-page-workspace-section-provider-readiness">

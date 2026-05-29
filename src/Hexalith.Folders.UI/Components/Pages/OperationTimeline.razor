@@ -1,0 +1,150 @@
+@page "/folders/{FolderId}/operation-timeline"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+
+<PageTitle>Hexalith Folders — Operation timeline @FolderId</PageTitle>
+
+@* Operation-timeline view (§3.4) — the Diagnostic Timeline (UX-DR8): scope banner → h1 → paginated
+   newest-first timeline → cursor pagination (read-only navigation) → freshness. The operator disposition
+   is the PRIMARY status visual (F-4) with the technical from→to lifecycle as muted secondary metadata.
+   Strictly read-only and metadata-only: no mutation affordance, no filter UI (C4 rejection-only). *@
+<div data-testid="console-page-operation-timeline-root">
+    <TenantScopeBanner Permissions="@_permissions" />
+    <h1>Operation timeline · @FolderId</h1>
+
+    <p>
+        <a href="@($"/folders/{FolderId}/audit-trail")" data-testid="console-page-operation-timeline-audit-link">Audit trail</a>
+    </p>
+
+    @if (_loading)
+    {
+        <p data-testid="console-page-operation-timeline-loading" aria-busy="true">Loading operation timeline…</p>
+    }
+    else if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_unavailable || _timeline is null)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+    else if (_timeline.Entries is null || _timeline.Entries.Count == 0)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.NoMatches" />
+    }
+    else
+    {
+        <table data-testid="console-page-operation-timeline-table">
+            <caption>
+                Operation timeline (Diagnostic Timeline) — newest first as returned by the tenant-scoped
+                projection. The operator disposition is the primary signal; the technical from→to lifecycle
+                transition is secondary metadata. Retryability is advisory only.
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Entry</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Task</th>
+                    <th scope="col">Correlation</th>
+                    <th scope="col">Workspace</th>
+                    <th scope="col">State transition</th>
+                    <th scope="col">Result</th>
+                    <th scope="col">Retryable (advisory)</th>
+                    <th scope="col">Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (OperationTimelineEntry entry in _timeline.Entries)
+                {
+                    OperationTimelineEntryView row = OperationTimelineEntryView.Create(entry);
+                    <tr data-testid="console-page-operation-timeline-row">
+                        <td>
+                            @if (row.TimelineEntryId is not null)
+                            {
+                                <SafeCopyId Value="@row.TimelineEntryId" ColumnHeader="Timeline entry" CodeTestId="console-page-operation-timeline-entry-id" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Timeline entry" />
+                            }
+                        </td>
+                        <td>
+                            <span data-testid="console-page-operation-timeline-timestamp">@row.Timestamp</span>
+                        </td>
+                        <td>
+                            @if (row.OperationId is not null)
+                            {
+                                <SafeCopyId Value="@row.OperationId" ColumnHeader="Operation" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Operation" />
+                            }
+                        </td>
+                        <td>
+                            @if (row.TaskId is not null)
+                            {
+                                <SafeCopyId Value="@row.TaskId" ColumnHeader="Task" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Task" />
+                            }
+                        </td>
+                        <td>
+                            @if (row.CorrelationId is not null)
+                            {
+                                <SafeCopyId Value="@row.CorrelationId" ColumnHeader="Correlation" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Correlation" />
+                            }
+                        </td>
+                        <td>
+                            <RedactedField Disclosure="@row.WorkspaceDisclosure" Value="@row.Workspace" Monospace="true" ColumnHeader="Workspace" />
+                        </td>
+                        <td data-testid="console-page-operation-timeline-transition">
+                            @* Disposition is the primary visual (F-4); technical from→to is muted secondary metadata. *@
+                            <OperatorDispositionBadge Disposition="@row.Disposition" ColumnHeader="Disposition" />
+                            <TechnicalStateMetadata State="@row.FromState" IncludePrefix="false" ColumnHeader="From" />
+                            <TechnicalStateMetadata State="@row.ToState" IncludePrefix="false" ColumnHeader="To" />
+                        </td>
+                        <td>
+                            <span data-testid="console-page-operation-timeline-result">@ConsoleStatusText.ResolveReasonCategoryLabel(row.SanitizedResult)</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-operation-timeline-retryable">@(row.Retryable ? "Yes" : "No")</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-operation-timeline-duration">@(row.DurationMilliseconds.ToString(CultureInfo.InvariantCulture)) ms</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <nav aria-label="Operation timeline pagination" data-testid="console-page-operation-timeline-pagination">
+            @{
+                string? nextHref = NextPageHref();
+            }
+            @if (nextHref is not null)
+            {
+                <a href="@nextHref" data-testid="console-page-operation-timeline-next">Next page</a>
+            }
+            else
+            {
+                <span data-testid="console-page-operation-timeline-end">End of results</span>
+            }
+        </nav>
+
+        <p data-testid="console-page-operation-timeline-freshness">
+            <span>Evidence freshness:</span>
+            <span>@FreshnessLabel() · observed @ObservedAtLabel()</span>
+        </p>
+    }
+</div>

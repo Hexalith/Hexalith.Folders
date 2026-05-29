@@ -162,6 +162,23 @@ public static class ConsoleStatusText
         };
 
     /// <summary>
+    /// Story 6.8 — maps a changed-path evidence kind to its operator-facing label. The audit trail surfaces
+    /// only the <i>kind</i> of changed-path evidence (a digest, an opaque reference, redacted, or
+    /// unavailable) alongside the metadata-only digest/reference — never a raw path or file content
+    /// (S-6 / console boundary concern #11). Total over the SDK enum; throws on an unrecognized member so a
+    /// contract drift becomes a failing totality test rather than a mis-rendered audit field.
+    /// </summary>
+    public static string ResolveChangedPathEvidenceKindLabel(ChangedPathEvidenceEvidenceKind kind)
+        => kind switch
+        {
+            ChangedPathEvidenceEvidenceKind.Digest => "Digest",
+            ChangedPathEvidenceEvidenceKind.Reference => "Reference",
+            ChangedPathEvidenceEvidenceKind.Redacted => "Redacted",
+            ChangedPathEvidenceEvidenceKind.Unavailable => "Unavailable",
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown changed-path evidence kind."),
+        };
+
+    /// <summary>
     /// Resolves a coarse, non-sensitive size class label from a byte length (a presentation bucket, not a
     /// wire contract). Directories pass <see langword="null"/> and render the not-applicable marker.
     /// </summary>

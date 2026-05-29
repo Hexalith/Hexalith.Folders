@@ -167,6 +167,32 @@ public sealed class WorkspacePageTests
         rendered.FindAll("[data-testid=\"console-page-workspace-provider-pending\"]").ShouldBeEmpty();
     }
 
+    [Fact]
+    public void AuditTrailSection_ResolvesPlaceholder_IntoFolderScopedAuditAndTimelineLinks()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+            .Returns(Status());
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
+            .Add(w => w.FolderId, "folder-1")
+            .Add(w => w.WorkspaceId, "workspace-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-workspace-section-audit-trail\"]").ShouldNotBeNull());
+
+        // Story 6.8 / AC #15 / AC #16 / UX-DR19: the 6.6 "available in Story 6.8" pending span is RESOLVED
+        // into real folder-scoped links to the audit-trail and operation-timeline pages (connected evidence);
+        // the pending span is gone and the section data-testid stays stable.
+        rendered.Find("[data-testid=\"console-page-workspace-audit-trail-link\"]")
+            .GetAttribute("href").ShouldBe("/folders/folder-1/audit-trail");
+        rendered.Find("[data-testid=\"console-page-workspace-operation-timeline-link\"]")
+            .GetAttribute("href").ShouldBe("/folders/folder-1/operation-timeline");
+        rendered.FindAll("[data-testid=\"console-page-workspace-audit-trail-pending\"]").ShouldBeEmpty();
+    }
+
     private static readonly IReadOnlyDictionary<string, IEnumerable<string>> EmptyHeaders =
         new Dictionary<string, IEnumerable<string>>();
 

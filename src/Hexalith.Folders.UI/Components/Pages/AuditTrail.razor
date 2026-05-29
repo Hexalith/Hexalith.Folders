@@ -1,0 +1,152 @@
+@page "/folders/{FolderId}/audit-trail"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+
+<PageTitle>Hexalith Folders — Audit @FolderId</PageTitle>
+
+@* Audit-trail view (§3.4): scope banner → h1 → paginated newest-first evidence table → cursor pagination
+   (read-only navigation) → freshness. Strictly read-only and metadata-only: no mutation affordance, no
+   filter UI (C4 rejection-only), no file contents / raw diffs / raw paths / secrets. Every redactable
+   field renders through RedactedField so redacted ≠ unknown ≠ missing (F-5). *@
+<div data-testid="console-page-audit-trail-root">
+    <TenantScopeBanner Permissions="@_permissions" />
+    <h1>Audit · @FolderId</h1>
+
+    <p>
+        <a href="@($"/folders/{FolderId}/operation-timeline")" data-testid="console-page-audit-trail-timeline-link">Operation timeline</a>
+    </p>
+
+    @if (_loading)
+    {
+        <p data-testid="console-page-audit-trail-loading" aria-busy="true">Loading audit trail…</p>
+    }
+    else if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_unavailable || _audit is null)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+    else if (_audit.Entries is null || _audit.Entries.Count == 0)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.NoMatches" />
+    }
+    else
+    {
+        <table data-testid="console-page-audit-trail-table">
+            <caption>
+                Audit-trail evidence (metadata-only), newest first as returned by the tenant-scoped
+                projection. Retryability is advisory only; changed-path evidence is a digest/reference,
+                never a raw path or file content.
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Record</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Actor</th>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Task</th>
+                    <th scope="col">Correlation</th>
+                    <th scope="col">Result</th>
+                    <th scope="col">Error category</th>
+                    <th scope="col">Retryable (advisory)</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col">Changed-path evidence</th>
+                    <th scope="col">Redaction</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (AuditRecord record in _audit.Entries)
+                {
+                    AuditRecordView row = AuditRecordView.Create(record);
+                    <tr data-testid="console-page-audit-trail-row">
+                        <td>
+                            @if (row.AuditRecordId is not null)
+                            {
+                                <SafeCopyId Value="@row.AuditRecordId" ColumnHeader="Audit record" CodeTestId="console-page-audit-trail-record-id" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Audit record" />
+                            }
+                        </td>
+                        <td data-testid="console-page-audit-trail-timestamp">
+                            <RedactedField Disclosure="@row.TimestampDisclosure" Value="@row.Timestamp" Monospace="true" ColumnHeader="Timestamp" />
+                        </td>
+                        <td>
+                            <RedactedField Disclosure="@row.ActorDisclosure" Value="@row.Actor" Monospace="true" ColumnHeader="Actor" />
+                        </td>
+                        <td>
+                            <RedactedField Disclosure="@row.OperationDisclosure" Value="@row.Operation" Monospace="true" ColumnHeader="Operation" />
+                        </td>
+                        <td>
+                            @if (row.TaskId is not null)
+                            {
+                                <SafeCopyId Value="@row.TaskId" ColumnHeader="Task" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Task" />
+                            }
+                        </td>
+                        <td>
+                            @if (row.CorrelationId is not null)
+                            {
+                                <SafeCopyId Value="@row.CorrelationId" ColumnHeader="Correlation" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Missing" ColumnHeader="Correlation" />
+                            }
+                        </td>
+                        <td>
+                            <span data-testid="console-page-audit-trail-result">@ConsoleStatusText.ResolveReasonCategoryLabel(row.ResultStatus)</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-audit-trail-error-category">@ConsoleStatusText.ResolveReasonCategoryLabel(row.SanitizedErrorCategory)</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-audit-trail-retryable">@(row.Retryable ? "Yes" : "No")</span>
+                        </td>
+                        <td>
+                            <span data-testid="console-page-audit-trail-duration">@(row.DurationMilliseconds.ToString(CultureInfo.InvariantCulture)) ms</span>
+                        </td>
+                        <td data-testid="console-page-audit-trail-changed-path">
+                            @if (row.ChangedPathKind is { } kind)
+                            {
+                                <span data-testid="console-page-audit-trail-changed-path-kind">@ConsoleStatusText.ResolveChangedPathEvidenceKindLabel(kind)</span>
+                            }
+                            <RedactedField Disclosure="@row.ChangedPathDisclosure" Value="@row.ChangedPathValue" Monospace="true" ColumnHeader="Changed-path evidence" MissingText="Not recorded" />
+                        </td>
+                        <td>
+                            <RedactedField Disclosure="@row.RecordRedactionDisclosure" Value="Metadata only" ColumnHeader="Redaction" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <nav aria-label="Audit trail pagination" data-testid="console-page-audit-trail-pagination">
+            @{
+                string? nextHref = NextPageHref();
+            }
+            @if (nextHref is not null)
+            {
+                <a href="@nextHref" data-testid="console-page-audit-trail-next">Next page</a>
+            }
+            else
+            {
+                <span data-testid="console-page-audit-trail-end">End of results</span>
+            }
+        </nav>
+
+        <p data-testid="console-page-audit-trail-freshness">
+            <span>Evidence freshness:</span>
+            <span>@FreshnessLabel() · observed @ObservedAtLabel()</span>
+        </p>
+    }
+</div>

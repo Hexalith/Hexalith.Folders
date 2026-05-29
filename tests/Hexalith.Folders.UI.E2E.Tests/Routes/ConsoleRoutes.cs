@@ -35,4 +35,12 @@ public static class ConsoleRoutes
     /// <summary>Builds the folder-scoped provider readiness route (Story 6.7 Provider view, §3.3).</summary>
     public static string Provider(string folderId)
         => string.Create(CultureInfo.InvariantCulture, $"/folders/{folderId}/provider");
+
+    /// <summary>Builds the folder-scoped audit-trail route (Story 6.8 Audit view, §3.4).</summary>
+    public static string AuditTrail(string folderId)
+        => string.Create(CultureInfo.InvariantCulture, $"/folders/{folderId}/audit-trail");
+
+    /// <summary>Builds the folder-scoped operation-timeline route (Story 6.8 Diagnostic Timeline, §3.4).</summary>
+    public static string OperationTimeline(string folderId)
+        => string.Create(CultureInfo.InvariantCulture, $"/folders/{folderId}/operation-timeline");
 }

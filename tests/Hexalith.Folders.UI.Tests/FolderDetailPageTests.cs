@@ -85,6 +85,28 @@ public sealed class FolderDetailPageTests
             .GetAttribute("href").ShouldBe("/folders/folder-1/provider");
     }
 
+    [Fact]
+    public void FolderDetail_RendersAuditTrailAndOperationTimelineLinks_WithFolderScopedHrefs()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+            .Returns(Lifecycle());
+
+        IRenderedComponent<FolderDetail> rendered = ctx.Render<FolderDetail>(p => p.Add(d => d.FolderId, "folder-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-folder-detail-identity\"]").ShouldNotBeNull());
+
+        // Story 6.8 / AC #16 / UX-DR19: the Folder view links out to the audit-trail and operation-timeline
+        // pages — audit/timeline are reachable from FolderDetail, not isolated on a disconnected page.
+        rendered.Find("[data-testid=\"console-page-folder-detail-audit-trail-link\"]")
+            .GetAttribute("href").ShouldBe("/folders/folder-1/audit-trail");
+        rendered.Find("[data-testid=\"console-page-folder-detail-operation-timeline-link\"]")
+            .GetAttribute("href").ShouldBe("/folders/folder-1/operation-timeline");
+    }
+
     private static readonly IReadOnlyDictionary<string, IEnumerable<string>> EmptyHeaders =
         new Dictionary<string, IEnumerable<string>>();
 

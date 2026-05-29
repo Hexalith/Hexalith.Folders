@@ -26,6 +26,8 @@ public sealed class ConsoleStatusTextTests
 
     public static TheoryData<CanonicalErrorCategory> ErrorCategories => [.. Enum.GetValues<CanonicalErrorCategory>()];
 
+    public static TheoryData<ChangedPathEvidenceEvidenceKind> ChangedPathEvidenceKinds => [.. Enum.GetValues<ChangedPathEvidenceEvidenceKind>()];
+
     [Theory]
     [MemberData(nameof(LockStates))]
     public void ResolveLock_IsTotal(LockState state)
@@ -99,6 +101,16 @@ public sealed class ConsoleStatusTextTests
     [Fact]
     public void ResolveErrorExplanation_FallsBackSafely_ForUnmappedToken()
         => ConsoleStatusText.ResolveErrorExplanation("some_future_category").ShouldBe(ConsoleStatusText.DefaultErrorExplanation);
+
+    [Theory]
+    [MemberData(nameof(ChangedPathEvidenceKinds))]
+    public void ResolveChangedPathEvidenceKind_IsTotal(ChangedPathEvidenceEvidenceKind kind)
+        => ConsoleStatusText.ResolveChangedPathEvidenceKindLabel(kind).ShouldNotBeNullOrWhiteSpace();
+
+    [Fact]
+    public void ResolveChangedPathEvidenceKind_ThrowsOnUndefined()
+        => Should.Throw<ArgumentOutOfRangeException>(
+            () => ConsoleStatusText.ResolveChangedPathEvidenceKindLabel((ChangedPathEvidenceEvidenceKind)999));
 
     [Theory]
     [InlineData(0L, "empty")]
