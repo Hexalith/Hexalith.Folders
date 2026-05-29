@@ -179,9 +179,9 @@ public partial class Workspace : ComponentBase
             _status.Freshness?.Stale ?? false);
         ProviderOutcomeState? providerOutcome = _status.ProviderOutcome?.State;
 
-        // UX-DR19 connected-evidence: every cell links to its supporting on-page section. These are
-        // same-page fragment anchors (the sections already exist), so no cell points at a not-yet-shipped
-        // route (the provider/audit pages are 6.7/6.8 — surfaced here as in-page summaries only).
+        // UX-DR19 connected-evidence: every cell links to its supporting evidence. Most are same-page
+        // fragment anchors (the sections already exist); the provider-readiness cell now links out to the
+        // dedicated provider page shipped by Story 6.7 (the audit page remains a 6.8 in-page summary).
         return
         [
             new TrustMatrixCell(
@@ -194,10 +194,10 @@ public partial class Workspace : ComponentBase
             new TrustMatrixCell(
                 "Provider readiness",
                 TrustDimensionDeriver.FromProviderOutcome(providerOutcome),
-                "Provider readiness diagnostics ship with Story 6.7.",
+                "Provider binding, credential-reference status, readiness, and failure diagnostics.",
                 ObservedAtOrNull(_status.ProviderOutcome?.Freshness),
-                "#console-page-workspace-section-provider-readiness",
-                "Provider readiness section"),
+                $"/folders/{FolderId}/provider",
+                "Provider readiness page"),
             new TrustMatrixCell(
                 "Workspace lifecycle",
                 TrustDimensionDeriver.FromDisposition(disposition),

@@ -1,0 +1,92 @@
+@page "/providers/support"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<PageTitle>Hexalith Folders — Provider support</PageTitle>
+
+@* Provider support / capability page (FR57, §3.3): tenant scope banner → h1 → capability-support
+   matrix read directly from the tenant-scoped support-evidence projection (differences never inferred)
+   → cursor pagination (read-only navigation) → freshness. Strictly read-only. *@
+<div data-testid="console-page-provider-support-root">
+    <TenantScopeBanner />
+    <h1>Provider support &amp; capability matrix</h1>
+
+    @if (_loading)
+    {
+        <p data-testid="console-page-provider-support-loading" aria-busy="true">Loading provider support evidence…</p>
+    }
+    else if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_unavailable || _evidence is null)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+    else if (_evidence.Items is null || _evidence.Items.Count == 0)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.NoMatches" />
+    }
+    else
+    {
+        <table data-testid="console-page-provider-support-matrix">
+            <caption>
+                Provider capability support evidence — read directly from the tenant-scoped projection;
+                capability differences are never inferred from a failed operation (FR57).
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Capability profile</th>
+                    <th scope="col">Capability</th>
+                    <th scope="col">Support state</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ProviderSupportEvidence row in _evidence.Items)
+                {
+                    <tr data-testid="console-page-provider-support-row">
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(row.CapabilityProfileRef))
+                            {
+                                <SafeCopyId Value="@row.CapabilityProfileRef" ColumnHeader="Capability profile" />
+                            }
+                            else
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Capability profile" />
+                            }
+                        </td>
+                        <td>@ProviderStatusText.ResolveCapabilityNameLabel(row.Capability)</td>
+                        <td>
+                            <FcStatusBadge Slot="@ProviderStatusText.ResolveCapabilityStateSlot(row.SupportState)"
+                                           Label="@ProviderStatusText.ResolveCapabilityStateLabel(row.SupportState)"
+                                           ColumnHeader="Support state" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <nav aria-label="Provider support pagination" data-testid="console-page-provider-support-pagination">
+            @{
+                string? nextHref = NextPageHref();
+            }
+            @if (nextHref is not null)
+            {
+                <a href="@nextHref" data-testid="console-page-provider-support-next">Next page</a>
+            }
+            else
+            {
+                <span data-testid="console-page-provider-support-end">End of results</span>
+            }
+        </nav>
+
+        <p data-testid="console-page-provider-support-freshness">
+            <span>Evidence freshness:</span>
+            <span>@FreshnessLabel() · observed @ObservedAtLabel()</span>
+        </p>
+    }
+</div>

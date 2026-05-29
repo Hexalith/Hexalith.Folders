@@ -28,4 +28,11 @@ public static class ConsoleRoutes
     /// <summary>Builds the workspace detail route (Story 6.6 Workspace view, §3.2).</summary>
     public static string Workspace(string folderId, string workspaceId)
         => string.Create(CultureInfo.InvariantCulture, $"/folders/{folderId}/workspaces/{workspaceId}");
+
+    /// <summary>The tenant-scoped provider support / capability page (Story 6.7 Provider view, §3.3, FR57).</summary>
+    public const string ProviderSupport = "/providers/support";
+
+    /// <summary>Builds the folder-scoped provider readiness route (Story 6.7 Provider view, §3.3).</summary>
+    public static string Provider(string folderId)
+        => string.Create(CultureInfo.InvariantCulture, $"/folders/{folderId}/provider");
 }

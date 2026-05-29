@@ -1,9 +1,6 @@
 # Test Automation Summary — Story 6.7 (Provider readiness & support diagnostic pages)
 
-> Canonical latest-run summary (per `bmad-qa-generate-e2e-tests` `default_output_file`). Durable per-story copy: [`6-7-test-summary.md`](./6-7-test-summary.md).
-
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Role:** QA automation engineer (test generation only) · **Date:** 2026-05-29
-**Story:** `_bmad-output/implementation-artifacts/6-7-build-provider-readiness-and-support-diagnostic-pages.md` (Status: review)
 **Feature under test:** the Provider view (§3.3) of the operations console — `Provider.razor` (folder-scoped readiness) and `ProviderSupport.razor` (tenant-scoped capability matrix, FR57), plus the AC #11 link-out wiring.
 
 ## Approach

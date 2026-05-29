@@ -143,6 +143,30 @@ public sealed class WorkspacePageTests
         rendered.ShouldHaveNoMutationAffordances();
     }
 
+    [Fact]
+    public void ProviderReadinessSection_ResolvesPlaceholder_IntoProviderLink_WithFolderScopedHref()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+            .Returns(Status());
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
+            .Add(w => w.FolderId, "folder-1")
+            .Add(w => w.WorkspaceId, "workspace-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-workspace-section-provider-readiness\"]").ShouldNotBeNull());
+
+        // AC #11 / UX-DR19: the 6.6 "available in Story 6.7" pending placeholder is RESOLVED into a real
+        // folder-scoped link to the Story 6.7 Provider readiness page (connected evidence) — the pending
+        // span is gone.
+        rendered.Find("[data-testid=\"console-page-workspace-provider-link\"]")
+            .GetAttribute("href").ShouldBe("/folders/folder-1/provider");
+        rendered.FindAll("[data-testid=\"console-page-workspace-provider-pending\"]").ShouldBeEmpty();
+    }
+
     private static readonly IReadOnlyDictionary<string, IEnumerable<string>> EmptyHeaders =
         new Dictionary<string, IEnumerable<string>>();
 

@@ -92,6 +92,18 @@ public sealed class ShellCompositionTests
     }
 
     [Fact]
+    public void Home_RendersProviderSupportNavLink_PointingToProvidersSupport()
+    {
+        using BunitContext ctx = CreateHomeContext(Environments.Production);
+        IRenderedComponent<Home> rendered = ctx.Render<Home>();
+
+        // AC #11: the console home exposes a hand-authored nav entry to the tenant-scoped provider-support
+        // capability matrix (Story 6.7), reachable in every environment (not a dev-only gallery link).
+        rendered.Find("[data-testid=\"console-page-home-provider-support-link\"] a")
+            .GetAttribute("href").ShouldBe("/providers/support");
+    }
+
+    [Fact]
     public void Home_RendersDevGalleryLink_InDevelopmentOnly()
     {
         using BunitContext ctx = CreateHomeContext(Environments.Development);

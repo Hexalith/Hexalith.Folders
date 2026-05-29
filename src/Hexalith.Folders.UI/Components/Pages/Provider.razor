@@ -1,0 +1,251 @@
+@page "/folders/{FolderId}/provider"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<PageTitle>Hexalith Folders — Provider @FolderId</PageTitle>
+
+@* Provider view (§3.3): banner → h1 → provider identity → readiness (disposition primary + reason
+   secondary + freshness) → capability/sync metadata → advisory failure metadata. Strictly read-only:
+   no credential reveal, no token/embedded-credential URL, no validate/retry/configure action. *@
+<div data-testid="console-page-provider-root">
+    <TenantScopeBanner Permissions="@_permissions" />
+    <h1>Provider readiness — folder @FolderId</h1>
+
+    @if (_loading)
+    {
+        <p data-testid="console-page-provider-loading" aria-busy="true">Loading provider readiness…</p>
+    }
+    else if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_unavailable || _model is null)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+    else
+    {
+        <section aria-label="Request correlation" data-testid="console-page-provider-section-correlation">
+            <p>
+                <span>Correlation ID:</span>
+                <SafeCopyId Value="@_model.CorrelationId" ColumnHeader="Correlation ID" CodeTestId="console-page-provider-correlation" />
+            </p>
+            @if (_model.ProviderCorrelationReference is not null)
+            {
+                <p>
+                    <span>Provider correlation:</span>
+                    <SafeCopyId Value="@_model.ProviderCorrelationReference" ColumnHeader="Provider correlation" CodeTestId="console-page-provider-provider-correlation" />
+                </p>
+            }
+        </section>
+
+        <section aria-label="Provider identity" data-testid="console-page-provider-section-identity">
+            <h2>Provider identity</h2>
+            <dl>
+                <dt>Provider family</dt>
+                <dd>
+                    @if (_model.ProviderFamilyRef is not null)
+                    {
+                        <SafeCopyId Value="@_model.ProviderFamilyRef" ColumnHeader="Provider family" />
+                    }
+                    else
+                    {
+                        <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Provider family" />
+                    }
+                </dd>
+
+                <dt>Provider binding</dt>
+                <dd>
+                    @if (_model.ProviderBindingRef is not null)
+                    {
+                        <SafeCopyId Value="@_model.ProviderBindingRef" ColumnHeader="Provider binding" />
+                    }
+                    else
+                    {
+                        <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Provider binding" />
+                    }
+                </dd>
+
+                <dt>Capability profile</dt>
+                <dd>
+                    @if (_model.CapabilityProfileRef is not null)
+                    {
+                        <SafeCopyId Value="@_model.CapabilityProfileRef" ColumnHeader="Capability profile" />
+                    }
+                    else
+                    {
+                        <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Capability profile" />
+                    }
+                </dd>
+
+                <dt>Repository binding</dt>
+                <dd data-testid="console-page-provider-repository-binding">
+                    @if (_model.RepositoryBindingId is not null)
+                    {
+                        <SafeCopyId Value="@_model.RepositoryBindingId" ColumnHeader="Repository binding" />
+                    }
+                    else
+                    {
+                        <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Repository binding" />
+                    }
+                    @if (_model.RepositoryBindingState is { } bindingState)
+                    {
+                        <FcStatusBadge Slot="@ProviderStatusText.ResolveBindingStateSlot(bindingState)"
+                                       Label="@ProviderStatusText.ResolveBindingStateLabel(bindingState)"
+                                       ColumnHeader="Binding state" />
+                    }
+                    else
+                    {
+                        <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Binding state" />
+                    }
+                </dd>
+
+                <dt>Sensitive metadata tier</dt>
+                <dd>
+                    @if (_model.SensitiveMetadataTier is { } tier)
+                    {
+                        <span data-testid="console-page-provider-sensitive-tier">@ProviderStatusText.ResolveSensitiveMetadataTierLabel(tier)</span>
+                    }
+                    else
+                    {
+                        <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Sensitive metadata tier" />
+                    }
+                </dd>
+
+                <dt>Credential reference identifier (not a secret)</dt>
+                <dd data-testid="console-page-provider-credential-reference">
+                    @* The passive read path never returns a credential-reference VALUE (it is a
+                       configure-request input only; ProviderBinding.Redaction is a required single-valued
+                       marker). So this field is only ever Redacted (binding loaded → hidden by tenant
+                       policy) or Unknown (binding not loaded) — never a visible value, and never the
+                       provider-binding reference mislabeled as the credential reference (AC #3 / §2.3). *@
+                    <RedactedField Disclosure="@_model.CredentialReferenceDisclosure"
+                                   ColumnHeader="reference identifier (not a secret)" />
+                </dd>
+            </dl>
+        </section>
+
+        <section aria-label="Readiness" data-testid="console-page-provider-section-readiness">
+            <h2>Readiness</h2>
+            <OperatorDispositionBadge Disposition="@_model.Disposition" ColumnHeader="Readiness disposition" />
+            <p data-testid="console-page-provider-readiness-reason">
+                <span>Reason:</span>
+                @if (_model.ReadinessStatus is not null)
+                {
+                    <span data-testid="console-page-provider-readiness-status">@_model.ReadinessStatus</span>
+                }
+                else
+                {
+                    <RedactedField Disclosure="FieldDisclosure.Unknown" ColumnHeader="Readiness reason" />
+                }
+            </p>
+            <p data-testid="console-page-provider-freshness">
+                <span>Evidence freshness:</span>
+                @if (_model.Availability == ProjectionAvailability.Unavailable)
+                {
+                    <span data-testid="console-page-provider-freshness-unavailable">Unavailable@(_model.UnavailableReasonCode is not null ? $" — {_model.UnavailableReasonCode}" : string.Empty)</span>
+                }
+                else if (_model.FreshnessStale || _model.Availability == ProjectionAvailability.Stale)
+                {
+                    <span data-testid="console-page-provider-freshness-stale">Stale@(_model.StaleReasonCode is not null ? $" — {_model.StaleReasonCode}" : string.Empty)</span>
+                }
+                else if (_model.Availability == ProjectionAvailability.Available)
+                {
+                    <span data-testid="console-page-provider-freshness-current">Current</span>
+                }
+                else
+                {
+                    @* ProjectionAvailability redacted/unknown are reference-pending C5 (§7): treat as
+                       not-yet-available rather than inventing a rendering — never claim "Current". *@
+                    <span data-testid="console-page-provider-freshness-unknown">Unknown</span>
+                }
+                <span> · observed @(_model.FreshnessObservedAt?.ToString("u", CultureInfo.InvariantCulture) ?? "unknown")</span>
+                @if (_model.ProjectionWatermark is not null)
+                {
+                    <span> · watermark </span>
+                    <SafeCopyId Value="@_model.ProjectionWatermark" ColumnHeader="Projection watermark" />
+                }
+            </p>
+        </section>
+
+        <section aria-label="Capability and sync metadata" data-testid="console-page-provider-section-sync">
+            <h2>Capability &amp; sync metadata</h2>
+            @if (_model.Sync is { } sync)
+            {
+                <p>
+                    <span>Projected state:</span>
+                    <TechnicalStateMetadata State="@sync.ProjectedState" ColumnHeader="Projected state" />
+                </p>
+                <p>
+                    <span>Sync outcome:</span>
+                    <FcStatusBadge Slot="@ProviderStatusText.ResolveOutcomeStateSlot(sync.OutcomeState)"
+                                   Label="@ProviderStatusText.ResolveOutcomeStateLabel(sync.OutcomeState)"
+                                   ColumnHeader="Sync outcome" />
+                </p>
+                <p>
+                    <span>Sync freshness:</span>
+                    <span>@(sync.FreshnessStale ? "Stale" : "Current") · observed @(sync.FreshnessObservedAt?.ToString("u", CultureInfo.InvariantCulture) ?? "unknown")</span>
+                </p>
+            }
+            else
+            {
+                <p data-testid="console-page-provider-no-workspace-context">
+                    Sync metadata requires a workspace context. Append <code>?workspaceId=…</code> to inspect a
+                    workspace's provider sync; it is not shown here (Unknown).
+                </p>
+            }
+        </section>
+
+        <section aria-label="Failure metadata" data-testid="console-page-provider-section-failure">
+            <h2>Failure metadata</h2>
+            @if (_model.Outcome is { } outcome)
+            {
+                <p>
+                    <span>Provider outcome:</span>
+                    <FcStatusBadge Slot="@ProviderStatusText.ResolveOutcomeStateSlot(outcome.State)"
+                                   Label="@ProviderStatusText.ResolveOutcomeStateLabel(outcome.State)"
+                                   ColumnHeader="Provider outcome" />
+                </p>
+                <p>
+                    <span>Failure category:</span>
+                    <span data-testid="console-page-provider-failure-category">@ConsoleStatusText.ResolveReasonCategoryLabel(outcome.SanitizedCategory)</span>
+                </p>
+                <p data-testid="console-page-provider-retryability">
+                    <span>Retryable (advisory only):</span>
+                    <span>@(outcome.RetryEligible ? "Yes" : "No")</span>
+                    @if (outcome.RetryReasonCode is not null)
+                    {
+                        <span> · reason @outcome.RetryReasonCode</span>
+                    }
+                    @if (outcome.RetryAfterSeconds is { } retryAfter)
+                    {
+                        <span> · retry after @retryAfter.ToString(CultureInfo.InvariantCulture)s (advisory)</span>
+                    }
+                </p>
+                @if (outcome.ProviderCorrelationReference is not null)
+                {
+                    <p>
+                        <span>Provider correlation:</span>
+                        <SafeCopyId Value="@outcome.ProviderCorrelationReference" ColumnHeader="Provider correlation" CodeTestId="console-page-provider-failure-correlation" />
+                    </p>
+                }
+                <p>
+                    <span>Outcome freshness:</span>
+                    <span>@(outcome.FreshnessStale ? "Stale" : "Current") · observed @(outcome.FreshnessObservedAt?.ToString("u", CultureInfo.InvariantCulture) ?? "unknown")</span>
+                </p>
+            }
+            else
+            {
+                <p data-testid="console-page-provider-no-operation">
+                    No recent provider operation in context. Retryability and failure metadata are
+                    unavailable (Unknown) — append <code>?workspaceId=…&amp;operationId=…</code> to inspect a
+                    specific operation. This view never triggers a provider probe.
+                </p>
+            }
+        </section>
+    }
+</div>

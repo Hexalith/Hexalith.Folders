@@ -66,6 +66,25 @@ public sealed class FolderDetailPageTests
         rendered.ShouldHaveNoMutationAffordances();
     }
 
+    [Fact]
+    public void ProviderBindingRow_RendersProviderReadinessLink_WithFolderScopedHref()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+            .Returns(Lifecycle());
+
+        IRenderedComponent<FolderDetail> rendered = ctx.Render<FolderDetail>(p => p.Add(d => d.FolderId, "folder-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-folder-detail-identity\"]").ShouldNotBeNull());
+
+        // AC #11: the Folder view's provider-binding row links out to the Story 6.7 Provider readiness page.
+        rendered.Find("[data-testid=\"console-page-folder-detail-provider-link\"]")
+            .GetAttribute("href").ShouldBe("/folders/folder-1/provider");
+    }
+
     private static readonly IReadOnlyDictionary<string, IEnumerable<string>> EmptyHeaders =
         new Dictionary<string, IEnumerable<string>>();
 
