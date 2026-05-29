@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-29T08:12:30+02:00
+last_updated: 2026-05-29T09:14:19+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -122,7 +122,7 @@ development_status:
   epic-5-retrospective: done
 
   # Epic 6: Read-Only Workspace Trust Console And Audit Review
-  epic-6: in-progress
+  epic-6: done
   6-1-audit-and-operation-timeline-query-endpoints: done
   6-2-scaffold-frontcomposer-hosted-read-only-operations-console: done
   6-3-render-operator-disposition-labels-as-primary-visual: done
@@ -134,7 +134,7 @@ development_status:
   6-9-implement-incident-mode-last-resort-read-path: done
   6-10-enforce-console-performance-and-perceived-wait-ux: done
   6-11-verify-no-mutation-enforcement-and-accessibility: done
-  epic-6-retrospective: optional
+  epic-6-retrospective: done
 
   # Epic 7: MVP Release Readiness And Operational Evidence
   epic-7: backlog
