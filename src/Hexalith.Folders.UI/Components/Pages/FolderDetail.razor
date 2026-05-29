@@ -124,6 +124,16 @@
             // Advisory for the banner; a genuine denial still surfaces on the lifecycle read below.
             _permissions = null;
         }
+        catch (HttpRequestException)
+        {
+            // Transport failure on the advisory permissions read is non-fatal; the lifecycle read below drives
+            // the page-level read-model-unavailable state.
+            _permissions = null;
+        }
+        catch (TaskCanceledException)
+        {
+            _permissions = null;
+        }
 
         try
         {
@@ -143,6 +153,18 @@
         catch (HexalithFoldersApiException ex)
         {
             _error = ConsoleErrorPresenter.FromException(ex, correlationId);
+        }
+        catch (HttpRequestException)
+        {
+            // The read model / API is unreachable (transport failure, not a canonical denial). Leave the
+            // lifecycle null so the render falls through to the §3.8 read-model-unavailable empty state rather
+            // than crashing to a 500 — never leak a transport error (metadata-only). Mirrors the sibling
+            // diagnostic pages (AuditTrail / OperationTimeline / Provider / ProviderSupport / IncidentStream).
+            _lifecycle = null;
+        }
+        catch (TaskCanceledException)
+        {
+            _lifecycle = null;
         }
         finally
         {

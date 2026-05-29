@@ -1,3 +1,5 @@
+using System.Net.Http;
+
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.UI.Components.Models;
 using Hexalith.Folders.UI.Services;
@@ -70,6 +72,16 @@ public partial class Workspace : ComponentBase, IDisposable
         {
             _permissions = null;
         }
+        catch (HttpRequestException)
+        {
+            // Transport failure on the advisory permissions read is non-fatal; the banner degrades and the
+            // primary workspace-status read below drives the page-level read-model-unavailable state.
+            _permissions = null;
+        }
+        catch (TaskCanceledException)
+        {
+            _permissions = null;
+        }
 
         // Primary read. Authorization-before-observation: a denial here is the page-level safe denial.
         try
@@ -86,6 +98,20 @@ public partial class Workspace : ComponentBase, IDisposable
         catch (HexalithFoldersApiException ex)
         {
             _error = ConsoleErrorPresenter.FromException(ex, _correlationId);
+            _loading = false;
+            return;
+        }
+        catch (HttpRequestException)
+        {
+            // The read model / API is unreachable (transport failure, not a canonical denial). Fall through to
+            // the §3.8 read-model-unavailable empty state (the same surface as a null status) rather than
+            // crashing to a 500 — and never leak a transport error (metadata-only). Mirrors AuditTrail /
+            // OperationTimeline / Provider / ProviderSupport / IncidentStream.
+            _loading = false;
+            return;
+        }
+        catch (TaskCanceledException)
+        {
             _loading = false;
             return;
         }
@@ -290,6 +316,16 @@ public partial class Workspace : ComponentBase, IDisposable
         {
             // A denial or unavailability on a supplementary panel must not blow up the whole page;
             // the affected panel renders its unknown/unavailable state instead.
+            return null;
+        }
+        catch (HttpRequestException)
+        {
+            // A transport failure on a supplementary panel degrades that panel to unknown/unavailable, never
+            // the whole page (metadata-only).
+            return null;
+        }
+        catch (TaskCanceledException)
+        {
             return null;
         }
     }

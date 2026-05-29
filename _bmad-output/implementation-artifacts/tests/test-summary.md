@@ -1,59 +1,84 @@
-# Test Automation Summary — Story 6.9 (Incident-mode last-resort read path)
+# Test Automation Summary — Story 6.11 (Verify no-mutation enforcement and accessibility)
 
-> Canonical latest-run summary (per `bmad-qa-generate-e2e-tests` `default_output_file`). Durable per-story copy: [`6-9-test-summary.md`](./6-9-test-summary.md).
+> Canonical latest-run summary (per `bmad-qa-generate-e2e-tests` `default_output_file`). Durable per-story copy: [`6-11-test-summary.md`](./6-11-test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Role:** QA automation engineer (test generation only) · **Date:** 2026-05-29
-**Story:** `_bmad-output/implementation-artifacts/6-9-implement-incident-mode-last-resort-read-path.md` (Status: review)
-**Feature under test:** the Incident-mode view (§3.5 / F-6) of the operations console — `IncidentStream.razor` plus the `DegradedModeBanner` and `CorrelationCopyButton` components, built on the existing folder-scoped `IClient.ListOperationTimelineAsync` read.
+**Story:** `_bmad-output/implementation-artifacts/6-11-verify-no-mutation-enforcement-and-accessibility.md` (Status: review)
+**Feature under test:** Operations console — no-mutation enforcement + WCAG 2.2 AA + responsive verification.
+**Framework (existing, reused — no new package):** xUnit v3 `3.2.2` + bUnit `2.7.2` + AngleSharp + Shouldly +
+NSubstitute (component lane); `Microsoft.Playwright 1.60.0` (E2E lane). Build/test with the **Windows SDK**
+(`/mnt/c/Program Files/dotnet/dotnet.exe`, `global.json` pin `10.0.300`); the WSL SDK `10.0.108` fails the pin.
 
 ## Approach
 
-Story 6.9 already shipped a strong suite (baseline **446/446** green). This run was a **gap fill**, not green-field generation: a review of the existing 6.9 tests against the 15 acceptance criteria and the near-identical Story 6.8 `OperationTimeline` template surfaced **8 coverage gaps**, all confirmed against the implementation source and **auto-applied**.
+Gap fill, not green-field generation. Story 6.11's dev pass shipped the no-mutation + WCAG-structural bUnit
+sweeps (baseline **519/519**) but left **Task 3 / AC #8** — the *optional* Playwright responsive-viewport smoke
+— **unautomated** (`reference_pending`, no browser provisioned). This run automated it and auto-applied every
+discovered gap. Console reads go through the generated SDK `IClient`, so there is no separate HTTP/API layer —
+coverage is bUnit (rendering/invariants) + Playwright E2E smoke (route load + responsive structure).
 
-No separate HTTP/API test layer exists for this feature — the console reads projections through the generated SDK `IClient`. Coverage is therefore **bUnit page/component tests** (rendering + invariants) and **Playwright E2E smoke** (route load), matching the project's existing patterns.
+## Generated / changed tests
 
-## Generated Tests (8 new)
+### E2E (Playwright) — `tests/Hexalith.Folders.UI.E2E.Tests`
+- [x] `Responsive/ResponsiveViewportSmokeTests.cs` (new) — **7 surface routes × 4 widths** (1280 / 768 / 430 /
+  360) = **28 cases**; per case: root resolves + single `<h1>` + zero mutation affordances. Presence/structure
+  only — no pixel/overflow/CSS/text/sleep. Reuses `AspireConsoleHostFixture` + `PlaywrightFixture` +
+  `ConsoleRoutes.cs`.
 
-### bUnit — `tests/Hexalith.Folders.UI.Tests`
+### bUnit — `tests/Hexalith.Folders.UI.Tests` (regression guards)
+- [x] `WorkspacePageTests.TransportFailure_RendersReadModelUnavailable`
+- [x] `FolderDetailPageTests.TransportFailure_RendersReadModelUnavailable`
+  §3.8 read-model-unavailable degradation on `HttpRequestException`, mirroring `AuditTrailPageTests`. Contract
+  now uniform across all **7** SDK-backed pages.
 
-`IncidentStreamPageTests.cs` (+7 → 17→24 facts)
-- [x] `WhilePrimaryReadPending_RendersLoadingBusyIndicator_BannerStillPresent` — AC #14 untested `aria-busy` loading branch
-- [x] `StaleFreshness_RendersStaleInFooter_NotCurrent` — AC #2 / UX-DR26 freshness footer (recurring 6.7/6.8 risk)
-- [x] `PresentFreshness_RendersRealCheckpointInBanner_NotUnknown` — AC #2 happy-path checkpoint (complements absent→"unknown")
-- [x] `MultipleEntries_RenderOneRowEach_NoClientSideHiding` — AC #10 no client-side hiding
-- [x] `CorrelationCopyButton_ReceivesOldestToNewestTimeWindow_FromVisibleEntries` — AC #5 `TimeWindowLabel()` oldest..newest logic
-- [x] `BlankWorkspaceMetadataOnly_RendersMissing_DistinctFromRedacted` — AC #6 Missing ≠ Redacted distinctness
-- [x] `SupplementaryPermissionsDenied_IsSwallowed_TableStillRenders` — AC #7 swallow-denial `TryReadAsync` path
+### Test fixture (fixed)
+- [x] `tests/.../Fixtures/AspireConsoleHostFixture.cs` — configures a valid-but-unreachable SDK base address so
+  reads fail as `HttpRequestException` (caught → §3.8) not an unconfigured-base-address `InvalidOperationException`
+  (uncaught → 500); unblocked the previously-red pre-existing smoke tests.
 
-`CorrelationCopyButtonTests.cs` (+1 → 3→4 facts)
-- [x] `RendersHumanLabel_NotTheRawPayload_InTheDom` — AC #5 / AC #12 payload copied via JS only, never rendered to DOM
+## Defect found & fixed (production — user-approved)
 
-### E2E (Playwright) — `tests/Hexalith.Folders.UI.E2E.Tests/Smoke`
+`Workspace` + `FolderDetail` crashed (HTTP 500) on an unreachable read model instead of degrading to §3.8 (they
+didn't catch `HttpRequestException`/`TaskCanceledException`, unlike the 5 sibling pages). Fixed minimally,
+mirrored on `AuditTrail`:
+- [x] `src/Hexalith.Folders.UI/Components/Pages/Workspace.razor.cs`
+- [x] `src/Hexalith.Folders.UI/Components/Pages/FolderDetail.razor`
 
-- `IncidentRouteSmokeTests.cs` — already shipped by dev-story; the one-smoke-per-route convention (6.6–6.8) is satisfied. **No gap.**
+Recorded in `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` (§7, §12, §13) + UX-DR31 row.
+
+## Results (Windows SDK, actually run)
+
+| Lane | Before | After | Δ | Status |
+| --- | --- | --- | --- | --- |
+| bUnit `Hexalith.Folders.UI.Tests` | 519 / 519 | **521 / 521** | +2 | ✅ 0 failed, 0 warnings |
+| E2E `Hexalith.Folders.UI.E2E.Tests` | red (SDK routes 500) | **40 / 40** | +28 new; +12 unblocked | ✅ 0 failed |
 
 ## Coverage
 
-| Surface | Before | After | Note |
-|---|---|---|---|
-| UI bUnit lane (`Hexalith.Folders.UI.Tests`) | 446 | **454** | +8, all green |
-| `IncidentStream` loading / freshness-footer / multi-row / window / distinctness / swallow-denial | untested | covered | AC #2/#5/#6/#7/#10/#14 hardened |
-| `CorrelationCopyButton` no-leak DOM guard | untested | covered | AC #5 / AC #12 |
-| Incident E2E smoke route | 1 | 1 | already covered (deferred lane) |
+| Surface | Before | After |
+|---|---|---|
+| No-mutation / WCAG-structural (bUnit, 12 surfaces) | covered | covered |
+| Responsive viewport structural (E2E, 7 routes × 4 widths) | untested | **covered** |
+| Read-model-unavailable degradation (bUnit, SDK pages) | 5 of 7 | **7 of 7** |
+| Manual (zoom / forced-colors / color-blindness / screen-reader / real-width visual) | reference_pending | reference_pending (method defined) |
 
-## Verification
+## Verification & scope guards
 
-- `dotnet test tests/Hexalith.Folders.UI.Tests` → **454 passed, 0 failed, 0 skipped** (Windows SDK `/mnt/c/Program Files/dotnet/dotnet.exe`, SDK 10.0.300).
-- `git diff --stat` of `src/Hexalith.Folders.Client/Generated/`, `Directory.Packages.props`, `*.csproj`, `*.slnx`, and the OpenAPI spine is **empty** — only existing test files extended; no source/package/contract edits.
-- `NavigationContractTests.Console_DoesNotRegisterAnyDomainCommandManifest` passes within the 454; pre-existing IntegrationTests/LoadTests `ScaffoldContractTests` reds are unrelated and untouched.
+- bUnit **521/521**, E2E **40/40**; build clean (warnings-as-error). `git diff --stat` empty for
+  `Generated/`, `Directory.Packages.props`, OpenAPI spine, `*.csproj`/`*.slnx`; no new package/project refs; no
+  `.razor.css`. `Console_DoesNotRegisterAnyDomainCommandManifest` green; the two `ScaffoldContractTests`
+  baseline reds are unrelated.
 
-## Next Steps
+## Next steps
 
-- Run the deferred Playwright E2E lane (`tests/install-playwright.ps1` + live Aspire host) to execute the incident-route smoke.
-- Story 6.11 owns the formal no-mutation + WCAG 2.2 AA verification sweep; these tests build toward it but do not replace that matrix.
+- Wire the deferred-active UI E2E lane into non-blocking CI with `tests/install-playwright.ps1` provisioning.
+- Release-time human passes for the `reference_pending` manual checks per the evidence-doc method.
 
 ## Checklist validation (`.agents/skills/bmad-qa-generate-e2e-tests/checklist.md`)
 
-- **Test Generation** — API tests **N/A** (SDK-`IClient`-backed UI); E2E/bUnit generated ✅; standard framework APIs ✅; happy path ✅; critical error cases (denied, transport failure, cancellation, missing/redacted, swallowed denial) ✅.
-- **Test Quality** — all run successfully (454/454) ✅; semantic/accessible locators (`data-testid`, `role`, `data-fc-disclosure`) ✅; clear descriptions ✅; no hardcoded waits/sleeps (`WaitForAssertion`) ✅; tests independent ✅.
+- **Test Generation** — API tests **N/A** (SDK-backed UI); E2E generated ✅; standard framework APIs ✅; happy
+  path ✅; critical error case (transport-failure → read-model-unavailable) ✅.
+- **Test Quality** — all run successfully (521/521 + 40/40) ✅; semantic/accessible locators ✅; clear
+  descriptions ✅; no hardcoded waits/sleeps (auto-wait) ✅; tests independent ✅.
 - **Output** — summary created ✅; tests saved to appropriate directories ✅; coverage metrics included ✅.
+- **Validation** — project test command run; all generated tests pass ✅.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Http;
 
 using Bunit;
 
@@ -143,6 +144,32 @@ public sealed class WorkspacePageTests
 
         rendered.FindAll("[data-testid=\"console-page-workspace-section-overview\"]").ShouldBeEmpty();
         rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
+        rendered.ShouldHaveNoMutationAffordances();
+    }
+
+    [Fact]
+    public void TransportFailure_RendersReadModelUnavailable()
+    {
+        // Story 6.11 regression guard (surfaced by the E2E responsive smoke): when the read model / API is
+        // unreachable the primary workspace-status read throws HttpRequestException — the page must degrade to
+        // the §3.8 read-model-unavailable empty state (root + single <h1>, no crash, no leaked transport
+        // error), consistent with the sibling diagnostic pages, NOT throw to a 500.
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new HttpRequestException("connection refused"));
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
+            .Add(w => w.FolderId, "folder-1")
+            .Add(w => w.WorkspaceId, "workspace-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-fc-empty-reason=\"read_model_unavailable\"]").ShouldNotBeNull());
+
+        rendered.Find("[data-testid=\"console-page-workspace-root\"]").ShouldNotBeNull();
+        rendered.FindAll("h1").Count.ShouldBe(1);
+        rendered.FindAll("[data-testid=\"console-error-panel\"]").ShouldBeEmpty();
         rendered.ShouldHaveNoMutationAffordances();
     }
 

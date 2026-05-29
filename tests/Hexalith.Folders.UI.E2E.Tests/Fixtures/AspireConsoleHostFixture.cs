@@ -50,6 +50,16 @@ public sealed class AspireConsoleHostFixture : IAsyncLifetime
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
             [$"{FoldersAuthenticationOptions.SectionName}:Mode"] = FoldersAuthenticationOptions.HermeticTestMode,
+
+            // Point the typed SDK at a valid-but-unreachable loopback address. Aspire (EventStore / sidecars /
+            // the Folders REST service) is intentionally bypassed in this hermetic host, so the SDK has no
+            // backend to call. Without a base address the SDK would throw an *uncaught* InvalidOperationException
+            // ("BaseAddress must be set") and the SDK-backed pages would 500 during prerender. With a configured-
+            // but-unreachable base address the read fails as HttpRequestException (connection refused) — the
+            // realistic transport-failure mode the pages catch (e.g. AuditTrail.razor.cs) to degrade to the §3.8
+            // read-model-unavailable state, so the page root + single <h1> still render (HTTP 200, no crash).
+            // Port 1 on loopback is closed, so the failure is immediate (no hang on a routing timeout).
+            ["Folders:Client:BaseAddress"] = "http://127.0.0.1:1/",
         });
 
         // Bind Kestrel to a random localhost port so Playwright can hit the running host.
