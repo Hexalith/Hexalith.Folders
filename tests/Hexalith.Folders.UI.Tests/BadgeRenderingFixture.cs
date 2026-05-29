@@ -25,6 +25,11 @@ internal static class BadgeRenderingFixture
         BunitContext ctx = new();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddLogging();
+
+        // Story 6.10 — a controllable TimeProvider so any SkeletonState rendered by a page/component test can
+        // be injected (and, where a test casts it back, advanced deterministically). Not advancing it keeps
+        // SkeletonState in its ≤400 ms band (root + label, no bars), so existing loading-state assertions hold.
+        ctx.Services.AddSingleton<System.TimeProvider>(new ControllableTimeProvider());
         ctx.Services.AddFluentUIComponents();
         ctx.Services.AddHexalithFrontComposerQuickstart();
         ctx.Services.Replace(ServiceDescriptor.Scoped<IStorageService, InMemoryStorageService>());

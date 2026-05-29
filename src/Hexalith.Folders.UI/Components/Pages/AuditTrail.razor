@@ -21,7 +21,15 @@
 
     @if (_loading)
     {
-        <p data-testid="console-page-audit-trail-loading" aria-busy="true">Loading audit trail…</p>
+        @* F-7 perceived-wait UX (Story 6.10): skeleton at 400 ms, "still loading… [Cancel]" at 2 s. *@
+        <SkeletonState Label="audit timeline" TestId="console-page-audit-trail-loading" OnCancel="CancelAsync" />
+    }
+    else if (_cancelled)
+    {
+        @* Neutral cancelled state (§3.7): stable non-error idle view + read-only reload, distinct from
+           safe-denial and read-model-unavailable. *@
+        <p data-testid="console-page-audit-trail-cancelled">Loading cancelled.</p>
+        <a href="@ReloadHref()" data-testid="console-page-audit-trail-reload">Reload</a>
     }
     else if (_error is not null)
     {

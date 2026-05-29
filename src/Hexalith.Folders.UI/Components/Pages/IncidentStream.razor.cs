@@ -35,7 +35,7 @@ namespace Hexalith.Folders.UI.Components.Pages;
 /// client-side gate on a self-asserted claim.
 /// </para>
 /// </remarks>
-public partial class IncidentStream : ComponentBase
+public partial class IncidentStream : ComponentBase, IDisposable
 {
     /// <summary>Bounded page size for the paginated incident stream (server clamps to its max).</summary>
     private const int PageLimit = 50;
@@ -45,7 +45,9 @@ public partial class IncidentStream : ComponentBase
     private ConsoleErrorView? _error;
     private bool _unavailable;
     private bool _loading;
+    private bool _cancelled;
     private bool _folderless;
+    private CancellationTokenSource? _cts;
     private string _correlationId = string.Empty;
 
     /// <summary>The folder whose incident stream is inspected. Query param (the only data source is folder-scoped).</summary>
@@ -66,6 +68,7 @@ public partial class IncidentStream : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         ResetState();
+        CancellationToken token = _cts!.Token;
 
         // Eventually-consistent read-only browsing (concern #19). Even in "incident" framing this is still a
         // passive read — never the active snapshot_per_task probe (Dev Notes call-discipline).
@@ -81,15 +84,23 @@ public partial class IncidentStream : ComponentBase
         }
 
         // Advisory for the scope banner; a real authorization denial surfaces on the primary read below.
-        _permissions = await TryReadAsync(() =>
-            Client.GetEffectivePermissionsAsync(Folder, _correlationId, freshness)).ConfigureAwait(false);
+        _permissions = await TryReadAsync(ct =>
+            Client.GetEffectivePermissionsAsync(Folder, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
         // Primary read. C4: the filter key vocabulary is rejection-only today, so always pass filter: null.
         try
         {
             _timeline = await Client
-                .ListOperationTimelineAsync(Folder, _correlationId, freshness, Cursor, PageLimit, filter: null)
+                .ListOperationTimelineAsync(Folder, _correlationId, freshness, Cursor, PageLimit, filter: null, token)
                 .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: operator cancelled this in-flight read — neutral cancelled state, not _error/_unavailable.
+            // The degraded-mode banner still renders unconditionally in the cancelled branch (AC #7).
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException ex)
         {
@@ -123,10 +134,30 @@ public partial class IncidentStream : ComponentBase
         _loading = true;
         _error = null;
         _unavailable = false;
+        _cancelled = false;
         _folderless = false;
         _timeline = null;
         _permissions = null;
+        // One fresh CancellationTokenSource per load; dispose any prior so reloads never leak a token source.
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
         _correlationId = Guid.NewGuid().ToString();
+    }
+
+    /// <summary>F-7 Cancel: aborts the in-flight read; the cancelled read resolves to the neutral cancelled state.</summary>
+    private Task CancelAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>The read-only reload affordance for the neutral cancelled state — the same incident route.</summary>
+    private string ReloadHref()
+    {
+        string baseHref = string.Create(CultureInfo.InvariantCulture, $"/_admin/incident-stream?folder={Uri.EscapeDataString(Folder ?? string.Empty)}");
+        return string.IsNullOrWhiteSpace(Cursor)
+            ? baseHref
+            : string.Create(CultureInfo.InvariantCulture, $"{baseHref}&cursor={Uri.EscapeDataString(Cursor)}");
     }
 
     /// <summary>
@@ -218,12 +249,17 @@ public partial class IncidentStream : ComponentBase
             ? observedAt.ToString("u", CultureInfo.InvariantCulture)
             : "unknown";
 
-    private static async Task<T?> TryReadAsync<T>(Func<Task<T>> read)
+    private static async Task<T?> TryReadAsync<T>(Func<CancellationToken, Task<T>> read, CancellationToken token)
         where T : class
     {
         try
         {
-            return await read().ConfigureAwait(false);
+            return await read(token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // Operator cancel during a supplementary read; the primary read drives the neutral cancelled state.
+            return null;
         }
         catch (HexalithFoldersApiException)
         {
@@ -237,5 +273,12 @@ public partial class IncidentStream : ComponentBase
         {
             return null;
         }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

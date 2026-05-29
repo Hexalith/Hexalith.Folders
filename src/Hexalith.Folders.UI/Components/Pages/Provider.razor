@@ -17,7 +17,14 @@
 
     @if (_loading)
     {
-        <p data-testid="console-page-provider-loading" aria-busy="true">Loading provider readiness…</p>
+        @* F-7 perceived-wait UX (Story 6.10): skeleton at 400 ms, "still loading… [Cancel]" at 2 s. *@
+        <SkeletonState Label="provider readiness" TestId="console-page-provider-loading" OnCancel="CancelAsync" />
+    }
+    else if (_cancelled)
+    {
+        @* Neutral cancelled state (§3.7): stable non-error idle view + read-only reload. *@
+        <p data-testid="console-page-provider-cancelled">Loading cancelled.</p>
+        <a href="@ReloadHref()" data-testid="console-page-provider-reload">Reload</a>
     }
     else if (_error is not null)
     {

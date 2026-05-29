@@ -17,9 +17,10 @@ using Shouldly;
 
 using Xunit;
 
-// xUnit1051 fires on NSubstitute arg-matcher setups for IClient methods that have a CancellationToken
-// overload; these are substitute configuration (matching the no-token overload the page calls), not
-// cancellable operations, so the rule does not apply here.
+// xUnit1051 fires on the NSubstitute arg-matcher setups below, which configure the CancellationToken
+// overload of the IClient reads (the overload the page now calls after Story 6.10). These are substitute
+// configuration with an Arg.Any<CancellationToken>() matcher, not cancellable test operations, so passing
+// TestContext.Current.CancellationToken would be wrong here — suppress the rule for the file.
 #pragma warning disable xUnit1051
 
 namespace Hexalith.Folders.UI.Tests;
@@ -212,7 +213,7 @@ public sealed class AuditTrailPageTests
         const string body = """{"category":"audit_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<AuditTrail> rendered = Render(ctx);
@@ -233,7 +234,7 @@ public sealed class AuditTrailPageTests
 
         client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HttpRequestException("connection refused"));
 
         IRenderedComponent<AuditTrail> rendered = Render(ctx);
@@ -312,7 +313,7 @@ public sealed class AuditTrailPageTests
         // The incoming cursor must drive the projection read — a dropped cursor would silently break paging.
         client.Received(1).ListAuditTrailAsync(
             "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-            Arg.Is<string>(c => c == "cur-1"), Arg.Any<int?>(), Arg.Is<string>(f => f == null));
+            Arg.Is<string>(c => c == "cur-1"), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>());
 
         // No client-side hiding of returned rows (AC #5).
         rendered.FindAll("[data-testid=\"console-page-audit-trail-row\"]").Count.ShouldBe(1);
@@ -335,7 +336,7 @@ public sealed class AuditTrailPageTests
         // (a populated filter returns validation_error). The literal null pins the rejection-only contract.
         client.Received(1).ListAuditTrailAsync(
             Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-            Arg.Any<string>(), Arg.Any<int?>(), Arg.Is<string>(f => f == null));
+            Arg.Any<string>(), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -370,7 +371,7 @@ public sealed class AuditTrailPageTests
         // degrade to read-model-unavailable (the same branch the backend-less E2E smoke host relies on).
         client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new TaskCanceledException());
 
         IRenderedComponent<AuditTrail> rendered = Render(ctx);
@@ -450,7 +451,7 @@ public sealed class AuditTrailPageTests
         TaskCompletionSource<AuditTrailPage> pending = new();
         client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(pending.Task);
 
         IRenderedComponent<AuditTrail> rendered = Render(ctx);
@@ -527,13 +528,96 @@ public sealed class AuditTrailPageTests
             .ShouldBeEmpty();
     }
 
+    [Fact]
+    public void PrimaryRead_ReceivesCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        StubList(client, Page(truncated: false, cursor: null, VisibleRecord()));
+
+        IRenderedComponent<AuditTrail> rendered = Render(ctx);
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-audit-trail-table\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the primary read is threaded the page's per-load CancellationToken so the
+        // F-7 Cancel affordance can abort the in-flight request.
+        client.Received(1).ListAuditTrailAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
+            Arg.Any<string>(), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CancelDuringLoad_RendersNeutralCancelledReloadState_NotErrorNorUnavailable()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+        ControllableTimeProvider clock = (ControllableTimeProvider)ctx.Services.GetRequiredService<TimeProvider>();
+
+        // The primary read observes the token and only completes (by throwing) when the operator cancels —
+        // exactly the in-flight read the F-7 Cancel affordance aborts.
+        client.ListAuditTrailAsync(
+                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>())
+            .Returns(async ci =>
+            {
+                CancellationToken ct = ci.Arg<CancellationToken>();
+                await Task.Delay(Timeout.Infinite, ct).ConfigureAwait(false);
+                return (AuditTrailPage)null!;
+            });
+
+        IRenderedComponent<AuditTrail> rendered = Render(ctx);
+
+        // The loading branch renders SkeletonState with the page's preserved loading testid.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-audit-trail-loading\"]").ShouldNotBeNull());
+
+        // Advance past the 2 s threshold so "still loading… [Cancel]" appears, then cancel.
+        clock.Advance(TimeSpan.FromSeconds(2));
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-still-loading-cancel\"]").ShouldNotBeNull());
+        rendered.Find("[data-testid=\"console-still-loading-cancel\"]").Click();
+
+        // AC #5: Cancel resolves to the neutral cancelled state — a stable, non-error idle view with a
+        // read-only reload — NOT the safe-denial panel and NOT the read-model-unavailable empty state.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-audit-trail-reload\"]").ShouldNotBeNull());
+        rendered.FindAll("[data-testid=\"console-error-panel\"]").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-empty-reason=\"read_model_unavailable\"]").ShouldBeEmpty();
+        rendered.Find("[data-testid=\"console-page-audit-trail-root\"]").ShouldNotBeNull();
+        rendered.FindAll("h1").Count.ShouldBe(1);
+        rendered.ShouldHaveNoMutationAffordances();
+    }
+
+    [Fact]
+    public void SupplementaryReads_ReceiveCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        // A populated primary read lets the load proceed cleanly through to a rendered table.
+        StubList(client, Page(truncated: false, cursor: null, VisibleRecord()));
+
+        IRenderedComponent<AuditTrail> rendered = Render(ctx);
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-audit-trail-table\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the per-load CancellationToken is threaded not only into the primary
+        // ListAuditTrailAsync read but into the supplementary TryReadAsync reads too — proven here via
+        // GetEffectivePermissionsAsync, the unconditional advisory scope-banner read that runs on every load.
+        client.Received(1).GetEffectivePermissionsAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+    }
+
     private static IRenderedComponent<AuditTrail> Render(BunitContext ctx)
         => ctx.Render<AuditTrail>(p => p.Add(c => c.FolderId, FolderId));
 
     private static void StubList(IClient client, AuditTrailPage page)
         => client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(page);
 
     private static AuditTrailPage Page(bool truncated, string? cursor, params AuditRecord[] records)

@@ -27,9 +27,17 @@
 
     @if (_loading)
     {
-        @* F-7 perceived-wait UX (skeleton / still-loading-cancel) is Story 6.10 — a simple labelled
-           aria-busy paragraph only here. *@
-        <p data-testid="console-page-incident-stream-loading" aria-busy="true">Loading incident stream…</p>
+        @* F-7 perceived-wait UX (Story 6.10): skeleton at 400 ms, "still loading… [Cancel]" at 2 s. Per F-7
+           the incident path is the degraded ≤ 5 s p95 band; the DegradedModeBanner above still renders
+           unconditionally and redaction is not relaxed during loading (AC #7). *@
+        <SkeletonState Label="incident stream" TestId="console-page-incident-stream-loading" OnCancel="CancelAsync" />
+    }
+    else if (_cancelled)
+    {
+        @* Neutral cancelled state (§3.7): stable non-error idle view + read-only reload. The persistent
+           degraded-mode banner (rendered above) still shows; never a defect, never a relaxed-safety state. *@
+        <p data-testid="console-page-incident-stream-cancelled">Loading cancelled.</p>
+        <a href="@ReloadHref()" data-testid="console-page-incident-stream-reload">Reload</a>
     }
     else if (_error is not null)
     {

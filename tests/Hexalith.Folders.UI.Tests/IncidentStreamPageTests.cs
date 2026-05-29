@@ -19,8 +19,10 @@ using Shouldly;
 using Xunit;
 
 // xUnit1051 fires on NSubstitute arg-matcher setups for IClient methods that have a CancellationToken
-// overload; these are substitute configuration (matching the no-token overload the page calls), not
-// cancellable operations, so the rule does not apply here.
+// overload; these setups now configure the CancellationToken overload (Story 6.10) with an
+// Arg.Any<CancellationToken>() matcher (the page passes its per-load token), so passing
+// TestContext.Current.CancellationToken here would be wrong. The matcher is substitute configuration, not a
+// cancellable operation, so the rule does not apply.
 #pragma warning disable xUnit1051
 
 namespace Hexalith.Folders.UI.Tests;
@@ -271,7 +273,7 @@ public sealed class IncidentStreamPageTests
         rendered.FindAll("h1").Count.ShouldBe(1);
         client.DidNotReceive().ListOperationTimelineAsync(
             Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-            Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>());
+            Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -302,7 +304,7 @@ public sealed class IncidentStreamPageTests
         const string body = """{"category":"audit_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
@@ -325,7 +327,7 @@ public sealed class IncidentStreamPageTests
 
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HttpRequestException("connection refused"));
 
         IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
@@ -347,7 +349,7 @@ public sealed class IncidentStreamPageTests
 
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new TaskCanceledException());
 
         IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
@@ -378,7 +380,7 @@ public sealed class IncidentStreamPageTests
         // Arg.Is<string>(f => f == null) avoids the NSubstitute AmbiguousArgumentsException (6.8 fix).
         client.Received(1).ListOperationTimelineAsync(
             "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-            Arg.Is<string>(c => c == "cur-1"), Arg.Any<int?>(), Arg.Is<string>(f => f == null));
+            Arg.Is<string>(c => c == "cur-1"), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>());
 
         rendered.FindAll("[data-testid=\"console-page-incident-stream-row\"]").Count.ShouldBe(1);
     }
@@ -455,7 +457,7 @@ public sealed class IncidentStreamPageTests
         TaskCompletionSource<OperationTimelinePage> pending = new();
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(pending.Task);
 
         IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
@@ -615,7 +617,7 @@ public sealed class IncidentStreamPageTests
         // AC #7: the supplementary effective-permissions read uses the swallow-denial TryReadAsync helper.
         // A denial on THAT read must not block the page — the authoritative gate is the primary timeline read,
         // which here succeeds, so the event table still renders (no error panel from the swallowed denial).
-        client.GetEffectivePermissionsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetEffectivePermissionsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, "{}", EmptyHeaders, innerException: null));
         StubList(client, Page(truncated: false, cursor: null, VisibleEntry()));
 
@@ -629,6 +631,92 @@ public sealed class IncidentStreamPageTests
         rendered.FindAll("h1").Count.ShouldBe(1);
     }
 
+    [Fact]
+    public void PrimaryRead_ReceivesCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        StubList(client, Page(truncated: false, cursor: null, VisibleEntry()));
+
+        IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-incident-stream-table\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the primary timeline read is threaded the page's per-load CancellationToken
+        // so the F-7 Cancel affordance can abort the in-flight request. Filter is always null (C4).
+        client.Received(1).ListOperationTimelineAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
+            Arg.Any<string>(), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void SupplementaryReads_ReceiveCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        // The primary read returns a populated page so the load proceeds normally.
+        StubList(client, Page(truncated: false, cursor: null, VisibleEntry()));
+
+        IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-incident-stream-table\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the per-load CancellationToken is threaded into the supplementary reads too,
+        // not just the primary. The effective-permissions read runs unconditionally on every folder-scoped
+        // load (via the swallow-denial TryReadAsync helper) and must receive the page's per-load token so the
+        // F-7 Cancel affordance can abort it. Asserted via the CancellationToken overload of the read.
+        client.Received(1).GetEffectivePermissionsAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CancelDuringLoad_RendersNeutralCancelledReloadState_NotErrorNorUnavailable()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+        ControllableTimeProvider clock = (ControllableTimeProvider)ctx.Services.GetRequiredService<TimeProvider>();
+
+        // The primary read observes the token and only completes (by throwing) when the operator cancels —
+        // exactly the in-flight read the F-7 Cancel affordance aborts.
+        client.ListOperationTimelineAsync(
+                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Is<string>(f => f == null), Arg.Any<CancellationToken>())
+            .Returns(async ci =>
+            {
+                CancellationToken ct = ci.Arg<CancellationToken>();
+                await Task.Delay(Timeout.Infinite, ct).ConfigureAwait(false);
+                return (OperationTimelinePage)null!;
+            });
+
+        IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
+
+        // The loading branch renders SkeletonState with the page's preserved loading testid.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-incident-stream-loading\"]").ShouldNotBeNull());
+
+        // Advance past the 2 s threshold so "still loading… [Cancel]" appears, then cancel.
+        clock.Advance(TimeSpan.FromSeconds(2));
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-still-loading-cancel\"]").ShouldNotBeNull());
+        rendered.Find("[data-testid=\"console-still-loading-cancel\"]").Click();
+
+        // AC #5: Cancel resolves to the neutral cancelled state — a stable, non-error idle view with a
+        // read-only reload — NOT the safe-denial panel and NOT the read-model-unavailable empty state.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-incident-stream-reload\"]").ShouldNotBeNull());
+        rendered.FindAll("[data-testid=\"console-error-panel\"]").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-empty-reason=\"read_model_unavailable\"]").ShouldBeEmpty();
+        rendered.Find("[data-testid=\"console-page-incident-stream-root\"]").ShouldNotBeNull();
+        // AC #7: the PERSISTENT degraded-mode banner renders unconditionally, including in the cancelled branch.
+        rendered.Find("[data-testid=\"incident-degraded-mode-banner\"]").ShouldNotBeNull();
+        rendered.FindAll("h1").Count.ShouldBe(1);
+        rendered.ShouldHaveNoMutationAffordances();
+    }
+
     private static IRenderedComponent<IncidentStream> RenderForFolder(BunitContext ctx)
     {
         ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(Route);
@@ -638,7 +726,7 @@ public sealed class IncidentStreamPageTests
     private static void StubList(IClient client, OperationTimelinePage page)
         => client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
-                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>())
+                Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(page);
 
     private static OperationTimelinePage Page(bool truncated, string? cursor, params OperationTimelineEntry[] entries)

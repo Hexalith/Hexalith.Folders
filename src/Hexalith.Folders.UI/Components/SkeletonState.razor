@@ -1,0 +1,36 @@
+@namespace Hexalith.Folders.UI.Components
+
+@* Story 6.10 / F-7 / §3.7 / UX-DR25 / UX-DR14 — the timed perceived-wait component that replaces the simple
+   aria-busy loading paragraph every Epic-6 data page shipped. A dumb presentational component fed by the page
+   (no IClient injection); the 400 ms / 2 s thresholds are driven by the injected BCL TimeProvider so they are
+   deterministically testable. Three bands (AC #2/#3):
+     (a) ≤ 400 ms  → only this minimal labelled aria-busy region (no skeleton bars, no spinner) so assistive
+                     tech announces loading and the page's loading testid stays resolvable;
+     (b) 400 ms–2 s → the layout-stable placeholder skeleton (no content jump / no focus loss, UX-DR25);
+     (c) ≥ 2 s      → skeleton PLUS the still-loading + cancel affordance (StillLoadingCancel, F-7).
+   The root region is always present with a stable @TestId + aria-busy (layout stability); the Label names what
+   is loading (UX-DR25); status is conveyed by text + shape, never colour alone (UX-DR14). *@
+<div class="fc-skeleton-state @AdditionalCssClass"
+     data-testid="@TestId"
+     aria-busy="true"
+     aria-live="polite">
+    <span class="fc-skeleton-state-label" data-testid="console-skeleton-label">Loading @Label…</span>
+
+    @if (_showSkeleton)
+    {
+        @* Band (b)/(c): layout-stable placeholder bars. Decorative (aria-hidden) — the accessible loading
+           announcement is the label + aria-busy above, never colour alone (UX-DR14). *@
+        <div class="fc-skeleton-bars" data-testid="console-skeleton-bars" aria-hidden="true">
+            <span class="fc-skeleton-bar fc-skeleton-bar-wide"></span>
+            <span class="fc-skeleton-bar"></span>
+            <span class="fc-skeleton-bar fc-skeleton-bar-narrow"></span>
+        </div>
+    }
+
+    @if (_showCancel)
+    {
+        @* Band (c) ≥ 2 s: surface "still loading… [Cancel]". OnCancel is the page's CancellationTokenSource
+           cancel — a read-query cancel only, never a mutation. *@
+        <StillLoadingCancel OnCancel="OnCancel" />
+    }
+</div>

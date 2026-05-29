@@ -21,7 +21,16 @@
 
     @if (_loading)
     {
-        <p data-testid="console-page-operation-timeline-loading" aria-busy="true">Loading operation timeline…</p>
+        @* F-7 perceived-wait UX (Story 6.10): no skeleton ≤400 ms, layout-stable skeleton at 400 ms,
+           "still loading… [Cancel]" at 2 s. The page's loading testid moves onto the SkeletonState root. *@
+        <SkeletonState Label="operation timeline" TestId="console-page-operation-timeline-loading" OnCancel="CancelAsync" />
+    }
+    else if (_cancelled)
+    {
+        @* Neutral cancelled state (§3.7): a stable, non-error idle view with a read-only reload — never a
+           defect, distinct from the safe-denial panel and the read-model-unavailable empty state. *@
+        <p data-testid="console-page-operation-timeline-cancelled">Loading cancelled.</p>
+        <a href="@ReloadHref()" data-testid="console-page-operation-timeline-reload">Reload</a>
     }
     else if (_error is not null)
     {

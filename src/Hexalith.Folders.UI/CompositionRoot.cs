@@ -62,6 +62,12 @@ internal static class CompositionRoot
 
         services.AddFluentUIComponents();
 
+        // Story 6.10 / F-7 / AC #9 — the BCL System.TimeProvider (net10.0, no package) drives the
+        // SkeletonState 400 ms / 2 s perceived-wait thresholds. Registered as a singleton so the same clock
+        // is injected everywhere; tests substitute a controllable TimeProvider. Directory.Packages.props is
+        // untouched (System.TimeProvider needs no PackageReference).
+        services.AddSingleton(TimeProvider.System);
+
         services.AddHexalithFrontComposerQuickstart(
             o => o.ScanAssemblies(typeof(Program).Assembly));
         services.AddFrontComposerDevMode(environment);

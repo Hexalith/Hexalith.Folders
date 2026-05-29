@@ -14,7 +14,7 @@ namespace Hexalith.Folders.UI.Components.Pages;
 /// matrix. Reads through the SDK <see cref="IClient"/> directly (diagnostics primary + status DTOs
 /// supplementary). Strictly read-only.
 /// </summary>
-public partial class Workspace : ComponentBase
+public partial class Workspace : ComponentBase, IDisposable
 {
     /// <summary>The folder identifier from the route.</summary>
     [Parameter]
@@ -33,6 +33,8 @@ public partial class Workspace : ComponentBase
     private IUserContextAccessor UserContext { get; set; } = default!;
 
     private bool _loading = true;
+    private bool _cancelled;
+    private CancellationTokenSource? _cts;
     private ConsoleErrorView? _error;
     private EffectivePermissions? _permissions;
     private WorkspaceTrustSummaryModel? _summary;
@@ -49,13 +51,20 @@ public partial class Workspace : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         ResetState();
+        CancellationToken token = _cts!.Token;
 
         ReadConsistencyClass freshness = ReadConsistencyClass.Eventually_consistent;
 
         // Advisory for the banner; a real authorization denial surfaces on the workspace-status read.
         try
         {
-            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness).ConfigureAwait(false);
+            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException)
         {
@@ -65,7 +74,14 @@ public partial class Workspace : ComponentBase
         // Primary read. Authorization-before-observation: a denial here is the page-level safe denial.
         try
         {
-            _status = await Client.GetWorkspaceStatusAsync(FolderId, WorkspaceId, _correlationId, freshness).ConfigureAwait(false);
+            _status = await Client.GetWorkspaceStatusAsync(FolderId, WorkspaceId, _correlationId, freshness, token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: operator cancelled this in-flight read — neutral cancelled state, not _error/_unavailable.
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException ex)
         {
@@ -83,29 +99,38 @@ public partial class Workspace : ComponentBase
         _taskId = NullIfBlank(_status.AcceptedCommandState?.TaskId);
         string? operationId = NullIfBlank(_status.AcceptedCommandState?.OperationId);
 
-        FolderLifecycleStatus? lifecycle = await TryReadAsync(() =>
-            Client.GetFolderLifecycleStatusAsync(FolderId, _correlationId, freshness)).ConfigureAwait(false);
+        FolderLifecycleStatus? lifecycle = await TryReadAsync(ct =>
+            Client.GetFolderLifecycleStatusAsync(FolderId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
-        _lock = await TryReadAsync(() =>
-            Client.GetWorkspaceLockAsync(FolderId, WorkspaceId, _correlationId, freshness)).ConfigureAwait(false);
+        _lock = await TryReadAsync(ct =>
+            Client.GetWorkspaceLockAsync(FolderId, WorkspaceId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
-        _dirty = await TryReadAsync(() =>
-            Client.GetDirtyStateDiagnosticsAsync(FolderId, WorkspaceId, _correlationId, freshness)).ConfigureAwait(false);
+        _dirty = await TryReadAsync(ct =>
+            Client.GetDirtyStateDiagnosticsAsync(FolderId, WorkspaceId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
         CommitEvidence? commit = operationId is null
             ? null
-            : await TryReadAsync(() =>
-                Client.GetCommitEvidenceAsync(FolderId, WorkspaceId, operationId, _correlationId, freshness)).ConfigureAwait(false);
+            : await TryReadAsync(ct =>
+                Client.GetCommitEvidenceAsync(FolderId, WorkspaceId, operationId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
         // The cleanup and file-tree reads require a task id; never fabricate one when absent.
         if (_taskId is not null)
         {
-            _cleanup = await TryReadAsync(() =>
-                Client.GetWorkspaceCleanupStatusAsync(FolderId, WorkspaceId, _correlationId, _taskId, freshness)).ConfigureAwait(false);
+            _cleanup = await TryReadAsync(ct =>
+                Client.GetWorkspaceCleanupStatusAsync(FolderId, WorkspaceId, _correlationId, _taskId, freshness, ct), token).ConfigureAwait(false);
 
-            FileTreeResult? tree = await TryReadAsync(() =>
-                Client.ListFolderFilesAsync(FolderId, WorkspaceId, _correlationId, _taskId, freshness, null, null)).ConfigureAwait(false);
+            FileTreeResult? tree = await TryReadAsync(ct =>
+                Client.ListFolderFilesAsync(FolderId, WorkspaceId, _correlationId, _taskId, freshness, null, null, ct), token).ConfigureAwait(false);
             _fileItems = tree?.Items is null ? null : [.. tree.Items];
+        }
+
+        // A cancel during the supplementary reads (swallowed to null above) still lands on the neutral
+        // cancelled state rather than rendering a partial workspace view.
+        if (_cts.IsCancellationRequested)
+        {
+            _cancelled = true;
+            _loading = false;
+            return;
         }
 
         _summary = BuildSummary(lifecycle, commit);
@@ -116,6 +141,7 @@ public partial class Workspace : ComponentBase
     private void ResetState()
     {
         _loading = true;
+        _cancelled = false;
         _error = null;
         _permissions = null;
         _summary = null;
@@ -126,8 +152,22 @@ public partial class Workspace : ComponentBase
         _dirty = null;
         _status = null;
         _taskId = null;
+        // One fresh CancellationTokenSource per load; dispose any prior so reloads never leak a token source.
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
         _correlationId = Guid.NewGuid().ToString();
     }
+
+    /// <summary>F-7 Cancel: aborts the in-flight read; the cancelled read resolves to the neutral cancelled state.</summary>
+    private Task CancelAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>The read-only reload affordance for the neutral cancelled state — the same workspace route.</summary>
+    private string ReloadHref()
+        => $"/folders/{Uri.EscapeDataString(FolderId)}/workspaces/{Uri.EscapeDataString(WorkspaceId)}";
 
     private WorkspaceTrustSummaryModel BuildSummary(FolderLifecycleStatus? lifecycle, CommitEvidence? commit)
     {
@@ -234,12 +274,17 @@ public partial class Workspace : ComponentBase
     private static DateTimeOffset? ObservedAtOrNull(FreshnessMetadata? freshness)
         => freshness is { ObservedAt: var observedAt } && observedAt != default ? observedAt : null;
 
-    private static async Task<T?> TryReadAsync<T>(Func<Task<T>> read)
+    private static async Task<T?> TryReadAsync<T>(Func<CancellationToken, Task<T>> read, CancellationToken token)
         where T : class
     {
         try
         {
-            return await read().ConfigureAwait(false);
+            return await read(token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // Operator cancel during a supplementary read; the post-read cancel guard drives the cancelled state.
+            return null;
         }
         catch (HexalithFoldersApiException)
         {
@@ -251,4 +296,11 @@ public partial class Workspace : ComponentBase
 
     private static string? NullIfBlank(string? value)
         => string.IsNullOrWhiteSpace(value) ? null : value;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }

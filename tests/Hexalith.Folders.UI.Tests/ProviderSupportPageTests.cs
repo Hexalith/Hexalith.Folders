@@ -7,6 +7,8 @@ using Bunit;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.UI.Components.Pages;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
@@ -14,9 +16,10 @@ using Shouldly;
 
 using Xunit;
 
-// xUnit1051 fires on NSubstitute arg-matcher setups for IClient methods that have a CancellationToken
-// overload; these are substitute configuration (matching the no-token overload the page calls), not
-// cancellable operations, so the rule does not apply here.
+// xUnit1051 fires on the NSubstitute arg-matcher setups below, which configure the CancellationToken
+// overload of the IClient reads (the overload the page now calls after Story 6.10). These are substitute
+// configuration with an Arg.Any<CancellationToken>() matcher, not cancellable test operations, so passing
+// TestContext.Current.CancellationToken would be wrong here — suppress the rule for the file.
 #pragma warning disable xUnit1051
 
 namespace Hexalith.Folders.UI.Tests;
@@ -38,7 +41,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(
                 truncated: false,
                 cursor: null,
@@ -70,7 +73,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(
                 truncated: true,
                 cursor: "next-cursor",
@@ -92,7 +95,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(truncated: false, cursor: null, Row(ProviderCapabilityName.Branch_ref_policy, ProviderCapabilityState.Supported)));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -109,7 +112,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(truncated: false, cursor: null));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -127,7 +130,7 @@ public sealed class ProviderSupportPageTests
         using BunitContext _ctx = ctx;
 
         const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -146,7 +149,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HttpRequestException("connection refused"));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -164,7 +167,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(truncated: false, cursor: null, Row(ProviderCapabilityName.Repository_creation, ProviderCapabilityState.Supported)));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -183,7 +186,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(truncated: false, cursor: null, RowWithoutProfile(ProviderCapabilityName.File_operations, ProviderCapabilityState.Supported)));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -207,7 +210,7 @@ public sealed class ProviderSupportPageTests
         using BunitContext _ctx = ctx;
 
         // FR57: the SAME capability shows different support states across two profiles (e.g. GitHub vs Forgejo).
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(Evidence(
                 truncated: false,
                 cursor: null,
@@ -236,7 +239,7 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(StaleEvidence(Row(ProviderCapabilityName.Repository_creation, ProviderCapabilityState.Supported)));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
@@ -258,7 +261,7 @@ public sealed class ProviderSupportPageTests
 
         // The projection returned evidence rows but no freshness metadata. UX-DR26 / AC #8: absent freshness
         // must render an honest "Unknown", never "Current", and never a fabricated 0001-01-01 observed-at.
-        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>())
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
             .Returns(new ProviderSupportEvidenceList
             {
                 Items = [Row(ProviderCapabilityName.Repository_creation, ProviderCapabilityState.Supported)],
@@ -275,6 +278,66 @@ public sealed class ProviderSupportPageTests
         freshness.ShouldContain("Unknown");
         freshness.ShouldNotContain("Current");
         freshness.ShouldNotContain("0001");
+    }
+
+    [Fact]
+    public void PrimaryRead_ReceivesCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
+            .Returns(Evidence(truncated: false, cursor: null, Row(ProviderCapabilityName.Repository_creation, ProviderCapabilityState.Supported)));
+
+        IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-support-matrix\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the primary read is threaded the page's per-load CancellationToken so the
+        // F-7 Cancel affordance can abort the in-flight request.
+        client.Received(1).GetProviderSupportEvidenceAsync(
+            Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CancelDuringLoad_RendersNeutralCancelledReloadState_NotErrorNorUnavailable()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+        ControllableTimeProvider clock = (ControllableTimeProvider)ctx.Services.GetRequiredService<TimeProvider>();
+
+        // The primary read observes the token and only completes (by throwing) when the operator cancels —
+        // exactly the in-flight read the F-7 Cancel affordance aborts.
+        client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
+            .Returns(async ci =>
+            {
+                CancellationToken ct = ci.Arg<CancellationToken>();
+                await Task.Delay(Timeout.Infinite, ct).ConfigureAwait(false);
+                return (ProviderSupportEvidenceList)null!;
+            });
+
+        IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
+
+        // The loading branch renders SkeletonState with the page's preserved loading testid.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-support-loading\"]").ShouldNotBeNull());
+
+        // Advance past the 2 s threshold so "still loading… [Cancel]" appears, then cancel.
+        clock.Advance(TimeSpan.FromSeconds(2));
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-still-loading-cancel\"]").ShouldNotBeNull());
+        rendered.Find("[data-testid=\"console-still-loading-cancel\"]").Click();
+
+        // AC #5: Cancel resolves to the neutral cancelled state — a stable, non-error idle view with a
+        // read-only reload — NOT the safe-denial panel and NOT the read-model-unavailable empty state.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-support-reload\"]").ShouldNotBeNull());
+        rendered.FindAll("[data-testid=\"console-error-panel\"]").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-empty-reason=\"read_model_unavailable\"]").ShouldBeEmpty();
+        rendered.Find("[data-testid=\"console-page-provider-support-root\"]").ShouldNotBeNull();
+        rendered.FindAll("h1").Count.ShouldBe(1);
+        rendered.ShouldHaveNoMutationAffordances();
     }
 
     private static ProviderSupportEvidenceList Evidence(bool truncated, string? cursor, params ProviderSupportEvidence[] items)

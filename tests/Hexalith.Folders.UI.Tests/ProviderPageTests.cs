@@ -16,9 +16,10 @@ using Shouldly;
 
 using Xunit;
 
-// xUnit1051 fires on NSubstitute arg-matcher setups for IClient methods that have a CancellationToken
-// overload; these are substitute configuration (matching the no-token overload the page calls), not
-// cancellable operations, so the rule does not apply here.
+// xUnit1051 fires on the NSubstitute arg-matcher setups below, which now configure the CancellationToken
+// overload of the IClient reads (the overload the page calls after Story 6.10) with an
+// Arg.Any<CancellationToken>() matcher. These are substitute configuration, not cancellable test
+// operations, so passing TestContext.Current.CancellationToken would be wrong here — suppress for the file.
 #pragma warning disable xUnit1051
 
 namespace Hexalith.Folders.UI.Tests;
@@ -153,9 +154,9 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client) = ArrangeHappyPath();
         using BunitContext _ctx = ctx;
 
-        client.GetSyncStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetSyncStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Sync());
-        client.GetProviderOutcomeAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderOutcomeAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Outcome());
 
         // Workspace/operation context arrives via the query string ([SupplyParameterFromQuery]); in bUnit
@@ -184,7 +185,7 @@ public sealed class ProviderPageTests
         using BunitContext _ctx = ctx;
 
         const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<Provider> rendered = Render(ctx);
@@ -207,7 +208,7 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HttpRequestException("connection refused"));
 
         IRenderedComponent<Provider> rendered = Render(ctx);
@@ -331,7 +332,7 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client) = ArrangeHappyPath();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(DiagnosticsWith(stale: true, staleReasonCode: "projection_lag"));
 
         IRenderedComponent<Provider> rendered = Render(ctx);
@@ -352,7 +353,7 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client) = ArrangeHappyPath();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(DiagnosticsWith(availability: ProjectionAvailability.Unavailable, unavailableReasonCode: "read_model_down"));
 
         IRenderedComponent<Provider> rendered = Render(ctx);
@@ -374,7 +375,7 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client) = ArrangeHappyPath();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(DiagnosticsWith(availability: ProjectionAvailability.Unknown));
 
         IRenderedComponent<Provider> rendered = Render(ctx);
@@ -392,7 +393,7 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client) = ArrangeHappyPath();
         using BunitContext _ctx = ctx;
 
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(DiagnosticsWith(status: null));
 
         IRenderedComponent<Provider> rendered = Render(ctx);
@@ -414,9 +415,9 @@ public sealed class ProviderPageTests
         using BunitContext _ctx = ctx;
 
         // No provider binding, no repository binding, and no diagnostics credential reference resolved.
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(DiagnosticsWith(includeBindingReference: false));
-        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(new FolderLifecycleStatus
             {
                 FolderId = "folder-1",
@@ -446,7 +447,7 @@ public sealed class ProviderPageTests
         (BunitContext ctx, IClient client) = ArrangeHappyPath();
         using BunitContext _ctx = ctx;
 
-        client.GetSyncStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetSyncStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Sync());
 
         // Workspace context only (no OperationId) — supplied via the query string ([SupplyParameterFromQuery]).
@@ -467,6 +468,84 @@ public sealed class ProviderPageTests
         rendered.ShouldHaveNoMutationAffordances();
     }
 
+    [Fact]
+    public void PrimaryRead_ReceivesCancellationToken()
+    {
+        (BunitContext ctx, IClient client) = ArrangeHappyPath();
+        using BunitContext _ctx = ctx;
+
+        IRenderedComponent<Provider> rendered = Render(ctx);
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-section-identity\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the primary read is threaded the page's per-load CancellationToken so the
+        // F-7 Cancel affordance can abort the in-flight request.
+        _ = client.Received(1).GetProviderStatusDiagnosticsAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CancelDuringLoad_RendersNeutralCancelledReloadState_NotErrorNorUnavailable()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+        ControllableTimeProvider clock = (ControllableTimeProvider)ctx.Services.GetRequiredService<TimeProvider>();
+
+        // The PRIMARY read observes the token and only completes (by throwing) when the operator cancels —
+        // exactly the in-flight read the F-7 Cancel affordance aborts. The advisory permissions read and the
+        // supplementary reads stay unstubbed (returning defaults) so the flow reaches this primary read.
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(async ci =>
+            {
+                CancellationToken ct = ci.Arg<CancellationToken>();
+                await Task.Delay(Timeout.Infinite, ct).ConfigureAwait(false);
+                return (ProviderStatusDiagnostics)null!;
+            });
+
+        IRenderedComponent<Provider> rendered = Render(ctx);
+
+        // The loading branch renders SkeletonState with the page's preserved loading testid.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-loading\"]").ShouldNotBeNull());
+
+        // Advance past the 2 s threshold so "still loading… [Cancel]" appears, then cancel.
+        clock.Advance(TimeSpan.FromSeconds(2));
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-still-loading-cancel\"]").ShouldNotBeNull());
+        rendered.Find("[data-testid=\"console-still-loading-cancel\"]").Click();
+
+        // AC #5: Cancel resolves to the neutral cancelled state — a stable, non-error idle view with a
+        // read-only reload — NOT the safe-denial panel and NOT the read-model-unavailable empty state.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-reload\"]").ShouldNotBeNull());
+        rendered.FindAll("[data-testid=\"console-error-panel\"]").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-empty-reason=\"read_model_unavailable\"]").ShouldBeEmpty();
+        rendered.Find("[data-testid=\"console-page-provider-root\"]").ShouldNotBeNull();
+        rendered.FindAll("h1").Count.ShouldBe(1);
+        rendered.ShouldHaveNoMutationAffordances();
+    }
+
+    [Fact]
+    public void SupplementaryReads_ReceiveCancellationToken()
+    {
+        // The happy-path primary diagnostics resolve non-null, so the load proceeds past the primary read
+        // into the supplementary reads.
+        (BunitContext ctx, IClient client) = ArrangeHappyPath();
+        using BunitContext _ctx = ctx;
+
+        IRenderedComponent<Provider> rendered = Render(ctx);
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-section-identity\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the per-load CancellationToken is threaded into the supplementary reads, not
+        // just the primary read. GetFolderLifecycleStatusAsync runs unconditionally once the primary
+        // diagnostics resolve, so its CancellationToken overload must receive the token.
+        _ = client.Received(1).GetFolderLifecycleStatusAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+    }
+
     private static IRenderedComponent<Provider> Render(BunitContext ctx)
         => ctx.Render<Provider>(p => p.Add(c => c.FolderId, "folder-1"));
 
@@ -477,13 +556,13 @@ public sealed class ProviderPageTests
     {
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
 
-        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderStatusDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Diagnostics(bindingReference, includeDiagnosticsReference));
-        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Lifecycle(providerRef: withBinding ? "pbr-1" : null));
-        client.GetProviderBindingAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetProviderBindingAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Binding());
-        client.GetRepositoryBindingAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetRepositoryBindingAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Repository());
 
         return (ctx, client);

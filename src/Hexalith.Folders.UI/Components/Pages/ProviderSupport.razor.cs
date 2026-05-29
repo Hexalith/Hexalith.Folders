@@ -17,7 +17,7 @@ namespace Hexalith.Folders.UI.Components.Pages;
 /// within the server-accepted vocabulary); the page never client-pre-filters rows (authorization already
 /// ran server-side).
 /// </summary>
-public partial class ProviderSupport : ComponentBase
+public partial class ProviderSupport : ComponentBase, IDisposable
 {
     /// <summary>Bounded page size for the paginated support-evidence list (a status/diagnostics flow — keep it small).</summary>
     private const int PageLimit = 50;
@@ -26,6 +26,8 @@ public partial class ProviderSupport : ComponentBase
     private ConsoleErrorView? _error;
     private bool _unavailable;
     private bool _loading;
+    private bool _cancelled;
+    private CancellationTokenSource? _cts;
     private string _correlationId = string.Empty;
 
     /// <summary>Opaque pagination cursor (query string). The only filter input the server accepts today (C4).</summary>
@@ -41,6 +43,7 @@ public partial class ProviderSupport : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         ResetState();
+        CancellationToken token = _cts!.Token;
 
         // Eventually-consistent read-only browsing (concern #19).
         ReadConsistencyClass freshness = ReadConsistencyClass.Eventually_consistent;
@@ -48,8 +51,15 @@ public partial class ProviderSupport : ComponentBase
         try
         {
             _evidence = await Client
-                .GetProviderSupportEvidenceAsync(_correlationId, freshness, Cursor, PageLimit)
+                .GetProviderSupportEvidenceAsync(_correlationId, freshness, Cursor, PageLimit, token)
                 .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: operator cancelled this in-flight read — neutral cancelled state, not _error/_unavailable.
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException ex)
         {
@@ -80,8 +90,32 @@ public partial class ProviderSupport : ComponentBase
         _loading = true;
         _error = null;
         _unavailable = false;
+        _cancelled = false;
         _evidence = null;
+        // One fresh CancellationTokenSource per load; dispose any prior so reloads never leak a token source.
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
         _correlationId = Guid.NewGuid().ToString();
+    }
+
+    /// <summary>F-7 Cancel: aborts the in-flight read; the cancelled read resolves to the neutral cancelled state.</summary>
+    private Task CancelAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>The read-only reload affordance for the neutral cancelled state — the same route the user is on.</summary>
+    private string ReloadHref()
+        => string.IsNullOrWhiteSpace(Cursor)
+            ? "/providers/support"
+            : string.Create(CultureInfo.InvariantCulture, $"/providers/support?cursor={Uri.EscapeDataString(Cursor)}");
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>

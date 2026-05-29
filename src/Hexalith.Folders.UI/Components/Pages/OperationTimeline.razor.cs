@@ -19,7 +19,7 @@ namespace Hexalith.Folders.UI.Components.Pages;
 /// affordance, no filter UI (C4 rejection-only); tenant scope is sourced from the authenticated context via
 /// <c>TenantScopeBanner</c> — never the route.
 /// </summary>
-public partial class OperationTimeline : ComponentBase
+public partial class OperationTimeline : ComponentBase, IDisposable
 {
     /// <summary>Bounded page size for the paginated timeline (a diagnostics flow — keep it small; server clamps to its max).</summary>
     private const int PageLimit = 50;
@@ -29,6 +29,8 @@ public partial class OperationTimeline : ComponentBase
     private ConsoleErrorView? _error;
     private bool _unavailable;
     private bool _loading;
+    private bool _cancelled;
+    private CancellationTokenSource? _cts;
     private string _correlationId = string.Empty;
 
     /// <summary>The folder whose operation timeline is inspected (route parameter).</summary>
@@ -48,20 +50,31 @@ public partial class OperationTimeline : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         ResetState();
+        CancellationToken token = _cts!.Token;
 
         // Eventually-consistent read-only browsing (concern #19) — never the active snapshot_per_task probe.
         ReadConsistencyClass freshness = ReadConsistencyClass.Eventually_consistent;
 
         // Advisory for the scope banner; a real authorization denial surfaces on the primary read below.
-        _permissions = await TryReadAsync(() =>
-            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness)).ConfigureAwait(false);
+        _permissions = await TryReadAsync(ct =>
+            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
         // Primary read. C4: the filter key vocabulary is rejection-only today, so always pass filter: null.
         try
         {
             _timeline = await Client
-                .ListOperationTimelineAsync(FolderId, _correlationId, freshness, Cursor, PageLimit, filter: null)
+                .ListOperationTimelineAsync(FolderId, _correlationId, freshness, Cursor, PageLimit, filter: null, token)
                 .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: the operator cancelled this in-flight read (StillLoadingCancel → _cts.Cancel()).
+            // Resolve to the neutral cancelled state — NOT _error (safe-denial) and NOT _unavailable
+            // (transport failure). Ordered FIRST so a token-triggered cancel is never mistaken for a
+            // transport TaskCanceledException.
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException ex)
         {
@@ -92,10 +105,27 @@ public partial class OperationTimeline : ComponentBase
         _loading = true;
         _error = null;
         _unavailable = false;
+        _cancelled = false;
         _timeline = null;
         _permissions = null;
+        // One fresh CancellationTokenSource per load; dispose any prior so reloads never leak a token source.
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
         _correlationId = Guid.NewGuid().ToString();
     }
+
+    /// <summary>F-7 Cancel: aborts the in-flight read; the cancelled read resolves to the neutral cancelled state.</summary>
+    private Task CancelAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>The read-only reload affordance for the neutral cancelled state — the same route the user is on.</summary>
+    private string ReloadHref()
+        => string.IsNullOrWhiteSpace(Cursor)
+            ? string.Create(CultureInfo.InvariantCulture, $"/folders/{Uri.EscapeDataString(FolderId)}/operation-timeline")
+            : string.Create(CultureInfo.InvariantCulture, $"/folders/{Uri.EscapeDataString(FolderId)}/operation-timeline?cursor={Uri.EscapeDataString(Cursor)}");
 
     /// <summary>
     /// Builds the next-page route preserving the projection cursor; returns <see langword="null"/> when
@@ -133,12 +163,18 @@ public partial class OperationTimeline : ComponentBase
             ? observedAt.ToString("u", CultureInfo.InvariantCulture)
             : "unknown";
 
-    private static async Task<T?> TryReadAsync<T>(Func<Task<T>> read)
+    private static async Task<T?> TryReadAsync<T>(Func<CancellationToken, Task<T>> read, CancellationToken token)
         where T : class
     {
         try
         {
-            return await read().ConfigureAwait(false);
+            return await read(token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // An operator-triggered cancel during this supplementary read is swallowed here; the primary
+            // read (invoked next with the same cancelled token) throws and drives the neutral cancelled state.
+            return null;
         }
         catch (HexalithFoldersApiException)
         {
@@ -152,5 +188,12 @@ public partial class OperationTimeline : ComponentBase
         {
             return null;
         }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

@@ -20,7 +20,7 @@ namespace Hexalith.Folders.UI.Components.Pages;
 /// (advisory for the scope banner). No mutation affordance, no filter UI (C4 rejection-only), and the
 /// tenant scope is sourced from the authenticated context via <c>TenantScopeBanner</c> — never the route.
 /// </summary>
-public partial class AuditTrail : ComponentBase
+public partial class AuditTrail : ComponentBase, IDisposable
 {
     /// <summary>Bounded page size for the paginated audit list (a diagnostics flow — keep it small; server clamps to its max).</summary>
     private const int PageLimit = 50;
@@ -30,6 +30,8 @@ public partial class AuditTrail : ComponentBase
     private ConsoleErrorView? _error;
     private bool _unavailable;
     private bool _loading;
+    private bool _cancelled;
+    private CancellationTokenSource? _cts;
     private string _correlationId = string.Empty;
 
     /// <summary>The folder whose audit trail is inspected (route parameter).</summary>
@@ -49,13 +51,14 @@ public partial class AuditTrail : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         ResetState();
+        CancellationToken token = _cts!.Token;
 
         // Eventually-consistent read-only browsing (concern #19) — never the active snapshot_per_task probe.
         ReadConsistencyClass freshness = ReadConsistencyClass.Eventually_consistent;
 
         // Advisory for the scope banner; a real authorization denial surfaces on the primary read below.
-        _permissions = await TryReadAsync(() =>
-            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness)).ConfigureAwait(false);
+        _permissions = await TryReadAsync(ct =>
+            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
         // Primary read. C4: the filter key vocabulary is rejection-only today, so always pass filter: null —
         // a populated filter returns validation_error. Authorization-before-observation: a canonical denial
@@ -63,8 +66,15 @@ public partial class AuditTrail : ComponentBase
         try
         {
             _audit = await Client
-                .ListAuditTrailAsync(FolderId, _correlationId, freshness, Cursor, PageLimit, filter: null)
+                .ListAuditTrailAsync(FolderId, _correlationId, freshness, Cursor, PageLimit, filter: null, token)
                 .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: operator cancelled this in-flight read — neutral cancelled state, not _error/_unavailable.
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException ex)
         {
@@ -95,10 +105,27 @@ public partial class AuditTrail : ComponentBase
         _loading = true;
         _error = null;
         _unavailable = false;
+        _cancelled = false;
         _audit = null;
         _permissions = null;
+        // One fresh CancellationTokenSource per load; dispose any prior so reloads never leak a token source.
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
         _correlationId = Guid.NewGuid().ToString();
     }
+
+    /// <summary>F-7 Cancel: aborts the in-flight read; the cancelled read resolves to the neutral cancelled state.</summary>
+    private Task CancelAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>The read-only reload affordance for the neutral cancelled state — the same route the user is on.</summary>
+    private string ReloadHref()
+        => string.IsNullOrWhiteSpace(Cursor)
+            ? string.Create(CultureInfo.InvariantCulture, $"/folders/{Uri.EscapeDataString(FolderId)}/audit-trail")
+            : string.Create(CultureInfo.InvariantCulture, $"/folders/{Uri.EscapeDataString(FolderId)}/audit-trail?cursor={Uri.EscapeDataString(Cursor)}");
 
     /// <summary>
     /// Builds the next-page route preserving the projection cursor; returns <see langword="null"/> when
@@ -136,12 +163,17 @@ public partial class AuditTrail : ComponentBase
             ? observedAt.ToString("u", CultureInfo.InvariantCulture)
             : "unknown";
 
-    private static async Task<T?> TryReadAsync<T>(Func<Task<T>> read)
+    private static async Task<T?> TryReadAsync<T>(Func<CancellationToken, Task<T>> read, CancellationToken token)
         where T : class
     {
         try
         {
-            return await read().ConfigureAwait(false);
+            return await read(token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // Operator cancel during a supplementary read; the primary read drives the neutral cancelled state.
+            return null;
         }
         catch (HexalithFoldersApiException)
         {
@@ -155,5 +187,12 @@ public partial class AuditTrail : ComponentBase
         {
             return null;
         }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

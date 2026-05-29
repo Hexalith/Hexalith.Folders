@@ -5,6 +5,8 @@ using Bunit;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.UI.Components.Pages;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
@@ -12,9 +14,10 @@ using Shouldly;
 
 using Xunit;
 
-// xUnit1051 fires on NSubstitute arg-matcher setups for IClient methods that have a CancellationToken
-// overload; these are substitute configuration (matching the no-token overload the pages call), not
-// cancellable operations, so the rule does not apply here.
+// xUnit1051 fires on the NSubstitute arg-matcher setups below, which configure the CancellationToken
+// overload of the IClient reads (the overload the page now calls after Story 6.10). These are substitute
+// configuration with an Arg.Any<CancellationToken>() matcher, not cancellable test operations, so passing
+// TestContext.Current.CancellationToken would be wrong here — suppress the rule for the file.
 #pragma warning disable xUnit1051
 
 namespace Hexalith.Folders.UI.Tests;
@@ -32,7 +35,7 @@ public sealed class WorkspacePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Status());
 
         IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
@@ -69,9 +72,9 @@ public sealed class WorkspacePageTests
         using BunitContext _ctx = ctx;
 
         // CurrentState = Ready would derive "Available"; the server diagnostics DTO must win (AC #7).
-        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Status());
-        client.GetDirtyStateDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetDirtyStateDiagnosticsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(new DirtyStateDiagnostics
             {
                 Disposition = OperatorDispositionLabel.Terminal_until_intervention,
@@ -100,11 +103,11 @@ public sealed class WorkspacePageTests
         WorkspaceStatus status = Status();
         status.ProviderOutcome = new ProviderOutcome { State = ProviderOutcomeState.Known_success };
 
-        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(status);
-        client.GetWorkspaceCleanupStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceCleanupStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(new WorkspaceCleanupStatus { Status = CleanupStatus.Succeeded });
-        client.GetCommitEvidenceAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetCommitEvidenceAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(new CommitEvidence { CommitReferenceClassification = CommitEvidenceCommitReferenceClassification.Opaque_reference });
 
         IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
@@ -128,7 +131,7 @@ public sealed class WorkspacePageTests
         using BunitContext _ctx = ctx;
 
         const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
-        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
@@ -149,7 +152,7 @@ public sealed class WorkspacePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Status());
 
         IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
@@ -173,7 +176,7 @@ public sealed class WorkspacePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>())
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
             .Returns(Status());
 
         IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
@@ -191,6 +194,94 @@ public sealed class WorkspacePageTests
         rendered.Find("[data-testid=\"console-page-workspace-operation-timeline-link\"]")
             .GetAttribute("href").ShouldBe("/folders/folder-1/operation-timeline");
         rendered.FindAll("[data-testid=\"console-page-workspace-audit-trail-pending\"]").ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void PrimaryRead_ReceivesCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(Status());
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
+            .Add(w => w.FolderId, "folder-1")
+            .Add(w => w.WorkspaceId, "workspace-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"workspace-trust-summary\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the primary read is threaded the page's per-load CancellationToken so the
+        // F-7 Cancel affordance can abort the in-flight request.
+        client.Received(1).GetWorkspaceStatusAsync(
+            "folder-1", "workspace-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void SupplementaryReads_ReceiveCancellationToken()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+
+        // A populated primary read lets the load proceed past the primary into the supplementary reads.
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(Status());
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
+            .Add(w => w.FolderId, "folder-1")
+            .Add(w => w.WorkspaceId, "workspace-1"));
+
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"workspace-trust-summary\"]").ShouldNotBeNull());
+
+        // Story 6.10 AC #5/#14: the per-load CancellationToken is threaded not only into the primary read
+        // but into the supplementary TryReadAsync reads too — proven here via GetFolderLifecycleStatusAsync,
+        // an unconditional supplementary read that runs on every successful load.
+        client.Received(1).GetFolderLifecycleStatusAsync(
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void CancelDuringLoad_RendersNeutralCancelledReloadState_NotErrorNorUnavailable()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+        ControllableTimeProvider clock = (ControllableTimeProvider)ctx.Services.GetRequiredService<TimeProvider>();
+
+        // The primary read observes the token and only completes (by throwing) when the operator cancels —
+        // exactly the in-flight read the F-7 Cancel affordance aborts.
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(async ci =>
+            {
+                CancellationToken ct = ci.Arg<CancellationToken>();
+                await Task.Delay(Timeout.Infinite, ct).ConfigureAwait(false);
+                return (WorkspaceStatus)null!;
+            });
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
+            .Add(w => w.FolderId, "folder-1")
+            .Add(w => w.WorkspaceId, "workspace-1"));
+
+        // The loading branch renders SkeletonState with the page's preserved loading testid.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-workspace-loading\"]").ShouldNotBeNull());
+
+        // Advance past the 2 s threshold so "still loading… [Cancel]" appears, then cancel.
+        clock.Advance(TimeSpan.FromSeconds(2));
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-still-loading-cancel\"]").ShouldNotBeNull());
+        rendered.Find("[data-testid=\"console-still-loading-cancel\"]").Click();
+
+        // AC #5: Cancel resolves to the neutral cancelled state — a stable, non-error idle view with a
+        // read-only reload — NOT the safe-denial panel and NOT the read-model-unavailable empty state.
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-workspace-reload\"]").ShouldNotBeNull());
+        rendered.FindAll("[data-testid=\"console-error-panel\"]").ShouldBeEmpty();
+        rendered.FindAll("[data-fc-empty-reason=\"read_model_unavailable\"]").ShouldBeEmpty();
+        rendered.Find("[data-testid=\"console-page-workspace-root\"]").ShouldNotBeNull();
+        rendered.FindAll("h1").Count.ShouldBe(1);
+        rendered.ShouldHaveNoMutationAffordances();
     }
 
     private static readonly IReadOnlyDictionary<string, IEnumerable<string>> EmptyHeaders =

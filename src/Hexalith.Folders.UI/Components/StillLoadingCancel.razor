@@ -1,0 +1,35 @@
+@namespace Hexalith.Folders.UI.Components
+
+@* Story 6.10 / F-7 / §3.7 / UX-DR30 / UX-DR14 — the "still loading… [Cancel]" affordance that SkeletonState
+   surfaces once a request has been in flight for 2 s. A dumb presentational component fed by the page (no
+   IClient injection): the Cancel control is a READ-ONLY <button type="button"> modelled on SafeCopyId /
+   CorrelationCopyButton, so it never trips the 5-selector command-suppression guard (no form /
+   fluentinputform / fluentdialog / [data-fc-command] / [data-fc-mutation]). It cancels an in-flight READ
+   query only (the page wires OnCancel to a CancellationTokenSource) — never a domain mutation, never the
+   lifecycle Cancelled state. Status is conveyed by text + control, never colour alone (UX-DR14); the control
+   is keyboard reachable with an accessible name (UX-DR30). *@
+<div class="fc-still-loading-cancel @AdditionalCssClass"
+     role="status"
+     aria-live="polite"
+     data-testid="console-still-loading-cancel-region">
+    <span data-testid="console-still-loading-cancel-text">still loading…</span>
+    <button type="button"
+            class="fc-still-loading-cancel-button"
+            data-testid="console-still-loading-cancel"
+            aria-label="Cancel loading"
+            title="Cancel loading"
+            @onclick="OnCancel">Cancel</button>
+</div>
+
+@code {
+    /// <summary>
+    /// Gets or sets the callback invoked when the operator activates Cancel (click, Enter, or Space — a
+    /// native button handles all three). The page wires this to <c>CancellationTokenSource.Cancel()</c>.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    /// <summary>Gets or sets an optional extra CSS class.</summary>
+    [Parameter]
+    public string? AdditionalCssClass { get; set; }
+}

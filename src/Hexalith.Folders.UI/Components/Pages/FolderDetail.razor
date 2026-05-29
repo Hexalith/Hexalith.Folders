@@ -5,6 +5,7 @@
 @using Hexalith.Folders.UI.Services
 @inject IClient Client
 @inject Microsoft.AspNetCore.Components.NavigationManager Navigation
+@implements IDisposable
 
 <PageTitle>Hexalith Folders — Folder @FolderId</PageTitle>
 
@@ -20,7 +21,14 @@
     }
     else if (_loading)
     {
-        <p data-testid="console-page-folder-detail-loading" aria-busy="true">Loading folder diagnostics…</p>
+        @* F-7 perceived-wait UX (Story 6.10): skeleton at 400 ms, "still loading… [Cancel]" at 2 s. *@
+        <SkeletonState Label="folder metadata" TestId="console-page-folder-detail-loading" OnCancel="CancelAsync" />
+    }
+    else if (_cancelled)
+    {
+        @* Neutral cancelled state (§3.7): stable non-error idle view + read-only reload. *@
+        <p data-testid="console-page-folder-detail-cancelled">Loading cancelled.</p>
+        <a href="@ReloadHref()" data-testid="console-page-folder-detail-reload">Reload</a>
     }
     else if (_lifecycle is not null)
     {
@@ -81,21 +89,35 @@
     private ConsoleErrorView? _error;
     private OperatorDispositionLabel _disposition;
     private bool _loading = true;
+    private bool _cancelled;
+    private CancellationTokenSource? _cts;
     private string _workspaceId = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
         _loading = true;
+        _cancelled = false;
         _error = null;
         _permissions = null;
         _lifecycle = null;
+        // One fresh CancellationTokenSource per load; dispose any prior so reloads never leak a token source.
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+        CancellationToken token = _cts.Token;
 
         string correlationId = Guid.NewGuid().ToString();
         ReadConsistencyClass freshness = ReadConsistencyClass.Eventually_consistent;
 
         try
         {
-            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, correlationId, freshness).ConfigureAwait(false);
+            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, correlationId, freshness, token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: operator cancelled this in-flight read — neutral cancelled state, not _error.
+            _cancelled = true;
+            _loading = false;
+            return;
         }
         catch (HexalithFoldersApiException)
         {
@@ -105,13 +127,18 @@
 
         try
         {
-            _lifecycle = await Client.GetFolderLifecycleStatusAsync(FolderId, correlationId, freshness).ConfigureAwait(false);
+            _lifecycle = await Client.GetFolderLifecycleStatusAsync(FolderId, correlationId, freshness, token).ConfigureAwait(false);
             if (_lifecycle is not null)
             {
                 _disposition = DispositionLabelMapper.ResolveDisposition(
                     _lifecycle.LifecycleState,
                     _lifecycle.Freshness?.Stale ?? false);
             }
+        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        {
+            // F-7 cancel: neutral cancelled state, distinct from the safe-denial panel.
+            _cancelled = true;
         }
         catch (HexalithFoldersApiException ex)
         {
@@ -121,6 +148,24 @@
         {
             _loading = false;
         }
+    }
+
+    /// <summary>F-7 Cancel: aborts the in-flight read; the cancelled read resolves to the neutral cancelled state.</summary>
+    private Task CancelAsync()
+    {
+        _cts?.Cancel();
+        return Task.CompletedTask;
+    }
+
+    /// <summary>The read-only reload affordance for the neutral cancelled state — the same folder route.</summary>
+    private string ReloadHref()
+        => $"/folders/{Uri.EscapeDataString(FolderId)}";
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     private void OpenWorkspace()
