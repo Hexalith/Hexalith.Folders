@@ -1,0 +1,125 @@
+{
+  "gate": "security-redaction-ci",
+  "status": "passed",
+  "report_path": "_bmad-output/gates/security-redaction-ci/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "categories": [
+    "sentinel-corpus",
+    "redaction-channel-scan",
+    "forbidden-field-diagnostics",
+    "tenant-cache-key-lint"
+  ],
+  "test_gates": [
+    {
+      "category": "sentinel-corpus",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SentinelCorpusDeclaresAuthoritativeSyntheticVocabulary|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.TelemetrySurfaceVocabularyIsExplicitAndInventoryAddressable|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SentinelCorpusAvoidsRealDataAndKeepsNegativeControlsQuarantined|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.ChannelInventoryResolvesCoveredSourcesAndBoundsMissingChannels",
+      "runner_methods": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SentinelCorpusDeclaresAuthoritativeSyntheticVocabulary",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.TelemetrySurfaceVocabularyIsExplicitAndInventoryAddressable",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SentinelCorpusAvoidsRealDataAndKeepsNegativeControlsQuarantined",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.ChannelInventoryResolvesCoveredSourcesAndBoundsMissingChannels"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/audit-leakage-corpus.json",
+        "tests/fixtures/safety-channel-inventory.json",
+        "tests/fixtures/quarantine/safety-negative-controls.json"
+      ]
+    },
+    {
+      "category": "redaction-channel-scan",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SafetyScansDetectQuarantinedControlsWithoutScanningQuarantineAsNormalArtifacts|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.OpenApiExamplesAndContextQueriesRemainMetadataOnly|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.StoryFourteenTelemetryChannelsAreCoveredByRuntimeArtifacts",
+      "runner_methods": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SafetyScansDetectQuarantinedControlsWithoutScanningQuarantineAsNormalArtifacts",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.OpenApiExamplesAndContextQueriesRemainMetadataOnly",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.StoryFourteenTelemetryChannelsAreCoveredByRuntimeArtifacts"
+      ],
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "tests/fixtures/safety-channel-inventory.json",
+        "src/Hexalith.Folders.Client/Generated"
+      ]
+    },
+    {
+      "category": "forbidden-field-diagnostics",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.MissingChannelDiagnosticsAreEmittedAsBoundedRuntimeEvidence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.WorkflowAndDocumentationExposeSameOfflineSafetyGate|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuditOpsConsoleContractGroupTests.AuditOpsConsoleSchemas_EnforceBehavioralInvariantsFromFollowUpReview",
+      "runner_methods": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.MissingChannelDiagnosticsAreEmittedAsBoundedRuntimeEvidence",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.WorkflowAndDocumentationExposeSameOfflineSafetyGate",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.AuditOpsConsoleContractGroupTests.AuditOpsConsoleSchemas_EnforceBehavioralInvariantsFromFollowUpReview"
+      ],
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "docs/contract/safety-invariant-ci-gates.md",
+        "tests/tools/run-safety-invariant-gates.ps1"
+      ]
+    },
+    {
+      "category": "tenant-cache-key-lint",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyExceptionManifestIsReviewedAndCurrentRepositoryHasNoTenantDataCacheKeysWithoutScope|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyExceptionApprovalStateFailsClosedForExpiredOrUnknownStatus|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyLintNegativeControlsClassifyTenantScopeAndExceptionsWithoutEchoingKeyValues",
+      "runner_methods": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyExceptionManifestIsReviewedAndCurrentRepositoryHasNoTenantDataCacheKeysWithoutScope",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyExceptionApprovalStateFailsClosedForExpiredOrUnknownStatus",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyLintNegativeControlsClassifyTenantScopeAndExceptionsWithoutEchoingKeyValues"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/cache-key-exceptions.yaml",
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "category": "sentinel-corpus",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SentinelCorpusDeclaresAuthoritativeSyntheticVocabulary|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.TelemetrySurfaceVocabularyIsExplicitAndInventoryAddressable|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SentinelCorpusAvoidsRealDataAndKeepsNegativeControlsQuarantined|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.ChannelInventoryResolvesCoveredSourcesAndBoundsMissingChannels",
+      "artifact_paths": [
+        "tests/fixtures/audit-leakage-corpus.json",
+        "tests/fixtures/safety-channel-inventory.json",
+        "tests/fixtures/quarantine/safety-negative-controls.json"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "redaction-channel-scan",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SafetyScansDetectQuarantinedControlsWithoutScanningQuarantineAsNormalArtifacts|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.OpenApiExamplesAndContextQueriesRemainMetadataOnly|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.SafeDenialAndDiagnosticStatesDoNotRevealResourceExistence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.StoryElevenDiagnosticChannelsAreReevaluatedAgainstCurrentArtifacts|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.StoryFourteenTelemetryChannelsAreCoveredByRuntimeArtifacts",
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "tests/fixtures/safety-channel-inventory.json",
+        "src/Hexalith.Folders.Client/Generated"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "forbidden-field-diagnostics",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.MissingChannelDiagnosticsAreEmittedAsBoundedRuntimeEvidence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests.WorkflowAndDocumentationExposeSameOfflineSafetyGate|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuditOpsConsoleContractGroupTests.AuditOpsConsoleSchemas_EnforceBehavioralInvariantsFromFollowUpReview",
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "docs/contract/safety-invariant-ci-gates.md",
+        "tests/tools/run-safety-invariant-gates.ps1"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "tenant-cache-key-lint",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyExceptionManifestIsReviewedAndCurrentRepositoryHasNoTenantDataCacheKeysWithoutScope|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyExceptionApprovalStateFailsClosedForExpiredOrUnknownStatus|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests.CacheKeyLintNegativeControlsClassifyTenantScopeAndExceptionsWithoutEchoingKeyValues",
+      "artifact_paths": [
+        "tests/fixtures/cache-key-exceptions.yaml",
+        "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    }
+  ]
+}
