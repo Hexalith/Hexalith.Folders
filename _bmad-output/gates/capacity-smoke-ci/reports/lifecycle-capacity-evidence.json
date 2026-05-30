@@ -1,0 +1,58 @@
+{
+  "run_id": "capacity-smoke-ci",
+  "utc_timestamp": "2026-05-30T16:52:27.4885766+00:00",
+  "git_commit": "5e7238363283fc5ecc10790113682a35f4ad51d8",
+  "target_framework": ".NETCoreApp,Version=v10.0",
+  "n_bomber_version": "6.4.1\u002B67e3c24f271a197fc1ca88e55f0a68e7a65bb7a4",
+  "scenario_names": [
+    "folder_workspace_full_lifecycle"
+  ],
+  "profile_name": "quick",
+  "dimensions": {
+    "tenant_count": 2,
+    "folders_per_tenant": 1,
+    "workspaces_per_tenant": 1,
+    "tasks_per_workspace": 1,
+    "operations_per_task": 1
+  },
+  "load_simulations": [
+    {
+      "kind": "inject",
+      "rate": 1,
+      "interval_seconds": 1,
+      "duration_seconds": 3,
+      "warmup": "disabled"
+    }
+  ],
+  "thresholds": "reference_pending",
+  "result_artifact_paths": [
+    "_bmad-output/gates/capacity-smoke-ci/reports/capacity-smoke-ci.txt",
+    "_bmad-output/gates/capacity-smoke-ci/reports/capacity-smoke-ci.md"
+  ],
+  "measured_steps": [
+    "acquire_workspace_lock",
+    "commit_workspace",
+    "mutate_workspace_file",
+    "prepare_workspace",
+    "read_workspace_status"
+  ],
+  "observed_step_counts": {
+    "commit_workspace": 3,
+    "mutate_workspace_file": 3,
+    "read_workspace_status": 3,
+    "acquire_workspace_lock": 3,
+    "prepare_workspace": 3
+  },
+  "observed_counts": {
+    "tenant_count": 2,
+    "folder_count": 2,
+    "workspace_count": 2,
+    "task_count": 2,
+    "operation_count": 12,
+    "idempotency_key_count": 12
+  },
+  "result_codes": {
+    "Accepted": 12,
+    "Allowed": 3
+  }
+}

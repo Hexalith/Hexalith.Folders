@@ -87,14 +87,14 @@ criteria:
     owner: Release Readiness
     status: reference_pending
     artifact_path: tests/load/README.md
-    verification_command: dotnet build Hexalith.Folders.slnx --no-restore
-    result_summary: Capacity smoke lane is documented; executable release evidence is deferred to Epic 7.
+    verification_command: .\tests\tools\run-capacity-smoke-ci-gates.ps1
+    result_summary: Capacity smoke lane is wired via the capacity-smoke-gates PR check; executable release-target evidence is deferred to Story 7.10.
     open_policy_placeholders:
       - id: C5-capacity-smoke
         owner: Release Readiness
         reason: Smoke targets require implemented lifecycle endpoints and load fixtures.
-        verification_gap: Capacity smoke CI job and target threshold assertions are not yet wired.
-        consuming_story: 7-7-add-capacity-smoke-ci-gate
+        verification_gap: Capacity smoke CI job is wired via capacity-smoke-gates; release-target threshold assertions and hardware-profile pinning remain deferred.
+        consuming_story: 7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets
   - criterion_id: C6
     title: Workspace transition matrix evidence
     owner: Architect

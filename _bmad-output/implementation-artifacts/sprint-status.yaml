@@ -144,7 +144,7 @@ development_status:
   7-4-consolidate-baseline-build-and-unit-ci-gates: done
   7-5-consolidate-contract-and-parity-ci-gates: done
   7-6-consolidate-security-and-redaction-ci-gates: done
-  7-7-add-capacity-smoke-ci-gate: backlog
+  7-7-add-capacity-smoke-ci-gate: done
   7-8-wire-scheduled-drift-and-policy-conformance-workflows: backlog
   7-9-publish-traceable-nuget-release-packages: backlog
   7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets: backlog

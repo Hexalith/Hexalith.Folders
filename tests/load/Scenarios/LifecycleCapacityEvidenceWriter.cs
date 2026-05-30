@@ -47,6 +47,8 @@ public static class LifecycleCapacityEvidenceWriter
             LoadSimulations: [profile.LoadSimulation()],
             Thresholds: "reference_pending",
             ResultArtifactPaths: reportPaths.Select(SafeArtifactPath).ToArray(),
+            MeasuredSteps: recorder.MeasuredSteps,
+            ObservedStepCounts: recorder.ObservedStepCounts,
             ObservedCounts: new Dictionary<string, object>(StringComparer.Ordinal)
             {
                 ["tenant_count"] = recorder.TenantCount,
@@ -121,6 +123,8 @@ public static class LifecycleCapacityEvidenceWriter
         IReadOnlyList<IReadOnlyDictionary<string, object>> LoadSimulations,
         string Thresholds,
         IReadOnlyList<string> ResultArtifactPaths,
+        IReadOnlyList<string> MeasuredSteps,
+        IReadOnlyDictionary<string, int> ObservedStepCounts,
         IReadOnlyDictionary<string, object> ObservedCounts,
         IReadOnlyDictionary<string, int> ResultCodes);
 }

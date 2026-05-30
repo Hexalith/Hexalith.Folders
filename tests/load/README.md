@@ -1,6 +1,6 @@
 # Load Tests
 
-This directory contains the hermetic lifecycle capacity harness for repository-backed workspace prepare, lock, mutate, and commit scenarios.
+This directory contains the hermetic lifecycle capacity harness for repository-backed workspace prepare, lock, mutate, commit, and status-read scenarios.
 
 The harness uses synthetic tenant, folder, workspace, task, operation, correlation, and idempotency identifiers only. It does not require provider credentials, tenant seed data, Aspire, Dapr, Redis, GitHub, Forgejo, Docker, Testcontainers, network services, production secrets, local Git working copies, or nested submodule initialization.
 
@@ -22,11 +22,13 @@ dotnet run --project tests/load/Hexalith.Folders.LoadTests.csproj -- --self-chec
 
 - `quick`: tiny local profile for harness verification. It uses no production thresholds and must not be treated as C1, C2, or C5 release evidence.
 
-Future CI capacity-smoke work can select the same scenario/profile shape with `--profile quick` and a CI-controlled `--report-folder`. Story 7.7 owns any GitHub Actions gate. Story 7.10 owns final p95, throughput, C1, C2, and C5 calibration.
+The Story 7.7 PR capacity-smoke gate uses `--profile quick`, `--run-id capacity-smoke-ci`, and `_bmad-output/gates/capacity-smoke-ci/reports` as its CI-controlled report folder. The stable blocking check is `capacity-smoke-gates`; the local orchestrator is `pwsh ./tests/tools/run-capacity-smoke-ci-gates.ps1`.
+
+Story 7.10 owns final p95, throughput, C1, C2, and C5 calibration.
 
 ## Evidence
 
-Each run writes `lifecycle-capacity-evidence.json` in the report folder. The sidecar records run metadata, dimensions, load simulation settings, scenario names, NBomber version, target framework, result artifact paths, and `thresholds: "reference_pending"`.
+Each run writes `lifecycle-capacity-evidence.json` in the report folder. The sidecar records run metadata, dimensions, load simulation settings, scenario names, measured step names, observed step counts, NBomber version, target framework, result artifact paths, and `thresholds: "reference_pending"`.
 
 Reports and evidence are local artifacts. Do not commit generated report folders unless a later story intentionally adds a small deterministic fixture.
 
@@ -34,7 +36,7 @@ Reports and evidence are local artifacts. Do not commit generated report folders
 
 - owner_workstream: Capacity smoke CI and release-readiness calibration stories.
 - future_test_use: Capacity smoke checks, C1/C2/C5 evidence, and release calibration artifacts.
-- known_omissions: No production thresholds, provider scenarios, environments, CI gates, or release-calibration artifacts are defined here.
+- known_omissions: No production thresholds, provider scenarios, environments, or release-calibration artifacts are defined here.
 - mutation_rules: Keep load assets hermetic, metadata-only, and free of provider credentials, network services, production secrets, or recursive submodule commands.
 - non_policy_placeholder: false
 - synthetic_data_only: true

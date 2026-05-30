@@ -12,6 +12,7 @@ public sealed class LifecycleCapacityRunRecorder
     private readonly ConcurrentDictionary<string, byte> _tasks = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, byte> _operations = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, byte> _idempotencyKeys = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, int> _observedStepCounts = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, int> _resultCodes = new(StringComparer.Ordinal);
 
     public int TenantCount => _tenants.Count;
@@ -28,6 +29,12 @@ public sealed class LifecycleCapacityRunRecorder
 
     public IReadOnlyDictionary<string, int> ResultCodes
         => _resultCodes.ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+
+    public IReadOnlyDictionary<string, int> ObservedStepCounts
+        => _observedStepCounts.ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+
+    public IReadOnlyList<string> MeasuredSteps
+        => _observedStepCounts.Keys.Order(StringComparer.Ordinal).ToArray();
 
     public void RecordIteration(LifecycleCapacityIteration iteration)
     {
@@ -47,6 +54,18 @@ public sealed class LifecycleCapacityRunRecorder
         _idempotencyKeys.TryAdd($"{iteration.TenantId}:{iteration.FolderId}:{idempotencyKey}", 0);
     }
 
+    public void RecordMeasuredStep(string stepName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(stepName);
+        _observedStepCounts.AddOrUpdate(stepName, 1, static (_, count) => count + 1);
+    }
+
     public void RecordResult(FolderResultCode code)
-        => _resultCodes.AddOrUpdate(code.ToString(), 1, static (_, count) => count + 1);
+        => RecordResult(code.ToString());
+
+    public void RecordResult(string code)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(code);
+        _resultCodes.AddOrUpdate(code, 1, static (_, count) => count + 1);
+    }
 }

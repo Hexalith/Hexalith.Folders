@@ -1,6 +1,7 @@
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Queries.Folders;
 
 namespace Hexalith.Folders.LoadTests.Scenarios;
 
@@ -16,6 +17,8 @@ public sealed class LifecycleCapacityDriver
     private readonly WorkspaceLockAcquisitionService _lockService;
     private readonly WorkspaceFileMutationService _mutationService;
     private readonly WorkspaceCommitService _commitService;
+    private readonly InMemoryWorkspaceStatusReadModel _statusReadModel;
+    private readonly WorkspaceStatusQueryHandler _statusQueryHandler;
 
     public LifecycleCapacityDriver(
         LifecycleCapacityIteration iteration,
@@ -44,6 +47,8 @@ public sealed class LifecycleCapacityDriver
             _repository,
             new SyntheticCommitExecutor(iteration),
             _timeProvider);
+        _statusReadModel = new InMemoryWorkspaceStatusReadModel(new FixedUtcClock(BaselineTime));
+        _statusQueryHandler = new WorkspaceStatusQueryHandler(authorization, _statusReadModel, new FixedUtcClock(BaselineTime));
     }
 
     public async Task<FolderResultCode> PrepareAsync(CancellationToken cancellationToken)
@@ -74,7 +79,7 @@ public sealed class LifecycleCapacityDriver
             AppendWorkspacePreparedOutcome();
         }
 
-        return Record(result.Code);
+        return Record(LifecycleCapacityScenario.PrepareStepName, result.Code);
     }
 
     public async Task<FolderResultCode> AcquireLockAsync(CancellationToken cancellationToken)
@@ -98,7 +103,7 @@ public sealed class LifecycleCapacityDriver
                 new Dictionary<string, string?>(StringComparer.Ordinal)),
             cancellationToken).ConfigureAwait(false);
 
-        return Record(result.Code);
+        return Record(LifecycleCapacityScenario.LockStepName, result.Code);
     }
 
     public async Task<FolderResultCode> MutateFileAsync(CancellationToken cancellationToken)
@@ -129,7 +134,7 @@ public sealed class LifecycleCapacityDriver
                 new Dictionary<string, string?>(StringComparer.Ordinal)),
             cancellationToken).ConfigureAwait(false);
 
-        return Record(result.Code);
+        return Record(LifecycleCapacityScenario.MutateStepName, result.Code);
     }
 
     public async Task<FolderResultCode> CommitAsync(CancellationToken cancellationToken)
@@ -156,11 +161,40 @@ public sealed class LifecycleCapacityDriver
                 new Dictionary<string, string?>(StringComparer.Ordinal)),
             cancellationToken).ConfigureAwait(false);
 
-        return Record(result.Code);
+        if (result.Code == FolderResultCode.Accepted)
+        {
+            AppendWorkspaceCommittedStatusSnapshot();
+        }
+
+        return Record(LifecycleCapacityScenario.CommitStepName, result.Code);
     }
 
-    private FolderResultCode Record(FolderResultCode code)
+    public async Task<WorkspaceStatusQueryResultCode> ReadStatusAsync(CancellationToken cancellationToken)
     {
+        WorkspaceStatusQueryResult result = await _statusQueryHandler.HandleAsync(
+            new WorkspaceStatusQuery(
+                _iteration.FolderId,
+                _iteration.WorkspaceId,
+                _iteration.TenantId,
+                _iteration.PrincipalId,
+                EventStoreClaimTransformEvidence.Allowed(
+                    _iteration.TenantId,
+                    _iteration.PrincipalId,
+                    [WorkspaceStatusQueryHandler.ActionToken]),
+                _iteration.CommitCorrelationId,
+                _iteration.TaskId,
+                ClientControlledTenantValues: null,
+                ClientControlledPrincipalValues: null),
+            cancellationToken).ConfigureAwait(false);
+
+        _recorder.RecordMeasuredStep(LifecycleCapacityScenario.StatusStepName);
+        _recorder.RecordResult(result.Code.ToString());
+        return result.Code;
+    }
+
+    private FolderResultCode Record(string stepName, FolderResultCode code)
+    {
+        _recorder.RecordMeasuredStep(stepName);
         _recorder.RecordResult(code);
         return code;
     }
@@ -188,6 +222,45 @@ public sealed class LifecycleCapacityDriver
                     _timeProvider.GetUtcNow()),
             ]);
     }
+
+    private void AppendWorkspaceCommittedStatusSnapshot()
+        => _statusReadModel.Save(new WorkspaceStatusReadModelSnapshot(
+            ManagedTenantId: _iteration.TenantId,
+            FolderId: _iteration.FolderId,
+            WorkspaceId: _iteration.WorkspaceId,
+            CurrentState: "committed",
+            AcceptedCommandState: new WorkspaceAcceptedCommandState(
+                _iteration.TaskId,
+                _iteration.CommitOperationId,
+                "completed",
+                BaselineTime),
+            ProjectedState: new WorkspaceProjectedState("committed", "projection", BaselineTime),
+            ProviderOutcome: new WorkspaceProviderOutcome(
+                _iteration.CommitOperationId,
+                "known_success",
+                "success",
+                "provref_capacity_status",
+                new WorkspaceStatusRetryEligibility(false, "retry_not_required"),
+                RetryAfter: null,
+                Freshness: WorkspaceStatusFreshness(),
+                _iteration.ChangedPathMetadataDigest,
+                CommitReferenceClassification: "opaque_reference",
+                ReconciliationReference: null),
+            RetryEligibility: new WorkspaceStatusRetryEligibility(false, "retry_not_required"),
+            RetryAfter: null,
+            Freshness: WorkspaceStatusFreshness(),
+            ProjectionLag: new WorkspaceProjectionLag(0, "projection"),
+            LastFailureCategory: null,
+            EvidenceScope: new FolderLifecycleEvidenceScope(
+                _iteration.TenantId,
+                _iteration.PrincipalId,
+                WorkspaceStatusQueryHandler.ActionToken,
+                _iteration.TaskId,
+                _iteration.CommitCorrelationId,
+                $"{_iteration.TenantId}:folder-permission:7")));
+
+    private static FolderLifecycleFreshness WorkspaceStatusFreshness()
+        => new("read_your_writes", BaselineTime, "workspace_status_watermark_v1", Stale: false, ReasonCode: null);
 
     private void SeedConfiguredFolder()
     {

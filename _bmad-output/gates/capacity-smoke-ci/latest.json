@@ -1,0 +1,87 @@
+{
+  "gate": "capacity-smoke-ci",
+  "status": "passed",
+  "report_path": "_bmad-output/gates/capacity-smoke-ci/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "categories": [
+    "harness-self-check",
+    "quick-lifecycle-smoke",
+    "evidence-shape",
+    "non-production-thresholds",
+    "metadata-only-report"
+  ],
+  "profile_name": "quick",
+  "run_id": "capacity-smoke-ci",
+  "threshold_posture": "reference_pending",
+  "required_measured_steps": [
+    "prepare_workspace",
+    "acquire_workspace_lock",
+    "mutate_workspace_file",
+    "commit_workspace",
+    "read_workspace_status"
+  ],
+  "evidence_path": "_bmad-output/gates/capacity-smoke-ci/reports/lifecycle-capacity-evidence.json",
+  "self_check_report_path": "_bmad-output/gates/capacity-smoke-ci/self-check",
+  "smoke_report_path": "_bmad-output/gates/capacity-smoke-ci/reports",
+  "elapsed_ms": 7678,
+  "results": [
+    {
+      "category": "harness-self-check",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "quick-lifecycle-smoke",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "evidence-shape",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "non-production-thresholds",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "metadata-only-report",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "measured_steps": [
+    "acquire_workspace_lock",
+    "commit_workspace",
+    "mutate_workspace_file",
+    "prepare_workspace",
+    "read_workspace_status"
+  ],
+  "observed_step_counts": {
+    "commit_workspace": 3,
+    "mutate_workspace_file": 3,
+    "read_workspace_status": 3,
+    "acquire_workspace_lock": 3,
+    "prepare_workspace": 3
+  },
+  "observed_counts": {
+    "tenant_count": 2,
+    "folder_count": 2,
+    "workspace_count": 2,
+    "task_count": 2,
+    "operation_count": 12,
+    "idempotency_key_count": 12
+  },
+  "result_codes": {
+    "Accepted": 12,
+    "Allowed": 3
+  },
+  "scenario_names": [
+    "folder_workspace_full_lifecycle"
+  ],
+  "result_artifact_paths": [
+    "_bmad-output/gates/capacity-smoke-ci/reports/capacity-smoke-ci.txt",
+    "_bmad-output/gates/capacity-smoke-ci/reports/capacity-smoke-ci.md"
+  ]
+}

@@ -1,4 +1,5 @@
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Queries.Folders;
 
 using NBomber.Contracts;
 using NBomber.Contracts.Stats;
@@ -13,6 +14,7 @@ public static class LifecycleCapacityScenario
     public const string LockStepName = "acquire_workspace_lock";
     public const string MutateStepName = "mutate_workspace_file";
     public const string CommitStepName = "commit_workspace";
+    public const string StatusStepName = "read_workspace_status";
 
     public static async Task<int> RunAsync(string[] args)
     {
@@ -83,8 +85,15 @@ public static class LifecycleCapacityScenario
                     return mutation;
                 }
 
-                return await Step.Run<string>(CommitStepName, context, async () =>
+                var commit = await Step.Run<string>(CommitStepName, context, async () =>
                     ToResponse(await driver.CommitAsync(context.ScenarioCancellationToken).ConfigureAwait(false))).ConfigureAwait(false);
+                if (commit.IsError)
+                {
+                    return commit;
+                }
+
+                return await Step.Run<string>(StatusStepName, context, async () =>
+                    ToResponse(await driver.ReadStatusAsync(context.ScenarioCancellationToken).ConfigureAwait(false))).ConfigureAwait(false);
             })
             .WithoutWarmUp()
             .WithRestartIterationOnFail(shouldRestart: false)
@@ -173,6 +182,11 @@ public static class LifecycleCapacityScenario
             ? Response.Ok(payload: code.ToString(), statusCode: code.ToString())
             : Response.Fail<string>(statusCode: SafeFailureStatus(code));
 
+    private static Response<string> ToResponse(WorkspaceStatusQueryResultCode code)
+        => code == WorkspaceStatusQueryResultCode.Allowed
+            ? Response.Ok(payload: code.ToString(), statusCode: code.ToString())
+            : Response.Fail<string>(statusCode: SafeFailureStatus(code));
+
     private static string FindLoadReadme()
     {
         DirectoryInfo? directory = new(AppContext.BaseDirectory);
@@ -201,6 +215,18 @@ public static class LifecycleCapacityScenario
             FolderResultCode.StateTransitionInvalid => "state_transition_invalid",
             FolderResultCode.PathPolicyDenied => "path_policy_denied",
             _ => "lifecycle_rejected",
+        };
+
+    private static string SafeFailureStatus(WorkspaceStatusQueryResultCode code)
+        => code switch
+        {
+            WorkspaceStatusQueryResultCode.AuthenticationRequired => "authentication_required",
+            WorkspaceStatusQueryResultCode.AuthorizationDenied => "authorization_denied",
+            WorkspaceStatusQueryResultCode.NotFoundSafe => "not_found_safe",
+            WorkspaceStatusQueryResultCode.ProjectionStale => "projection_stale",
+            WorkspaceStatusQueryResultCode.ProjectionUnavailable => "projection_unavailable",
+            WorkspaceStatusQueryResultCode.ReadModelUnavailable => "read_model_unavailable",
+            _ => "status_rejected",
         };
 
     private sealed record LifecycleCapacityOptions(
