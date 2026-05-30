@@ -1,0 +1,164 @@
+{
+  "gate": "release-packages",
+  "status": "passed",
+  "mode": "DryRun",
+  "exit_code": 0,
+  "report_path": "_bmad-output/gates/release-packages/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "categories": [
+    "version-policy",
+    "source-revision-policy",
+    "manifest-package-set",
+    "restore-build",
+    "package-build",
+    "package-metadata",
+    "symbol-packages",
+    "dependency-closure",
+    "release-evidence",
+    "metadata-only-report",
+    "publish"
+  ],
+  "package_version": "0.0.0-local.1",
+  "release_tag": "",
+  "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+  "contract_version": "0.0.0-scaffold",
+  "contract_metadata_path": "src/Hexalith.Folders.Contracts/FoldersContractMetadata.cs",
+  "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+  "package_manifest_path": "deploy/nuget/release-packages.yaml",
+  "package_output_path": "_bmad-output/gates/release-packages/packages",
+  "release_evidence_paths": [
+    "_bmad-output/gates/baseline-ci/latest.json",
+    "_bmad-output/gates/contract-parity-ci/latest.json",
+    "_bmad-output/gates/security-redaction-ci/latest.json",
+    "_bmad-output/gates/capacity-smoke-ci/latest.json",
+    "_bmad-output/gates/safety-invariants/latest.json",
+    "_bmad-output/gates/governance-completeness/latest.json"
+  ],
+  "pushed_package_ids": [
+    "Hexalith.Folders.Contracts",
+    "Hexalith.Folders",
+    "Hexalith.Folders.Client",
+    "Hexalith.Folders.Aspire",
+    "Hexalith.Folders.Testing"
+  ],
+  "package_reports": [
+    {
+      "package_id": "Hexalith.Folders.Contracts",
+      "role": "contracts",
+      "project_path": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Contracts.0.0.0-local.1.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Contracts.0.0.0-local.1.snupkg",
+      "version": "0.0.0-local.1",
+      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "contract_version": "0.0.0-scaffold",
+      "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+      "publish_mode": "push"
+    },
+    {
+      "package_id": "Hexalith.Folders",
+      "role": "core",
+      "project_path": "src/Hexalith.Folders/Hexalith.Folders.csproj",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.0.0.0-local.1.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.0.0.0-local.1.snupkg",
+      "version": "0.0.0-local.1",
+      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "contract_version": "0.0.0-scaffold",
+      "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+      "publish_mode": "push"
+    },
+    {
+      "package_id": "Hexalith.Folders.Client",
+      "role": "client",
+      "project_path": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Client.0.0.0-local.1.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Client.0.0.0-local.1.snupkg",
+      "version": "0.0.0-local.1",
+      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "contract_version": "0.0.0-scaffold",
+      "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+      "publish_mode": "push"
+    },
+    {
+      "package_id": "Hexalith.Folders.Aspire",
+      "role": "aspire",
+      "project_path": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Aspire.0.0.0-local.1.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Aspire.0.0.0-local.1.snupkg",
+      "version": "0.0.0-local.1",
+      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "contract_version": "0.0.0-scaffold",
+      "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+      "publish_mode": "push"
+    },
+    {
+      "package_id": "Hexalith.Folders.Testing",
+      "role": "testing",
+      "project_path": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Testing.0.0.0-local.1.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Testing.0.0.0-local.1.snupkg",
+      "version": "0.0.0-local.1",
+      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "contract_version": "0.0.0-scaffold",
+      "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+      "publish_mode": "push"
+    }
+  ],
+  "results": [
+    {
+      "category": "version-policy",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "source-revision-policy",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "manifest-package-set",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "restore-build",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-build",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-metadata",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "symbol-packages",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "dependency-closure",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "release-evidence",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "metadata-only-report",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "publish",
+      "status": "skipped-dry-run",
+      "exit_code": 0
+    }
+  ],
+  "elapsed_ms": 13538
+}

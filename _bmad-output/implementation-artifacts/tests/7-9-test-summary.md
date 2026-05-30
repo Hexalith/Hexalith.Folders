@@ -1,6 +1,6 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.9. Durable per-story copy: [`7-9-test-summary.md`](./7-9-test-summary.md).
+> Durable per-story copy for Story 7.9. Canonical latest-run summary: [`test-summary.md`](./test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests`
 **Story:** `_bmad-output/implementation-artifacts/7-9-publish-traceable-nuget-release-packages.md`

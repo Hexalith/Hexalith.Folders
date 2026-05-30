@@ -21,6 +21,10 @@
          projects inherit the default and do not produce NuGet packages. -->
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <Authors>Hexalith Contributors</Authors>
     <Company>Hexalith</Company>

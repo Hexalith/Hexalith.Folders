@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <Description>Aspire orchestration helpers for Hexalith.Folders local and release validation topologies.</Description>
+    <PackageTags>folders;aspire;dapr;dotnet;hexalith</PackageTags>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" />

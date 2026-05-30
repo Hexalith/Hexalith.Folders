@@ -1,0 +1,177 @@
+name: release-packages
+
+'on':
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run_version:
+        description: 'Strict SemVer package version for dry-run validation'
+        required: true
+        default: '0.0.0-local.1'
+        type: string
+      dry_run_source_revision_id:
+        description: 'Full source commit SHA for dry-run validation'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release-prerequisite-gates:
+    name: release-prerequisite-gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Verify immutable release tag
+        if: ${{ github.event_name == 'release' }}
+        shell: pwsh
+        run: |
+          $tag = '${{ github.event.release.tag_name }}'
+          if ($tag -notmatch '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$') {
+            throw "Release tag is not strict v-prefixed SemVer: $tag"
+          }
+          $tagCommit = (git rev-parse "$tag^{commit}").Trim()
+          if ($tagCommit -ne '${{ github.sha }}') {
+            throw "Release tag commit does not match workflow SHA."
+          }
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+
+      - name: Run contract and parity gates
+        shell: pwsh
+        timeout-minutes: 30
+        run: ./tests/tools/run-contract-parity-ci-gates.ps1
+
+      - name: Run security and redaction gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-security-redaction-ci-gates.ps1
+
+      - name: Run capacity smoke gates
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/tools/run-capacity-smoke-ci-gates.ps1
+
+      - name: Run safety gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild
+
+      - name: Run governance gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild
+
+  release-package-conformance:
+    name: release-package-conformance
+    runs-on: ubuntu-latest
+    needs: [release-prerequisite-gates]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+
+      - name: Run release package dry-run gates
+        if: ${{ github.event_name == 'release' }}
+        shell: pwsh
+        timeout-minutes: 20
+        run: |
+          $version = '${{ github.event.release.tag_name }}'.Substring(1)
+          ./tests/tools/run-release-package-gates.ps1 -Version $version -ReleaseTag '${{ github.event.release.tag_name }}' -SourceRevisionId '${{ github.sha }}' -SkipRestoreBuild
+
+      - name: Run workflow dispatch dry-run gates
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-release-package-gates.ps1 -Version '${{ inputs.dry_run_version }}' -SourceRevisionId '${{ inputs.dry_run_source_revision_id }}' -SkipRestoreBuild
+
+  publish-packages:
+    name: publish-packages
+    runs-on: ubuntu-latest
+    needs: [release-prerequisite-gates, release-package-conformance]
+    if: ${{ github.event_name == 'release' && github.event.action == 'published' && needs.release-prerequisite-gates.result == 'success' && needs.release-package-conformance.result == 'success' }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+
+      - name: Publish release packages
+        shell: pwsh
+        timeout-minutes: 20
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          $version = '${{ github.event.release.tag_name }}'.Substring(1)
+          ./tests/tools/run-release-package-gates.ps1 -Version $version -ReleaseTag '${{ github.event.release.tag_name }}' -SourceRevisionId '${{ github.sha }}' -Mode Publish -FeedSource 'https://nuget.pkg.github.com/Hexalith/index.json' -ApiKeyEnvironmentVariable GITHUB_TOKEN -SkipRestoreBuild

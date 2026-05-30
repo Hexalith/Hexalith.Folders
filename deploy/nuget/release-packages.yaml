@@ -1,0 +1,70 @@
+kind: ReleasePackageManifest
+version: 1
+releaseSet:
+  - packageId: Hexalith.Folders.Contracts
+    projectPath: src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj
+    role: contracts
+    publishMode: push
+    dependencyRationale: Public contract assembly and OpenAPI Contract Spine metadata consumed by clients and tests.
+    pushedInStory79: true
+    symbolPackageRequired: true
+  - packageId: Hexalith.Folders
+    projectPath: src/Hexalith.Folders/Hexalith.Folders.csproj
+    role: core
+    publishMode: push
+    dependencyRationale: Required dependency closure for Hexalith.Folders.Testing because the testing package references core folder behaviors.
+    pushedInStory79: true
+    symbolPackageRequired: true
+  - packageId: Hexalith.Folders.Client
+    projectPath: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
+    role: client
+    publishMode: push
+    dependencyRationale: Canonical typed SDK package generated from the OpenAPI Contract Spine and consumed by CLI, MCP, UI, and downstream services.
+    pushedInStory79: true
+    symbolPackageRequired: true
+  - packageId: Hexalith.Folders.Aspire
+    projectPath: src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj
+    role: aspire
+    publishMode: push
+    dependencyRationale: Epic 7.9 mandated Aspire package for reusable local orchestration and release validation topology helpers.
+    pushedInStory79: true
+    symbolPackageRequired: true
+  - packageId: Hexalith.Folders.Testing
+    projectPath: src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj
+    role: testing
+    publishMode: push
+    dependencyRationale: Shared consumer test helpers; depends on Hexalith.Folders and Hexalith.Folders.Contracts, so those dependencies are also published.
+    pushedInStory79: true
+    symbolPackageRequired: true
+excludedPackableProjects:
+  - packageId: Hexalith.Folders.ServiceDefaults
+    projectPath: src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj
+    role: service-defaults
+    publishMode: excluded
+    dependencyRationale: Shared service-host defaults are deployable host plumbing, not part of the downstream NuGet consumer surface in Story 7.9.
+    pushedInStory79: false
+    symbolPackageRequired: false
+  - packageId: Hexalith.Folders.Cli
+    projectPath: src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj
+    role: tool
+    publishMode: excluded
+    dependencyRationale: CLI is a .NET tool distribution concern and is intentionally excluded from the library package release set for Story 7.9.
+    pushedInStory79: false
+    symbolPackageRequired: false
+nonPackageableProjects:
+  - src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj
+  - src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj
+  - src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj
+  - src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj
+  - src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj
+contractSpine:
+  metadataPath: src/Hexalith.Folders.Contracts/FoldersContractMetadata.cs
+  openApiPath: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+evidencePaths:
+  - _bmad-output/gates/baseline-ci/latest.json
+  - _bmad-output/gates/contract-parity-ci/latest.json
+  - _bmad-output/gates/security-redaction-ci/latest.json
+  - _bmad-output/gates/capacity-smoke-ci/latest.json
+  - _bmad-output/gates/safety-invariants/latest.json
+  - _bmad-output/gates/governance-completeness/latest.json
+  - _bmad-output/gates/release-packages/latest.json

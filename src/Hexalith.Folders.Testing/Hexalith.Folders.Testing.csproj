@@ -6,7 +6,13 @@
     <InternalsVisibleTo Include="Hexalith.Folders.Testing.Tests" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
-    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+    <!-- SetTargetFramework pins the referenced projects to the single net10.0 TFF during
+         release packing. Direct (non-solution) `dotnet pack` of this package referenced the
+         projects without an explicit framework and intermittently failed framework negotiation
+         under parallel builds; pinning the TFF (combined with `-m:1` in the release gate) makes
+         packing deterministic. Both references are single-target net10.0, so this is a no-op for
+         normal builds. Do not remove without re-validating tests/tools/run-release-package-gates.ps1. -->
+    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" SetTargetFramework="TargetFramework=net10.0" />
+    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" SetTargetFramework="TargetFramework=net10.0" />
   </ItemGroup>
 </Project>
