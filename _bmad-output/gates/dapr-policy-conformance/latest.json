@@ -1,0 +1,14 @@
+{
+  "gate": "dapr-policy-conformance",
+  "status": "failed",
+  "exit_code": 1,
+  "canonical_inputs": [
+    "deploy/dapr/production/accesscontrol.yaml",
+    "deploy/dapr/production/daprsystem.yaml",
+    "tests/fixtures/dapr-policy-conformance.yaml"
+  ],
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "report_path": "_bmad-output/gates/dapr-policy-conformance/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "live_dapr_kind_gate": "reference_pending_story_7_8"
+}

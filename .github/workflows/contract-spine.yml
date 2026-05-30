@@ -48,3 +48,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 15
         run: ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild
+
+      - name: Run Dapr policy conformance gates
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild

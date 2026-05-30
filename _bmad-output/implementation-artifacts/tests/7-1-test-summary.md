@@ -1,6 +1,6 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.1. Durable per-story copy: [`7-1-test-summary.md`](./7-1-test-summary.md).
+> Durable Story 7.1 copy. Canonical latest-run summary: [`test-summary.md`](./test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests`
 **Story:** `_bmad-output/implementation-artifacts/7-1-deploy-production-dapr-deny-by-default-access-control.md`

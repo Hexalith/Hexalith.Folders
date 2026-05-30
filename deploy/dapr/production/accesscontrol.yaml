@@ -1,0 +1,82 @@
+# Sanitized production conformance artifact.
+# Platform deployment tooling mirrors these deny-by-default semantics and may template namespace/trust-domain values.
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-accesscontrol-folders
+  namespace: hexalith-production
+  annotations:
+    hexalith.io/target-app-id: folders
+    hexalith.io/trust-domain-template: DAPR_TRUST_DOMAIN
+spec:
+  accessControl:
+    defaultAction: deny
+    trustDomain: "hexalith-production"
+    policies:
+      - appId: eventstore
+        defaultAction: deny
+        trustDomain: "hexalith-production"
+        namespace: "hexalith-production"
+        operations:
+          - name: /process
+            httpVerb: ["POST"]
+            action: allow
+          - name: /project
+            httpVerb: ["POST"]
+            action: allow
+---
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-accesscontrol-eventstore
+  namespace: hexalith-production
+  annotations:
+    hexalith.io/target-app-id: eventstore
+    hexalith.io/trust-domain-template: DAPR_TRUST_DOMAIN
+spec:
+  accessControl:
+    defaultAction: deny
+    trustDomain: "hexalith-production"
+    policies: []
+---
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-accesscontrol-tenants
+  namespace: hexalith-production
+  annotations:
+    hexalith.io/target-app-id: tenants
+    hexalith.io/trust-domain-template: DAPR_TRUST_DOMAIN
+spec:
+  accessControl:
+    defaultAction: deny
+    trustDomain: "hexalith-production"
+    policies: []
+---
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-accesscontrol-folders-workers
+  namespace: hexalith-production
+  annotations:
+    hexalith.io/target-app-id: folders-workers
+    hexalith.io/trust-domain-template: DAPR_TRUST_DOMAIN
+spec:
+  accessControl:
+    defaultAction: deny
+    trustDomain: "hexalith-production"
+    policies: []
+---
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-accesscontrol-folders-ui
+  namespace: hexalith-production
+  annotations:
+    hexalith.io/target-app-id: folders-ui
+    hexalith.io/trust-domain-template: DAPR_TRUST_DOMAIN
+spec:
+  accessControl:
+    defaultAction: deny
+    trustDomain: "hexalith-production"
+    policies: []

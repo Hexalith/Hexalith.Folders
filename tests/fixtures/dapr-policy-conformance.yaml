@@ -1,0 +1,191 @@
+version: 1
+policyProvenance:
+  path: deploy/dapr/production/accesscontrol.yaml
+  hashAlgorithm: sha256-normalized-policy-v1
+  semanticSha256: "7788d30f66aca3761545209b1ff4eee3e10ed873c839db4e25409afbbfbb0b96"
+  normalization: "Parsed Dapr Configuration accessControl semantics; comments and YAML line endings are ignored."
+mtlsEvidence:
+  path: deploy/dapr/production/daprsystem.yaml
+  expectedEnabled: true
+targetPolicies:
+  - targetAppId: folders
+    allowRules:
+      - id: folders.eventstore.process.post
+        sourceAppId: eventstore
+        operation: /process
+        httpVerb: POST
+        namespace: hexalith-production
+        trustDomain: hexalith-production
+      - id: folders.eventstore.project.post
+        sourceAppId: eventstore
+        operation: /project
+        httpVerb: POST
+        namespace: hexalith-production
+        trustDomain: hexalith-production
+  - targetAppId: eventstore
+    allowRules: []
+  - targetAppId: tenants
+    allowRules: []
+  - targetAppId: folders-workers
+    allowRules: []
+  - targetAppId: folders-ui
+    allowRules: []
+cases:
+  - id: allow-folders-eventstore-process-post
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /process
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    expectedOutcome: allow
+  - id: deny-process-unknown-source
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: external-worker
+    operation: /process
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: unknown-source-app
+    expectedOutcome: "403"
+  - id: deny-process-known-unauthorized-source
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: folders-ui
+    operation: /process
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: known-unauthorized-source-app
+    expectedOutcome: "403"
+  - id: deny-process-wrong-target
+    ruleId: folders.eventstore.process.post
+    targetAppId: tenants
+    sourceAppId: eventstore
+    operation: /process
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-target-app
+    expectedOutcome: "403"
+  - id: deny-process-wrong-operation
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /status
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-operation
+    expectedOutcome: "403"
+  - id: deny-process-wrong-http-verb
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /process
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-http-verb
+    expectedOutcome: "403"
+  - id: deny-process-wrong-namespace
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /process
+    httpVerb: POST
+    namespace: default
+    trustDomain: hexalith-production
+    negativeCategory: wrong-namespace
+    expectedOutcome: "403"
+  - id: deny-process-wrong-trust-domain
+    ruleId: folders.eventstore.process.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /process
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: public
+    negativeCategory: wrong-trust-domain
+    expectedOutcome: "403"
+  - id: allow-folders-eventstore-project-post
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /project
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    expectedOutcome: allow
+  - id: deny-project-unknown-source
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: external-worker
+    operation: /project
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: unknown-source-app
+    expectedOutcome: "403"
+  - id: deny-project-known-unauthorized-source
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: folders-ui
+    operation: /project
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: known-unauthorized-source-app
+    expectedOutcome: "403"
+  - id: deny-project-wrong-target
+    ruleId: folders.eventstore.project.post
+    targetAppId: eventstore
+    sourceAppId: eventstore
+    operation: /project
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-target-app
+    expectedOutcome: "403"
+  - id: deny-project-wrong-operation
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /query
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-operation
+    expectedOutcome: "403"
+  - id: deny-project-wrong-http-verb
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /project
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-http-verb
+    expectedOutcome: "403"
+  - id: deny-project-wrong-namespace
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /project
+    httpVerb: POST
+    namespace: default
+    trustDomain: hexalith-production
+    negativeCategory: wrong-namespace
+    expectedOutcome: "403"
+  - id: deny-project-wrong-trust-domain
+    ruleId: folders.eventstore.project.post
+    targetAppId: folders
+    sourceAppId: eventstore
+    operation: /project
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: public
+    negativeCategory: wrong-trust-domain
+    expectedOutcome: "403"

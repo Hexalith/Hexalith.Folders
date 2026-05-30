@@ -3,6 +3,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>

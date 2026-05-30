@@ -1,0 +1,12 @@
+# Sanitized production control-plane conformance artifact.
+# This fixture proves mTLS intent without storing certificates or other secret material.
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-daprsystem
+  namespace: hexalith-production
+spec:
+  mtls:
+    enabled: true
+    workloadCertTTL: "24h"
+    allowedClockSkew: "15m"
