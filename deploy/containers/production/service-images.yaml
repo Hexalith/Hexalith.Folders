@@ -1,0 +1,36 @@
+# Sanitized production service image binding conformance artifact.
+# Deployment tooling owns registry selection, image tags, digests, pull secrets, and namespace overlays.
+apiVersion: hexalith.io/v1alpha1
+kind: ServiceImageBindings
+metadata:
+  name: hexalith-folders-production-service-images
+  namespace: hexalith-production
+spec:
+  services:
+    - service: server
+      project: Hexalith.Folders
+      projectPath: src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj
+      deployment: hexalith-folders-server
+      imageRepository: hexalith-folders-server
+      registry: deployment-owned
+      namespace: hexalith-production
+      daprAppId: folders
+      daprConfig: hexalith-folders-production-accesscontrol-folders
+    - service: workers
+      project: Hexalith.Folders
+      projectPath: src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj
+      deployment: hexalith-folders-workers
+      imageRepository: hexalith-folders-workers
+      registry: deployment-owned
+      namespace: hexalith-production
+      daprAppId: folders-workers
+      daprConfig: hexalith-folders-production-accesscontrol-folders-workers
+    - service: ui
+      project: Hexalith.Folders
+      projectPath: src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj
+      deployment: hexalith-folders-ui
+      imageRepository: hexalith-folders-ui
+      registry: deployment-owned
+      namespace: hexalith-production
+      daprAppId: folders-ui
+      daprConfig: hexalith-folders-production-accesscontrol-folders-ui

@@ -1,0 +1,80 @@
+{
+  "gate": "container-images",
+  "status": "failed",
+  "services": [
+    {
+      "service": "server",
+      "project_path": "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
+      "repository": "hexalith-folders-server",
+      "archive_path": "_bmad-output/gates/container-images/archives/hexalith-folders-server.tar.gz",
+      "tags": [
+        "local-validation"
+      ],
+      "labels_asserted": [
+        "org.opencontainers.image.source",
+        "org.opencontainers.image.revision",
+        "org.opencontainers.image.version",
+        "org.opencontainers.image.title",
+        "org.opencontainers.image.vendor",
+        "org.opencontainers.image.licenses",
+        "io.hexalith.project",
+        "io.hexalith.service"
+      ],
+      "command_exit_code": 1
+    },
+    {
+      "service": "workers",
+      "project_path": "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj",
+      "repository": "hexalith-folders-workers",
+      "archive_path": "_bmad-output/gates/container-images/archives/hexalith-folders-workers.tar.gz",
+      "tags": [
+        "local-validation"
+      ],
+      "labels_asserted": [
+        "org.opencontainers.image.source",
+        "org.opencontainers.image.revision",
+        "org.opencontainers.image.version",
+        "org.opencontainers.image.title",
+        "org.opencontainers.image.vendor",
+        "org.opencontainers.image.licenses",
+        "io.hexalith.project",
+        "io.hexalith.service"
+      ],
+      "command_exit_code": 1
+    },
+    {
+      "service": "ui",
+      "project_path": "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj",
+      "repository": "hexalith-folders-ui",
+      "archive_path": "_bmad-output/gates/container-images/archives/hexalith-folders-ui.tar.gz",
+      "tags": [
+        "local-validation"
+      ],
+      "labels_asserted": [
+        "org.opencontainers.image.source",
+        "org.opencontainers.image.revision",
+        "org.opencontainers.image.version",
+        "org.opencontainers.image.title",
+        "org.opencontainers.image.vendor",
+        "org.opencontainers.image.licenses",
+        "io.hexalith.project",
+        "io.hexalith.service"
+      ],
+      "command_exit_code": 1
+    }
+  ],
+  "required_labels": [
+    "org.opencontainers.image.source",
+    "org.opencontainers.image.revision",
+    "org.opencontainers.image.version",
+    "org.opencontainers.image.title",
+    "org.opencontainers.image.vendor",
+    "org.opencontainers.image.licenses",
+    "io.hexalith.project",
+    "io.hexalith.service"
+  ],
+  "publish_mode": "sdk-container-archive",
+  "report_path": "_bmad-output/gates/container-images/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "live_registry": "not_required"
+}

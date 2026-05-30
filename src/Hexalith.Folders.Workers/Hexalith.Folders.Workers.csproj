@@ -2,6 +2,10 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <EnableContainer>true</EnableContainer>
+    <ContainerRepository>hexalith-folders-workers</ContainerRepository>
+    <HexalithContainerServiceName>workers</HexalithContainerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Workers.Tests" />

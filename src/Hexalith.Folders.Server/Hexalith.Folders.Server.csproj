@@ -3,7 +3,8 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>true</IsPublishable>
     <EnableContainer>true</EnableContainer>
-    <ContainerRepository>folders</ContainerRepository>
+    <ContainerRepository>hexalith-folders-server</ContainerRepository>
+    <HexalithContainerServiceName>server</HexalithContainerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Server.Tests" />

@@ -109,7 +109,15 @@ public static class FoldersAspireModule
         _ = foldersUi
             .WithReference(folders)
             .WaitFor(folders)
-            .WithExternalHttpEndpoints();
+            .WithExternalHttpEndpoints()
+            .WithDaprSidecar(sidecar => sidecar
+                .WithOptions(new DaprSidecarOptions
+                {
+                    AppId = FoldersUiAppId,
+                    Config = daprConfigPath,
+                })
+                .WithReference(stateStore)
+                .WithReference(pubSub));
 
         return new HexalithFoldersResources(stateStore, pubSub, eventStore, tenants, folders, foldersWorkers, foldersUi);
     }
