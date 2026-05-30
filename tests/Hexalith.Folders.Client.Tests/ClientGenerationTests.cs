@@ -261,7 +261,7 @@ public sealed class ClientGenerationTests
             }
 
             string project = Path.Combine(tempRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
-            ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\"", tempRoot, 180_000);
+            ProcessResult restore = RunProcess("dotnet", $"restore \"{project}\" -p:NuGetAudit=false", tempRoot, 180_000);
             restore.ExitCode.ShouldBe(0, RedactDiagnosticOutput(restore.Output, tempRoot));
 
             ProcessResult generation = RunProcess(

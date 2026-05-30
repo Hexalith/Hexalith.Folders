@@ -41,3 +41,38 @@ jobs:
         shell: pwsh
         timeout-minutes: 25
         run: ./tests/tools/run-baseline-ci-gates.ps1
+
+  contract-and-parity-gates:
+    name: contract-and-parity-gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+
+      - name: Run contract and parity gates
+        shell: pwsh
+        timeout-minutes: 30
+        run: ./tests/tools/run-contract-parity-ci-gates.ps1

@@ -1,0 +1,286 @@
+{
+  "gate": "contract-parity-ci",
+  "status": "passed",
+  "report_path": "_bmad-output/gates/contract-parity-ci/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "categories": [
+    "server-vs-spine",
+    "previous-spine",
+    "generated-client",
+    "idempotency-helpers",
+    "parity-oracle-schema",
+    "parity-oracle-determinism",
+    "sdk-transport-parity",
+    "rest-sdk-golden-parity",
+    "cli-behavioral-parity",
+    "mcp-behavioral-parity",
+    "mixed-surface-handoff"
+  ],
+  "test_gates": [
+    {
+      "category": "server-vs-spine",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpine|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests",
+      "runner_classes": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests"
+      ],
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Server"
+      ]
+    },
+    {
+      "category": "previous-spine",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.PreviousSpineBaselinePinsCurrentOperationInventory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.PreviousSpineBaselineCoversEveryCurrentOperation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForEmptyBaselineWithoutOverride|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForApprovedDeprecationWithoutEvidence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDanglingDeprecationApprovalSource",
+      "runner_classes": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/previous-spine.yaml",
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+      ]
+    },
+    {
+      "category": "generated-client",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.NswagConfigurationUsesContractSpineAsOnlyInput|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedOutputCarriesStableSafeProvenance|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.StaleGeneratedOutputDetectionUsesAllContentHashes|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGeneratorProjectIsBuildTimeInput",
+      "runner_classes": [
+        "Hexalith.Folders.Client.Tests.ClientGenerationTests"
+      ],
+      "artifact_paths": [
+        "src/Hexalith.Folders.Client/nswag.json",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs"
+      ]
+    },
+    {
+      "category": "idempotency-helpers",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.BranchRefPolicyHelperUsesDeclaredSpineFields|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.FileMutationHelperSeparatesAddChangeAndRemove|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CreateFolderHelperUsesDeclaredLexicographicFields|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CreateRepositoryBackedFolderHelperIncludesExistingFolderIdentity|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.NullAndOmittedValuesProduceDifferentCanonicalHashes|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.FileMutationHelpersIgnoreRawContentAndLocalPaths|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalHasherFailsClosedForMalformedMetadata|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.IdempotencyEncodingCorpusIsConsumedForParserPolicyCases|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalHasherPinsPrimitiveEdgeFormatting",
+      "runner_classes": [
+        "Hexalith.Folders.Client.Tests.ClientGenerationTests"
+      ],
+      "artifact_paths": [
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
+        "tests/fixtures/idempotency-encoding-corpus.json"
+      ]
+    },
+    {
+      "category": "parity-oracle-schema",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedOutcomeMappingPopulatesEveryDeclaredErrorCategory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaOutcomeMappingShapeIsBounded",
+      "runner_classes": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/fixtures/parity-contract.schema.json"
+      ]
+    },
+    {
+      "category": "parity-oracle-determinism",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDuplicateIdempotencyFields",
+      "runner_classes": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/tools/parity-oracle-generator"
+      ]
+    },
+    {
+      "category": "sdk-transport-parity",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.TransportParityConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.ArchiveFolderClientConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.LifecycleStatusClientConformanceTests",
+      "runner_classes": [
+        "Hexalith.Folders.Client.Tests.TransportParityConformanceTests",
+        "Hexalith.Folders.Client.Tests.ArchiveFolderClientConformanceTests",
+        "Hexalith.Folders.Client.Tests.LifecycleStatusClientConformanceTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs"
+      ]
+    },
+    {
+      "category": "rest-sdk-golden-parity",
+      "project_path": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests",
+      "runner_classes": [
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/shared/Parity/GoldenLifecycle.cs"
+      ]
+    },
+    {
+      "category": "cli-behavioral-parity",
+      "project_path": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests|FullyQualifiedName~Hexalith.Folders.Cli.Tests.BehavioralParityTests",
+      "runner_classes": [
+        "Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests",
+        "Hexalith.Folders.Cli.Tests.BehavioralParityTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Cli"
+      ]
+    },
+    {
+      "category": "mcp-behavioral-parity",
+      "project_path": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Mcp.Tests.ParityOracleConformanceTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.PreSdkFailureTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.PostSdkMappingTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.SourcingTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.FailureKindProjectionTests",
+      "runner_classes": [
+        "Hexalith.Folders.Mcp.Tests.ParityOracleConformanceTests",
+        "Hexalith.Folders.Mcp.Tests.PreSdkFailureTests",
+        "Hexalith.Folders.Mcp.Tests.PostSdkMappingTests",
+        "Hexalith.Folders.Mcp.Tests.SourcingTests",
+        "Hexalith.Folders.Mcp.Tests.FailureKindProjectionTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Mcp"
+      ]
+    },
+    {
+      "category": "mixed-surface-handoff",
+      "project_path": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.IntegrationTests.AdapterParity.CrossAdapterBehavioralParityTests|FullyQualifiedName~Hexalith.Folders.IntegrationTests.MixedSurfaceHandoff.MixedSurfaceHandoffTests",
+      "runner_classes": [
+        "Hexalith.Folders.IntegrationTests.AdapterParity.CrossAdapterBehavioralParityTests",
+        "Hexalith.Folders.IntegrationTests.MixedSurfaceHandoff.MixedSurfaceHandoffTests"
+      ],
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/shared/Parity/MixedSurfaceScenario.cs"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "category": "server-vs-spine",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpine|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests",
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Server"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "previous-spine",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.PreviousSpineBaselinePinsCurrentOperationInventory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.PreviousSpineBaselineCoversEveryCurrentOperation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForEmptyBaselineWithoutOverride|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForApprovedDeprecationWithoutEvidence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDanglingDeprecationApprovalSource",
+      "artifact_paths": [
+        "tests/fixtures/previous-spine.yaml",
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "generated-client",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.NswagConfigurationUsesContractSpineAsOnlyInput|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedOutputCarriesStableSafeProvenance|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.StaleGeneratedOutputDetectionUsesAllContentHashes|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGeneratorProjectIsBuildTimeInput",
+      "artifact_paths": [
+        "src/Hexalith.Folders.Client/nswag.json",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "idempotency-helpers",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.BranchRefPolicyHelperUsesDeclaredSpineFields|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.FileMutationHelperSeparatesAddChangeAndRemove|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CreateFolderHelperUsesDeclaredLexicographicFields|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CreateRepositoryBackedFolderHelperIncludesExistingFolderIdentity|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.NullAndOmittedValuesProduceDifferentCanonicalHashes|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.FileMutationHelpersIgnoreRawContentAndLocalPaths|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalHasherFailsClosedForMalformedMetadata|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.IdempotencyEncodingCorpusIsConsumedForParserPolicyCases|FullyQualifiedName~Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalHasherPinsPrimitiveEdgeFormatting",
+      "artifact_paths": [
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
+        "tests/fixtures/idempotency-encoding-corpus.json"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "parity-oracle-schema",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedOutcomeMappingPopulatesEveryDeclaredErrorCategory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaOutcomeMappingShapeIsBounded",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/fixtures/parity-contract.schema.json"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "parity-oracle-determinism",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDuplicateIdempotencyFields",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/tools/parity-oracle-generator"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "sdk-transport-parity",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.TransportParityConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.ArchiveFolderClientConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.LifecycleStatusClientConformanceTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "rest-sdk-golden-parity",
+      "project_path": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/shared/Parity/GoldenLifecycle.cs"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "cli-behavioral-parity",
+      "project_path": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests|FullyQualifiedName~Hexalith.Folders.Cli.Tests.BehavioralParityTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Cli"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "mcp-behavioral-parity",
+      "project_path": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Mcp.Tests.ParityOracleConformanceTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.PreSdkFailureTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.PostSdkMappingTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.SourcingTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.FailureKindProjectionTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Mcp"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "mixed-surface-handoff",
+      "project_path": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.IntegrationTests.AdapterParity.CrossAdapterBehavioralParityTests|FullyQualifiedName~Hexalith.Folders.IntegrationTests.MixedSurfaceHandoff.MixedSurfaceHandoffTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/shared/Parity/MixedSurfaceScenario.cs"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    }
+  ]
+}

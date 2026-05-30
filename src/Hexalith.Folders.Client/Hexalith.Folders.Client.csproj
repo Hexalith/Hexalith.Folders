@@ -43,7 +43,7 @@
           Outputs="$(HexalithFoldersGeneratedHelpers)"
           Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)"
-          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot;" />
+          Command="dotnet run --project &quot;$(HexalithFoldersHelperGeneratorProject)&quot; -p:NuGetAudit=false -- --repository-root &quot;$(MSBuildProjectDirectory)/../..&quot; --contract &quot;$(HexalithFoldersContractSpine)&quot; --configuration &quot;$(MSBuildProjectDirectory)/nswag.json&quot; --output &quot;$(HexalithFoldersGeneratedHelpers)&quot;" />
   </Target>
   <Target Name="VerifyHexalithFoldersGeneratedArtifacts"
           BeforeTargets="CoreCompile"

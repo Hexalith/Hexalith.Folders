@@ -403,7 +403,7 @@ operations:
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
+            Arguments = $"run --no-restore --no-build --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

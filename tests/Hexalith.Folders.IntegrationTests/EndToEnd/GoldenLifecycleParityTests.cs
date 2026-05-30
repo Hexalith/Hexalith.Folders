@@ -18,6 +18,7 @@ using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -637,15 +638,16 @@ public sealed class GoldenLifecycleParityTests
             InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(clock);
             TimeProvider timeProvider = new FixedTimeProvider(Now);
             InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
-            Uri? hostUri = null;
-            InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
+            Func<HttpClient>? eventStoreClientFactory = null;
+            InProcessEventStoreGatewayClient gateway = new(() => eventStoreClientFactory!(), context);
 
             WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
             {
                 EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
             });
-            builder.Configuration["urls"] = "http://127.0.0.1:0";
+            builder.WebHost.UseTestServer();
             builder.Services.AddFoldersServer();
+            builder.Services.AddAuthentication();
             builder.Services.RemoveAll<IEventStoreGatewayClient>();
             builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
             builder.Services.RemoveAll<ITenantContextAccessor>();
@@ -670,12 +672,12 @@ public sealed class GoldenLifecycleParityTests
             WebApplication app = builder.Build();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
-            hostUri = new Uri(app.Urls.First());
+            eventStoreClientFactory = app.GetTestClient;
 
-            HttpClient httpClient = new() { BaseAddress = hostUri };
+            HttpClient httpClient = app.GetTestClient();
             // The SDK client points at the same in-process host. Per the generated Client constructor,
             // the HttpClient's BaseAddress is what's used; no other DI plumbing is required for the test.
-            IClient sdkClient = new GeneratedSdkClient(new HttpClient { BaseAddress = hostUri });
+            IClient sdkClient = new GeneratedSdkClient(app.GetTestClient());
 
             return new TestHost(app, httpClient, sdkClient, gateway, repository, tenantStore, permissions, lifecycleReadModel);
         }
@@ -703,7 +705,7 @@ public sealed class GoldenLifecycleParityTests
     }
 
     private sealed class InProcessEventStoreGatewayClient(
-        Func<Uri> baseAddress,
+        Func<HttpClient> clientFactory,
         MutableTenantAndClaimContext context) : IEventStoreGatewayClient
     {
         public int ProcessCalls { get; private set; }
@@ -713,7 +715,7 @@ public sealed class GoldenLifecycleParityTests
             CancellationToken cancellationToken = default)
         {
             ProcessCalls++;
-            using HttpClient client = new() { BaseAddress = baseAddress() };
+            using HttpClient client = clientFactory();
             CommandEnvelope envelope = new(
                 request.MessageId,
                 request.Tenant,

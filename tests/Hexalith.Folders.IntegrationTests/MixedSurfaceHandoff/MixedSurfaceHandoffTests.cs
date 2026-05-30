@@ -25,6 +25,7 @@ using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -918,15 +919,16 @@ public sealed class MixedSurfaceHandoffTests
             InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(clock);
             TimeProvider timeProvider = new FixedTimeProvider(Now);
             InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
-            Uri? hostUri = null;
-            InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
+            Func<HttpClient>? eventStoreClientFactory = null;
+            InProcessEventStoreGatewayClient gateway = new(() => eventStoreClientFactory!(), context);
 
             WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
             {
                 EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
             });
-            builder.Configuration["urls"] = "http://127.0.0.1:0";
+            builder.WebHost.UseTestServer();
             builder.Services.AddFoldersServer();
+            builder.Services.AddAuthentication();
             builder.Services.RemoveAll<IEventStoreGatewayClient>();
             builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
             builder.Services.RemoveAll<ITenantContextAccessor>();
@@ -951,17 +953,18 @@ public sealed class MixedSurfaceHandoffTests
             WebApplication app = builder.Build();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
-            hostUri = new Uri(app.Urls.First());
+            eventStoreClientFactory = app.GetTestClient;
+            Uri hostUri = new("http://localhost");
 
-            HttpClient httpClient = new() { BaseAddress = hostUri };
-            HttpClient sdkHttpClient = new() { BaseAddress = hostUri };
+            HttpClient httpClient = app.GetTestClient();
+            HttpClient sdkHttpClient = app.GetTestClient();
             IClient sdkClient = new GeneratedSdkClient(sdkHttpClient);
 
             // MCP pipeline bound to a SECOND IClient pointing at the same in-process host so the MCP
             // transport plumbing is exercised end-to-end (not just the SDK leg of the pipeline). The MCP
             // TestSupport.Token is a non-secret stub; the in-process MutableTenantAndClaimContext does not
             // validate bearers, so the resolved token is only used to exercise credential plumbing.
-            HttpClient mcpHttpClient = new() { BaseAddress = hostUri };
+            HttpClient mcpHttpClient = app.GetTestClient();
             IClient mcpClient = new GeneratedSdkClient(mcpHttpClient);
             ToolPipeline mcpPipeline = TestSupport.Pipeline(mcpClient, token: TestSupport.Token);
 
@@ -979,7 +982,6 @@ public sealed class MixedSurfaceHandoffTests
         public async Task<CliInvocationOutcome> RunCliAsync(params string[] args)
         {
             TestCliConsole console = new();
-            Uri capturedHostUri = HostUri;
             CredentialResolver credentials = new(
                 environment: _ => null,
                 credentialsFilePath: Path.Combine(Path.GetTempPath(), $"hexalith-creds-{Guid.NewGuid():N}.json"));
@@ -991,8 +993,9 @@ public sealed class MixedSurfaceHandoffTests
                 IdempotencyKeyGenerator = () => "01testautokey00000000000000",
                 ClientFactory = (baseAddress, token) =>
                 {
+                    _ = baseAddress;
                     _ = token; // exercised but unused by the in-process MutableTenantAndClaimContext.
-                    return new GeneratedSdkClient(new HttpClient { BaseAddress = capturedHostUri });
+                    return new GeneratedSdkClient(App.GetTestClient());
                 },
             };
 
@@ -1028,7 +1031,7 @@ public sealed class MixedSurfaceHandoffTests
     }
 
     private sealed class InProcessEventStoreGatewayClient(
-        Func<Uri> baseAddress,
+        Func<HttpClient> clientFactory,
         MutableTenantAndClaimContext context) : IEventStoreGatewayClient
     {
         public int ProcessCalls { get; private set; }
@@ -1038,7 +1041,7 @@ public sealed class MixedSurfaceHandoffTests
             CancellationToken cancellationToken = default)
         {
             ProcessCalls++;
-            using HttpClient client = new() { BaseAddress = baseAddress() };
+            using HttpClient client = clientFactory();
             CommandEnvelope envelope = new(
                 request.MessageId,
                 request.Tenant,
