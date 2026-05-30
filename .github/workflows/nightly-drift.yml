@@ -1,0 +1,54 @@
+name: nightly-drift
+
+'on':
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+    inputs:
+      provider_profile:
+        description: 'Bounded provider profile for drift evidence'
+        required: true
+        default: 'pinned-snapshots'
+        type: choice
+        options:
+          - pinned-snapshots
+          - latest-supported
+
+permissions:
+  contents: read
+
+jobs:
+  nightly-drift-gates:
+    name: nightly-drift-gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+
+      - name: Run nightly drift gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-nightly-drift-gates.ps1 -SkipRestoreBuild -ProviderProfile '${{ inputs.provider_profile || 'pinned-snapshots' }}'

@@ -1,0 +1,84 @@
+{
+  "gate": "policy-conformance",
+  "status": "passed",
+  "report_path": "_bmad-output/gates/policy-conformance/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "trigger_policy": "schedule_utc_or_manual_dispatch_default_branch",
+  "policy_mode": "static-plus-live-reference",
+  "categories": [
+    "static-policy-shape",
+    "fixture-provenance",
+    "negative-triple-coverage",
+    "mtls-and-sidecar-bindings",
+    "pubsub-topic-scopes",
+    "live-kind-dapr-denial"
+  ],
+  "canonical_inputs": [
+    "deploy/dapr/production/accesscontrol.yaml",
+    "deploy/dapr/production/daprsystem.yaml",
+    "deploy/dapr/production/pubsub.yaml",
+    "deploy/dapr/production/secretstore.yaml",
+    "deploy/dapr/production/sidecar-config-bindings.yaml",
+    "tests/fixtures/dapr-policy-conformance.yaml"
+  ],
+  "static_gate_script": "tests/tools/run-dapr-policy-conformance-gates.ps1",
+  "static_gate_report_path": "_bmad-output/gates/dapr-policy-conformance/latest.json",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "expected_static_gate_minimum_test_count": 8,
+  "negative_categories": [
+    "unknown-source-app",
+    "known-unauthorized-source-app",
+    "wrong-target-app",
+    "wrong-operation",
+    "wrong-http-verb",
+    "wrong-namespace",
+    "wrong-trust-domain"
+  ],
+  "live_kind_dapr_denial": {
+    "status": "reference_pending_story_7_8",
+    "owner": "platform-engineering",
+    "command_shape": "pwsh ./tests/tools/run-scheduled-policy-conformance-gates.ps1 -PolicyMode static-plus-live-reference",
+    "evidence_path": "_bmad-output/gates/policy-conformance/latest.json",
+    "follow_up_boundary": "replace reference_pending only when isolated synthetic apps prove denied Dapr service invocation returns 403 without production endpoints or secrets"
+  },
+  "static_gate_status": "passed",
+  "elapsed_ms": 3121,
+  "results": [
+    {
+      "category": "static-policy-shape",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "fixture-provenance",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "negative-triple-coverage",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "mtls-and-sidecar-bindings",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "pubsub-topic-scopes",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "live-kind-dapr-denial",
+      "status": "reference_pending_story_7_8",
+      "severity": "warning",
+      "exit_code": 0
+    }
+  ]
+}

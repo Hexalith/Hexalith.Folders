@@ -1,0 +1,54 @@
+name: policy-conformance
+
+'on':
+  schedule:
+    - cron: '43 2 * * *'
+  workflow_dispatch:
+    inputs:
+      policy_mode:
+        description: 'Bounded policy evidence mode'
+        required: true
+        default: 'static-plus-live-reference'
+        type: choice
+        options:
+          - static-plus-live-reference
+          - static-only
+
+permissions:
+  contents: read
+
+jobs:
+  policy-conformance-gates:
+    name: policy-conformance-gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Restore
+        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+
+      - name: Run scheduled policy conformance gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-scheduled-policy-conformance-gates.ps1 -SkipRestoreBuild -PolicyMode '${{ inputs.policy_mode || 'static-plus-live-reference' }}'

@@ -1,0 +1,85 @@
+{
+  "gate": "nightly-drift",
+  "status": "passed",
+  "report_path": "_bmad-output/gates/nightly-drift/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "trigger_policy": "schedule_utc_or_manual_dispatch_default_branch",
+  "provider": "forgejo",
+  "provider_profile": "pinned-snapshots",
+  "categories": [
+    "forgejo-manifest-integrity",
+    "forgejo-snapshot-coverage",
+    "forgejo-drift-classification",
+    "forgejo-sanitized-report",
+    "live-provider-drift"
+  ],
+  "manifest_path": "tests/contracts/forgejo/supported-versions.json",
+  "classification_fixture_path": "tests/tools/forgejo-drift/classification-fixtures.json",
+  "sanitized_report_path": "_bmad-output/gates/nightly-drift/sanitized-forgejo-drift.json",
+  "test_project": "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+  "expected_test_count": 7,
+  "live_provider_drift": {
+    "status": "reference_pending_story_7_8",
+    "owner": "folders-provider-maintainers",
+    "command_shape": "pwsh ./tests/tools/run-nightly-drift-gates.ps1 -ProviderProfile pinned-snapshots",
+    "evidence_path": "_bmad-output/gates/nightly-drift/latest.json",
+    "follow_up_boundary": "replace reference_pending only when a synthetic credential-free live provider lane can classify live schema drift without retaining raw upstream responses"
+  },
+  "provider_versions": [
+    {
+      "provider_version": "15.0.2",
+      "version_family": "15.0",
+      "support_class": "latest-stable-lts",
+      "snapshot_path": "tests/contracts/forgejo/15.0.2/swagger.v1.json",
+      "compatibility_posture": "supported"
+    },
+    {
+      "provider_version": "14.0.5",
+      "version_family": "14.0",
+      "support_class": "n-1-discontinued-reference",
+      "snapshot_path": "tests/contracts/forgejo/14.0.5/swagger.v1.json",
+      "compatibility_posture": "additive-compatible"
+    },
+    {
+      "provider_version": "11.0.14",
+      "version_family": "11.0",
+      "support_class": "older-lts",
+      "snapshot_path": "tests/contracts/forgejo/11.0.14/swagger.v1.json",
+      "compatibility_posture": "supported"
+    }
+  ],
+  "sanitized_report_schema": "forgejo-drift-report-v1",
+  "elapsed_ms": 2278,
+  "results": [
+    {
+      "category": "forgejo-manifest-integrity",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "forgejo-snapshot-coverage",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "forgejo-drift-classification",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "forgejo-sanitized-report",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "live-provider-drift",
+      "status": "reference_pending_story_7_8",
+      "severity": "warning",
+      "exit_code": 0
+    }
+  ]
+}

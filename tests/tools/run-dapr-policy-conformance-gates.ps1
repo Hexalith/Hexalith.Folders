@@ -19,6 +19,17 @@ $repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
 $reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/dapr-policy-conformance'
 $reportPath = Join-Path $reportDirectory 'latest.json'
 $pushed = $false
+$usedXunitFallback = $false
+$runnerMethods = @(
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.ProductionAccessControlPolicyShouldBeDenyByDefaultAndMatchFixtureProvenance',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.ProductionDaprSystemConfigurationShouldEnableMtlsWithoutSecretMaterial',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.PolicyConformanceFixtureShouldCoverAllowedAndDeniedTriples',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.LocalDevelopmentAccessControlShouldRemainPermissiveAndMarkedLocalOnly',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.ProductionSidecarBindingsShouldAttachEveryAppToItsAccessControlConfiguration',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.ProductionPubSubComponentShouldConstrainTenantEventTopicScopes',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.ProductionSecretStoreArtifactsShouldBeReferenceOnlyAndDenyByDefault',
+    'Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance.DaprPolicyConformanceTests.WorkflowAndScriptShouldWireOfflineDaprPolicyConformanceGate'
+)
 
 function Write-DaprPolicyConformanceReport {
     param(
@@ -44,6 +55,53 @@ function Write-DaprPolicyConformanceReport {
     } | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding utf8NoBOM
 }
 
+function Get-ExecutedTestCount {
+    param(
+        [AllowEmptyCollection()]
+        [Parameter(Mandatory = $true)][array]$Output
+    )
+
+    $joined = ($Output -join [Environment]::NewLine)
+    $total = 0
+    foreach ($match in [regex]::Matches($joined, 'Total:\s+(\d+)')) {
+        $total += [int]$match.Groups[1].Value
+    }
+
+    return $total
+}
+
+function Invoke-XunitInProcessFallback {
+    $script:usedXunitFallback = $true
+    Write-Host 'DAPR-POLICY category=static-policy-shape vstest-socket-denied=true fallback=xunit-in-process'
+    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests'
+    if (-not (Test-Path $runnerPath)) {
+        Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode 1
+        Write-Error 'DAPR-POLICY-GATE-VACUOUS: xUnit in-process runner missing for DaprPolicyConformanceTests.'
+        exit 1
+    }
+
+    $runnerArguments = @('-noLogo', '-noColor')
+    foreach ($method in $runnerMethods) {
+        $runnerArguments += @('-method', $method)
+    }
+
+    $runnerOutput = & $runnerPath @runnerArguments 2>&1
+    $runnerExitCode = $LASTEXITCODE
+    $runnerOutput | ForEach-Object { Write-Host $_ }
+
+    [int]$executedTests = Get-ExecutedTestCount -Output $runnerOutput
+    if ($executedTests -ne $runnerMethods.Count) {
+        Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode 1
+        Write-Error "DAPR-POLICY-GATE-VACUOUS: expected $($runnerMethods.Count) Dapr policy conformance facts but $executedTests executed."
+        exit 1
+    }
+
+    if ($runnerExitCode -ne 0) {
+        Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode $runnerExitCode
+        exit $runnerExitCode
+    }
+}
+
 try {
     Push-Location $repositoryRoot
     $pushed = $true
@@ -52,13 +110,13 @@ try {
     Write-DaprPolicyConformanceReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx
+        dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
         if ($LASTEXITCODE -ne 0) {
             Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
 
-        dotnet build Hexalith.Folders.slnx --no-restore
+        dotnet build Hexalith.Folders.slnx --no-restore -m:1
         if ($LASTEXITCODE -ne 0) {
             Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
@@ -71,23 +129,31 @@ try {
         Remove-Item $trxPath -Force
     }
 
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance --results-directory $reportDirectory --logger "trx;LogFileName=$trxName"
+    $testOutput = dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance --results-directory $reportDirectory --logger "trx;LogFileName=$trxName" 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode $LASTEXITCODE
-        exit $LASTEXITCODE
+        if (($testOutput -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied') {
+            Invoke-XunitInProcessFallback
+        }
+        else {
+            Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode $LASTEXITCODE
+            exit $LASTEXITCODE
+        }
+    }
+    else {
+        $testOutput | ForEach-Object { Write-Host $_ }
     }
 
     # Fail closed if the namespace/type filter ever drifts and silently matches zero conformance facts
     # (VSTest exits 0 on an empty filter), which would otherwise let this load-bearing gate pass vacuously.
     [int]$executedTests = 0
-    if (Test-Path $trxPath) {
+    if (-not $usedXunitFallback -and (Test-Path $trxPath)) {
         [xml]$trx = Get-Content -Raw -Path $trxPath
         $executedTests = [int]$trx.TestRun.ResultSummary.Counters.total
     }
 
-    if ($executedTests -lt 4) {
+    if (-not $usedXunitFallback -and $executedTests -lt $runnerMethods.Count) {
         Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode 1
-        Write-Error "DAPR-POLICY-GATE-VACUOUS: expected at least 4 Dapr policy conformance facts but $executedTests executed. The --filter no longer matches the DaprPolicyConformance namespace/type; restore the filter or namespace."
+        Write-Error "DAPR-POLICY-GATE-VACUOUS: expected at least $($runnerMethods.Count) Dapr policy conformance facts but $executedTests executed. The --filter no longer matches the DaprPolicyConformance namespace/type; restore the filter or namespace."
         exit 1
     }
 

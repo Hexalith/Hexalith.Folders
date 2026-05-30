@@ -1,6 +1,6 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.8. Durable per-story copy: [`7-8-test-summary.md`](./7-8-test-summary.md).
+> Durable per-story copy for Story 7.8. Canonical latest-run summary: [`test-summary.md`](./test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests`
 **Story:** `_bmad-output/implementation-artifacts/7-8-wire-scheduled-drift-and-policy-conformance-workflows.md`
