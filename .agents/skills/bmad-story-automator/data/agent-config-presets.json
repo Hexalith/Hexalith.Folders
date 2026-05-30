@@ -1,4 +1,19 @@
 {
   "version": "1.0.0",
-  "presets": []
+  "presets": [
+    {
+      "name": "codex_and_claude_review",
+      "createdAt": "2026-05-30T07:51:54Z",
+      "config": {
+        "defaultPrimary": "codex",
+        "defaultFallback": false,
+        "perTask": {
+          "review": {
+            "primary": "claude",
+            "fallback": false
+          }
+        }
+      }
+    }
+  ]
 }

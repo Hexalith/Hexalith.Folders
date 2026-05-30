@@ -1,0 +1,270 @@
+{
+  "epic_path": "/home/administrator/projects/hexalith/folders/_bmad-output/planning-artifacts/epics.md",
+  "epic_name": "Hexalith.Folders - Epic Breakdown",
+  "story_count": 86,
+  "selection": "7.1-7.17",
+  "parser_selection": "70-86",
+  "first_story_id": "7.1",
+  "epic_id": "7",
+  "custom_instructions": "",
+  "skip_automate": false,
+  "max_parallel": 1,
+  "agent_config_json": {
+    "defaultPrimary": "codex",
+    "defaultFallback": false,
+    "perTask": {
+      "review": {
+        "primary": "claude",
+        "fallback": false
+      }
+    }
+  },
+  "range_json": {
+    "ok": true,
+    "indices": [
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86
+    ],
+    "storyIds": [
+      "7.1",
+      "7.2",
+      "7.3",
+      "7.4",
+      "7.5",
+      "7.6",
+      "7.7",
+      "7.8",
+      "7.9",
+      "7.10",
+      "7.11",
+      "7.12",
+      "7.13",
+      "7.14",
+      "7.15",
+      "7.16",
+      "7.17"
+    ],
+    "count": 17
+  },
+  "stories_json": [
+    {
+      "storyId": "7.1",
+      "title": "Deploy production Dapr deny-by-default access control",
+      "complexity": {
+        "score": 7,
+        "level": "Medium",
+        "reasons": [
+          "Webhook/async processing",
+          "Authorization/permissions",
+          "Encryption/security",
+          "Infrastructure changes"
+        ]
+      }
+    },
+    {
+      "storyId": "7.4",
+      "title": "Consolidate baseline build and unit CI gates",
+      "complexity": {
+        "score": 0,
+        "level": "Low",
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "7.3",
+      "title": "Build container images with stable Dapr app IDs",
+      "complexity": {
+        "score": 2,
+        "level": "Low",
+        "reasons": [
+          "Infrastructure changes"
+        ]
+      }
+    },
+    {
+      "storyId": "7.2",
+      "title": "Configure production OIDC and secret store integration",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Authentication system",
+          "Complex forms"
+        ]
+      }
+    },
+    {
+      "storyId": "7.5",
+      "title": "Consolidate contract and parity CI gates",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Authorization/permissions",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "7.8",
+      "title": "Wire scheduled drift and policy-conformance workflows",
+      "complexity": {
+        "score": 5,
+        "level": "Medium",
+        "reasons": [
+          "Authorization/permissions",
+          "Integration testing required",
+          "Breaking/migration change"
+        ]
+      }
+    },
+    {
+      "storyId": "7.6",
+      "title": "Consolidate security and redaction CI gates",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Caching layer",
+          "Infrastructure changes"
+        ]
+      }
+    },
+    {
+      "storyId": "7.7",
+      "title": "Add capacity-smoke CI gate",
+      "complexity": {
+        "score": 1,
+        "level": "Low",
+        "reasons": [
+          "Performance optimization"
+        ]
+      }
+    },
+    {
+      "storyId": "7.9",
+      "title": "Publish traceable NuGet release packages",
+      "complexity": {
+        "score": 2,
+        "level": "Low",
+        "reasons": [
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "7.11",
+      "title": "Enforce C3 retention and tenant-deletion behavior",
+      "complexity": {
+        "score": 0,
+        "level": "Low",
+        "reasons": [
+          "Logging/monitoring/observability",
+          "Pure refactor (no behavior change)"
+        ]
+      }
+    },
+    {
+      "storyId": "7.10",
+      "title": "Calibrate capacity tests and pin C1/C2/C5 targets",
+      "complexity": {
+        "score": 1,
+        "level": "Low",
+        "reasons": [
+          "Performance optimization"
+        ]
+      }
+    },
+    {
+      "storyId": "7.12",
+      "title": "Wire production observability and alerts",
+      "complexity": {
+        "score": 2,
+        "level": "Low",
+        "reasons": [
+          "Complex error handling",
+          "Logging/monitoring/observability"
+        ]
+      }
+    },
+    {
+      "storyId": "7.13",
+      "title": "Publish API, SDK, CLI, and MCP consumer references",
+      "complexity": {
+        "score": 2,
+        "level": "Low",
+        "reasons": [
+          "Backend + Frontend combined"
+        ]
+      }
+    },
+    {
+      "storyId": "7.16",
+      "title": "Publish NFR traceability bridge",
+      "complexity": {
+        "score": 6,
+        "level": "Medium",
+        "reasons": [
+          "Authorization/permissions",
+          "Performance optimization",
+          "Accessibility requirements",
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "7.14",
+      "title": "Publish operations and audit documentation",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Authorization/permissions",
+          "Logging/monitoring/observability"
+        ]
+      }
+    },
+    {
+      "storyId": "7.15",
+      "title": "Publish provider and error documentation",
+      "complexity": {
+        "score": 2,
+        "level": "Low",
+        "reasons": [
+          "Integration testing required",
+          "Configuration/feature flags"
+        ]
+      }
+    },
+    {
+      "storyId": "7.17",
+      "title": "Publish ADR set and maintenance runbooks",
+      "complexity": {
+        "score": 4,
+        "level": "Medium",
+        "reasons": [
+          "Infrastructure changes",
+          "Complex error handling",
+          "Logging/monitoring/observability"
+        ]
+      }
+    }
+  ]
+}
