@@ -28,7 +28,7 @@ $unitTestProjects = @(
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests'
+        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests'
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj'
@@ -53,6 +53,12 @@ $unitTestProjects = @(
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj'
         filter = 'FullyQualifiedName!~Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShould'
+    },
+    # Hermetic SDK lifecycle example tests (RecordingHandler, no AppHost/Dapr/network). Running them here
+    # in PR CI satisfies the "examples ... validated by CI" clause for the consumer SDK quickstart/reference.
+    [ordered]@{
+        project_path = 'samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj'
+        filter = ''
     }
 )
 

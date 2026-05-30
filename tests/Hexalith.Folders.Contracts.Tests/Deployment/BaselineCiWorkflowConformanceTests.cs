@@ -34,6 +34,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
         "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+        "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
     ];
 
     private static readonly string[] _rootBuildSubmodules =

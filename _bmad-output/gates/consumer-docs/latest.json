@@ -1,0 +1,59 @@
+{
+  "gate": "consumer-docs",
+  "status": "passed",
+  "exit_code": 0,
+  "diagnostic_policy": "metadata-only",
+  "report_path": "_bmad-output/gates/consumer-docs/latest.json",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "canonical_inputs": [
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+    "tests/fixtures/parity-contract.yaml",
+    "src/Hexalith.Folders.Cli/FoldersExitCodes.cs",
+    "tests/fixtures/pattern-example-manifest.yaml"
+  ],
+  "surfaces": [
+    {
+      "surface": "openapi-reference",
+      "doc": "docs/sdk/api-reference.md",
+      "assertion": "operation-and-tag-inventory-equals-spine"
+    },
+    {
+      "surface": "sdk-quickstart",
+      "doc": "docs/sdk/quickstart.md",
+      "assertion": "metadata-only"
+    },
+    {
+      "surface": "cli-reference",
+      "doc": "docs/sdk/cli-reference.md",
+      "assertion": "exit-code-rows-equal-foldersexitcodes"
+    },
+    {
+      "surface": "mcp-reference",
+      "doc": "docs/sdk/mcp-reference.md",
+      "assertion": "47-tools-2-resources-and-failure-kind-catalog"
+    },
+    {
+      "surface": "authentication",
+      "doc": "docs/sdk/authentication.md",
+      "assertion": "metadata-only-invalid-issuers-only"
+    },
+    {
+      "surface": "lifecycle-diagrams",
+      "doc": "docs/diagrams",
+      "assertion": "c6-traceable-metadata-only"
+    },
+    {
+      "surface": "examples-validation",
+      "doc": "tests/tools/pattern-examples",
+      "assertion": "compilable-example-and-hermetic-sample-tests"
+    }
+  ],
+  "live_doc_render_smoke": {
+    "status": "reference_pending_external_tooling",
+    "severity": "warning",
+    "owner": "Release Readiness",
+    "command_shape": "pwsh ./tests/tools/run-consumer-docs-gates.ps1",
+    "evidence_path": "_bmad-output/gates/consumer-docs/latest.json",
+    "follow_up_boundary": "metadata-only intent only; no live endpoints, tokens, or rendered HTML in CI"
+  }
+}

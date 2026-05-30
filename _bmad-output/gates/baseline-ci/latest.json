@@ -18,7 +18,7 @@
     },
     {
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests"
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests"
     },
     {
       "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
@@ -43,21 +43,13 @@
     {
       "project_path": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
       "filter": "FullyQualifiedName!~Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShould"
+    },
+    {
+      "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
+      "filter": ""
     }
   ],
   "results": [
-    {
-      "category": "restore",
-      "project_path": "",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "build",
-      "project_path": "",
-      "status": "passed",
-      "exit_code": 0
-    },
     {
       "category": "format",
       "project_path": "",
@@ -115,6 +107,12 @@
     {
       "category": "unit-tests",
       "project_path": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
       "status": "passed",
       "exit_code": 0
     }

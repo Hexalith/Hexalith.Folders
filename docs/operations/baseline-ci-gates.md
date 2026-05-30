@@ -32,14 +32,16 @@ The baseline lane runs these projects only:
 - `tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`
 - `tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj`
 - `tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj`
+- `samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj`
 
 Several projects use baseline-safe filters so the lane stays focused on mechanical health:
 
 - `tests/Hexalith.Folders.Tests` excludes two stale provider-boundary guard methods that need provider-scope cleanup outside Story 7.4.
-- `tests/Hexalith.Folders.Contracts.Tests` runs smoke and baseline CI conformance tests only. Broader contract, parity, security, and provider cleanup belongs to later Epic 7 consolidation stories.
+- `tests/Hexalith.Folders.Contracts.Tests` runs smoke, baseline CI, release package, retention/deletion, production observability, and consumer documentation conformance checks only. Broader contract, parity, security, and provider cleanup belongs to later Epic 7 consolidation stories.
 - `tests/Hexalith.Folders.Client.Tests` excludes isolated regeneration tests that perform their own restore and can be affected by NuGet audit network access.
 - `tests/Hexalith.Folders.Testing.Tests` excludes scaffold/deferred-artifact policy checks that track broader repository governance drift.
 - `tests/Hexalith.Folders.Workers.Tests` excludes tenant subscription endpoint tests that bind local sockets; worker endpoint coverage belongs in a lane with socket-capable test hosts.
+- `samples/Hexalith.Folders.Sample.Tests` runs hermetic SDK lifecycle example checks with a fake handler and no AppHost, Dapr, provider, or network dependency.
 
 Excluded from this lane:
 

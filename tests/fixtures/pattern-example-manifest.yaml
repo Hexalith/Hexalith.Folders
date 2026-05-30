@@ -22,3 +22,9 @@ examples:
     marker: '<!-- hexalith-example: documentation-only -->'
     owner: Governance Gates
     synthetic_data_only: true
+  - example_id: consumer-golden-lifecycle-ordering
+    source_path: tests/tools/pattern-examples/ConsumerGoldenLifecycleExample.cs
+    classification: compilable-csharp
+    marker: '<!-- hexalith-example: compile-csharp -->'
+    owner: Release Readiness
+    synthetic_data_only: true

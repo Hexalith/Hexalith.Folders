@@ -8,6 +8,18 @@ This guide shows how to consume the canonical Folders lifecycle through the type
 All examples are **metadata-only**: identifiers are opaque, synthetic references. Never place secrets,
 tokens, raw file contents, diffs, provider payloads, or local absolute paths in requests, logs, or examples.
 
+Consumer references (Story 7.13):
+
+- [API & SDK reference](./api-reference.md) — the spine-rendered REST surface, the typed `IClient` operations
+  by tag group, the 9-step golden lifecycle, and the idempotency-helper parameter-order trap.
+- [CLI reference](./cli-reference.md) — the `folders` .NET tool over the same surface.
+- [MCP reference](./mcp-reference.md) — the standalone MCP stdio server tools/resources.
+- [Authentication guidance](./authentication.md) — bearer-token handlers, OIDC validation, and claim
+  provenance.
+- Lifecycle diagrams: [workspace lifecycle](../diagrams/workspace-lifecycle.md) ·
+  [file → commit flow](../diagrams/file-commit-flow.md) ·
+  [auth/ACL decision flow](../diagrams/auth-acl-decision-flow.md).
+
 Related contract docs:
 
 - [SDK generation and idempotency helpers](../contract/sdk-generation-and-idempotency-helpers.md) — the
@@ -140,7 +152,21 @@ Replay and conflict semantics are enforced server-side and surfaced through gene
   (`HexalithFoldersApiException<ProblemDetails>` with `Result.Code == "idempotency_conflict"`).
 
 Other request DTOs expose `ComputeIdempotencyHash(...)` with parameters matching the spine path declaration
-(for example, `PrepareWorkspaceRequest.ComputeIdempotencyHash(folderId, workspaceId, taskId)`).
+(for example, `PrepareWorkspaceRequest.ComputeIdempotencyHash(folderId, workspaceId, taskId)`). The parameter
+order is `(folderId, workspaceId, taskId)`; the older `(folderId, taskId, workspaceId)` order is no longer
+emitted, so positional callers that pass the old order compile but compute a diverging key — pass spine path
+order or use named arguments. See the
+[API & SDK reference parameter-order trap](./api-reference.md#idempotency-helper-signature-contract-parameter-order-trap).
+
+### Compatibility-gating with `HelperSchemaVersion`
+
+The generated idempotency helpers carry a schema version, `HexalithFoldersGeneratedArtifacts.HelperSchemaVersion`.
+It changes whenever the canonicalization rules or helper signatures are regenerated from the spine. If you
+**cache** computed idempotency keys, persist them across deployments, or compare keys produced by two builds,
+gate on this value: only treat keys as interchangeable when they were produced under the same
+`HelperSchemaVersion`. A version change means the canonical form may differ, so previously cached keys must be
+recomputed rather than reused. The value is generated, never hand-edited — see
+[SDK generation and idempotency helpers](../contract/sdk-generation-and-idempotency-helpers.md).
 
 ## 5. Run the local AppHost sample
 

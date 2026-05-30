@@ -58,3 +58,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 15
         run: ./tests/tools/run-production-observability-gates.ps1 -SkipRestoreBuild
+
+      - name: Run consumer docs conformance gates
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/tools/run-consumer-docs-gates.ps1 -SkipRestoreBuild
