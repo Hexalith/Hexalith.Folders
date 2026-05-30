@@ -14,6 +14,8 @@ public sealed class LifecycleCapacityRunRecorder
     private readonly ConcurrentDictionary<string, byte> _idempotencyKeys = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, int> _observedStepCounts = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, int> _resultCodes = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, ConcurrentBag<double>> _stepLatencyMilliseconds = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, ConcurrentBag<double>> _freshnessLagMilliseconds = new(StringComparer.Ordinal);
 
     public int TenantCount => _tenants.Count;
 
@@ -35,6 +37,18 @@ public sealed class LifecycleCapacityRunRecorder
 
     public IReadOnlyList<string> MeasuredSteps
         => _observedStepCounts.Keys.Order(StringComparer.Ordinal).ToArray();
+
+    public IReadOnlyDictionary<string, IReadOnlyList<double>> StepLatencyMilliseconds
+        => _stepLatencyMilliseconds.ToDictionary(
+            static pair => pair.Key,
+            static pair => (IReadOnlyList<double>)pair.Value.Order().ToArray(),
+            StringComparer.Ordinal);
+
+    public IReadOnlyDictionary<string, IReadOnlyList<double>> FreshnessLagMilliseconds
+        => _freshnessLagMilliseconds.ToDictionary(
+            static pair => pair.Key,
+            static pair => (IReadOnlyList<double>)pair.Value.Order().ToArray(),
+            StringComparer.Ordinal);
 
     public void RecordIteration(LifecycleCapacityIteration iteration)
     {
@@ -58,6 +72,22 @@ public sealed class LifecycleCapacityRunRecorder
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(stepName);
         _observedStepCounts.AddOrUpdate(stepName, 1, static (_, count) => count + 1);
+    }
+
+    public void RecordStepLatency(string stepName, double elapsedMilliseconds)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(stepName);
+        _stepLatencyMilliseconds
+            .GetOrAdd(stepName, static _ => [])
+            .Add(Math.Max(0, elapsedMilliseconds));
+    }
+
+    public void RecordFreshnessLag(string observationName, double lagMilliseconds)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(observationName);
+        _freshnessLagMilliseconds
+            .GetOrAdd(observationName, static _ => [])
+            .Add(Math.Max(0, lagMilliseconds));
     }
 
     public void RecordResult(FolderResultCode code)

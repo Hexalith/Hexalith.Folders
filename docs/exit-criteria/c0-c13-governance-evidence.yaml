@@ -33,29 +33,19 @@ criteria:
   - criterion_id: C1
     title: Capacity target evidence
     owner: Release Readiness
-    status: reference_pending
-    artifact_path: tests/load/README.md
-    verification_command: dotnet build Hexalith.Folders.slnx --no-restore
-    result_summary: Load-test harness placeholder exists; release target calibration is deferred to Epic 7.
-    open_policy_placeholders:
-      - id: C1-capacity-calibration
-        owner: Release Readiness
-        reason: Capacity thresholds are calibrated after lifecycle implementation exists.
-        verification_gap: Hardware profile pin and target throughput assertions are not yet emitted by tests/load harness.
-        consuming_story: 7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets
+    status: approved
+    artifact_path: docs/exit-criteria/c1-capacity.md
+    verification_command: .\tests\tools\run-capacity-calibration-gates.ps1
+    result_summary: C1 target numbers are pinned by release-calibration evidence for concurrent tenants, folders per tenant, active workspaces per tenant, and concurrent agent tasks per tenant.
+    open_policy_placeholders: []
   - criterion_id: C2
     title: Projection freshness target evidence
     owner: Release Readiness
-    status: reference_pending
-    artifact_path: _bmad-output/planning-artifacts/architecture.md
-    verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
-    result_summary: Architecture records the freshness target; implementation evidence is deferred until projections exist.
-    open_policy_placeholders:
-      - id: C2-projection-freshness
-        owner: Release Readiness
-        reason: Projection runtime and freshness metrics are implemented after aggregate and worker stories.
-        verification_gap: OpenTelemetry projection-lag metric emission and SLA threshold assertions are absent.
-        consuming_story: 7-12-wire-production-observability-and-alerts
+    status: approved
+    artifact_path: docs/exit-criteria/c2-freshness.md
+    verification_command: .\tests\tools\run-capacity-calibration-gates.ps1
+    result_summary: C2 pins a 500 millisecond commit-to-status-read freshness target for release evidence; Story 7.12 owns production metric export and alert wiring.
+    open_policy_placeholders: []
   - criterion_id: C3
     title: Retention policy evidence
     owner: Tech Lead
@@ -83,18 +73,13 @@ criteria:
         verification_gap: PM sign-off on OpenAPI maxItems, maxLength, maxBytes, and maxResultCount values is not recorded.
         consuming_story: 4-8-query-file-context-with-policy-boundaries
   - criterion_id: C5
-    title: Release capacity smoke evidence
+    title: Release scalability quantifier evidence
     owner: Release Readiness
-    status: reference_pending
-    artifact_path: tests/load/README.md
-    verification_command: .\tests\tools\run-capacity-smoke-ci-gates.ps1
-    result_summary: Capacity smoke lane is wired via the capacity-smoke-gates PR check; executable release-target evidence is deferred to Story 7.10.
-    open_policy_placeholders:
-      - id: C5-capacity-smoke
-        owner: Release Readiness
-        reason: Smoke targets require implemented lifecycle endpoints and load fixtures.
-        verification_gap: Capacity smoke CI job is wired via capacity-smoke-gates; release-target threshold assertions and hardware-profile pinning remain deferred.
-        consuming_story: 7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets
+    status: approved
+    artifact_path: docs/exit-criteria/c5-scalability-quantifiers.md
+    verification_command: .\tests\tools\run-capacity-calibration-gates.ps1
+    result_summary: C5 exposes machine-readable scalability quantifiers derived from C1 and validated by release-calibration evidence.
+    open_policy_placeholders: []
   - criterion_id: C6
     title: Workspace transition matrix evidence
     owner: Architect

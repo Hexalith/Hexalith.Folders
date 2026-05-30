@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -19,6 +21,7 @@ public sealed class LifecycleCapacityDriver
     private readonly WorkspaceCommitService _commitService;
     private readonly InMemoryWorkspaceStatusReadModel _statusReadModel;
     private readonly WorkspaceStatusQueryHandler _statusQueryHandler;
+    private long _committedTimestamp;
 
     public LifecycleCapacityDriver(
         LifecycleCapacityIteration iteration,
@@ -53,6 +56,7 @@ public sealed class LifecycleCapacityDriver
 
     public async Task<FolderResultCode> PrepareAsync(CancellationToken cancellationToken)
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
         _recorder.RecordIteration(_iteration);
         _recorder.RecordOperation(_iteration, _iteration.PrepareOperationId, _iteration.PrepareIdempotencyKey);
         FolderResult result = await _preparationService.PrepareAsync(
@@ -79,11 +83,14 @@ public sealed class LifecycleCapacityDriver
             AppendWorkspacePreparedOutcome();
         }
 
+        stopwatch.Stop();
+        _recorder.RecordStepLatency(LifecycleCapacityScenario.PrepareStepName, stopwatch.Elapsed.TotalMilliseconds);
         return Record(LifecycleCapacityScenario.PrepareStepName, result.Code);
     }
 
     public async Task<FolderResultCode> AcquireLockAsync(CancellationToken cancellationToken)
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
         _recorder.RecordOperation(_iteration, _iteration.LockOperationId, _iteration.LockIdempotencyKey);
         FolderResult result = await _lockService.AcquireAsync(
             new WorkspaceLockAcquisitionRequest(
@@ -103,11 +110,14 @@ public sealed class LifecycleCapacityDriver
                 new Dictionary<string, string?>(StringComparer.Ordinal)),
             cancellationToken).ConfigureAwait(false);
 
+        stopwatch.Stop();
+        _recorder.RecordStepLatency(LifecycleCapacityScenario.LockStepName, stopwatch.Elapsed.TotalMilliseconds);
         return Record(LifecycleCapacityScenario.LockStepName, result.Code);
     }
 
     public async Task<FolderResultCode> MutateFileAsync(CancellationToken cancellationToken)
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
         _recorder.RecordOperation(_iteration, _iteration.MutationOperationId, _iteration.MutationIdempotencyKey);
         FolderResult result = await _mutationService.MutateAsync(
             new WorkspaceFileMutationRequest(
@@ -134,11 +144,14 @@ public sealed class LifecycleCapacityDriver
                 new Dictionary<string, string?>(StringComparer.Ordinal)),
             cancellationToken).ConfigureAwait(false);
 
+        stopwatch.Stop();
+        _recorder.RecordStepLatency(LifecycleCapacityScenario.MutateStepName, stopwatch.Elapsed.TotalMilliseconds);
         return Record(LifecycleCapacityScenario.MutateStepName, result.Code);
     }
 
     public async Task<FolderResultCode> CommitAsync(CancellationToken cancellationToken)
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
         _recorder.RecordOperation(_iteration, _iteration.CommitOperationId, _iteration.CommitIdempotencyKey);
         FolderResult result = await _commitService.CommitAsync(
             new WorkspaceCommitRequest(
@@ -164,13 +177,20 @@ public sealed class LifecycleCapacityDriver
         if (result.Code == FolderResultCode.Accepted)
         {
             AppendWorkspaceCommittedStatusSnapshot();
+
+            // Anchor a monotonic timestamp at the moment committed status becomes visible so the
+            // status read can record a real commit-to-status-read freshness lag instead of a constant.
+            _committedTimestamp = Stopwatch.GetTimestamp();
         }
 
+        stopwatch.Stop();
+        _recorder.RecordStepLatency(LifecycleCapacityScenario.CommitStepName, stopwatch.Elapsed.TotalMilliseconds);
         return Record(LifecycleCapacityScenario.CommitStepName, result.Code);
     }
 
     public async Task<WorkspaceStatusQueryResultCode> ReadStatusAsync(CancellationToken cancellationToken)
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
         WorkspaceStatusQueryResult result = await _statusQueryHandler.HandleAsync(
             new WorkspaceStatusQuery(
                 _iteration.FolderId,
@@ -187,6 +207,19 @@ public sealed class LifecycleCapacityDriver
                 ClientControlledPrincipalValues: null),
             cancellationToken).ConfigureAwait(false);
 
+        stopwatch.Stop();
+        _recorder.RecordStepLatency(LifecycleCapacityScenario.StatusStepName, stopwatch.Elapsed.TotalMilliseconds);
+
+        // Measure the real wall-clock lag from committed status visibility to the completed status
+        // read. The domain clock is a FixedTimeProvider, so a clock-based delta would be 0; the
+        // monotonic Stopwatch elapsed is the genuine hermetic commit-to-status-read freshness sample.
+        // It traces to observed harness work and lets the C2 target comparison fail closed if the
+        // status-read path ever regresses past the 500 ms target. Falls back to the status-read
+        // latency when invoked without a preceding accepted commit (focused unit tests).
+        double commitToStatusReadMs = _committedTimestamp == 0
+            ? stopwatch.Elapsed.TotalMilliseconds
+            : Stopwatch.GetElapsedTime(_committedTimestamp).TotalMilliseconds;
+        _recorder.RecordFreshnessLag("commit_to_status_read_ms", commitToStatusReadMs);
         _recorder.RecordMeasuredStep(LifecycleCapacityScenario.StatusStepName);
         _recorder.RecordResult(result.Code.ToString());
         return result.Code;

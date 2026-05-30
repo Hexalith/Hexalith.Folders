@@ -77,6 +77,11 @@ jobs:
         timeout-minutes: 15
         run: ./tests/tools/run-capacity-smoke-ci-gates.ps1
 
+      - name: Run capacity calibration gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-capacity-calibration-gates.ps1
+
       - name: Run safety gates
         shell: pwsh
         timeout-minutes: 20

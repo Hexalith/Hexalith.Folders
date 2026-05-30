@@ -65,6 +65,7 @@ evidencePaths:
   - _bmad-output/gates/contract-parity-ci/latest.json
   - _bmad-output/gates/security-redaction-ci/latest.json
   - _bmad-output/gates/capacity-smoke-ci/latest.json
+  - _bmad-output/gates/capacity-calibration/latest.json
   - _bmad-output/gates/safety-invariants/latest.json
   - _bmad-output/gates/governance-completeness/latest.json
   - _bmad-output/gates/release-packages/latest.json

@@ -26,10 +26,27 @@ public sealed record LifecycleCapacityProfile(
         TimeSpan.FromSeconds(3),
         ExplicitReplay: false);
 
+    public static LifecycleCapacityProfile ReleaseCalibration { get; } = new(
+        "release-calibration",
+        TenantCount: 4,
+        FoldersPerTenant: 2,
+        WorkspacesPerTenant: 2,
+        TasksPerWorkspace: 2,
+        OperationsPerTask: 1,
+        InjectRate: 2,
+        TimeSpan.FromSeconds(1),
+        TimeSpan.FromSeconds(9),
+        ExplicitReplay: false);
+
+    public bool IsReleaseCalibration
+        => string.Equals(Name, ReleaseCalibration.Name, StringComparison.Ordinal);
+
     public static LifecycleCapacityProfile FromName(string name)
         => string.Equals(name, Quick.Name, StringComparison.OrdinalIgnoreCase)
             ? Quick
-            : throw new ArgumentException($"Unsupported lifecycle capacity profile '{name}'.", nameof(name));
+            : string.Equals(name, ReleaseCalibration.Name, StringComparison.OrdinalIgnoreCase)
+                ? ReleaseCalibration
+                : throw new ArgumentException($"Unsupported lifecycle capacity profile '{name}'.", nameof(name));
 
     public LifecycleCapacityIteration CreateIteration(long invocationNumber)
     {

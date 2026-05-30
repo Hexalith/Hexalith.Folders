@@ -23,7 +23,7 @@
   "evidence_path": "_bmad-output/gates/capacity-smoke-ci/reports/lifecycle-capacity-evidence.json",
   "self_check_report_path": "_bmad-output/gates/capacity-smoke-ci/self-check",
   "smoke_report_path": "_bmad-output/gates/capacity-smoke-ci/reports",
-  "elapsed_ms": 7678,
+  "elapsed_ms": 7654,
   "results": [
     {
       "category": "harness-self-check",

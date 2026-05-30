@@ -1,7 +1,7 @@
 {
   "run_id": "capacity-smoke-ci",
-  "utc_timestamp": "2026-05-30T16:52:27.4885766+00:00",
-  "git_commit": "5e7238363283fc5ecc10790113682a35f4ad51d8",
+  "utc_timestamp": "2026-05-30T19:59:56.9512503+00:00",
+  "git_commit": "23c70c62bf28b8890a1216b183328bdddd847c95",
   "target_framework": ".NETCoreApp,Version=v10.0",
   "n_bomber_version": "6.4.1\u002B67e3c24f271a197fc1ca88e55f0a68e7a65bb7a4",
   "scenario_names": [

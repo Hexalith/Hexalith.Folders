@@ -195,6 +195,190 @@ public sealed class LifecycleCapacityHarnessTests
     }
 
     [Fact]
+    public void ReleaseCalibrationProfileShouldEmitTargetComparisonsAndStatistics()
+    {
+        string reportFolder = Path.Combine(Path.GetTempPath(), $"folders-load-calibration-evidence-{Guid.NewGuid():N}");
+        LifecycleCapacityProfile profile = LifecycleCapacityProfile.ReleaseCalibration;
+        LifecycleCapacityRunRecorder recorder = new();
+        LifecycleCapacityIteration iteration = profile.CreateIteration(1);
+        recorder.RecordIteration(iteration);
+
+        foreach (string step in RequiredMeasuredSteps())
+        {
+            recorder.RecordMeasuredStep(step);
+            recorder.RecordStepLatency(step, 10);
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            recorder.RecordMeasuredStep(LifecycleCapacityScenario.StatusStepName);
+            recorder.RecordStepLatency(LifecycleCapacityScenario.StatusStepName, 10);
+        }
+
+        recorder.RecordFreshnessLag("commit_to_status_read_ms", 2);
+        recorder.RecordOperation(iteration, iteration.PrepareOperationId, iteration.PrepareIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.LockOperationId, iteration.LockIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.MutationOperationId, iteration.MutationIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.CommitOperationId, iteration.CommitIdempotencyKey);
+        recorder.RecordResult(FolderResultCode.Accepted);
+        recorder.RecordResult(FolderResultCode.Accepted);
+        recorder.RecordResult(FolderResultCode.Accepted);
+        recorder.RecordResult(FolderResultCode.Accepted);
+        recorder.RecordResult(WorkspaceStatusQueryResultCode.Allowed.ToString());
+
+        string evidencePath = LifecycleCapacityEvidenceWriter.Write(
+            reportFolder,
+            profile,
+            recorder,
+            [LifecycleCapacityScenario.FullLifecycleScenarioName],
+            ["capacity-calibration.md"],
+            "capacity-calibration",
+            new DateTimeOffset(2026, 5, 30, 0, 0, 0, TimeSpan.Zero));
+
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(evidencePath));
+        JsonElement root = document.RootElement;
+
+        root.GetProperty("profile_name").GetString().ShouldBe("release-calibration");
+        root.GetProperty("thresholds").GetString().ShouldBe("release_calibrated");
+        root.GetProperty("hardware_profile").GetProperty("target_hardware_profile").GetString().ShouldBe("github-actions-ubuntu-latest-or-local-hermetic");
+        root.GetProperty("step_latency_statistics").GetProperty(LifecycleCapacityScenario.StatusStepName).GetProperty("p95_ms").GetDouble().ShouldBe(10);
+        root.GetProperty("throughput").GetProperty("lifecycle_iterations_per_second").GetDouble().ShouldBeGreaterThan(0);
+        root.GetProperty("freshness_observations").GetProperty("commit_to_status_read_ms").GetProperty("p95_ms").GetDouble().ShouldBe(2);
+        root.GetProperty("target_comparison").GetProperty("c1").GetProperty("max_concurrent_tenants").GetProperty("target").GetDouble().ShouldBe(4);
+        root.GetProperty("target_comparison").GetProperty("c2").GetProperty("max_commit_to_status_read_freshness_ms").GetProperty("target").GetDouble().ShouldBe(500);
+        root.GetProperty("target_comparison").GetProperty("c2").GetProperty("max_commit_to_status_read_freshness_ms").GetProperty("observed").GetDouble().ShouldBe(2);
+        root.GetProperty("target_comparison").GetProperty("c2").GetProperty("max_commit_to_status_read_freshness_ms").GetProperty("passed").GetBoolean().ShouldBeTrue();
+        root.GetProperty("target_comparison").GetProperty("c5").GetProperty("minimum_lifecycle_iterations_per_second").GetProperty("passed").GetBoolean().ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ReleaseCalibrationEvidenceShouldFailC2ComparisonWhenFreshnessExceedsTarget()
+    {
+        string reportFolder = Path.Combine(Path.GetTempPath(), $"folders-load-calibration-stale-evidence-{Guid.NewGuid():N}");
+        LifecycleCapacityProfile profile = LifecycleCapacityProfile.ReleaseCalibration;
+        LifecycleCapacityRunRecorder recorder = new();
+        LifecycleCapacityIteration iteration = profile.CreateIteration(1);
+        recorder.RecordIteration(iteration);
+
+        foreach (string step in RequiredMeasuredSteps())
+        {
+            recorder.RecordMeasuredStep(step);
+            recorder.RecordStepLatency(step, 10);
+        }
+
+        recorder.RecordFreshnessLag("commit_to_status_read_ms", 750);
+        recorder.RecordOperation(iteration, iteration.PrepareOperationId, iteration.PrepareIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.LockOperationId, iteration.LockIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.MutationOperationId, iteration.MutationIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.CommitOperationId, iteration.CommitIdempotencyKey);
+
+        string evidencePath = LifecycleCapacityEvidenceWriter.Write(
+            reportFolder,
+            profile,
+            recorder,
+            [LifecycleCapacityScenario.FullLifecycleScenarioName],
+            ["capacity-calibration.md"],
+            "capacity-calibration",
+            new DateTimeOffset(2026, 5, 30, 0, 0, 0, TimeSpan.Zero));
+
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(evidencePath));
+        JsonElement c2 = document.RootElement
+            .GetProperty("target_comparison")
+            .GetProperty("c2")
+            .GetProperty("max_commit_to_status_read_freshness_ms");
+
+        c2.GetProperty("observed").GetDouble().ShouldBe(750);
+        c2.GetProperty("passed").GetBoolean().ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ReleaseCalibrationProfileShouldBeDistinctFromQuickSmoke()
+    {
+        LifecycleCapacityProfile quick = LifecycleCapacityProfile.FromName("quick");
+        LifecycleCapacityProfile calibration = LifecycleCapacityProfile.FromName("release-calibration");
+
+        quick.IsReleaseCalibration.ShouldBeFalse();
+        calibration.IsReleaseCalibration.ShouldBeTrue();
+        calibration.TenantCount.ShouldBe(4);
+        calibration.FoldersPerTenant.ShouldBe(2);
+        calibration.WorkspacesPerTenant.ShouldBe(2);
+        calibration.TasksPerWorkspace.ShouldBe(2);
+        calibration.Duration.ShouldBe(TimeSpan.FromSeconds(9));
+
+        // Lock the Story 7.7 quick smoke dimensions so a calibration change cannot silently
+        // weaken the non-production smoke lane.
+        quick.TenantCount.ShouldBe(2);
+        quick.FoldersPerTenant.ShouldBe(1);
+        quick.WorkspacesPerTenant.ShouldBe(1);
+        quick.TasksPerWorkspace.ShouldBe(1);
+        quick.OperationsPerTask.ShouldBe(1);
+        quick.InjectRate.ShouldBe(1);
+        quick.Duration.ShouldBe(TimeSpan.FromSeconds(3));
+    }
+
+    [Fact]
+    public async Task ReleaseCalibrationDriverShouldRecordMeasuredCommitToStatusReadFreshness()
+    {
+        LifecycleCapacityProfile profile = LifecycleCapacityProfile.ReleaseCalibration;
+        LifecycleCapacityRunRecorder recorder = new();
+        LifecycleCapacityDriver driver = new(profile.CreateIteration(1), recorder);
+
+        await driver.PrepareAsync(TestContext.Current.CancellationToken);
+        await driver.AcquireLockAsync(TestContext.Current.CancellationToken);
+        await driver.MutateFileAsync(TestContext.Current.CancellationToken);
+        (await driver.CommitAsync(TestContext.Current.CancellationToken)).ShouldBe(FolderResultCode.Accepted);
+        (await driver.ReadStatusAsync(TestContext.Current.CancellationToken)).ShouldBe(WorkspaceStatusQueryResultCode.Allowed);
+
+        recorder.FreshnessLagMilliseconds.ShouldContainKey("commit_to_status_read_ms");
+        IReadOnlyList<double> samples = recorder.FreshnessLagMilliseconds["commit_to_status_read_ms"];
+        samples.Count.ShouldBe(1);
+
+        // The freshness sample must be a real measured wall-clock interval, not a hardcoded constant.
+        // A regression to a literal 0 would make the C2 target comparison incapable of failing closed.
+        samples[0].ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public void ReleaseCalibrationEvidenceShouldFailC2ComparisonWhenFreshnessObservationIsMissing()
+    {
+        string reportFolder = Path.Combine(Path.GetTempPath(), $"folders-load-calibration-missing-freshness-{Guid.NewGuid():N}");
+        LifecycleCapacityProfile profile = LifecycleCapacityProfile.ReleaseCalibration;
+        LifecycleCapacityRunRecorder recorder = new();
+        LifecycleCapacityIteration iteration = profile.CreateIteration(1);
+        recorder.RecordIteration(iteration);
+
+        foreach (string step in RequiredMeasuredSteps())
+        {
+            recorder.RecordMeasuredStep(step);
+            recorder.RecordStepLatency(step, 10);
+        }
+
+        // Deliberately omit RecordFreshnessLag so no C2 freshness observation exists.
+        recorder.RecordOperation(iteration, iteration.PrepareOperationId, iteration.PrepareIdempotencyKey);
+        recorder.RecordOperation(iteration, iteration.CommitOperationId, iteration.CommitIdempotencyKey);
+
+        string evidencePath = LifecycleCapacityEvidenceWriter.Write(
+            reportFolder,
+            profile,
+            recorder,
+            [LifecycleCapacityScenario.FullLifecycleScenarioName],
+            ["capacity-calibration.md"],
+            "capacity-calibration",
+            new DateTimeOffset(2026, 5, 30, 0, 0, 0, TimeSpan.Zero));
+
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(evidencePath));
+        JsonElement c2 = document.RootElement
+            .GetProperty("target_comparison")
+            .GetProperty("c2")
+            .GetProperty("max_commit_to_status_read_freshness_ms");
+
+        // A missing freshness observation must fall back to a value above the target and fail closed,
+        // never silently pass as valid C2 release evidence.
+        c2.GetProperty("observed").GetDouble().ShouldBeGreaterThan(500);
+        c2.GetProperty("passed").GetBoolean().ShouldBeFalse();
+    }
+
+    [Fact]
     public void EvidenceWriterShouldPreservePartialExecutionSignalsForGateFailure()
     {
         string reportFolder = Path.Combine(Path.GetTempPath(), $"folders-load-partial-evidence-{Guid.NewGuid():N}");

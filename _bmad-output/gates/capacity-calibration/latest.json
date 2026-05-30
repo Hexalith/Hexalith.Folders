@@ -1,0 +1,241 @@
+{
+  "gate": "capacity-calibration",
+  "status": "passed",
+  "exit_code": 0,
+  "report_path": "_bmad-output/gates/capacity-calibration/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "categories": [
+    "harness-build-output",
+    "release-calibration-run",
+    "calibration-artifacts",
+    "evidence-shape",
+    "target-comparison",
+    "metadata-only-report"
+  ],
+  "profile_name": "release-calibration",
+  "run_id": "capacity-calibration",
+  "source_commit": "23c70c62bf28b8890a1216b183328bdddd847c95",
+  "required_measured_steps": [
+    "prepare_workspace",
+    "acquire_workspace_lock",
+    "mutate_workspace_file",
+    "commit_workspace",
+    "read_workspace_status"
+  ],
+  "evidence_path": "_bmad-output/gates/capacity-calibration/reports/lifecycle-capacity-evidence.json",
+  "calibration_report_path": "_bmad-output/gates/capacity-calibration/reports",
+  "c1_artifact_path": "docs/exit-criteria/c1-capacity.md",
+  "c2_artifact_path": "docs/exit-criteria/c2-freshness.md",
+  "c5_artifact_path": "docs/exit-criteria/c5-scalability-quantifiers.md",
+  "results": [
+    {
+      "category": "calibration-artifacts",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "harness-build-output",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "release-calibration-run",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "evidence-shape",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "target-comparison",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "metadata-only-report",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "elapsed_ms": 13361,
+  "hardware_profile": {
+    "runner_profile": "local-hermetic",
+    "target_hardware_profile": "github-actions-ubuntu-latest-or-local-hermetic",
+    "processor_count": 16,
+    "process_architecture": "X64",
+    "os_architecture": "X64",
+    "os_family": "linux",
+    "profile_name": "release-calibration"
+  },
+  "measured_steps": [
+    "acquire_workspace_lock",
+    "commit_workspace",
+    "mutate_workspace_file",
+    "prepare_workspace",
+    "read_workspace_status"
+  ],
+  "observed_step_counts": {
+    "commit_workspace": 18,
+    "mutate_workspace_file": 18,
+    "read_workspace_status": 18,
+    "acquire_workspace_lock": 18,
+    "prepare_workspace": 18
+  },
+  "observed_counts": {
+    "tenant_count": 4,
+    "folder_count": 8,
+    "workspace_count": 16,
+    "task_count": 18,
+    "operation_count": 72,
+    "idempotency_key_count": 72
+  },
+  "result_codes": {
+    "Accepted": 72,
+    "Allowed": 18
+  },
+  "scenario_names": [
+    "folder_workspace_full_lifecycle"
+  ],
+  "result_artifact_paths": [
+    "_bmad-output/gates/capacity-calibration/reports/capacity-calibration.txt",
+    "_bmad-output/gates/capacity-calibration/reports/capacity-calibration.md"
+  ],
+  "latency_stats": {
+    "commit_workspace": {
+      "count": 18,
+      "min_ms": 0.033,
+      "p50_ms": 0.038,
+      "p95_ms": 4.687,
+      "p99_ms": 4.687,
+      "max_ms": 4.687
+    },
+    "mutate_workspace_file": {
+      "count": 18,
+      "min_ms": 0.044,
+      "p50_ms": 0.066,
+      "p95_ms": 5.544,
+      "p99_ms": 5.544,
+      "max_ms": 5.544
+    },
+    "read_workspace_status": {
+      "count": 18,
+      "min_ms": 0.014,
+      "p50_ms": 0.023,
+      "p95_ms": 3.145,
+      "p99_ms": 3.145,
+      "max_ms": 3.145
+    },
+    "acquire_workspace_lock": {
+      "count": 18,
+      "min_ms": 0.019,
+      "p50_ms": 0.028,
+      "p95_ms": 1.474,
+      "p99_ms": 1.474,
+      "max_ms": 1.474
+    },
+    "prepare_workspace": {
+      "count": 18,
+      "min_ms": 0.045,
+      "p50_ms": 0.068,
+      "p95_ms": 8.054,
+      "p99_ms": 8.054,
+      "max_ms": 8.054
+    }
+  },
+  "throughput": {
+    "duration_seconds": 9,
+    "lifecycle_iterations_per_second": 2,
+    "operations_per_second": 8,
+    "measured_status_reads": 18
+  },
+  "freshness_observations": {
+    "commit_to_status_read_ms": {
+      "count": 18,
+      "p50_ms": 0.026,
+      "p95_ms": 3.919,
+      "p99_ms": 3.919,
+      "max_ms": 3.919,
+      "scope": "hermetic_commit_to_status_read"
+    }
+  },
+  "target_comparison": {
+    "c1": {
+      "max_concurrent_tenants": {
+        "target": 4,
+        "observed": 4,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "folders_per_tenant": {
+        "target": 2,
+        "observed": 2,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "active_workspaces_per_tenant": {
+        "target": 2,
+        "observed": 4,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "concurrent_agent_tasks_per_tenant": {
+        "target": 2,
+        "observed": 4,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      }
+    },
+    "c2": {
+      "max_commit_to_status_read_freshness_ms": {
+        "target": 500,
+        "observed": 3.919,
+        "units": "milliseconds",
+        "comparator": "observed_less_than_or_equal_target",
+        "passed": true
+      }
+    },
+    "c5": {
+      "tenant_scale_units": {
+        "target": 4,
+        "observed": 4,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "folder_scale_units_per_tenant": {
+        "target": 2,
+        "observed": 2,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "workspace_scale_units_per_tenant": {
+        "target": 2,
+        "observed": 4,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "agent_task_scale_units_per_tenant": {
+        "target": 2,
+        "observed": 4,
+        "units": "count",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      },
+      "minimum_lifecycle_iterations_per_second": {
+        "target": 1,
+        "observed": 2,
+        "units": "operations_per_second",
+        "comparator": "observed_greater_than_or_equal_target",
+        "passed": true
+      }
+    }
+  }
+}

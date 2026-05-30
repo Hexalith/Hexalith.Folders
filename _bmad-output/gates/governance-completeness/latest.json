@@ -1,7 +1,7 @@
 {
   "gate": "governance-completeness",
-  "status": "passed",
-  "exit_code": 0,
+  "status": "failed",
+  "exit_code": 1,
   "canonical_inputs": [
     "docs/exit-criteria/c0-c13-governance-evidence.yaml",
     "tests/fixtures/idempotency-encoding-corpus.json",

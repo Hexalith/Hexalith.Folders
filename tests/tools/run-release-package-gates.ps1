@@ -49,6 +49,7 @@ $evidencePaths = @(
     '_bmad-output/gates/contract-parity-ci/latest.json',
     '_bmad-output/gates/security-redaction-ci/latest.json',
     '_bmad-output/gates/capacity-smoke-ci/latest.json',
+    '_bmad-output/gates/capacity-calibration/latest.json',
     '_bmad-output/gates/safety-invariants/latest.json',
     '_bmad-output/gates/governance-completeness/latest.json'
 )
@@ -467,6 +468,36 @@ function Assert-ReleaseEvidence {
 
     if (-not (Test-Path (Join-Path $repositoryRoot $openApiRelativePath))) {
         Fail-Gate -Category 'release-evidence' -Reason 'missing-openapi-spine'
+    }
+
+    foreach ($relativePath in $evidencePaths) {
+        $fullPath = Join-Path $repositoryRoot $relativePath
+        if (-not (Test-Path $fullPath)) {
+            Fail-Gate -Category 'release-evidence' -Reason "missing-release-evidence path=$relativePath"
+        }
+
+        try {
+            $evidence = Get-Content -Raw -Path $fullPath | ConvertFrom-Json
+        }
+        catch {
+            Fail-Gate -Category 'release-evidence' -Reason "malformed-release-evidence path=$relativePath"
+        }
+
+        if ($evidence.status -ne 'passed') {
+            Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
+        }
+
+        if ($relativePath -eq '_bmad-output/gates/capacity-calibration/latest.json') {
+            if ($evidence.source_commit -ne $SourceRevisionId) {
+                Fail-Gate -Category 'release-evidence' -Reason 'stale-capacity-calibration-evidence'
+            }
+
+            foreach ($criterion in @('c1', 'c2', 'c5')) {
+                if ($null -eq $evidence.target_comparison.$criterion) {
+                    Fail-Gate -Category 'release-evidence' -Reason "missing-capacity-target-comparison criterion=$criterion"
+                }
+            }
+        }
     }
 
     Add-Result -Category 'release-evidence' -Status 'passed' -ExitCode 0
