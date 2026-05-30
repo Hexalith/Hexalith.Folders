@@ -2,6 +2,7 @@ using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.ServiceDefaults;
 
 using Microsoft.Extensions.DependencyInjection;

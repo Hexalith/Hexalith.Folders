@@ -42,8 +42,7 @@ public static class FoldersAuthenticationServiceCollectionExtensions
             })
             .ValidateOnStart();
 
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<FoldersOidcOptions>>(static sp =>
-            new FoldersOidcOptionsValidator(sp.GetRequiredService<IHostEnvironment>())));
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<FoldersOidcOptions>, FoldersOidcOptionsValidator>());
 
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -72,13 +71,25 @@ public static class FoldersAuthenticationServiceCollectionExtensions
         options.MetadataAddress ??= fallback["MetadataAddress"];
         options.Audience ??= fallback["Audience"];
         options.ValidIssuer ??= fallback["Issuer"] ?? fallback["ValidIssuer"];
+
+        if (fallback["RequireHttpsMetadata"] is { Length: > 0 } requireHttps
+            && !configuration.GetSection(FoldersOidcOptions.SectionName).GetChildren().Any(static c => c.Key == nameof(FoldersOidcOptions.RequireHttpsMetadata)))
+        {
+            options.RequireHttpsMetadata = bool.Parse(requireHttps);
+        }
+
         return options;
     }
 
     private static void ApplyJwtBearerOptions(JwtBearerOptions options, FoldersOidcOptions oidc)
     {
         options.Authority = BlankToNull(oidc.Authority);
-        options.MetadataAddress = BlankToNull(oidc.MetadataAddress);
+        string? metadataAddress = BlankToNull(oidc.MetadataAddress);
+        if (metadataAddress is not null)
+        {
+            options.MetadataAddress = metadataAddress;
+        }
+
         options.Audience = BlankToNull(oidc.Audience);
         options.RequireHttpsMetadata = oidc.RequireHttpsMetadata;
         options.MapInboundClaims = false;

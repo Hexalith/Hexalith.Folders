@@ -41,6 +41,8 @@ public sealed class ForgejoProviderTests
         profile.RateLimit.Metadata["header_posture"].ShouldBe("forgejo_headers_metadata_only");
 
         credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClientFactory.Calls.ShouldBe(1);
         apiClient.ReadinessCalls.ShouldBe(1);
         apiClientFactory.LastRequest.ShouldNotBeNull().BaseUri.AbsoluteUri.ShouldBe("https://forgejo.example.test/");
@@ -68,6 +70,8 @@ public sealed class ForgejoProviderTests
         result.ProviderBindingRef.ShouldBe("binding-a");
         result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
         credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClient.RepositoryCreationCalls.ShouldBe(1);
         apiClient.LastRepositoryCreationRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("15.0.2");
         apiClient.LastRepositoryCreationRequest.ShouldNotBeNull().SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
@@ -94,6 +98,8 @@ public sealed class ForgejoProviderTests
         result.ProviderBindingRef.ShouldBe("binding-a");
         result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
         credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClient.RepositoryBindingCalls.ShouldBe(1);
         apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("15.0.2");
         apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRef.ShouldBe("external-repository-a");
@@ -400,6 +406,54 @@ public sealed class ForgejoProviderTests
         credentialResolver.Calls.ShouldBe(1);
         apiClientFactory.Calls.ShouldBe(0);
         apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RepositoryCreationCredentialResolutionFailuresShortCircuitBeforeHttpClientCreation()
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Failure(
+            ProviderFailureCategory.ProviderConfigurationMissing,
+            "provider_credential_reference_missing");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConfigurationMissing);
+        result.ReasonCode.ShouldBe("provider_credential_reference_missing");
+        credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.RepositoryCreationCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RepositoryBindingCredentialResolutionFailuresShortCircuitBeforeHttpClientCreation()
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Failure(
+            ProviderFailureCategory.ProviderPermissionInsufficient,
+            "provider_credential_reference_denied");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderPermissionInsufficient);
+        result.ReasonCode.ShouldBe("provider_credential_reference_denied");
+        credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.RepositoryBindingCalls.ShouldBe(0);
     }
 
     [Fact]

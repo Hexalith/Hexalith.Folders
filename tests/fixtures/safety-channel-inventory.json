@@ -15,9 +15,13 @@
     "tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs",
     "src/Hexalith.Folders/Observability",
     "src/Hexalith.Folders.Server/FolderAuditEndpointFilter.cs",
+    "src/Hexalith.Folders.Server/AuditEndpoints.cs",
+    "src/Hexalith.Folders.Contracts/Projections/Audit",
+    "src/Hexalith.Folders/Queries/Audit",
     "src/Hexalith.Folders.ServiceDefaults/Extensions.cs",
     "tests/Hexalith.Folders.Tests/Observability",
-    "tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs"
+    "tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs",
+    "src/Hexalith.Folders/Providers/Abstractions"
   ],
   "structured_exclusions": [
     ".git/**",
@@ -367,6 +371,19 @@
       "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
       "coverage_notes": "Current Story 1.11 OpenAPI and generated-client diagnostic artifacts are in scope; safety gate scans leakage only.",
       "last_evaluated_at": "2026-05-18"
+    },
+    {
+      "channel": "provider-credential-references",
+      "owning_story": "7-2-configure-production-oidc-and-secret-store-integration",
+      "artifact_sources": [
+        "src/Hexalith.Folders/Providers/Abstractions"
+      ],
+      "prerequisite_status": "covered",
+      "diagnostic": "covered",
+      "scan_forbidden_values": true,
+      "safe_absence_diagnostic": "SAFETY-PREREQUISITE-DRIFT",
+      "coverage_notes": "Story 7.2 reference-only provider credential resolution: the Dapr secret-store client and credential resolvers handle credential reference IDs and lease tokens, so the source is swept to keep raw provider tokens, client secrets, or secret dictionaries out of the repository.",
+      "last_evaluated_at": "2026-05-30"
     }
   ]
 }

@@ -256,13 +256,16 @@ public sealed class DaprPolicyConformanceTests
             string.Equals(scope.StoreName, "folders-provider-credentials", StringComparison.Ordinal) &&
             string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal));
 
-        scopes.Where(static scope => scope.StoreName is "folders-provider-credentials")
-            .SelectMany(static scope => scope.AllowedSecrets)
-            .Order(StringComparer.Ordinal)
-            .Distinct(StringComparer.Ordinal)
-            .ShouldBe(
-                ["forgejo-user-delegated-ref-synthetic", "github-app-installation-ref-synthetic"],
-                ignoreOrder: true);
+        foreach (string appId in new[] { FoldersAspireModule.FoldersAppId, FoldersAspireModule.FoldersWorkersAppId })
+        {
+            scopes.Single(scope =>
+                    string.Equals(scope.TargetAppId, appId, StringComparison.Ordinal) &&
+                    string.Equals(scope.StoreName, "folders-provider-credentials", StringComparison.Ordinal))
+                .AllowedSecrets
+                .ShouldBe(
+                    ["forgejo-user-delegated-ref-synthetic", "github-app-installation-ref-synthetic"],
+                    ignoreOrder: true);
+        }
 
         scopes.Where(static scope => string.Equals(scope.StoreName, "kubernetes", StringComparison.Ordinal))
             .ShouldAllBe(static scope => string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal) && scope.AllowedSecrets.Length == 0);
@@ -355,7 +358,7 @@ public sealed class DaprPolicyConformanceTests
     private static IEnumerable<SecretScope> ParseSecretScopes(YamlMappingNode document)
     {
         string targetAppId = document.GetMapping("metadata").GetMapping("annotations").GetScalar("hexalith.io/target-app-id");
-        if (!document.GetMapping("spec").TryGetMapping("secrets", out YamlMappingNode? secrets))
+        if (!document.GetMapping("spec").TryGetMapping("secrets", out YamlMappingNode? secrets) || secrets is null)
         {
             return [];
         }

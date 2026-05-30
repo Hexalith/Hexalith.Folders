@@ -1,6 +1,6 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.2. Durable per-story copy: [`7-2-test-summary.md`](./7-2-test-summary.md).
+> Durable per-story summary for Story 7.2. Latest-run copy: [`test-summary.md`](./test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests`
 **Story:** `_bmad-output/implementation-artifacts/7-2-configure-production-oidc-and-secret-store-integration.md`

@@ -90,6 +90,26 @@ public sealed class DaprBackedProviderCredentialResolverTests
             "provider_credential_store_unavailable");
 
     [Fact]
+    public async Task ReferenceResolverShouldRejectBlankCredentialReferenceBeforeSecretLookup()
+    {
+        RecordingSecretStoreClient store = new(ProviderCredentialSecretLookupResult.Found(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["access_token"] = "synthetic-access-token",
+            }));
+        DaprProviderCredentialReferenceResolver resolver = ReferenceResolver(store);
+
+        ProviderCredentialReferenceResolutionResult result = await resolver.ResolveAsync(
+            ReferenceRequest() with { CredentialReferenceId = " " },
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConfigurationMissing);
+        result.ReasonCode.ShouldBe("provider_credential_reference_missing");
+        store.Calls.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ReferenceResolverShouldPropagateCancellationBeforeSecretLookup()
     {
         RecordingSecretStoreClient store = new(ProviderCredentialSecretLookupResult.Missing());

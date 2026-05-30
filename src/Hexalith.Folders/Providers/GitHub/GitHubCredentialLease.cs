@@ -2,8 +2,9 @@ namespace Hexalith.Folders.Providers.GitHub;
 
 internal sealed class GitHubCredentialLease : IAsyncDisposable
 {
-    private GitHubCredentialLease(string accessToken)
+    internal GitHubCredentialLease(string accessToken)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(accessToken);
         AccessToken = accessToken;
     }
 

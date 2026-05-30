@@ -74,16 +74,53 @@ public sealed class FoldersProductionAuthenticationTests
     {
         using ServiceProvider provider = Services(new Dictionary<string, string?>
         {
-            ["Folders:Authentication:Authority"] = "https://oidc.example.invalid/realms/folders",
+            ["Folders:Authentication:MetadataAddress"] = "https://oidc.example.invalid/realms/folders/.well-known/openid-configuration",
             ["Folders:Authentication:RequireHttpsMetadata"] = "true",
         }).BuildServiceProvider();
 
         IHostedService validator = provider.GetServices<IHostedService>().OfType<FoldersAuthSchemeValidator>().Single();
 
-        InvalidOperationException ex = await Should.ThrowAsync<InvalidOperationException>(
+        OptionsValidationException ex = await Should.ThrowAsync<OptionsValidationException>(
             () => validator.StartAsync(TestContext.Current.CancellationToken));
-        ex.Message.ShouldContain("audience pin");
-        ex.Message.ShouldContain("issuer pin");
+        ex.Failures.ShouldContain(static failure => failure.Contains("Audience", StringComparison.Ordinal));
+        ex.Failures.ShouldContain(static failure => failure.Contains("ValidIssuer", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ProductionValidatorShouldRejectMissingMetadataAndUnsafeMetadataTransport()
+    {
+        using ServiceProvider provider = Services(new Dictionary<string, string?>
+        {
+            ["Folders:Authentication:Audience"] = "api://hexalith-folders.example.invalid",
+            ["Folders:Authentication:ValidIssuer"] = "https://oidc.example.invalid/realms/folders",
+            ["Folders:Authentication:Authority"] = "http://oidc.example.invalid/realms/folders",
+            ["Folders:Authentication:RequireHttpsMetadata"] = "false",
+        }).BuildServiceProvider();
+
+        IHostedService validator = provider.GetServices<IHostedService>().OfType<FoldersAuthSchemeValidator>().Single();
+
+        OptionsValidationException ex = await Should.ThrowAsync<OptionsValidationException>(
+            () => validator.StartAsync(TestContext.Current.CancellationToken));
+        ex.Failures.ShouldContain(static failure => failure.Contains("RequireHttpsMetadata", StringComparison.Ordinal));
+        ex.Failures.ShouldContain(static failure => failure.Contains("Authority", StringComparison.Ordinal));
+        ex.Failures.ShouldContain(static failure => failure.Contains("absolute HTTPS URI", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ProductionValidatorShouldRejectMissingAuthorityAndMetadataAddress()
+    {
+        using ServiceProvider provider = Services(new Dictionary<string, string?>
+        {
+            ["Folders:Authentication:Audience"] = "api://hexalith-folders.example.invalid",
+            ["Folders:Authentication:ValidIssuer"] = "https://oidc.example.invalid/realms/folders",
+            ["Folders:Authentication:RequireHttpsMetadata"] = "true",
+        }).BuildServiceProvider();
+
+        IHostedService validator = provider.GetServices<IHostedService>().OfType<FoldersAuthSchemeValidator>().Single();
+
+        OptionsValidationException ex = await Should.ThrowAsync<OptionsValidationException>(
+            () => validator.StartAsync(TestContext.Current.CancellationToken));
+        ex.Failures.ShouldContain(static failure => failure.Contains("Authority or MetadataAddress", StringComparison.Ordinal));
     }
 
     [Fact]

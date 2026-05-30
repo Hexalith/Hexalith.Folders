@@ -2,8 +2,9 @@ namespace Hexalith.Folders.Providers.Forgejo;
 
 internal sealed class ForgejoCredentialLease : IAsyncDisposable
 {
-    private ForgejoCredentialLease(string accessToken)
+    internal ForgejoCredentialLease(string accessToken)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(accessToken);
         AccessToken = accessToken;
     }
 

@@ -27,7 +27,7 @@ internal sealed class DaprBackedGitHubCredentialResolver(IProviderCredentialRefe
             cancellationToken).ConfigureAwait(false);
 
         return result.IsSuccess
-            ? GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(result.AccessToken!))
+            ? GitHubCredentialResolutionResult.Success(new GitHubCredentialLease(result.AccessToken!))
             : GitHubCredentialResolutionResult.Failure(result.FailureCategory, result.ReasonCode, result.RetryAfter);
     }
 }

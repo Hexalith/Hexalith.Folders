@@ -38,6 +38,8 @@ public sealed class GitHubProviderTests
         profile.RateLimit.RetryAfter.ShouldBe(TimeSpan.FromSeconds(90));
 
         credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClientFactory.Calls.ShouldBe(1);
         apiClient.ReadinessCalls.ShouldBe(1);
 
@@ -63,6 +65,8 @@ public sealed class GitHubProviderTests
         result.ProviderBindingRef.ShouldBe("binding-a");
         result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
         credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClient.RepositoryCreationCalls.ShouldBe(1);
         apiClient.LastRepositoryCreationRequest.ShouldNotBeNull().SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
 
@@ -88,6 +92,8 @@ public sealed class GitHubProviderTests
         result.ProviderBindingRef.ShouldBe("binding-a");
         result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
         credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClient.RepositoryBindingCalls.ShouldBe(1);
         apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRef.ShouldBe("external-repository-a");
         apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRefFingerprint.ShouldBe("external-ref-fingerprint-a");
@@ -429,6 +435,54 @@ public sealed class GitHubProviderTests
         credentialResolver.Calls.ShouldBe(1);
         apiClientFactory.Calls.ShouldBe(0);
         apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RepositoryCreationCredentialResolutionFailuresShortCircuitBeforeOctokitClientCreation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Failure(
+            ProviderFailureCategory.ProviderConfigurationMissing,
+            "provider_credential_reference_missing");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConfigurationMissing);
+        result.ReasonCode.ShouldBe("provider_credential_reference_missing");
+        credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.RepositoryCreationCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RepositoryBindingCredentialResolutionFailuresShortCircuitBeforeOctokitClientCreation()
+    {
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Failure(
+            ProviderFailureCategory.ProviderPermissionInsufficient,
+            "provider_credential_reference_denied");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderPermissionInsufficient);
+        result.ReasonCode.ShouldBe("provider_credential_reference_denied");
+        credentialResolver.Calls.ShouldBe(1);
+        credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
+        credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.RepositoryBindingCalls.ShouldBe(0);
     }
 
     [Fact]

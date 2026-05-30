@@ -27,7 +27,7 @@ internal sealed class DaprBackedForgejoCredentialResolver(IProviderCredentialRef
             cancellationToken).ConfigureAwait(false);
 
         return result.IsSuccess
-            ? ForgejoCredentialResolutionResult.Success(ForgejoCredentialLease.CreateForTesting(result.AccessToken!))
+            ? ForgejoCredentialResolutionResult.Success(new ForgejoCredentialLease(result.AccessToken!))
             : ForgejoCredentialResolutionResult.Failure(result.FailureCategory, result.ReasonCode, result.RetryAfter);
     }
 }
