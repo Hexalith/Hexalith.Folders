@@ -44,6 +44,29 @@ function Write-GovernanceReport {
     } | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding utf8NoBOM
 }
 
+function Invoke-GovernanceTests {
+    # Keep a native non-zero exit from dotnet test as a returnable code (do not let it throw
+    # under Stop) so the xUnit v3 in-process fallback below is reliably reached.
+    $PSNativeCommandUseErrorActionPreference = $false
+    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests | Out-Host
+    if ($LASTEXITCODE -eq 0) {
+        return 0
+    }
+
+    # Match the extensionless ELF runner on Linux and the .exe runner on Windows; the regex
+    # excludes .dll/.pdb/.json artifacts that a bare -Filter pattern would otherwise miss/include.
+    $testExecutable = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin') -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -match '^Hexalith\.Folders\.Contracts\.Tests(\.exe)?$' -and $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
+        Select-Object -First 1
+
+    if ($null -eq $testExecutable) {
+        return $LASTEXITCODE
+    }
+
+    & $testExecutable.FullName -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests | Out-Host
+    return $LASTEXITCODE
+}
+
 try {
     Push-Location $repositoryRoot
     $pushed = $true
@@ -71,10 +94,10 @@ try {
         }
     }
 
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests
-    if ($LASTEXITCODE -ne 0) {
-        Write-GovernanceReport -Status 'failed' -ExitCode $LASTEXITCODE
-        exit $LASTEXITCODE
+    $testExitCode = Invoke-GovernanceTests
+    if ($testExitCode -ne 0) {
+        Write-GovernanceReport -Status 'failed' -ExitCode $testExitCode
+        exit $testExitCode
     }
 
     Write-GovernanceReport -Status 'passed'

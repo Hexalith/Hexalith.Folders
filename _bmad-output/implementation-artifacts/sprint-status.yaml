@@ -148,7 +148,7 @@ development_status:
   7-8-wire-scheduled-drift-and-policy-conformance-workflows: done
   7-9-publish-traceable-nuget-release-packages: done
   7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets: done
-  7-11-enforce-c3-retention-and-tenant-deletion-behavior: backlog
+  7-11-enforce-c3-retention-and-tenant-deletion-behavior: done
   7-12-wire-production-observability-and-alerts: backlog
   7-13-publish-api-sdk-cli-and-mcp-consumer-references: backlog
   7-14-publish-operations-and-audit-documentation: backlog

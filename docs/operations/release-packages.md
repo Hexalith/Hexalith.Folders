@@ -64,7 +64,7 @@ Every package is traced to:
 - OpenAPI spine path `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`;
 - package manifest `deploy/nuget/release-packages.yaml`;
 - release evidence report `_bmad-output/gates/release-packages/latest.json`;
-- same-run gate evidence paths for baseline, contract/parity, security/redaction, capacity smoke, safety, and governance checks.
+- same-run gate evidence paths for baseline, contract/parity, security/redaction, capacity smoke, retention/deletion, safety, and governance checks.
 
 `ContractVersion = "0.0.0-scaffold"` is allowed for local dry-run package validation, but it blocks live `Publish` mode until the contract version is advanced intentionally.
 
@@ -80,7 +80,7 @@ The release package gate fails closed under these categories:
 - `package-metadata`: missing repository, license, readme, source commit, or other required NuGet metadata.
 - `symbol-packages`: missing `.snupkg` output for a pushed package.
 - `dependency-closure`: a pushed package depends on another `Hexalith.Folders*` package outside the push set.
-- `release-evidence`: missing Contract Spine evidence or placeholder contract version in live publish mode.
+- `release-evidence`: missing Contract Spine evidence, stale release evidence, C3 retention approval blocking live publish, or placeholder contract version in live publish mode.
 - `metadata-only-report`: absolute paths or unsafe diagnostic material in generated evidence.
 - `publish`: missing feed source, missing API key environment variable, or `dotnet nuget push` failure.
 

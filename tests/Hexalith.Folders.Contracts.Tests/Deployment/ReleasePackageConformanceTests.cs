@@ -111,6 +111,7 @@ public sealed partial class ReleasePackageConformanceTests
             "./tests/tools/run-contract-parity-ci-gates.ps1",
             "./tests/tools/run-security-redaction-ci-gates.ps1",
             "./tests/tools/run-capacity-smoke-ci-gates.ps1",
+            "./tests/tools/run-retention-deletion-gates.ps1",
             "./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild",
             "./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild",
             "./tests/tools/run-release-package-gates.ps1",
@@ -228,6 +229,9 @@ public sealed partial class ReleasePackageConformanceTests
             "0.0.0-scaffold",
             "unexpected-package",
             "contract-version-placeholder-blocks-live-publish",
+            "_bmad-output/gates/retention-deletion/latest.json",
+            "stale-retention-deletion-evidence",
+            "c3-retention-approval-blocks-live-publish",
         })
         {
             script.ShouldContain(required, Case.Sensitive);

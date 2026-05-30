@@ -50,6 +50,7 @@ $evidencePaths = @(
     '_bmad-output/gates/security-redaction-ci/latest.json',
     '_bmad-output/gates/capacity-smoke-ci/latest.json',
     '_bmad-output/gates/capacity-calibration/latest.json',
+    '_bmad-output/gates/retention-deletion/latest.json',
     '_bmad-output/gates/safety-invariants/latest.json',
     '_bmad-output/gates/governance-completeness/latest.json'
 )
@@ -483,11 +484,11 @@ function Assert-ReleaseEvidence {
             Fail-Gate -Category 'release-evidence' -Reason "malformed-release-evidence path=$relativePath"
         }
 
-        if ($evidence.status -ne 'passed') {
-            Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
-        }
-
         if ($relativePath -eq '_bmad-output/gates/capacity-calibration/latest.json') {
+            if ($evidence.status -ne 'passed') {
+                Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
+            }
+
             if ($evidence.source_commit -ne $SourceRevisionId) {
                 Fail-Gate -Category 'release-evidence' -Reason 'stale-capacity-calibration-evidence'
             }
@@ -497,6 +498,39 @@ function Assert-ReleaseEvidence {
                     Fail-Gate -Category 'release-evidence' -Reason "missing-capacity-target-comparison criterion=$criterion"
                 }
             }
+
+            continue
+        }
+
+        if ($relativePath -eq '_bmad-output/gates/retention-deletion/latest.json') {
+            if ($evidence.source_commit -ne $SourceRevisionId) {
+                Fail-Gate -Category 'release-evidence' -Reason 'stale-retention-deletion-evidence'
+            }
+
+            if ($evidence.policy_status -eq 'reference_pending') {
+                # Approval state is authoritative: pending Legal + PM approval blocks live publish
+                # regardless of the gate's status field, so a tampered or future report that pairs
+                # reference_pending with status=passed cannot slip a live release through.
+                if ($Mode -eq 'Publish') {
+                    Fail-Gate -Category 'release-evidence' -Reason 'c3-retention-approval-blocks-live-publish'
+                }
+
+                if ($evidence.status -notin @('release-blocked', 'passed')) {
+                    Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
+                }
+
+                continue
+            }
+
+            if ($evidence.status -ne 'passed') {
+                Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
+            }
+
+            continue
+        }
+
+        if ($evidence.status -ne 'passed') {
+            Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
         }
     }
 

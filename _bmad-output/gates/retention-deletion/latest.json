@@ -1,0 +1,105 @@
+{
+  "gate": "retention-deletion",
+  "status": "release-blocked",
+  "policy_status": "reference_pending",
+  "exit_code": 0,
+  "report_path": "_bmad-output/gates/retention-deletion/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "source_commit": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
+  "required_data_classes": [
+    "Audit metadata",
+    "Workspace status",
+    "Provider correlation IDs",
+    "Read-model views",
+    "Temporary working files",
+    "Cleanup records"
+  ],
+  "tenant_deletion_matrix_rows": [
+    {
+      "data_class": "Audit metadata",
+      "disposition": "retained",
+      "automation": "automated retention, manual approval review",
+      "retention_behavior": "Keep C3 audit duration and remove display aliases when anonymization applies"
+    },
+    {
+      "data_class": "Workspace status",
+      "disposition": "tombstoned",
+      "automation": "automated compaction, manual exception review",
+      "retention_behavior": "Keep terminal status metadata for C3 status duration and tombstone task-local labels"
+    },
+    {
+      "data_class": "Provider correlation IDs",
+      "disposition": "retained",
+      "automation": "automated provider-diagnostics compaction",
+      "retention_behavior": "Keep bounded request and operation identifiers without provider bodies"
+    },
+    {
+      "data_class": "Read-model views",
+      "disposition": "deleted",
+      "automation": "automated projection drop or rebuild",
+      "retention_behavior": "Delete rebuildable projection rows when events can rebuild authorized state"
+    },
+    {
+      "data_class": "Temporary working files",
+      "disposition": "deleted",
+      "automation": "automated cleanup worker after terminal state",
+      "retention_behavior": "Delete disposable working-copy cache after C3 working-file duration"
+    },
+    {
+      "data_class": "Cleanup records",
+      "disposition": "retained",
+      "automation": "automated retention compaction, manual failed-cleanup review",
+      "retention_behavior": "Keep cleanup attempts, failures, retryability, reason code, and correlation ID"
+    }
+  ],
+  "artifact_paths": [
+    "docs/exit-criteria/c3-retention.md",
+    "docs/operations/retention-and-tenant-deletion.md",
+    "docs/runbooks/tenant-deletion.md",
+    "docs/exit-criteria/c0-c13-governance-evidence.yaml",
+    ".github/workflows/release-packages.yml",
+    "tests/tools/run-release-package-gates.ps1",
+    "deploy/nuget/release-packages.yaml"
+  ],
+  "validation_categories": [
+    "policy-source",
+    "tenant-deletion-matrix",
+    "governance-evidence",
+    "release-readiness",
+    "source-commit",
+    "metadata-only-report"
+  ],
+  "result_summaries": [
+    {
+      "category": "source-commit",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "policy-source",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "tenant-deletion-matrix",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "governance-evidence",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "release-readiness",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "metadata-only-report",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "elapsed_ms": 925
+}

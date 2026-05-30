@@ -82,6 +82,11 @@ jobs:
         timeout-minutes: 20
         run: ./tests/tools/run-capacity-calibration-gates.ps1
 
+      - name: Run retention deletion gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-retention-deletion-gates.ps1
+
       - name: Run safety gates
         shell: pwsh
         timeout-minutes: 20
