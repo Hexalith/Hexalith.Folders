@@ -67,6 +67,7 @@ public sealed class RepositoryProvisioningProcessManager
             requested.ManagedTenantId,
             requested.OrganizationId,
             requested.ProviderBindingRef,
+            context.CredentialReferenceId,
             requested.RepositoryBindingId,
             context.ProviderFamily,
             context.ProviderKey,

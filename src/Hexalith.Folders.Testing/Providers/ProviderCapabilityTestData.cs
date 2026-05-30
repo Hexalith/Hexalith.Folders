@@ -14,6 +14,7 @@ public static class ProviderCapabilityTestData
             "tenant-a",
             "organization-a",
             "binding-a",
+            "credential-ref-a",
             providerFamily,
             providerKey,
             profileSchemaVersion,

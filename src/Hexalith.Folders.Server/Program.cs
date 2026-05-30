@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddFoldersServer();
+builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
 
 // Production safety gate: AddInMemoryFolderRepository registers a dictionary-backed
 // repository that loses every event on process restart. It is safe for dev/staging hosts
@@ -39,6 +40,8 @@ builder.Host.UseDefaultServiceProvider(static options =>
 WebApplication app = builder.Build();
 
 app.UseCloudEvents();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapSubscribeHandler();
 app.MapFoldersServerEndpoints();
 

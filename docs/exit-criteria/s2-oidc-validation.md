@@ -51,6 +51,6 @@ Examples use `.invalid` issuer hosts and placeholder audiences only. Real issuer
 
 Verification must reject production-looking issuer URLs, raw JWTs, private keys, certificate material, client credentials, tenant identifiers, and provider tokens. Later implementation tests must assert the frozen validation flags, JWKS refresh intervals, JWT-only behavior, and claim-provenance rules.
 
-## Deferred implementation
+## Implementation handoff
 
-This document does not add authentication middleware, package references, appsettings files, secret-store integration, runtime configuration, Keycloak setup, Entra ID setup, Auth0 setup, or deployment manifests.
+Story 7.2 wires the production JWT bearer implementation and the operations handoff in `docs/operations/production-identity-and-secrets.md`. Real issuer, audience, metadata, client, and provider credential values remain environment-owned configuration and are not stored in Folders source.

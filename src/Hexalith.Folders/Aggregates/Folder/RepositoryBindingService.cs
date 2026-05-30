@@ -173,6 +173,7 @@ public sealed class RepositoryBindingService(
                 command.ManagedTenantId,
                 command.OrganizationId,
                 command.ProviderBindingRef,
+                binding.CredentialReferenceId,
                 command.RepositoryBindingId,
                 command.ExternalRepositoryRef,
                 FolderCommandValidator.ExternalRepositoryRefFingerprint(command),

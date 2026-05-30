@@ -6,7 +6,6 @@ using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -24,10 +23,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddEventStoreGatewayClient();
         services.AddFoldersObservability();
         services.AddHttpContextAccessor();
-        services.AddOptions<TenantContextOptions>();
-        // Register the authentication core services so the validator can introspect scheme registrations.
-        // Concrete schemes (JWT bearer, OIDC) are added by the host composition (Story 7.2).
-        _ = services.AddAuthentication();
+        services.AddOptions<TenantContextOptions>().BindConfiguration(TenantContextOptions.SectionName);
         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
         services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();
         services.TryAddSingleton<IFolderCommandActionTokenMapper, FolderCommandActionTokenMapper>();

@@ -6,7 +6,7 @@ internal sealed record GitHubCredentialResolutionRequest(
     string ManagedTenantId,
     string OrganizationId,
     string ProviderBindingRef,
+    string CredentialReferenceId,
     ProviderCredentialMode CredentialMode,
     string AuthorizationEvidenceFingerprint,
     string CorrelationId);
-

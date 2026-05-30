@@ -10,6 +10,8 @@ using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
 
+using Dapr.Client;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -123,6 +125,8 @@ public static class FoldersServiceCollectionExtensions
 
         services.AddFoldersTenantAccess();
         services.AddFoldersObservability();
+        services.TryAddSingleton<IGitHubCredentialResolver, UnconfiguredGitHubCredentialResolver>();
+        services.TryAddSingleton<IForgejoCredentialResolver, UnconfiguredForgejoCredentialResolver>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProvider>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
         services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
@@ -135,6 +139,38 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IProviderSupportEvidenceReadModel>(static sp => sp.GetRequiredService<InMemoryProviderReadinessEvidenceStore>());
         services.TryAddSingleton<ProviderReadinessValidationService>();
         services.TryAddSingleton<ProviderSupportEvidenceQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersDaprProviderCredentialResolution(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersProviderReadiness();
+        services.TryAddSingleton(static _ => new DaprClientBuilder().Build());
+        services.AddOptions<FoldersProviderCredentialOptions>()
+            .BindConfiguration(FoldersProviderCredentialOptions.SectionName)
+            .Validate(static options => !string.IsNullOrWhiteSpace(options.SecretStoreName), "Provider credential secret store name is required.")
+            .Validate(static options => !string.IsNullOrWhiteSpace(options.AccessTokenKey), "Provider credential access-token key is required.")
+            .ValidateOnStart();
+
+        services.RemoveAll<IProviderCredentialReferenceResolver>();
+        services.RemoveAll<IProviderCredentialSecretStoreClient>();
+        services.RemoveAll<IGitHubCredentialResolver>();
+        services.RemoveAll<IForgejoCredentialResolver>();
+        services.RemoveAll<IGitProvider>();
+
+        services.TryAddSingleton<IProviderCredentialSecretStoreClient, DaprProviderCredentialSecretStoreClient>();
+        services.TryAddSingleton<IProviderCredentialReferenceResolver, DaprProviderCredentialReferenceResolver>();
+        services.TryAddSingleton<IGitHubCredentialResolver, DaprBackedGitHubCredentialResolver>();
+        services.TryAddSingleton<IForgejoCredentialResolver, DaprBackedForgejoCredentialResolver>();
+        services.AddSingleton<IGitProvider>(static sp => new GitHubProvider(
+            sp.GetRequiredService<IGitHubCredentialResolver>(),
+            new OctokitGitHubApiClientFactory()));
+        services.AddSingleton<IGitProvider>(static sp => new ForgejoProvider(
+            sp.GetRequiredService<IForgejoCredentialResolver>(),
+            new ForgejoHttpApiClientFactory()));
 
         return services;
     }

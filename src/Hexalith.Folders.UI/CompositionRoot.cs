@@ -143,6 +143,9 @@ internal static class CompositionRoot
                 oidc.ClientId = options.ClientId;
                 oidc.RequireHttpsMetadata = options.RequireHttpsMetadata;
                 oidc.ResponseType = "code";
+                oidc.MapInboundClaims = false;
+                // Server-side Blazor keeps tokens in the protected auth session so backend API calls can
+                // attach the access token; console state, logs, and projections only use metadata claims.
                 oidc.SaveTokens = true;
                 oidc.GetClaimsFromUserInfoEndpoint = true;
                 oidc.Scope.Add("openid");

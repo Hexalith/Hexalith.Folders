@@ -4,6 +4,7 @@ public sealed record ProviderRepositoryBindingRequest(
     string ManagedTenantId,
     string OrganizationId,
     string ProviderBindingRef,
+    string CredentialReferenceId,
     string RepositoryBindingId,
     string ExternalRepositoryRef,
     string ExternalRepositoryRefFingerprint,

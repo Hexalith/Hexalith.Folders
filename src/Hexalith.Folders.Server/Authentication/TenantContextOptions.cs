@@ -6,7 +6,11 @@ public sealed class TenantContextOptions
 {
     public const string SectionName = "Folders:TenantContext";
 
-    public string TenantClaimType { get; set; } = "tenant_id";
+    public const string EventStoreTenantClaimType = "eventstore:tenant";
 
-    public string PrincipalClaimType { get; set; } = ClaimTypes.NameIdentifier;
+    public const string SubjectClaimType = "sub";
+
+    public string TenantClaimType { get; set; } = EventStoreTenantClaimType;
+
+    public string PrincipalClaimType { get; set; } = SubjectClaimType;
 }

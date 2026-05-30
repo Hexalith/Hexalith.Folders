@@ -236,6 +236,7 @@ public sealed partial class ProviderReadinessValidationService(
             binding.ManagedTenantId,
             binding.OrganizationId,
             binding.ProviderBindingRef,
+            binding.CredentialReferenceId,
             binding.ProviderKind,
             binding.ProviderKind,
             ProviderProfileSchemaVersion,

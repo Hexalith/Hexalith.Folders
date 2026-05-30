@@ -222,6 +222,7 @@ public static partial class ProviderCapabilityProfileFactory
         AppendField(hash, request.ManagedTenantId);
         AppendField(hash, request.OrganizationId);
         AppendField(hash, request.ProviderBindingRef);
+        AppendField(hash, request.CredentialReferenceId);
         AppendField(hash, providerFamily);
         AppendField(hash, providerKey);
         AppendField(hash, schemaVersion);

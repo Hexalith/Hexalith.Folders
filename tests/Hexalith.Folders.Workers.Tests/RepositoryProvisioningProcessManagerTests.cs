@@ -216,6 +216,7 @@ public sealed class RepositoryProvisioningProcessManagerTests
             ManagedTenantId: "tenant-a",
             OrganizationId: "organization-a",
             ProviderBindingRef: "provider-binding-a",
+            CredentialReferenceId: "credential-ref-a",
             ProviderFamily: "github",
             ProviderKey: "github",
             TargetEvidence: new ProviderTargetEvidence(
@@ -368,6 +369,7 @@ public sealed class RepositoryProvisioningProcessManagerTests
             ManagedTenantId: "tenant-a",
             OrganizationId: "organization-a",
             ProviderBindingRef: "provider-binding-a",
+            CredentialReferenceId: "credential-ref-a",
             RepositoryBindingId: "binding-a",
             ProviderFamily: "github",
             ProviderKey: "github",

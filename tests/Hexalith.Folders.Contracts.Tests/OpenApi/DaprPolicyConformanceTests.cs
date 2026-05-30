@@ -22,6 +22,7 @@ public sealed class DaprPolicyConformanceTests
     private const string PolicyPath = "deploy/dapr/production/accesscontrol.yaml";
     private const string MtlsPath = "deploy/dapr/production/daprsystem.yaml";
     private const string PubSubPath = "deploy/dapr/production/pubsub.yaml";
+    private const string SecretStorePath = "deploy/dapr/production/secretstore.yaml";
     private const string SidecarBindingsPath = "deploy/dapr/production/sidecar-config-bindings.yaml";
     private const string FixturePath = "tests/fixtures/dapr-policy-conformance.yaml";
     private static readonly string[] StableAppIds =
@@ -106,6 +107,7 @@ public sealed class DaprPolicyConformanceTests
         AssertNoSecretMaterial(MtlsPath);
         AssertNoSecretMaterial(PolicyPath);
         AssertNoSecretMaterial(PubSubPath);
+        AssertNoSecretMaterial(SecretStorePath);
         AssertNoSecretMaterial(SidecarBindingsPath);
         AssertNoSecretMaterial(FixturePath);
     }
@@ -232,6 +234,41 @@ public sealed class DaprPolicyConformanceTests
     }
 
     [Fact]
+    public void ProductionSecretStoreArtifactsShouldBeReferenceOnlyAndDenyByDefault()
+    {
+        YamlMappingNode component = LoadSingleYamlDocument(SecretStorePath);
+        component.GetScalar("kind").ShouldBe("Component");
+        component.GetMapping("metadata").GetScalar("name").ShouldBe("folders-provider-credentials");
+        component.GetMapping("metadata").GetScalar("namespace").ShouldBe(ExpectedNamespace);
+
+        YamlMappingNode spec = component.GetMapping("spec");
+        spec.GetScalar("type").ShouldStartWith("secretstores.");
+        spec.GetScalar("version").ShouldBe("v1");
+
+        YamlMappingNode[] configurations = LoadYamlDocuments(PolicyPath);
+        SecretScope[] scopes = [.. configurations.SelectMany(ParseSecretScopes)];
+        scopes.ShouldContain(static scope =>
+            string.Equals(scope.TargetAppId, FoldersAspireModule.FoldersAppId, StringComparison.Ordinal) &&
+            string.Equals(scope.StoreName, "folders-provider-credentials", StringComparison.Ordinal) &&
+            string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal));
+        scopes.ShouldContain(static scope =>
+            string.Equals(scope.TargetAppId, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal) &&
+            string.Equals(scope.StoreName, "folders-provider-credentials", StringComparison.Ordinal) &&
+            string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal));
+
+        scopes.Where(static scope => scope.StoreName is "folders-provider-credentials")
+            .SelectMany(static scope => scope.AllowedSecrets)
+            .Order(StringComparer.Ordinal)
+            .Distinct(StringComparer.Ordinal)
+            .ShouldBe(
+                ["forgejo-user-delegated-ref-synthetic", "github-app-installation-ref-synthetic"],
+                ignoreOrder: true);
+
+        scopes.Where(static scope => string.Equals(scope.StoreName, "kubernetes", StringComparison.Ordinal))
+            .ShouldAllBe(static scope => string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal) && scope.AllowedSecrets.Length == 0);
+    }
+
+    [Fact]
     public void WorkflowAndScriptShouldWireOfflineDaprPolicyConformanceGate()
     {
         string workflow = File.ReadAllText(RepositoryPath(".github/workflows/contract-spine.yml"), Encoding.UTF8);
@@ -314,6 +351,23 @@ public sealed class DaprPolicyConformanceTests
                 return (AppId: parts[0], Topics: topics);
             })
             .ToDictionary(static scope => scope.AppId, static scope => scope.Topics, StringComparer.Ordinal);
+
+    private static IEnumerable<SecretScope> ParseSecretScopes(YamlMappingNode document)
+    {
+        string targetAppId = document.GetMapping("metadata").GetMapping("annotations").GetScalar("hexalith.io/target-app-id");
+        if (!document.GetMapping("spec").TryGetMapping("secrets", out YamlMappingNode? secrets))
+        {
+            return [];
+        }
+
+        return secrets.GetSequence("scopes").Children
+            .Cast<YamlMappingNode>()
+            .Select(scope => new SecretScope(
+                targetAppId,
+                scope.GetScalar("storeName"),
+                scope.GetScalar("defaultAccess"),
+                [.. scope.GetSequence("allowedSecrets").Children.Cast<YamlScalarNode>().Select(static value => value.Value ?? string.Empty)]));
+    }
 
     private static TargetPolicy ParseTargetPolicy(YamlMappingNode document)
     {
@@ -543,6 +597,8 @@ public sealed class DaprPolicyConformanceTests
     private sealed record Operation(string Name, string[] HttpVerbs, string Action);
 
     private sealed record SidecarBinding(string AppId, string Namespace, string Enabled, string ConfigName);
+
+    private sealed record SecretScope(string TargetAppId, string StoreName, string DefaultAccess, string[] AllowedSecrets);
 
     private sealed record AllowRule(
         string Id,

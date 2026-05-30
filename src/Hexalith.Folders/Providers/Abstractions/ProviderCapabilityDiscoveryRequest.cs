@@ -4,6 +4,7 @@ public sealed record ProviderCapabilityDiscoveryRequest(
     string ManagedTenantId,
     string OrganizationId,
     string ProviderBindingRef,
+    string CredentialReferenceId,
     string ProviderFamily,
     string ProviderKey,
     string ProfileSchemaVersion,

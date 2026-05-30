@@ -24,6 +24,16 @@ spec:
           - name: /project
             httpVerb: ["POST"]
             action: allow
+  secrets:
+    scopes:
+      - storeName: folders-provider-credentials
+        defaultAccess: deny
+        allowedSecrets:
+          - github-app-installation-ref-synthetic
+          - forgejo-user-delegated-ref-synthetic
+      - storeName: kubernetes
+        defaultAccess: deny
+        allowedSecrets: []
 ---
 apiVersion: dapr.io/v1alpha1
 kind: Configuration
@@ -38,6 +48,16 @@ spec:
     defaultAction: deny
     trustDomain: "hexalith-production"
     policies: []
+  secrets:
+    scopes:
+      - storeName: folders-provider-credentials
+        defaultAccess: deny
+        allowedSecrets:
+          - github-app-installation-ref-synthetic
+          - forgejo-user-delegated-ref-synthetic
+      - storeName: kubernetes
+        defaultAccess: deny
+        allowedSecrets: []
 ---
 apiVersion: dapr.io/v1alpha1
 kind: Configuration
