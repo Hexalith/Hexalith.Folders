@@ -1,4 +1,18 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(grep -v '^\\\\*\\\\? *main$')",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git rev-list *)",
+      "Bash(git push *)",
+      "Bash(gh auth *)",
+      "Bash(git config *)",
+      "Bash(command -v gh)"
+    ]
+  },
   "hooks": {
     "Stop": [
       {
