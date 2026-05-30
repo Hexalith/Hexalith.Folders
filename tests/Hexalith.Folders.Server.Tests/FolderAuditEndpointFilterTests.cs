@@ -224,6 +224,26 @@ public sealed class FolderAuditEndpointFilterTests
             return ValueTask.CompletedTask;
         }
 
+        public void RecordProjectionLag(long ageMilliseconds, string? stateSource)
+        {
+        }
+
+        public void RecordDeadLetterDepth(string? domain, long depth)
+        {
+        }
+
+        public void RecordProviderFailure(Hexalith.Folders.Providers.Abstractions.ProviderFailureCategory category)
+        {
+        }
+
+        public void RecordStaleLock(string? lockState)
+        {
+        }
+
+        public void RecordCleanupFailure(string? cleanupStatus, string? reasonCode, bool retryEligible)
+        {
+        }
+
         public int Count => _observations.Count;
 
         public FolderAuditObservation Single()

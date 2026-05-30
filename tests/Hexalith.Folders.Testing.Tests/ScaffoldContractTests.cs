@@ -104,7 +104,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client", "Hexalith.FrontComposer.Shell"]);
-        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Tenants"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);

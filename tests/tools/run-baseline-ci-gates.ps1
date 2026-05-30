@@ -28,7 +28,7 @@ $unitTestProjects = @(
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests'
+        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests'
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj'

@@ -1,0 +1,68 @@
+{
+  "gate": "production-observability",
+  "status": "passed",
+  "exit_code": 0,
+  "diagnostic_policy": "metadata-only",
+  "report_path": "_bmad-output/gates/production-observability/latest.json",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "canonical_inputs": [
+    "deploy/observability/production/observability.yaml",
+    "deploy/dapr/production/pubsub.yaml",
+    "src/Hexalith.Folders.ServiceDefaults/Extensions.cs",
+    "src/Hexalith.Folders.ServiceDefaults/MonitoredSnapshotReadinessCheck.cs",
+    "src/Hexalith.Folders/Observability/FolderTelemetryNames.cs",
+    "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+    "docs/exit-criteria/c2-freshness.md",
+    "docs/exit-criteria/c0-c13-governance-evidence.yaml",
+    "docs/operations/production-observability.md"
+  ],
+  "signal_categories": [
+    {
+      "signal": "projection_lag",
+      "severity": "warning",
+      "threshold_source": "docs/exit-criteria/c2-freshness.md",
+      "owning_component": "folders-server"
+    },
+    {
+      "signal": "dead_letter_depth",
+      "severity": "warning",
+      "threshold_source": "architecture-i7",
+      "owning_component": "folders-workers"
+    },
+    {
+      "signal": "provider_failure",
+      "severity": "error",
+      "threshold_source": "architecture-i7",
+      "owning_component": "folders-workers"
+    },
+    {
+      "signal": "stale_lock",
+      "severity": "warning",
+      "threshold_source": "architecture-process-patterns",
+      "owning_component": "folders-server"
+    },
+    {
+      "signal": "cleanup_failure",
+      "severity": "error",
+      "threshold_source": "prd-cleanup-observability",
+      "owning_component": "folders-workers"
+    }
+  ],
+  "exporter_signals": [
+    "traces",
+    "metrics",
+    "logs"
+  ],
+  "health_probes": [
+    "/health/live",
+    "/health/ready"
+  ],
+  "live_exporter_alert_smoke": {
+    "status": "reference_pending_story_7_12",
+    "severity": "warning",
+    "owner": "Release Readiness",
+    "command_shape": "pwsh ./tests/tools/run-production-observability-gates.ps1",
+    "evidence_path": "_bmad-output/gates/production-observability/latest.json",
+    "follow_up_boundary": "metadata-only intent only; no live endpoints, tokens, or backend assertions in CI"
+  }
+}

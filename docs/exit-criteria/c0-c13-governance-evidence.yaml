@@ -44,7 +44,7 @@ criteria:
     status: approved
     artifact_path: docs/exit-criteria/c2-freshness.md
     verification_command: .\tests\tools\run-capacity-calibration-gates.ps1
-    result_summary: C2 pins a 500 millisecond commit-to-status-read freshness target for release evidence; Story 7.12 owns production metric export and alert wiring.
+    result_summary: C2 pins a 500 millisecond commit-to-status-read freshness target for release evidence; Story 7.12 implements the production observability metric export, health endpoints, and alert-rule intent validated by the production-observability conformance gate, without redefining the numeric target.
     open_policy_placeholders: []
   - criterion_id: C3
     title: Retention policy evidence

@@ -1,0 +1,106 @@
+# Sanitized production observability conformance artifact.
+# Deployment tooling supplies OTLP exporter endpoints, headers, and credentials outside this repository.
+# Metadata-only: synthetic/templated placeholders only — no real endpoints, tokens, credentials,
+# production URLs, or vendor account identifiers. This realizes the BDD "Given production observability
+# settings exist" precondition the same way Story 7.1 realized "production Dapr policy YAML exists".
+apiVersion: hexalith.io/observability/v1alpha1
+kind: ProductionObservability
+metadata:
+  name: folders-observability
+  namespace: hexalith-production
+spec:
+  diagnosticPolicy: metadata-only
+  # I-6: OpenTelemetry exporting to OTLP for all three signal families, vendor-neutral via the standard
+  # OTEL_EXPORTER_OTLP_* env seam. Endpoint is a templating sentinel, never a real URL.
+  exporters:
+    protocol: otlp
+    vendorNeutral: true
+    endpointTemplate: OTEL_EXPORTER_OTLP_ENDPOINT
+    headersTemplate: OTEL_EXPORTER_OTLP_HEADERS
+    protocolTemplate: OTEL_EXPORTER_OTLP_PROTOCOL
+    serviceNameTemplate: OTEL_SERVICE_NAME
+    signals:
+      - traces
+      - metrics
+      - logs
+    pluggableBackends:
+      - jaeger
+      - tempo
+      - application-insights
+      - datadog
+  # I-7: liveness/readiness split on each service. Readiness aggregates the monitored snapshots and
+  # reports degraded-but-serving (HTTP 200) when projection lag exceeds the pinned C2 target.
+  healthProbes:
+    - path: /health/live
+      kind: liveness
+      owningComponent: service-defaults
+    - path: /health/ready
+      kind: readiness
+      owningComponent: service-defaults
+      monitoredSnapshots:
+        - dapr_sidecar_health
+        - tenants_availability_degraded_mode
+        - projection_lag
+      degradedButServing: projection lag above C2 reports degraded-but-serving without failing readiness
+  # Per-signal monitored-snapshot intent: signal name, severity (log-level convention), threshold source,
+  # owning component, and bounded metric instrument. Thresholds trace to exit-criteria/architecture, never guesses.
+  signals:
+    - name: projection_lag
+      severity: warning
+      instrument: folders.projection.lag
+      thresholdSource: docs/exit-criteria/c2-freshness.md
+      thresholdMilliseconds: 500
+      owningComponent: folders-server
+      anchor: prd-status-freshness
+    - name: dead_letter_depth
+      severity: warning
+      instrument: folders.deadletter.depth
+      thresholdSource: architecture-i7
+      owningComponent: folders-workers
+      anchor: architecture-i7
+      topics:
+        - deadletter.folders.events
+        - deadletter.organizations.events
+    - name: provider_failure
+      severity: error
+      instrument: folders.provider.failures
+      thresholdSource: architecture-i7
+      owningComponent: folders-workers
+      anchor: provider-failure-known
+    - name: stale_lock
+      severity: warning
+      instrument: folders.lock.stale
+      thresholdSource: architecture-process-patterns
+      owningComponent: folders-server
+      anchor: stale-lock-observable
+      remediation: observe-only
+    - name: cleanup_failure
+      severity: error
+      instrument: folders.cleanup.failures
+      thresholdSource: prd-cleanup-observability
+      owningComponent: folders-workers
+      anchor: prd-cleanup-observability
+      remediation: observe-only
+  # Alert-rule intent only. Live alert firing against a real backend lives outside this repo per the ops
+  # runbook and is reference-pending; declaring intent + feeding instruments satisfies "exported OR alerted".
+  alertRules:
+    - signal: projection_lag
+      severity: warning
+      thresholdSource: docs/exit-criteria/c2-freshness.md
+      liveAlertEvidence: reference_pending_story_7_12
+    - signal: dead_letter_depth
+      severity: warning
+      thresholdSource: architecture-i7
+      liveAlertEvidence: reference_pending_story_7_12
+    - signal: provider_failure
+      severity: error
+      thresholdSource: architecture-i7
+      liveAlertEvidence: reference_pending_story_7_12
+    - signal: stale_lock
+      severity: warning
+      thresholdSource: architecture-process-patterns
+      liveAlertEvidence: reference_pending_story_7_12
+    - signal: cleanup_failure
+      severity: error
+      thresholdSource: prd-cleanup-observability
+      liveAlertEvidence: reference_pending_story_7_12

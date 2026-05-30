@@ -1,7 +1,9 @@
+using System.Diagnostics.Metrics;
 using System.Text.Json;
 
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Observability;
+using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Tests.Aggregates.Folder;
 
 using Microsoft.Extensions.Logging.Abstractions;
@@ -215,12 +217,113 @@ public sealed class FolderAuditObservationTests
             FolderTelemetryNames.TaskPresentTag,
             FolderTelemetryNames.TenantPresentTag,
             FolderTelemetryNames.ActorReferencePresentTag,
+
+            // Story 7.12 operational-signal tags: bounded categories, severities, and presence booleans only.
+            FolderTelemetryNames.SignalTag,
+            FolderTelemetryNames.SeverityTag,
+            FolderTelemetryNames.StateSourceTag,
+            FolderTelemetryNames.ThresholdExceededTag,
+            FolderTelemetryNames.DomainTag,
+            FolderTelemetryNames.ProviderFailureCategoryTag,
+            FolderTelemetryNames.LockStateTag,
+            FolderTelemetryNames.CleanupStatusTag,
+            FolderTelemetryNames.ReasonCodeTag,
+            FolderTelemetryNames.RetryEligibleTag,
         ];
 
         foreach (string rawIdentifierTag in rawIdentifierTags)
         {
             stableTags.ShouldNotContain(rawIdentifierTag);
         }
+    }
+
+    [Fact]
+    public void OperationalSignalInstrumentsShouldEmitBoundedLowCardinalityTags()
+    {
+        List<KeyValuePair<string, object?>> captured = CaptureOperationalSignalTags(emitter =>
+        {
+            emitter.RecordProjectionLag(900, "status");
+            emitter.RecordDeadLetterDepth("folders", 4);
+            emitter.RecordProviderFailure(ProviderFailureCategory.ProviderUnavailable);
+            emitter.RecordStaleLock("lock_expired");
+            emitter.RecordCleanupFailure("cleanup_failed", "retry_exhausted", true);
+        });
+
+        captured.ShouldNotBeEmpty();
+
+        captured.Where(tag => tag.Key == FolderTelemetryNames.SignalTag).Select(tag => (string?)tag.Value)
+            .ShouldBe(
+                [
+                    FolderTelemetryNames.ProjectionLagSignal,
+                    FolderTelemetryNames.DeadLetterDepthSignal,
+                    FolderTelemetryNames.ProviderFailureSignal,
+                    FolderTelemetryNames.StaleLockSignal,
+                    FolderTelemetryNames.CleanupFailureSignal,
+                ],
+                ignoreOrder: true);
+
+        // Projection lag of 900 ms exceeds the pinned C2 500 ms target.
+        captured.Single(tag => tag.Key == FolderTelemetryNames.ThresholdExceededTag).Value.ShouldBe(true);
+        captured.Single(tag => tag.Key == FolderTelemetryNames.DomainTag).Value.ShouldBe("folders");
+        captured.Single(tag => tag.Key == FolderTelemetryNames.ProviderFailureCategoryTag).Value
+            .ShouldBe(ProviderFailureCategory.ProviderUnavailable.ToCategoryCode());
+
+        // Every severity stays inside the bounded log-level convention vocabulary.
+        captured.Where(tag => tag.Key == FolderTelemetryNames.SeverityTag).Select(tag => (string?)tag.Value)
+            .ShouldAllBe(severity => severity == FolderTelemetryNames.SeverityWarning || severity == FolderTelemetryNames.SeverityError);
+    }
+
+    [Theory]
+    [MemberData(nameof(ForbiddenSentinelValues))]
+    public void OperationalSignalTagsShouldNotLeakForbiddenSentinels(string sentinel)
+    {
+        List<KeyValuePair<string, object?>> captured = CaptureOperationalSignalTags(emitter =>
+        {
+            emitter.RecordProjectionLag(900, sentinel);
+            emitter.RecordDeadLetterDepth(sentinel, 5);
+            emitter.RecordStaleLock(sentinel);
+            emitter.RecordCleanupFailure(sentinel, sentinel, false);
+        });
+
+        captured.ShouldNotBeEmpty();
+        foreach (KeyValuePair<string, object?> tag in captured)
+        {
+            (tag.Value as string ?? string.Empty).ShouldNotContain(sentinel, Case.Sensitive);
+        }
+    }
+
+    private static List<KeyValuePair<string, object?>> CaptureOperationalSignalTags(Action<FolderTelemetryEmitter> record)
+    {
+        List<KeyValuePair<string, object?>> captured = [];
+        void Capture(ReadOnlySpan<KeyValuePair<string, object?>> tags)
+        {
+            foreach (KeyValuePair<string, object?> tag in tags)
+            {
+                captured.Add(tag);
+            }
+        }
+
+        using MeterListener listener = new()
+        {
+            InstrumentPublished = static (instrument, activeListener) =>
+            {
+                if (string.Equals(instrument.Meter.Name, FolderTelemetryNames.MeterName, StringComparison.Ordinal))
+                {
+                    activeListener.EnableMeasurementEvents(instrument);
+                }
+            },
+        };
+        listener.SetMeasurementEventCallback<long>((_, _, tags, _) => Capture(tags));
+        listener.SetMeasurementEventCallback<double>((_, _, tags, _) => Capture(tags));
+
+        // Force instrument publication before Start so the listener enumerates the operational-signal instruments.
+        FolderTelemetryEmitter emitter = new([], NullLogger<FolderTelemetryEmitter>.Instance);
+        listener.Start();
+
+        record(emitter);
+
+        listener.Dispose();
+        return captured;
     }
 
     [Fact]

@@ -25,4 +25,6 @@ Governance and release-package gates must fail if C2 points only to Story 7.12, 
 
 ## Deferred implementation
 
-This document does not implement production metric export, alert routing, audit-view SLO dashboards, live endpoints, provider credentials, Aspire, Dapr, Redis, Docker, Testcontainers, or tenant seed data.
+Story 7.12 now implements the repository-local production observability intent for this target: the OpenTelemetry projection-lag metric instrument (`folders.projection.lag`), the `/health/ready` degraded-but-serving disposition keyed to the 500 millisecond C2 ceiling, and the sanitized exporter/health/alert-rule intent under `deploy/observability/production/`, validated by `pwsh ./tests/tools/run-production-observability-gates.ps1`. It reuses — and does not redefine — the 500 millisecond C2 target.
+
+This document still does not implement live alert routing, audit-view SLO dashboards, live endpoints, provider credentials, Aspire, Dapr, Redis, Docker, Testcontainers, or tenant seed data. Live exporter/alert firing against a real backend remains reference-pending outside this repository per the operations runbook.

@@ -162,14 +162,15 @@
       "owning_story": "4-14-emit-metadata-only-audit-and-observability",
       "artifact_sources": [
         "src/Hexalith.Folders/Observability/FolderTelemetryEmitter.cs",
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs",
         "tests/Hexalith.Folders.Server.Tests/FolderAuditEndpointFilterTests.cs"
       ],
       "prerequisite_status": "covered",
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
-      "coverage_notes": "Story 4.14 structured logging emits metadata-only operation kind, result, category, correlation reference, task reference, and redaction state through named placeholders only.",
-      "last_evaluated_at": "2026-05-27"
+      "coverage_notes": "Story 4.14 structured logging emits metadata-only operation kind, result, category, correlation reference, task reference, and redaction state through named placeholders only; Story 7.12 re-evaluated the source after wiring the OpenTelemetry logs OTLP exporter and the new operational-signal instruments.",
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "traces",
@@ -184,7 +185,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 registers a folders-owned ActivitySource and emits low-cardinality trace attributes for operation/result/category/redaction and presence flags.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "span-names",
@@ -197,7 +198,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 span names are stable constants and exclude tenant, folder, file, commit, provider, path, token, and payload values.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "metric-names",
@@ -209,8 +210,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
-      "coverage_notes": "Story 4.14 metric names are stable folders-owned constants and do not encode request identifiers or sensitive values.",
-      "last_evaluated_at": "2026-05-27"
+      "coverage_notes": "Story 4.14 metric names are stable folders-owned constants and do not encode request identifiers or sensitive values; Story 7.12 added bounded operational-signal instrument names (projection lag, dead-letter depth, provider failure, stale lock, cleanup failure) as further stable constants.",
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "event-names",
@@ -224,7 +225,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 event-like audit operation/result vocabulary is bounded by enums rather than caller-provided names.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "counters",
@@ -237,8 +238,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
-      "coverage_notes": "Story 4.14 counters and histograms use low-cardinality operation/result/category/redaction labels only.",
-      "last_evaluated_at": "2026-05-27"
+      "coverage_notes": "Story 4.14 counters and histograms use low-cardinality operation/result/category/redaction labels only; Story 7.12 operational-signal counters/histograms add only bounded signal/severity/category labels and presence booleans.",
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "exception-metadata",
@@ -252,7 +253,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 exception paths emit a redacted category/result without exception message or stack content.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "baggage",
@@ -265,7 +266,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 telemetry does not write baggage; the emitter source is scanned to keep that absence deterministic.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "metric-labels",
@@ -279,8 +280,8 @@
       "diagnostic": "covered",
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
-      "coverage_notes": "Story 4.14 metric labels are limited to operation kind, result, category, and redaction state.",
-      "last_evaluated_at": "2026-05-27"
+      "coverage_notes": "Story 4.14 metric labels are limited to operation kind, result, category, and redaction state; Story 7.12 operational-signal labels add only bounded signal, severity, domain, provider-failure category, lock state, cleanup status, reason code, and presence booleans routed through the sanitizer.",
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "telemetry-attributes",
@@ -296,7 +297,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 trace attributes use stable low-cardinality tags and presence booleans rather than raw scoped identifiers.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "events",
@@ -311,7 +312,7 @@
       "scan_forbidden_values": true,
       "safe_absence_diagnostic": "covered",
       "coverage_notes": "Story 4.14 runtime audit observations provide bounded metadata-only operation evidence without domain event duplication.",
-      "last_evaluated_at": "2026-05-27"
+      "last_evaluated_at": "2026-05-30"
     },
     {
       "channel": "audit-records",
