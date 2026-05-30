@@ -368,9 +368,9 @@ public sealed class ProviderReadinessValidationServiceTests
         ProviderReadinessValidationResult result = await service.ValidateAsync(
             Request(claimTransformEvidence: EventStoreClaimTransformEvidence.Allowed("system", "user-a", [ProviderReadinessValidationService.ReadActionToken]))
                 with
-                {
-                    AuthoritativeTenantId = "system",
-                },
+            {
+                AuthoritativeTenantId = "system",
+            },
             TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(ProviderReadinessResultCode.AuthorizationDenied);

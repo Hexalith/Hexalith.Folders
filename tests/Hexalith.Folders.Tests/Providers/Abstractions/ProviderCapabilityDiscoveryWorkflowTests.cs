@@ -20,14 +20,14 @@ public sealed class ProviderCapabilityDiscoveryWorkflowTests
             correlationId: "correlation-profile-shape",
             targetEvidence: ProviderCapabilityTestData.TargetEvidence(productVersion: " 3.13.0 "))
             with
-            {
-                CredentialModeRequirements =
+        {
+            CredentialModeRequirements =
                 [
                     ProviderCredentialMode.UserDelegatedReference,
                     ProviderCredentialMode.AppInstallationReference,
                     ProviderCredentialMode.UserDelegatedReference,
                 ],
-            };
+        };
 
         ProviderCapabilityDiscoveryResult result = await service.DiscoverCapabilitiesAsync(
             request,

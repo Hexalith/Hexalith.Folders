@@ -1,0 +1,43 @@
+name: baseline-ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - next
+      - alpha
+      - beta
+
+permissions:
+  contents: read
+
+jobs:
+  baseline-build-and-unit-gates:
+    name: baseline-build-and-unit-gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Run restore, build, format, lint, and unit-tests
+        shell: pwsh
+        timeout-minutes: 25
+        run: ./tests/tools/run-baseline-ci-gates.ps1

@@ -54,128 +54,128 @@ public sealed class NoMutationConsoleSweepTests
         switch (page)
         {
             case "home":
-            {
-                using BunitContext ctx = BadgeRenderingFixture.Create();
-                ConsoleSweepFixtures.AddDevelopmentHostEnvironment(ctx);
-                AssertReadOnly(ctx.Render<Home>(), "console-page-home-root");
-                break;
-            }
+                {
+                    using BunitContext ctx = BadgeRenderingFixture.Create();
+                    ConsoleSweepFixtures.AddDevelopmentHostEnvironment(ctx);
+                    AssertReadOnly(ctx.Render<Home>(), "console-page-home-root");
+                    break;
+                }
 
             case "tenants":
-            {
-                using BunitContext ctx = BadgeRenderingFixture.Create();
-                AssertReadOnly(ctx.Render<Tenants>(), "console-page-tenants-root");
-                break;
-            }
+                {
+                    using BunitContext ctx = BadgeRenderingFixture.Create();
+                    AssertReadOnly(ctx.Render<Tenants>(), "console-page-tenants-root");
+                    break;
+                }
 
             case "folders":
-            {
-                (BunitContext ctx, _, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                AssertReadOnly(ctx.Render<FoldersPage>(), "console-page-folders-root");
-                break;
-            }
+                {
+                    (BunitContext ctx, _, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    AssertReadOnly(ctx.Render<FoldersPage>(), "console-page-folders-root");
+                    break;
+                }
 
             case "folder-detail":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubFolderDetail(client);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<FolderDetail>(p => p.Add(d => d.FolderId, ConsoleSweepFixtures.FolderId)),
-                    "console-page-folder-detail-root",
-                    "console-page-folder-detail-identity");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubFolderDetail(client);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<FolderDetail>(p => p.Add(d => d.FolderId, ConsoleSweepFixtures.FolderId)),
+                        "console-page-folder-detail-root",
+                        "console-page-folder-detail-identity");
+                    break;
+                }
 
             case "workspace":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubWorkspace(client);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<Workspace>(p => p
-                        .Add(w => w.FolderId, ConsoleSweepFixtures.FolderId)
-                        .Add(w => w.WorkspaceId, ConsoleSweepFixtures.WorkspaceId)),
-                    "console-page-workspace-root",
-                    "workspace-trust-summary");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubWorkspace(client);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<Workspace>(p => p
+                            .Add(w => w.FolderId, ConsoleSweepFixtures.FolderId)
+                            .Add(w => w.WorkspaceId, ConsoleSweepFixtures.WorkspaceId)),
+                        "console-page-workspace-root",
+                        "workspace-trust-summary");
+                    break;
+                }
 
             case "audit-trail":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubAuditTrail(client);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<AuditTrail>(p => p.Add(c => c.FolderId, ConsoleSweepFixtures.FolderId)),
-                    "console-page-audit-trail-root",
-                    "console-page-audit-trail-table");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubAuditTrail(client);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<AuditTrail>(p => p.Add(c => c.FolderId, ConsoleSweepFixtures.FolderId)),
+                        "console-page-audit-trail-root",
+                        "console-page-audit-trail-table");
+                    break;
+                }
 
             case "operation-timeline":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubOperationTimeline(client);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<OperationTimeline>(p => p.Add(c => c.FolderId, ConsoleSweepFixtures.FolderId)),
-                    "console-page-operation-timeline-root",
-                    "console-page-operation-timeline-table");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubOperationTimeline(client);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<OperationTimeline>(p => p.Add(c => c.FolderId, ConsoleSweepFixtures.FolderId)),
+                        "console-page-operation-timeline-root",
+                        "console-page-operation-timeline-table");
+                    break;
+                }
 
             case "provider":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubProvider(client);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<Provider>(p => p.Add(c => c.FolderId, ConsoleSweepFixtures.FolderId)),
-                    "console-page-provider-root",
-                    "console-page-provider-section-identity");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubProvider(client);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<Provider>(p => p.Add(c => c.FolderId, ConsoleSweepFixtures.FolderId)),
+                        "console-page-provider-root",
+                        "console-page-provider-section-identity");
+                    break;
+                }
 
             case "provider-support":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubProviderSupport(client);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<ProviderSupport>(),
-                    "console-page-provider-support-root",
-                    "console-page-provider-support-matrix");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubProviderSupport(client);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<ProviderSupport>(),
+                        "console-page-provider-support-root",
+                        "console-page-provider-support-matrix");
+                    break;
+                }
 
             case "incident-stream":
-            {
-                (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
-                using BunitContext _ctx = ctx;
-                ConsoleSweepFixtures.StubIncidentStream(client);
-                ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(ConsoleSweepFixtures.IncidentStreamRoute);
-                AssertReadOnlyWhenPopulated(
-                    ctx.Render<IncidentStream>(),
-                    "console-page-incident-stream-root",
-                    "console-page-incident-stream-table");
-                break;
-            }
+                {
+                    (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+                    using BunitContext _ctx = ctx;
+                    ConsoleSweepFixtures.StubIncidentStream(client);
+                    ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(ConsoleSweepFixtures.IncidentStreamRoute);
+                    AssertReadOnlyWhenPopulated(
+                        ctx.Render<IncidentStream>(),
+                        "console-page-incident-stream-root",
+                        "console-page-incident-stream-table");
+                    break;
+                }
 
             case "redaction-gallery":
-            {
-                using BunitContext ctx = BadgeRenderingFixture.Create();
-                AssertReadOnly(ctx.Render<RedactionGallery>(), "console-page-redaction-gallery-root");
-                break;
-            }
+                {
+                    using BunitContext ctx = BadgeRenderingFixture.Create();
+                    AssertReadOnly(ctx.Render<RedactionGallery>(), "console-page-redaction-gallery-root");
+                    break;
+                }
 
             case "state-label-gallery":
-            {
-                using BunitContext ctx = BadgeRenderingFixture.Create();
-                AssertReadOnly(ctx.Render<StateLabelGallery>(), "console-page-state-label-gallery-root");
-                break;
-            }
+                {
+                    using BunitContext ctx = BadgeRenderingFixture.Create();
+                    AssertReadOnly(ctx.Render<StateLabelGallery>(), "console-page-state-label-gallery-root");
+                    break;
+                }
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(page), page, "Unknown console page key.");

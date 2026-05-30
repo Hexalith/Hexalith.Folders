@@ -7,11 +7,11 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 public sealed class TenantFolderProviderContractGroupTests
 {
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
-    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
-    private static readonly string ExtensionVocabularyPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "extensions", "hexalith-extension-vocabulary.yaml");
+    private static readonly string _repositoryRootPath = FindRepositoryRoot();
+    private static readonly string _openApiFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string _extensionVocabularyFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "extensions", "hexalith-extension-vocabulary.yaml");
 
-    private static readonly string[] OperationAllowList =
+    private static readonly string[] _allowedOperationIds =
     [
         "CreateFolder",
         "GetFolderLifecycleStatus",
@@ -65,7 +65,7 @@ public sealed class TenantFolderProviderContractGroupTests
     // POST/PUT/PATCH/DELETE operations are mutating by default. Anything in this allow-list
     // is a documented exception (e.g. POST-as-query for ValidateProviderReadiness — see
     // docs/contract/tenant-folder-provider-repository-contract-groups.md#POST-as-query-Exception).
-    private static readonly string[] NonMutatingMethodPostAllowList =
+    private static readonly string[] _nonMutatingPostOperationIds =
     [
         "ValidateProviderReadiness",
         "GetFolderFileMetadata",
@@ -77,10 +77,10 @@ public sealed class TenantFolderProviderContractGroupTests
     [Fact]
     public void ContractGroupOperations_MatchStoryAllowListAndResolveRefs()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         Operation[] operations = EnumerateOperations(root).ToArray();
 
-        operations.Select(o => o.OperationId).Order(StringComparer.Ordinal).ShouldBe(OperationAllowList.Order(StringComparer.Ordinal));
+        operations.Select(o => o.OperationId).Order(StringComparer.Ordinal).ShouldBe(_allowedOperationIds.Order(StringComparer.Ordinal));
         operations.Select(o => o.Path).Distinct(StringComparer.Ordinal).All(p => p.StartsWith("/api/v1/", StringComparison.Ordinal)).ShouldBeTrue();
         operations.Select(o => o.OperationId).ShouldBeUnique();
 
@@ -111,8 +111,8 @@ public sealed class TenantFolderProviderContractGroupTests
     [Fact]
     public void ContractGroupOperations_DeclareRequiredMetadataAndIdempotencyRules()
     {
-        Operation[] operations = EnumerateOperations(LoadYamlMapping(OpenApiPath)).ToArray();
-        HashSet<string> nonMutatingPostAllowList = NonMutatingMethodPostAllowList.ToHashSet(StringComparer.Ordinal);
+        Operation[] operations = EnumerateOperations(LoadYamlMapping(_openApiFilePath)).ToArray();
+        HashSet<string> nonMutatingPostAllowList = _nonMutatingPostOperationIds.ToHashSet(StringComparer.Ordinal);
 
         foreach (Operation operation in operations)
         {
@@ -152,8 +152,8 @@ public sealed class TenantFolderProviderContractGroupTests
     [Fact]
     public void ContractGroupOperations_DoNotExposeTenantAuthorityOrSecretMaterial()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
-        string serialized = File.ReadAllText(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        string serialized = File.ReadAllText(_openApiFilePath);
 
         foreach (string named in EnumerateNamedFields(root))
         {
@@ -212,7 +212,7 @@ public sealed class TenantFolderProviderContractGroupTests
     [Fact]
     public void CreateRepositoryBackedFolder_TargetsExistingFolderAndKeepsIdempotencyScoped()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         Operation operation = EnumerateOperations(root).Single(o => o.OperationId == "CreateRepositoryBackedFolder");
         YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
         YamlMappingNode request = RequiredMapping(schemas, "CreateRepositoryBackedFolderRequest");
@@ -244,7 +244,7 @@ public sealed class TenantFolderProviderContractGroupTests
     [Fact]
     public void ContractGroupOperations_SafeDenialExamplesMatchTheirHttpStatusAndAreAudiencePartitioned()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
         // Each canonical safe-denial example must declare a `status:` that matches the HTTP status
@@ -314,10 +314,10 @@ public sealed class TenantFolderProviderContractGroupTests
     {
         string[] forbiddenRoots =
         [
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Cli", "Commands"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Mcp", "Tools"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.UI", "Pages"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Workers", "Providers"),
+            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Cli", "Commands"),
+            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Mcp", "Tools"),
+            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.UI", "Pages"),
+            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Workers", "Providers"),
         ];
 
         foreach (string forbiddenRoot in forbiddenRoots)
@@ -325,14 +325,14 @@ public sealed class TenantFolderProviderContractGroupTests
             Directory.Exists(forbiddenRoot).ShouldBeFalse($"Story 1.7 must not add downstream artifacts at {forbiddenRoot}.");
         }
 
-        string githubRoot = Path.Combine(RepositoryRoot, ".github");
+        string githubRoot = Path.Combine(_repositoryRootPath, ".github");
         if (Directory.Exists(githubRoot))
         {
             string[] workflowFiles = Directory.EnumerateFiles(githubRoot, "*.yml", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(githubRoot, "*.yaml", SearchOption.AllDirectories))
                 .ToArray();
             workflowFiles
-                .Select(file => Path.GetRelativePath(RepositoryRoot, file).Replace("\\", "/", StringComparison.Ordinal))
+                .Select(file => Path.GetRelativePath(_repositoryRootPath, file).Replace("\\", "/", StringComparison.Ordinal))
                 .Where(file => !string.Equals(file, ".github/workflows/contract-spine.yml", StringComparison.Ordinal))
                 .ToArray()
                 .ShouldBeEmpty("Story 1.7 must not add CI gates; Story 1.14 owns the focused contract-spine workflow.");
@@ -436,13 +436,13 @@ public sealed class TenantFolderProviderContractGroupTests
         // We load it separately and confirm every external pointer of the form
         // "../hexalith.folders.v1.yaml#/components/schemas/<X>" actually resolves in the spine,
         // while intra-file pointers resolve within the extension file itself.
-        if (!File.Exists(ExtensionVocabularyPath))
+        if (!File.Exists(_extensionVocabularyFilePath))
         {
             return;
         }
 
-        YamlMappingNode spine = LoadYamlMapping(OpenApiPath);
-        YamlMappingNode extensions = LoadYamlMapping(ExtensionVocabularyPath);
+        YamlMappingNode spine = LoadYamlMapping(_openApiFilePath);
+        YamlMappingNode extensions = LoadYamlMapping(_extensionVocabularyFilePath);
 
         foreach (string reference in EnumerateRefs(extensions))
         {

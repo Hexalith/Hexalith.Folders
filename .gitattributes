@@ -1,5 +1,9 @@
 * text=auto
 
+# C# source is kept LF to match the repository's Linux CI checkout and the
+# dotnet format baseline gate.
+*.cs text eol=lf
+
 # Story 1.13 (C13 parity oracle) requires byte-stable LF output for fixtures the
 # generator emits. Force LF on checkout so the committed-vs-generated equality
 # assertion in ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly

@@ -7,11 +7,11 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 public sealed class WorkspaceLockContractGroupTests
 {
-    private static readonly string RepositoryRoot = FindRepositoryRoot();
-    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
-    private static readonly string ContractNotesPath = Path.Combine(RepositoryRoot, "docs", "contract", "workspace-lock-contract-groups.md");
+    private static readonly string _repositoryRootPath = FindRepositoryRoot();
+    private static readonly string _openApiFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string _contractNotesFilePath = Path.Combine(_repositoryRootPath, "docs", "contract", "workspace-lock-contract-groups.md");
 
-    private static readonly string[] WorkspaceLockOperationIds =
+    private static readonly string[] _workspaceLockOperationIdList =
     [
         "PrepareWorkspace",
         "LockWorkspace",
@@ -21,7 +21,7 @@ public sealed class WorkspaceLockContractGroupTests
         "GetWorkspaceTransitionEvidence",
     ];
 
-    private static readonly string[] MutatingOperationIds =
+    private static readonly string[] _mutatingOperationIdList =
     [
         "PrepareWorkspace",
         "LockWorkspace",
@@ -31,11 +31,11 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_MatchStoryAllowListAndResolveRefs()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
-        Operation[] operations = EnumerateOperations(root).Where(o => WorkspaceLockOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        Operation[] operations = EnumerateOperations(root).Where(o => _workspaceLockOperationIdList.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
 
         HashSet<string> actual = operations.Select(o => o.OperationId).ToHashSet(StringComparer.Ordinal);
-        HashSet<string> expected = WorkspaceLockOperationIds.ToHashSet(StringComparer.Ordinal);
+        HashSet<string> expected = _workspaceLockOperationIdList.ToHashSet(StringComparer.Ordinal);
         actual.SetEquals(expected).ShouldBeTrue($"workspace/lock operation allow-list drift. Expected {string.Join(", ", expected)}, found {string.Join(", ", actual)}.");
         operations.Select(o => o.OperationId).ShouldBeUnique();
         operations.Select(o => o.Path).All(p => p.StartsWith("/api/v1/folders/{folderId}/workspaces", StringComparison.Ordinal)).ShouldBeTrue();
@@ -63,9 +63,9 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_DeclareRequiredMetadataAndIdempotencyRules()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
-        Operation[] operations = EnumerateOperations(root).Where(o => WorkspaceLockOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
-        HashSet<string> mutating = MutatingOperationIds.ToHashSet(StringComparer.Ordinal);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
+        Operation[] operations = EnumerateOperations(root).Where(o => _workspaceLockOperationIdList.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
+        HashSet<string> mutating = _mutatingOperationIdList.ToHashSet(StringComparer.Ordinal);
 
         foreach (Operation operation in operations)
         {
@@ -112,7 +112,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_ExposeC6LeaseRetryAndSafeProblemDetails()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
@@ -151,8 +151,8 @@ public sealed class WorkspaceLockContractGroupTests
             examples.Children.ContainsKey(new YamlScalarNode(exampleName)).ShouldBeTrue(exampleName);
         }
 
-        Operation[] operations = EnumerateOperations(root).Where(o => WorkspaceLockOperationIds.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
-        HashSet<string> mutating = MutatingOperationIds.ToHashSet(StringComparer.Ordinal);
+        Operation[] operations = EnumerateOperations(root).Where(o => _workspaceLockOperationIdList.Contains(o.OperationId, StringComparer.Ordinal)).ToArray();
+        HashSet<string> mutating = _mutatingOperationIdList.ToHashSet(StringComparer.Ordinal);
         foreach (Operation operation in operations)
         {
             string[] categories = RequiredSequence(operation.Node, "x-hexalith-canonical-error-categories")
@@ -188,10 +188,10 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOperations_DoNotExposeTenantAuthoritySecretMaterialOrForbiddenScope()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
-        string serialized = File.ReadAllText(OpenApiPath);
-        string notes = File.ReadAllText(ContractNotesPath);
+        string serialized = File.ReadAllText(_openApiFilePath);
+        string notes = File.ReadAllText(_contractNotesFilePath);
         string combined = string.Concat(serialized, "\n", notes);
 
         foreach (string named in EnumerateNamedFields(root))
@@ -254,7 +254,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockSafeDenialEnvelopes_AreExternallyIndistinguishable()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
         // 403 and 404 must be byte-identical so callers cannot distinguish absent-from-forbidden,
@@ -290,7 +290,7 @@ public sealed class WorkspaceLockContractGroupTests
     [Fact]
     public void WorkspaceLockOwnershipProof_NeverAppearsInUnauthorizedOrLeakyProblemDetails()
     {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        YamlMappingNode root = LoadYamlMapping(_openApiFilePath);
         YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
 
         YamlMappingNode releaseRequest = RequiredMapping(examples, "ReleaseWorkspaceLockRequest");
