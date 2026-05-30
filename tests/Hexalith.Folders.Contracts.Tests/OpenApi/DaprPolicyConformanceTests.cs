@@ -15,9 +15,14 @@ public sealed class DaprPolicyConformanceTests
 {
     private const string ExpectedDenyOutcome = "403";
     private const string ExpectedTrustDomain = "hexalith-production";
+    private const string ExpectedTrustDomainTemplate = "DAPR_TRUST_DOMAIN";
     private const string ExpectedNamespace = "hexalith-production";
+    private const string ExpectedDaprSystemNamespace = "dapr-system";
+    private const string ExpectedTenantEventsTopic = "system.tenants.events";
     private const string PolicyPath = "deploy/dapr/production/accesscontrol.yaml";
     private const string MtlsPath = "deploy/dapr/production/daprsystem.yaml";
+    private const string PubSubPath = "deploy/dapr/production/pubsub.yaml";
+    private const string SidecarBindingsPath = "deploy/dapr/production/sidecar-config-bindings.yaml";
     private const string FixturePath = "tests/fixtures/dapr-policy-conformance.yaml";
     private static readonly string[] StableAppIds =
     [
@@ -46,8 +51,28 @@ public sealed class DaprPolicyConformanceTests
             target.CallerPolicies.ShouldAllBe(static p => string.Equals(p.Namespace, ExpectedNamespace, StringComparison.Ordinal));
             target.CallerPolicies.Select(static p => p.SourceAppId).ShouldAllBe(appId => StableAppIds.Contains(appId, StringComparer.Ordinal));
             target.CallerPolicies.SelectMany(static p => p.Operations).ShouldAllBe(static o => string.Equals(o.Action, "allow", StringComparison.Ordinal));
+            // Wildcards are categorically forbidden in production allow rules; there is intentionally no
+            // exception/justification path. A future bounded-wildcard need requires a deliberate, reviewed
+            // change to this test rather than a fixture-level opt-out.
             target.CallerPolicies.SelectMany(static p => p.Operations).ShouldAllBe(static o => !o.Name.Contains('*', StringComparison.Ordinal));
             target.CallerPolicies.SelectMany(static p => p.Operations).SelectMany(static o => o.HttpVerbs).ShouldAllBe(static verb => !string.Equals(verb, "*", StringComparison.Ordinal));
+
+            // An allow operation with no httpVerb constraint applies to ALL verbs in Dapr (an effective wildcard
+            // broader than the intended verb list); fail closed on an empty or blank verb list.
+            target.CallerPolicies.SelectMany(static p => p.Operations)
+                .ShouldAllBe(static o => o.HttpVerbs.Length > 0 && o.HttpVerbs.All(static v => !string.IsNullOrWhiteSpace(v)));
+
+            // Fail closed on duplicate operations within a caller policy (same operation name + verb-set twice).
+            foreach (CallerPolicy callerPolicy in target.CallerPolicies)
+            {
+                callerPolicy.Operations
+                    .Select(static o => $"{o.Name}|{string.Join(',', o.HttpVerbs.Order(StringComparer.Ordinal))}")
+                    .ShouldBeUnique();
+            }
+
+            // The trust-domain-template annotation marks the deployment-templating seam; assert the sentinel
+            // placeholder so it cannot silently rot or ship as a real trust-domain value.
+            target.TrustDomainTemplate.ShouldBe(ExpectedTrustDomainTemplate);
         }
 
         string semanticHash = ComputeSemanticHash(policy);
@@ -68,14 +93,26 @@ public sealed class DaprPolicyConformanceTests
 
         document.GetScalar("kind").ShouldBe("Configuration");
         YamlMappingNode metadata = document.GetMapping("metadata");
-        metadata.GetScalar("namespace").ShouldBe(ExpectedNamespace);
+        metadata.GetScalar("name").ShouldBe("daprsystem");
+        metadata.GetScalar("namespace").ShouldBe(ExpectedDaprSystemNamespace);
 
         YamlMappingNode mtls = document.GetMapping("spec").GetMapping("mtls");
         mtls.GetBool("enabled").ShouldBeTrue();
         mtls.GetScalar("workloadCertTTL").ShouldNotBeNullOrWhiteSpace();
         mtls.GetScalar("allowedClockSkew").ShouldNotBeNullOrWhiteSpace();
 
-        string yaml = File.ReadAllText(RepositoryPath(MtlsPath), Encoding.UTF8);
+        // The mTLS evidence plus the access-control policy and the conformance fixture are all declared
+        // sanitized, non-secret artifacts; scan every canonical input for secret-shaped material, not just one.
+        AssertNoSecretMaterial(MtlsPath);
+        AssertNoSecretMaterial(PolicyPath);
+        AssertNoSecretMaterial(PubSubPath);
+        AssertNoSecretMaterial(SidecarBindingsPath);
+        AssertNoSecretMaterial(FixturePath);
+    }
+
+    private static void AssertNoSecretMaterial(string relativePath)
+    {
+        string yaml = File.ReadAllText(RepositoryPath(relativePath), Encoding.UTF8);
         yaml.ShouldNotContain("BEGIN CERTIFICATE", Case.Insensitive);
         yaml.ShouldNotContain("token", Case.Insensitive);
         yaml.ShouldNotContain("password", Case.Insensitive);
@@ -139,6 +176,81 @@ public sealed class DaprPolicyConformanceTests
         document.GetMapping("spec").GetMapping("accessControl").GetScalar("defaultAction").ShouldBe("allow");
     }
 
+    [Fact]
+    public void ProductionSidecarBindingsShouldAttachEveryAppToItsAccessControlConfiguration()
+    {
+        YamlMappingNode[] documents = LoadYamlDocuments(SidecarBindingsPath);
+        documents.Length.ShouldBe(StableAppIds.Length);
+
+        SidecarBinding[] bindings = [.. documents.Select(ParseSidecarBinding)];
+        bindings.Select(static b => b.AppId).Order(StringComparer.Ordinal).ShouldBe(StableAppIds.Order(StringComparer.Ordinal));
+
+        foreach (SidecarBinding binding in bindings)
+        {
+            binding.Namespace.ShouldBe(ExpectedNamespace);
+            binding.Enabled.ShouldBe("true");
+            binding.ConfigName.ShouldBe(AccessControlConfigName(binding.AppId));
+        }
+    }
+
+    [Fact]
+    public void ProductionPubSubComponentShouldConstrainTenantEventTopicScopes()
+    {
+        YamlMappingNode component = LoadSingleYamlDocument(PubSubPath);
+
+        component.GetScalar("kind").ShouldBe("Component");
+        YamlMappingNode metadata = component.GetMapping("metadata");
+        metadata.GetScalar("name").ShouldBe(FoldersAspireModule.PubSubComponentName);
+        metadata.GetScalar("namespace").ShouldBe(ExpectedNamespace);
+
+        YamlMappingNode spec = component.GetMapping("spec");
+        spec.GetScalar("type").ShouldBe("pubsub.redis");
+        spec.GetScalar("version").ShouldBe("v1");
+
+        IReadOnlyDictionary<string, string> componentMetadata = ParseComponentMetadata(spec.GetSequence("metadata"));
+        componentMetadata["protectedTopics"].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ShouldContain(ExpectedTenantEventsTopic);
+
+        IReadOnlyDictionary<string, string[]> publishingScopes = ParseTopicScopes(componentMetadata["publishingScopes"]);
+        IReadOnlyDictionary<string, string[]> subscriptionScopes = ParseTopicScopes(componentMetadata["subscriptionScopes"]);
+
+        publishingScopes.Keys.Order(StringComparer.Ordinal).ShouldBe(StableAppIds.Order(StringComparer.Ordinal));
+        subscriptionScopes.Keys.Order(StringComparer.Ordinal).ShouldBe(StableAppIds.Order(StringComparer.Ordinal));
+
+        publishingScopes[FoldersAspireModule.TenantsAppId].ShouldBe([ExpectedTenantEventsTopic]);
+        subscriptionScopes[FoldersAspireModule.FoldersAppId].ShouldBe([ExpectedTenantEventsTopic]);
+        subscriptionScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBe([ExpectedTenantEventsTopic]);
+
+        publishingScopes.Where(static scope => !string.Equals(scope.Key, FoldersAspireModule.TenantsAppId, StringComparison.Ordinal))
+            .SelectMany(static scope => scope.Value)
+            .ShouldBeEmpty();
+        subscriptionScopes.Where(static scope =>
+                !string.Equals(scope.Key, FoldersAspireModule.FoldersAppId, StringComparison.Ordinal) &&
+                !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal))
+            .SelectMany(static scope => scope.Value)
+            .ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void WorkflowAndScriptShouldWireOfflineDaprPolicyConformanceGate()
+    {
+        string workflow = File.ReadAllText(RepositoryPath(".github/workflows/contract-spine.yml"), Encoding.UTF8);
+        string script = File.ReadAllText(RepositoryPath("tests/tools/run-dapr-policy-conformance-gates.ps1"), Encoding.UTF8);
+
+        workflow.ShouldContain("./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild");
+        workflow.ShouldContain("submodules: false");
+        workflow.ShouldContain("global-json-file: global.json");
+        workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
+
+        script.ShouldContain("#Requires -Version 7");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
+        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance");
+        script.ShouldContain("deploy/dapr/production/pubsub.yaml");
+        script.ShouldContain("deploy/dapr/production/sidecar-config-bindings.yaml");
+        script.ShouldContain("$LASTEXITCODE");
+        script.ShouldNotContain("--recursive", Case.Insensitive);
+    }
+
     private static ProductionPolicy LoadProductionPolicy()
     {
         string path = RepositoryPath(PolicyPath);
@@ -148,20 +260,67 @@ public sealed class DaprPolicyConformanceTests
         YamlStream stream = new();
         stream.Load(reader);
 
-        TargetPolicy[] targets = [.. stream.Documents
-            .Select(static d => (YamlMappingNode)d.RootNode)
-            .Where(static d => string.Equals(d.GetScalar("kind"), "Configuration", StringComparison.Ordinal))
-            .Where(static d => d.GetMapping("spec").TryGetMapping("accessControl", out _))
-            .Select(ParseTargetPolicy)];
+        YamlMappingNode[] documents = [.. stream.Documents.Select(static d => (YamlMappingNode)d.RootNode)];
+        documents.ShouldNotBeEmpty();
+        foreach (YamlMappingNode document in documents)
+        {
+            document.GetScalar("kind").ShouldBe("Configuration");
+            document.GetMapping("spec").TryGetMapping("accessControl", out _)
+                .ShouldBeTrue($"{PolicyPath} must contain only Dapr Configuration documents with spec.accessControl.");
+        }
+
+        TargetPolicy[] targets = [.. documents.Select(ParseTargetPolicy)];
 
         return new ProductionPolicy(targets);
     }
+
+    private static string AccessControlConfigName(string appId)
+        => $"hexalith-folders-production-accesscontrol-{appId}";
+
+    private static SidecarBinding ParseSidecarBinding(YamlMappingNode document)
+    {
+        document.GetScalar("kind").ShouldBe("Deployment");
+        string @namespace = document.GetMapping("metadata").GetScalar("namespace");
+        YamlMappingNode annotations = document
+            .GetMapping("spec")
+            .GetMapping("template")
+            .GetMapping("metadata")
+            .GetMapping("annotations");
+
+        return new SidecarBinding(
+            annotations.GetScalar("dapr.io/app-id"),
+            @namespace,
+            annotations.GetScalar("dapr.io/enabled"),
+            annotations.GetScalar("dapr.io/config"));
+    }
+
+    private static IReadOnlyDictionary<string, string> ParseComponentMetadata(YamlSequenceNode metadata)
+        => metadata.Children
+            .Cast<YamlMappingNode>()
+            .ToDictionary(
+                static node => node.GetScalar("name"),
+                static node => node.GetScalar("value"),
+                StringComparer.Ordinal);
+
+    private static IReadOnlyDictionary<string, string[]> ParseTopicScopes(string scopes)
+        => scopes.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(static entry =>
+            {
+                string[] parts = entry.Split('=', 2, StringSplitOptions.TrimEntries);
+                parts.Length.ShouldBe(2, $"Invalid Dapr pub/sub scope entry '{entry}'.");
+                string[] topics = string.IsNullOrWhiteSpace(parts[1])
+                    ? []
+                    : [.. parts[1].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+                return (AppId: parts[0], Topics: topics);
+            })
+            .ToDictionary(static scope => scope.AppId, static scope => scope.Topics, StringComparer.Ordinal);
 
     private static TargetPolicy ParseTargetPolicy(YamlMappingNode document)
     {
         YamlMappingNode metadata = document.GetMapping("metadata");
         YamlMappingNode annotations = metadata.GetMapping("annotations");
         string targetAppId = annotations.GetScalar("hexalith.io/target-app-id");
+        string trustDomainTemplate = annotations.GetScalar("hexalith.io/trust-domain-template");
         YamlMappingNode accessControl = document.GetMapping("spec").GetMapping("accessControl");
         YamlSequenceNode policies = accessControl.GetSequence("policies");
         CallerPolicy[] callerPolicies = [.. policies.Children.Cast<YamlMappingNode>().Select(ParseCallerPolicy)];
@@ -169,6 +328,7 @@ public sealed class DaprPolicyConformanceTests
         return new TargetPolicy(
             targetAppId,
             metadata.GetScalar("name"),
+            trustDomainTemplate,
             metadata.GetScalar("namespace"),
             accessControl.GetScalar("trustDomain"),
             accessControl.GetScalar("defaultAction"),
@@ -256,7 +416,9 @@ public sealed class DaprPolicyConformanceTests
             string.Equals(p.TrustDomain, conformanceCase.TrustDomain, StringComparison.Ordinal));
         if (caller is null)
         {
-            return ExpectedDenyOutcome;
+            // No caller policy matched: defer to the target's access-control defaultAction so the simulator
+            // faithfully reflects a flipped defaultAction instead of assuming deny.
+            return Outcome(target.DefaultAction);
         }
 
         bool operationAllowed = caller.Operations.Any(o =>
@@ -264,11 +426,19 @@ public sealed class DaprPolicyConformanceTests
             o.HttpVerbs.Contains(conformanceCase.HttpVerb, StringComparer.Ordinal) &&
             string.Equals(o.Action, "allow", StringComparison.Ordinal));
 
-        return operationAllowed ? "allow" : ExpectedDenyOutcome;
+        // An explicit allow operation wins; otherwise defer to the caller policy's defaultAction.
+        return operationAllowed ? "allow" : Outcome(caller.DefaultAction);
     }
+
+    private static string Outcome(string defaultAction)
+        => string.Equals(defaultAction, "allow", StringComparison.Ordinal) ? "allow" : ExpectedDenyOutcome;
 
     private static string ComputeSemanticHash(ProductionPolicy policy)
     {
+        // The semantic hash intentionally covers only access-control decision inputs (target/caller app IDs,
+        // namespace, trust domain, defaultAction, and operations). Config metadata.name and the
+        // hexalith.io/trust-domain-template annotation are deployment-templating provenance, not authorization
+        // inputs, so they are excluded; the template annotation is asserted directly in Fact 1 instead.
         var semanticPolicy = policy.Targets
             .OrderBy(static t => t.TargetAppId, StringComparer.Ordinal)
             .Select(static t => new
@@ -306,11 +476,17 @@ public sealed class DaprPolicyConformanceTests
 
     private static YamlMappingNode LoadSingleYamlDocument(string relativePath)
     {
+        YamlMappingNode[] documents = LoadYamlDocuments(relativePath);
+        documents.Length.ShouldBe(1);
+        return documents[0];
+    }
+
+    private static YamlMappingNode[] LoadYamlDocuments(string relativePath)
+    {
         using StreamReader reader = File.OpenText(RepositoryPath(relativePath));
         YamlStream stream = new();
         stream.Load(reader);
-        stream.Documents.Count.ShouldBe(1);
-        return (YamlMappingNode)stream.Documents[0].RootNode;
+        return [.. stream.Documents.Select(static d => (YamlMappingNode)d.RootNode)];
     }
 
     private static string RepositoryPath(string relativePath)
@@ -351,6 +527,7 @@ public sealed class DaprPolicyConformanceTests
     private sealed record TargetPolicy(
         string TargetAppId,
         string ConfigName,
+        string TrustDomainTemplate,
         string Namespace,
         string TrustDomain,
         string DefaultAction,
@@ -364,6 +541,8 @@ public sealed class DaprPolicyConformanceTests
         Operation[] Operations);
 
     private sealed record Operation(string Name, string[] HttpVerbs, string Action);
+
+    private sealed record SidecarBinding(string AppId, string Namespace, string Enabled, string ConfigName);
 
     private sealed record AllowRule(
         string Id,

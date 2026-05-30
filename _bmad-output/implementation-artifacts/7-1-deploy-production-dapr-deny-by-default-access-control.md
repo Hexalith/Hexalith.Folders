@@ -4,7 +4,7 @@ baseline_commit: 3d0cc4298c09796fefc8680f78fb64ed1e4bd78b
 
 # Story 7.1: Deploy production Dapr deny-by-default access control
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -74,6 +74,14 @@ Decomposed acceptance criteria:
   - [x] Run the narrowest affected test projects, then the full relevant CI workflow locally if practical.
   - [x] Run `rg -n "git submodule update --init --recursive|--recursive" .github tests docs deploy` and confirm no new recursive submodule setup guidance was introduced.
   - [x] Record exact commands, pass/fail counts, environment limitations, and any reference-pending live/kind gate in the Dev Agent Record.
+
+### Review Findings
+
+- [x] [Review][Patch] mTLS evidence could pass without configuring the Dapr control plane [`deploy/dapr/production/daprsystem.yaml:6`] — fixed by making the control-plane fixture use `metadata.name: daprsystem` and `metadata.namespace: dapr-system`, and by asserting those values in `DaprPolicyConformanceTests`.
+- [x] [Review][Patch] deny-by-default sidecar configuration bindings were not proven [`deploy/dapr/production/accesscontrol.yaml:6`] — fixed by adding sanitized sidecar binding patch fragments for every stable app ID and validating each `dapr.io/config` annotation against the matching access-control configuration.
+- [x] [Review][Patch] malformed extra access-control YAML documents could be ignored [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs:199`] — fixed by failing closed unless every document in `accesscontrol.yaml` is a Dapr `Configuration` with `spec.accessControl`.
+- [x] [Review][Patch] pub/sub topic constraints were not represented in the production conformance artifacts [`docs/operations/dapr-policy-conformance.md:10`] — fixed by adding sanitized pub/sub topic-scope evidence for `system.tenants.events` and validating protected-topic publishing/subscription scopes for `tenants`, `folders`, and `folders-workers`.
+- [x] [Review][Patch] story File List did not include the new review-added production artifacts [`_bmad-output/implementation-artifacts/7-1-deploy-production-dapr-deny-by-default-access-control.md:252`] — fixed by adding `pubsub.yaml`, `sidecar-config-bindings.yaml`, and the gate report path to the story artifact list.
 
 ## Dev Notes
 
@@ -245,6 +253,7 @@ Codex GPT-5 (story context generation)
 - Added sanitized production Dapr access-control and mTLS artifacts under `deploy/dapr/production/` while leaving local AppHost access control permissive and local-only.
 - Added metadata-only conformance fixture and static xUnit/YamlDotNet tests that validate deny-by-default policy shape, mTLS evidence, stable app IDs, negative controls, and normalized policy hash drift.
 - Wired a focused Dapr policy conformance gate into the existing contract-spine workflow and documented production handoff plus the Story 7.8 live Dapr/kind promotion gate as `reference_pending_story_7_8`.
+- Added follow-up review fixes for Dapr control-plane mTLS shape, sidecar `dapr.io/config` binding evidence, protected tenant-event pub/sub scopes, and fail-closed policy-document parsing.
 - Removed credential-shaped wording from the sanitized mTLS fixture comment so the focused static conformance tests pass.
 - Verification was initially partially blocked by sandbox/environment constraints: NuGet repository signature lookup was denied, `pwsh` was unavailable, and VSTest could not create local sockets. The solution passed with the single-node/no-reuse build fallback and the focused Dapr conformance tests passed through the xUnit in-process runner.
 - SUPERSEDED 2026-05-30 (dev-story verification completion): In a native WSL environment with SDK `10.0.300` (matching `global.json`) and initialized root-level submodules, the full Verification task now passes cleanly: `dotnet restore` exit 0, `dotnet build --no-restore` exit 0 with 0 warnings/0 errors, and the focused `DaprPolicyConformance` tests 4/4 passing via the normal test runner. PowerShell 7 was installed as a `dotnet` global tool and the `run-dapr-policy-conformance-gates.ps1` gate was executed (its only fallible step — the focused conformance test — was independently confirmed green). Story 7.1 is complete; live `daprd`/kind 403 conformance remains intentionally deferred to Story 7.8 as `reference_pending_story_7_8`.
@@ -256,13 +265,45 @@ Codex GPT-5 (story context generation)
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
 - `deploy/dapr/production/accesscontrol.yaml`
 - `deploy/dapr/production/daprsystem.yaml`
+- `deploy/dapr/production/pubsub.yaml`
+- `deploy/dapr/production/sidecar-config-bindings.yaml`
 - `docs/operations/dapr-policy-conformance.md`
 - `tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj`
 - `tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs`
 - `tests/fixtures/dapr-policy-conformance.yaml`
 - `tests/tools/run-dapr-policy-conformance-gates.ps1`
+- `_bmad-output/gates/dapr-policy-conformance/latest.json`
 
 ### Change Log
 
 - 2026-05-30 - Added production Dapr deny-by-default access-control and mTLS conformance artifacts, fixture-backed static tests, local/CI gate wiring, and operations handoff documentation. Updated the mTLS fixture comment to satisfy secret-string conformance.
 - 2026-05-30 - Completed the Verification task in a native WSL environment (restore exit 0; build exit 0 with 0 warnings/0 errors; focused Dapr policy conformance tests 4/4 passing; PowerShell gate script executed via a `dotnet`-global-tool `pwsh`). Marked all tasks complete and moved the story to `review`.
+- 2026-05-30 - Adversarial senior review (story-automator auto-fix). Verified build (0/0), focused conformance suite, and the pwsh gate end-to-end; confirmed the 6 failing Contracts.Tests are pre-existing negative-scope/safety guards about pre-existing `src/Hexalith.Folders.Cli/Commands/**` files, not regressions from this story. Auto-fixed 7 confirmed review findings (no CRITICAL/HIGH): duplicate-operation guard, empty-httpVerb wildcard guard, `Evaluate()` now honors `defaultAction`, secret-leak scan extended to all three canonical artifacts, gate-script vacuous-pass guard (TRX minimum-count ≥ 4), a CI-wiring conformance fact, and `trust-domain-template` sentinel assertion plus clarifying comments/doc. Focused suite now 5/5; full assembly 82 passed / 6 pre-existing failures. Status set to `done`.
+- 2026-05-30 - Follow-up code review fixed 5 additional conformance gaps: Dapr control-plane `daprsystem` metadata, sidecar config-binding evidence, fail-closed parsing for every access-control document, protected tenant-event pub/sub scopes, and story File List coverage. Focused Dapr conformance suite and PowerShell gate now pass 7/7.
+
+## Senior Developer Review (AI)
+
+**Reviewer:** jpiquot · **Date:** 2026-05-30 · **Outcome:** Approved (auto-fixed)
+
+**Method:** Adversarial multi-agent review (5 dimension reviewers — AC validation, task audit, test correctness, policy/fixture semantics, CI/scope compliance — each with per-finding adversarial verification). 18 findings raised, 12 confirmed after verification (deduped to 7 distinct issues), 6 rejected as false positives or out-of-scope nitpicks.
+
+**Independent verification performed:**
+- `dotnet build` → 0 warnings / 0 errors (SDK 10.0.300, root-level submodules populated).
+- Focused `DaprPolicyConformance` suite → 5/5 passing (4 original facts + 1 new CI-wiring fact).
+- `pwsh ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` → exit 0, report `passed`, TRX minimum-count guard satisfied (5 ≥ 4).
+- Full `Hexalith.Folders.Contracts.Tests` assembly → 82 passed, 6 failed. The 6 failures are confirmed **pre-existing** (negative-scope/safety guards from stories 1.7/1.10/1.11 about pre-existing `src/Hexalith.Folders.Cli/Commands/**` files and an `audit-records` include-root in `safety-channel-inventory.json`); story 7.1 touches none of those paths, so they are not regressions.
+- File List cross-checked against `git status`: all 8 source artifacts match; remaining dirty paths are excluded `_bmad-output/` orchestration output.
+- Layered authorization (AC7) preservation confirmed: `src/Hexalith.Folders/Authorization/**` and its tests in `tests/Hexalith.Folders.Tests/Authorization/**` are unmodified by this story.
+
+**Findings fixed (all MEDIUM/LOW — no CRITICAL/HIGH):**
+1. (MEDIUM) Subtask claimed "fail closed on duplicate operations" but no guard existed → added per-caller-policy operation-uniqueness assertion (`DaprPolicyConformanceTests.cs`).
+2. (MEDIUM) Empty `httpVerb: []` is an effective all-verbs wildcard not caught by the `*` guard → added non-empty/non-blank verb assertion.
+3. (MEDIUM) `Evaluate()` ignored `defaultAction`, so it could not simulate a flipped policy → it now honors target/caller `defaultAction` (behavior-preserving for the current deny-by-default policy; all 16 cases unchanged).
+4. (MEDIUM) Secret-leak string scan only covered `daprsystem.yaml` → extracted `AssertNoSecretMaterial` helper and applied it to `accesscontrol.yaml` and the fixture too.
+5. (MEDIUM) Gate script could pass vacuously if the `--filter` drifted to match zero tests (VSTest exits 0 on empty filter) → added TRX logging and a minimum-executed-count (≥ 4) fail-closed check in `run-dapr-policy-conformance-gates.ps1`.
+6. (MEDIUM) New gate lacked the CI-wiring guard test every sibling gate has → added `WorkflowAndScriptShouldWireOfflineDaprPolicyConformanceGate` asserting the workflow step, `submodules: false`, `global-json-file`, no recursive submodules, and script exit-code propagation.
+7. (LOW) Dead/untested `hexalith.io/trust-domain-template` annotation + wildcard "unless justified" wording mismatch + unexplained hash scope → assert the `DAPR_TRUST_DOMAIN` sentinel in Fact 1, added clarifying comments in the test and `ComputeSemanticHash`, and a doc note that wildcards are categorically forbidden with no exception field.
+
+**Accepted as documented, not changed:** the `unknown-source-app` vs `known-unauthorized-source-app` negative controls currently traverse the same global deny-by-default path (no scoped caller policy exists for the "known" app yet). Giving them genuinely distinct coverage requires adding a caller policy entry to the deployed production access-control YAML and re-baselining the semantic hash — a production-posture change reserved for security review rather than an automatic edit. Documented inline in `tests/fixtures/dapr-policy-conformance.yaml`.
+
+**Deferred by design:** live `daprd`/kind 403 conformance remains `reference_pending_story_7_8` (deterministic static conformance is delivered here for the PR gate).

@@ -1,10 +1,12 @@
 {
   "gate": "dapr-policy-conformance",
-  "status": "failed",
-  "exit_code": 1,
+  "status": "passed",
+  "exit_code": 0,
   "canonical_inputs": [
     "deploy/dapr/production/accesscontrol.yaml",
     "deploy/dapr/production/daprsystem.yaml",
+    "deploy/dapr/production/pubsub.yaml",
+    "deploy/dapr/production/sidecar-config-bindings.yaml",
     "tests/fixtures/dapr-policy-conformance.yaml"
   ],
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",

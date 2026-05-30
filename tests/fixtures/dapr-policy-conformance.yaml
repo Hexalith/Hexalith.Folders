@@ -30,6 +30,11 @@ targetPolicies:
     allowRules: []
   - targetAppId: folders-ui
     allowRules: []
+# Negative-control note: with the current minimal allow-list (only eventstore -> folders), both
+# "unknown-source-app" (e.g. external-worker) and "known-unauthorized-source-app" (e.g. folders-ui)
+# are denied via the global deny-by-default path because no scoped caller policy exists for them yet.
+# When a known app gains a scoped caller policy with a denied operation, its negative control should be
+# repointed at that policy so it exercises the per-policy operation-deny path distinctly.
 cases:
   - id: allow-folders-eventstore-process-post
     ruleId: folders.eventstore.process.post

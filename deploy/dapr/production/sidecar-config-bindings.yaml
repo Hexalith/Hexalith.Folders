@@ -1,0 +1,66 @@
+# Sanitized production sidecar binding conformance artifact.
+# These are Kustomize-style patch fragments; deployment tooling owns images, ports, and secret references.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hexalith-eventstore
+  namespace: hexalith-production
+spec:
+  template:
+    metadata:
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: eventstore
+        dapr.io/config: hexalith-folders-production-accesscontrol-eventstore
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hexalith-tenants
+  namespace: hexalith-production
+spec:
+  template:
+    metadata:
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: tenants
+        dapr.io/config: hexalith-folders-production-accesscontrol-tenants
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hexalith-folders-server
+  namespace: hexalith-production
+spec:
+  template:
+    metadata:
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: folders
+        dapr.io/config: hexalith-folders-production-accesscontrol-folders
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hexalith-folders-workers
+  namespace: hexalith-production
+spec:
+  template:
+    metadata:
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: folders-workers
+        dapr.io/config: hexalith-folders-production-accesscontrol-folders-workers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hexalith-folders-ui
+  namespace: hexalith-production
+spec:
+  template:
+    metadata:
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: folders-ui
+        dapr.io/config: hexalith-folders-production-accesscontrol-folders-ui

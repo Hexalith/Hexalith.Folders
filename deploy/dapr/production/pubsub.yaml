@@ -1,0 +1,17 @@
+# Sanitized production pub/sub topic-scope conformance artifact.
+# Deployment tooling supplies broker endpoints and credentials outside this repository.
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+  namespace: hexalith-production
+spec:
+  type: pubsub.redis
+  version: v1
+  metadata:
+    - name: protectedTopics
+      value: system.tenants.events
+    - name: publishingScopes
+      value: tenants=system.tenants.events;eventstore=;folders=;folders-workers=;folders-ui=
+    - name: subscriptionScopes
+      value: folders=system.tenants.events;folders-workers=system.tenants.events;eventstore=;tenants=;folders-ui=

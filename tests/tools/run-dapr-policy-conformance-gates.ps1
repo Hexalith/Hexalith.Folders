@@ -33,6 +33,8 @@ function Write-DaprPolicyConformanceReport {
         canonical_inputs = @(
             'deploy/dapr/production/accesscontrol.yaml',
             'deploy/dapr/production/daprsystem.yaml',
+            'deploy/dapr/production/pubsub.yaml',
+            'deploy/dapr/production/sidecar-config-bindings.yaml',
             'tests/fixtures/dapr-policy-conformance.yaml'
         )
         test_project = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
@@ -63,10 +65,30 @@ try {
         }
     }
 
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance
+    $trxName = 'dapr-policy-conformance.trx'
+    $trxPath = Join-Path $reportDirectory $trxName
+    if (Test-Path $trxPath) {
+        Remove-Item $trxPath -Force
+    }
+
+    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance --results-directory $reportDirectory --logger "trx;LogFileName=$trxName"
     if ($LASTEXITCODE -ne 0) {
         Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode $LASTEXITCODE
         exit $LASTEXITCODE
+    }
+
+    # Fail closed if the namespace/type filter ever drifts and silently matches zero conformance facts
+    # (VSTest exits 0 on an empty filter), which would otherwise let this load-bearing gate pass vacuously.
+    [int]$executedTests = 0
+    if (Test-Path $trxPath) {
+        [xml]$trx = Get-Content -Raw -Path $trxPath
+        $executedTests = [int]$trx.TestRun.ResultSummary.Counters.total
+    }
+
+    if ($executedTests -lt 4) {
+        Write-DaprPolicyConformanceReport -Status 'failed' -ExitCode 1
+        Write-Error "DAPR-POLICY-GATE-VACUOUS: expected at least 4 Dapr policy conformance facts but $executedTests executed. The --filter no longer matches the DaprPolicyConformance namespace/type; restore the filter or namespace."
+        exit 1
     }
 
     Write-DaprPolicyConformanceReport -Status 'passed'
