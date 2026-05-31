@@ -1,7 +1,5 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.17. Durable per-story copy: [`7-17-test-summary.md`](./7-17-test-summary.md).
-
 **Workflow:** `bmad-qa-generate-e2e-tests`
 **Story:** `_bmad-output/implementation-artifacts/7-17-publish-adr-set-and-maintenance-runbooks.md`
 **Feature under test:** The ADR/runbook handoff documentation set: six retrospective ADRs, seven maintenance

@@ -1,0 +1,127 @@
+{
+  "gate": "adr-runbook-docs",
+  "status": "passed",
+  "exit_code": 0,
+  "diagnostic_policy": "metadata-only",
+  "report_path": "_bmad-output/gates/adr-runbook-docs/latest.json",
+  "source_commit": "e535995ee1cce97f79921ddbec0717b001f2e295",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "adr_total": 6,
+  "runbook_total": 7,
+  "canonical_inputs": [
+    "docs/adrs/index.md",
+    "docs/runbooks/index.md",
+    "docs/adrs/0000-template.md",
+    "docs/adrs/0001-folder-domain-processor-persistence.md",
+    "_bmad-output/planning-artifacts/architecture.md",
+    "tests/tools/run-adr-runbook-docs-gates.ps1",
+    ".github/workflows/contract-spine.yml",
+    "tests/tools/run-baseline-ci-gates.ps1"
+  ],
+  "surfaces": [
+    "adr-set",
+    "adr-template-preserved",
+    "runbook-set",
+    "adr-index",
+    "runbook-index",
+    "architecture-decision-citations",
+    "metadata-only",
+    "ci-wiring"
+  ],
+  "adr_inventory": [
+    {
+      "area": "contract",
+      "file": "0002-contract-spine-single-source-of-truth.md",
+      "decision_ids": [
+        "C0",
+        "A-1",
+        "A-2",
+        "A-3",
+        "C13"
+      ]
+    },
+    {
+      "area": "provider",
+      "file": "0003-provider-abstraction-and-capability-model.md",
+      "decision_ids": [
+        "A-6",
+        "A-7",
+        "C12"
+      ]
+    },
+    {
+      "area": "idempotency",
+      "file": "0004-per-command-canonical-idempotency.md",
+      "decision_ids": [
+        "A-9",
+        "D-7"
+      ]
+    },
+    {
+      "area": "security",
+      "file": "0005-layered-authorization-and-oidc.md",
+      "decision_ids": [
+        "S-4",
+        "S-2",
+        "S-6",
+        "C9"
+      ]
+    },
+    {
+      "area": "observability",
+      "file": "0006-observability-and-operational-signals.md",
+      "decision_ids": [
+        "I-6",
+        "I-7",
+        "C2"
+      ]
+    },
+    {
+      "area": "deployment",
+      "file": "0007-container-deployment-with-dapr.md",
+      "decision_ids": [
+        "I-2",
+        "I-3",
+        "I-4",
+        "I-1"
+      ]
+    }
+  ],
+  "runbook_inventory": [
+    {
+      "topic": "tenant deletion",
+      "file": "tenant-deletion.md",
+      "preserved": true
+    },
+    {
+      "topic": "retention",
+      "file": "retention.md",
+      "preserved": false
+    },
+    {
+      "topic": "alerts",
+      "file": "alerts.md",
+      "preserved": false
+    },
+    {
+      "topic": "rollback",
+      "file": "rollback.md",
+      "preserved": false
+    },
+    {
+      "topic": "provider drift",
+      "file": "provider-drift.md",
+      "preserved": false
+    },
+    {
+      "topic": "reconciliation",
+      "file": "reconciliation.md",
+      "preserved": false
+    },
+    {
+      "topic": "incident-mode operations",
+      "file": "incident-mode.md",
+      "preserved": false
+    }
+  ]
+}
