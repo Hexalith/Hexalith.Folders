@@ -68,3 +68,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 15
         run: ./tests/tools/run-operations-audit-docs-gates.ps1 -SkipRestoreBuild
+
+      - name: Run provider and error docs conformance gates
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/tools/run-provider-error-docs-gates.ps1 -SkipRestoreBuild

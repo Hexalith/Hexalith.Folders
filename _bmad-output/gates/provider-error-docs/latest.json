@@ -1,0 +1,62 @@
+{
+  "gate": "provider-error-docs",
+  "status": "passed",
+  "exit_code": 0,
+  "diagnostic_policy": "metadata-only",
+  "report_path": "_bmad-output/gates/provider-error-docs/latest.json",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "canonical_inputs": [
+    "src/Hexalith.Folders/Providers/Abstractions/ProviderOperationCatalog.cs",
+    "src/Hexalith.Folders/Providers/Abstractions/ProviderCredentialMode.cs",
+    "src/Hexalith.Folders/Providers/Abstractions/ProviderFailureCategory.cs",
+    "src/Hexalith.Folders/Providers/Abstractions/ProviderFailureCategoryExtensions.cs",
+    "src/Hexalith.Folders/Queries/ProviderReadiness/ProviderReadinessResultCode.cs",
+    "src/Hexalith.Folders/Providers/Forgejo/ForgejoSupportedVersionCatalog.cs",
+    "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+    "tests/fixtures/parity-contract.yaml",
+    "src/Hexalith.Folders.Cli/FoldersExitCodes.cs",
+    "src/Hexalith.Folders.Mcp/Errors/FailureKindProjection.cs",
+    "src/Hexalith.Folders/Queries/Folders/WorkspaceStatusRetryAfter.cs",
+    "src/Hexalith.Folders/Queries/Folders/WorkspaceStatusRetryEligibility.cs"
+  ],
+  "surfaces": [
+    {
+      "surface": "provider-capability",
+      "doc": "docs/operations/provider-integration-and-testing.md",
+      "assertion": "capability-operations-credential-modes-readiness-and-failure-categories-equal-source"
+    },
+    {
+      "surface": "forgejo-versions",
+      "doc": "docs/operations/provider-integration-and-testing.md",
+      "assertion": "supported-forgejo-versions-and-drift-classification-equal-catalog"
+    },
+    {
+      "surface": "provider-differences",
+      "doc": "docs/operations/provider-integration-and-testing.md",
+      "assertion": "github-vs-forgejo-differences-pinned-without-false-parity-and-no-silent-retry"
+    },
+    {
+      "surface": "canonical-categories",
+      "doc": "docs/operations/canonical-error-catalog.md",
+      "assertion": "generated-47-and-oracle-43-categories-equal-source"
+    },
+    {
+      "surface": "cross-surface-projection",
+      "doc": "docs/operations/canonical-error-catalog.md",
+      "assertion": "client-actions-cli-exit-codes-and-mcp-failure-kind-rules-equal-source"
+    },
+    {
+      "surface": "retry-after",
+      "doc": "docs/operations/canonical-error-catalog.md",
+      "assertion": "retry-after-fields-advisory-only-equal-source"
+    }
+  ],
+  "reference_pending": {
+    "status": "reference_pending_external_tooling",
+    "severity": "warning",
+    "owner": "Operations Runbook (Story 7.17)",
+    "command_shape": "pwsh ./tests/tools/run-provider-error-docs-gates.ps1",
+    "evidence_path": "_bmad-output/gates/provider-error-docs/latest.json",
+    "follow_up_boundary": "provider drift runbooks, alert/rollback procedures, and live provider endpoints stay external; metadata-only intent only; no live endpoints, tokens, or raw provider payloads in CI"
+  }
+}
