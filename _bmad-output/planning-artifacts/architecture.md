@@ -207,7 +207,7 @@ Each exit criterion must be (a) set as a concrete value or rule with a measureme
 | C6 | Architect | Architecture team | this document §"Workspace State Transition Matrix" | **Phase 1 entry — BLOCKS Phase 2 `FolderStateTransitions.cs`** | enumerated state × event matrix; aggregate test asserts every (state, event) has defined outcome |
 | C7 | Architect | PM (SLO sign-off) | this document §"Authentication & Security" + §"Process Patterns" | Phase 4 exit | tunable defaults pinned per tenant; SLO statement in artifact |
 | C8 | Architect | PM | this document §"API & Communication Patterns" + per-query-family freshness header | Phase 4 entry | per-query-family declaration table; freshness-header tests |
-| C9 | Architect | Security + PM | this document §"S-6" + `Hexalith.Folders/Redaction/SensitiveMetadataClassifier.cs` | Phase 3 entry | classifier unit tests; sentinel corpus iteration |
+| C9 | Architect | Security + PM | this document §"S-6" + `Hexalith.Folders/Observability/FolderAuditSanitizer.cs` | Phase 3 entry | classifier unit tests; sentinel corpus iteration |
 | C10 | Architect | Architecture team | `.github/workflows/ci.yml` (lint job) + `Hexalith.Folders/Caching/TenantPrefixedCacheKey.cs` | Phase 1 entry | CI lint gate; Roslyn analyzer or grep-based |
 | C11 | Architect | Architecture team | this document §"D-9" + Contract Spine (PutFileInline + PutFileStream operations) | **resolved (D-9 bimodal REST + UploadFileAsync convenience)** | OpenAPI operations + SDK convenience helper test |
 | C12 | Architect | Architecture team | `tests/contracts/forgejo/supported-versions.json` + `.github/workflows/nightly-drift.yml` | Phase 5 entry | oasdiff classifier; fixture-to-failure-mode coverage matrix |
@@ -308,8 +308,8 @@ Hexalith.Tenants is the closest functional analogue: it is an event-sourced .NET
 ```
 Hexalith.Folders/
 ├── Hexalith.Folders.slnx
-├── Directory.Build.props          ← mirror Hexalith.Tenants
-├── Directory.Packages.props       ← central package management; pin Hexalith.* 3.15.1
+├── Directory.Build.props          ← mirror Hexalith.Tenants; defines HexalithEventStoreRoot/HexalithTenantsRoot for sibling submodule detection
+├── Directory.Packages.props       ← central package management for third-party packages (Hexalith.* siblings consumed via project reference, not pinned here)
 ├── src/
 │   ├── Hexalith.Folders.Contracts          ← commands, events, state DTOs, projection DTOs, query DTOs (REFERENCE: Tenants.Contracts pattern)
 │   ├── Hexalith.Folders                    ← Folder + Organization aggregates, state Apply, projection handlers (REFERENCE: Tenants core project)
@@ -347,7 +347,7 @@ There is no single `dotnet new` command. Project scaffolding proceeds as a multi
 # From the Hexalith.Folders root
 dotnet new sln -n Hexalith.Folders --format slnx
 
-# Mirror Tenants Directory.Build.props and Directory.Packages.props (pin Hexalith.* 3.15.1)
+# Mirror Tenants Directory.Build.props (HexalithEventStoreRoot/HexalithTenantsRoot sibling-submodule detection) and Directory.Packages.props (third-party packages)
 # Then create projects in the order shown in the layout above:
 #   src/* projects (in dependency order: Contracts → Hexalith.Folders → Server → Client → adapter projects)
 #   tests/* mirroring src/ 1:1
@@ -362,7 +362,7 @@ dotnet new sln -n Hexalith.Folders --format slnx
 
 **Package Management:**
 
-- Central package management via `Directory.Packages.props`. Pin `Hexalith.EventStore.*` and `Hexalith.Tenants.*` to **3.15.1** (verified on NuGet 2026-05-09, latest published).
+- Central package management via `Directory.Packages.props` for third-party packages. `Hexalith.EventStore.*` and `Hexalith.Tenants.*` are consumed as **project references to the root-level sibling submodule source**, located by the `HexalithEventStoreRoot`/`HexalithTenantsRoot` properties in `Directory.Build.props` — not pinned as NuGet packages (verified as-built; do not replace with package references).
 - `Hexalith.Tenants.Client` will use a project reference to the submodule project until package availability is confirmed (per Tenants research caveat).
 - Aspire packages from `CommunityToolkit.Aspire.Hosting.Dapr`.
 
@@ -410,8 +410,8 @@ dotnet new sln -n Hexalith.Folders --format slnx
 **Already Decided (from Project Context Analysis and Starter Template Evaluation):**
 
 - Language/runtime: .NET 10 / C#
-- Write-side framework: Hexalith.EventStore 3.15.1 (CQRS + event sourcing)
-- Tenant identity source of truth: Hexalith.Tenants 3.15.1 (consumed via Dapr pub/sub `system.tenants.events` + local fail-closed projection)
+- Write-side framework: Hexalith.EventStore (CQRS + event sourcing; consumed via project reference to the sibling submodule)
+- Tenant identity source of truth: Hexalith.Tenants (consumed via project reference to the sibling submodule + Dapr pub/sub `system.tenants.events` + local fail-closed projection)
 - Sidecar runtime: Dapr (pub/sub, state store, service invocation, actors, access control, resiliency)
 - Local orchestration: .NET Aspire (`Aspire.Hosting.AppHost` 13.3.0; `CommunityToolkit.Aspire.Hosting.Dapr` 13.0.0)
 - Observability: OpenTelemetry (traces / metrics / logs)
@@ -457,7 +457,7 @@ dotnet new sln -n Hexalith.Folders --format slnx
 
 | # | Decision | Choice | Rationale | Alternatives considered |
 |---|---|---|---|---|
-| D-1 | Aggregate event persistence | **Hexalith.EventStore 3.15.1 with Dapr state store** (per ecosystem) | Mandated by ecosystem + PRD audit/replay/determinism requirements | None viable inside the ecosystem |
+| D-1 | Aggregate event persistence | **Hexalith.EventStore with Dapr state store** (per ecosystem; consumed via project reference to the sibling submodule) | Mandated by ecosystem + PRD audit/replay/determinism requirements | None viable inside the ecosystem |
 | D-2 | Dapr state-store backend (local) | **Redis 7.x via Aspire** | Mirrors Tenants AppHost; required for shared state across EventStore + Tenants + Folders sidecars | Postgres (heavier local setup) |
 | D-3 | Dapr state-store backend (production) | **Redis-compatible (Azure Cache for Redis or self-hosted Redis 7+) for state and pub/sub baseline; PostgreSQL upgrade path documented** for higher-durability tenants. **Postgres-escalation trigger CRITERIA are recorded; trigger THRESHOLDS are deferred-until-C1** (cannot be set independently of capacity targets without producing a circular reference). Criteria: (a) per-tenant state-store size sustained beyond Redis-replication operational comfort (threshold pinned alongside C1), (b) tenant SLA mandates point-in-time-recovery / multi-region durability beyond Redis-replication guarantees (threshold-free; SLA-driven), (c) actor-reminder volume sustained beyond per-sidecar headroom (threshold pinned alongside C1). Provisional placeholders for early infrastructure planning (NOT recorded decisions): 50 GB and 5,000 reminders/sec/sidecar — to be confirmed or revised when C1 sets concurrent capacity targets | Redis carries the Tenants/EventStore production pattern; Postgres is the documented escalation per EventStore deployment guidance | Cosmos DB (Azure-coupling), Kafka for pub/sub (operational weight) |
 | D-4 | Dapr pub/sub broker (local) | **Redis Streams via Aspire** | Mirrors Tenants AppHost | RabbitMQ |
@@ -568,7 +568,7 @@ The SDK-as-canonical reframe (per §"Project Context Analysis → Scale & Comple
 
 **Implementation Sequence (informs future Step 6 epic breakdown):**
 
-1. **Phase 0 — Solution Scaffolding:** project skeleton per Step 3 layout; central package management pinning Hexalith.* 3.15.1; `Directory.Build.props` + `Directory.Packages.props` mirroring Tenants; root `.slnx`. Empty placeholder files for `tests/load/`, `tests/fixtures/idempotency-encoding-corpus.json`, `tests/fixtures/parity-contract.schema.json`, `docs/exit-criteria/_template.md`.
+1. **Phase 0 — Solution Scaffolding:** project skeleton per Step 3 layout; sibling submodules (Hexalith.EventStore, Hexalith.Tenants) consumed via project references located by `Directory.Build.props` roots; `Directory.Build.props` + `Directory.Packages.props` mirroring Tenants; root `.slnx`. Empty placeholder files for `tests/load/`, `tests/fixtures/idempotency-encoding-corpus.json`, `tests/fixtures/parity-contract.schema.json`, `docs/exit-criteria/_template.md`.
 2. **Phase 0.5 — Pre-Spine Workshop (BLOCKS Phase 1 Contract Spine authoring):** resolve every input the spine needs before it can be authored. Outputs land in `docs/exit-criteria/` and in this architecture document.
    - **C3 retention durations per data class** (Tech Lead + Legal + PM; output: `docs/exit-criteria/c3-retention.md`); D-7 commit-TTL inherits this value.
    - **C4 bounded MVP input limits** (Architect + PM; output: `docs/exit-criteria/c4-input-limits.md`); `maxItems` / `maxLength` / `maxBytes` / `maxResultCount` constraints land in the spine.
@@ -942,7 +942,7 @@ Hexalith.Folders/
 ├── .gitmodules                                 # root-level submodule references only (no recursive)
 ├── .editorconfig
 ├── Directory.Build.props                       # mirror Hexalith.Tenants
-├── Directory.Packages.props                    # central package management; pins Hexalith.* 3.15.1
+├── Directory.Packages.props                    # central package management for third-party packages (Hexalith.* siblings via project reference)
 ├── Hexalith.Folders.slnx
 ├── global.json                                 # .NET 10 SDK pin
 ├── nuget.config
@@ -950,10 +950,10 @@ Hexalith.Folders/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml                              # build + format + lint + unit + parity + sentinel
-│       ├── contract-tests.yml                  # hermetic provider contract tests (PR gate)
+│       ├── contract-spine.yml                  # hermetic contract/parity static gate (PR gate)
 │       ├── nightly-drift.yml                   # live-nightly Forgejo + GitHub drift detection
 │       ├── policy-conformance.yml              # dapr-policy-conformance negative tests
-│       └── release.yml                         # NuGet publish on tag
+│       └── release-packages.yml                # NuGet publish on tag
 │
 ├── docs/                                       # exists; contains static project docs
 │   ├── architecture/                           # generated from architecture.md sections
@@ -1089,9 +1089,10 @@ Hexalith.Folders/
 │   │   │   └── IdempotencyRecordStore.cs       # Dapr state with two-tier TTL (D-7)
 │   │   ├── Caching/
 │   │   │   └── TenantPrefixedCacheKey.cs       # C10 mandatory prefix helper
-│   │   ├── Redaction/                          # concern #6 sentinel-redaction support
-│   │   │   ├── SensitiveMetadataClassifier.cs  # C9 classification per S-6
-│   │   │   └── RedactingFormatter.cs
+│   │   ├── Observability/                      # concern #6 sentinel-redaction + audit telemetry
+│   │   │   ├── FolderAuditSanitizer.cs         # C9 metadata-only sanitization per S-6
+│   │   │   ├── FolderTelemetryEmitter.cs       # OpenTelemetry metrics/traces/logs (I-6)
+│   │   │   └── FolderAuditObservation.cs       # metadata-only audit observation model
 │   │   └── Registration/
 │   │       └── HexalithFoldersDomainServiceExtensions.cs   # AddEventStore() registration for OrganizationAggregate + FolderAggregate
 │   │
@@ -1362,20 +1363,20 @@ Hexalith.Folders/
 | **FR50** SDK parity | `src/Hexalith.Folders.Client/`; parity tests in `tests/Hexalith.Folders.Client.Tests/` |
 | **FR51** Cross-surface equivalence | `tests/fixtures/parity-contract.yaml` (C13 oracle, generated from Contract Spine); `tests/Hexalith.Folders.IntegrationTests/EndToEnd/` |
 | **FR52** Read-only ops console | `src/Hexalith.Folders.UI/Pages/`, `Components/`, `Layout/`; `src/Hexalith.Folders.Server/Endpoints/OpsConsoleEndpoints.cs` |
-| **FR53–FR57** Audit and Ops Visibility | `src/Hexalith.Folders/Projections/Audit/`; `src/Hexalith.Folders.Server/Endpoints/AuditEndpoints.cs`; `src/Hexalith.Folders/Redaction/` |
+| **FR53–FR57** Audit and Ops Visibility | `src/Hexalith.Folders/Projections/Audit/`; `src/Hexalith.Folders.Server/Endpoints/AuditEndpoints.cs`; `src/Hexalith.Folders/Observability/` |
 
 **Cross-Cutting Concerns:**
 
 | Concern (from Step 2) | Lives In |
 |---|---|
 | #1 Tenant isolation enforcement | `Authorization/`, `Caching/TenantPrefixedCacheKey.cs`, `Server/Middleware/TenantContextProvenanceMiddleware.cs`, lint rules in `.github/workflows/ci.yml` |
-| #6 Metadata-only audit + sentinel redaction | `Redaction/`, `tests/fixtures/audit-leakage-corpus.json`, sentinel-test runners across all `*.Tests/` |
+| #6 Metadata-only audit + sentinel redaction | `Observability/`, `tests/fixtures/audit-leakage-corpus.json`, sentinel-test runners across all `*.Tests/` |
 | #11 Operations console boundary | `Hexalith.Folders.UI/Pages/_Admin/IncidentStream.razor`; `Components/{DegradedModeBanner,SkeletonState,StillLoadingCancel}.razor` |
 | #13 Cache-key tenant prefix invariant | `Hexalith.Folders/Caching/TenantPrefixedCacheKey.cs` + CI lint job in `.github/workflows/ci.yml` |
 | #14 Aggregate ID opacity | `Hexalith.Folders.Contracts/Identity/{Folder,Organization,Workspace}Id.cs` (opaque ULID wrappers) |
 | #15 Correlation propagation invariant | `Server/Middleware/CorrelationPropagationMiddleware.cs`; parity tests in `tests/fixtures/parity-contract.yaml` |
 | #16 Mid-task authorization revocation | `Authorization/TenantAccessAuthorizer.cs` (revalidation logic); `Workers/Tenants/TenantEventHandlers/` (revocation handlers) |
-| #17 Sensitive metadata classification | `Redaction/SensitiveMetadataClassifier.cs` |
+| #17 Sensitive metadata classification | `Observability/FolderAuditSanitizer.cs` |
 | #18 Context-query authorization order | `Authorization/AuthorizationOrder.cs`; enforced by `Queries/Context/*Handler.cs` |
 | #19 Read consistency model | `Server/Endpoints/*Endpoints.cs` (per-query-family freshness header emission) |
 | #20 Tenants-availability degraded mode | `Hexalith.Folders.Client/Subscription/`; `Server/HealthChecks/TenantsAvailabilityCheck.cs`; `Authorization/TenantAccessAuthorizer.cs` |
@@ -1618,7 +1619,7 @@ Phase 0 — Solution Scaffolding, then Phase 0.5 Pre-Spine Workshop. From the re
 
 ```bash
 dotnet new sln -n Hexalith.Folders --format slnx
-# Mirror Hexalith.Tenants Directory.Build.props and Directory.Packages.props (pin Hexalith.* 3.15.1)
+# Mirror Hexalith.Tenants Directory.Build.props (HexalithEventStoreRoot/HexalithTenantsRoot sibling-submodule detection) and Directory.Packages.props (third-party packages)
 # Create projects in dependency order:
 #   src/Hexalith.Folders.Contracts → src/Hexalith.Folders → src/Hexalith.Folders.Server →
 #   src/Hexalith.Folders.Client → src/Hexalith.Folders.{Cli,Mcp,UI,Workers,Aspire,AppHost,ServiceDefaults,Testing}
@@ -1630,7 +1631,7 @@ dotnet new sln -n Hexalith.Folders --format slnx
 #   tests/tools/parity-oracle-generator/
 #   docs/exit-criteria/_template.md
 #   docs/adrs/0000-template.md
-# Create .github/workflows/{ci,contract-tests,nightly-drift,policy-conformance,release}.yml from sibling-module patterns.
+# Create .github/workflows/{ci,contract-spine,nightly-drift,policy-conformance,release-packages}.yml from sibling-module patterns.
 ```
 
 Then Phase 0.5 Pre-Spine Workshop: complete every item in the §"Spine Authoring Checklist" before Phase 1 begins. Specifically: resolve C3 retention durations (Tech Lead + Legal + PM); resolve C4 input limits (Architect + PM); enumerate per-command `x-hexalith-idempotency-equivalence` and `x-hexalith-parity-dimensions`; finalize §"Adapter Parity Contract" if not already; pin S-2 issuer + audience per environment; seed `tests/fixtures/previous-spine.yaml`.

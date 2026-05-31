@@ -507,11 +507,11 @@ The PRD intentionally defers the following numeric targets to the architecture r
 
 | ID | Target | PRD Source | Status |
 | --- | --- | --- | --- |
-| C1 | Concurrent capacity targets: maximum concurrent tenants, folders per tenant, active workspaces per tenant, and concurrent agent tasks per tenant | NFR Scalability and Capacity (constraint that capacity targets must avoid assuming a single tenant, single repository, or single active workspace) | TBD by architecture review |
-| C2 | Status-freshness target: maximum acceptable lag between an emitted lifecycle event and its appearance in status/audit views under normal operation | NFR Observability, Auditability, and Replay | TBD by architecture review |
+| C1 | Concurrent capacity targets: maximum concurrent tenants, folders per tenant, active workspaces per tenant, and concurrent agent tasks per tenant | NFR Scalability and Capacity (constraint that capacity targets must avoid assuming a single tenant, single repository, or single active workspace) | Approved 2026-05-30 (Story 7.10): 4 concurrent tenants, 2 folders/tenant, 2 active workspaces/tenant, 2 concurrent agent tasks/tenant — see `docs/exit-criteria/c1-capacity.md` |
+| C2 | Status-freshness target: maximum acceptable lag between an emitted lifecycle event and its appearance in status/audit views under normal operation | NFR Observability, Auditability, and Replay | Approved 2026-05-30 (Story 7.10): 500 ms commit-to-status-read lag (hermetic) — see `docs/exit-criteria/c2-freshness.md`; production exporters/alerts wired by Story 7.12 |
 | C3 | Retention durations per data class: audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, and cleanup records | NFR Data Retention and Cleanup | TBD by architecture review |
 | C4 | Bounded MVP input limits: maximum files per context query, maximum bytes per query response, maximum result count, and maximum query duration | NFR Performance and Query Bounds | TBD by architecture review |
-| C5 | Concrete scalability quantifiers replacing the word "multiple" in the NFR scalability constraint, derived from C1 | NFR Scalability and Capacity | TBD by architecture review |
+| C5 | Concrete scalability quantifiers replacing the word "multiple" in the NFR scalability constraint, derived from C1 | NFR Scalability and Capacity | Approved 2026-05-30 (Story 7.10): 4 tenant units, 2 folder units/tenant, 2 workspace units/tenant, 2 task units/tenant, ≥1 lifecycle op/sec — see `docs/exit-criteria/c5-scalability-quantifiers.md` |
 
 Each target must be (a) set as a concrete number with a measurement method, (b) validated through implementation benchmarks before MVP release, and (c) recorded in the Architecture document and referenced from this PRD via update.
 
