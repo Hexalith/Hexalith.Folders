@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-31
+# last_updated: 2026-05-31T12:00:00+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-31
+last_updated: 2026-05-31T12:00:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -63,7 +63,7 @@ development_status:
   epic-1-retrospective: done
 
   # Epic 2: Tenant-Scoped Folder Access And Lifecycle
-  epic-2: in-progress
+  epic-2: done
   2-1-stand-up-domain-service-host-with-tenants-integration: done
   2-2-implement-organization-aggregate-acl-baseline: done
   2-3-create-folders-within-a-tenant: done
@@ -72,12 +72,12 @@ development_status:
   2-6-enforce-layered-authorization-with-safe-denials: done
   2-7-inspect-folder-lifecycle-and-binding-status: done
   2-8-archive-folders-with-audit-npxpreservation: done
-  2-8b-wire-folder-domain-processor: review
+  2-8b-wire-folder-domain-processor: done
   2-9-react-to-tenants-events-through-worker-handlers: done
   epic-2-retrospective: optional
 
   # Epic 3: Provider Readiness And Repository Binding
-  epic-3: in-progress
+  epic-3: done
   3-1-configure-provider-binding-and-credential-reference: done
   3-2-define-igitprovider-port-and-capability-model: done
   3-3-implement-github-provider-adapter: done
@@ -90,7 +90,7 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Repository-Backed Workspace Task Lifecycle
-  epic-4: in-progress
+  epic-4: done
   4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: done
   4-2-prepare-workspace-from-a-ready-repository-backed-folder: done
   4-3-acquire-task-scoped-workspace-lock: done
@@ -137,7 +137,7 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: MVP Release Readiness And Operational Evidence
-  epic-7: in-progress
+  epic-7: done
   7-1-deploy-production-dapr-deny-by-default-access-control: done
   7-2-configure-production-oidc-and-secret-store-integration: done
   7-3-build-container-images-with-stable-dapr-app-ids: done

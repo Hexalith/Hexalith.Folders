@@ -47,7 +47,17 @@ public sealed class ArchiveFolderProcessWiringTests
             host.Gateway.ProcessCalls.ShouldBe(1);
             host.Gateway.LastWireEventCount.ShouldBe(0, "Option B keeps folder event persistence inside the gate and returns no framework events.");
             host.Repository.EventsAppended.ShouldBe(1);
-            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a")).LifecycleState.ShouldBe(FolderLifecycleState.Archived);
+
+            // AC2: the persisted FolderArchived event must carry the correct evidence fields
+            // sourced end-to-end through REST -> gateway -> /process -> gate. Actor comes from
+            // the verified layered-auth context (not the raw envelope); correlation and task id
+            // come from the request headers; reason code maps from the request body.
+            FolderState archived = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));
+            archived.LifecycleState.ShouldBe(FolderLifecycleState.Archived);
+            archived.ArchiveActorPrincipalId.ShouldBe("user-a");
+            archived.ArchiveCorrelationId.ShouldBe("correlation-archive-key-a");
+            archived.ArchiveTaskId.ShouldBe("task-archive-key-a");
+            archived.ArchiveReasonCode.ShouldBe(FolderArchiveReasonCode.CallerRequested);
             FolderLifecycleStatusReadModelResult lifecycle = await host.LifecycleReadModel
                 .GetAsync(
                     new FolderLifecycleStatusReadModelRequest(
@@ -297,6 +307,13 @@ public sealed class ArchiveFolderProcessWiringTests
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
         builder.Services.AddFoldersServer();
+        // AddFoldersServer registers FoldersAuthSchemeValidator (needs IAuthenticationSchemeProvider)
+        // and MapFoldersServerEndpoints maps the ServiceDefaults health endpoints (need
+        // HealthCheckService). The slim test host doesn't pull in AddServiceDefaults, so register
+        // the two composition primitives the server surface depends on. Matches the pattern in
+        // GoldenLifecycleParityTests and MixedSurfaceHandoffTests.
+        builder.Services.AddAuthentication();
+        builder.Services.AddHealthChecks();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();

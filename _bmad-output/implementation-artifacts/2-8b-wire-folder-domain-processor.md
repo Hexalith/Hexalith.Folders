@@ -1,6 +1,6 @@
 # Story 2.8b: Wire FolderArchiveTenantGate as an IDomainProcessor
 
-Status: review
+Status: done
 
 <!-- Spawned 2026-05-20 from `/bmad-code-review 2.8` round-2 BLOCKED finding. -->
 <!-- This story exists to resolve the architectural decision that Story 2.8 surfaced. -->
@@ -137,6 +137,35 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
   - [x] Update `_bmad-output/implementation-artifacts/sprint-status.yaml`.
   - [x] Append a Change Log entry to Story 2.8 referencing this story's commit.
 
+### Review Findings
+
+**Review run 2026-05-31 (Opus 4.8).** Three adversarial layers reviewed story commit `8705034`. NOTE: the review found the working tree has evolved 11 days past that commit (Epics 3–7 build directly on `FolderDomainProcessor`, which now dispatches 9 command types). Several original findings were already resolved by later work; the list below is re-triaged against the **current** working tree and verified with a build + targeted test run.
+
+**Resolved before review (no action):**
+- [x] [Review][Resolved] D1: `InMemoryFolderRepository` default registration — ALREADY FIXED in working tree. `FoldersServiceCollectionExtensions` no longer default-registers it; it is now an explicit opt-in `AddInMemoryFolderRepository()` (lines 41–56) with a fail-loud comment ("Production AppHosts MUST register a real EventStore-backed repository ... fails loud at startup rather than silently running on a dictionary"). This is exactly option (c) from the original finding.
+
+**Applied + verified green (build + `ArchiveFolderProcessWiringTests` 8/8 pass):**
+- [x] [Review][Patch] P3: Strengthened the archive happy-path test to assert evidence fields propagate end-to-end through `/process` → gate → persisted event (actor=`user-a` from verified layered-auth context, correlation, task id, `FolderArchiveReasonCode.CallerRequested`) [`ArchiveFolderProcessWiringTests.cs`].
+- [x] [Review][Patch] HOST: Fixed a pre-existing test-host composition red in this story's own test file — added `AddAuthentication()` + `AddHealthChecks()` so `FoldersAuthSchemeValidator` (needs `IAuthenticationSchemeProvider`) and `MapDefaultEndpoints` (needs `HealthCheckService`) resolve. The host gap was introduced by later stories (auth validator `6e816ce`, ServiceDefaults health checks) and matches the existing pattern in `GoldenLifecycleParityTests`/`MixedSurfaceHandoffTests`. Restored 8 tests from red to green [`ArchiveFolderProcessWiringTests.cs:308`].
+
+**Dismissed (false positive in context):**
+- [x] [Review][Dismiss] P2: `UnmappedMemberHandling.Disallow` is an intentional hardened design, NOT a forward-compat hazard. The `/process` boundary is an internal EventStore gateway round-trip (server controls both ends), every payload field is now `[property: JsonRequired]`, and a code comment documents that the processor re-validates wire values the REST endpoint doesn't. Strict fail-closed is correct here.
+
+**Deferred (pre-existing / out of scope, tracked in deferred-work.md):**
+- [x] [Review][Defer] P1: `EventsAppended`/`ResetAppendCounters` lock-guarding — now `internal` (test-only via InternalsVisibleTo), single-threaded per test host; already tracked rounds 3/4.
+- [x] [Review][Defer] P4: Cross-tenant/foreign-tenant-smuggling integration row — already deferred in round 3 with documented defense-in-depth rationale (gate-unit `HasCompetingClientTenant` + layered-auth tenant comparison at the request handler).
+- [x] [Review][Defer] W1: `CancellationToken` cannot propagate into `IDomainProcessor` — interface gap [`IDomainProcessor`] — deferred, pre-existing interface contract documented in ADR; no IO inside processor
+- [x] [Review][Defer] W2: `Seed()` retains stale fingerprints from prior append calls [`InMemoryFolderRepository.cs:100`] — deferred, pre-existing test infra only; no production exposure
+- [x] [Review][Defer] W3: `FolderAccessTenantGate` whitespace-key bypass in `HasCompetingClientTenant` [`FolderAccessTenantGate.cs:168`] — deferred, pre-existing; not introduced by this change
+- [x] [Review][Defer] W4: `FolderAccessTenantGate` ACL evaluated before schema validation (inverse of archive gate order) [`FolderAccessTenantGate.cs:66`] — deferred, pre-existing; separate story scope
+- [x] [Review][Defer] W5: Archive gate `Map(Allowed)` branch missing OTel trace tag [`FolderArchiveTenantGate.cs`] — deferred, minor observability gap; pre-existing in archive gate
+- [x] [Review][Defer] W6: TOCTOU window between `TryGetIdempotencyFingerprint` and `AppendIfFingerprintAbsent` [`FolderArchiveTenantGate.cs:96`] — deferred, pre-existing optimistic-concurrency design
+- [x] [Review][Defer] W7: `policyEvidence.PolicyVersion` not validated before null-forgiving dereference in `BindArchiveDecisionFingerprint` [`FolderArchiveTenantGate.cs:87`] — deferred, pre-existing; baseline provider always supplies valid version
+- [x] [Review][Defer] W8: `FolderAccessTenantGate` null-forgiving `validation.IdempotencyFingerprint!` after `IsAccepted` [`FolderAccessTenantGate.cs:110`] — deferred, pre-existing; static factory methods never produce null fingerprint
+
+**⚠️ Separate systemic blocker surfaced during verification (NOT a 2-8b defect — flag for Epic 7 "historical reds"):**
+The test suite at HEAD has widespread pre-existing reds from a shared test-host composition gap: hosts call `AddFoldersServer()` + `MapFoldersServerEndpoints()` but not `AddServiceDefaults()`, so `FoldersAuthSchemeValidator` (`IAuthenticationSchemeProvider`) and `MapDefaultEndpoints` (`HealthCheckService`) fail to resolve. Measured 2026-05-31: `Hexalith.Folders.Server.Tests` **339 failed / 94 passed** (same auth/health root cause), `Hexalith.Folders.IntegrationTests` 11 remaining failures in `GoldenLifecycleParityTests`/`MixedSurfaceHandoffTests` (Epic 5), and `Hexalith.Folders.Tests` 2 failures in Epic 3 provider-boundary guard tests. This was introduced by later stories (auth validator `6e816ce`, ServiceDefaults health checks) updating the shared server surface without updating every test host. Mechanical fix: add `AddAuthentication()` + `AddHealthChecks()` (or a shared test-host helper) to each affected host — the same fix applied to this story's own host. Recommend owning under Epic 7 release-readiness (the named "historical reds" blocker), not under 2-8b.
+
 ## Out of Scope
 
 - Real archive-retention policy logic (Epic 7).
@@ -158,6 +187,7 @@ Make `IFolderEvent : IEventPayload` so Folders events implement the framework's 
 |---|---|---|
 | 2026-05-20 | Implemented ADR 0001 using Option B: `FolderDomainProcessor` invokes gate-owned persistence and returns no-op/structured rejection results to prevent double-write. Wired archive evidence providers, scoped layered-authorization handoff, production DI registration, in-memory repository/projection support, and in-process REST -> gateway -> `/process` integration coverage. | Codex |
 | 2026-05-20 | Applied party-mode review hardening for scoped layered-authorization evidence handoff, cancellation-boundary decisioning, `DomainResult` / result-payload mapping, duplicate-persistence prevention, and access/archive gate consistency checks. | Codex |
+| 2026-05-31 | Code review (Opus 4.8, 3 adversarial layers vs commit `8705034`). Re-triaged against current working tree: D1 already resolved (opt-in repo registration), P2 dismissed (intentional strict `/process` contract), P1/P4 deferred (pre-existing/already-tracked). Applied P3 (end-to-end evidence-field assertions) and fixed this story's own test-host composition red (`AddAuthentication()`+`AddHealthChecks()`); `ArchiveFolderProcessWiringTests` 8/8 green. Surfaced a separate systemic test-host red (Server.Tests 339 fail, same auth/health root cause) as an Epic 7 "historical reds" follow-up. Status → done. | Claude (Opus 4.8) |
 | 2026-05-20 | Created from Story 2.8 `/bmad-code-review` round-2 BLOCKED finding. Three architectural options documented; ADR required before implementation. | Claude |
 
 ## Dev Agent Record
