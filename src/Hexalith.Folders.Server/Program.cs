@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddFoldersServer();
+builder.Services.AddAuthorization();
 builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
 
 // Production safety gate: AddInMemoryFolderRepository registers a dictionary-backed

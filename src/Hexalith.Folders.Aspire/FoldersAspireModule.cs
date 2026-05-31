@@ -106,9 +106,12 @@ public static class FoldersAspireModule
                 .WithReference(stateStore)
                 .WithReference(pubSub));
 
+        EndpointReference foldersHttp = folders.GetEndpoint("http");
+
         _ = foldersUi
             .WithReference(folders)
             .WaitFor(folders)
+            .WithEnvironment("Folders__Client__BaseAddress", ReferenceExpression.Create($"{foldersHttp}"))
             .WithExternalHttpEndpoints()
             .WithDaprSidecar(sidecar => sidecar
                 .WithOptions(new DaprSidecarOptions
