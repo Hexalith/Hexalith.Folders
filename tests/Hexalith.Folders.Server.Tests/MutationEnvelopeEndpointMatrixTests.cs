@@ -7,6 +7,8 @@ using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.Folders.Server.Authentication;
 
+using Hexalith.Folders.Testing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -133,6 +135,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.WebHost.UseTestServer();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();

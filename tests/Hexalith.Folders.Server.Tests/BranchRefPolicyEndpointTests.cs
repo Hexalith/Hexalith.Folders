@@ -11,6 +11,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Builder;
@@ -259,7 +260,7 @@ public sealed class BranchRefPolicyEndpointTests
     }
 
     [Fact]
-    public async Task GetBranchRefPolicyShouldUseSafeDenialEnvelopeForTenantMismatch()
+    public async Task GetBranchRefPolicyShouldDenyClientTenantMismatchBeforeReadModelAccess()
     {
         RecordingEventStoreGatewayClient gateway = new();
         await using WebApplication app = BuildApp(gateway, BranchRefPolicyReadModel());
@@ -275,7 +276,9 @@ public sealed class BranchRefPolicyEndpointTests
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
-        json.ShouldContain("\"code\":\"denied_safe\"");
+        json.ShouldContain("\"category\":\"authorization_denied\"");
+        json.ShouldContain("\"code\":\"claim_transform_denied\"");
+        json.ShouldContain("\"clientAction\":\"no_action\"");
         json.ShouldNotContain("folder-secret-victim", Case.Sensitive);
         json.ShouldNotContain("tenant-secret-victim", Case.Sensitive);
         response.Headers.Contains("X-Hexalith-Freshness").ShouldBeFalse();
@@ -312,6 +315,7 @@ public sealed class BranchRefPolicyEndpointTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.WebHost.UseTestServer();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();

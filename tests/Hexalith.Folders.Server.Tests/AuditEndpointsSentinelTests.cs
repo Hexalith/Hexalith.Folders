@@ -7,6 +7,8 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Server.Authentication;
 
+using Hexalith.Folders.Testing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -149,6 +151,7 @@ public sealed class AuditEndpointsSentinelTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<ITenantContextAccessor>();

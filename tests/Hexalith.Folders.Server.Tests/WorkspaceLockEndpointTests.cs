@@ -14,6 +14,8 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
 
+using Hexalith.Folders.Testing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -1073,6 +1075,7 @@ public sealed class WorkspaceLockEndpointTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.WebHost.UseTestServer();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();

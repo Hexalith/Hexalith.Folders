@@ -14,6 +14,7 @@ using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Builder;
@@ -306,14 +307,8 @@ public sealed class ArchiveFolderProcessWiringTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
-        // AddFoldersServer registers FoldersAuthSchemeValidator (needs IAuthenticationSchemeProvider)
-        // and MapFoldersServerEndpoints maps the ServiceDefaults health endpoints (need
-        // HealthCheckService). The slim test host doesn't pull in AddServiceDefaults, so register
-        // the two composition primitives the server surface depends on. Matches the pattern in
-        // GoldenLifecycleParityTests and MixedSurfaceHandoffTests.
-        builder.Services.AddAuthentication();
-        builder.Services.AddHealthChecks();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();

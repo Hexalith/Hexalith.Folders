@@ -7,6 +7,8 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Server.Authentication;
 
+using Hexalith.Folders.Testing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +33,7 @@ public sealed class AuditEndpointsTests
     public void MapFoldersServerEndpointsShouldRegisterAllFourAuditRoutes()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor("tenant-a", "user-a"));
@@ -540,6 +543,7 @@ public sealed class AuditEndpointsTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<ITenantContextAccessor>();
@@ -605,6 +609,7 @@ public sealed class AuditEndpointsTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<ITenantContextAccessor>();

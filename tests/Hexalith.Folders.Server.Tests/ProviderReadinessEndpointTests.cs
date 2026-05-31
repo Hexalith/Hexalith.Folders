@@ -10,6 +10,8 @@ using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Testing.Providers;
 
+using Hexalith.Folders.Testing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
@@ -28,6 +30,7 @@ public sealed class ProviderReadinessEndpointTests
     public void MapFoldersServerEndpointsShouldRegisterProviderReadinessRoute()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
@@ -503,6 +506,7 @@ public sealed class ProviderReadinessEndpointTests
             "tenant-a",
             "user-a",
             [ProviderReadinessValidationService.ReadActionToken, ProviderSupportEvidenceQueryHandler.ReadActionToken]));
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();

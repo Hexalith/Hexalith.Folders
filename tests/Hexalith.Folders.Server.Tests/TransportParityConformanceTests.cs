@@ -14,6 +14,7 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Builder;
@@ -419,6 +420,7 @@ public sealed class TransportParityConformanceTests
     private static HashSet<string> LoadRegisteredOperationIds()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         using WebApplication app = builder.Build();
@@ -480,6 +482,7 @@ public sealed class TransportParityConformanceTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
@@ -529,6 +532,7 @@ public sealed class TransportParityConformanceTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<ITenantContextAccessor>();

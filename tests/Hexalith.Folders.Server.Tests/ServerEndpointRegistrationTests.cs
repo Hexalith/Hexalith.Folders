@@ -1,6 +1,7 @@
 using Dapr;
 
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Testing;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +30,7 @@ public sealed class ServerEndpointRegistrationTests
     public void MapFoldersServerEndpointsShouldRegisterDomainServiceAndTenantSubscriptionRoutes()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
@@ -58,6 +60,7 @@ public sealed class ServerEndpointRegistrationTests
     public void TenantEventsRouteShouldCarryExpectedTopicMetadata()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
@@ -87,6 +90,7 @@ public sealed class ServerEndpointRegistrationTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();

@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-31T15:00:00+02:00
+# last_updated: 2026-05-31T15:00:01+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-31T15:00:00+02:00
+last_updated: 2026-05-31T15:00:01+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -158,5 +158,5 @@ development_status:
   7-15-publish-provider-and-error-documentation: done
   7-16-publish-nfr-traceability-bridge: done
   7-17-publish-adr-set-and-maintenance-runbooks: done
-  7-18-restore-test-host-composition-baseline: ready-for-dev
+  7-18-restore-test-host-composition-baseline: done
   epic-7-retrospective: done

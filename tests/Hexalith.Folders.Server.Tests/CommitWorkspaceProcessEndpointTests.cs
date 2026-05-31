@@ -9,6 +9,8 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server.Authentication;
 
+using Hexalith.Folders.Testing;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,6 +98,7 @@ public sealed class CommitWorkspaceProcessEndpointTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.WebHost.UseTestServer();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.RemoveAll<IFolderRepository>();
         builder.Services.AddSingleton<IFolderRepository>(repository);

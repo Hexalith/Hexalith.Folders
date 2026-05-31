@@ -9,6 +9,7 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Builder;
@@ -411,6 +412,7 @@ public sealed class FileContextEndpointTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.WebHost.UseTestServer();
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         builder.Services.RemoveAll<ITenantContextAccessor>();

@@ -3,6 +3,7 @@ using System.Text.Json;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -23,6 +24,7 @@ public sealed class EffectivePermissionsEndpointTests
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore("tenant-a", "user-a"));
         builder.Services.AddSingleton<IEffectivePermissionsReadModel>(ReadModel());
         builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor("tenant-a", "user-a"));
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
@@ -156,6 +158,7 @@ public sealed class EffectivePermissionsEndpointTests
         builder.Services.AddSingleton(tenantStore);
         builder.Services.AddSingleton(readModel);
         builder.Services.AddSingleton(tenantContext);
+        builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
