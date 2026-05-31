@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-05-31T12:00:00+02:00
+# last_updated: 2026-05-31T15:00:00+02:00
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-05-31T12:00:00+02:00
+last_updated: 2026-05-31T15:00:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -111,7 +111,7 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Cross-Surface Workflow Parity
-  epic-5: in-progress
+  epic-5: done
   5-1-ship-sdk-convenience-helpers-samples-and-quickstart: done
   5-2-implement-cli-commands-with-behavioral-parity-rules: done
   5-3-implement-mcp-tools-resources-and-failure-kinds: done
@@ -137,7 +137,10 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: MVP Release Readiness And Operational Evidence
-  epic-7: done
+  # Reopened 2026-05-31 (in-progress) to own Story 7-18, the systemic test-host
+  # composition red surfaced during 2-8b verification. See
+  # planning-artifacts/sprint-change-proposal-2026-05-31-test-host-composition-baseline.md
+  epic-7: in-progress
   7-1-deploy-production-dapr-deny-by-default-access-control: done
   7-2-configure-production-oidc-and-secret-store-integration: done
   7-3-build-container-images-with-stable-dapr-app-ids: done
@@ -155,4 +158,5 @@ development_status:
   7-15-publish-provider-and-error-documentation: done
   7-16-publish-nfr-traceability-bridge: done
   7-17-publish-adr-set-and-maintenance-runbooks: done
+  7-18-restore-test-host-composition-baseline: ready-for-dev
   epic-7-retrospective: done

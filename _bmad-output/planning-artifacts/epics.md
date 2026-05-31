@@ -1689,3 +1689,19 @@ So that design rationale and operational decisions survive handoff and release p
 **When** ADRs and runbooks are reviewed
 **Then** ADRs cover major contract, provider, idempotency, security, observability, and deployment decisions
 **And** runbooks cover tenant deletion, retention, alerts, rollback, provider drift, reconciliation, and incident-mode operations.
+
+### Story 7.18: Restore shared test-host composition baseline
+
+_Added 2026-05-31 via the bmad-correct-course Sprint Change Proposal (reopens Epic 7). Owns the systemic test-host DI-composition red surfaced during 2-8b verification — distinct from, and ~50× larger than, the epic-1 CLI-reds historical-reds item._
+
+As a platform engineer,
+I want every in-process test host that mounts the Folders server surface to compose the same auth-scheme and health-check primitives the production surface now requires,
+So that the MVP test suite runs green at HEAD and the "conditionally release-ready" claim rests on an honestly-passing baseline rather than ≈352 silently-red tests from a single composition gap.
+
+**Acceptance Criteria:**
+
+**Given** `AddFoldersServer()` registers `FoldersAuthSchemeValidator` (needs `IAuthenticationSchemeProvider`) and `MapFoldersServerEndpoints()` maps health endpoints (need `HealthCheckService`)
+**When** a shared test-host helper (`AddAuthentication()`+`AddHealthChecks()`) is applied across all affected hosts
+**Then** `Hexalith.Folders.Server.Tests` reports Total 433 / Failed 0, and the `IntegrationTests` (Golden/MixedSurface) and `Folders.Tests` (Epic 3 provider-boundary) composition reds clear
+**And** a central host-composition smoke test (`ValidateOnBuild`) guards the shared-surface DI contract against recurrence
+**And** no production code behavior changes.
