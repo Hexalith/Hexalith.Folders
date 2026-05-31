@@ -151,7 +151,7 @@ development_status:
   7-11-enforce-c3-retention-and-tenant-deletion-behavior: done
   7-12-wire-production-observability-and-alerts: done
   7-13-publish-api-sdk-cli-and-mcp-consumer-references: done
-  7-14-publish-operations-and-audit-documentation: backlog
+  7-14-publish-operations-and-audit-documentation: done
   7-15-publish-provider-and-error-documentation: backlog
   7-16-publish-nfr-traceability-bridge: backlog
   7-17-publish-adr-set-and-maintenance-runbooks: backlog

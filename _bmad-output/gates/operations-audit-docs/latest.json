@@ -1,0 +1,61 @@
+{
+  "gate": "operations-audit-docs",
+  "status": "passed",
+  "exit_code": 0,
+  "diagnostic_policy": "metadata-only",
+  "report_path": "_bmad-output/gates/operations-audit-docs/latest.json",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "canonical_inputs": [
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+    "src/Hexalith.Folders.Contracts/Projections/Audit/AuditRecord.cs",
+    "src/Hexalith.Folders.Contracts/Projections/Audit/OperationTimelineEntry.cs",
+    "src/Hexalith.Folders/Observability/FolderAuditOperationKind.cs",
+    "src/Hexalith.Folders/Observability/FolderAuditResult.cs",
+    "src/Hexalith.Folders.UI/Services/DispositionLabelMapper.cs",
+    "src/Hexalith.Folders.Contracts/Projections/Audit/RedactionVisibility.cs",
+    "src/Hexalith.Folders.UI/Services/FieldDisclosure.cs",
+    "deploy/observability/production/observability.yaml",
+    "docs/runbooks/tenant-deletion.md",
+    "tests/fixtures/audit-leakage-corpus.json"
+  ],
+  "surfaces": [
+    {
+      "surface": "console-workflows",
+      "doc": "docs/operations/operations-console.md",
+      "assertion": "routes-journeys-disposition-and-technical-states-equal-mapper"
+    },
+    {
+      "surface": "audit-fields",
+      "doc": "docs/operations/audit-and-redaction.md",
+      "assertion": "audit-operations-fields-and-kind-result-taxonomy-equal-source"
+    },
+    {
+      "surface": "redaction",
+      "doc": "docs/operations/audit-and-redaction.md",
+      "assertion": "wire-and-presentation-vocabularies-equal-redactionvisibility-and-fielddisclosure"
+    },
+    {
+      "surface": "incident-mode",
+      "doc": "docs/operations/incident-alerting-and-recovery.md",
+      "assertion": "last-resort-read-guardrails-and-projection-independent-read-reference-pending"
+    },
+    {
+      "surface": "alerting-handoff",
+      "doc": "docs/operations/incident-alerting-and-recovery.md",
+      "assertion": "alert-signals-and-severities-equal-observability-manifest"
+    },
+    {
+      "surface": "backup-recovery",
+      "doc": "docs/operations/incident-alerting-and-recovery.md",
+      "assertion": "authoritative-records-rebuildable-projections-and-no-automation"
+    }
+  ],
+  "reference_pending": {
+    "status": "reference_pending_external_tooling",
+    "severity": "warning",
+    "owner": "Operations Runbook (Story 7.17)",
+    "command_shape": "pwsh ./tests/tools/run-operations-audit-docs-gates.ps1",
+    "evidence_path": "_bmad-output/gates/operations-audit-docs/latest.json",
+    "follow_up_boundary": "live alerting, dashboards, paging, and backup/restore tooling stay external; metadata-only intent only; no live endpoints, tokens, or rendered content in CI"
+  }
+}
