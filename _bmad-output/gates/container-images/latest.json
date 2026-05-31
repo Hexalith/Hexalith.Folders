@@ -1,6 +1,6 @@
 {
   "gate": "container-images",
-  "status": "failed",
+  "status": "passed",
   "services": [
     {
       "service": "server",
@@ -20,7 +20,7 @@
         "io.hexalith.project",
         "io.hexalith.service"
       ],
-      "command_exit_code": 1
+      "command_exit_code": 0
     },
     {
       "service": "workers",
@@ -40,7 +40,7 @@
         "io.hexalith.project",
         "io.hexalith.service"
       ],
-      "command_exit_code": 1
+      "command_exit_code": 0
     },
     {
       "service": "ui",
@@ -60,7 +60,7 @@
         "io.hexalith.project",
         "io.hexalith.service"
       ],
-      "command_exit_code": 1
+      "command_exit_code": 0
     }
   ],
   "required_labels": [

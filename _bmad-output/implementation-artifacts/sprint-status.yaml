@@ -140,7 +140,7 @@ development_status:
   epic-7: in-progress
   7-1-deploy-production-dapr-deny-by-default-access-control: done
   7-2-configure-production-oidc-and-secret-store-integration: done
-  7-3-build-container-images-with-stable-dapr-app-ids: in-progress
+  7-3-build-container-images-with-stable-dapr-app-ids: done
   7-4-consolidate-baseline-build-and-unit-ci-gates: done
   7-5-consolidate-contract-and-parity-ci-gates: done
   7-6-consolidate-security-and-redaction-ci-gates: done

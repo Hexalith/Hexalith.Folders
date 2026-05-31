@@ -4,7 +4,7 @@ baseline_commit: 4efa6372b1ca1fa8ce8201620b349da5274df323
 
 # Story 7.3: Build container images with stable Dapr app IDs
 
-Status: in-progress
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -35,50 +35,50 @@ Decomposed acceptance criteria:
 
 ## Tasks / Subtasks
 
-- [ ] Normalize container publishing metadata for all service hosts (AC: 1, 2, 3, 4)
-  - [ ] Review `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`, `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`, and `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`.
-  - [ ] Add missing Workers container settings. At minimum set a stable repository such as `hexalith-folders-workers`; use central/shared MSBuild properties if that prevents drift.
-  - [ ] Decide whether to rename existing Server/UI `ContainerRepository` values from `folders` / `folders-ui` to full image names. If `folders` remains the server image repository, document why it intentionally equals the Dapr app ID.
-  - [ ] Add deterministic, non-secret OCI labels through MSBuild container properties or a shared target. Include source/revision/version/service labels without real tenant, credential, endpoint, token, or provider payload values.
-  - [ ] Do not add `Microsoft.NET.Build.Containers`; .NET SDK container publishing is built into modern SDKs used by this repo.
+- [x] Normalize container publishing metadata for all service hosts (AC: 1, 2, 3, 4)
+  - [x] Review `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`, `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`, and `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`.
+  - [x] Add missing Workers container settings. At minimum set a stable repository such as `hexalith-folders-workers`; use central/shared MSBuild properties if that prevents drift.
+  - [x] Decide whether to rename existing Server/UI `ContainerRepository` values from `folders` / `folders-ui` to full image names. If `folders` remains the server image repository, document why it intentionally equals the Dapr app ID.
+  - [x] Add deterministic, non-secret OCI labels through MSBuild container properties or a shared target. Include source/revision/version/service labels without real tenant, credential, endpoint, token, or provider payload values.
+  - [x] Do not add `Microsoft.NET.Build.Containers`; .NET SDK container publishing is built into modern SDKs used by this repo.
 
-- [ ] Add or update a focused container build script/gate (AC: 1, 3, 4, 8)
-  - [ ] Add a hermetic script under `tests/tools/`, suggested `run-container-image-gates.ps1`, following the style of `run-dapr-policy-conformance-gates.ps1`.
-  - [ ] Publish the three service projects in Release for Linux x64 with SDK container targets. Prefer `ContainerArchiveOutputPath` for CI/sandbox validation so the gate does not require a registry push.
-  - [ ] Emit a metadata-only JSON report under `_bmad-output/gates/container-images/latest.json` with service name, project path, repository name, tags/labels asserted, and command exit code. Do not include absolute local paths, registry credentials, tokens, image layer contents, or environment dumps.
-  - [ ] Keep this gate optional or focused for Story 7.3. Story 7.4 owns consolidation into baseline PR CI.
+- [x] Add or update a focused container build script/gate (AC: 1, 3, 4, 8)
+  - [x] Add a hermetic script under `tests/tools/`, suggested `run-container-image-gates.ps1`, following the style of `run-dapr-policy-conformance-gates.ps1`.
+  - [x] Publish the three service projects in Release for Linux x64 with SDK container targets. Prefer `ContainerArchiveOutputPath` for CI/sandbox validation so the gate does not require a registry push.
+  - [x] Emit a metadata-only JSON report under `_bmad-output/gates/container-images/latest.json` with service name, project path, repository name, tags/labels asserted, and command exit code. Do not include absolute local paths, registry credentials, tokens, image layer contents, or environment dumps.
+  - [x] Keep this gate optional or focused for Story 7.3. Story 7.4 owns consolidation into baseline PR CI.
 
-- [ ] Align local Aspire Dapr app IDs and sidecar topology (AC: 5, 7)
-  - [ ] Inspect `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`; Server and Workers already use `WithDaprSidecar`, but UI currently only references Server and exposes HTTP endpoints.
-  - [ ] If production remains sidecar-enabled for UI, add a `foldersUi.WithDaprSidecar(...)` configuration with `AppId = FoldersAspireModule.FoldersUiAppId` and `Config = daprConfigPath`.
-  - [ ] Preserve existing dependencies: UI references Server and waits for Server; Server and Workers reference/wait for EventStore and Tenants; shared `statestore` and `pubsub` component names stay `statestore` and `pubsub`.
-  - [ ] Update `tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs` to prove all expected Dapr sidecar app IDs are present in local topology, not just exposed as constants.
+- [x] Align local Aspire Dapr app IDs and sidecar topology (AC: 5, 7)
+  - [x] Inspect `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`; Server and Workers already use `WithDaprSidecar`, but UI currently only references Server and exposes HTTP endpoints.
+  - [x] If production remains sidecar-enabled for UI, add a `foldersUi.WithDaprSidecar(...)` configuration with `AppId = FoldersAspireModule.FoldersUiAppId` and `Config = daprConfigPath`.
+  - [x] Preserve existing dependencies: UI references Server and waits for Server; Server and Workers reference/wait for EventStore and Tenants; shared `statestore` and `pubsub` component names stay `statestore` and `pubsub`.
+  - [x] Update `tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs` to prove all expected Dapr sidecar app IDs are present in local topology, not just exposed as constants.
 
-- [ ] Strengthen production deployment evidence for image-plus-sidecar binding (AC: 2, 5, 6, 8)
-  - [ ] Update `deploy/dapr/production/sidecar-config-bindings.yaml` or add a narrow companion artifact such as `deploy/containers/production/service-images.yaml` to bind each service deployment to its stable image repository and Dapr app ID.
-  - [ ] Keep `dapr.io/app-id` values exact: `folders`, `folders-workers`, `folders-ui`. Do not derive app IDs from image repositories, Kubernetes deployment names, GitHub Actions job names, or branch names.
-  - [ ] Preserve existing `dapr.io/config` values: `hexalith-folders-production-accesscontrol-folders`, `hexalith-folders-production-accesscontrol-folders-workers`, and `hexalith-folders-production-accesscontrol-folders-ui`.
-  - [ ] Do not add real registry names, production namespaces beyond sanitized placeholders already in production Dapr artifacts, image digests from private registries, Kubernetes Secret manifests, pull secrets, or live cluster references.
+- [x] Strengthen production deployment evidence for image-plus-sidecar binding (AC: 2, 5, 6, 8)
+  - [x] Update `deploy/dapr/production/sidecar-config-bindings.yaml` or add a narrow companion artifact such as `deploy/containers/production/service-images.yaml` to bind each service deployment to its stable image repository and Dapr app ID.
+  - [x] Keep `dapr.io/app-id` values exact: `folders`, `folders-workers`, `folders-ui`. Do not derive app IDs from image repositories, Kubernetes deployment names, GitHub Actions job names, or branch names.
+  - [x] Preserve existing `dapr.io/config` values: `hexalith-folders-production-accesscontrol-folders`, `hexalith-folders-production-accesscontrol-folders-workers`, and `hexalith-folders-production-accesscontrol-folders-ui`.
+  - [x] Do not add real registry names, production namespaces beyond sanitized placeholders already in production Dapr artifacts, image digests from private registries, Kubernetes Secret manifests, pull secrets, or live cluster references.
 
-- [ ] Add conformance tests for container and deployment contracts (AC: all)
-  - [ ] Add static tests, suggested under `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` or a new `Deployment` folder, that parse service `.csproj` XML semantically and assert expected container repositories, labels, and publishability.
-  - [ ] Extend Dapr policy/deployment tests or add a dedicated test to parse production deployment YAML and assert image repository to Dapr app ID mapping.
-  - [ ] Add tests that fail on secret-shaped material in container/deployment artifacts: `ghp_`, `github_pat_`, `client_secret`, `private_key`, `BEGIN .*PRIVATE KEY`, `password=`, `token=`, and production-looking URLs.
-  - [ ] Add or extend tests to assert no `git submodule update --init --recursive` / `--recursive` setup appears in new scripts, docs, workflows, or deployment artifacts.
+- [x] Add conformance tests for container and deployment contracts (AC: all)
+  - [x] Add static tests, suggested under `tests/Hexalith.Folders.Contracts.Tests/OpenApi/` or a new `Deployment` folder, that parse service `.csproj` XML semantically and assert expected container repositories, labels, and publishability.
+  - [x] Extend Dapr policy/deployment tests or add a dedicated test to parse production deployment YAML and assert image repository to Dapr app ID mapping.
+  - [x] Add tests that fail on secret-shaped material in container/deployment artifacts: `ghp_`, `github_pat_`, `client_secret`, `private_key`, `BEGIN .*PRIVATE KEY`, `password=`, `token=`, and production-looking URLs.
+  - [x] Add or extend tests to assert no `git submodule update --init --recursive` / `--recursive` setup appears in new scripts, docs, workflows, or deployment artifacts.
 
-- [ ] Document operator handoff (AC: 2, 3, 4, 5, 6)
-  - [ ] Add or update `docs/operations/container-images-and-dapr-app-ids.md`.
-  - [ ] Document service image names, Dapr app IDs, sidecar config names, expected publish commands, non-secret label keys, and promotion flow from local/archive validation to staging/production registry ownership.
-  - [ ] Make the naming distinction explicit: image repository names are deployment artifacts; Dapr app IDs are policy identities and must remain stable across environments.
+- [x] Document operator handoff (AC: 2, 3, 4, 5, 6)
+  - [x] Add or update `docs/operations/container-images-and-dapr-app-ids.md`.
+  - [x] Document service image names, Dapr app IDs, sidecar config names, expected publish commands, non-secret label keys, and promotion flow from local/archive validation to staging/production registry ownership.
+  - [x] Make the naming distinction explicit: image repository names are deployment artifacts; Dapr app IDs are policy identities and must remain stable across environments.
 
-- [ ] Verification (AC: all)
-  - [ ] Run `dotnet restore Hexalith.Folders.slnx`.
-  - [ ] Run `dotnet build Hexalith.Folders.slnx --no-restore`.
-  - [ ] Run focused container/deployment conformance tests.
-  - [ ] Run `tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` if PowerShell/VSTest is available; otherwise record the sandbox limitation and run the matching test assembly/filter by the available in-process xUnit path used in Story 7.2.
-  - [ ] Run SDK container publish checks for Server, Workers, and UI using archive output or local OCI daemon.
-  - [ ] Run `rg -n "git submodule update --init --recursive|--recursive" .github tests docs deploy src` and confirm new work did not introduce recursive submodule setup.
-  - [ ] Run a secret-shaped scan across touched deployment/container artifacts and report exact commands and limitations in the Dev Agent Record.
+- [x] Verification (AC: all)
+  - [x] Run `dotnet restore Hexalith.Folders.slnx`.
+  - [x] Run `dotnet build Hexalith.Folders.slnx --no-restore`.
+  - [x] Run focused container/deployment conformance tests.
+  - [x] Run `tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` if PowerShell/VSTest is available; otherwise record the sandbox limitation and run the matching test assembly/filter by the available in-process xUnit path used in Story 7.2.
+  - [x] Run SDK container publish checks for Server, Workers, and UI using archive output or local OCI daemon.
+  - [x] Run `rg -n "git submodule update --init --recursive|--recursive" .github tests docs deploy src` and confirm new work did not introduce recursive submodule setup.
+  - [x] Run a secret-shaped scan across touched deployment/container artifacts and report exact commands and limitations in the Dev Agent Record.
 
 ## Dev Notes
 
@@ -172,6 +172,93 @@ Codex GPT-5
 
 ### Debug Log References
 
+- 2026-05-30: `dotnet restore Hexalith.Folders.slnx` and `dotnet build Hexalith.Folders.slnx --no-restore` initially failed silently under default MSBuild parallelism; reran with `-m:1` and both passed.
+- 2026-05-30: `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.Deployment` passed 5/5.
+- 2026-05-30: `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance` passed 8/8.
+- 2026-05-30: `dotnet tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll -noLogo -noColor -class Hexalith.Folders.IntegrationTests.AspireTopologyTests` passed 4/4 after resolving test project paths from the repository root.
+- 2026-05-30: `pwsh -NoLogo -NoProfile -File tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` was attempted; VSTest aborted with `System.Net.Sockets.SocketException (13): Permission denied`, so the matching Dapr policy tests were run through xUnit v3 in-process.
+- 2026-05-30: `pwsh -NoLogo -NoProfile -File tests/tools/run-container-image-gates.ps1` was attempted; SDK container publish reached image creation but failed because the sandbox blocks outbound access to `mcr.microsoft.com` and `api.nuget.org`. The gate emitted `_bmad-output/gates/container-images/latest.json` with metadata-only failed service results.
+- 2026-05-30: Broad in-process regression signal: sample, CLI, client, load, and MCP test assemblies passed before known unrelated baseline failures appeared in contract negative-scope tests, integration/server authentication-scheme test hosts, and VSTest socket usage.
+- 2026-05-30: `rg -n "git submodule update --init --recursive|--recursive" .github tests docs deploy src` returned only existing guard/test assertions. A focused scan of Story 7.3 container/deployment artifacts returned no recursive submodule setup.
+- 2026-05-30: Secret-shaped scan of Story 7.3 container/deployment artifacts returned no matches. Including test source returns expected regex definitions for the forbidden patterns themselves.
+- 2026-05-30: `git diff --check` passed.
+- 2026-05-30: Re-ran `dotnet restore Hexalith.Folders.slnx -m:1` and `dotnet build Hexalith.Folders.slnx --no-restore -m:1`; both passed.
+- 2026-05-30: Re-ran focused Story 7.3 checks through xUnit v3 in-process: deployment conformance passed 5/5, Dapr policy conformance passed 8/8, and Aspire topology passed 4/4.
+- 2026-05-30: Re-ran `pwsh -NoLogo -NoProfile -File tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild`; VSTest still aborted with `System.Net.Sockets.SocketException (13): Permission denied`, while the matching in-process Dapr conformance lane passed.
+- 2026-05-30: Re-ran `pwsh -NoLogo -NoProfile -File tests/tools/run-container-image-gates.ps1`; SDK container publish still failed when the sandbox blocked `mcr.microsoft.com` base-image access and `api.nuget.org` runtime-pack access. `_bmad-output/gates/container-images/latest.json` was emitted with metadata-only failed service results.
+- 2026-05-30: Re-ran full in-process test assemblies. Story-focused and several non-host lanes passed, but existing broad-suite failures remain in contract negative-scope tests, server/integration authentication-scheme test hosts, missing Playwright browser binaries, worker host socket binding, and unrelated provider/scaffold guard tests.
+- 2026-05-30: Re-ran recursive-submodule scan and focused secret-shaped scan for Story 7.3 artifacts. Recursive scan returned only existing guard/test assertions, and focused secret scan returned no matches.
+- 2026-05-30: `dotnet restore Hexalith.Folders.slnx -m:1` failed in the restricted sandbox with `NU1900` because NuGet vulnerability audit could not reach `api.nuget.org`; `dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false` passed.
+- 2026-05-30: `dotnet build Hexalith.Folders.slnx --no-restore -m:1` passed after the audit-disabled restore.
+- 2026-05-30: Re-ran focused Story 7.3 tests after the container gate patch: deployment conformance passed 5/5, Dapr policy conformance passed 8/8, and Aspire topology passed 4/4.
+- 2026-05-30: `pwsh -NoLogo -NoProfile -File tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` still aborted in VSTest with `System.Net.Sockets.SocketException (13): Permission denied`; matching Dapr policy conformance passed through the in-process xUnit runner.
+- 2026-05-30: Patched `tests/tools/run-container-image-gates.ps1` so `-SkipRestoreBuild` no longer appends `--no-restore` to RID-specific SDK container publish commands, and so the offline container gate uses `-p:NuGetAudit=false`.
+- 2026-05-30: `pwsh -NoLogo -NoProfile -File tests/tools/run-container-image-gates.ps1 -SkipRestoreBuild` now reaches SDK container publish for Server and Workers and emits all three service results, but still fails in the sandbox on `mcr.microsoft.com` base-image access and NuGet repository-signature/runtime-pack access for UI. `_bmad-output/gates/container-images/latest.json` was emitted with metadata-only failed service results.
+- 2026-05-30: `dotnet test Hexalith.Folders.slnx --no-build -m:1` was attempted and every VSTest lane aborted with `System.Net.Sockets.SocketException (13): Permission denied`; focused in-process Story 7.3 tests passed.
+- 2026-05-30: Re-ran `rg -n "git submodule update --init --recursive|--recursive" .github tests docs deploy src`; matches were existing guard/test assertions only. Focused Story 7.3 artifact recursive-submodule scan returned no matches.
+- 2026-05-30: Re-ran focused secret-shaped scan across Story 7.3 container/deployment artifacts; no matches. `git diff --check` passed.
+- 2026-05-31: Resumed deferred Story 7.3 after the rest of Epic 7 completed and reapplied stash `story-7.3-deferred-wip-20260530T1450Z`.
+- 2026-05-31: `dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false` passed.
+- 2026-05-31: `dotnet build Hexalith.Folders.slnx --no-restore -m:1` passed with 0 warnings and 0 errors.
+- 2026-05-31: Focused in-process checks passed: `ContainerImageConformanceTests` 5/5, `DaprPolicyConformance` 8/8, and `AspireTopologyTests` 4/4.
+- 2026-05-31: `pwsh -NoLogo -NoProfile -File tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` passed 8/8 and regenerated the Dapr policy report.
+- 2026-05-31: `pwsh -NoLogo -NoProfile -File tests/tools/run-container-image-gates.ps1 -SkipRestoreBuild` passed and generated local SDK container archives for `hexalith-folders-server`, `hexalith-folders-workers`, and `hexalith-folders-ui`; `_bmad-output/gates/container-images/latest.json` now reports `status: passed` with metadata-only service results.
+- 2026-05-31: `dotnet format whitespace` and `dotnet format analyzers` passed for the modified contract and integration test files.
+- 2026-05-31: `git diff --check` passed; focused recursive-submodule and secret-shaped scans across Story 7.3 artifacts returned no matches.
+
 ### Completion Notes List
 
+- Normalized Server, Workers, and UI container metadata to stable repositories with shared non-secret OCI labels in `Directory.Build.targets`.
+- Kept Dapr app IDs distinct from image repositories: `folders`, `folders-workers`, and `folders-ui` remain policy identities while image repositories use `hexalith-folders-*` names.
+- Matched local Aspire topology to production sidecar evidence by keeping the UI sidecar enabled with app ID `folders-ui`, and fixed the topology test to resolve project paths correctly from in-process xUnit runs.
+- Added sanitized production image-to-Dapr binding evidence and operator handoff documentation for image names, Dapr app IDs, configs, labels, and promotion flow.
+- Added focused conformance tests for SDK container metadata, service image bindings, secret-shaped material, recursive submodule setup, Dapr policy bindings, and local sidecar topology.
+- Updated the container image gate to write failure reports with empty result sets and to use single-node MSBuild for this repository's sandbox-sensitive build graph.
+- Fixed the container gate's `-SkipRestoreBuild` path so SDK container publish can restore RID-specific assets instead of failing early on missing `linux-x64` restore targets, and added a conformance assertion for that behavior.
+- Verification is ready for review after the resumed run: the Dapr gate and SDK container archive gate now pass in this environment, and the container report records `status: passed`.
+
 ### File List
+
+- `Directory.Build.targets`
+- `deploy/containers/production/service-images.yaml`
+- `docs/operations/container-images-and-dapr-app-ids.md`
+- `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`
+- `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`
+- `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`
+- `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`
+- `tests/Hexalith.Folders.Contracts.Tests/Deployment/ContainerImageConformanceTests.cs`
+- `tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs`
+- `tests/tools/run-container-image-gates.ps1`
+- `_bmad-output/gates/container-images/latest.json`
+- `_bmad-output/implementation-artifacts/7-3-build-container-images-with-stable-dapr-app-ids.md` (story tracking)
+- `_bmad-output/implementation-artifacts/tests/7-3-test-summary.md`
+- `_bmad-output/implementation-artifacts/tests/test-summary.md` (latest QA summary now points to Story 7.3)
+
+### Change Log
+
+| Date | Change | Author |
+| --- | --- | --- |
+| 2026-05-30 | Implemented stable SDK container image metadata, local/production Dapr app ID alignment, sanitized service image binding evidence, focused gates/tests, and operator handoff docs for Story 7.3. | Codex |
+| 2026-05-30 | Patched container gate failure reporting/single-node MSBuild behavior and fixed Aspire topology test path resolution found during validation. | Codex |
+| 2026-05-30 | Patched the container gate skip-restore path to allow RID-specific SDK container publish restore and added test coverage for the offline gate behavior. | Codex |
+| 2026-05-31 | Resumed deferred validation, confirmed full build, focused in-process tests, Dapr PowerShell gate, SDK container archive gate, format checks, diff hygiene, recursive-submodule scan, and secret-shaped scan; status -> review. | Codex (parent recovery) |
+| 2026-05-31 | Senior review fixed one story-record issue: the verification parent task was still unchecked after all validation subtasks passed. Reconfirmed task checklist, file list, focused gates, and sprint evidence; status -> done. | Senior Developer Review (AI) |
+
+## Senior Developer Review (AI)
+
+**Reviewer:** jpiquot (local fallback after stalled review session) · **Date:** 2026-05-31 · **Outcome:** Approved (minor story-record fix applied)
+
+Empirical review verified the implemented container/Dapr contract against the story acceptance criteria and the actual repository state:
+
+- Server, Workers, and UI projects publish SDK container images with stable repositories `hexalith-folders-server`, `hexalith-folders-workers`, and `hexalith-folders-ui`.
+- `Directory.Build.targets` centralizes non-secret OCI labels, `ContainerUser=app`, the .NET 10 Alpine base image, and metadata validation before `PublishContainer`.
+- Production evidence maps image repositories to the stable Dapr app IDs `folders`, `folders-workers`, and `folders-ui`, and local Aspire now attaches matching sidecars, including UI.
+- Focused conformance coverage is real: `ContainerImageConformanceTests` 5/5, Dapr policy conformance 8/8, and Aspire topology 4/4.
+- Both PowerShell gates now pass in this environment: Dapr policy conformance and SDK container archive publish. The container report records `status: passed`.
+- File List now covers the tracked story artifacts, including `_bmad-output/gates/container-images/latest.json` and the QA summaries.
+
+Finding fixed:
+
+1. **[LOW story-record] Verification parent task unchecked** - all verification subtasks and validation evidence were complete, but the parent task still showed `[ ]`. Updated it to `[x]` and confirmed no unchecked tasks remain.
+
+No Critical or High findings remain. Re-validated before approval: restore, full build, focused in-process tests, Dapr gate, container image gate, format/analyzers, diff hygiene, recursive-submodule scan, and secret-shaped scan all passed or returned clean.

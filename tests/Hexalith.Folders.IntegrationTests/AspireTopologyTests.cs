@@ -63,11 +63,11 @@ public sealed class AspireTopologyTests
         const string daprConfigPath = "DaprComponents/accesscontrol.yaml";
         IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder();
 
-        IResourceBuilder<ProjectResource> eventStore = builder.AddProject("eventstore-test", "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj");
-        IResourceBuilder<ProjectResource> tenants = builder.AddProject("tenants-test", "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj");
-        IResourceBuilder<ProjectResource> folders = builder.AddProject("folders-test", "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj");
-        IResourceBuilder<ProjectResource> foldersWorkers = builder.AddProject("folders-workers-test", "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj");
-        IResourceBuilder<ProjectResource> foldersUi = builder.AddProject("folders-ui-test", "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj");
+        IResourceBuilder<ProjectResource> eventStore = builder.AddProject("eventstore-test", RepositoryPath("src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"));
+        IResourceBuilder<ProjectResource> tenants = builder.AddProject("tenants-test", RepositoryPath("src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"));
+        IResourceBuilder<ProjectResource> folders = builder.AddProject("folders-test", RepositoryPath("src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"));
+        IResourceBuilder<ProjectResource> foldersWorkers = builder.AddProject("folders-workers-test", RepositoryPath("src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj"));
+        IResourceBuilder<ProjectResource> foldersUi = builder.AddProject("folders-ui-test", RepositoryPath("src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj"));
 
         HexalithFoldersResources resources = builder.AddHexalithFolders(
             eventStore,
@@ -91,5 +91,27 @@ public sealed class AspireTopologyTests
 
         options.Options.AppId.ShouldBe(expectedAppId);
         options.Options.Config.ShouldBe(expectedConfigPath);
+    }
+
+    private static string RepositoryPath(string relativePath)
+    {
+        string? directory = AppContext.BaseDirectory;
+        while (directory is not null)
+        {
+            string candidate = Path.Combine(directory, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            if (File.Exists(Path.Combine(directory, "Hexalith.Folders.slnx")))
+            {
+                return candidate;
+            }
+
+            directory = Directory.GetParent(directory)?.FullName;
+        }
+
+        return Path.Combine(AppContext.BaseDirectory, relativePath);
     }
 }

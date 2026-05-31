@@ -1,7 +1,5 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.3. Durable per-story copy: [`7-3-test-summary.md`](./7-3-test-summary.md).
-
 **Workflow:** `bmad-qa-generate-e2e-tests`
 **Story:** `_bmad-output/implementation-artifacts/7-3-build-container-images-with-stable-dapr-app-ids.md`
 **Feature under test:** SDK container image metadata, stable Dapr app IDs, production service-image binding

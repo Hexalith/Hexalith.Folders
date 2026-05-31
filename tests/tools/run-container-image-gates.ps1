@@ -69,6 +69,7 @@ function Get-SourceRevision {
 function Write-ContainerImageReport {
     param(
         [Parameter(Mandatory = $true)][string]$Status,
+        [AllowEmptyCollection()]
         [Parameter(Mandatory = $true)][array]$Results
     )
 
@@ -92,7 +93,7 @@ try {
     New-Item -ItemType Directory -Force -Path $archiveDirectory | Out-Null
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx
+        dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
         if ($LASTEXITCODE -ne 0) {
             Write-ContainerImageReport -Status 'failed' -Results @()
             exit $LASTEXITCODE
@@ -118,15 +119,13 @@ try {
             'linux',
             '--arch',
             'x64',
+            '-m:1',
             '/t:PublishContainer',
             "-p:ContainerArchiveOutputPath=$archivePath",
             '-p:ContainerImageTag=local-validation',
+            '-p:NuGetAudit=false',
             "-p:SourceRevisionId=$revision"
         )
-
-        if ($SkipRestoreBuild) {
-            $publishArgs += '--no-restore'
-        }
 
         & dotnet @publishArgs
         $exitCode = $LASTEXITCODE
