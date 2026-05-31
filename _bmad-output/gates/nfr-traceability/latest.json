@@ -1,0 +1,111 @@
+{
+  "gate": "nfr-traceability",
+  "status": "passed",
+  "exit_code": 0,
+  "diagnostic_policy": "metadata-only",
+  "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
+  "source_commit": "3ca0fdd245b61ec394eea4c801540c2fafa5bd2e",
+  "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+  "nfr_total": 70,
+  "category_total": 9,
+  "canonical_inputs": [
+    "_bmad-output/planning-artifacts/prd.md",
+    "_bmad-output/planning-artifacts/epics.md",
+    "_bmad-output/planning-artifacts/architecture.md",
+    "docs/exit-criteria/c0-c13-governance-evidence.yaml",
+    "docs/exit-criteria/nfr-traceability.md",
+    "tests/tools/run-release-package-gates.ps1",
+    ".github/workflows/release-packages.yml"
+  ],
+  "surfaces": [
+    "prd-nfr-inventory",
+    "epics-nfr-inventory",
+    "traceability-table",
+    "category-rollup",
+    "bdd-evidence-rollup",
+    "release-evidence",
+    "reference-pending-gaps",
+    "ci-wiring",
+    "release-wiring",
+    "metadata-only"
+  ],
+  "release_blocking_gaps": [
+    {
+      "nfr": "NFR18",
+      "criterion": "C7",
+      "owner": "Architecture",
+      "consuming_story": "4-3",
+      "gap": "lock-revalidation-budget-and-mid-task-revocation-evidence"
+    },
+    {
+      "nfr": "NFR26",
+      "criterion": "C4",
+      "owner": "PM",
+      "consuming_story": "4-8",
+      "gap": "pm-approval-of-context-query-input-bounds"
+    },
+    {
+      "nfr": "NFR28",
+      "criterion": "C4",
+      "owner": "PM",
+      "consuming_story": "4-8",
+      "gap": "pm-approval-of-large-file-and-payload-limits"
+    },
+    {
+      "nfr": "NFR44",
+      "criterion": "C12",
+      "owner": "Provider Readiness",
+      "consuming_story": "7-8",
+      "gap": "live-provider-drift-requires-credentials-absent-in-ci"
+    },
+    {
+      "nfr": "NFR54",
+      "criterion": "",
+      "owner": "Operations Runbook (Story 7.17)",
+      "consuming_story": "7-17",
+      "gap": "live-alert-delivery-tooling-deferred"
+    },
+    {
+      "nfr": "NFR55",
+      "criterion": "",
+      "owner": "Operations Runbook (Story 7.17)",
+      "consuming_story": "7-17",
+      "gap": "backup-restore-tooling-and-recovery-drill-evidence-deferred"
+    },
+    {
+      "nfr": "NFR57",
+      "criterion": "C3",
+      "owner": "Legal + PM",
+      "consuming_story": "7-11",
+      "gap": "legal-pm-approval-of-retention-durations"
+    },
+    {
+      "nfr": "NFR62",
+      "criterion": "",
+      "owner": "UX / Release Validation",
+      "consuming_story": "7-17",
+      "gap": "manual-wcag-keyboard-screen-reader-zoom-validation-evidence"
+    },
+    {
+      "nfr": "NFR63",
+      "criterion": "",
+      "owner": "UX / Release Validation",
+      "consuming_story": "7-17",
+      "gap": "manual-keyboard-navigation-validation-evidence"
+    },
+    {
+      "nfr": "NFR65",
+      "criterion": "",
+      "owner": "UX / Release Validation",
+      "consuming_story": "7-17",
+      "gap": "manual-focus-heading-contrast-validation-evidence"
+    },
+    {
+      "nfr": "NFR66",
+      "criterion": "",
+      "owner": "UX / Release Validation",
+      "consuming_story": "7-17",
+      "gap": "manual-browser-zoom-readability-validation-evidence"
+    }
+  ]
+}

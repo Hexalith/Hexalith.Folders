@@ -73,3 +73,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 15
         run: ./tests/tools/run-provider-error-docs-gates.ps1 -SkipRestoreBuild
+
+      - name: Run NFR traceability conformance gates
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/tools/run-nfr-traceability-gates.ps1 -SkipRestoreBuild

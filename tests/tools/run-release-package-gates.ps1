@@ -52,7 +52,8 @@ $evidencePaths = @(
     '_bmad-output/gates/capacity-calibration/latest.json',
     '_bmad-output/gates/retention-deletion/latest.json',
     '_bmad-output/gates/safety-invariants/latest.json',
-    '_bmad-output/gates/governance-completeness/latest.json'
+    '_bmad-output/gates/governance-completeness/latest.json',
+    '_bmad-output/gates/nfr-traceability/latest.json'
 )
 $categories = @(
     'version-policy',
@@ -524,6 +525,26 @@ function Assert-ReleaseEvidence {
 
             if ($evidence.status -ne 'passed') {
                 Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
+            }
+
+            continue
+        }
+
+        if ($relativePath -eq '_bmad-output/gates/nfr-traceability/latest.json') {
+            if ($evidence.status -ne 'passed') {
+                Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
+            }
+
+            # Every release-blocking NFR gap must name an owner; an unowned gap blocks the release review.
+            foreach ($gap in @($evidence.release_blocking_gaps)) {
+                if ([string]::IsNullOrWhiteSpace($gap.owner)) {
+                    Fail-Gate -Category 'release-evidence' -Reason 'nfr-traceability-unowned-release-blocking-gap'
+                }
+            }
+
+            # Live publish requires same-commit NFR traceability evidence; dry-run accepts the checked-in report.
+            if ($Mode -eq 'Publish' -and $evidence.source_commit -ne $SourceRevisionId) {
+                Fail-Gate -Category 'release-evidence' -Reason 'stale-nfr-traceability-evidence'
             }
 
             continue

@@ -97,6 +97,11 @@ jobs:
         timeout-minutes: 20
         run: ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild
 
+      - name: Run NFR traceability gates
+        shell: pwsh
+        timeout-minutes: 20
+        run: ./tests/tools/run-nfr-traceability-gates.ps1 -SkipRestoreBuild
+
   release-package-conformance:
     name: release-package-conformance
     runs-on: ubuntu-latest
