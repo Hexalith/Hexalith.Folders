@@ -1,4 +1,5 @@
 using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.Credentials;
 using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Providers.GitHub;
 

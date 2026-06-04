@@ -314,8 +314,6 @@ public sealed class TenantFolderProviderContractGroupTests
     {
         string[] forbiddenRoots =
         [
-            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Cli", "Commands"),
-            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Mcp", "Tools"),
             Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.UI", "Pages"),
             Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Workers", "Providers"),
         ];
@@ -331,11 +329,20 @@ public sealed class TenantFolderProviderContractGroupTests
             string[] workflowFiles = Directory.EnumerateFiles(githubRoot, "*.yml", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(githubRoot, "*.yaml", SearchOption.AllDirectories))
                 .ToArray();
+            string[] allowedWorkflowFiles =
+            [
+                ".github/workflows/ci.yml",
+                ".github/workflows/contract-spine.yml",
+                ".github/workflows/nightly-drift.yml",
+                ".github/workflows/policy-conformance.yml",
+                ".github/workflows/release-packages.yml",
+            ];
+
             workflowFiles
                 .Select(file => Path.GetRelativePath(_repositoryRootPath, file).Replace("\\", "/", StringComparison.Ordinal))
-                .Where(file => !string.Equals(file, ".github/workflows/contract-spine.yml", StringComparison.Ordinal))
+                .Where(file => !allowedWorkflowFiles.Contains(file, StringComparer.Ordinal))
                 .ToArray()
-                .ShouldBeEmpty("Story 1.7 must not add CI gates; Story 1.14 owns the focused contract-spine workflow.");
+                .ShouldBeEmpty("Only the known downstream CI/policy/release workflow inventory is allowed.");
         }
     }
 

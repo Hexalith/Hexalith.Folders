@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 
-namespace Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.Credentials;
 
 internal sealed class DaprProviderCredentialReferenceResolver(
     IProviderCredentialSecretStoreClient secretStoreClient,

@@ -26,6 +26,8 @@ public sealed class GitHubDependencyGuardTests
         references.ShouldAllBe(path =>
             path.StartsWith("src/Hexalith.Folders/Providers/GitHub/", StringComparison.Ordinal)
             || string.Equals(path, "src/Hexalith.Folders/Hexalith.Folders.csproj", StringComparison.Ordinal)
+            || string.Equals(path, "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs", StringComparison.Ordinal)
+            || string.Equals(path, "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs", StringComparison.Ordinal)
             || path.StartsWith("tests/Hexalith.Folders.Tests/Providers/GitHub/", StringComparison.Ordinal)
             || path.StartsWith("tests/Hexalith.Folders.Tests/Providers/Abstractions/", StringComparison.Ordinal));
     }

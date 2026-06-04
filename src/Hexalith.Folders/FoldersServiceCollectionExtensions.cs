@@ -5,6 +5,7 @@ using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Providers.GitHub;
 using Hexalith.Folders.Observability;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Providers.Credentials;
 using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.Folders;

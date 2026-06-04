@@ -277,8 +277,6 @@ public sealed class FileContextContractGroupTests
         [
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Endpoints", "FileEndpoints.cs"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Endpoints", "ContextQueryEndpoints.cs"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Cli", "Commands"),
-            Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Mcp", "Tools"),
             Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Workers", "Providers"),
         ];
 

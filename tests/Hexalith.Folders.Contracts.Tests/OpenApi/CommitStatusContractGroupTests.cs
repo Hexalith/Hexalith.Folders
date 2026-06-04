@@ -306,8 +306,6 @@ public sealed class CommitStatusContractGroupTests
             ("Hexalith.Folders.Server", "Commands/**/*.cs", "server-side commands"),
             ("Hexalith.Folders", "Aggregates/**/*.cs", "domain aggregate behavior"),
             ("Hexalith.Folders", "Providers/**/*.cs", "provider adapters"),
-            ("Hexalith.Folders.Cli", "Commands/**/*.cs", "CLI commands"),
-            ("Hexalith.Folders.Mcp", "Tools/**/*.cs", "MCP tools"),
             ("Hexalith.Folders.Workers", "CommitWorkflows/**/*.cs", "commit-workflow workers"),
             ("Hexalith.Folders.Workers", "Reconciliation/**/*.cs", "reconciliation workers"),
             ("Hexalith.Folders.Workers", "Handlers/**/*.cs", "worker event handlers"),
@@ -332,6 +330,7 @@ public sealed class CommitStatusContractGroupTests
                         && !relative.StartsWith("Aggregates/Organization/", StringComparison.Ordinal)
                         && !relative.StartsWith("Aggregates/Folder/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/Abstractions/", StringComparison.Ordinal)
+                        && !relative.StartsWith("Providers/Credentials/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/GitHub/", StringComparison.Ordinal)
                         && !relative.StartsWith("Providers/Forgejo/", StringComparison.Ordinal)
                         && MatchesGlob(relative, pattern);

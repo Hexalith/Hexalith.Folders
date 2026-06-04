@@ -3,7 +3,9 @@ using Dapr.Client;
 
 using Grpc.Core;
 
-namespace Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.Abstractions;
+
+namespace Hexalith.Folders.Providers.Credentials;
 
 internal sealed class DaprProviderCredentialSecretStoreClient(DaprClient daprClient) : IProviderCredentialSecretStoreClient
 {

@@ -8,14 +8,14 @@ namespace Hexalith.Folders.Testing.Tests;
 
 public sealed class ScaffoldContractTests
 {
-    private static readonly string[] ExpectedSolutionProjects =
+    private static readonly string[] ExpectedRootPolicyProjects =
     [
         "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
         "samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj",
         "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
         "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
-        "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj",
+        "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
         "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj",
         "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
@@ -28,6 +28,7 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
         "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
         "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj",
         "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
         "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
         "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
@@ -37,6 +38,54 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
         "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
         "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj"
+    ];
+
+    private static readonly string[] ExpectedSolutionProjects =
+    [
+        "Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj",
+        "Hexalith.EventStore/src/Hexalith.EventStore/Hexalith.EventStore.csproj",
+        "Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj",
+        "Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj",
+        "Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj",
+        "Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj",
+        "Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj",
+        "Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj",
+        "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
+        "samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj",
+        "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+        "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
+        "src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj",
+        "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
+        "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
+        "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
+        "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj",
+        "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
+        "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
+        "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj",
+        "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj",
+        "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj",
+        "src/Hexalith.Folders/Hexalith.Folders.csproj",
+        "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+        "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+        "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+        "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+        "tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj",
+        "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+        "tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj",
+        "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
+        "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+        "tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj",
+        "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+        "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+        "tests/load/Hexalith.Folders.LoadTests.csproj",
+        "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
+        "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj",
     ];
 
     private static readonly string[] RequiredCanonicalSubmodules =
@@ -60,7 +109,7 @@ public sealed class ScaffoldContractTests
             .ToArray();
 
         solutionProjects.ShouldBe(ExpectedSolutionProjects.Order(StringComparer.Ordinal).ToArray());
-        buildableProjects.ShouldBe(ExpectedSolutionProjects.Order(StringComparer.Ordinal).ToArray());
+        buildableProjects.ShouldBe(ExpectedRootPolicyProjects.Order(StringComparer.Ordinal).ToArray());
     }
 
     [Fact]
@@ -99,19 +148,19 @@ public sealed class ScaffoldContractTests
 
         AssertReferences(references, "Hexalith.Folders.Contracts", []);
         AssertReferences(references, "Hexalith.Folders", ["Hexalith.Folders.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client"]);
+        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client", "Hexalith.FrontComposer.Shell"]);
-        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Tenants"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
         AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders", "Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Sample", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
-        AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
         AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
@@ -121,8 +170,9 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.UI.Tests", ["Hexalith.Folders.UI", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
-        AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
-        AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Cli", "Hexalith.Folders.Client", "Hexalith.Folders.Mcp", "Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
+        AssertReferences(references, "Hexalith.Folders.LoadTests.Tests", ["Hexalith.Folders.LoadTests"]);
+        AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Client", "Hexalith.Folders.Contracts"]);
     }
 
     [Fact]
@@ -186,7 +236,7 @@ public sealed class ScaffoldContractTests
         string root = RepositoryRoot();
         XDocument buildProps = XDocument.Load(Path.Combine(root, "Directory.Build.props"));
         XDocument packagesProps = XDocument.Load(Path.Combine(root, "Directory.Packages.props"));
-        string[] projectsWithInlineVersions = ExpectedSolutionProjects
+        string[] projectsWithInlineVersions = ExpectedRootPolicyProjects
             .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
             .Where(ProjectHasPackageReferenceVersion)
             .Select(path => Normalize(Path.GetRelativePath(root, path)))
@@ -220,7 +270,7 @@ public sealed class ScaffoldContractTests
             "ContinuousIntegrationBuild",
         ];
 
-        string[] violations = ExpectedSolutionProjects
+        string[] violations = ExpectedRootPolicyProjects
             .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
             .SelectMany(path => FindLocalRootSettingOverrides(root, path, driftingElements))
             .ToArray();
@@ -351,7 +401,7 @@ public sealed class ScaffoldContractTests
     }
 
     private static Dictionary<string, string[]> BuildProjectReferenceMap(string root) =>
-        ExpectedSolutionProjects.ToDictionary(
+        ExpectedRootPolicyProjects.ToDictionary(
             project => Path.GetFileNameWithoutExtension(project),
             project => ReadProjectReferenceNames(Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar))),
             StringComparer.Ordinal);
@@ -360,7 +410,7 @@ public sealed class ScaffoldContractTests
     {
         if (!references.TryGetValue(project, out string[]? actual))
         {
-            actual.ShouldNotBeNull($"Project '{project}' is missing from the expected scaffold project list; update ExpectedSolutionProjects.");
+            actual.ShouldNotBeNull($"Project '{project}' is missing from the expected scaffold project list; update ExpectedRootPolicyProjects.");
             return;
         }
         actual.ShouldBe(expected, ignoreOrder: true, customMessage: $"{project} references drifted from policy.");
@@ -370,7 +420,7 @@ public sealed class ScaffoldContractTests
     {
         if (!references.TryGetValue(project, out HashSet<string>? refs))
         {
-            throw new ShouldAssertException($"Project '{project}' is missing from the expected scaffold project list; update ExpectedSolutionProjects.");
+            throw new ShouldAssertException($"Project '{project}' is missing from the expected scaffold project list; update ExpectedRootPolicyProjects.");
         }
         return refs;
     }
@@ -432,6 +482,7 @@ public sealed class ScaffoldContractTests
             .Where(Directory.Exists)
             .SelectMany(area => SafeEnumerate(area, "Hexalith.Folders*.csproj", SearchOption.AllDirectories))
             .Where(path => !Normalize(Path.GetRelativePath(root, path)).StartsWith("src/Hexalith.Folders.Client/Generation/", StringComparison.Ordinal))
+            .Where(path => !string.Equals(Normalize(Path.GetRelativePath(root, path)), "tests/load/Hexalith.Folders.LoadTests.csproj", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal);
     }
 

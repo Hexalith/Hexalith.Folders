@@ -41,5 +41,5 @@ Reports and evidence are local artifacts. Do not commit generated report folders
 - future_test_use: Capacity smoke checks, C1/C2/C5 evidence, and release calibration artifacts.
 - known_omissions: No production thresholds, provider scenarios, environments, or release-calibration artifacts are defined here.
 - mutation_rules: Keep load assets hermetic, metadata-only, and free of provider credentials, network services, production secrets, or recursive submodule commands.
-- non_policy_placeholder: false
+- non_policy_placeholder: true
 - synthetic_data_only: true

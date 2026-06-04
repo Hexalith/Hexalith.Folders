@@ -15,10 +15,9 @@ internal sealed class OctokitGitHubApiClientFactory : IGitHubApiClientFactory
 
         GitHubClient client = new(new ProductHeaderValue(request.ProductHeader))
         {
-            Credentials = new Credentials(credential.AccessToken),
+            Credentials = new Octokit.Credentials(credential.AccessToken),
         };
 
         return ValueTask.FromResult<IGitHubApiClient>(new OctokitGitHubApiClient(client));
     }
 }
-
