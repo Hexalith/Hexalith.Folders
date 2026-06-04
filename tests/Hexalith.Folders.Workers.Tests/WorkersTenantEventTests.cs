@@ -9,9 +9,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Workers;
-using Hexalith.Tenants.Client.Configuration;
-using Hexalith.Tenants.Client.Handlers;
-using Hexalith.Tenants.Client.Subscription;
+using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Tenants.Contracts.Enums;
 using Hexalith.Tenants.Contracts.Events;
 
@@ -56,18 +54,20 @@ public sealed class WorkersTenantEventTests
         provider.GetRequiredService<FolderTenantAccessHandler>().ShouldNotBeNull();
         provider.GetRequiredService<IFolderTenantAccessProjectionStore>().ShouldNotBeNull();
         provider.GetRequiredService<IOptions<FoldersTenantEventOptions>>().Value.ProjectionWriter.ShouldBe(FoldersTenantEventProjectionWriter.Workers);
-        provider.GetRequiredService<IOptions<HexalithTenantsOptions>>().Value.PubSubName.ShouldBe(FoldersWorkersModule.TenantEventsPubSubName);
-        provider.GetRequiredService<IOptions<HexalithTenantsOptions>>().Value.TopicName.ShouldBe(FoldersWorkersModule.TenantEventsTopicName);
+        EventStoreDomainEventsOptions options = provider.GetRequiredService<IOptions<EventStoreDomainEventsOptions>>().Value;
+        options.PubSubName.ShouldBe(FoldersWorkersModule.TenantEventsPubSubName);
+        options.TopicName.ShouldBe(FoldersWorkersModule.TenantEventsTopicName);
+        options.SubscriptionRoute.ShouldBe(FoldersWorkersModule.TenantEventsRoute);
 
-        provider.GetServices<ITenantEventHandler<TenantCreated>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<TenantUpdated>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<TenantDisabled>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<TenantEnabled>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<UserAddedToTenant>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<UserRemovedFromTenant>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<UserRoleChanged>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<TenantConfigurationSet>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
-        provider.GetServices<ITenantEventHandler<TenantConfigurationRemoved>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<TenantCreated>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<TenantUpdated>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<TenantDisabled>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<TenantEnabled>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<UserAddedToTenant>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<UserRemovedFromTenant>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<UserRoleChanged>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<TenantConfigurationSet>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
+        provider.GetServices<IEventStoreDomainEventHandler<TenantConfigurationRemoved>>().OfType<WorkerTenantEventHandler>().ShouldHaveSingleItem();
     }
 
     [Fact]
@@ -182,10 +182,10 @@ public sealed class WorkersTenantEventTests
         ServiceCollection services = CreateServiceCollection();
         services.AddFoldersTenantEventWorkers();
         using ServiceProvider provider = services.BuildServiceProvider();
-        TenantEventProcessor processor = provider.GetRequiredService<TenantEventProcessor>();
+        EventStoreDomainEventProcessor processor = provider.GetRequiredService<EventStoreDomainEventProcessor>();
 
-        TenantEventProcessingResult result = await processor.ProcessAsync(
-            new TenantEventEnvelope(
+        EventStoreDomainEventProcessingResult result = await processor.ProcessAsync(
+            new EventStoreDomainEventEnvelope(
                 "01J00000000000000000000999",
                 "tenant-a",
                 "system",
@@ -197,7 +197,7 @@ public sealed class WorkersTenantEventTests
                 "{}"u8.ToArray()),
             TestContext.Current.CancellationToken);
 
-        result.ShouldBe(TenantEventProcessingResult.SkippedUnknownEventType);
+        result.ShouldBe(EventStoreDomainEventProcessingResult.SkippedUnknownEventType);
         IFolderTenantAccessProjectionStore store = provider.GetRequiredService<IFolderTenantAccessProjectionStore>();
         (await store.GetAsync("tenant-a", TestContext.Current.CancellationToken)).ShouldBeNull();
     }
@@ -269,7 +269,7 @@ public sealed class WorkersTenantEventTests
         WorkerTestHost host = await StartWorkerHostAsync().ConfigureAwait(true);
         try
         {
-            TenantEventEnvelope envelope = new(
+            EventStoreDomainEventEnvelope envelope = new(
                 "01J00000000000000000001010",
                 "tenant-a",
                 "system",
@@ -304,7 +304,7 @@ public sealed class WorkersTenantEventTests
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
                     FoldersWorkersModule.TenantEventsRoute,
-                    new TenantEventEnvelope(
+                    new EventStoreDomainEventEnvelope(
                         "01J00000000000000000001020",
                         "tenant-a",
                         "system",
@@ -360,8 +360,8 @@ public sealed class WorkersTenantEventTests
             new FoldersTenantAccessEventMapper(),
             Options.Create(new FoldersTenantEventOptions { ProjectionWriter = writer }));
 
-    private static TenantEventContext Context(long sequence, string tenantId = "tenant-a")
-        => new(tenantId, $"01J00000000000000000000{sequence:D3}", sequence, Now, $"corr-{sequence}");
+    private static EventStoreDomainEventContext Context(long sequence, string tenantId = "tenant-a")
+        => new("system", tenantId, $"01J00000000000000000000{sequence:D3}", sequence, Now, $"corr-{sequence}");
 
     private static ServiceCollection CreateServiceCollection()
     {
@@ -371,7 +371,7 @@ public sealed class WorkersTenantEventTests
         return services;
     }
 
-    private static TenantEventEnvelope Envelope<TEvent>(string messageId, long sequenceNumber, TEvent @event)
+    private static EventStoreDomainEventEnvelope Envelope<TEvent>(string messageId, long sequenceNumber, TEvent @event)
         => new(
             messageId,
             "tenant-a",

@@ -444,3 +444,5 @@ _bmad-output/process-notes/predev-preflight-*Z.json
 .agents/.story-automator-active
 .agents\.story-automator-active
 .claude/.story-automator-active
+
+.fake

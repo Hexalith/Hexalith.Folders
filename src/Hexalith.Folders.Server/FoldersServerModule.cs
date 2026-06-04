@@ -2,9 +2,9 @@ using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.ServiceDefaults;
+using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.EventStore.DomainService;
 using Hexalith.Tenants.Client.Registration;
-using Hexalith.Tenants.Client.Handlers;
-using Hexalith.Tenants.Client.Subscription;
 using Hexalith.Tenants.Contracts.Events;
 
 using Microsoft.AspNetCore.Builder;
@@ -72,6 +72,7 @@ public static class FoldersServerModule
         {
             options.PubSubName = TenantEventsPubSubName;
             options.TopicName = TenantEventsTopicName;
+            options.SubscriptionRoute = TenantEventsRoute;
         });
         services.AddFoldersDomainServices();
 
@@ -81,15 +82,15 @@ public static class FoldersServerModule
     private static IServiceCollection AddFoldersTenantEventProjection(this IServiceCollection services)
     {
         services.TryAddSingleton<FoldersTenantEventHandler>();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantCreated>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantUpdated>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantDisabled>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantEnabled>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserAddedToTenant>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserRemovedFromTenant>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserRoleChanged>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantConfigurationSet>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantConfigurationRemoved>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantCreated>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantUpdated>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantDisabled>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantEnabled>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<UserAddedToTenant>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<UserRemovedFromTenant>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<UserRoleChanged>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantConfigurationSet>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantConfigurationRemoved>, FoldersTenantEventHandler>());
         return services;
     }
 
@@ -102,7 +103,7 @@ public static class FoldersServerModule
         endpoints.MapFoldersDomainServiceEndpoints();
         endpoints.MapProviderReadinessEndpoints();
         endpoints.MapAuditEndpoints();
-        endpoints.MapTenantEventSubscription();
+        endpoints.MapEventStoreDomainEvents();
 
         return endpoints;
     }

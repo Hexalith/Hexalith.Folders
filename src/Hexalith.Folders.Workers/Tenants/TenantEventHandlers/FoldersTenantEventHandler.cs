@@ -1,5 +1,5 @@
 using Hexalith.Folders.Projections.TenantAccess;
-using Hexalith.Tenants.Client.Handlers;
+using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Tenants.Contracts.Events;
 
 using Microsoft.Extensions.Logging;
@@ -12,45 +12,45 @@ public sealed class FoldersTenantEventHandler(
     FoldersTenantAccessEventMapper mapper,
     IOptions<FoldersTenantEventOptions> options,
     ILogger<FoldersTenantEventHandler>? logger = null) :
-    ITenantEventHandler<TenantCreated>,
-    ITenantEventHandler<TenantUpdated>,
-    ITenantEventHandler<TenantDisabled>,
-    ITenantEventHandler<TenantEnabled>,
-    ITenantEventHandler<UserAddedToTenant>,
-    ITenantEventHandler<UserRemovedFromTenant>,
-    ITenantEventHandler<UserRoleChanged>,
-    ITenantEventHandler<TenantConfigurationSet>,
-    ITenantEventHandler<TenantConfigurationRemoved>
+    IEventStoreDomainEventHandler<TenantCreated>,
+    IEventStoreDomainEventHandler<TenantUpdated>,
+    IEventStoreDomainEventHandler<TenantDisabled>,
+    IEventStoreDomainEventHandler<TenantEnabled>,
+    IEventStoreDomainEventHandler<UserAddedToTenant>,
+    IEventStoreDomainEventHandler<UserRemovedFromTenant>,
+    IEventStoreDomainEventHandler<UserRoleChanged>,
+    IEventStoreDomainEventHandler<TenantConfigurationSet>,
+    IEventStoreDomainEventHandler<TenantConfigurationRemoved>
 {
-    public Task HandleAsync(TenantCreated @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TenantCreated @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
         return HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantCreated, @event.TenantId, context, fingerprintParts: [@event.Name]), cancellationToken);
     }
 
-    public Task HandleAsync(TenantUpdated @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TenantUpdated @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
         return HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantUpdated, @event.TenantId, context, fingerprintParts: [@event.Name]), cancellationToken);
     }
 
-    public Task HandleAsync(TenantDisabled @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TenantDisabled @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
         return HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantDisabled, @event.TenantId, context), cancellationToken);
     }
 
-    public Task HandleAsync(TenantEnabled @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TenantEnabled @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
         return HandleAsync(ToProjectionEvent(FolderTenantAccessEventKind.TenantEnabled, @event.TenantId, context), cancellationToken);
     }
 
-    public Task HandleAsync(UserAddedToTenant @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(UserAddedToTenant @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
@@ -63,7 +63,7 @@ public sealed class FoldersTenantEventHandler(
             fingerprintParts: [@event.UserId, @event.Role.ToString()]), cancellationToken);
     }
 
-    public Task HandleAsync(UserRemovedFromTenant @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(UserRemovedFromTenant @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
@@ -75,7 +75,7 @@ public sealed class FoldersTenantEventHandler(
             fingerprintParts: [@event.UserId]), cancellationToken);
     }
 
-    public Task HandleAsync(UserRoleChanged @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(UserRoleChanged @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
@@ -89,7 +89,7 @@ public sealed class FoldersTenantEventHandler(
             fingerprintParts: [@event.UserId, @event.OldRole.ToString(), @event.NewRole.ToString()]), cancellationToken);
     }
 
-    public Task HandleAsync(TenantConfigurationSet @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TenantConfigurationSet @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
@@ -101,7 +101,7 @@ public sealed class FoldersTenantEventHandler(
             fingerprintParts: [@event.Key]), cancellationToken);
     }
 
-    public Task HandleAsync(TenantConfigurationRemoved @event, TenantEventContext context, CancellationToken cancellationToken = default)
+    public Task HandleAsync(TenantConfigurationRemoved @event, EventStoreDomainEventContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
         ArgumentNullException.ThrowIfNull(context);
@@ -129,7 +129,7 @@ public sealed class FoldersTenantEventHandler(
     private FolderTenantAccessEvent ToProjectionEvent(
         FolderTenantAccessEventKind kind,
         string eventTenantId,
-        TenantEventContext context,
+        EventStoreDomainEventContext context,
         string? principalId = null,
         string? role = null,
         string? previousRole = null,
@@ -138,7 +138,7 @@ public sealed class FoldersTenantEventHandler(
         => mapper.Map(
             kind,
             eventTenantId,
-            context.TenantId,
+            context.AggregateId,
             context.MessageId,
             context.SequenceNumber,
             context.Timestamp,

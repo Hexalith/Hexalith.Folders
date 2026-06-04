@@ -1,7 +1,7 @@
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server;
-using Hexalith.Tenants.Client.Handlers;
+using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Tenants.Contracts.Events;
 
 using Shouldly;
@@ -20,9 +20,10 @@ public sealed class FoldersTenantEventHandlerTests
         FolderTenantAccessHandler projectionHandler = new(store, new FixedUtcClock(Now), new TenantAccessOptions());
         FoldersTenantEventHandler subject = new(projectionHandler);
 
-        // Envelope says tenant-a, payload says tenant-b: the handler must drop the event without granting access.
-        TenantEventContext context = new(
-            TenantId: "tenant-a",
+        // Envelope aggregate says tenant-a, payload says tenant-b: the handler must drop the event without granting access.
+        EventStoreDomainEventContext context = new(
+            TenantId: "system",
+            AggregateId: "tenant-a",
             MessageId: "01J00000000000000000000099",
             SequenceNumber: 1,
             Timestamp: Now,
@@ -44,11 +45,11 @@ public sealed class FoldersTenantEventHandlerTests
         FolderTenantAccessHandler projectionHandler = new(store, new FixedUtcClock(Now.AddMinutes(1)), new TenantAccessOptions());
         FoldersTenantEventHandler subject = new(projectionHandler);
 
-        TenantEventContext createdContext = new("tenant-a", "01J00000000000000000000100", 1, Now, "corr-100");
-        TenantEventContext updatedContext = new("tenant-a", "01J00000000000000000000101", 2, Now, "corr-101");
+        EventStoreDomainEventContext createdContext = new("system", "tenant-a", "01J00000000000000000000100", 1, Now, "corr-100");
+        EventStoreDomainEventContext updatedContext = new("system", "tenant-a", "01J00000000000000000000101", 2, Now, "corr-101");
 
         await subject.HandleAsync(new TenantCreated("tenant-a", "Tenant A", null, Now), createdContext, TestContext.Current.CancellationToken);
-        await subject.HandleAsync(new TenantUpdated("tenant-a", "Tenant A renamed", null), updatedContext, TestContext.Current.CancellationToken);
+        await subject.HandleAsync(new TenantUpdated("tenant-a", "Tenant A renamed", null, Now), updatedContext, TestContext.Current.CancellationToken);
 
         FolderTenantAccessProjection? projection = await store.GetAsync("tenant-a", TestContext.Current.CancellationToken);
         projection.ShouldNotBeNull();

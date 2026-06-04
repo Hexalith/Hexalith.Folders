@@ -19,6 +19,7 @@
     <Project Path="src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj" />
     <Project Path="src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj" />
     <Project Path="src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj" />
+    <Project Path="src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj" />
     <Project Path="src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj" />
     <Project Path="src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj" />
     <Project Path="src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj" />
@@ -45,5 +46,27 @@
     <Project Path="tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj" />
     <Project Path="tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj" />
     <Project Path="tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj" />
+  </Folder>
+  <Folder Name="/Submodules/Hexalith.Commons/">
+    <Project Path="Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj" />
+  </Folder>
+  <Folder Name="/Submodules/Hexalith.EventStore/">
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj" />
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj" />
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj" />
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj" />
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj" />
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj" />
+    <Project Path="Hexalith.EventStore/src/Hexalith.EventStore/Hexalith.EventStore.csproj" />
+  </Folder>
+  <Folder Name="/Submodules/Hexalith.FrontComposer/">
+    <Project Path="Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj" />
+    <Project Path="Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj" />
+  </Folder>
+  <Folder Name="/Submodules/Hexalith.Tenants/">
+    <Project Path="Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj" />
+    <Project Path="Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj" />
+    <Project Path="Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj" />
+    <Project Path="Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj" />
   </Folder>
 </Solution>

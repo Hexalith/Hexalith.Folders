@@ -5,10 +5,9 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Workers.RepositoryProvisioning;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
-using Hexalith.Tenants.Client.Configuration;
-using Hexalith.Tenants.Client.Handlers;
+using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.EventStore.DomainService;
 using Hexalith.Tenants.Client.Registration;
-using Hexalith.Tenants.Client.Subscription;
 using Hexalith.Tenants.Contracts.Events;
 
 using Microsoft.AspNetCore.Builder;
@@ -42,13 +41,14 @@ public static class FoldersWorkersModule
 
         // AddFoldersTenantAccess already binds and validate-on-start's FoldersTenantEventOptions; do not rebind here.
         services.AddFoldersTenantAccess();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<HexalithTenantsOptions>, FoldersTenantEventSubscriptionOptionsValidator>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<EventStoreDomainEventsOptions>, FoldersTenantEventSubscriptionOptionsValidator>());
         services.AddHexalithTenants(options =>
         {
             options.PubSubName = TenantEventsPubSubName;
             options.TopicName = TenantEventsTopicName;
+            options.SubscriptionRoute = TenantEventsRoute;
         });
-        services.AddOptions<HexalithTenantsOptions>().ValidateOnStart();
+        services.AddOptions<EventStoreDomainEventsOptions>().ValidateOnStart();
         services.AddFoldersTenantEventProjection();
         services.AddFoldersRepositoryProvisioningWorkers();
 
@@ -74,7 +74,7 @@ public static class FoldersWorkersModule
         ArgumentNullException.ThrowIfNull(endpoints);
 
         endpoints.MapGet("/", () => Description);
-        endpoints.MapTenantEventSubscription();
+        endpoints.MapEventStoreDomainEvents();
 
         return endpoints;
     }
@@ -82,21 +82,21 @@ public static class FoldersWorkersModule
     private static IServiceCollection AddFoldersTenantEventProjection(this IServiceCollection services)
     {
         services.TryAddSingleton<FoldersTenantEventHandler>();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantCreated>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantUpdated>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantDisabled>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantEnabled>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserAddedToTenant>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserRemovedFromTenant>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<UserRoleChanged>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantConfigurationSet>, FoldersTenantEventHandler>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITenantEventHandler<TenantConfigurationRemoved>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantCreated>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantUpdated>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantDisabled>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantEnabled>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<UserAddedToTenant>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<UserRemovedFromTenant>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<UserRoleChanged>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantConfigurationSet>, FoldersTenantEventHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEventStoreDomainEventHandler<TenantConfigurationRemoved>, FoldersTenantEventHandler>());
         return services;
     }
 
-    private sealed class FoldersTenantEventSubscriptionOptionsValidator : IValidateOptions<HexalithTenantsOptions>
+    private sealed class FoldersTenantEventSubscriptionOptionsValidator : IValidateOptions<EventStoreDomainEventsOptions>
     {
-        public ValidateOptionsResult Validate(string? name, HexalithTenantsOptions options)
+        public ValidateOptionsResult Validate(string? name, EventStoreDomainEventsOptions options)
         {
             ArgumentNullException.ThrowIfNull(options);
 
@@ -108,6 +108,11 @@ public static class FoldersWorkersModule
             if (!string.Equals(options.TopicName, TenantEventsTopicName, StringComparison.Ordinal))
             {
                 return ValidateOptionsResult.Fail($"Tenants TopicName must be '{TenantEventsTopicName}' for {Name}.");
+            }
+
+            if (!string.Equals(options.SubscriptionRoute, TenantEventsRoute, StringComparison.Ordinal))
+            {
+                return ValidateOptionsResult.Fail($"Tenants SubscriptionRoute must be '{TenantEventsRoute}' for {Name}.");
             }
 
             return ValidateOptionsResult.Success;
