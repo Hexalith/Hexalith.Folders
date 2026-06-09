@@ -37,14 +37,14 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - Use C# `LangVersion=latest`, nullable enabled, implicit usings enabled, deterministic builds, and warnings-as-errors from `Directory.Build.props`.
 - Use `.slnx` solution format and central package management through `Directory.Packages.props`; project files must not carry inline package versions.
 - Root-level sibling modules are consumed through project references detected in `Directory.Build.props`, especially Hexalith.EventStore and Hexalith.Tenants. Do not replace these with ad hoc package references or initialize nested submodules.
-- Dapr .NET packages are pinned to `1.17.7`; Folders uses Dapr sidecars, pub/sub, state store, service invocation, and Dapr configuration includes deny-by-default access-control policy that must be preserved unless intentionally changed.
-- Aspire versions are intentionally mixed: `Aspire.Hosting` `13.3.3`, hosting integrations mostly `13.2.2`, preview Keycloak/Kubernetes integrations `13.2.2-preview.1.26207.2`, Aspire test host `13.2.1`, and `CommunityToolkit.Aspire.Hosting.Dapr` `13.0.0`. Do not normalize these versions without verifying compatibility.
+- Dapr .NET packages are pinned to `1.17.9` (latest stable; `1.18.x` is still rc-only — do not adopt without runtime/CLI compatibility verification); Folders uses Dapr sidecars, pub/sub, state store, service invocation, and Dapr configuration includes deny-by-default access-control policy that must be preserved unless intentionally changed.
+- Aspire stable packages are aligned on `13.4.3` (`Aspire.Hosting`, `Aspire.Hosting.Azure.AppContainers`, `Aspire.Hosting.Docker`, `Aspire.Hosting.Redis`, `Aspire.Hosting.Testing`); the preview-only Keycloak/Kubernetes integrations track the same line at `13.4.3-preview.1.26305.13`; `CommunityToolkit.Aspire.Hosting.Dapr` stays at its latest stable `13.0.0` (no `13.4.x` stable is published, and it restores/builds cleanly against Aspire `13.4.3`). Do not change these versions without verifying compatibility via restore/build plus the integration/host lanes.
 - Service defaults stay on the Microsoft.Extensions `10.x` family and OpenTelemetry packages `1.15.x`; keep OpenTelemetry package versions aligned by family.
-- UI uses Microsoft Fluent UI Blazor `5.0.0-rc.2-26098.1` plus Fluent UI icons `4.14.0`; treat Fluent UI APIs as RC-sensitive.
-- CLI uses System.CommandLine `2.0.8`; MCP uses ModelContextProtocol `1.3.0`; both wrap `Hexalith.Folders.Client` instead of duplicating business behavior.
+- UI uses Microsoft Fluent UI Blazor `5.0.0-rc.3-26138.1` plus Fluent UI icons `4.14.2`; treat Fluent UI APIs as RC-sensitive (stay on the 5.0 RC line — the `4.14.x` "stable" is the previous major, not an upgrade; revisit when 5.0 reaches GA).
+- CLI uses System.CommandLine `2.0.8` (latest stable; `3.0` is preview-only); MCP uses ModelContextProtocol `1.4.0`; both wrap `Hexalith.Folders.Client` instead of duplicating business behavior.
 - The OpenAPI Contract Spine is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; NSwag.MSBuild `14.7.1`, Newtonsoft.Json `13.0.4`, and generated idempotency helpers derive from that spine.
 - Do not hand-edit generated client files under `src/Hexalith.Folders.Client/Generated`; change the OpenAPI spine or generation pipeline instead.
-- Tests use xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Testcontainers `4.10.0`, YamlDotNet `17.1.0`, and Microsoft.Playwright `1.59.0`.
+- Tests use xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Testcontainers `4.12.0`, YamlDotNet `18.0.0`, Microsoft.NET.Test.Sdk `18.6.0`, and Microsoft.Playwright `1.60.0`.
 - Treat Dapr runtime/CLI, Playwright browser binaries, Aspire preview integrations, and Fluent UI RC APIs as test-runtime compatibility risks; upgrades require focused smoke/regression coverage, not version-only edits.
 
 ## Critical Implementation Rules
@@ -166,4 +166,4 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - Update it when the technology stack, architecture decisions, or workflow policies change.
 - Remove rules that become obvious or mechanically enforced everywhere.
 
-Last Updated: 2026-05-20
+Last Updated: 2026-06-09
