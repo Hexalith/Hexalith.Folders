@@ -3,54 +3,54 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup Label="Dapr">
-    <PackageVersion Include="Dapr.Client" Version="1.17.9" />
-    <PackageVersion Include="Dapr.AspNetCore" Version="1.17.9" />
-    <PackageVersion Include="Dapr.Actors" Version="1.17.9" />
-    <PackageVersion Include="Dapr.Actors.AspNetCore" Version="1.17.9" />
+    <PackageVersion Include="Dapr.Client" Version="1.18.4" />
+    <PackageVersion Include="Dapr.AspNetCore" Version="1.18.4" />
+    <PackageVersion Include="Dapr.Actors" Version="1.18.4" />
+    <PackageVersion Include="Dapr.Actors.AspNetCore" Version="1.18.4" />
   </ItemGroup>
   <ItemGroup Label="Aspire">
-    <PackageVersion Include="Aspire.Hosting" Version="13.4.3" />
-    <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="13.4.3" />
-    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.4.3" />
-    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="13.4.3-preview.1.26305.13" />
-    <PackageVersion Include="Aspire.Hosting.Kubernetes" Version="13.4.3-preview.1.26305.13" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.4.3" />
-    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.4.3" />
+    <PackageVersion Include="Aspire.Hosting" Version="13.4.5" />
+    <PackageVersion Include="Aspire.Hosting.Azure.AppContainers" Version="13.4.5" />
+    <PackageVersion Include="Aspire.Hosting.Docker" Version="13.4.5" />
+    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="13.4.5-preview.1.26316.12" />
+    <PackageVersion Include="Aspire.Hosting.Kubernetes" Version="13.4.5-preview.1.26316.12" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.4.5" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.4.5" />
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="13.0.0" />
   </ItemGroup>
   <ItemGroup Label="Aspire ServiceDefaults">
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.6.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.6.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.7.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.7.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.2" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
   </ItemGroup>
   <ItemGroup Label="Microsoft.Extensions">
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.9" />
   </ItemGroup>
   <ItemGroup Label="Blazor">
     <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.0-rc.3-26138.1" />
     <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.14.2" />
   </ItemGroup>
   <ItemGroup Label="CLI">
-    <PackageVersion Include="System.CommandLine" Version="2.0.8" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.9" />
   </ItemGroup>
   <ItemGroup Label="MCP">
     <PackageVersion Include="ModelContextProtocol" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup Label="Application">
     <PackageVersion Include="MediatR" Version="14.1.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.7.1" />
     <PackageVersion Include="Octokit" Version="14.0.0" />
@@ -60,8 +60,8 @@
   </ItemGroup>
   <ItemGroup Label="Testing">
     <PackageVersion Include="coverlet.collector" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageVersion Include="NBomber" Version="6.4.1" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
