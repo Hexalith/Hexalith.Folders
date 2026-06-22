@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
@@ -291,6 +292,438 @@ public sealed class ArchiveFolderProcessWiringTests
         }
     }
 
+    [Fact]
+    public async Task CreateFolderRequestShouldRoundTripThroughProcessAndPersistFolderCreated()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "org-a", "user-a");
+
+            using HttpRequestMessage request = CreateValidCreateFolderRequest("create-key-a", "My Folder");
+
+            HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            host.Repository.EventsAppended.ShouldBe(1);
+
+            FolderState created = host.Repository.Load(
+                FolderStreamName.Create("tenant-a", DeriveCreateFolderId("tenant-a", "create-key-a")));
+            created.IsCreated.ShouldBeTrue();
+            created.DisplayName.ShouldBe("My Folder");
+            created.OrganizationId.ShouldBe("org-a");
+            created.LifecycleState.ShouldBe(FolderLifecycleState.Active);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task CreateFolderReplayWithSameKeyShouldNotPersistASecondFolder()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "org-a", "user-a");
+
+            HttpResponseMessage first = await host.Client
+                .SendAsync(CreateValidCreateFolderRequest("create-key-a", "My Folder"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            HttpResponseMessage replay = await host.Client
+                .SendAsync(CreateValidCreateFolderRequest("create-key-a", "My Folder"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            replay.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Repository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task CreateFolderSameKeyDifferentPayloadShouldSurfaceIdempotencyConflict()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "org-a", "user-a");
+
+            HttpResponseMessage first = await host.Client
+                .SendAsync(CreateValidCreateFolderRequest("create-key-a", "My Folder"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            HttpResponseMessage conflict = await host.Client
+                .SendAsync(CreateValidCreateFolderRequest("create-key-a", "A Different Name"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            conflict.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+            host.Repository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task UpdateFolderAclEntryShouldPersistAccessOverrideAndRoundTripThroughList()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedAclPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            string aclEntryId = FolderAclContract.DeriveAclEntryId("user", "user-a", "read");
+            using HttpRequestMessage grant = new(HttpMethod.Put, $"/api/v1/folders/folder-a/acl/{aclEntryId}")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    subjectRef = "user:user-a",
+                    permissionLevel = "read",
+                    effect = "grant",
+                }),
+            };
+            grant.Headers.Add("Idempotency-Key", "acl-key-a");
+            grant.Headers.Add("X-Correlation-Id", "correlation-acl-a");
+            grant.Headers.Add("X-Hexalith-Task-Id", "task-acl-a");
+
+            HttpResponseMessage grantResponse = await host.Client.SendAsync(grant, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            grantResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            host.Repository.EventsAppended.ShouldBe(1);
+
+            FolderState state = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));
+            state.HasFolderAccess(new FolderAccessEntryKey(
+                "tenant-a",
+                "folder-a",
+                FolderAccessPrincipalKind.User,
+                "user-a",
+                FolderAclContract.ReadAction)).ShouldBeTrue();
+
+            using HttpRequestMessage list = new(HttpMethod.Get, "/api/v1/folders/folder-a/acl");
+            list.Headers.Add("X-Correlation-Id", "correlation-acl-list");
+
+            HttpResponseMessage listResponse = await host.Client.SendAsync(list, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string listJson = await listResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            listResponse.StatusCode.ShouldBe(HttpStatusCode.OK, listJson);
+            using JsonDocument document = JsonDocument.Parse(listJson);
+            JsonElement item = document.RootElement.GetProperty("items")[0];
+            item.GetProperty("aclEntryId").GetString().ShouldBe(aclEntryId);
+            item.GetProperty("subjectRef").GetString().ShouldBe("user:user-a");
+            item.GetProperty("permissionLevel").GetString().ShouldBe("read");
+            item.GetProperty("effect").GetString().ShouldBe("grant");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task UpdateFolderAclEntryReplayWithSameKeyShouldNotPersistTwice()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedAclPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            HttpResponseMessage first = await host.Client
+                .SendAsync(CreateUpdateAclEntryRequest("acl-key-a", "grant"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            HttpResponseMessage replay = await host.Client
+                .SendAsync(CreateUpdateAclEntryRequest("acl-key-a", "grant"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            replay.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Repository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task UpdateFolderAclEntrySameKeyDifferentPayloadShouldSurfaceIdempotencyConflict()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedAclPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            HttpResponseMessage grant = await host.Client
+                .SendAsync(CreateUpdateAclEntryRequest("acl-key-a", "grant"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            // Same idempotency key, different effect => different canonical fingerprint => conflict (AC5).
+            HttpResponseMessage conflict = await host.Client
+                .SendAsync(CreateUpdateAclEntryRequest("acl-key-a", "revoke"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            grant.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            conflict.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+            host.Repository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ConfigureProviderBindingShouldRoundTripThroughProcessAndPersistBinding()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "org-a", "binding-a", "user-a");
+
+            using HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/provider-bindings/binding-a")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    providerFamilyRef = "github",
+                    capabilityProfileRef = "profile-a",
+                    nonSecretCredentialReference = "credential-ref-a",
+                }),
+            };
+            request.Headers.Add("Idempotency-Key", "binding-key-a");
+            request.Headers.Add("X-Correlation-Id", "correlation-binding-a");
+            request.Headers.Add("X-Hexalith-Task-Id", "task-binding-a");
+
+            HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            host.OrganizationRepository.EventsAppended.ShouldBe(1);
+
+            OrganizationState state = host.OrganizationRepository.Load(OrganizationStreamName.Create("tenant-a", "org-a"));
+            state.ProviderBindings.ContainsKey("binding-a").ShouldBeTrue();
+            OrganizationProviderBinding binding = state.ProviderBindings["binding-a"];
+            binding.ProviderKind.ShouldBe("github");
+            binding.CredentialReferenceId.ShouldBe("credential-ref-a");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ConfigureProviderBindingReplayWithSameKeyShouldNotPersistTwice()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "org-a", "binding-a", "user-a");
+
+            HttpResponseMessage first = await host.Client.SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-a"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            HttpResponseMessage replay = await host.Client.SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-a"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            replay.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            host.OrganizationRepository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ConfigureProviderBindingSameKeyDifferentPayloadShouldSurfaceIdempotencyConflict()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "org-a", "binding-a", "user-a");
+
+            HttpResponseMessage first = await host.Client
+                .SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-a"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            // Same idempotency key, different credential reference => different fingerprint => conflict (AC5).
+            HttpResponseMessage conflict = await host.Client
+                .SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-b"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            conflict.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+            host.OrganizationRepository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private static HttpRequestMessage CreateUpdateAclEntryRequest(string key, string effect)
+    {
+        string aclEntryId = FolderAclContract.DeriveAclEntryId("user", "user-a", "read");
+        HttpRequestMessage request = new(HttpMethod.Put, $"/api/v1/folders/folder-a/acl/{aclEntryId}")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                subjectRef = "user:user-a",
+                permissionLevel = "read",
+                effect,
+            }),
+        };
+        request.Headers.Add("Idempotency-Key", key);
+        request.Headers.Add("X-Correlation-Id", $"correlation-{key}");
+        request.Headers.Add("X-Hexalith-Task-Id", $"task-{key}");
+        return request;
+    }
+
+    private static HttpRequestMessage CreateConfigureProviderBindingRequest(string key, string credentialReference)
+    {
+        HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/provider-bindings/binding-a")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                providerFamilyRef = "github",
+                capabilityProfileRef = "profile-a",
+                nonSecretCredentialReference = credentialReference,
+            }),
+        };
+        request.Headers.Add("Idempotency-Key", key);
+        request.Headers.Add("X-Correlation-Id", $"correlation-{key}");
+        request.Headers.Add("X-Hexalith-Task-Id", $"task-{key}");
+        return request;
+    }
+
+    private static void SeedConfigureProviderBindingPermissions(
+        InMemoryEffectivePermissionsReadModel readModel,
+        string tenantId,
+        string organizationId,
+        string providerBindingRef,
+        string principalId)
+        => readModel.Save(new EffectivePermissionsReadModelSnapshot(
+            tenantId,
+            organizationId,
+            // configure_provider_binding authorizes against the provider-binding-ref scope; the owning
+            // organization is carried by the snapshot and resolved into the command (story 8.1 DD4).
+            providerBindingRef,
+            EffectivePermissionsFolderLifecycleState.Active,
+            [
+                new(
+                    EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
+                    EffectivePermissionPrincipal.User(principalId),
+                    "configure_provider_binding",
+                    Sequence: 1,
+                    EffectiveAt: Now.AddMinutes(-1)),
+            ],
+            new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
+            RevocationFreshnessEstablished: true,
+            TaskScope: null));
+
+    private static void SeedAclPermissions(
+        InMemoryEffectivePermissionsReadModel readModel,
+        string tenantId,
+        string organizationId,
+        string folderId,
+        string principalId)
+        => readModel.Save(new EffectivePermissionsReadModelSnapshot(
+            tenantId,
+            organizationId,
+            folderId,
+            EffectivePermissionsFolderLifecycleState.Active,
+            [
+                new(
+                    EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                    EffectivePermissionPrincipal.User(principalId),
+                    "manage_folder_access",
+                    Sequence: 1,
+                    EffectiveAt: Now.AddMinutes(-1)),
+                new(
+                    EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                    EffectivePermissionPrincipal.User(principalId),
+                    "read_metadata",
+                    Sequence: 2,
+                    EffectiveAt: Now.AddMinutes(-1)),
+            ],
+            new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
+            RevocationFreshnessEstablished: true,
+            TaskScope: null));
+
+    private static HttpRequestMessage CreateValidCreateFolderRequest(string key, string displayName)
+    {
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders")
+        {
+            Content = JsonContent.Create(new
+            {
+                requestSchemaVersion = "v1",
+                parentFolderId = "parent-a",
+                folderMetadata = new
+                {
+                    displayName,
+                    metadataClass = "tenant_sensitive",
+                },
+            }),
+        };
+        request.Headers.Add("Idempotency-Key", key);
+        request.Headers.Add("X-Correlation-Id", $"correlation-{key}");
+        request.Headers.Add("X-Hexalith-Task-Id", $"task-{key}");
+        return request;
+    }
+
+    private static void SeedCreateFolderPermissions(
+        InMemoryEffectivePermissionsReadModel readModel,
+        string tenantId,
+        string organizationId,
+        string principalId)
+        => readModel.Save(new EffectivePermissionsReadModelSnapshot(
+            tenantId,
+            organizationId,
+            // CreateFolder authorizes against the synthetic organization-baseline scope, so the
+            // effective-permissions snapshot is keyed by that scope, not a concrete folder id.
+            "organization_baseline",
+            EffectivePermissionsFolderLifecycleState.Active,
+            [
+                new(
+                    EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
+                    EffectivePermissionPrincipal.User(principalId),
+                    FolderCreationService.ActionToken,
+                    Sequence: 1,
+                    EffectiveAt: Now.AddMinutes(-1)),
+            ],
+            new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
+            RevocationFreshnessEstablished: true,
+            TaskScope: null));
+
+    // Mirrors FoldersDomainServiceEndpoints.DeriveCreateFolderId so the test can address the
+    // server-assigned folder stream.
+    private static string DeriveCreateFolderId(string tenantId, string idempotencyKey)
+    {
+        byte[] hash = System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(
+                $"{tenantId.Length}:{tenantId}|{idempotencyKey.Length}:{idempotencyKey}"));
+        return "fld-" + Convert.ToHexString(hash)[..40].ToLowerInvariant();
+    }
+
     private static async Task<TestHost> StartHostAsync()
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
@@ -299,6 +732,7 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryFolderLifecycleStatusReadModel lifecycleReadModel = new(new FixedUtcClock(Now));
         TimeProvider timeProvider = new FixedTimeProvider(Now);
         InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
+        InMemoryOrganizationProviderBindingRepository organizationRepository = new();
         Uri? hostUri = null;
         InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
 
@@ -317,6 +751,8 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton<IEventStoreClaimTransformEvidenceAccessor>(context);
         builder.Services.RemoveAll<IFolderRepository>();
         builder.Services.AddSingleton<IFolderRepository>(repository);
+        builder.Services.RemoveAll<IOrganizationProviderBindingRepository>();
+        builder.Services.AddSingleton<IOrganizationProviderBindingRepository>(organizationRepository);
         builder.Services.RemoveAll<IFolderLifecycleStatusReadModel>();
         builder.Services.AddSingleton<IFolderLifecycleStatusReadModel>(lifecycleReadModel);
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
@@ -336,7 +772,7 @@ public sealed class ArchiveFolderProcessWiringTests
         app.MapFoldersServerEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
         hostUri = new Uri(app.Urls.First());
-        return new TestHost(app, new HttpClient { BaseAddress = hostUri }, gateway, context, repository, tenantStore, permissions, lifecycleReadModel);
+        return new TestHost(app, new HttpClient { BaseAddress = hostUri }, gateway, context, repository, tenantStore, permissions, lifecycleReadModel, organizationRepository);
     }
 
     private static HttpRequestMessage CreateValidArchiveRequest(string folderId, string key, string reasonCode)
@@ -507,7 +943,8 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryFolderRepository Repository,
         InMemoryFolderTenantAccessProjectionStore TenantStore,
         InMemoryEffectivePermissionsReadModel Permissions,
-        InMemoryFolderLifecycleStatusReadModel LifecycleReadModel) : IAsyncDisposable
+        InMemoryFolderLifecycleStatusReadModel LifecycleReadModel,
+        InMemoryOrganizationProviderBindingRepository OrganizationRepository) : IAsyncDisposable
     {
         public async ValueTask DisposeAsync()
         {

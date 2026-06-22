@@ -2,6 +2,7 @@ using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
@@ -38,6 +39,14 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddScoped<FolderArchiveTenantGate>();
         services.TryAddScoped<FolderAccessTenantGate>();
+        services.TryAddScoped<FolderCreationService>();
+        services.TryAddScoped<FolderAccessMutationService>();
+        services.TryAddScoped<ConfigureProviderBindingService>();
+
+        // In-memory organization provider-binding write store default, consistent with the other
+        // in-memory provider/read-model defaults registered for the server composition. Production
+        // hosts override this with an EventStore-backed implementation.
+        services.TryAddSingleton<IOrganizationProviderBindingRepository, InMemoryOrganizationProviderBindingRepository>();
         services.TryAddScoped<RepositoryBackedFolderCreationService>();
         services.TryAddScoped<RepositoryBindingService>();
         services.TryAddScoped<BranchRefPolicyConfigurationService>();

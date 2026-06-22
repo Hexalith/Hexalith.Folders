@@ -65,7 +65,154 @@ public static partial class ProviderReadinessEndpoints
         .WithName("GetProviderSupportEvidence")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
+        endpoints.MapGet("/api/v1/provider-bindings/{providerBindingRef}", async (
+            string providerBindingRef,
+            HttpContext httpContext,
+            GetProviderBindingQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            => await GetProviderBindingAsync(
+                providerBindingRef,
+                httpContext,
+                handler,
+                tenantContext,
+                claimTransformEvidence,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("GetProviderBinding")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
         return endpoints;
+    }
+
+    private static async Task<IResult> GetProviderBindingAsync(
+        string providerBindingRef,
+        HttpContext httpContext,
+        GetProviderBindingQueryHandler handler,
+        ITenantContextAccessor tenantContext,
+        IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(handler);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(claimTransformEvidence);
+
+        if (!TryReadSupportEvidenceCorrelation(httpContext, out string? correlationId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "unsafe_correlation_id",
+                retryable: false,
+                correlationId: null);
+        }
+
+        if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
+        {
+            // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
+            // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId);
+        }
+
+        string? freshness = ReadHeader(httpContext, FreshnessHeaderName);
+        if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "unsupported_read_consistency",
+                retryable: false,
+                correlationId);
+        }
+
+        if (string.IsNullOrWhiteSpace(providerBindingRef)
+            || providerBindingRef.Length > 256
+            || !CanonicalIdentifierPattern().IsMatch(providerBindingRef))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "validation_error",
+                retryable: false,
+                correlationId);
+        }
+
+        GetProviderBindingQueryResult result = await handler.HandleAsync(
+            new GetProviderBindingQuery(
+                tenantContext.AuthoritativeTenantId,
+                tenantContext.PrincipalId,
+                claimTransformEvidence.GetEvidence(GetProviderBindingQueryHandler.ReadActionToken),
+                providerBindingRef,
+                correlationId,
+                ClientTenantIds(httpContext)),
+            cancellationToken).ConfigureAwait(false);
+
+        return ToHttpResult(httpContext, result);
+    }
+
+    private static IResult ToHttpResult(HttpContext httpContext, GetProviderBindingQueryResult result)
+    {
+        switch (result.Code)
+        {
+            case GetProviderBindingQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    "authentication_failure",
+                    "authentication_failure",
+                    retryable: false,
+                    result.CorrelationId);
+            case GetProviderBindingQueryResultCode.AuthorizationDenied:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    "authorization_denied",
+                    "denied_safe",
+                    retryable: false,
+                    result.CorrelationId);
+            case GetProviderBindingQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    "not_found",
+                    "not_found",
+                    retryable: false,
+                    result.CorrelationId);
+            case GetProviderBindingQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "projection_stale",
+                    "projection_stale",
+                    retryable: true,
+                    result.CorrelationId);
+            case GetProviderBindingQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "projection_unavailable",
+                    "projection_unavailable",
+                    retryable: true,
+                    result.CorrelationId);
+            case GetProviderBindingQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    "read_model_unavailable",
+                    "read_model_unavailable",
+                    retryable: true,
+                    result.CorrelationId);
+        }
+
+        AddSuccessHeaders(httpContext, result.CorrelationId, result.Freshness.ReadConsistency);
+        return Results.Json(
+            new ProviderBindingHttpResponse(
+                result.ProviderBindingRef!,
+                result.ProviderFamilyRef!,
+                result.CapabilityProfileRef!,
+                "credential_reference_redacted",
+                result.Freshness),
+            ResponseJsonOptions);
     }
 
     private static async Task<IResult> GetProviderSupportEvidenceAsync(
@@ -619,6 +766,13 @@ public static partial class ProviderReadinessEndpoints
     private sealed record ProviderSupportEvidenceListHttpResponse(
         IReadOnlyList<ProviderSupportEvidenceItem> Items,
         ProviderSupportEvidencePage Page,
+        ProviderReadinessFreshness Freshness);
+
+    private sealed record ProviderBindingHttpResponse(
+        string ProviderBindingRef,
+        string ProviderFamilyRef,
+        string CapabilityProfileRef,
+        string Redaction,
         ProviderReadinessFreshness Freshness);
 
     [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]

@@ -8,6 +8,7 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Credentials;
 using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Queries.FileContext;
+using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
 
@@ -79,10 +80,13 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<WorkspaceLockStatusQueryHandler>();
         services.TryAddSingleton<IWorkspaceStatusReadModel, InMemoryWorkspaceStatusReadModel>();
         services.TryAddSingleton<WorkspaceStatusQueryHandler>();
+        services.TryAddSingleton<IWorkspaceTransitionEvidenceReadModel, InMemoryWorkspaceTransitionEvidenceReadModel>();
+        services.TryAddSingleton<WorkspaceTransitionEvidenceQueryHandler>();
         services.TryAddSingleton<IWorkspaceCleanupStatusReadModel, InMemoryWorkspaceCleanupStatusReadModel>();
         services.TryAddSingleton<WorkspaceCleanupStatusQueryHandler>();
         services.TryAddSingleton<ITaskStatusReadModel, InMemoryTaskStatusReadModel>();
         services.TryAddSingleton<TaskStatusQueryHandler>();
+        services.TryAddSingleton<ListFolderAclEntriesQueryHandler>();
 
         return services;
     }
@@ -140,6 +144,7 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IProviderSupportEvidenceReadModel>(static sp => sp.GetRequiredService<InMemoryProviderReadinessEvidenceStore>());
         services.TryAddSingleton<ProviderReadinessValidationService>();
         services.TryAddSingleton<ProviderSupportEvidenceQueryHandler>();
+        services.TryAddSingleton<GetProviderBindingQueryHandler>();
 
         return services;
     }

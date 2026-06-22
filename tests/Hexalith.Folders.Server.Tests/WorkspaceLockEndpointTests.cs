@@ -46,6 +46,7 @@ public sealed class WorkspaceLockEndpointTests
 
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock");
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release");
+        routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility");
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add");
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change");
         routes.ShouldContain("/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove");
@@ -195,6 +196,121 @@ public sealed class WorkspaceLockEndpointTests
         document.RootElement.GetProperty("lease").GetProperty("leaseStatus").GetString().ShouldBe("expired");
         document.RootElement.GetProperty("retryEligibility").GetProperty("retryable").GetBoolean().ShouldBeTrue();
         document.RootElement.GetProperty("retryEligibility").GetProperty("reasonCode").GetString().ShouldBe("lock_conflict_retry");
+    }
+
+    [Fact]
+    public async Task GetWorkspaceRetryEligibilityShouldReturnContractShapedResponse()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient(), LockReadModel());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/retry-eligibility");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        response.Headers.GetValues("X-Hexalith-Freshness").ShouldContain("eventually_consistent");
+        document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeFalse();
+        document.RootElement.GetProperty("reasonCode").GetString().ShouldBe("lock_active");
+        document.RootElement.GetProperty("currentState").GetString().ShouldBe("locked");
+        document.RootElement.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
+        json.ShouldNotContain("lockOwnershipProof", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task GetWorkspaceRetryEligibilityShouldReportRetryableForExpiredLease()
+    {
+        await using WebApplication app = BuildApp(
+            new RecordingEventStoreGatewayClient(),
+            LockReadModel(expiresAt: Now.AddSeconds(-1)));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/retry-eligibility");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+        request.Headers.Add("X-Hexalith-Freshness", "eventually_consistent");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeTrue();
+        document.RootElement.GetProperty("reasonCode").GetString().ShouldBe("lock_conflict_retry");
+    }
+
+    [Fact]
+    public async Task GetWorkspaceRetryEligibilityShouldRejectIdempotencyKeyBeforeReadModelAccess()
+    {
+        CountingWorkspaceLockStatusReadModel readModel = new(LockReadModel());
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient(), readModel);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/retry-eligibility");
+        request.Headers.Add("Idempotency-Key", "idempotency-a");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task GetWorkspaceRetryEligibilityShouldRejectUnsupportedFreshnessBeforeReadModelAccess()
+    {
+        CountingWorkspaceLockStatusReadModel readModel = new(LockReadModel());
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient(), readModel);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/retry-eligibility");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Freshness", "read_your_writes");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"unsupported_read_consistency\"");
+        readModel.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task GetWorkspaceRetryEligibilityShouldUseSafeDenialForUnauthenticatedCallerBeforeReadModelAccess()
+    {
+        CountingWorkspaceLockStatusReadModel readModel = new(LockReadModel());
+        await using WebApplication app = BuildApp(
+            new RecordingEventStoreGatewayClient(),
+            readModel,
+            tenantId: null,
+            principalId: null);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/workspaces/workspace-a/retry-eligibility");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        request.Headers.Add("X-Hexalith-Task-Id", "task-a");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        json.ShouldContain("\"category\":\"authentication_failure\"");
+        json.ShouldNotContain("folder-a", Case.Sensitive);
+        json.ShouldNotContain("workspace-a", Case.Sensitive);
+        json.ShouldNotContain("workspace_lock_a", Case.Sensitive);
+        readModel.Calls.ShouldBe(0);
     }
 
     [Fact]

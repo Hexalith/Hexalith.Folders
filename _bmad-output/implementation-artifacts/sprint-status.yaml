@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-22T12:00:00+02:00
+last_updated: 2026-06-23T09:00:00+02:00
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -168,7 +168,7 @@ development_status:
   # conditions: 47/47 REST parity (8-1/8-2), wire-exercised parity + claim gate (8-3), axe a11y
   # gate (8-4), C3 Legal sign-off + residual reds (8-5). Stories are stubs pending create-story.
   epic-8: backlog
-  8-1-implement-bucket-a-missing-rest-server-routes: backlog
+  8-1-implement-bucket-a-missing-rest-server-routes: done
   8-2-implement-ops-console-diagnostics-rest-routes: backlog
   8-3-wire-exercise-cross-surface-parity-and-close-claim: backlog
   8-4-stand-up-axe-wcag-ci-gate: backlog

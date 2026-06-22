@@ -29,11 +29,19 @@ public static class FoldersServerModule
 
     public const string DomainName = "folders";
 
+    public const string CreateFolderCommandType = "Hexalith.Folders.Commands.CreateFolder";
+
     public const string ArchiveFolderCommandType = "Hexalith.Folders.Commands.ArchiveFolder";
 
     public const string CreateRepositoryBackedFolderCommandType = "Hexalith.Folders.Commands.CreateRepositoryBackedFolder";
 
+    public const string GrantFolderAccessCommandType = "Hexalith.Folders.Commands.GrantFolderAccess";
+
+    public const string RevokeFolderAccessCommandType = "Hexalith.Folders.Commands.RevokeFolderAccess";
+
     public const string BindRepositoryCommandType = "Hexalith.Folders.Commands.BindRepository";
+
+    public const string ConfigureProviderBindingCommandType = "Hexalith.Folders.Commands.ConfigureProviderBinding";
 
     public const string ConfigureBranchRefPolicyCommandType = "Hexalith.Folders.Commands.ConfigureBranchRefPolicy";
 

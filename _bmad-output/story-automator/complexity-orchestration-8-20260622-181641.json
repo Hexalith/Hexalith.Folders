@@ -1,0 +1,164 @@
+{
+  "stories": [
+    {
+      "storyId": "8.1",
+      "title": "Implement the 8 missing Bucket-A canonical REST server routes",
+      "complexity": {
+        "score": 8,
+        "level": "High",
+        "reasons": [
+          "Complex database operations",
+          "Authorization/permissions",
+          "Backend + Frontend combined",
+          "Complex error handling",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "8.2",
+      "title": "Implement the 7 ops-console diagnostics REST server routes (Bucket B)",
+      "complexity": {
+        "score": 4,
+        "level": "Medium",
+        "reasons": [
+          "Data transformation/ETL",
+          "Authorization/permissions"
+        ]
+      }
+    },
+    {
+      "storyId": "8.3",
+      "title": "Wire-exercise cross-surface parity and gate the four-surface claim",
+      "complexity": {
+        "score": 5,
+        "level": "Medium",
+        "reasons": [
+          "Real-time communication",
+          "Authorization/permissions",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "8.4",
+      "title": "Stand up an automated axe/WCAG 2.2 AA CI gate for the operations console",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Real-time communication",
+          "Accessibility requirements"
+        ]
+      }
+    },
+    {
+      "storyId": "8.5",
+      "title": "Close C3 Legal sign-off and drive the residual test baseline honestly green",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Authorization/permissions",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "9.1",
+      "title": "Adopt the EventStore and Tenants platform Aspire helpers",
+      "complexity": {
+        "score": 6,
+        "level": "Medium",
+        "reasons": [
+          "Webhook/async processing",
+          "Real-time communication",
+          "Complex forms",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "9.2",
+      "title": "Add the Memories search-index server to the AppHost topology",
+      "complexity": {
+        "score": 10,
+        "level": "High",
+        "reasons": [
+          "Webhook/async processing",
+          "Real-time communication",
+          "Caching layer",
+          "Search/indexing",
+          "Complex forms",
+          "Charts/visualization",
+          "Complex test setup"
+        ]
+      }
+    },
+    {
+      "storyId": "9.3",
+      "title": "Apply Folders→Memories routing config and synchronize artifacts",
+      "complexity": {
+        "score": 1,
+        "level": "Low",
+        "reasons": [
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "10.1",
+      "title": "Define the worker-side semantic-indexing port and Memories dependency",
+      "complexity": {
+        "score": 0,
+        "level": "Low",
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "10.2",
+      "title": "Build the Folders-owned indexing bridge projection",
+      "complexity": {
+        "score": 0,
+        "level": "Low",
+        "reasons": []
+      }
+    },
+    {
+      "storyId": "10.3",
+      "title": "Author authorized asynchronous indexing on file-write and commit",
+      "complexity": {
+        "score": 5,
+        "level": "Medium",
+        "reasons": [
+          "Webhook/async processing",
+          "Authorization/permissions",
+          "Complex error handling"
+        ]
+      }
+    },
+    {
+      "storyId": "10.4",
+      "title": "Emit SearchIndexEntryChanged CloudEvents from the workers",
+      "complexity": {
+        "score": 3,
+        "level": "Low",
+        "reasons": [
+          "Webhook/async processing",
+          "Integration testing required"
+        ]
+      }
+    },
+    {
+      "storyId": "10.5",
+      "title": "Expose an authorized Folders query facade over Memories",
+      "complexity": {
+        "score": 2,
+        "level": "Low",
+        "reasons": [
+          "Authorization/permissions"
+        ]
+      }
+    }
+  ]
+}

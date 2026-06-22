@@ -57,7 +57,8 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class TransportParityConformanceTests
 {
     /// <summary>The count of oracle operations the REST server currently implements as <c>/api/v1</c> endpoints.</summary>
-    public const int ImplementedRestOperationCount = 32;
+    /// <remarks>Story 8.1 raised this from 32 to 40 by implementing the 8 Bucket-A canonical REST routes.</remarks>
+    public const int ImplementedRestOperationCount = 40;
 
     /// <summary>
     /// Documented endpoint-name aliases where the ASP.NET <c>.WithName(...)</c> diverges from the contract
@@ -72,28 +73,15 @@ public sealed class TransportParityConformanceTests
     };
 
     /// <summary>
-    /// The 15 oracle operations that are <c>rest</c>-expected but have no registered <c>/api/v1</c>
+    /// The 7 oracle operations that are <c>rest</c>-expected but have no registered <c>/api/v1</c>
     /// endpoint in the current server. Enumerated explicitly so a NEW unimplemented row (or a silently
-    /// filled gap) fails the surface-gap guard. Recorded in Story 5.5 Dev Notes as the known REST gap.
+    /// filled gap) fails the surface-gap guard. Story 8.1 implemented the 8 Bucket-A routes (removed from
+    /// this set); the remaining 7 are the Bucket-B ops-console diagnostics tracked by Story 8.2.
     /// </summary>
     public static readonly IReadOnlySet<string> KnownRestSurfaceGap = new HashSet<string>(StringComparer.Ordinal)
     {
-        // Queries that the SDK exposes but the server does not yet route.
-        "GetProviderBinding",
-        "GetRepositoryBinding",
-        "GetWorkspaceRetryEligibility",
-        "GetWorkspaceTransitionEvidence",
+        // Diagnostics / operations-console projections (Bucket B — Story 8.2).
         "GetProjectionFreshness",
-
-        // ACL.
-        "ListFolderAclEntries",
-        "UpdateFolderAclEntry",
-
-        // Mutating commands the SDK exposes but the server does not yet route.
-        "CreateFolder",
-        "ConfigureProviderBinding",
-
-        // Diagnostics / operations-console projections.
         "GetDirtyStateDiagnostics",
         "GetFailedOperationDiagnostics",
         "GetLockDiagnostics",

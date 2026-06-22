@@ -7,6 +7,7 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Queries.FileContext;
+using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
 
@@ -140,6 +141,21 @@ public static class FoldersDomainServiceEndpoints
                 timeProvider,
                 cancellationToken).ConfigureAwait(false))
         .WithName("ArchiveFolder")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        endpoints.MapPost("/api/v1/folders", async (
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await CreateFolderAsync(
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("CreateFolder")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
         endpoints.MapPost("/api/v1/folders/repository-backed", async (
@@ -298,6 +314,147 @@ public static class FoldersDomainServiceEndpoints
             return ToHttpResult(httpContext, result, correlationId, taskId);
         })
         .WithName("GetWorkspaceLock")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceLockStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            if (idempotencyKey is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            if (!IsCanonicalIdentifier(folderId)
+                || !IsCanonicalIdentifier(workspaceId)
+                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Operation supports eventually_consistent only.");
+            }
+
+            WorkspaceLockStatusQueryResult result = await handler.HandleAsync(
+                new WorkspaceLockStatusQuery(
+                    folderId,
+                    workspaceId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(WorkspaceLockStatusQueryHandler.ActionToken),
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToWorkspaceRetryEligibilityHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("GetWorkspaceRetryEligibility")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            WorkspaceTransitionEvidenceQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            if (!IsCanonicalIdentifier(folderId)
+                || !IsCanonicalIdentifier(workspaceId)
+                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, SnapshotPerTask, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Operation supports snapshot_per_task only.");
+            }
+
+            WorkspaceTransitionEvidenceQueryResult result = await handler.HandleAsync(
+                new WorkspaceTransitionEvidenceQuery(
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(WorkspaceTransitionEvidenceQueryHandler.ActionToken),
+                    folderId,
+                    workspaceId,
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToWorkspaceTransitionEvidenceHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("GetWorkspaceTransitionEvidence")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
         endpoints.MapGet("/api/v1/folders/{folderId}/workspaces/{workspaceId}/status", async (
@@ -981,6 +1138,176 @@ public static class FoldersDomainServiceEndpoints
         .WithName("GetFolderLifecycleStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
+        endpoints.MapGet("/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}", async (
+            string folderId,
+            string repositoryBindingId,
+            HttpContext httpContext,
+            FolderLifecycleStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            if (!IsCanonicalIdentifier(folderId)
+                || !IsCanonicalIdentifier(repositoryBindingId)
+                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
+                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId,
+                    message: "Operation supports eventually_consistent only.");
+            }
+
+            FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
+                new FolderLifecycleStatusQuery(
+                    folderId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence("read_metadata"),
+                    correlationId,
+                    TaskId: taskId,
+                    ClientControlledTenantValues: ClientTenantIds(httpContext),
+                    ClientControlledPrincipalValues: ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToRepositoryBindingHttpResult(httpContext, result, folderId, repositoryBindingId, correlationId, taskId);
+        })
+        .WithName("GetRepositoryBinding")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        endpoints.MapGet("/api/v1/folders/{folderId}/acl", async (
+            string folderId,
+            HttpContext httpContext,
+            ListFolderAclEntriesQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null,
+                    message: "Idempotency-Key is not accepted on read operations.");
+            }
+
+            if (!IsCanonicalIdentifier(folderId)
+                || (correlationId is not null && !IsCanonicalIdentifier(correlationId)))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    taskId: null);
+            }
+
+            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            if (requestedFreshness is not null
+                && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "unsupported_read_consistency",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null,
+                    message: "Operation supports eventually_consistent only.");
+            }
+
+            ListFolderAclEntriesQueryResult result = await handler.HandleAsync(
+                new ListFolderAclEntriesQuery(
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(ListFolderAclEntriesQueryHandler.ActionToken),
+                    folderId,
+                    correlationId,
+                    TaskId: null,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return ToFolderAclEntryListHttpResult(httpContext, result, correlationId);
+        })
+        .WithName("ListFolderAclEntries")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        endpoints.MapPut("/api/v1/folders/{folderId}/acl/{aclEntryId}", async (
+            string folderId,
+            string aclEntryId,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await UpdateFolderAclEntryAsync(
+                folderId,
+                aclEntryId,
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("UpdateFolderAclEntry")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        endpoints.MapPut("/api/v1/provider-bindings/{providerBindingRef}", async (
+            string providerBindingRef,
+            HttpContext httpContext,
+            IEventStoreGatewayClient gateway,
+            ITenantContextAccessor tenantContext,
+            TimeProvider timeProvider,
+            CancellationToken cancellationToken)
+            => await ConfigureProviderBindingAsync(
+                providerBindingRef,
+                httpContext,
+                gateway,
+                tenantContext,
+                timeProvider,
+                cancellationToken).ConfigureAwait(false))
+        .WithName("ConfigureProviderBinding")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
         return endpoints;
     }
 
@@ -1124,6 +1451,571 @@ public static class FoldersDomainServiceEndpoints
                 IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
             ResponseJsonOptions,
             statusCode: StatusCodes.Status202Accepted);
+    }
+
+    private static async Task<IResult> CreateFolderAsync(
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId: null,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
+        {
+            return envelopeFailure;
+        }
+
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
+
+        CreateFolderHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<CreateFolderHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null || body.FolderMetadata is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (string.IsNullOrWhiteSpace(body.FolderMetadata.DisplayName))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        // The folder id is server-assigned (the spine request carries none) and derived
+        // deterministically from tenant + idempotency key so a retry with the same key resolves
+        // to the same folder stream (idempotent replay), while a different payload under the same
+        // key surfaces idempotency_conflict at the aggregate. See story 8.1 DD3.
+        string folderId = DeriveCreateFolderId(envelope.TenantId, idempotencyKey);
+
+        CreateFolderGatewayPayload gatewayPayload = new(
+            body.RequestSchemaVersion,
+            folderId,
+            body.ParentFolderId,
+            body.FolderMetadata);
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: envelope.TenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: FoldersServerModule.CreateFolderCommandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
+    // Derives a stable, opaque, canonical folder id from the tenant and idempotency key. Length-prefixed
+    // inputs prevent field-boundary collisions; the 40-hex-char body keeps the id well within the canonical
+    // identifier limit and matches the lowercase canonical pattern.
+    private static string DeriveCreateFolderId(string tenantId, string idempotencyKey)
+    {
+        byte[] hash = System.Security.Cryptography.SHA256.HashData(
+            System.Text.Encoding.UTF8.GetBytes(
+                $"{tenantId.Length}:{tenantId}|{idempotencyKey.Length}:{idempotencyKey}"));
+        return "fld-" + Convert.ToHexString(hash)[..40].ToLowerInvariant();
+    }
+
+    private static async Task<IResult> UpdateFolderAclEntryAsync(
+        string folderId,
+        string aclEntryId,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
+        {
+            return envelopeFailure;
+        }
+
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
+
+        UpdateFolderAclEntryHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<UpdateFolderAclEntryHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        string? action = FolderAclContract.PermissionLevelToAction(body.PermissionLevel);
+        if (!FolderAclContract.TryParseSubjectRef(body.SubjectRef, out string principalKindToken, out _, out string principalId)
+            || action is null
+            || body.Effect is not ("grant" or "revoke")
+            || !IsCanonicalIdentifier(principalId))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string derivedAclEntryId = FolderAclContract.DeriveAclEntryId(principalKindToken, principalId, body.PermissionLevel!);
+        if (!string.Equals(aclEntryId, derivedAclEntryId, StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "acl_entry_id_mismatch",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "aclEntryId must match the subjectRef and permissionLevel.");
+        }
+
+        FolderAccessGatewayPayload gatewayPayload = new(
+            body.RequestSchemaVersion,
+            [new FolderAccessOperationPayloadDto(principalKindToken, principalId, action)]);
+
+        string commandType = string.Equals(body.Effect, "revoke", StringComparison.Ordinal)
+            ? FoldersServerModule.RevokeFolderAccessCommandType
+            : FoldersServerModule.GrantFolderAccessCommandType;
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: envelope.TenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: folderId,
+                    CommandType: commandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "read_model_unavailable",
+                code: "evidence_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
+    private static async Task<IResult> ConfigureProviderBindingAsync(
+        string providerBindingRef,
+        HttpContext httpContext,
+        IEventStoreGatewayClient gateway,
+        ITenantContextAccessor tenantContext,
+        TimeProvider timeProvider,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+        ArgumentNullException.ThrowIfNull(gateway);
+        ArgumentNullException.ThrowIfNull(tenantContext);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        IResult? envelopeFailure = ValidateMutationEnvelope(
+            httpContext,
+            tenantContext,
+            folderId: null,
+            workspaceId: null,
+            out MutationCommandEnvelope envelope);
+        if (envelopeFailure is not null)
+        {
+            return envelopeFailure;
+        }
+
+        string idempotencyKey = envelope.IdempotencyKey;
+        string correlationId = envelope.CorrelationId;
+        string taskId = envelope.TaskId;
+
+        // The provider-binding reference is the gateway aggregate id, so it must be canonical.
+        if (!IsCanonicalIdentifier(providerBindingRef))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        ConfigureProviderBindingHttpRequest? body;
+        try
+        {
+            body = await httpContext.Request
+                .ReadFromJsonAsync<ConfigureProviderBindingHttpRequest>(RequestJsonOptions, cancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (JsonException)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (body is null)
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "unsupported_request_schema_version",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId,
+                message: "requestSchemaVersion must be exactly v1.");
+        }
+
+        if (string.IsNullOrWhiteSpace(body.ProviderFamilyRef)
+            || string.IsNullOrWhiteSpace(body.NonSecretCredentialReference))
+        {
+            return SafeProblem(
+                StatusCodes.Status400BadRequest,
+                category: "validation_error",
+                code: "validation_error",
+                retryable: false,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        ConfigureProviderBindingGatewayPayload gatewayPayload = new(
+            body.RequestSchemaVersion,
+            providerBindingRef,
+            body.ProviderFamilyRef,
+            body.CapabilityProfileRef,
+            body.NonSecretCredentialReference);
+
+        SubmitCommandResponse submitted;
+        try
+        {
+            submitted = await gateway.SubmitCommandAsync(
+                new SubmitCommandRequest(
+                    MessageId: idempotencyKey,
+                    Tenant: envelope.TenantId,
+                    Domain: FoldersServerModule.DomainName,
+                    AggregateId: providerBindingRef,
+                    CommandType: FoldersServerModule.ConfigureProviderBindingCommandType,
+                    Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
+                    CorrelationId: correlationId,
+                    Extensions: new Dictionary<string, string>
+                    {
+                        ["taskId"] = taskId,
+                    }),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (EventStoreGatewayException ex)
+        {
+            return ToArchiveGatewayProblem(ex, correlationId, taskId);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "provider_unavailable",
+                code: "provider_unavailable",
+                retryable: true,
+                correlationId: correlationId,
+                taskId: taskId);
+        }
+
+        string acceptedCorrelationId = !string.IsNullOrWhiteSpace(submitted.CorrelationId)
+            && IsSafeGatewayCorrelationId(submitted.CorrelationId)
+            ? submitted.CorrelationId
+            : correlationId;
+
+        httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
+        httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        return Results.Json(
+            new AcceptedCommandResponse(
+                timeProvider.GetUtcNow(),
+                acceptedCorrelationId,
+                taskId,
+                "accepted",
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+            ResponseJsonOptions,
+            statusCode: StatusCodes.Status202Accepted);
+    }
+
+    private static IResult ToFolderAclEntryListHttpResult(
+        HttpContext httpContext,
+        ListFolderAclEntriesQueryResult result,
+        string? correlationId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case ListFolderAclEntriesQueryResultCode.Allowed:
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                {
+                    httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+                }
+
+                httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
+
+                return Results.Json(
+                    new FolderAclEntryListResponse(
+                        [.. result.Entries.Select(static e => new FolderAclEntryResponse(e.AclEntryId, e.SubjectRef, e.PermissionLevel, e.Effect))],
+                        // The in-memory MVP returns the full ACL set in a single page (no cursor).
+                        new PaginationMetadataResponse(Cursor: null, Limit: 1000, IsTruncated: false, TruncatedReason: null),
+                        new FreshnessMetadataResponse(
+                            EventuallyConsistent,
+                            result.Freshness.ObservedAt,
+                            result.Freshness.ProjectionWatermark,
+                            result.Freshness.Stale)),
+                    ResponseJsonOptions);
+
+            case ListFolderAclEntriesQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case ListFolderAclEntriesQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case ListFolderAclEntriesQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case ListFolderAclEntriesQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case ListFolderAclEntriesQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: null);
+
+            case ListFolderAclEntriesQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null);
+        }
     }
 
     private static async Task<IResult> CreateRepositoryBackedFolderAsync(
@@ -3628,6 +4520,228 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static IResult ToWorkspaceRetryEligibilityHttpResult(
+        HttpContext httpContext,
+        WorkspaceLockStatusQueryResult result,
+        string? correlationId,
+        string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case WorkspaceLockStatusQueryResultCode.Allowed:
+                WorkspaceLockRetryEligibility retry = result.RetryEligibility;
+                if (string.IsNullOrWhiteSpace(retry.CurrentState) || string.IsNullOrWhiteSpace(retry.ReasonCode))
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                {
+                    httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+                }
+
+                httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
+
+                return Results.Json(
+                    new WorkspaceRetryEligibilityResponse(
+                        retry.Retryable,
+                        retry.RetryAfterSeconds,
+                        retry.ReasonCode,
+                        retry.CorrelationId ?? correlationId,
+                        retry.TaskId ?? taskId,
+                        retry.CurrentState,
+                        new FreshnessMetadataResponse(
+                            EventuallyConsistent,
+                            retry.Freshness.ObservedAt,
+                            retry.Freshness.ProjectionWatermark,
+                            retry.Freshness.Stale)),
+                    ResponseJsonOptions);
+
+            case WorkspaceLockStatusQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceLockStatusQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceLockStatusQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceLockStatusQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceLockStatusQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceLockStatusQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
+    private static IResult ToWorkspaceTransitionEvidenceHttpResult(
+        HttpContext httpContext,
+        WorkspaceTransitionEvidenceQueryResult result,
+        string? correlationId,
+        string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case WorkspaceTransitionEvidenceQueryResultCode.Allowed:
+                WorkspaceTransitionEvidenceSnapshot? snapshot = result.Snapshot;
+                if (snapshot is null)
+                {
+                    return SafeProblem(
+                        StatusCodes.Status503ServiceUnavailable,
+                        category: "read_model_unavailable",
+                        code: "read_model_unavailable",
+                        retryable: true,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                if (!string.IsNullOrWhiteSpace(snapshot.CorrelationId) && !ContainsControlChars(snapshot.CorrelationId))
+                {
+                    httpContext.Response.Headers["X-Correlation-Id"] = snapshot.CorrelationId;
+                }
+
+                httpContext.Response.Headers[FreshnessHeaderName] = SnapshotPerTask;
+
+                return Results.Json(
+                    new WorkspaceTransitionEvidenceResponse(
+                        snapshot.WorkspaceId,
+                        snapshot.CurrentState,
+                        new WorkspaceTransitionAttemptResponse(snapshot.FromState, snapshot.EventName, snapshot.CurrentState),
+                        snapshot.Result,
+                        snapshot.ReasonCode,
+                        snapshot.EvidenceAt,
+                        snapshot.CorrelationId ?? correlationId,
+                        snapshot.TaskId ?? taskId,
+                        snapshot.LockEvidence is null
+                            ? null
+                            : new LockLeaseMetadataResponse(
+                                snapshot.LockEvidence.LockId,
+                                snapshot.LockEvidence.LeaseStatus,
+                                snapshot.LockEvidence.AcquiredAt,
+                                snapshot.LockEvidence.EffectiveAt,
+                                snapshot.LockEvidence.ExpiresAt,
+                                snapshot.LockEvidence.HolderRef),
+                        snapshot.AuditMetadata,
+                        new FreshnessMetadataResponse(
+                            SnapshotPerTask,
+                            snapshot.Freshness.ObservedAt,
+                            snapshot.Freshness.ProjectionWatermark,
+                            snapshot.Freshness.Stale)),
+                    ResponseJsonOptions);
+
+            case WorkspaceTransitionEvidenceQueryResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceTransitionEvidenceQueryResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceTransitionEvidenceQueryResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceTransitionEvidenceQueryResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceTransitionEvidenceQueryResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case WorkspaceTransitionEvidenceQueryResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
     private static IResult ToHttpResult(HttpContext httpContext, WorkspaceStatusQueryResult result, string? correlationId, string? taskId)
     {
         if (result.AuthorizationDenial is not null)
@@ -4383,6 +5497,136 @@ public static class FoldersDomainServiceEndpoints
         }
     }
 
+    private static IResult ToRepositoryBindingHttpResult(
+        HttpContext httpContext,
+        FolderLifecycleStatusQueryResult result,
+        string folderId,
+        string repositoryBindingId,
+        string? correlationId,
+        string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case FolderLifecycleStatusResultCode.Allowed:
+                string? bindingState = MapRepositoryBindingState(result.LifecycleState);
+
+                // Safe 404 when there is no binding, the binding metadata is incomplete, the
+                // lifecycle state has no repository-binding projection, or the requested id does
+                // not match the folder's bound repository (id mismatch is indistinguishable from
+                // a nonexistent binding).
+                if (string.IsNullOrWhiteSpace(result.RepositoryBindingId)
+                    || string.IsNullOrWhiteSpace(result.ProviderBindingRef)
+                    || bindingState is null
+                    || !string.Equals(result.RepositoryBindingId, repositoryBindingId, StringComparison.Ordinal))
+                {
+                    return SafeProblem(
+                        StatusCodes.Status404NotFound,
+                        category: "not_found",
+                        code: "not_found",
+                        retryable: false,
+                        correlationId: correlationId,
+                        taskId: taskId);
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                {
+                    httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+                }
+
+                httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
+
+                return Results.Json(
+                    new RepositoryBindingResponse(
+                        result.RepositoryBindingId,
+                        folderId,
+                        result.ProviderBindingRef,
+                        bindingState,
+                        "tenant_sensitive",
+                        new FreshnessMetadataResponse(
+                            EventuallyConsistent,
+                            result.Freshness.ObservedAt,
+                            result.Freshness.ProjectionWatermark,
+                            result.Freshness.Stale)),
+                    ResponseJsonOptions);
+
+            case FolderLifecycleStatusResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ProjectionStale:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_stale",
+                    code: "projection_stale",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ProjectionUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "projection_unavailable",
+                    code: "projection_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.ReadModelUnavailable:
+            case FolderLifecycleStatusResultCode.ArchiveStateUnsupported:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderLifecycleStatusResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
+    // Maps the folder lifecycle-status projection's repository lifecycle string onto the
+    // canonical RepositoryBinding.bindingState enum (story 8.1 DD5). A Bound repository is
+    // surfaced by the lifecycle handler as "ready" (active) or "inaccessible" (archived).
+    private static string? MapRepositoryBindingState(string? lifecycleState)
+        => lifecycleState switch
+        {
+            "requested" => "requested",
+            "ready" => "bound",
+            "inaccessible" => "bound",
+            "failed" => "failed",
+            "unknown_provider_outcome" => "unknown_provider_outcome",
+            "reconciliation_required" => "reconciliation_required",
+            _ => null,
+        };
+
     private static void AddWorkspaceLockSuccessHeaders(HttpContext httpContext, WorkspaceLockStatusQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
@@ -4531,6 +5775,62 @@ public static class FoldersDomainServiceEndpoints
     private sealed record ArchiveFolderHttpRequest(
         string? RequestSchemaVersion,
         string? ArchiveReasonCode);
+
+    private sealed record CreateFolderHttpRequest(
+        string? RequestSchemaVersion,
+        string? ParentFolderId,
+        FolderMetadataHttpRequest? FolderMetadata);
+
+    private sealed record CreateFolderGatewayPayload(
+        string? RequestSchemaVersion,
+        string? FolderId,
+        string? ParentFolderId,
+        FolderMetadataHttpRequest? FolderMetadata);
+
+    private sealed record UpdateFolderAclEntryHttpRequest(
+        string? RequestSchemaVersion,
+        string? SubjectRef,
+        string? PermissionLevel,
+        string? Effect);
+
+    private sealed record FolderAccessGatewayPayload(
+        string? RequestSchemaVersion,
+        IReadOnlyList<FolderAccessOperationPayloadDto> Operations);
+
+    private sealed record FolderAccessOperationPayloadDto(
+        string PrincipalKind,
+        string PrincipalId,
+        string Action);
+
+    private sealed record ConfigureProviderBindingHttpRequest(
+        string? RequestSchemaVersion,
+        string? ProviderFamilyRef,
+        string? CapabilityProfileRef,
+        string? NonSecretCredentialReference);
+
+    private sealed record ConfigureProviderBindingGatewayPayload(
+        string? RequestSchemaVersion,
+        string? ProviderBindingRef,
+        string? ProviderFamilyRef,
+        string? CapabilityProfileRef,
+        string? NonSecretCredentialReference);
+
+    private sealed record FolderAclEntryListResponse(
+        IReadOnlyList<FolderAclEntryResponse> Items,
+        PaginationMetadataResponse Page,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record FolderAclEntryResponse(
+        string AclEntryId,
+        string SubjectRef,
+        string PermissionLevel,
+        string Effect);
+
+    private sealed record PaginationMetadataResponse(
+        string? Cursor,
+        int Limit,
+        bool IsTruncated,
+        string? TruncatedReason);
 
     private sealed record CreateRepositoryBackedFolderHttpRequest(
         string? RequestSchemaVersion,
@@ -4757,6 +6057,32 @@ public static class FoldersDomainServiceEndpoints
         string? TaskId,
         string CurrentState,
         FreshnessMetadataResponse Freshness);
+
+    private sealed record RepositoryBindingResponse(
+        string RepositoryBindingId,
+        string FolderId,
+        string ProviderBindingRef,
+        string BindingState,
+        string SensitiveMetadataTier,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record WorkspaceTransitionEvidenceResponse(
+        string WorkspaceId,
+        string CurrentState,
+        WorkspaceTransitionAttemptResponse AttemptedTransition,
+        string Result,
+        string ReasonCode,
+        DateTimeOffset EvidenceAt,
+        string? CorrelationId,
+        string? TaskId,
+        LockLeaseMetadataResponse? LockEvidence,
+        IReadOnlyDictionary<string, DateTimeOffset> AuditMetadata,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record WorkspaceTransitionAttemptResponse(
+        string FromState,
+        string EventName,
+        string ToState);
 
     private sealed record WorkspaceStatusResponse(
         string FolderId,

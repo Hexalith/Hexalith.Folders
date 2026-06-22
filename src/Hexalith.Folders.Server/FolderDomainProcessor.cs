@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Observability;
 using Hexalith.Folders.Queries.ProviderReadiness;
@@ -17,6 +18,9 @@ namespace Hexalith.Folders.Server;
 
 public sealed partial class FolderDomainProcessor(
     FolderArchiveTenantGate archiveGate,
+    FolderCreationService folderCreationService,
+    FolderAccessMutationService folderAccessMutationService,
+    ConfigureProviderBindingService configureProviderBindingService,
     RepositoryBackedFolderCreationService repositoryBackedCreationService,
     RepositoryBindingService repositoryBindingService,
     BranchRefPolicyConfigurationService branchRefPolicyConfigurationService,
@@ -43,6 +47,12 @@ public sealed partial class FolderDomainProcessor(
     private static partial Regex CanonicalSegmentRegex();
 
     private readonly FolderArchiveTenantGate _archiveGate = archiveGate ?? throw new ArgumentNullException(nameof(archiveGate));
+    private readonly FolderCreationService _folderCreationService =
+        folderCreationService ?? throw new ArgumentNullException(nameof(folderCreationService));
+    private readonly FolderAccessMutationService _folderAccessMutationService =
+        folderAccessMutationService ?? throw new ArgumentNullException(nameof(folderAccessMutationService));
+    private readonly ConfigureProviderBindingService _configureProviderBindingService =
+        configureProviderBindingService ?? throw new ArgumentNullException(nameof(configureProviderBindingService));
     private readonly RepositoryBackedFolderCreationService _repositoryBackedCreationService =
         repositoryBackedCreationService ?? throw new ArgumentNullException(nameof(repositoryBackedCreationService));
     private readonly RepositoryBindingService _repositoryBindingService =
@@ -93,6 +103,26 @@ public sealed partial class FolderDomainProcessor(
             return Rejection(command, FolderResultCode.ValidationFailed, null);
         }
 
+        if (string.Equals(command.CommandType, FoldersServerModule.CreateFolderCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessCreateFolderAsync(command).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.GrantFolderAccessCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessFolderAccessAsync(command, FolderAccessOperationIntent.Grant).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.RevokeFolderAccessCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessFolderAccessAsync(command, FolderAccessOperationIntent.Revoke).ConfigureAwait(false);
+        }
+
+        if (string.Equals(command.CommandType, FoldersServerModule.ConfigureProviderBindingCommandType, StringComparison.Ordinal))
+        {
+            return await ProcessConfigureProviderBindingAsync(command).ConfigureAwait(false);
+        }
+
         if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
         {
             return await ProcessArchiveAsync(command).ConfigureAwait(false);
@@ -139,6 +169,288 @@ public sealed partial class FolderDomainProcessor(
         }
 
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
+    }
+
+    private async Task<DomainResult> ProcessCreateFolderAsync(CommandEnvelope envelope)
+    {
+        CreateFolderPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<CreateFolderPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || payload.FolderMetadata is null
+            || string.IsNullOrWhiteSpace(payload.FolderId)
+            || string.IsNullOrWhiteSpace(payload.FolderMetadata.DisplayName)
+            || !string.Equals(payload.FolderId, envelope.AggregateId, StringComparison.Ordinal))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = ReadRequiredTaskId(envelope);
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        FolderCreationRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [FolderCreationService.ActionToken]),
+            payload.FolderId,
+            payload.FolderMetadata.DisplayName,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _folderCreationService.CreateAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
+    private async Task<DomainResult> ProcessFolderAccessAsync(CommandEnvelope envelope, FolderAccessOperationIntent intent)
+    {
+        FolderAccessMutationPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<FolderAccessMutationPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null || payload.Operations is null || payload.Operations.Count == 0)
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        List<FolderAccessOperation> operations = new(payload.Operations.Count);
+        foreach (FolderAccessOperationPayload operation in payload.Operations)
+        {
+            if (string.IsNullOrWhiteSpace(operation.PrincipalId)
+                || string.IsNullOrWhiteSpace(operation.Action)
+                || !TryParsePrincipalKind(operation.PrincipalKind, out FolderAccessPrincipalKind principalKind))
+            {
+                return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+            }
+
+            operations.Add(new FolderAccessOperation(intent, principalKind, operation.PrincipalId, operation.Action));
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = ReadRequiredTaskId(envelope);
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        FolderAccessMutationRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [FolderAccessMutationService.ActionToken]),
+            envelope.AggregateId,
+            intent,
+            operations,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        FolderResult result;
+        try
+        {
+            result = await _folderAccessMutationService.MutateAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToDomainResult(envelope, result);
+    }
+
+    private async Task<DomainResult> ProcessConfigureProviderBindingAsync(CommandEnvelope envelope)
+    {
+        ConfigureProviderBindingPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<ConfigureProviderBindingPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null
+            || string.IsNullOrWhiteSpace(payload.ProviderBindingRef)
+            || string.IsNullOrWhiteSpace(payload.ProviderFamilyRef)
+            || string.IsNullOrWhiteSpace(payload.NonSecretCredentialReference)
+            || !string.Equals(payload.ProviderBindingRef, envelope.AggregateId, StringComparison.Ordinal))
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || string.IsNullOrWhiteSpace(allowed.OrganizationId)
+            || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        string taskId = ReadRequiredTaskId(envelope);
+        Dictionary<string, string?> principalValues = new(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(envelope.UserId))
+        {
+            principalValues["eventstore_envelope_user"] = envelope.UserId;
+        }
+
+        ConfigureProviderBindingServiceRequest request = new(
+            allowed.AuthoritativeTenantId,
+            allowed.ActorSafeIdentifier,
+            EventStoreClaimTransformEvidence.Allowed(
+                allowed.AuthoritativeTenantId,
+                allowed.ActorSafeIdentifier,
+                [ConfigureProviderBindingService.ActionToken]),
+            payload.ProviderBindingRef,
+            payload.ProviderFamilyRef,
+            payload.NonSecretCredentialReference,
+            envelope.CorrelationId,
+            taskId,
+            envelope.MessageId,
+            PayloadTenantId: null,
+            ClientControlledTenantValues: new Dictionary<string, string?>(StringComparer.Ordinal)
+            {
+                ["eventstore_envelope_tenant"] = envelope.TenantId,
+            },
+            ClientControlledPrincipalValues: principalValues);
+
+        OrganizationProviderBindingResult result;
+        try
+        {
+            result = await _configureProviderBindingService.ConfigureAsync(request, CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
+        }
+
+        return ToOrganizationDomainResult(envelope, result);
+    }
+
+    private static DomainResult ToOrganizationDomainResult(CommandEnvelope envelope, OrganizationProviderBindingResult result)
+        => result.Code switch
+        {
+            OrganizationProviderBindingResultCode.Accepted
+                or OrganizationProviderBindingResultCode.AlreadyApplied => OrganizationAcceptedNoOp(result),
+            _ => Rejection(envelope, MapOrganizationResultCode(result.Code), null),
+        };
+
+    private static DomainResult OrganizationAcceptedNoOp(OrganizationProviderBindingResult result)
+    {
+        FolderProcessResultPayload payload = new(
+            Status: "accepted",
+            IdempotentReplay: result.Code == OrganizationProviderBindingResultCode.AlreadyApplied,
+            CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
+            TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
+            IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null);
+
+        return new PayloadNoOpDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions));
+    }
+
+    // Maps organization provider-binding result codes onto folder result codes so the shared rejection
+    // event + gateway HTTP mapping (idempotency_conflict -> 409, validation -> 400, denial -> 403,
+    // projection -> 503) apply uniformly. The organization aggregate performs no provider call, so the
+    // spine's 503 provider_unavailable is not produced here.
+    private static FolderResultCode MapOrganizationResultCode(OrganizationProviderBindingResultCode code)
+        => code switch
+        {
+            OrganizationProviderBindingResultCode.IdempotencyConflict
+                or OrganizationProviderBindingResultCode.DuplicateConflict
+                or OrganizationProviderBindingResultCode.ReplayConflict => FolderResultCode.IdempotencyConflict,
+            OrganizationProviderBindingResultCode.UnsupportedProviderKind
+                or OrganizationProviderBindingResultCode.InvalidProviderBindingReference
+                or OrganizationProviderBindingResultCode.InvalidCredentialReference
+                or OrganizationProviderBindingResultCode.InvalidPolicy
+                or OrganizationProviderBindingResultCode.InvalidOrganization
+                or OrganizationProviderBindingResultCode.InvalidTenant
+                or OrganizationProviderBindingResultCode.ReservedTenant
+                or OrganizationProviderBindingResultCode.ForbiddenCredentialMaterial => FolderResultCode.ValidationFailed,
+            OrganizationProviderBindingResultCode.StaleProjection => FolderResultCode.StaleProjection,
+            OrganizationProviderBindingResultCode.UnavailableProjection => FolderResultCode.UnavailableProjection,
+            OrganizationProviderBindingResultCode.MissingAuthoritativeTenant => FolderResultCode.MissingAuthoritativeTenant,
+            OrganizationProviderBindingResultCode.MalformedEvidence => FolderResultCode.MalformedEvidence,
+            OrganizationProviderBindingResultCode.MissingPermission
+                or OrganizationProviderBindingResultCode.TenantAccessDenied
+                or OrganizationProviderBindingResultCode.TenantMismatch
+                or OrganizationProviderBindingResultCode.UnknownTenant
+                or OrganizationProviderBindingResultCode.DisabledTenant => FolderResultCode.FolderAclDenied,
+            _ => FolderResultCode.TenantAccessDenied,
+        };
+
+    private static bool TryParsePrincipalKind(string? value, out FolderAccessPrincipalKind principalKind)
+    {
+        principalKind = value switch
+        {
+            "user" => FolderAccessPrincipalKind.User,
+            "group" => FolderAccessPrincipalKind.Group,
+            "role" => FolderAccessPrincipalKind.Role,
+            "delegated_service_agent" => FolderAccessPrincipalKind.DelegatedServiceAgent,
+            _ => FolderAccessPrincipalKind.User,
+        };
+
+        return value is "user" or "group" or "role" or "delegated_service_agent";
     }
 
     private async Task<DomainResult> ProcessArchiveAsync(CommandEnvelope envelope)
@@ -1040,6 +1352,37 @@ public sealed partial class FolderDomainProcessor(
     private sealed record ArchiveFolderPayload(
         [property: JsonRequired] string? RequestSchemaVersion,
         [property: JsonRequired] string? ArchiveReasonCode);
+
+    // CreateFolder payload is validated explicitly in ProcessCreateFolderAsync rather than via
+    // [JsonRequired]: parentFolderId and metadataClass are optional and GatewayPayloadJsonOptions
+    // omits nulls, which would make JsonRequired on those fields fail spuriously.
+    private sealed record CreateFolderPayload(
+        string? RequestSchemaVersion,
+        string? FolderId,
+        string? ParentFolderId,
+        CreateFolderMetadataPayload? FolderMetadata);
+
+    private sealed record CreateFolderMetadataPayload(
+        string? DisplayName,
+        string? MetadataClass);
+
+    // Folder ACL grant/revoke payload. Operations carry the resolved principal kind/id and the
+    // canonical action; the grant-vs-revoke intent comes from the command type, not the payload.
+    private sealed record FolderAccessMutationPayload(
+        string? RequestSchemaVersion,
+        IReadOnlyList<FolderAccessOperationPayload>? Operations);
+
+    private sealed record FolderAccessOperationPayload(
+        string? PrincipalKind,
+        string? PrincipalId,
+        string? Action);
+
+    private sealed record ConfigureProviderBindingPayload(
+        string? RequestSchemaVersion,
+        string? ProviderBindingRef,
+        string? ProviderFamilyRef,
+        string? CapabilityProfileRef,
+        string? NonSecretCredentialReference);
 
     private sealed record CreateRepositoryBackedFolderPayload(
         [property: JsonRequired] string? RequestSchemaVersion,
