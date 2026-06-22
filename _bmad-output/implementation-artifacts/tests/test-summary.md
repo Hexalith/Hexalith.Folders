@@ -1,67 +1,48 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 7.3. Durable per-story copy: [`7-3-test-summary.md`](./7-3-test-summary.md).
+> Canonical latest-run summary for Story 8.2. Durable per-story copy: [`8-2-test-summary.md`](./8-2-test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests`
-**Story:** `_bmad-output/implementation-artifacts/7-3-build-container-images-with-stable-dapr-app-ids.md`
-**Feature under test:** SDK container image metadata, stable Dapr app IDs, production service-image binding
-evidence, local Aspire sidecar topology, and the focused container image gate.
-
-This is a release-readiness packaging and static conformance story. There are no browser flows to automate; the
-test surface is xUnit v3 + Shouldly static conformance, the Dapr policy PowerShell gate, and the SDK container
-archive publish gate.
+**Story:** `_bmad-output/implementation-artifacts/8-2-implement-ops-console-diagnostics-rest-routes.md`
+**Feature under test:** the 7 read-only ops-console diagnostics REST routes (`src/Hexalith.Folders.Server/OpsConsoleDiagnosticsEndpoints.cs`).
+**Framework:** xUnit + `Microsoft.AspNetCore.TestHost` (`WebApplication` + `GetTestClient`) — the project's existing API-conformance pattern. No new framework introduced.
 
 ## Generated Tests
 
-### API Tests
+### API Tests — `tests/Hexalith.Folders.Server.Tests/OpsConsoleDiagnosticsEndpointTests.cs`
 
-- [x] Not applicable - Story 7.3 publishes deployment/container evidence and CI gate behavior, not runtime API endpoints.
+Existing contract/route tests retained; the following coverage **gaps were discovered and auto-applied**:
 
-### E2E / Conformance Tests
+- [x] **403 `denied_safe`** — `TenantScopedDiagnosticsShouldDenySafeWhenClientControlledTenantMismatch` (Theory ×2). Client-supplied tenant override that disagrees with the authoritative tenant fails closed; attempted tenant id never reflected. *(403 branch had no prior test.)*
+- [x] **503 `read_model_unavailable`** — `DiagnosticsShouldReturnServiceUnavailableWhenReadModelThrows` (Theory ×4). Throwing read model → retryable 503, never 200 / never a leaked exception. *(503 branch had no prior test.)*
+- [x] **400 `validation_error`** — `DiagnosticsShouldRejectNonCanonicalPathId` (Theory ×3). Non-canonical path segments fail the anti-injection canonical-id guardrail; offending value never echoed.
+- [x] **400 `unsafe_correlation_id`** — `DiagnosticsShouldRejectSensitiveCorrelationId` (Theory ×2). Secret-looking correlation id rejected and never reflected.
+- [x] **409 `projection_stale` (folder-scoped)** — `GetLockDiagnosticsShouldReturnConflictWhenFolderProjectionStale`. Folder/workspace counterpart of the tenant-scoped 409 test.
+- [x] **Per-route guardrail breadth** — idempotency-key / unsupported-freshness / unauthenticated-safe-denial Theories broadened from 2 representative routes to **all 7**.
 
-- [x] `tests/Hexalith.Folders.Contracts.Tests/Deployment/ContainerImageConformanceTests.cs` - **5 facts**.
-- [x] `tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs` - **8 facts**.
-- [x] `tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs` - **4 facts**.
+### E2E (UI) Tests
 
-Coverage includes:
+- N/A — Story 8.2 ships REST server routes only; no UI surface to automate.
 
-- [x] Server, Workers, and UI projects expose stable SDK container repositories and non-secret OCI metadata.
-- [x] Production service-image evidence binds image repositories to exact Dapr app IDs and config names.
-- [x] Local Aspire topology attaches the same Dapr app IDs used by production evidence, including `folders-ui`.
-- [x] Container image gate script uses SDK `/t:PublishContainer`, archive output, audit-disabled restore for sandbox stability, and no live registry push.
-- [x] Container gate report is metadata-only and records `status: passed` with service-level repository/tag/label evidence.
-- [x] Secret-shaped and recursive-submodule negative scans are clean on Story 7.3 deployment/container artifacts.
+## Coverage
+
+- **Diagnostics endpoint tests:** 17 → **39** (`OpsConsoleDiagnosticsEndpointTests`).
+- **Full `Hexalith.Folders.Server.Tests` project:** **525 / 525 passing** (was 503; +22), 0 skipped — no regressions.
+- Every spine status code (`200/401/403/404/409/503`) now has at least one route-level test; both authorization paths (tenant-scoped + folder-scoped) and the diagnostics-specific `projection_stale → 409` mapping are exercised.
 
 ## Validation
 
 | Check | Command | Result |
 | ----- | ------- | ------ |
-| Restore | `dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false` | passed |
-| Build | `dotnet build Hexalith.Folders.slnx --no-restore -m:1` | passed, 0 warnings / 0 errors |
-| Container/deployment tests | `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.Deployment.ContainerImageConformanceTests` | 5/5 passed |
-| Dapr policy tests | `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor -namespace Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance` | 8/8 passed |
-| Aspire topology tests | `dotnet tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests.dll -noLogo -noColor -class Hexalith.Folders.IntegrationTests.AspireTopologyTests` | 4/4 passed |
-| Dapr policy gate | `pwsh -NoLogo -NoProfile -File tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` | passed, 8/8 |
-| Container image gate | `pwsh -NoLogo -NoProfile -File tests/tools/run-container-image-gates.ps1 -SkipRestoreBuild` | passed; server, workers, and UI archives generated locally |
-| Format/analyzers | `dotnet format whitespace ...` and `dotnet format analyzers ...` on modified test files | passed |
-| Diff hygiene | `git diff --check` | clean |
-| Submodule policy scan | `rg -n "git submodule update --init --recursive|--recursive"` over Story 7.3 artifacts | clean |
-| Secret-shaped scan | `rg -n "ghp_|github_pat_|client_secret|private_key|BEGIN .*PRIVATE KEY|password=|token=|https://...prod"` over Story 7.3 artifacts | clean |
+| Diagnostics suite | `dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --filter "FullyQualifiedName~OpsConsoleDiagnosticsEndpointTests"` | 39/39 passed |
+| Full Server.Tests project | `dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj` | 525/525 passed, 0 skipped |
 
 ## Files Changed
 
-- `Directory.Build.targets`
-- `deploy/containers/production/service-images.yaml`
-- `docs/operations/container-images-and-dapr-app-ids.md`
-- `src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`
-- `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`
-- `src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj`
-- `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`
-- `tests/Hexalith.Folders.Contracts.Tests/Deployment/ContainerImageConformanceTests.cs`
-- `tests/Hexalith.Folders.IntegrationTests/AspireTopologyTests.cs`
-- `tests/tools/run-container-image-gates.ps1`
-- `_bmad-output/gates/container-images/latest.json`
+- `tests/Hexalith.Folders.Server.Tests/OpsConsoleDiagnosticsEndpointTests.cs`
+- `_bmad-output/implementation-artifacts/tests/8-2-test-summary.md`
+- `_bmad-output/implementation-artifacts/tests/test-summary.md`
 
 ## Next Steps
 
-- Run code review. No QA-only blocker remains.
+- Run in CI alongside the `Contracts.Tests` parity oracle (REST 47/47). Full per-story detail: [`8-2-test-summary.md`](./8-2-test-summary.md).

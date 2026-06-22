@@ -10,6 +10,7 @@ using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
+using Hexalith.Folders.Queries.OpsConsole;
 using Hexalith.Folders.Queries.ProviderReadiness;
 
 using Dapr.Client;
@@ -87,6 +88,20 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<ITaskStatusReadModel, InMemoryTaskStatusReadModel>();
         services.TryAddSingleton<TaskStatusQueryHandler>();
         services.TryAddSingleton<ListFolderAclEntriesQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersOpsConsoleDiagnostics(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        // Layered authorization brings TenantAccessAuthorizer (tenant-scoped diagnostics) and
+        // LayeredFolderAuthorizationService (folder/workspace-scoped diagnostics) plus IUtcClock.
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddSingleton<IOpsConsoleDiagnosticsReadModel, InMemoryOpsConsoleDiagnosticsReadModel>();
+        services.TryAddSingleton<TenantScopedDiagnosticsQueryHandler>();
+        services.TryAddSingleton<FolderScopedDiagnosticsQueryHandler>();
 
         return services;
     }

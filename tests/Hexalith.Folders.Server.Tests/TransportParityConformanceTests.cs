@@ -38,11 +38,11 @@ namespace Hexalith.Folders.Server.Tests;
 /// </summary>
 /// <remarks>
 /// <para><b>Drift-aware REST coverage.</b> The contract spine declares all 47 operation ids and the SDK
-/// is generated from it, so the SDK exposes all 47 methods. The current REST server implementation
-/// registers <see cref="ImplementedRestOperationCount"/> of those 47 as <c>/api/v1</c> endpoints; the
-/// remaining 15 (ACL, several queries, a few mutators, diagnostics) are <c>rest</c>-expected by
-/// the oracle but have no server endpoint yet. Per Story 5.5's "surface drift in Dev Notes, do not edit
-/// production code or oracle" directive, the coverage guard here:
+/// is generated from it, so the SDK exposes all 47 methods. The REST server now registers all
+/// <see cref="ImplementedRestOperationCount"/> (= 47) as <c>/api/v1</c> endpoints — Stories 8.1 and 8.2
+/// closed the former Bucket-A and Bucket-B gaps, so <see cref="KnownRestSurfaceGap"/> is empty. Per Story
+/// 5.5's "surface drift in Dev Notes, do not edit production code or oracle" directive, the coverage guard
+/// here:
 /// <list type="bullet">
 ///   <item><description>asserts every registered <c>/api/v1</c> endpoint name maps back to an oracle row
 ///     (orphan-endpoint guard — a new endpoint not in the oracle fails),</description></item>
@@ -57,8 +57,10 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class TransportParityConformanceTests
 {
     /// <summary>The count of oracle operations the REST server currently implements as <c>/api/v1</c> endpoints.</summary>
-    /// <remarks>Story 8.1 raised this from 32 to 40 by implementing the 8 Bucket-A canonical REST routes.</remarks>
-    public const int ImplementedRestOperationCount = 40;
+    /// <remarks>Story 8.1 raised this from 32 to 40 by implementing the 8 Bucket-A canonical REST routes;
+    /// Story 8.2 raised it from 40 to 47 by implementing the 7 Bucket-B ops-console diagnostics routes (full
+    /// REST parity). CLI stays 40/47 — the 7 diagnostics are MCP-only by design.</remarks>
+    public const int ImplementedRestOperationCount = 47;
 
     /// <summary>
     /// Documented endpoint-name aliases where the ASP.NET <c>.WithName(...)</c> diverges from the contract
@@ -73,22 +75,12 @@ public sealed class TransportParityConformanceTests
     };
 
     /// <summary>
-    /// The 7 oracle operations that are <c>rest</c>-expected but have no registered <c>/api/v1</c>
-    /// endpoint in the current server. Enumerated explicitly so a NEW unimplemented row (or a silently
-    /// filled gap) fails the surface-gap guard. Story 8.1 implemented the 8 Bucket-A routes (removed from
-    /// this set); the remaining 7 are the Bucket-B ops-console diagnostics tracked by Story 8.2.
+    /// The oracle operations that are <c>rest</c>-expected but have no registered <c>/api/v1</c> endpoint.
+    /// Enumerated explicitly so a NEW unimplemented row (or a silently filled gap) fails the surface-gap
+    /// guard. Story 8.1 implemented the 8 Bucket-A routes; Story 8.2 implemented the 7 Bucket-B ops-console
+    /// diagnostics routes — the set is now <b>empty</b> (REST surface = 47/47, full parity).
     /// </summary>
-    public static readonly IReadOnlySet<string> KnownRestSurfaceGap = new HashSet<string>(StringComparer.Ordinal)
-    {
-        // Diagnostics / operations-console projections (Bucket B — Story 8.2).
-        "GetProjectionFreshness",
-        "GetDirtyStateDiagnostics",
-        "GetFailedOperationDiagnostics",
-        "GetLockDiagnostics",
-        "GetProviderStatusDiagnostics",
-        "GetReadinessDiagnostics",
-        "GetSyncStatusDiagnostics",
-    };
+    public static readonly IReadOnlySet<string> KnownRestSurfaceGap = new HashSet<string>(StringComparer.Ordinal);
 
     // ---------------------------------------------------------------------------------------------------
     // AC #2 / AC #8 — REST identity / coverage / drift-aware guards.

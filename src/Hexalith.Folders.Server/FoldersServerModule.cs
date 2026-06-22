@@ -72,6 +72,7 @@ public static class FoldersServerModule
         services.AddFoldersAuditQueries();
         services.AddFoldersFileContextQueries();
         services.AddFoldersProviderReadiness();
+        services.AddFoldersOpsConsoleDiagnostics();
 
         // AddFoldersEffectivePermissions -> AddFoldersTenantAccess already binds and validate-on-start's
         // FoldersTenantEventOptions; do not rebind here.
@@ -110,6 +111,7 @@ public static class FoldersServerModule
         endpoints.MapGet("/", () => Description);
         endpoints.MapFoldersDomainServiceEndpoints();
         endpoints.MapProviderReadinessEndpoints();
+        endpoints.MapOpsConsoleDiagnosticsEndpoints();
         endpoints.MapAuditEndpoints();
         endpoints.MapEventStoreDomainEvents();
 
