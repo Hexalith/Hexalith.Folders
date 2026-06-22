@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="NBomber" />
+    <!-- Override NBomber's vulnerable transitive MessagePack 2.5.192 (GHSA-hv8m-jj95-wg3x). Flows up to the dependent test project. -->
+    <PackageReference Include="MessagePack" />
   </ItemGroup>
 
   <ItemGroup>

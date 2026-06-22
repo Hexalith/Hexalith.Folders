@@ -262,7 +262,9 @@ function Assert-C3Policy {
         Fail-Gate -Category 'policy-source' -Reason 'missing-policy-status'
     }
 
-    if (-not $c3.Contains('release posture: release_blocking_until_legal_pm_approval', [StringComparison]::Ordinal)) {
+    # PM approved 2026-06-22 (Jerome); Legal sign-off is still outstanding, so the release stays blocked
+    # until Legal approves. The posture must still mark the release as blocking pending Legal.
+    if (-not $c3.Contains('release posture: release_blocking_until_legal_approval', [StringComparison]::Ordinal)) {
         Fail-Gate -Category 'policy-source' -Reason 'missing-release-blocking-posture'
     }
 
@@ -283,7 +285,7 @@ function Assert-C3Policy {
             Fail-Gate -Category 'policy-source' -Reason "invalid-tenant-deletion-disposition class=$required"
         }
 
-        if (-not $row.'Approval state'.Contains('needs human decision', [StringComparison]::OrdinalIgnoreCase)) {
+        if (-not $row.'Approval state'.Contains('Legal approval pending', [StringComparison]::OrdinalIgnoreCase)) {
             Fail-Gate -Category 'policy-source' -Reason "unexpected-c3-approval-state class=$required"
         }
     }
@@ -336,7 +338,7 @@ function Assert-GovernanceEvidence {
             'status: reference_pending',
             'artifact_path: docs/exit-criteria/c3-retention.md',
             'verification_command: .\tests\tools\run-retention-deletion-gates.ps1',
-            'C3-legal-pm-approval')) {
+            'C3-legal-approval')) {
         if (-not $governance.Contains($expected, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'governance-evidence' -Reason "governance-evidence-drift expected=$expected"
         }

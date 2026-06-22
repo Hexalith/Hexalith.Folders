@@ -71,7 +71,7 @@ development_status:
   2-5-inspect-effective-permissions: done
   2-6-enforce-layered-authorization-with-safe-denials: done
   2-7-inspect-folder-lifecycle-and-binding-status: done
-  2-8-archive-folders-with-audit-npxpreservation: done
+  2-8-archive-folders-with-audit-preservation: done
   2-8b-wire-folder-domain-processor: done
   2-9-react-to-tenants-events-through-worker-handlers: done
   epic-2-retrospective: optional

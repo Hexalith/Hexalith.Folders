@@ -24,10 +24,12 @@ storiesReviewedAt: '2026-05-11'
 finalValidationRefreshedAt: '2026-05-11'
 implementationReadinessPatchedAt: '2026-05-12'
 epicCount: 7
-storyCount: 86
+storyCount: 88
 ---
 
 # Hexalith.Folders - Epic Breakdown
+
+> **Note (2026-06-22):** Acceptance Criteria below are the terse *planning* ACs. As-built stories expanded these substantially (several to 11–22 ACs) through party-mode and code-review hardening. For the authoritative as-built ACs, see each story file under `_bmad-output/implementation-artifacts/`.
 
 ## Overview
 
@@ -834,6 +836,22 @@ So that retired work is no longer active while audit and status evidence remain 
 **When** `ArchiveFolder` is accepted
 **Then** lifecycle state becomes archived and future mutating task commands are rejected
 **And** audit and status evidence remain queryable under retention policy.
+
+### Story 2.8b: Wire FolderArchiveTenantGate as an IDomainProcessor
+
+_Added 2026-05-20 via the `bmad-code-review 2.8` round-2 BLOCKED finding. Story 2.8 could not reach `done` until this story wired the archive command into the production `/process` path — the "green tests, broken production wiring" remediation (see project-context Testing Rules; ADR 0001)._
+
+As a platform engineer,
+I want `FolderArchiveTenantGate` actually invoked by the production `/process` callback,
+So that the archive path enforces ACL, policy, freshness, decision-bound idempotency, and append-conflict reread in real production wiring — not just in unit tests.
+
+**Acceptance Criteria:**
+
+**Given** the REST → `IEventStoreGatewayClient` → `/process` → `FolderDomainProcessor` → gate → persistence path (ADR 0001, Option B)
+**When** an authenticated tenant administrator submits `POST /api/v1/folders/{folderId}/archive` with a valid envelope
+**Then** the response is `202 AcceptedCommand`, lifecycle state becomes `Archived`, and exactly one `FolderArchived` event is appended
+**And** an in-process integration test that does NOT mock `IEventStoreGatewayClient` proves the happy path and every Archive Denial And State Table row end-to-end
+**And** `FolderAccessTenantGate` follows the same persistence pattern for consistency.
 
 ### Story 2.9: React to Tenants events through Worker handlers
 

@@ -32,6 +32,7 @@ Decomposed acceptance criteria:
 6. Production deployment evidence attaches Dapr sidecars to `folders`, `folders-workers`, and `folders-ui` service deployments with `dapr.io/enabled: "true"`, exact `dapr.io/app-id`, and exact `dapr.io/config` values matching `deploy/dapr/production/accesscontrol.yaml`.
 7. The UI sidecar contract is explicit. If `folders-ui` remains sidecar-enabled in production, local Aspire must also attach a Dapr sidecar with app ID `folders-ui`; if UI does not need Dapr APIs, production policy and sidecar evidence must be intentionally narrowed instead of leaving a local/production mismatch.
 8. Conformance tests prove the image metadata contract, project container settings, stable app IDs, production sidecar bindings, and no-secret/no-recursive-submodule invariants.
+9. Given a container-publish failure occurs, when the container-image gate runs, then the contract is **coarse pass/fail**: any non-zero `dotnet publish /t:PublishContainer` exit sets the gate report `status: failed` with the captured `command_exit_code`, and the gate never contacts a live registry. Per-mode classification — registry-unreachable, base-image-pull failure, RID/runtime-restore failure — is an **explicit MVP non-goal** (no distinct handling, assertion, or retry); registry/promotion behavior is owned by CI/release tooling outside the sanitized repo artifacts.
 
 ## Tasks / Subtasks
 

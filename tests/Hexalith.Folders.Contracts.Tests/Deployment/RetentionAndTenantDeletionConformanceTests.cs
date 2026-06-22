@@ -38,8 +38,14 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         string c3 = ReadText(C3Path);
 
         c3.ShouldContain("policy status: reference_pending", Case.Sensitive);
-        c3.ShouldContain("release posture: release_blocking_until_legal_pm_approval", Case.Sensitive);
-        c3.ShouldContain("approval record: absent", Case.Sensitive);
+
+        // PM approval (Jerome) was recorded 2026-06-22 via the bmad-correct-course Sprint Change Proposal;
+        // Legal sign-off remains outstanding, so the release must stay blocked until Legal approves. These
+        // assertions keep the policy honest: the posture still blocks release, and the approval record
+        // truthfully shows PM-approved / Legal-pending rather than claiming a Legal sign-off that has not
+        // happened.
+        c3.ShouldContain("release posture: release_blocking_until_legal_approval", Case.Sensitive);
+        c3.ShouldContain("approval record: PM approved (Jerome) 2026-06-22; Legal sign-off pending", Case.Sensitive);
         c3.ShouldContain("validation command: `pwsh ./tests/tools/run-retention-deletion-gates.ps1`", Case.Sensitive);
 
         MarkdownRow[] rows = ReadMarkdownRows(C3Path, "Retention class identifier");
@@ -56,7 +62,8 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             row["Observability evidence"].ShouldNotBeNullOrWhiteSpace();
             row["Owner"].ShouldBe("Tech Lead");
             row["Authority"].ShouldBe("Legal + PM");
-            row["Approval state"].ShouldContain("needs human decision", Case.Insensitive);
+            // Each required row must still record Legal as pending — PM approval alone does not unblock release.
+            row["Approval state"].ShouldContain("Legal approval pending", Case.Insensitive);
             row["Review date"].ShouldBe("2026-05-11");
         }
     }
@@ -108,8 +115,11 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         c3.GetRetentionScalar("artifact_path").ShouldBe(C3Path);
         c3.GetRetentionScalar("verification_command").ShouldBe(@".\tests\tools\run-retention-deletion-gates.ps1");
         c3.GetRetentionScalar("result_summary").ShouldContain("blocks live release publishing", Case.Sensitive);
+        // After PM approval, exactly one open placeholder remains — the Legal sign-off. `.Single()` still
+        // enforces that the release stays blocked on an outstanding approval: it throws if the placeholder
+        // is removed to claim full approval.
         c3.GetRetentionSequence("open_policy_placeholders").Children.Cast<YamlMappingNode>()
-            .Single().GetRetentionScalar("id").ShouldBe("C3-legal-pm-approval");
+            .Single().GetRetentionScalar("id").ShouldBe("C3-legal-approval");
     }
 
     [Fact]

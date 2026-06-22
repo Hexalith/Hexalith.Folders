@@ -176,11 +176,11 @@ The UX design specification at `_bmad-output/planning-artifacts/ux-design-specif
 | ID | Target | Source / Notes |
 | --- | --- | --- |
 | **C0** | **Contract Spine Decision** — name and version of the single source-of-truth artifact for cross-surface generation, including its extension vocabulary for idempotency keys, correlation, lifecycle states, parity-dimension annotations, and audit-metadata declarations. **Recommended:** OpenAPI 3.1 with extension vocabulary; SDK generated via NSwag or Kiota for .NET 10. This is a *blocking precondition* for C1–C13 because every cross-surface parity claim, generator pipeline, and CI guarantee depends on it. | Added by analysis (Winston) — promoted from "TBD" to blocking decision |
-| C1 | Concurrent capacity targets (tenants, folders/tenant, active workspaces/tenant, concurrent agent tasks/tenant) | PRD §NFR Scalability — TBD |
-| C2 | Status-freshness target (max acceptable lag between emitted lifecycle event and appearance in status/audit views) | PRD §NFR Observability — TBD; jointly decided with C8 |
-| C3 | Retention durations per data class (audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, cleanup records) | PRD §NFR Data Retention — TBD |
-| C4 | Bounded MVP input limits (max files / max bytes / max result count / max query duration per context query) | PRD §NFR Performance — TBD |
-| C5 | Concrete scalability quantifiers replacing the word "multiple" in NFR Scalability | PRD §NFR Scalability — TBD |
+| C1 | Concurrent capacity targets (tenants, folders/tenant, active workspaces/tenant, concurrent agent tasks/tenant) | PRD §NFR Scalability — **RESOLVED: approved 2026-05-30 (Story 7.10)** → `docs/exit-criteria/c1-capacity.md` |
+| C2 | Status-freshness target (max acceptable lag between emitted lifecycle event and appearance in status/audit views) | PRD §NFR Observability — **RESOLVED: approved 2026-05-30 (Story 7.10), 500 ms** → `docs/exit-criteria/c2-freshness.md`; jointly decided with C8 |
+| C3 | Retention durations per data class (audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, cleanup records) | PRD §NFR Data Retention — **PM-approved 2026-06-22; Legal sign-off the sole remaining gate** → `docs/exit-criteria/c3-retention.md` |
+| C4 | Bounded MVP input limits (max files / max bytes / max result count / max query duration per context query) | PRD §NFR Performance — **RESOLVED: PM-approved 2026-06-22** → `docs/exit-criteria/c4-input-limits.md` |
+| C5 | Concrete scalability quantifiers replacing the word "multiple" in NFR Scalability | PRD §NFR Scalability — **RESOLVED: approved 2026-05-30 (Story 7.10)** → `docs/exit-criteria/c5-scalability-quantifiers.md` |
 | C6 | Total workspace state-transition matrix (every (state, event) pair → outcome, including reconciliation paths and terminal states) **plus the operator-disposition label paired to each state** (`auto-recovering` / `awaiting-human` / `terminal-until-intervention` / `degraded-but-serving`) | Added by analysis; UX-driven from Sally |
 | C7 | **Two-number lock contract:** lease-renewal interval AND auth-revalidation interval, defaulted and tunable per tenant, tied to a stated SLO ("a revoked tenant access takes effect within N seconds") so the numbers trace to business value, not to engineering preference | Added by analysis; refined by Winston |
 | C8 | Read consistency model per query family (snapshot-per-task / read-your-writes / eventually-consistent) | Added by analysis; jointly decided with C2 |
@@ -191,6 +191,8 @@ The UX design specification at `_bmad-output/planning-artifacts/ux-design-specif
 | C13 | **Parity oracle artifact** — a `parity-contract.yaml` (or equivalent) generated from the C0 Contract Spine, declaring for each `(operation_id) →` a row with **transport-parity columns** (`auth_outcome_class`, `error_code_set`, `idempotency_key_rule`, `audit_metadata_keys`, `correlation_field_path`, `terminal_states`) **plus behavioral-parity columns** (`pre_sdk_error_class`, `idempotency_key_sourcing`, `correlation_id_sourcing`, `cli_exit_code`, `mcp_failure_kind`) — see §"Adapter Parity Contract" for the per-adapter behavioral columns. **All four surface test projects consume the oracle as xUnit theory data:** `*.Sdk.Tests` + `*.Rest.Tests` for transport-parity columns; `*.Cli.Tests` + `*.Mcp.Tests` for behavioral-parity columns. The artifact is itself schema-validated against `tests/fixtures/parity-contract.schema.json` before tests consume it. **CI gates:** (a) Contract Spine adds a command without a parity-oracle row → fail; (b) Contract Spine *removes* an operation without a deprecation-window entry in `previous-spine.yaml` → fail (symmetric drift detection); (c) mutating command (POST/PUT/PATCH/DELETE) without `idempotency_key_rule` → fail (per-class completeness); (d) query operation without `read_consistency_class` → fail | Added by analysis; converged proposal from Amelia + Murat; behavioral-parity columns and symmetric-drift gate added in Step 7 elicitation |
 
 Each exit criterion must be (a) set as a concrete value or rule with a measurement/enforcement method, (b) validated through implementation evidence before MVP release, and (c) recorded in the architecture document and referenced from the PRD via update where applicable.
+
+> **Status reconciliation (2026-06-22):** The authoritative live status for every criterion is `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not this prose table. As of 2026-06-22: C0, C1, C2, C5, C6, C8–C11, C13 = approved; C4 = approved (PM, 2026-06-22); C3 = PM-approved with Legal sign-off the sole remaining gate; C7, C12 = reference_pending (non-release-gating).
 
 ### Exit Criteria Operations Plan
 
@@ -590,8 +592,8 @@ The SDK-as-canonical reframe (per §"Project Context Analysis → Scale & Comple
 
 - [ ] Capability groups enumerated (✓ inherited from PRD §"Endpoint Specifications" — provider-readiness, folders, workspaces, files, commits, audit, ops-console, context queries)
 - [ ] Error taxonomy enumerated (✓ inherited from PRD §"Error Codes")
-- [ ] **C3 commit-TTL retention period set** (Tech Lead + Legal + PM → `docs/exit-criteria/c3-retention.md`)
-- [ ] **C4 input limits set** (Architect + PM → `docs/exit-criteria/c4-input-limits.md`); `maxItems`, `maxLength`, `maxBytes`, `maxResultCount` per operation
+- [x] **C3 commit-TTL retention period set** (Tech Lead + Legal + PM → `docs/exit-criteria/c3-retention.md`) — values set + consumed by Story 1.6; PM-approved 2026-06-22; Legal sign-off pending for production release
+- [x] **C4 input limits set** (Architect + PM → `docs/exit-criteria/c4-input-limits.md`); `maxItems`, `maxLength`, `maxBytes`, `maxResultCount` per operation — PM-approved 2026-06-22
 - [ ] **C6 Workspace State Transition Matrix enumerated** (Architect → this document §"Workspace State Transition Matrix")
 - [ ] **S-2 OIDC issuer + audience** pinned per environment in deployment configuration template (Architect + Security)
 - [ ] **Per-command `x-hexalith-idempotency-equivalence`** field lists declared in lexicographic order for every mutating command

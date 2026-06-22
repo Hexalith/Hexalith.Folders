@@ -31,6 +31,12 @@ public sealed class ShellCompositionTests
         try
         {
             ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+            // The FrontComposer shell's FcAccountMenu resolves AuthenticationStateProvider during
+            // OnInitializedAsync (it reads the signed-in principal's claims). Register bUnit's fake
+            // authorization so the placeholder provider does not throw; an unauthenticated state is
+            // sufficient because the menu degrades to its anonymous "sign in" affordance.
+            ctx.AddAuthorization();
             ctx.Services.AddLogging();
             ctx.Services.AddFluentUIComponents();
             ctx.Services.AddHexalithFrontComposerQuickstart();
