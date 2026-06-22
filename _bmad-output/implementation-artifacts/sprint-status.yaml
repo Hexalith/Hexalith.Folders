@@ -137,10 +137,11 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: MVP Release Readiness And Operational Evidence
-  # Reopened 2026-05-31 (in-progress) to own Story 7-18, the systemic test-host
-  # composition red surfaced during 2-8b verification. See
-  # planning-artifacts/sprint-change-proposal-2026-05-31-test-host-composition-baseline.md
-  epic-7: in-progress
+  # Reopened 2026-05-31 to own Story 7-18 (systemic test-host composition red from
+  # 2-8b verification). 7-18 closed GREEN 2026-05-31 (Server.Tests 434/0/0,
+  # IntegrationTests 592/0, Folders.Tests 1314/0). Epic-7 close-out completed
+  # 2026-06-22 via bmad-correct-course (sprint-change-proposal-2026-06-22).
+  epic-7: done
   7-1-deploy-production-dapr-deny-by-default-access-control: done
   7-2-configure-production-oidc-and-secret-store-integration: done
   7-3-build-container-images-with-stable-dapr-app-ids: done

@@ -52,26 +52,21 @@ criteria:
     status: reference_pending
     artifact_path: docs/exit-criteria/c3-retention.md
     verification_command: .\tests\tools\run-retention-deletion-gates.ps1
-    result_summary: Machine-validated retention and tenant-deletion evidence is present; Legal and PM approval is still pending and blocks live release publishing.
+    result_summary: Machine-validated retention and tenant-deletion evidence is present; PM approved 2026-06-22; Legal approval is the sole remaining sign-off and blocks live release publishing.
     open_policy_placeholders:
-      - id: C3-legal-pm-approval
-        owner: Legal + PM
-        reason: Retention durations must be approved before production enforcement.
-        verification_gap: Recorded approval signatures from Legal and PM on per-data-class retention values and tenant-deletion dispositions are missing.
+      - id: C3-legal-approval
+        owner: Legal
+        reason: Retention durations must receive Legal sign-off before production enforcement.
+        verification_gap: Recorded Legal approval signature on per-data-class retention values and tenant-deletion dispositions is missing (PM approved 2026-06-22).
         consuming_story: 7-11-enforce-c3-retention-and-tenant-deletion-behavior
   - criterion_id: C4
     title: Input limit evidence
     owner: Architect
-    status: reference_pending
+    status: approved
     artifact_path: docs/exit-criteria/c4-input-limits.md
     verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
-    result_summary: Proposed query and payload limits are documented with PM approval still pending.
-    open_policy_placeholders:
-      - id: C4-pm-approval
-        owner: PM
-        reason: MVP input bounds must be approved before production contract enforcement.
-        verification_gap: PM sign-off on OpenAPI maxItems, maxLength, maxBytes, and maxResultCount values is not recorded.
-        consuming_story: 4-8-query-file-context-with-policy-boundaries
+    result_summary: Proposed query and payload limits are PM-approved (Jerome, 2026-06-22) and binding for Contract Spine enforcement.
+    open_policy_placeholders: []
   - criterion_id: C5
     title: Release scalability quantifier evidence
     owner: Release Readiness
