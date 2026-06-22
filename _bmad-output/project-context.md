@@ -68,9 +68,9 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 - Use Hexalith.EventStore as the write-side command/query/event/projection framework. Do not introduce a parallel write-side framework or direct database write model for folder state.
 - `Hexalith.Folders.Server` owns REST transport plus EventStore-compatible `/process` and `/project` endpoints; external REST remains `/api/v1/...`, while internal EventStore invocation routes remain `/process` and `/project`.
-- Dapr app IDs and component names are stable contracts: `eventstore`, `tenants`, `folders`, `folders-workers`, `folders-ui`, `statestore`, and `pubsub`.
+- Dapr app IDs and component names are stable contracts: `eventstore`, `tenants`, `memories`, `folders`, `folders-workers`, `folders-ui`, `statestore`, and `pubsub`.
 - AppHost must resolve `DaprComponents/accesscontrol.yaml` and fail fast if it is missing. Do not silently run without the Dapr access-control configuration.
-- Aspire topology is centralized in `Hexalith.Folders.Aspire`; keep shared Dapr state-store/pub-sub sidecar wiring there and AppHost environment concerns in `Hexalith.Folders.AppHost`.
+- Aspire topology is composed in `Hexalith.Folders.AppHost` via the platform helpers (`AddHexalithEventStore` gateway-only, `AddHexalithTenantsServer`, `AddHexalithMemoriesSearchIndexServer`); do not re-implement EventStore/Tenants/Memories Dapr sidecar or shared state-store/pub-sub wiring locally. `Hexalith.Folders.Aspire` retains only Folders-specific helpers and the stable app-ID/component-name constants (Epic 9).
 - Folders subscribes to Hexalith.Tenants events through Dapr pub/sub topic `system.tenants.events` on pubsub `pubsub`; tenant projection handlers must drop envelope/payload tenant mismatches and preserve replay/fingerprint behavior.
 - Production authorization layering is JWT validation, EventStore claim transform evidence, tenant-access projection freshness, folder ACL evidence, EventStore validators, then Dapr deny-by-default policy evidence.
 - Client-controlled tenant/principal values from headers, query strings, or payloads are comparison inputs only. Authoritative tenant and principal values come from authenticated context and EventStore claim-transform evidence.

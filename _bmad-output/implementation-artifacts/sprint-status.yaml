@@ -174,3 +174,24 @@ development_status:
   8-4-stand-up-axe-wcag-ci-gate: backlog
   8-5-close-c3-legal-signoff-and-residual-reds: backlog
   epic-8-retrospective: optional
+
+  # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
+  # Created 2026-06-22 via bmad-correct-course
+  # (sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment).
+  # Adopt platform Aspire helpers (EventStore gateway-only + Tenants + Memories),
+  # add Memories topology, apply hexalith-folders->folders-index routing config.
+  epic-9: backlog
+  9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: backlog
+  9-2-add-memories-search-index-server-to-the-apphost-topology: backlog
+  9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: backlog
+  epic-9-retrospective: optional
+
+  # Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
+  # Phase 2 (gated on Epic 9 + C4 large-file + C9 path-exposure). Stubs pending create-story.
+  epic-10: backlog
+  10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: backlog
+  10-2-build-folders-owned-indexing-bridge-projection: backlog
+  10-3-author-authorized-async-indexing-on-file-write-and-commit: backlog
+  10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog
+  10-5-expose-authorized-folders-query-facade-over-memories: backlog
+  epic-10-retrospective: optional

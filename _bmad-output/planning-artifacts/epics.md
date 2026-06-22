@@ -325,8 +325,8 @@ These come from the Architecture document and represent technical/infrastructure
 
 #### Infrastructure & Deployment
 
-- AR-INFRA-01: `Hexalith.Folders.AppHost` composes EventStore (`AppId=eventstore`) + Tenants (`AppId=tenants`) + Folders.Server (`AppId=folders`) + Folders.Workers (`AppId=folders-workers`) + Folders.UI (`AppId=folders-ui`) + Keycloak. Aspire 13.3.0 + CommunityToolkit.Aspire.Hosting.Dapr 13.0.0.
-- AR-INFRA-02: Dapr components: shared `statestore` (Redis 7.x via Aspire), `pubsub` (Redis Streams), `resiliency` policies, `accesscontrol.yaml` (local: defaultAction allow). Production: deny-by-default + mTLS, app IDs restricted (`folders` may invoke `eventstore` and `tenants`; not `system` admin; pubsub topics declared).
+- AR-INFRA-01: `Hexalith.Folders.AppHost` composes the platform through the shared Aspire helpers — EventStore command gateway (`AppId=eventstore`, gateway-only via `AddHexalithEventStore(adminServer: null)`) + Tenants (`AppId=tenants`, `AddHexalithTenantsServer`) + Memories search-index server (`AppId=memories`, `AddHexalithMemoriesSearchIndexServer`; `memories-vectors` + `memories-graphs` containers) + Folders.Server (`AppId=folders`) + Folders.Workers (`AppId=folders-workers`) + Folders.UI (`AppId=folders-ui`) + Keycloak. Aspire 13.4.3 + CommunityToolkit.Aspire.Hosting.Dapr 13.0.0. (See Epic 9.)
+- AR-INFRA-02: Dapr components: shared `statestore` (Redis 7.x via Aspire), `pubsub` (Redis Streams), `resiliency` policies, `accesscontrol.yaml` (local: defaultAction allow), plus Memories components `memories-secretstore` + `memories-llm` (Epic 9). Production: deny-by-default + mTLS, app IDs restricted (`folders` may invoke `eventstore` and `tenants`; `folders`/`folders-workers` may invoke `memories`; not `system` admin; pubsub topics declared).
 - AR-INFRA-03: Dapr policy conformance: CI job runs `daprd` in kind cluster with production policy YAML; property-based negative test asserts unauthorized `(sourceAppId, targetAppId, operation)` triples receive `403`. Block merge on policy YAML changes without corresponding negative test additions.
 - AR-INFRA-04: Containerized production hosting: one image per service (`hexalith-folders-server`, `hexalith-folders-workers`, `hexalith-folders-ui`); Dapr sidecars deployed alongside; Kubernetes-friendly but not Kubernetes-required.
 - AR-INFRA-05: GitHub Actions CI/CD pipeline gates: build, format, lint (including C10 cache-key tenant-prefix lint), unit tests, contract tests (hermetic), parity tests (C13), redaction sentinel tests (C6), nightly live-drift provider tests (C12), `dapr-policy-conformance` negative-test job, Forgejo schema-diff job, exit-criteria-presence gate, pattern-examples compile gate.
@@ -510,6 +510,16 @@ Release stakeholders can verify that the MVP satisfies security, tenant isolatio
 Release stakeholders can accept the MVP once the cross-surface canonical REST contract is fully served (47/47 operations), the operations console has an automated WCAG 2.2 AA gate, C3 retention has Legal sign-off, and the solution test baseline is honestly green — closing the bounded release-acceptance conditions from the 2026-06-22 readiness review without reopening Epics 1–7.
 **FRs covered:** No new product FR scope. Completes REST-surface delivery for FR2, FR5, FR6, FR11, FR15, FR26, FR28, FR39, FR46, FR52 (server routes for operations already present on SDK/CLI/MCP) plus cross-cutting release validation.
 **Created:** 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Closure epic — not a feature workstream.
+
+### Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
+Platform engineers can run the full Folders topology — EventStore (gateway-only), Tenants, and the Memories search-index server — composed purely through the shared platform Aspire helpers, with `hexalith-folders → folders-index` routing configured, removing the hand-rolled `FoldersAspireModule` Dapr wiring.
+**FRs covered:** No new product FR scope (infrastructure alignment + additive Memories hosting).
+**Created:** 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment.md`).
+
+### Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
+Developers and AI agents can have authorized file changes asynchronously indexed into Memories through a worker-side producer and a Folders-owned bridge projection, activating the Epic 9 routing and exposing an authorized, security-trimmed query facade.
+**FRs covered:** New FR for an authorized context-query/RAG facade (Phase 2; to be added to PRD when scheduled).
+**Created:** 2026-06-22 via bmad-correct-course. Phase 2 — gated on Epic 9 + C4 (large-file) and C9 (path exposure) policy.
 
 ## Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
 
@@ -1490,6 +1500,8 @@ Release stakeholders can verify that the MVP satisfies security, tenant isolatio
 
 This workstream is not a product FR-bearing epic. It is a release-readiness gate that continuously consumes evidence from Epics 1-6 and blocks MVP acceptance when required evidence is missing. Sprint planning must treat these items as release governance and hardening work, not as a peer product capability increment.
 
+> **CI submodule-posture guardrail (pinned 2026-06-22):** The canonical rule is CI checkout `submodules: false` (no PackageReference fallback assumptions); local setup may show only the explicit root-level submodule command. This is authoritative over any per-story wording drift in Stories 7.4–7.8. Source: `project-context.md` Development Workflow Rules + root `CLAUDE.md`.
+
 ### Story 7.1: Deploy production Dapr deny-by-default access control
 
 As a platform operator,
@@ -1799,3 +1811,84 @@ So that the MVP rests on a fully-approved governance posture and an honestly-gre
 **When** Legal signs off and the residual reds are triaged (`Testing.Tests` ×4 governance, `Contracts.Tests` ×4 epic-1 CLI negative-scope, Epic 3 provider-boundary guards, `UI.E2E` ×40 Playwright provisioning)
 **Then** C3 flips to `approved` (c3-retention + governance YAML; release-blocking posture clears) and each residual red is fixed or explicitly accepted with rationale
 **And** `dotnet test Hexalith.Folders.slnx` is honestly green (zero unexplained reds), recorded as release evidence.
+
+## Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
+
+Platform engineers can run the full Folders topology composed purely through the shared platform Aspire helpers — EventStore command gateway (gateway-only), Tenants, and the Memories search-index server — with `hexalith-folders → folders-index` routing configured, replacing the hand-rolled `FoldersAspireModule` Dapr wiring.
+
+_Created 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment.md`). Infrastructure-alignment + additive Memories hosting epic; no new product FR scope. Decisions: EventStore **gateway-only** (`AddHexalithEventStore(adminServer: null)` — no admin server/UI); Memories depth **topology + AppHost routing config** (end-to-end indexing gated on Epic 10 producer). Behavior-preserving for `folders`/`folders-workers`/`folders-ui` sidecars._
+
+### Story 9.1: Adopt the EventStore and Tenants platform Aspire helpers
+
+As a platform engineer,
+I want the Folders AppHost to compose EventStore and Tenants via the shared platform Aspire helpers,
+So that Folders stops re-implementing shared Dapr topology and matches the canonical Tenants AppHost.
+
+**Acceptance Criteria:**
+
+**Given** `FoldersAspireModule.AddHexalithFolders` / `AddFoldersSharedDaprComponents` hand-roll the EventStore/Tenants sidecars and the shared `statestore`/`pubsub` components
+**When** the AppHost is refactored to call `AddHexalithEventStore(eventStore, adminServer: null, …)` + `AddHexalithTenantsServer(eventStoreResources, …)`, the AppHost csproj references `Hexalith.EventStore.Aspire` + `Hexalith.Tenants.Aspire` (dropping the direct EventStore/Tenants runtime project refs), and the `statestore.yaml`/`pubsub.yaml`/`resiliency.yaml` Dapr component files are added under `DaprComponents/`
+**Then** `folders`, `folders-workers`, and `folders-ui` keep identical app-IDs, sidecars, and references, and no hand-rolled EventStore/Tenants Dapr wiring remains
+**And** `AspireTopologyTests` + `AppHostBootSmokeTests` are updated and green, and `aspire run` brings the topology up healthy.
+
+### Story 9.2: Add the Memories search-index server to the AppHost topology
+
+As a platform engineer,
+I want the Memories search-index server hosted in the Folders topology,
+So that the platform semantic search-index service runs alongside Folders locally and in release validation.
+
+**Acceptance Criteria:**
+
+**Given** Memories is registered in `.gitmodules` but unwired (no `HexalithMemoriesRoot`, no AppHost reference)
+**When** `Directory.Build.props` resolves `HexalithMemoriesRoot`, the AppHost references `Hexalith.Memories.Aspire`, and `AddHexalithMemoriesSearchIndexServer(stateStore, pubSub, secretStorePath, llmPath, …)` is called reusing the shared state/pubsub, with `secretstore.memories.yaml` + `llm.memories.yaml` added under `DaprComponents/`
+**Then** the topology adds `memories` (project + sidecar), `memories-vectors` (redis/redis-stack), `memories-graphs` (falkordb), `memories-secretstore`, and `memories-llm`, and the `memories` app-ID is registered
+**And** access-control, structural topology tests, and container-image conformance are updated and green.
+
+### Story 9.3: Apply Folders→Memories routing config and synchronize artifacts
+
+As a platform engineer,
+I want `hexalith-folders → folders-index` routing configured on the Memories resource and the architecture/context artifacts updated,
+So that routing is in place (dormant until Epic 10) and the planning artifacts reflect the new topology.
+
+**Acceptance Criteria:**
+
+**Given** the Memories server is hosted (9.2)
+**When** the AppHost sets `EventStoreIntegration__Routing__SourceToTenantMap__hexalith-folders=folders-index` and `AutoProvisionRoutedTenants=true` on the `memories` resource, and `architecture.md` (AppHost Composition, I-4/§756, I-3) + `project-context.md` (app-IDs + topology rule) are updated
+**Then** the routing config is present and the `folders-index` tenant auto-provisions, and a Memories search-index handoff doc records that end-to-end ingestion/search is gated on the Epic 10 producer
+**And** the updated artifacts are internally consistent (app-ID lists include `memories`).
+
+## Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
+
+Developers and AI agents can have authorized file changes asynchronously indexed into Memories via a worker-side producer and a Folders-owned bridge projection, activating the Epic 9 routing and exposing an authorized, security-trimmed Folders query facade.
+
+_Phase 2 — gated on Epic 9 + C4 (large-file guardrail) and C9 (path-exposure policy). Stories are backlog stubs pending `create-story`; ACs below are seed-level and will be detailed per story. Architecture inputs: `architecture.md` §130–156 (Memories integration track)._
+
+### Story 10.1: Define the worker-side semantic-indexing port and Memories dependency
+
+**Given** the architecture restricts the Memories dependency to `Hexalith.Folders.Workers`
+**When** a worker-side semantic-indexing port is defined and `Hexalith.Folders.Workers` takes `Hexalith.Memories.Client.Rest` + `Hexalith.Memories.Contracts` references
+**Then** no other project (Contracts, core, CLI, MCP, UI, Server) depends on Memories.
+
+### Story 10.2: Build the Folders-owned indexing bridge projection
+
+**Given** durable Folders events as indexing triggers
+**When** a bridge projection tracks `file version → Memories workflow/memory unit/status`
+**Then** it answers indexed / stale / skipped / failed / tombstoned / reconciliation-required per file version.
+
+### Story 10.3: Author authorized asynchronous indexing on file-write and commit
+
+**Given** a file-write/commit event
+**When** indexing runs after authorization (tenant → ACL → path policy → sensitivity → size/type limits → Memories) using stable source URIs + idempotency keys
+**Then** a Memories outage surfaces as retryable indexing status and never rolls back a durable Folders file operation.
+
+### Story 10.4: Emit SearchIndexEntryChanged CloudEvents from the workers
+
+**Given** the Epic 9 routing config (`hexalith-folders → folders-index`)
+**When** the worker emits `SearchIndexEntryChanged` CloudEvents (source `hexalith-folders`) to the memories pub/sub topic
+**Then** the Memories router ingests them into the `folders-index` partition (routing becomes live end-to-end).
+
+### Story 10.5: Expose an authorized Folders query facade over Memories
+
+**Given** indexed content in Memories
+**When** a Folders query facade serves context-query/RAG results
+**Then** results are authorized, security-trimmed, and redacted by Folders policy before leaving the API/SDK/MCP boundary, with a new PRD FR + architecture query-facade section + UX "indexing status" console projection added when scheduled.
