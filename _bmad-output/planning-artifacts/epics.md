@@ -23,8 +23,8 @@ partyModeReviewedAt: '2026-05-11'
 storiesReviewedAt: '2026-05-11'
 finalValidationRefreshedAt: '2026-05-11'
 implementationReadinessPatchedAt: '2026-05-12'
-epicCount: 7
-storyCount: 88
+epicCount: 8
+storyCount: 93
 ---
 
 # Hexalith.Folders - Epic Breakdown
@@ -505,6 +505,11 @@ Operators, tenant administrators, and audit reviewers can find a workspace, prov
 Release stakeholders can verify that the MVP satisfies security, tenant isolation, parity, provider compatibility, Dapr policy, retention, observability, capacity, accessibility, documentation, package-traceability, and NFR traceability evidence before production acceptance.
 **FRs covered:** Cross-cutting validation for all FRs; no new product FR scope.
 **Evidence guardrails:** Readiness evidence is collected continuously from Epics 1-6 and must cover REST, SDK, CLI, MCP, console, tenant isolation, audit completeness, performance baselines, accessibility, operational runbooks, and NFR traceability before MVP acceptance.
+
+### Epic 8: MVP Release Acceptance Closure
+Release stakeholders can accept the MVP once the cross-surface canonical REST contract is fully served (47/47 operations), the operations console has an automated WCAG 2.2 AA gate, C3 retention has Legal sign-off, and the solution test baseline is honestly green — closing the bounded release-acceptance conditions from the 2026-06-22 readiness review without reopening Epics 1–7.
+**FRs covered:** No new product FR scope. Completes REST-surface delivery for FR2, FR5, FR6, FR11, FR15, FR26, FR28, FR39, FR46, FR52 (server routes for operations already present on SDK/CLI/MCP) plus cross-cutting release validation.
+**Created:** 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Closure epic — not a feature workstream.
 
 ## Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
 
@@ -1723,3 +1728,74 @@ So that the MVP test suite runs green at HEAD and the "conditionally release-rea
 **Then** `Hexalith.Folders.Server.Tests` reports Total 433 / Failed 0, and the `IntegrationTests` (Golden/MixedSurface) and `Folders.Tests` (Epic 3 provider-boundary) composition reds clear
 **And** a central host-composition smoke test (`ValidateOnBuild`) guards the shared-surface DI contract against recurrence
 **And** no production code behavior changes.
+
+## Epic 8: MVP Release Acceptance Closure
+
+Release stakeholders can accept the MVP once the bounded, non-planning release-acceptance conditions from the 2026-06-22 implementation-readiness review are closed: the canonical REST contract is fully served (47/47 operations), the operations console has an automated WCAG 2.2 AA gate, C3 retention has Legal sign-off, and the solution test baseline is honestly green.
+
+_Created 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Release-acceptance **closure** epic — not a feature workstream; no new product FR scope. Verified parity ground truth (adversarial workflow, 2026-06-22): REST 32/47, SDK 47/47, MCP 47/47, CLI 40/47 (7 diagnostics MCP-only by design); 15 operations declared by the spine and wrapped by SDK/CLI/MCP but missing a server route. Detailed as-built ACs live in the `8-*` story files under `implementation-artifacts/`._
+
+### Story 8.1: Implement the 8 missing Bucket-A canonical REST server routes
+
+As an API consumer,
+I want every canonical operation the SDK/CLI/MCP already wrap to have a working REST server route,
+So that cross-surface parity is real and CLI/MCP calls do not hit unimplemented endpoints (404).
+
+**Acceptance Criteria:**
+
+**Given** the spine declares and SDK/CLI/MCP wrap `CreateFolder`, `ListFolderAclEntries`, `UpdateFolderAclEntry`, `ConfigureProviderBinding`, `GetProviderBinding`, `GetRepositoryBinding`, `GetWorkspaceRetryEligibility`, `GetWorkspaceTransitionEvidence`
+**When** each server route is implemented against existing aggregates/query handlers (no spine change)
+**Then** all 8 respond on REST with canonical envelopes, problem categories, and idempotency behavior matching the spine, mutating ops proven by a no-mock `IEventStoreGatewayClient` integration test
+**And** REST coverage reaches 40/47 (Bucket A closed).
+
+### Story 8.2: Implement the 7 ops-console diagnostics REST server routes (Bucket B)
+
+As an operator,
+I want the ops-console diagnostics operations to have working REST server routes,
+So that the read-only console and REST consumers can retrieve diagnostics evidence.
+
+**Acceptance Criteria:**
+
+**Given** the spine declares and SDK+MCP wrap the 7 diagnostics ops (`GetReadinessDiagnostics`, `GetProviderStatusDiagnostics`, `GetSyncStatusDiagnostics`, `GetLockDiagnostics`, `GetDirtyStateDiagnostics`, `GetFailedOperationDiagnostics`, `GetProjectionFreshness`)
+**When** REST server routes are added (CLI stays diagnostics-free by design)
+**Then** all 7 respond read-only, metadata-only, projection-backed, authorization-before-observation
+**And** REST coverage reaches 47/47 and the parity oracle + contract-spine drift gate pass.
+
+### Story 8.3: Wire-exercise cross-surface parity and gate the four-surface claim
+
+As a release stakeholder,
+I want golden-lifecycle and mixed-surface parity exercised over the wire across all four surfaces,
+So that the four-surface parity guarantee is true before it is asserted to consumers.
+
+**Acceptance Criteria:**
+
+**Given** 47/47 server routes (8.1 + 8.2)
+**When** the golden-lifecycle and mixed-surface scenarios run
+**Then** all 9 lifecycle steps are driven over the real transport, `folder_acl_denied` returns HTTP 403 (not 503), and `idempotency_conflict` surfaces at HTTP 409, with matching CLI exit codes and MCP failure kinds
+**And** the public "four-surface canonical-lifecycle parity" claim is asserted only after this story passes.
+
+### Story 8.4: Stand up an automated axe/WCAG 2.2 AA CI gate for the operations console
+
+As a release stakeholder,
+I want an automated accessibility gate against the read-only console,
+So that the PRD accessibility release-validation path (NFR-A11Y-1..5, NFR-VER-3) is enforced, not asserted.
+
+**Acceptance Criteria:**
+
+**Given** the read-only console routes from Story 6-2
+**When** an axe-core / WCAG 2.2 AA gate is wired into CI (registered in the gate inventory, closing the I-5 absence)
+**Then** it fails CI on AA violations across the three critical console journeys, covering keyboard nav, visible focus, semantic structure, contrast, and not-color-alone indicators, plus zoom (125/150/200%) and dense-identifier no-clipping (UX-DR31)
+**And** its green run is the recorded accessibility release-validation evidence.
+
+### Story 8.5: Close C3 Legal sign-off and drive the residual test baseline honestly green
+
+As a release stakeholder,
+I want C3 Legal sign-off recorded and the residual non-composition reds resolved or explicitly accepted,
+So that the MVP rests on a fully-approved governance posture and an honestly-green baseline.
+
+**Acceptance Criteria:**
+
+**Given** PM approval recorded 2026-06-22 and Legal as the sole remaining C3 gate
+**When** Legal signs off and the residual reds are triaged (`Testing.Tests` ×4 governance, `Contracts.Tests` ×4 epic-1 CLI negative-scope, Epic 3 provider-boundary guards, `UI.E2E` ×40 Playwright provisioning)
+**Then** C3 flips to `approved` (c3-retention + governance YAML; release-blocking posture clears) and each residual red is fixed or explicitly accepted with rationale
+**And** `dotnet test Hexalith.Folders.slnx` is honestly green (zero unexplained reds), recorded as release evidence.
