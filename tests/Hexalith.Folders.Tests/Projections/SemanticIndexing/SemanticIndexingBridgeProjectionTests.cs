@@ -291,6 +291,87 @@ public sealed class SemanticIndexingBridgeProjectionTests
     }
 
     [Fact]
+    public void RemoveShouldPreserveIndexTimeEvidenceForPreviouslyIndexedEntry()
+    {
+        // A previously-indexed file version carries its published cloudevent id + curated text/attributes as evidence.
+        // The remove tombstone MUST preserve that evidence so the removal egress can target the exact upserted document
+        // (decision (C)) and an archive re-send can reuse the original document (decision (A)).
+        SemanticIndexingBridgeEntry current = Apply(Mutation()).Entries.Values.ShouldHaveSingleItem();
+        SemanticIndexingBridgeEntry indexed = SemanticIndexingBridgeProjection.ApplyIndexingResult(
+            current,
+            new SemanticIndexingResultUpdate(
+                current.Identity,
+                SemanticIndexingBridgeStatus.Indexed,
+                "memories_accepted",
+                retryable: false,
+                "correlation-index-a",
+                "task-index-a",
+                "folders://tenant-a/published-a",
+                "result-fingerprint-a",
+                OccurredAt.AddMinutes(5),
+                indexedText: "authorized-file-version text",
+                indexedAttributes: new Dictionary<string, string>(StringComparer.Ordinal) { ["folders.status"] = "active" }));
+
+        SemanticIndexingBridgeEntry tombstoned = SemanticIndexingBridgeProjection
+            .FromEntries([indexed])
+            .Apply([new FolderProjectionEnvelope("tenant-a", 2, Mutation(fileOperationKind: "remove", contentHashReference: null))])
+            .Entries.Values.ShouldHaveSingleItem();
+
+        tombstoned.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        tombstoned.ReasonCode.ShouldBe("folder_file_removed");
+        tombstoned.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
+        tombstoned.Evidence.IndexedText.ShouldBe("authorized-file-version text");
+        tombstoned.Evidence.IndexedAttributes.ShouldNotBeNull();
+        tombstoned.Evidence.IndexedAttributes!["folders.status"].ShouldBe("active");
+    }
+
+    [Fact]
+    public void ApplyRemovalEvidenceShouldRecordOutcomeAndFreezeTombstonedStatus()
+    {
+        SemanticIndexingBridgeEntry tombstoned = Apply(Mutation(fileOperationKind: "remove", contentHashReference: null)).Entries.Values.ShouldHaveSingleItem();
+
+        SemanticIndexingBridgeEntry recorded = SemanticIndexingBridgeProjection.ApplyRemovalEvidence(
+            tombstoned,
+            RemovalEvidence(tombstoned.Identity, "memories_accepted", watermark: tombstoned.Freshness.Watermark));
+
+        // Evidence-only: the status is frozen at Tombstoned (no regression to Indexed) and the outcome is recorded.
+        recorded.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        recorded.StatusCode.ShouldBe("tombstoned");
+        recorded.ReasonCode.ShouldBe("memories_accepted");
+        recorded.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
+
+        string json = JsonSerializer.Serialize(recorded);
+        json.ShouldNotContain("file://", Case.Sensitive);
+        json.ShouldNotContain("raw/path", Case.Sensitive);
+    }
+
+    [Fact]
+    public void ApplyRemovalEvidenceShouldIgnoreStaleWatermark()
+    {
+        SemanticIndexingBridgeEntry tombstoned = SemanticIndexingBridgeProjection.Empty.Apply(
+            [new FolderProjectionEnvelope("tenant-a", 5, Mutation(fileOperationKind: "remove", contentHashReference: null))]).Entries.Values.ShouldHaveSingleItem();
+
+        SemanticIndexingBridgeEntry ignored = SemanticIndexingBridgeProjection.ApplyRemovalEvidence(
+            tombstoned,
+            RemovalEvidence(tombstoned.Identity, "memories_accepted", watermark: 2));
+
+        // An older/out-of-order removal result must not overwrite a newer file-version state.
+        ignored.ShouldBe(tombstoned);
+    }
+
+    [Fact]
+    public void ApplyRemovalEvidenceShouldNotResurrectNonTombstonedEntry()
+    {
+        SemanticIndexingBridgeEntry stale = Apply(Mutation()).Entries.Values.ShouldHaveSingleItem();
+
+        SemanticIndexingBridgeEntry unchanged = SemanticIndexingBridgeProjection.ApplyRemovalEvidence(
+            stale,
+            RemovalEvidence(stale.Identity, "memories_accepted", watermark: stale.Freshness.Watermark));
+
+        unchanged.ShouldBe(stale);
+    }
+
+    [Fact]
     public void StatusVocabularyShouldExposeStableCodes()
     {
         SemanticIndexingBridgeStatus.Unknown.ToStatusCode().ShouldBe("unknown");
@@ -390,6 +471,21 @@ public sealed class SemanticIndexingBridgeProjectionTests
             "published-x",
             "result-fingerprint-x",
             OccurredAt.AddMinutes(5));
+
+    private static SemanticIndexingRemovalEvidenceUpdate RemovalEvidence(
+        SemanticIndexingFileVersionIdentity identity,
+        string reasonCode,
+        long watermark)
+        => new(
+            identity,
+            reasonCode,
+            retryable: false,
+            "correlation-removal-x",
+            "task-removal-x",
+            "folders://tenant-a/published-a",
+            "result-fingerprint-removal-x",
+            watermark,
+            OccurredAt.AddMinutes(6));
 
     private static FolderArchived Archived()
         => new(

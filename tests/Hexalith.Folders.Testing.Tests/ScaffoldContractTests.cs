@@ -173,7 +173,11 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.Cli", "Hexalith.Folders.Client", "Hexalith.Folders.Mcp", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Hexalith.Memories.Aspire"]);
-        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire"]);
+        // Story 10.4 AC9: the Tier-3 harness references the worker project to seed/verify the live folders-index
+        // round-trip by publishing real SearchIndexEntryChanged/Removed CloudEvents through the worker's pub/sub
+        // component (and to reuse FoldersSemanticIndexingDefaults). Memories.Contracts flows in transitively; this is
+        // a test project, so it is not subject to the production Memories-isolation rule (see ForbiddenReferencesAreNotIntroduced).
+        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire", "Hexalith.Folders.Workers"]);
         AssertReferences(references, "Hexalith.Folders.LoadTests.Tests", ["Hexalith.Folders.LoadTests"]);
         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Client", "Hexalith.Folders.Contracts"]);
     }

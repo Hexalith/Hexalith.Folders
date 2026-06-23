@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-23 (Story 10.5 created via create-story: read facade = Option B Memories.Client.Rest in Server; full closure + full parity; backlog → ready-for-dev)
+last_updated: 2026-06-23 (Story 10.4 implemented via bmad-dev-story: hybrid removal/archive egress + folders.status; bridge index-time evidence + watermark-gated removal evidence; AC9 round-trip added to opt-in Tier-3 harness (BLOCKED-PENDING DCP lane). Build 0W/0E; Workers/Folders/Contracts lanes green; format clean; AppHost.Tests SKIP. One PRE-EXISTING Testing.Tests fail (SolutionContainsOnlyCanonicalBuildableProjects, Epic 9/10.1/10.5 .slnx-inventory drift). in-progress → review)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -218,10 +218,17 @@ development_status:
   # cross-process harness (tests/Hexalith.Folders.AppHost.Tests) is created (opt-in; runs on a DCP-capable lane —
   # the Epic 9 live-boot residual). All 9 findings ticked; full suite green. → review.
   10-3-author-authorized-async-indexing-on-file-write-and-commit: review
-  # 10-4 re-scoped to SearchIndexEntryRemoved (removal/archive/tombstone) + live folders-index
-  # round-trip verification; its create-story must follow the corrected epics.md scope.
-  10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog
-  10-5-expose-authorized-folders-query-facade-over-memories: ready-for-dev
+  # 10-4 contexted via bmad-create-story 2026-06-23 (refs verified at HEAD 4d9cd21 by a 4-agent adversarial
+  # review). Jerome's decisions: HYBRID removal — file-remove -> hard SearchIndexEntryRemoved; folder-archive ->
+  # soft SearchIndexEntryChanged{folders.status=archived} (full-document re-send, the Memories upsert is
+  # destructive); + folders.status=active on the live upsert path (10.5 filter enabler). Live verification =
+  # the real `aspire run` 6-service round-trip (AC9) extending the opt-in Tier-3 harness — BLOCKED-PENDING the
+  # DCP-capable lane (open Epic 9 action item); the gated test seeds via the port to prove remove/archive, while
+  # full real-mutation->index stays gated on a metadata-derived materializer (tracked, not 10.4 scope). The "D1
+  # inbound wiring" Jerome scoped to 10.4 was found ALREADY COMMITTED (27c22ff/3dc0db4) — 10.4 verifies + extends
+  # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
+  10-4-emit-search-index-entry-changed-cloudevents-from-workers: review
+  10-5-expose-authorized-folders-query-facade-over-memories: in-progress
   epic-10-retrospective: optional
 
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.

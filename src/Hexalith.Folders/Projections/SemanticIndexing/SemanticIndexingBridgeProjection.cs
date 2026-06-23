@@ -75,11 +75,7 @@ public sealed record SemanticIndexingBridgeProjection
         ArgumentNullException.ThrowIfNull(current);
         ArgumentNullException.ThrowIfNull(update);
 
-        if (!string.Equals(current.Identity.ManagedTenantId, update.Identity.ManagedTenantId, StringComparison.Ordinal)
-            || !string.Equals(current.Identity.FolderId, update.Identity.FolderId, StringComparison.Ordinal)
-            || !string.Equals(current.Identity.FileVersionId, update.Identity.FileVersionId, StringComparison.Ordinal)
-            || !string.Equals(current.Identity.ContentHashReference, update.Identity.ContentHashReference, StringComparison.Ordinal)
-            || !string.Equals(current.Identity.SourceUri, update.Identity.SourceUri, StringComparison.Ordinal))
+        if (!IdentityMatches(current.Identity, update.Identity))
         {
             return current;
         }
@@ -102,9 +98,62 @@ public sealed record SemanticIndexingBridgeProjection
             {
                 PublishedEventId = update.PublishedEventId,
                 ResultFingerprint = update.ResultFingerprint,
+
+                // Retain the exact published document so a later archive soft-delete can re-send it (the Memories
+                // upsert is a destructive full-field overwrite); preserve any prior value when this update carries none.
+                IndexedText = update.IndexedText ?? current.Evidence.IndexedText,
+                IndexedAttributes = update.IndexedAttributes ?? current.Evidence.IndexedAttributes,
             },
         };
     }
+
+    /// <summary>
+    /// Records a removal/archive egress outcome against a <c>Tombstoned</c> entry. Evidence-only: the status is never
+    /// changed (no Tombstoned -&gt; Indexed regression) and the update is ignored when its watermark is older than the
+    /// current entry's freshness watermark, so a stale/out-of-order removal cannot overwrite a newer state (AC6).
+    /// </summary>
+    public static SemanticIndexingBridgeEntry ApplyRemovalEvidence(SemanticIndexingBridgeEntry current, SemanticIndexingRemovalEvidenceUpdate update)
+    {
+        ArgumentNullException.ThrowIfNull(current);
+        ArgumentNullException.ThrowIfNull(update);
+
+        if (!IdentityMatches(current.Identity, update.Identity))
+        {
+            return current;
+        }
+
+        // The evidence-only path applies only to tombstoned entries and must never resurrect a non-tombstoned one.
+        if (current.Status is not SemanticIndexingBridgeStatus.Tombstoned)
+        {
+            return current;
+        }
+
+        if (update.Watermark < current.Freshness.Watermark)
+        {
+            return current;
+        }
+
+        return current with
+        {
+            ReasonCode = update.ReasonCode,
+            Retryable = update.Retryable,
+            CorrelationId = update.CorrelationId,
+            TaskId = update.TaskId,
+            StatusObservedAt = update.ObservedAt,
+            Evidence = current.Evidence with
+            {
+                PublishedEventId = update.PublishedEventId ?? current.Evidence.PublishedEventId,
+                ResultFingerprint = update.ResultFingerprint,
+            },
+        };
+    }
+
+    private static bool IdentityMatches(SemanticIndexingFileVersionIdentity current, SemanticIndexingFileVersionIdentity candidate)
+        => string.Equals(current.ManagedTenantId, candidate.ManagedTenantId, StringComparison.Ordinal)
+            && string.Equals(current.FolderId, candidate.FolderId, StringComparison.Ordinal)
+            && string.Equals(current.FileVersionId, candidate.FileVersionId, StringComparison.Ordinal)
+            && string.Equals(current.ContentHashReference, candidate.ContentHashReference, StringComparison.Ordinal)
+            && string.Equals(current.SourceUri, candidate.SourceUri, StringComparison.Ordinal);
 
     private static void ApplyFileMutation(
         Dictionary<string, SemanticIndexingBridgeEntry> entries,
@@ -117,7 +166,10 @@ public sealed record SemanticIndexingBridgeProjection
             string[] affectedKeys = PathKeys(entries, identity);
             if (affectedKeys.Length == 0)
             {
-                entries[identity.ReadModelKey] = Tombstone(identity, envelope, accepted);
+                // No previously-indexed entry matched this path: tombstone with the remove-event identity (which has no
+                // file-version content hash and no prior index evidence), so the removal egress treats it as a never-
+                // indexed no-op.
+                entries[identity.ReadModelKey] = Tombstone(identity, null, envelope, accepted);
                 return;
             }
 
@@ -129,7 +181,10 @@ public sealed record SemanticIndexingBridgeProjection
                     continue;
                 }
 
-                entries[affectedKey] = Tombstone(affectedCurrent.Identity, envelope, accepted);
+                // Preserve the matched entry's Identity AND its index-time Evidence (PublishedEventId + curated
+                // text/attributes) so the removal egress can target the exact upserted document (decision (C)) and an
+                // archive re-send can reuse the original document (decision (A)).
+                entries[affectedKey] = Tombstone(affectedCurrent.Identity, affectedCurrent.Evidence, envelope, accepted);
             }
 
             return;
@@ -285,6 +340,7 @@ public sealed record SemanticIndexingBridgeProjection
 
     private static SemanticIndexingBridgeEntry Tombstone(
         SemanticIndexingFileVersionIdentity identity,
+        SemanticIndexingEvidence? evidence,
         FolderProjectionEnvelope envelope,
         WorkspaceFileMutationAccepted accepted)
         => new(
@@ -295,6 +351,7 @@ public sealed record SemanticIndexingBridgeProjection
             accepted.CorrelationId,
             accepted.TaskId,
             accepted.OccurredAt,
+            evidence: evidence,
             freshness: Freshness(envelope, accepted.IdempotencyFingerprint));
 
     private static SemanticIndexingProjectionFreshness Freshness(FolderProjectionEnvelope envelope, string fingerprint)

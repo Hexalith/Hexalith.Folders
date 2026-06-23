@@ -22,6 +22,24 @@ Without the variable set, `AspireFoldersAppHostFixture` reports unavailable and 
 `SkipIfUnavailable()`. The wider environment currently has a known Aspire CLI/DCP boot mismatch (Epic 9 residual);
 standing up the dedicated DCP lane closes the live-boot evidence this harness produces.
 
+## Story 10.4 AC9 — the seed → search → remove → archive round-trip
+
+`SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` proves the live publish → route → index → search → remove path
+against the real `folders-index`. To avoid being blocked twice (DCP lane **and** the unpopulated index from the
+fail-closed materializer), it **seeds** the index by publishing a real `SearchIndexEntryChanged` through the worker
+pub/sub component (option (b)), then asserts:
+
+1. a syntactic `GET /api/search?tenantId=folders-index&axis=syntactic&query=…` returns exactly one hit whose
+   `ScoredResult.SourceUri` echoes the published `cloudevent.id`;
+2. after a `SearchIndexEntryRemoved`, the search returns zero hits (no stale entry);
+3. after a `SearchIndexEntryChanged{folders.status=archived}`, the document remains and is filterable as archived
+   (and no longer matches the active filter).
+
+It runs **only** on a DCP-capable lane (it resolves the `folders-workers` Dapr sidecar to publish, and skips cleanly
+if that endpoint is unavailable). The deeper **real folder-mutation → content-materialization → index** proof stays a
+separate, tracked prerequisite (a metadata-derived materializer) because the production content materializer is
+fail-closed (Story 10.3 Task 4) until a real workspace/provider content reader is wired.
+
 ## Extending
 
 `AspireFoldersAppHostFixture` is reusable. The deeper folder-mutation → worker-receipt assertion (drive a folder

@@ -62,4 +62,24 @@ public sealed class InMemorySemanticIndexingBridgeStore : ISemanticIndexingBridg
             return Task.FromResult<SemanticIndexingBridgeEntry?>(next);
         }
     }
+
+    public Task<SemanticIndexingBridgeEntry?> RecordRemovalEvidenceAsync(
+        SemanticIndexingRemovalEvidenceUpdate update,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(update);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        lock (_sync)
+        {
+            if (!_entries.TryGetValue(update.Identity.ReadModelKey, out SemanticIndexingBridgeEntry? current))
+            {
+                return Task.FromResult<SemanticIndexingBridgeEntry?>(null);
+            }
+
+            SemanticIndexingBridgeEntry next = SemanticIndexingBridgeProjection.ApplyRemovalEvidence(current, update);
+            _entries[update.Identity.ReadModelKey] = next;
+            return Task.FromResult<SemanticIndexingBridgeEntry?>(next);
+        }
+    }
 }

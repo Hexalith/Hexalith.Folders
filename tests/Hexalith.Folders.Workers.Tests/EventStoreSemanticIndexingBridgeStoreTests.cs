@@ -144,6 +144,63 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
         current.Evidence.PublishedEventId.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task RecordRemovalEvidenceAsyncShouldRecordOutcomeOnTombstonedEntryWithoutStatusRegression()
+    {
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        WorkspaceFileMutationAccepted mutation = Mutation();
+        SemanticIndexingFileVersionIdentity identity = SemanticIndexingFileVersionIdentity.From(mutation);
+
+        // Index the file version (records PublishedEventId evidence), then remove it (tombstone preserving evidence).
+        await bridgeStore.ApplyFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, mutation)],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        await bridgeStore.RecordIndexingResultAsync(
+            new SemanticIndexingResultUpdate(
+                identity,
+                SemanticIndexingBridgeStatus.Indexed,
+                "memories_accepted",
+                retryable: false,
+                "correlation-index-a",
+                "task-index-a",
+                "folders://tenant-a/published-a",
+                "result-fingerprint-a",
+                OccurredAt.AddMinutes(1)),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        IReadOnlyList<SemanticIndexingBridgeEntry> removed = await bridgeStore.ApplyFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 2, Mutation(fileOperationKind: "remove", contentHashReference: null))],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        SemanticIndexingBridgeEntry tombstoned = removed.ShouldHaveSingleItem();
+        tombstoned.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        tombstoned.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
+
+        SemanticIndexingBridgeEntry? recorded = await bridgeStore.RecordRemovalEvidenceAsync(
+            new SemanticIndexingRemovalEvidenceUpdate(
+                tombstoned.Identity,
+                "memories_accepted",
+                retryable: false,
+                "correlation-removal-a",
+                "task-removal-a",
+                "folders://tenant-a/published-a",
+                "result-fingerprint-removal-a",
+                tombstoned.Freshness.Watermark,
+                OccurredAt.AddMinutes(3)),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        recorded.ShouldNotBeNull();
+        recorded.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        recorded.ReasonCode.ShouldBe("memories_accepted");
+
+        SemanticIndexingBridgeEntry? reloaded = await bridgeStore.GetFileVersionAsync(
+            identity,
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        reloaded.ShouldNotBeNull();
+        reloaded.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        reloaded.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
+        readModelStore.Keys.ShouldContain($"statestore:{identity.ReadModelKey}");
+    }
+
     private static WorkspaceFileMutationAccepted Mutation(
         string fileOperationKind = "add",
         string? contentHashReference = "sha256:a")

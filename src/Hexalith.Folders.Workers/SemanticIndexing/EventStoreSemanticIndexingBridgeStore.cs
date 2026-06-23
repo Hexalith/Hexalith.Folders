@@ -119,6 +119,33 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<SemanticIndexingBridgeEntry?> RecordRemovalEvidenceAsync(
+        SemanticIndexingRemovalEvidenceUpdate update,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(update);
+
+        ReadModelEntry<SemanticIndexingBridgeEntry> existing = await _store
+            .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, update.Identity.ReadModelKey, cancellationToken)
+            .ConfigureAwait(false);
+        if (existing.Value is null)
+        {
+            return null;
+        }
+
+        return await ReadModelWritePolicy.UpdateAsync<SemanticIndexingBridgeEntry>(
+            _store,
+            StateStoreName,
+            update.Identity.ReadModelKey,
+            current => current is null ? existing.Value : SemanticIndexingBridgeProjection.ApplyRemovalEvidence(current, update),
+            new ReadModelWriteContext(
+                "folders semantic indexing bridge removal evidence",
+                nameof(SemanticIndexingBridgeEntry),
+                update.CorrelationId),
+            _logger,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
     private async Task<SemanticIndexingBridgeEntry> ApplyFileEventAsync(
         FolderProjectionEnvelope envelope,
         WorkspaceFileMutationAccepted accepted,

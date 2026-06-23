@@ -4,7 +4,7 @@ baseline_commit: e0a968b
 
 # Story 10.5: Expose an authorized Folders query facade over Memories
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -230,7 +230,11 @@ Out of scope:
 
 ### Agent Model Used
 
+claude-opus-4-8[1m] (bmad-dev-story, ultracode)
+
 ### Debug Log References
+
+- 2026-06-24 — Dev started; completed a full 6-agent precedent reconnaissance (Memories read surface + Tenants `TenantQueryGateway`; Server context endpoints + transport guardrails; layered authorization + redaction; OpenAPI op + SDK regen + MCP + CLI; Dapr policy + conformance + scaffold boundary; bridge read model + UX page). **PAUSED before writing code**: a concurrent 10.4 dev-story was actively editing the shared `SemanticIndexing` Workers/Projections files on the same working tree (silent same-tree clobber risk; 10.5 extends those exact files). Per Jerome's decision, waiting for 10.4 to land before implementing. Committed design + file-by-file plan recorded in auto-memory `story-10-5-design-and-pause.md`. Resume once 10.4 is committed/stable.
 
 ### Completion Notes List
 

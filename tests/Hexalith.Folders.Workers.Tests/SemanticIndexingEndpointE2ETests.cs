@@ -360,12 +360,40 @@ public sealed class SemanticIndexingEndpointE2ETests
 
         public List<SemanticIndexingRequest> Requests { get; } = [];
 
+        public List<SemanticIndexingRemovalRequest> RemovalRequests { get; } = [];
+
+        public List<SemanticIndexingArchiveRequest> ArchiveRequests { get; } = [];
+
         public ValueTask<SemanticIndexingResult> IndexFileVersionAsync(
             SemanticIndexingRequest request,
             CancellationToken cancellationToken)
         {
             Requests.Add(request);
             return ValueTask.FromResult(_result);
+        }
+
+        public ValueTask<SemanticIndexingResult> RemoveFileVersionAsync(
+            SemanticIndexingRemovalRequest request,
+            CancellationToken cancellationToken)
+        {
+            RemovalRequests.Add(request);
+            return ValueTask.FromResult(new SemanticIndexingResult(
+                SemanticIndexingStatus.Accepted,
+                "memories_accepted",
+                retryable: false,
+                publishedEventId: request.IndexedEventId));
+        }
+
+        public ValueTask<SemanticIndexingResult> SoftDeleteFileVersionAsync(
+            SemanticIndexingArchiveRequest request,
+            CancellationToken cancellationToken)
+        {
+            ArchiveRequests.Add(request);
+            return ValueTask.FromResult(new SemanticIndexingResult(
+                SemanticIndexingStatus.Accepted,
+                "memories_accepted",
+                retryable: false,
+                publishedEventId: request.IndexedEventId));
         }
     }
 

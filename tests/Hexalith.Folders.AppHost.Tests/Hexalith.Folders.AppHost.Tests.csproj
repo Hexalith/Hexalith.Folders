@@ -12,10 +12,15 @@
     </ProjectReference>
     <!-- Stable app-id / topic constants the cross-process assertions pin against. -->
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
+    <!-- The worker semantic-indexing defaults + Memories search-index contracts the AC9 round-trip seeds and verifies
+         (publish a real SearchIndexEntryChanged/Removed through the worker pub/sub component, then query folders-index).
+         Brings Dapr.Client and Hexalith.Memories.Contracts in transitively. -->
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Workers\Hexalith.Folders.Workers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Testing" />
+    <PackageReference Include="Dapr.Client" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit.v3" />

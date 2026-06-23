@@ -46,15 +46,14 @@ public sealed class SemanticIndexingProcessManager
         List<SemanticIndexingBridgeEntry> recorded = [];
 
         foreach (SemanticIndexingBridgeEntry entry in applied
-            .Where(static entry => entry.Status == SemanticIndexingBridgeStatus.Stale)
+            .Where(static entry => entry.Status is SemanticIndexingBridgeStatus.Stale or SemanticIndexingBridgeStatus.Tombstoned)
             .OrderBy(static entry => entry.Identity.ReadModelKey, StringComparer.Ordinal))
         {
-            if (entry.Identity.ContentHashReference is null)
-            {
-                continue;
-            }
-
-            SemanticIndexingBridgeEntry? result = await ProcessEntryAsync(entry, cancellationToken).ConfigureAwait(false);
+            // Stale entries keep the Story 10.3 create/update upsert behavior; tombstoned entries are routed to the
+            // removal (hard delete) / archive (soft delete) egress instead of being silently skipped (Story 10.4 AC1).
+            SemanticIndexingBridgeEntry? result = entry.Status == SemanticIndexingBridgeStatus.Tombstoned
+                ? await ProcessTombstoneAsync(entry, cancellationToken).ConfigureAwait(false)
+                : await ProcessStaleAsync(entry, cancellationToken).ConfigureAwait(false);
             if (result is not null)
             {
                 recorded.Add(result);
@@ -63,6 +62,98 @@ public sealed class SemanticIndexingProcessManager
 
         return recorded;
     }
+
+    private async Task<SemanticIndexingBridgeEntry?> ProcessStaleAsync(
+        SemanticIndexingBridgeEntry entry,
+        CancellationToken cancellationToken)
+    {
+        // A stale entry without a content-hash reference (e.g. a metadata-only mutation) has nothing to index.
+        if (entry.Identity.ContentHashReference is null)
+        {
+            return null;
+        }
+
+        return await ProcessEntryAsync(entry, cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<SemanticIndexingBridgeEntry?> ProcessTombstoneAsync(
+        SemanticIndexingBridgeEntry entry,
+        CancellationToken cancellationToken)
+    {
+        // Emit only for previously-indexed units (decision (B)): a tombstoned entry with no prior index-publish
+        // evidence has no document in the search index, so the egress is a metadata-only no-op (removal_not_required).
+        // PublishedEventId is the stable source URI the upsert used as its cloudevent.id (decision (C)); reusing it for
+        // the removal/archive guarantees byte-identical targeting under the composite (TenantId, AggregateId) key. The
+        // null-guard here ensures a never-indexed removal never dereferences a missing source identity.
+        string? indexedEventId = entry.Evidence.PublishedEventId;
+        if (indexedEventId is null)
+        {
+            return await RecordRemovalAsync(entry, "removal_not_required", retryable: false, publishedEventId: null, cancellationToken).ConfigureAwait(false);
+        }
+
+        // The tombstone reason mirrors the projection's literals: folder_file_removed -> hard delete; folder_archived
+        // -> soft delete. Any other reason is left untouched (defensive; the projection only sets these two).
+        SemanticIndexingResult result;
+        if (string.Equals(entry.ReasonCode, "folder_file_removed", StringComparison.Ordinal))
+        {
+            result = await _semanticIndexingPort
+                .RemoveFileVersionAsync(BuildRemovalRequest(entry, indexedEventId), cancellationToken)
+                .ConfigureAwait(false);
+        }
+        else if (string.Equals(entry.ReasonCode, "folder_archived", StringComparison.Ordinal))
+        {
+            result = await _semanticIndexingPort
+                .SoftDeleteFileVersionAsync(BuildArchiveRequest(entry, indexedEventId), cancellationToken)
+                .ConfigureAwait(false);
+        }
+        else
+        {
+            return null;
+        }
+
+        return await RecordRemovalAsync(entry, result.ReasonCode, result.Retryable, result.PublishedEventId, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static SemanticIndexingRemovalRequest BuildRemovalRequest(SemanticIndexingBridgeEntry entry, string indexedEventId)
+        => new(
+            entry.Identity.ManagedTenantId,
+            entry.Identity.OrganizationId,
+            entry.Identity.FolderId,
+            entry.Identity.FileVersionId,
+            indexedEventId,
+            entry.CorrelationId,
+            entry.TaskId);
+
+    private static SemanticIndexingArchiveRequest BuildArchiveRequest(SemanticIndexingBridgeEntry entry, string indexedEventId)
+        => new(
+            entry.Identity.ManagedTenantId,
+            entry.Identity.OrganizationId,
+            entry.Identity.FolderId,
+            entry.Identity.FileVersionId,
+            indexedEventId,
+            entry.Evidence.IndexedText,
+            entry.Evidence.IndexedAttributes,
+            entry.CorrelationId,
+            entry.TaskId);
+
+    private Task<SemanticIndexingBridgeEntry?> RecordRemovalAsync(
+        SemanticIndexingBridgeEntry entry,
+        string reasonCode,
+        bool retryable,
+        string? publishedEventId,
+        CancellationToken cancellationToken)
+        => _bridgeWriter.RecordRemovalEvidenceAsync(
+            new SemanticIndexingRemovalEvidenceUpdate(
+                entry.Identity,
+                reasonCode,
+                retryable,
+                entry.CorrelationId,
+                entry.TaskId,
+                publishedEventId,
+                DeriveResultFingerprint(entry.Identity, SemanticIndexingBridgeStatus.Tombstoned, reasonCode, publishedEventId),
+                entry.Freshness.Watermark,
+                _timeProvider.GetUtcNow()),
+            cancellationToken);
 
     private async Task<SemanticIndexingBridgeEntry?> ProcessEntryAsync(
         SemanticIndexingBridgeEntry entry,
@@ -152,7 +243,9 @@ public sealed class SemanticIndexingProcessManager
             result.ReasonCode,
             result.Retryable,
             result.PublishedEventId,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken,
+            result.IndexedText,
+            result.IndexedAttributes).ConfigureAwait(false);
     }
 
     private static SemanticIndexingRequest BuildRequest(
@@ -186,7 +279,9 @@ public sealed class SemanticIndexingProcessManager
         string reasonCode,
         bool retryable,
         string? publishedEventId,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? indexedText = null,
+        IReadOnlyDictionary<string, string>? indexedAttributes = null)
         => _bridgeWriter.RecordIndexingResultAsync(
             new SemanticIndexingResultUpdate(
                 entry.Identity,
@@ -197,7 +292,9 @@ public sealed class SemanticIndexingProcessManager
                 entry.TaskId,
                 publishedEventId,
                 DeriveResultFingerprint(entry.Identity, status, reasonCode, publishedEventId),
-                _timeProvider.GetUtcNow()),
+                _timeProvider.GetUtcNow(),
+                indexedText,
+                indexedAttributes),
             cancellationToken);
 
     private static SemanticIndexingBridgeStatus MapPolicyStatus(SemanticIndexingPolicyEvaluationResult policy)

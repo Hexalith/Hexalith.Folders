@@ -11,7 +11,9 @@ public sealed record SemanticIndexingEvidence
         long? byteLength = null,
         string? mediaType = null,
         string? transportEvidenceKind = null,
-        long? observedByteLength = null)
+        long? observedByteLength = null,
+        string? indexedText = null,
+        IReadOnlyDictionary<string, string>? indexedAttributes = null)
     {
         if (byteLength < 0)
         {
@@ -33,6 +35,13 @@ public sealed record SemanticIndexingEvidence
         MediaType = SemanticIndexingBridgeValidation.RequireOptionalValue(mediaType, nameof(mediaType));
         TransportEvidenceKind = SemanticIndexingBridgeValidation.RequireOptionalValue(transportEvidenceKind, nameof(transportEvidenceKind));
         ObservedByteLength = observedByteLength;
+
+        // IndexedText / IndexedAttributes retain the exact metadata-only curated document that was published on the
+        // SearchIndexEntryChanged upsert. The Memories upsert is a destructive full-field overwrite (Story 10.4
+        // decision (A)), so the archive soft-delete must re-send the complete document with only folders.status
+        // flipped to archived. These are already C9-safe (descriptor-derived text, classification attributes).
+        IndexedText = SemanticIndexingBridgeValidation.RequireOptionalValue(indexedText, nameof(indexedText));
+        IndexedAttributes = indexedAttributes;
     }
 
     public string? PublishedEventId { get; init; }
@@ -48,6 +57,10 @@ public sealed record SemanticIndexingEvidence
     public string? TransportEvidenceKind { get; init; }
 
     public long? ObservedByteLength { get; init; }
+
+    public string? IndexedText { get; init; }
+
+    public IReadOnlyDictionary<string, string>? IndexedAttributes { get; init; }
 
     public static SemanticIndexingEvidence FromMutation(WorkspaceFileMutationAccepted accepted)
     {

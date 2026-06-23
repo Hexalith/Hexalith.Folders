@@ -80,8 +80,11 @@ public sealed class SemanticIndexingProcessManagerTests
     }
 
     [Fact]
-    public async Task ProcessFolderEventsAsyncShouldSkipTombstonedEntriesWithoutCallingMemories()
+    public async Task ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedTombstoneWithoutCallingMemories()
     {
+        // A tombstoned entry that was never indexed (no PublishedEventId) has no document in the search index, so the
+        // removal egress is a metadata-only no-op (removal_not_required) — no SearchIndexEntryRemoved is published and
+        // no policy/content work happens. The Tombstoned status is frozen (never regresses).
         RecordingBridgeWriter bridge = new(Mutation(fileOperationKind: "remove", contentHashReference: null));
         AllowingPolicyEvaluator policy = new();
         RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
@@ -98,10 +101,149 @@ public sealed class SemanticIndexingProcessManagerTests
             [new FolderProjectionEnvelope("tenant-a", 1, Mutation(fileOperationKind: "remove", contentHashReference: null))],
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-        results.ShouldBeEmpty();
+        results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        bridge.RecordedRemovals.ShouldHaveSingleItem().ReasonCode.ShouldBe("removal_not_required");
+        bridge.RecordedResults.ShouldBeEmpty();
+        port.Requests.ShouldBeEmpty();
+        port.RemovalRequests.ShouldBeEmpty();
+        port.ArchiveRequests.ShouldBeEmpty();
         policy.Evaluated.ShouldBeEmpty();
         materializer.Requests.ShouldBeEmpty();
-        port.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ProcessFolderEventsAsyncShouldHardDeletePreviouslyIndexedRemovedFileVersion()
+    {
+        // Index a file version, then remove its path: the tombstone preserves the index-time evidence, so the removal
+        // egress publishes one SearchIndexEntryRemoved targeting the SAME cloudevent.id/AggregateId the upsert used
+        // (identity equivalence, AC5), and the bridge entry stays Tombstoned with the recorded outcome.
+        const string indexedEventId = "folders://tenant-a/published-a";
+        InMemorySemanticIndexingBridgeStore bridge = new();
+        AllowingPolicyEvaluator policy = new();
+        RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
+            [1, 2, 3],
+            "text/plain",
+            3,
+            "inline",
+            "small",
+            "text"));
+        RecordingIndexingPort port = new(new SemanticIndexingResult(
+            SemanticIndexingStatus.Accepted,
+            "memories_accepted",
+            retryable: false,
+            publishedEventId: indexedEventId,
+            indexedText: "authorized-file-version version-a text",
+            indexedAttributes: new Dictionary<string, string>(StringComparer.Ordinal) { ["folders.status"] = "active" }));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, Mutation())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        IReadOnlyList<SemanticIndexingBridgeEntry> removalResults = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 2, Mutation(fileOperationKind: "remove", contentHashReference: null))],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        port.Requests.ShouldHaveSingleItem();
+        port.ArchiveRequests.ShouldBeEmpty();
+        SemanticIndexingRemovalRequest removal = port.RemovalRequests.ShouldHaveSingleItem();
+        removal.IndexedEventId.ShouldBe(indexedEventId);
+        removal.ManagedTenantId.ShouldBe("tenant-a");
+        removal.FolderId.ShouldBe("folder-a");
+
+        SemanticIndexingBridgeEntry removed = removalResults.ShouldHaveSingleItem();
+        removed.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        removed.ReasonCode.ShouldBe("memories_accepted");
+        removed.Evidence.PublishedEventId.ShouldBe(indexedEventId);
+    }
+
+    [Fact]
+    public async Task ProcessFolderEventsAsyncShouldSoftDeletePreviouslyIndexedArchivedFolderWithFullDocumentReSend()
+    {
+        // Index a file version, then archive the folder: the archive soft-delete re-sends the full original document
+        // (text + attributes from preserved evidence) so the destructive Memories upsert does not wipe the searchable
+        // content; only folders.status flips to archived (the port owns that overwrite). The doc stays Tombstoned.
+        const string indexedEventId = "folders://tenant-a/published-a";
+        Dictionary<string, string> indexedAttributes = new(StringComparer.Ordinal)
+        {
+            ["folders.fileVersionId"] = "version-a",
+            ["folders.status"] = "active",
+        };
+        InMemorySemanticIndexingBridgeStore bridge = new();
+        AllowingPolicyEvaluator policy = new();
+        RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
+            [1, 2, 3],
+            "text/plain",
+            3,
+            "inline",
+            "small",
+            "text"));
+        RecordingIndexingPort port = new(new SemanticIndexingResult(
+            SemanticIndexingStatus.Accepted,
+            "memories_accepted",
+            retryable: false,
+            publishedEventId: indexedEventId,
+            indexedText: "authorized-file-version version-a text",
+            indexedAttributes: indexedAttributes));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, Mutation())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        IReadOnlyList<SemanticIndexingBridgeEntry> archiveResults = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 2, Archived())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        port.Requests.ShouldHaveSingleItem();
+        port.RemovalRequests.ShouldBeEmpty();
+        SemanticIndexingArchiveRequest archive = port.ArchiveRequests.ShouldHaveSingleItem();
+        archive.IndexedEventId.ShouldBe(indexedEventId);
+        archive.IndexedText.ShouldBe("authorized-file-version version-a text");
+        archive.IndexedAttributes.ShouldNotBeNull();
+        archive.IndexedAttributes!["folders.status"].ShouldBe("active");
+
+        SemanticIndexingBridgeEntry archived = archiveResults.ShouldHaveSingleItem();
+        archived.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        archived.ReasonCode.ShouldBe("memories_accepted");
+    }
+
+    [Fact]
+    public async Task ProcessFolderEventsAsyncShouldRecordRetryableFailureWhenRemovalPublishFails()
+    {
+        // A removal publish failure is recorded as a retryable failed outcome on the (frozen) Tombstoned entry; it is
+        // never thrown past the processor, so a Memories/pub-sub outage cannot make the durable folder removal look
+        // rejected (AC7).
+        const string indexedEventId = "folders://tenant-a/published-a";
+        InMemorySemanticIndexingBridgeStore bridge = new();
+        AllowingPolicyEvaluator policy = new();
+        RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
+            [1, 2, 3],
+            "text/plain",
+            3,
+            "inline",
+            "small",
+            "text"));
+        RecordingIndexingPort port = new(
+            new SemanticIndexingResult(
+                SemanticIndexingStatus.Accepted,
+                "memories_accepted",
+                retryable: false,
+                publishedEventId: indexedEventId,
+                indexedText: "authorized-file-version version-a text",
+                indexedAttributes: new Dictionary<string, string>(StringComparer.Ordinal) { ["folders.status"] = "active" }),
+            removeResult: new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_publish_error", retryable: true));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, Mutation())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        IReadOnlyList<SemanticIndexingBridgeEntry> removalResults = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 2, Mutation(fileOperationKind: "remove", contentHashReference: null))],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        SemanticIndexingBridgeEntry removed = removalResults.ShouldHaveSingleItem();
+        removed.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        removed.ReasonCode.ShouldBe("memories_publish_error");
+        removed.Retryable.ShouldBeTrue();
     }
 
     [Fact]
@@ -290,6 +432,19 @@ public sealed class SemanticIndexingProcessManagerTests
             fileOperationKind == "remove" ? "fingerprint-remove-a" : "fingerprint-a",
             OccurredAt);
 
+    private static FolderArchived Archived()
+        => new(
+            "tenant-a",
+            "organization-a",
+            "folder-a",
+            FolderArchiveReasonCode.CallerRequested,
+            "principal-a",
+            "correlation-archive-a",
+            "task-archive-a",
+            "idempotency-archive-a",
+            "fingerprint-archive-a",
+            OccurredAt);
+
     private static EventStoreDomainEventEnvelope Envelope(WorkspaceFileMutationAccepted mutation)
         => new(
             "message-a",
@@ -330,6 +485,8 @@ public sealed class SemanticIndexingProcessManagerTests
             return Task.FromResult<IReadOnlyList<SemanticIndexingBridgeEntry>>(projection.Entries.Values.ToArray());
         }
 
+        public List<SemanticIndexingRemovalEvidenceUpdate> RecordedRemovals { get; } = [];
+
         public Task<SemanticIndexingBridgeEntry?> RecordIndexingResultAsync(
             SemanticIndexingResultUpdate update,
             CancellationToken cancellationToken = default)
@@ -338,6 +495,16 @@ public sealed class SemanticIndexingProcessManagerTests
             SemanticIndexingBridgeEntry current = SemanticIndexingBridgeProjection.Empty.Apply(
                 [new FolderProjectionEnvelope("tenant-a", 1, _mutation)]).Entries.Values.ShouldHaveSingleItem();
             return Task.FromResult<SemanticIndexingBridgeEntry?>(SemanticIndexingBridgeProjection.ApplyIndexingResult(current, update));
+        }
+
+        public Task<SemanticIndexingBridgeEntry?> RecordRemovalEvidenceAsync(
+            SemanticIndexingRemovalEvidenceUpdate update,
+            CancellationToken cancellationToken = default)
+        {
+            RecordedRemovals.Add(update);
+            SemanticIndexingBridgeEntry current = SemanticIndexingBridgeProjection.Empty.Apply(
+                [new FolderProjectionEnvelope("tenant-a", 1, _mutation)]).Entries.Values.ShouldHaveSingleItem();
+            return Task.FromResult<SemanticIndexingBridgeEntry?>(SemanticIndexingBridgeProjection.ApplyRemovalEvidence(current, update));
         }
     }
 
@@ -399,13 +566,26 @@ public sealed class SemanticIndexingProcessManagerTests
     private sealed class RecordingIndexingPort : ISemanticIndexingPort
     {
         private readonly SemanticIndexingResult _result;
+        private readonly SemanticIndexingResult _removeResult;
+        private readonly SemanticIndexingResult _archiveResult;
 
-        public RecordingIndexingPort(SemanticIndexingResult result)
+        public RecordingIndexingPort(
+            SemanticIndexingResult result,
+            SemanticIndexingResult? removeResult = null,
+            SemanticIndexingResult? archiveResult = null)
         {
             _result = result;
+            _removeResult = removeResult
+                ?? new SemanticIndexingResult(SemanticIndexingStatus.Accepted, "memories_accepted", retryable: false, publishedEventId: "folders://tenant-a/published-a");
+            _archiveResult = archiveResult
+                ?? new SemanticIndexingResult(SemanticIndexingStatus.Accepted, "memories_accepted", retryable: false, publishedEventId: "folders://tenant-a/published-a");
         }
 
         public List<SemanticIndexingRequest> Requests { get; } = [];
+
+        public List<SemanticIndexingRemovalRequest> RemovalRequests { get; } = [];
+
+        public List<SemanticIndexingArchiveRequest> ArchiveRequests { get; } = [];
 
         public ValueTask<SemanticIndexingResult> IndexFileVersionAsync(
             SemanticIndexingRequest request,
@@ -413,6 +593,22 @@ public sealed class SemanticIndexingProcessManagerTests
         {
             Requests.Add(request);
             return ValueTask.FromResult(_result);
+        }
+
+        public ValueTask<SemanticIndexingResult> RemoveFileVersionAsync(
+            SemanticIndexingRemovalRequest request,
+            CancellationToken cancellationToken)
+        {
+            RemovalRequests.Add(request);
+            return ValueTask.FromResult(_removeResult);
+        }
+
+        public ValueTask<SemanticIndexingResult> SoftDeleteFileVersionAsync(
+            SemanticIndexingArchiveRequest request,
+            CancellationToken cancellationToken)
+        {
+            ArchiveRequests.Add(request);
+            return ValueTask.FromResult(_archiveResult);
         }
     }
 
