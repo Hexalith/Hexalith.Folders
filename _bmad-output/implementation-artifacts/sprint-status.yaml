@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-22T12:00:00+02:00
+# last_updated: 2026-06-23 (Epic 9 closed + retrospective complete)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -183,11 +183,15 @@ development_status:
   # (sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment).
   # Adopt platform Aspire helpers (EventStore gateway-only + Tenants + Memories),
   # add Memories topology, apply hexalith-folders->folders-index routing config.
-  epic-9: in-progress
+  # Closed 2026-06-23: all 3 stories done + review-approved; retrospective complete
+  # (epic-9-retro-2026-06-23.md). Phase-1 close-out of the Memories integration track;
+  # Phase 2 = Epic 10. Residual: aspire-run live boot owed to a DCP-capable env/CI
+  # (env-wide CLI 13.4.5/DCP --tls-cert-file mismatch; not a topology defect).
+  epic-9: done
   9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: done
   9-2-add-memories-search-index-server-to-the-apphost-topology: done
   9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: done
-  epic-9-retrospective: optional
+  epic-9-retrospective: done
 
   # Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
   # Phase 2 (gated on Epic 9 + C4 large-file + C9 path-exposure). Stubs pending create-story.
@@ -198,3 +202,41 @@ development_status:
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog
   10-5-expose-authorized-folders-query-facade-over-memories: backlog
   epic-10-retrospective: optional
+
+# Action items recorded from epic retrospectives. Status: open | in-progress | done.
+action_items:
+  - epic: 9
+    action: "Stand up a DCP-capable `aspire run` boot lane (CI or local) — or `aspire update` to align CLI 13.4.5 to DCP/Hosting 13.4.6 — and record live-boot evidence (all 6 services healthy, no eventstore-admin*, folders-index auto-provisioned). Closes the live-boot half of AC6/AC7 owed across 9.1/9.2/9.3."
+    owner: "Jerome / Platform"
+    priority: high
+    status: open
+  - epic: 9
+    action: "Reconcile the three-way Aspire version drift: update architecture.md, epics.md AR-INFRA-01, and project-context.md to the authoritative Directory.Packages.props pins (Aspire 13.4.6 + CommunityToolkit.Aspire.Hosting.Dapr 13.4.0-preview.1.260602-0230)."
+    owner: "Winston"
+    priority: medium
+    status: done
+  - epic: 9
+    action: "Resolve the inert resiliency.yaml in gateway-only mode (9.1 LOW-1): enhance Hexalith.EventStore.Aspire to load resiliency for gateway-only sidecars, or remove the dead file with documented rationale."
+    owner: "Amelia"
+    priority: medium
+    status: open
+  - epic: 9
+    action: "Carry the deferred folders/folders-workers -> memories invoke authorization into Epic 10: deny-by-default caller policies + 7-category negative-test rows + memories-topic pub/sub scope, updating the conformance closed-sets in lockstep when Story 10.4's producer lands."
+    owner: "Murat / Amelia"
+    priority: high
+    status: open
+  - epic: 9
+    action: "Run create-story for Epic 10 stubs 10.1-10.5 and confirm C4 (large-file) + C9 (path-exposure) gating readiness before Epic 10 kickoff."
+    owner: "John"
+    priority: high
+    status: open
+  - epic: 9
+    action: "Document and proactively align the cross-repo CommunityToolkit.Aspire.Hosting.Dapr / Aspire version coupling between Folders and the platform .Aspire submodules to prevent NU1605 recurrence."
+    owner: "Amelia"
+    priority: medium
+    status: open
+  - epic: 9
+    action: "Reconcile dev-record test counts at story close (not only at review) — minor under-counts recurred in 9.2/9.3."
+    owner: "Amelia"
+    priority: low
+    status: open
