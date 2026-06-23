@@ -1,8 +1,14 @@
+using Hexalith.EventStore.Aspire;
 using Hexalith.Folders.Aspire;
+using Hexalith.Tenants.Aspire;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
+// Dapr configuration + component paths resolved relative to the AppHost dir (fail-fast if missing).
 string accessControlConfigPath = ResolveDaprConfigPath(builder.AppHostDirectory, "accesscontrol.yaml");
+string resiliencyConfigPath = ResolveDaprConfigPath(builder.AppHostDirectory, "resiliency.yaml");
+string stateStoreComponentPath = ResolveDaprConfigPath(builder.AppHostDirectory, "statestore.yaml");
+string pubSubComponentPath = ResolveDaprConfigPath(builder.AppHostDirectory, "pubsub.yaml");
 
 IResourceBuilder<KeycloakResource>? keycloak = null;
 ReferenceExpression? realmUrl = null;
@@ -14,13 +20,42 @@ if (!string.Equals(builder.Configuration["EnableKeycloak"], "false", StringCompa
     realmUrl = ReferenceExpression.Create($"{keycloakEndpoint}/realms/hexalith");
 }
 
-IResourceBuilder<ProjectResource> eventStore = builder.AddProject<Projects.Hexalith_EventStore>(FoldersAspireModule.EventStoreAppId);
-IResourceBuilder<ProjectResource> tenants = builder.AddProject<Projects.Hexalith_Tenants>(FoldersAspireModule.TenantsAppId);
+// EventStore command gateway, composed gateway-only (no admin server / admin UI) via the platform Aspire
+// helper. The helper owns the eventstore sidecar plus the shared statestore/pubsub Dapr components, sourced
+// from the checked-in DaprComponents YAML so no component is created in Folders code (Epic 9).
+IResourceBuilder<ProjectResource> eventStoreProject = builder.AddHexalithEventStoreGatewayProject(FoldersAspireModule.EventStoreAppId);
+HexalithEventStoreResources eventStoreResources = builder.AddHexalithEventStore(
+    eventStoreProject,
+    adminServer: null,
+    adminUI: null,
+    eventStoreDaprConfigPath: accessControlConfigPath,
+    adminServerDaprConfigPath: null,
+    resiliencyConfigPath: resiliencyConfigPath,
+    stateStoreComponentPath: stateStoreComponentPath,
+    pubSubComponentPath: pubSubComponentPath);
+IResourceBuilder<ProjectResource> eventStore = eventStoreResources.EventStore;
+
+// Tenants domain service on the shared EventStore platform (appId "tenants"); its sidecar shares the
+// EventStore state store + pub/sub via the platform helper.
+IResourceBuilder<ProjectResource> tenants = builder.AddHexalithTenantsServer(
+    eventStoreResources,
+    accessControlConfigPath,
+    FoldersAspireModule.TenantsAppId);
+
 IResourceBuilder<ProjectResource> folders = builder.AddProject<Projects.Hexalith_Folders_Server>(FoldersAspireModule.FoldersAppId);
 IResourceBuilder<ProjectResource> foldersWorkers = builder.AddProject<Projects.Hexalith_Folders_Workers>(FoldersAspireModule.FoldersWorkersAppId);
 IResourceBuilder<ProjectResource> foldersUi = builder.AddProject<Projects.Hexalith_Folders_UI>(FoldersAspireModule.FoldersUiAppId);
 
-_ = builder.AddHexalithFolders(eventStore, tenants, folders, foldersWorkers, foldersUi, accessControlConfigPath);
+// Wire the Folders services onto the shared topology, reusing the platform statestore/pubsub components.
+_ = builder.AddHexalithFolders(
+    eventStoreResources.StateStore,
+    eventStoreResources.PubSub,
+    eventStore,
+    tenants,
+    folders,
+    foldersWorkers,
+    foldersUi,
+    accessControlConfigPath);
 
 if (keycloak is not null && realmUrl is not null)
 {

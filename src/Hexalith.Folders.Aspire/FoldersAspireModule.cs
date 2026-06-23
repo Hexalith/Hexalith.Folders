@@ -22,26 +22,32 @@ public static class FoldersAspireModule
     public const string PubSubComponentName = "pubsub";
 
     /// <summary>
-    /// Registers the shared Dapr state-store and pub/sub components used by every Folders sidecar.
-    /// Extracted from <see cref="AddHexalithFolders"/> so structural tests can verify component
-    /// registration without needing real <see cref="ProjectResource"/>s.
+    /// Wires the Folders-owned services (<c>folders</c>, <c>folders-workers</c>, <c>folders-ui</c>) onto the
+    /// shared Hexalith platform topology.
     /// </summary>
-    public static (IResourceBuilder<IDaprComponentResource> StateStore, IResourceBuilder<IDaprComponentResource> PubSub)
-        AddFoldersSharedDaprComponents(this IDistributedApplicationBuilder builder)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        IResourceBuilder<IDaprComponentResource> stateStore = builder
-            .AddDaprComponent(StateStoreComponentName, "state.redis")
-            .WithMetadata("actorStateStore", "true")
-            .WithMetadata("redisHost", "localhost:6379")
-            .WithMetadata("keyPrefix", "none");
-        IResourceBuilder<IDaprComponentResource> pubSub = builder.AddDaprPubSub(PubSubComponentName);
-        return (stateStore, pubSub);
-    }
-
+    /// <remarks>
+    /// The EventStore command gateway and the Tenants service — and the shared <c>statestore</c>/<c>pubsub</c>
+    /// Dapr components — are composed upstream by the platform Aspire helpers
+    /// (<c>AddHexalithEventStore</c> gateway-only + <c>AddHexalithTenantsServer</c>). This helper no longer
+    /// creates any Dapr component in code (Epic 9): it reuses the platform-provided <paramref name="stateStore"/>
+    /// and <paramref name="pubSub"/> components and attaches only the three Folders sidecars plus their
+    /// references — <c>folders</c>/<c>folders-workers</c> invoke and wait for the EventStore gateway and Tenants;
+    /// <c>folders-ui</c> invokes and waits for <c>folders</c>.
+    /// </remarks>
+    /// <param name="builder">The distributed application builder.</param>
+    /// <param name="stateStore">The shared Dapr state-store component from the platform EventStore composition.</param>
+    /// <param name="pubSub">The shared Dapr pub/sub component from the platform EventStore composition.</param>
+    /// <param name="eventStore">The EventStore command-gateway project the Folders backends invoke and wait for.</param>
+    /// <param name="tenants">The Tenants service project the Folders backends reference and wait for.</param>
+    /// <param name="folders">The Folders REST server project.</param>
+    /// <param name="foldersWorkers">The Folders workers project.</param>
+    /// <param name="foldersUi">The Folders read-only operations console UI project.</param>
+    /// <param name="daprConfigPath">Optional Dapr access-control configuration path applied to each Folders sidecar.</param>
+    /// <returns>The composed Folders topology resources (shared components + the five platform/Folders projects).</returns>
     public static HexalithFoldersResources AddHexalithFolders(
         this IDistributedApplicationBuilder builder,
+        IResourceBuilder<IDaprComponentResource> stateStore,
+        IResourceBuilder<IDaprComponentResource> pubSub,
         IResourceBuilder<ProjectResource> eventStore,
         IResourceBuilder<ProjectResource> tenants,
         IResourceBuilder<ProjectResource> folders,
@@ -50,33 +56,13 @@ public static class FoldersAspireModule
         string? daprConfigPath = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(stateStore);
+        ArgumentNullException.ThrowIfNull(pubSub);
         ArgumentNullException.ThrowIfNull(eventStore);
         ArgumentNullException.ThrowIfNull(tenants);
         ArgumentNullException.ThrowIfNull(folders);
         ArgumentNullException.ThrowIfNull(foldersWorkers);
         ArgumentNullException.ThrowIfNull(foldersUi);
-
-        (IResourceBuilder<IDaprComponentResource> stateStore, IResourceBuilder<IDaprComponentResource> pubSub) = builder.AddFoldersSharedDaprComponents();
-
-        _ = eventStore
-            .WithDaprSidecar(sidecar => sidecar
-                .WithOptions(new DaprSidecarOptions
-                {
-                    AppId = EventStoreAppId,
-                    Config = daprConfigPath,
-                })
-                .WithReference(stateStore)
-                .WithReference(pubSub));
-
-        _ = tenants
-            .WithDaprSidecar(sidecar => sidecar
-                .WithOptions(new DaprSidecarOptions
-                {
-                    AppId = TenantsAppId,
-                    Config = daprConfigPath,
-                })
-                .WithReference(stateStore)
-                .WithReference(pubSub));
 
         _ = folders
             .WithReference(eventStore)

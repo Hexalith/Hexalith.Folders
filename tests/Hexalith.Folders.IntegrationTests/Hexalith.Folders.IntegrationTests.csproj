@@ -4,6 +4,9 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
+    <!-- Story 9.1: the Aspire topology test drives the platform EventStore composition (gateway-only
+         AddHexalithEventStore + AddEventStoreDomainModule) to assert the full five-sidecar topology. -->
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Aspire\Hexalith.EventStore.Aspire.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Cli\Hexalith.Folders.Cli.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Mcp\Hexalith.Folders.Mcp.csproj" />

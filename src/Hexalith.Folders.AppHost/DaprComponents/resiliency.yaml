@@ -1,0 +1,68 @@
+# DAPR Resiliency Policies -- Local Development
+# ================================================================
+# Retry / timeout / circuit-breaker policies for the Folders topology. Targets reference the
+# eventstore app and the shared statestore / pubsub components (Epic 9). A Resiliency CRD is not
+# scoped per app-id (no `scopes:` field); each sidecar that loads it applies the matching targets.
+apiVersion: dapr.io/v1alpha1
+kind: Resiliency
+metadata:
+  name: resiliency
+spec:
+  policies:
+    retries:
+      defaultRetry:
+        policy: constant
+        duration: 1s
+        maxRetries: 3
+      # Pub/sub outbound: publisher -> sidecar -> broker
+      pubsubRetryOutbound:
+        policy: exponential
+        maxInterval: 10s
+        maxRetries: 3
+      # Pub/sub inbound: broker -> sidecar -> subscriber app
+      pubsubRetryInbound:
+        policy: exponential
+        maxInterval: 30s
+        maxRetries: 10
+    timeouts:
+      # Each timeout is a named duration string (DAPR rejects nested objects here).
+      daprSidecar: 5s
+      # Pub/sub outbound: prevent hung sidecar->broker calls
+      pubsubTimeout: 10s
+      # Pub/sub inbound: allow more time for subscriber processing
+      subscriberTimeout: 30s
+    circuitBreakers:
+      defaultBreaker:
+        maxRequests: 1
+        interval: 10s
+        timeout: 30s
+        trip: consecutiveFailures > 3
+      # Pub/sub circuit breaker for prolonged broker outages
+      pubsubBreaker:
+        maxRequests: 1
+        interval: 10s
+        timeout: 30s
+        trip: consecutiveFailures > 5
+  targets:
+    apps:
+      eventstore:
+        retry: defaultRetry
+        timeout: daprSidecar
+        circuitBreaker: defaultBreaker
+    # These policies AUGMENT built-in pub/sub component retries.
+    # Effective retry count = component built-in retries x resiliency retries.
+    components:
+      pubsub:
+        outbound:
+          retry: pubsubRetryOutbound
+          timeout: pubsubTimeout
+          circuitBreaker: pubsubBreaker
+        inbound:
+          retry: pubsubRetryInbound
+          timeout: subscriberTimeout
+      # State store resiliency: retry and circuit breaker for state persistence.
+      # Without this target, transient Redis failures would fail without retry.
+      statestore:
+        retry: defaultRetry
+        timeout: daprSidecar
+        circuitBreaker: defaultBreaker

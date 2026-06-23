@@ -10,8 +10,12 @@
     <ProjectReference Include="..\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.UI\Hexalith.Folders.UI.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.Workers\Hexalith.Folders.Workers.csproj" />
-    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore\Hexalith.EventStore.csproj" />
-    <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants\Hexalith.Tenants.csproj" />
+    <!-- Epic 9: compose EventStore (gateway-only) + Tenants through the platform Aspire helpers instead of
+         referencing the runtime projects. IsAspireProjectResource="false" so Aspire does not generate
+         Projects.* metadata for these hosting-extension libraries. The cross-repo EventStore/Tenants runtime
+         projects are added by the helpers via SuppressBuild project metadata (built independently). -->
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Aspire\Hexalith.EventStore.Aspire.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants.Aspire\Hexalith.Tenants.Aspire.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Keycloak" />

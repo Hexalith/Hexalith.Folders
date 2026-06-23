@@ -16,7 +16,10 @@
     <PackageVersion Include="Aspire.Hosting.Kubernetes" Version="13.4.6-preview.1.26319.6" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="13.4.6" />
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.4.6" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="13.0.0" />
+    <!-- Story 9.1: aligned to the platform version (Hexalith.EventStore + Hexalith.Tenants both ship this exact
+         build with Aspire 13.4.6). Required to consume the EventStore/Tenants platform Aspire helpers cross-repo
+         without an NU1605 transitive downgrade. -->
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="13.4.0-preview.1.260602-0230" />
   </ItemGroup>
   <ItemGroup Label="Aspire ServiceDefaults">
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.7.0" />

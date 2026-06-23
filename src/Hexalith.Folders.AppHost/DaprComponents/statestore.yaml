@@ -1,0 +1,37 @@
+# DAPR State Store Component -- Local Development
+# =============================================================
+# Redis-backed state store for actor state and command status tracking.
+# actorStateStore: "true" enables DAPR actor state management.
+#
+# keyPrefix: "none" keeps state keys un-prefixed so they are shared verbatim across the
+# eventstore / tenants / folders app-ids (preserves the Folders state-key layout that the
+# previous in-code component established -- do not change without a state-migration story).
+#
+# Component Scoping (Folders topology, Epic 9): the EventStore command gateway owns aggregate
+# actor state; Tenants writes projections; the Folders services read/write folder state. There is
+# no eventstore-admin or memories app-id in the Folders topology.
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+spec:
+  type: state.redis
+  version: v1
+  metadata:
+    # DAPR does not support the `{env:VAR|default}` template form, so an unset
+    # REDIS_HOST left the literal string as the hostname and daprd failed with
+    # "no such host". `dapr init` provisions Redis at localhost:6379 with no password.
+    - name: redisHost
+      value: "localhost:6379"
+    - name: redisPassword
+      value: ""
+    - name: actorStateStore
+      value: "true"
+    - name: keyPrefix
+      value: "none"
+scopes:
+  - eventstore
+  - tenants
+  - folders
+  - folders-workers
+  - folders-ui

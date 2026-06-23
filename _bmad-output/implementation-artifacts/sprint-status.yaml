@@ -183,8 +183,8 @@ development_status:
   # (sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment).
   # Adopt platform Aspire helpers (EventStore gateway-only + Tenants + Memories),
   # add Memories topology, apply hexalith-folders->folders-index routing config.
-  epic-9: backlog
-  9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: backlog
+  epic-9: in-progress
+  9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: done
   9-2-add-memories-search-index-server-to-the-apphost-topology: backlog
   9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: backlog
   epic-9-retrospective: optional
