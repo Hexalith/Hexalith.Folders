@@ -39,7 +39,7 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
         SearchIndexEntryChanged entry = new()
         {
             TenantId = FoldersSemanticIndexingDefaults.IndexTenant,
-            AggregateId = CaseId(request),
+            AggregateId = FileVersionAggregateId(request),
             Text = BuildText(request),
             Attributes = BuildAttributes(request),
             CorrelationId = request.CorrelationId,
@@ -114,8 +114,14 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
             ["folders.pathPolicyOutcome"] = request.Policy.PathPolicyOutcome,
         };
 
-    private static string CaseId(SemanticIndexingRequest request)
+    // The per-file-version upsert key for the shared `folders-index` tenant. Memories replaces the search-index
+    // entry by the composite (TenantId, AggregateId), so this MUST be unique per indexed file version — a
+    // folder-level key would collapse every file version in a folder onto one entry (within-folder data loss).
+    // The '/' delimiter is intentional: it is excluded from SemanticIndexingBridgeValidation segment ids (which do
+    // permit ':'), so no combination of segment values can forge a colliding AggregateId across managed tenants in
+    // the shared index.
+    private static string FileVersionAggregateId(SemanticIndexingRequest request)
         => string.Create(
             CultureInfo.InvariantCulture,
-            $"{request.ManagedTenantId}:{request.OrganizationId}:{request.FolderId}");
+            $"{request.ManagedTenantId}/{request.OrganizationId}/{request.FolderId}/{request.FileVersionId}");
 }

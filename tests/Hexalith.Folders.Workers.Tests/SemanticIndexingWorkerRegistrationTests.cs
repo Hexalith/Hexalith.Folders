@@ -100,7 +100,10 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         Dictionary<string, string> metadata = arguments[3].ShouldBeOfType<Dictionary<string, string>>();
 
         entry.TenantId.ShouldBe("folders-index");
-        entry.AggregateId.ShouldBe("tenant-a:organization-a:folder-a");
+
+        // The upsert key is per-file-version (not folder-level), so two files in the same folder do not collapse
+        // onto one search-index entry. '/' is excluded from segment ids, so the join cannot collide across tenants.
+        entry.AggregateId.ShouldBe("tenant-a/organization-a/folder-a/version-a");
         entry.Text.ShouldContain("version-a", Case.Sensitive);
         entry.Text.ShouldNotContain("C:/", Case.Sensitive);
         entry.CorrelationId.ShouldBe("correlation-a");
@@ -160,8 +163,6 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             .ParamName.ShouldBe("managedTenantId");
         Should.Throw<ArgumentException>(() => CreateRequest(correlationId: " "))
             .ParamName.ShouldBe("correlationId");
-        Should.Throw<ArgumentException>(() => CreateRequest(idempotencyKey: " "))
-            .ParamName.ShouldBe("idempotencyKey");
     }
 
     [Fact]
@@ -177,8 +178,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
                 new SemanticIndexingContentDescriptor("authorized-file-version", 1024, "text/markdown", "small", "text"),
                 new SemanticIndexingPolicyOutcome(true, "tenant-sensitive", "allowed"),
                 "correlation-a",
-                "task-a",
-                "idempotency-a"))
+                "task-a"))
             .ParamName.ShouldBe("source");
         Should.Throw<ArgumentNullException>(() => new SemanticIndexingRequest(
                 "tenant-a",
@@ -190,8 +190,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
                 null!,
                 new SemanticIndexingPolicyOutcome(true, "tenant-sensitive", "allowed"),
                 "correlation-a",
-                "task-a",
-                "idempotency-a"))
+                "task-a"))
             .ParamName.ShouldBe("content");
         Should.Throw<ArgumentNullException>(() => new SemanticIndexingRequest(
                 "tenant-a",
@@ -203,8 +202,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
                 new SemanticIndexingContentDescriptor("authorized-file-version", 1024, "text/markdown", "small", "text"),
                 null!,
                 "correlation-a",
-                "task-a",
-                "idempotency-a"))
+                "task-a"))
             .ParamName.ShouldBe("policy");
     }
 
@@ -291,8 +289,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
 
     private static SemanticIndexingRequest CreateRequest(
         string managedTenantId = "tenant-a",
-        string correlationId = "correlation-a",
-        string idempotencyKey = "idempotency-a")
+        string correlationId = "correlation-a")
         => new(
             managedTenantId,
             "organization-a",
@@ -306,8 +303,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             new SemanticIndexingContentDescriptor("authorized-file-version", 1024, "text/markdown", "small", "text"),
             new SemanticIndexingPolicyOutcome(true, "tenant-sensitive", "allowed"),
             correlationId,
-            "task-a",
-            idempotencyKey);
+            "task-a");
 
     private static IEnumerable<Type> ExpandTypeGraph(Type type)
     {

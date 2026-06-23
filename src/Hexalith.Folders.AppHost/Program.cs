@@ -36,6 +36,14 @@ HexalithEventStoreResources eventStoreResources = builder.AddHexalithEventStore(
     pubSubComponentPath: pubSubComponentPath);
 IResourceBuilder<ProjectResource> eventStore = eventStoreResources.EventStore;
 
+// Story 10.3 (D1): the EventStore actor host publishes folder domain events to `{tenantId}.folders.events` by the
+// D6 convention, but the folders-workers semantic-indexing subscriber listens on the single, tenant-agnostic
+// `folders.events` topic (FoldersSemanticIndexingDefaults.DomainEventsTopicName). Redirect the `folders` domain's
+// publish topic to that fixed topic via EventPublisherOptions.TopicOverrides so every managed tenant's folder
+// events reach the worker on one subscription. Cross-tenant isolation is preserved in the worker by the bridge
+// projection's per-tenant keys. The production EventStore deployment must carry the same override.
+_ = eventStore.WithEnvironment("EventStore__Publisher__TopicOverrides__folders", "folders.events");
+
 // Tenants domain service on the shared EventStore platform (appId "tenants"); its sidecar shares the
 // EventStore state store + pub/sub via the platform helper.
 IResourceBuilder<ProjectResource> tenants = builder.AddHexalithTenantsServer(

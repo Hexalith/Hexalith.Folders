@@ -4,6 +4,7 @@ using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
 using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Workers.SemanticIndexing;
 
 using Shouldly;
@@ -173,7 +174,7 @@ public sealed class SemanticIndexingProcessManagerTests
     public async Task ProcessFolderEventsAsyncShouldSkipRedactedSensitivityBeforeReadingContent()
     {
         RecordingBridgeWriter bridge = new(Mutation(pathPolicyClass: "credential"));
-        FailClosedSemanticIndexingPolicyEvaluator policy = new();
+        FailClosedSemanticIndexingPolicyEvaluator policy = new(new EnabledTenantAccessStore());
         RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
             [1, 2, 3],
             "text/plain",
@@ -195,10 +196,10 @@ public sealed class SemanticIndexingProcessManagerTests
     }
 
     [Fact]
-    public async Task EventProcessorShouldIgnoreDuplicateDeliveryAfterSuccessfulProcessing()
+    public async Task ProcessFolderEventsAsyncShouldFailClosedWhenTenantAccessIsUnavailableBeforeReadingContent()
     {
         RecordingBridgeWriter bridge = new();
-        AllowingPolicyEvaluator policy = new();
+        FailClosedSemanticIndexingPolicyEvaluator policy = new(new MissingTenantAccessStore());
         RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
             [1, 2, 3],
             "text/plain",
@@ -207,6 +208,40 @@ public sealed class SemanticIndexingProcessManagerTests
             "small",
             "text"));
         RecordingIndexingPort port = new(new SemanticIndexingResult(SemanticIndexingStatus.Accepted, "memories_accepted", retryable: false));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> results = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, Mutation())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        // Tenant-access authority gate runs first (AC3): an unknown/disabled tenant fails closed and no content is
+        // materialized or sent to Memories.
+        results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Failed);
+        bridge.RecordedResults.ShouldHaveSingleItem().ReasonCode.ShouldBe("tenant_access_unavailable");
+        materializer.Requests.ShouldBeEmpty();
+        port.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task EventProcessorShouldNotReindexRedeliveredEventBecauseTheBridgeOwnsIdempotency()
+    {
+        // Uses the real bridge store (not a recording fake) so the projection's fingerprint-based stale protection
+        // is exercised: a redelivered identical event must not be indexed a second time. This replaces the former
+        // in-process per-message dedup, which was dead weight on a transient processor.
+        InMemorySemanticIndexingBridgeStore bridge = new();
+        AllowingPolicyEvaluator policy = new();
+        RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
+            [1, 2, 3],
+            "text/plain",
+            3,
+            "inline",
+            "small",
+            "text"));
+        RecordingIndexingPort port = new(new SemanticIndexingResult(
+            SemanticIndexingStatus.Accepted,
+            "memories_accepted",
+            retryable: false,
+            publishedEventId: "folders://tenant-a/published-a"));
         SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
         FoldersSemanticIndexingEventProcessor processor = new(manager);
         EventStoreDomainEventEnvelope envelope = Envelope(Mutation());
@@ -219,8 +254,10 @@ public sealed class SemanticIndexingProcessManagerTests
             .ConfigureAwait(true);
 
         first.ShouldBe(FoldersSemanticIndexingEventProcessingResult.Processed);
-        second.ShouldBe(FoldersSemanticIndexingEventProcessingResult.Duplicate);
-        bridge.AppliedEnvelopes.Count.ShouldBe(1);
+        second.ShouldBe(FoldersSemanticIndexingEventProcessingResult.Processed);
+
+        // The redelivered event re-applies to the already-indexed bridge entry (same idempotency fingerprint), so it
+        // is never sent to Memories a second time. Idempotency lives in the bridge projection, not an in-process set.
         port.Requests.Count.ShouldBe(1);
     }
 
@@ -377,5 +414,28 @@ public sealed class SemanticIndexingProcessManagerTests
             Requests.Add(request);
             return ValueTask.FromResult(_result);
         }
+    }
+
+    private sealed class EnabledTenantAccessStore : IFolderTenantAccessProjectionStore
+    {
+        public Task<FolderTenantAccessProjection?> GetAsync(string tenantId, CancellationToken cancellationToken = default)
+            => Task.FromResult<FolderTenantAccessProjection?>(new FolderTenantAccessProjection
+            {
+                TenantId = tenantId,
+                Enabled = true,
+                Principals = { ["principal-a"] = new FolderTenantPrincipalEvidence("principal-a", "owner") },
+            });
+
+        public Task SaveAsync(FolderTenantAccessProjection projection, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+    }
+
+    private sealed class MissingTenantAccessStore : IFolderTenantAccessProjectionStore
+    {
+        public Task<FolderTenantAccessProjection?> GetAsync(string tenantId, CancellationToken cancellationToken = default)
+            => Task.FromResult<FolderTenantAccessProjection?>(null);
+
+        public Task SaveAsync(FolderTenantAccessProjection projection, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
     }
 }

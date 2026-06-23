@@ -1,9 +1,10 @@
-using System.Collections.Concurrent;
 using System.Text.Json;
 
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
+
+using Microsoft.Extensions.Logging;
 
 namespace Hexalith.Folders.Workers.SemanticIndexing;
 
@@ -19,13 +20,16 @@ public sealed class FoldersSemanticIndexingEventProcessor
         .GroupBy(static pair => pair.Key, StringComparer.Ordinal)
         .ToDictionary(static group => group.Key, static group => group.First().Value, StringComparer.Ordinal);
 
-    private readonly ConcurrentDictionary<string, byte> _processedMessageIds = new(StringComparer.Ordinal);
     private readonly SemanticIndexingProcessManager _processManager;
+    private readonly ILogger<FoldersSemanticIndexingEventProcessor>? _logger;
 
-    public FoldersSemanticIndexingEventProcessor(SemanticIndexingProcessManager processManager)
+    public FoldersSemanticIndexingEventProcessor(
+        SemanticIndexingProcessManager processManager,
+        ILogger<FoldersSemanticIndexingEventProcessor>? logger = null)
     {
         ArgumentNullException.ThrowIfNull(processManager);
         _processManager = processManager;
+        _logger = logger;
     }
 
     public async Task<FoldersSemanticIndexingEventProcessingResult> ProcessAsync(
@@ -35,11 +39,10 @@ public sealed class FoldersSemanticIndexingEventProcessor
         ArgumentNullException.ThrowIfNull(envelope);
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (!_processedMessageIds.TryAdd(envelope.MessageId, 0))
-        {
-            return FoldersSemanticIndexingEventProcessingResult.Duplicate;
-        }
-
+        // Cross-delivery idempotency is owned by the semantic-indexing bridge projection (stale-result protection):
+        // a redelivered event re-applies to the same bridge entry, whose fingerprint short-circuits re-indexing, so a
+        // non-stale entry is never sent to Memories twice. No in-process dedup is kept here — a per-request set would
+        // reset on every Dapr delivery (the processor is transient) and only give a false sense of idempotency.
         if (!s_eventTypes.TryGetValue(envelope.EventTypeName, out Type? eventType))
         {
             return FoldersSemanticIndexingEventProcessingResult.SkippedUnknownEventType;
@@ -50,7 +53,7 @@ public sealed class FoldersSemanticIndexingEventProcessor
             object? deserialized = JsonSerializer.Deserialize(envelope.Payload, eventType);
             if (deserialized is not IFolderEvent folderEvent)
             {
-                _processedMessageIds.TryRemove(envelope.MessageId, out _);
+                LogUnprocessablePayload(envelope);
                 return FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload;
             }
 
@@ -61,20 +64,26 @@ public sealed class FoldersSemanticIndexingEventProcessor
         }
         catch (JsonException)
         {
-            _processedMessageIds.TryRemove(envelope.MessageId, out _);
+            LogUnprocessablePayload(envelope);
             return FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload;
         }
         catch (NotSupportedException)
         {
-            _processedMessageIds.TryRemove(envelope.MessageId, out _);
+            LogUnprocessablePayload(envelope);
             return FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload;
         }
-        catch (Exception) when (!cancellationToken.IsCancellationRequested)
-        {
-            _processedMessageIds.TryRemove(envelope.MessageId, out _);
-            throw;
-        }
     }
+
+    // A payload that cannot be deserialized or is not an IFolderEvent is a deterministic, permanent failure of THIS
+    // message. Record it as a metadata-only warning (no payload, no content) so the dropped event is observable; the
+    // endpoint returns a success status for it so Dapr does not redeliver the same poison message forever.
+    private void LogUnprocessablePayload(EventStoreDomainEventEnvelope envelope)
+        => _logger?.LogWarning(
+            "Dropping unprocessable folders semantic-indexing event (metadata-only): MessageId={MessageId}, TenantId={TenantId}, EventType={EventType}, Sequence={Sequence}.",
+            envelope.MessageId,
+            envelope.TenantId,
+            envelope.EventTypeName,
+            envelope.SequenceNumber);
 
     private static Type[] SupportedEventTypes()
         =>
@@ -89,7 +98,6 @@ public sealed class FoldersSemanticIndexingEventProcessor
 public enum FoldersSemanticIndexingEventProcessingResult
 {
     Processed,
-    Duplicate,
     SkippedUnknownEventType,
     FailedInvalidPayload,
 }

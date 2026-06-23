@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -127,7 +126,22 @@ public sealed class SemanticIndexingProcessManager
                 cancellationToken).ConfigureAwait(false);
         }
 
-        SemanticIndexingRequest request = BuildRequest(entry, policy, materialized);
+        // A stored source URI that cannot be parsed into a stable source identity is a deterministic data problem,
+        // not a transient outage. Record it as reconciliation_required rather than throwing past the event
+        // processor: an unguarded throw here would surface as a 500 and Dapr would redeliver the same poison entry.
+        SemanticIndexingSourceIdentity? source = TrySourceFrom(entry.Identity.SourceUri);
+        if (source is null)
+        {
+            return await RecordAsync(
+                entry,
+                SemanticIndexingBridgeStatus.ReconciliationRequired,
+                "source_identity_invalid",
+                retryable: false,
+                null,
+                cancellationToken).ConfigureAwait(false);
+        }
+
+        SemanticIndexingRequest request = BuildRequest(entry, policy, materialized, source);
         SemanticIndexingResult result = await _semanticIndexingPort
             .IndexFileVersionAsync(request, cancellationToken)
             .ConfigureAwait(false);
@@ -144,10 +158,9 @@ public sealed class SemanticIndexingProcessManager
     private static SemanticIndexingRequest BuildRequest(
         SemanticIndexingBridgeEntry entry,
         SemanticIndexingPolicyEvaluationResult policy,
-        SemanticIndexingContentMaterializationResult materialized)
-    {
-        SemanticIndexingSourceIdentity source = SourceFrom(entry.Identity.SourceUri);
-        return new SemanticIndexingRequest(
+        SemanticIndexingContentMaterializationResult materialized,
+        SemanticIndexingSourceIdentity source)
+        => new(
             entry.Identity.ManagedTenantId,
             entry.Identity.OrganizationId,
             entry.Identity.FolderId,
@@ -165,9 +178,7 @@ public sealed class SemanticIndexingProcessManager
                 policy.SensitivityClassification,
                 policy.PathPolicyOutcome),
             entry.CorrelationId,
-            entry.TaskId,
-            DeriveIdempotencyKey(entry.Identity));
-    }
+            entry.TaskId);
 
     private Task<SemanticIndexingBridgeEntry?> RecordAsync(
         SemanticIndexingBridgeEntry entry,
@@ -212,28 +223,25 @@ public sealed class SemanticIndexingProcessManager
             || string.Equals(contentType, "application/yaml", StringComparison.OrdinalIgnoreCase)
             || string.Equals(contentType, "application/markdown", StringComparison.OrdinalIgnoreCase);
 
-    private static SemanticIndexingSourceIdentity SourceFrom(string sourceUri)
+    private static SemanticIndexingSourceIdentity? TrySourceFrom(string sourceUri)
     {
         if (!Uri.TryCreate(sourceUri, UriKind.Absolute, out Uri? uri))
         {
-            throw new ArgumentException("Semantic indexing source URI must be absolute.", nameof(sourceUri));
+            return null;
         }
 
-        return new SemanticIndexingSourceIdentity(
-            uri.Scheme,
-            uri.Authority,
-            uri.AbsolutePath.TrimStart('/'));
+        try
+        {
+            return new SemanticIndexingSourceIdentity(
+                uri.Scheme,
+                uri.Authority,
+                uri.AbsolutePath.TrimStart('/'));
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
     }
-
-    private static string DeriveIdempotencyKey(SemanticIndexingFileVersionIdentity identity)
-        => "semantic-indexing-" + Hash(
-            identity.ManagedTenantId,
-            identity.OrganizationId,
-            identity.FolderId,
-            identity.WorkspaceId,
-            identity.FileVersionId,
-            identity.ContentHashReference ?? "no-content-hash",
-            identity.SourceUri);
 
     private static string DeriveResultFingerprint(
         SemanticIndexingFileVersionIdentity identity,
@@ -254,6 +262,6 @@ public sealed class SemanticIndexingProcessManager
     {
         string material = string.Join('\u001f', parts.Select(static part => part.Normalize(NormalizationForm.FormC)));
         byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(material));
-        return Convert.ToHexString(hash).ToLower(CultureInfo.InvariantCulture);
+        return Convert.ToHexString(hash).ToLowerInvariant();
     }
 }

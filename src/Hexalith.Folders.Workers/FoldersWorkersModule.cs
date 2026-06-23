@@ -65,6 +65,10 @@ public static class FoldersWorkersModule
 
         services.AddDaprClient();
         services.AddFoldersSemanticIndexingBridge();
+
+        // The fail-closed policy evaluator gates indexing on tenant-access authority, so the tenant-access
+        // projection store must be resolvable even when this registration is used standalone.
+        services.AddFoldersTenantAccess();
         services.AddEventStoreReadModelStore();
         services.RemoveAll<ISemanticIndexingBridgeReadModel>();
         services.RemoveAll<ISemanticIndexingBridgeWriter>();
@@ -119,12 +123,13 @@ public static class FoldersWorkersModule
             return result switch
             {
                 FoldersSemanticIndexingEventProcessingResult.Processed => Results.Ok(),
-                FoldersSemanticIndexingEventProcessingResult.Duplicate => Results.Ok(),
                 FoldersSemanticIndexingEventProcessingResult.SkippedUnknownEventType => Results.Ok(),
-                FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload => Results.Problem(
-                    title: "Folders semantic-indexing event processing failed.",
-                    detail: "The folder event payload could not be deserialized.",
-                    statusCode: StatusCodes.Status500InternalServerError),
+
+                // A payload that cannot be deserialized or is not an IFolderEvent is a deterministic, permanent
+                // failure of this message. Return a success status so Dapr drops it instead of redelivering the same
+                // poison message forever; the drop is recorded as a metadata-only warning by the processor. Genuinely
+                // transient failures still surface as unhandled exceptions -> 500 -> Dapr retry / dead-letter routing.
+                FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload => Results.Ok(),
                 _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
             };
         }).WithTopic(

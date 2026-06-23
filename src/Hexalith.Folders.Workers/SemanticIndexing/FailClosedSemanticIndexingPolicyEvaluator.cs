@@ -1,4 +1,5 @@
 using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Projections.TenantAccess;
 
 namespace Hexalith.Folders.Workers.SemanticIndexing;
 
@@ -6,61 +7,93 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
 {
     private const int MaxPathPolicyClassLength = 80;
 
-    public ValueTask<SemanticIndexingPolicyEvaluationResult> EvaluateAsync(
+    private readonly IFolderTenantAccessProjectionStore _tenantAccessStore;
+
+    public FailClosedSemanticIndexingPolicyEvaluator(IFolderTenantAccessProjectionStore tenantAccessStore)
+    {
+        ArgumentNullException.ThrowIfNull(tenantAccessStore);
+        _tenantAccessStore = tenantAccessStore;
+    }
+
+    public async ValueTask<SemanticIndexingPolicyEvaluationResult> EvaluateAsync(
         SemanticIndexingBridgeEntry entry,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(entry);
         cancellationToken.ThrowIfCancellationRequested();
 
+        // Gate 1 (AC3 order): tenant-access authority. Indexing authority comes from the Folders tenant-access
+        // projection, not the client-carried event evidence. Fail closed when the tenant is unknown to the worker,
+        // disabled, has no authorized principals, or its projection is in a replay-conflict / malformed-evidence
+        // state. Per-folder ACL freshness is deferred: the bridge entry carries no principal/action to key an ACL
+        // lookup, so full per-folder-ACL gating requires a SemanticIndexingBridgeEntry schema extension (tracked as
+        // a follow-up story).
+        FolderTenantAccessProjection? tenantAccess = await _tenantAccessStore
+            .GetAsync(entry.Identity.ManagedTenantId, cancellationToken)
+            .ConfigureAwait(false);
+        if (tenantAccess is null
+            || !tenantAccess.Enabled
+            || tenantAccess.Principals.Count == 0
+            || tenantAccess.ReplayConflict
+            || tenantAccess.MalformedEvidence)
+        {
+            return SemanticIndexingPolicyEvaluationResult.Failed("tenant_access_unavailable", retryable: true);
+        }
+
+        // Gate 2 (AC3 order): path policy evidence carried on the durable accepted event.
         if (string.IsNullOrWhiteSpace(entry.Evidence.PathPolicyClass))
         {
-            return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Failed(
+            return SemanticIndexingPolicyEvaluationResult.Failed(
                 "authorization_evidence_unavailable",
-                retryable: true));
+                retryable: true);
         }
 
         string pathPolicyClass = entry.Evidence.PathPolicyClass.Trim();
         if (!IsValidPathPolicyClass(pathPolicyClass))
         {
-            return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Skipped(
+            return SemanticIndexingPolicyEvaluationResult.Skipped(
                 "path_policy_denied",
-                retryable: false));
+                retryable: false);
         }
 
+        // Gate 3 (AC3 order): sensitivity classification.
         if (IsRedactedSensitivity(pathPolicyClass))
         {
-            return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Skipped(
+            return SemanticIndexingPolicyEvaluationResult.Skipped(
                 "sensitivity_redacted",
-                retryable: false));
+                retryable: false);
         }
 
-        long? expectedLength = entry.Evidence.ByteLength ?? entry.Evidence.ObservedByteLength;
-        if (expectedLength is null || string.IsNullOrWhiteSpace(entry.Evidence.MediaType))
+        // Gate 4 (AC3 order): size / type limits. Require at least one length signal (declared or observed) plus a
+        // media type before sizing.
+        if ((entry.Evidence.ByteLength ?? entry.Evidence.ObservedByteLength) is null
+            || string.IsNullOrWhiteSpace(entry.Evidence.MediaType))
         {
-            return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Failed(
+            return SemanticIndexingPolicyEvaluationResult.Failed(
                 "content_descriptor_unavailable",
-                retryable: true));
+                retryable: true);
         }
 
-        if (expectedLength > FoldersSemanticIndexingDefaults.MaxInlineIngestionBytes
+        // Reject when EITHER the declared or the observed length exceeds the inline cap; a null field is ignored
+        // because a lifted `null > cap` comparison is false.
+        if (entry.Evidence.ByteLength > FoldersSemanticIndexingDefaults.MaxInlineIngestionBytes
             || entry.Evidence.ObservedByteLength > FoldersSemanticIndexingDefaults.MaxInlineIngestionBytes)
         {
-            return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Skipped(
+            return SemanticIndexingPolicyEvaluationResult.Skipped(
                 "content_too_large",
-                retryable: false));
+                retryable: false);
         }
 
         if (!IsSupportedInlineContentType(entry.Evidence.MediaType))
         {
-            return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Skipped(
+            return SemanticIndexingPolicyEvaluationResult.Skipped(
                 "content_type_unsupported",
-                retryable: false));
+                retryable: false);
         }
 
-        return ValueTask.FromResult(SemanticIndexingPolicyEvaluationResult.Allowed(
+        return SemanticIndexingPolicyEvaluationResult.Allowed(
             "tenant_sensitive",
-            "accepted_mutation_authorized"));
+            "accepted_mutation_authorized");
     }
 
     private static bool IsValidPathPolicyClass(string pathPolicyClass)

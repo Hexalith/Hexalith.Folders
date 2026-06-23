@@ -128,7 +128,7 @@ public sealed class SemanticIndexingEndpointE2ETests
     }
 
     [Fact]
-    public async Task SemanticIndexingSubscriptionEndpointShouldRejectInvalidPayloadWithoutEchoingContent()
+    public async Task SemanticIndexingSubscriptionEndpointShouldDropInvalidPayloadWithoutEchoingContentOrRedelivering()
     {
         WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);
         try
@@ -152,7 +152,9 @@ public sealed class SemanticIndexingEndpointE2ETests
                 .ConfigureAwait(true);
             string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            // A permanently-unprocessable payload is dropped with a success status so Dapr does not redeliver the same
+            // poison message forever; the drop is recorded as a metadata-only warning, never echoing payload content.
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
             body.ShouldNotContain("sentinel-secret-value", Case.Sensitive);
             host.Policy.Evaluated.ShouldBeEmpty();
             host.Materializer.Requests.ShouldBeEmpty();
