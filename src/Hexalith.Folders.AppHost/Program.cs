@@ -1,5 +1,6 @@
 using Hexalith.EventStore.Aspire;
 using Hexalith.Folders.Aspire;
+using Hexalith.Memories.Aspire;
 using Hexalith.Tenants.Aspire;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
@@ -56,6 +57,23 @@ _ = builder.AddHexalithFolders(
     foldersWorkers,
     foldersUi,
     accessControlConfigPath);
+
+// Memories search-index server (Story 9.2): hosted standalone on the shared EventStore topology, reusing
+// the same statestore/pubsub Dapr components. The reusable Memories hosting recipe (memories-vectors Redis
+// Stack store + memories-graphs FalkorDB store + secret store + conversation/LLM component + the memories
+// project and its Dapr sidecar) lives in Hexalith.Memories.Aspire; this AppHost owns only the component
+// YAML paths. Source->index routing (9.3) and the worker-side producer / folders->memories invoke
+// authorization (Epic 10) are intentionally deferred, so the memories resource is left unconsumed here and
+// is not JWT-wired (parity with the canonical Tenants AppHost's Memories composition).
+string memoriesSecretStorePath = ResolveDaprConfigPath(builder.AppHostDirectory, "secretstore.memories.yaml");
+string memoriesLlmConfigPath = ResolveDaprConfigPath(builder.AppHostDirectory, "llm.memories.yaml");
+
+_ = builder.AddHexalithMemoriesSearchIndexServer(
+    eventStoreResources.StateStore,
+    eventStoreResources.PubSub,
+    memoriesSecretStorePath,
+    memoriesLlmConfigPath,
+    serverName: FoldersAspireModule.MemoriesAppId);
 
 if (keycloak is not null && realmUrl is not null)
 {

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 
 using Hexalith.Folders.Aspire;
 
@@ -23,11 +24,15 @@ public sealed class AppHostPlatformCompositionConformanceTests
     private const string StateStorePath = $"{DaprComponentsDir}/statestore.yaml";
     private const string PubSubPath = $"{DaprComponentsDir}/pubsub.yaml";
     private const string ResiliencyPath = $"{DaprComponentsDir}/resiliency.yaml";
+    private const string MemoriesSecretStorePath = $"{DaprComponentsDir}/secretstore.memories.yaml";
+    private const string MemoriesLlmPath = $"{DaprComponentsDir}/llm.memories.yaml";
+    private const string MemoriesSecretsJsonPath = $"{DaprComponentsDir}/secrets.json";
     private const string AppHostCsprojPath = "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj";
     private const string AppHostProgramPath = "src/Hexalith.Folders.AppHost/Program.cs";
 
     // AC3: the local-dev Dapr components must be scoped to exactly the Folders topology app-ids — no
-    // eventstore-admin (gateway-only), no memories (deferred to 9.2), no sample.
+    // eventstore-admin (gateway-only), no sample. Story 9.2 adds the memories search-index server, which
+    // reuses the shared statestore/pubsub, so memories is now an expected scope (not forbidden).
     private static readonly string[] ExpectedFoldersScopes =
     [
         FoldersAspireModule.EventStoreAppId,
@@ -35,9 +40,10 @@ public sealed class AppHostPlatformCompositionConformanceTests
         FoldersAspireModule.FoldersAppId,
         FoldersAspireModule.FoldersWorkersAppId,
         FoldersAspireModule.FoldersUiAppId,
+        FoldersAspireModule.MemoriesAppId,
     ];
 
-    private static readonly string[] ForbiddenScopes = ["eventstore-admin", "eventstore-admin-ui", "memories", "sample"];
+    private static readonly string[] ForbiddenScopes = ["eventstore-admin", "eventstore-admin-ui", "sample"];
 
     [Fact]
     public void LocalStateStoreComponentShouldPreserveRedisActorSemanticsAndFoldersScopes()
@@ -107,11 +113,17 @@ public sealed class AppHostPlatformCompositionConformanceTests
         // AC2: the AppHost references the .Aspire hosting-extension libraries (IsAspireProjectResource="false").
         csproj.ShouldContain(@"Hexalith.EventStore.Aspire\Hexalith.EventStore.Aspire.csproj");
         csproj.ShouldContain(@"Hexalith.Tenants.Aspire\Hexalith.Tenants.Aspire.csproj");
+        // Story 9.2 / AC2: the Memories search-index helper is referenced the same way.
+        csproj.ShouldContain(@"Hexalith.Memories.Aspire\Hexalith.Memories.Aspire.csproj");
 
         // AC2: the two direct EventStore/Tenants runtime project references are removed (the helpers add the
         // runtime projects themselves via SuppressBuild project metadata).
         csproj.ShouldNotContain(@"Hexalith.EventStore\Hexalith.EventStore.csproj");
         csproj.ShouldNotContain(@"Hexalith.Tenants\Hexalith.Tenants.csproj");
+        // Story 9.2 / AC2: no Folders-owned Memories runtime/container project — the cross-repo memories project
+        // is added by the helper via SuppressBuild project metadata, not referenced here.
+        csproj.ShouldNotContain(@"Hexalith.Memories.Server\Hexalith.Memories.Server.csproj");
+        csproj.ShouldNotContain(@"Hexalith.Memories\Hexalith.Memories.csproj");
     }
 
     [Fact]
@@ -124,6 +136,97 @@ public sealed class AppHostPlatformCompositionConformanceTests
         program.ShouldNotContain("Projects.Hexalith_EventStore");
         program.ShouldNotContain("Projects.Hexalith_Tenants");
     }
+
+    [Fact]
+    public void AppHostProgramShouldComposeMemoriesStandaloneWithoutDeferredRoutingOrGeneratedMetadata()
+    {
+        string program = File.ReadAllText(RepositoryPath(AppHostProgramPath), Encoding.UTF8);
+
+        // Story 9.2 / AC1: the Memories search-index server IS composed via the platform helper, reusing the
+        // shared EventStore state store + pub/sub component instances.
+        program.ShouldContain("AddHexalithMemoriesSearchIndexServer");
+        program.ShouldContain("eventStoreResources.StateStore");
+        program.ShouldContain("eventStoreResources.PubSub");
+
+        // AC2: the cross-repo memories runtime project is added by the helper via SuppressBuild project metadata,
+        // so Program.cs uses no generated Projects.Hexalith_Memories* type.
+        program.ShouldNotContain("Projects.Hexalith_Memories");
+
+        // AC1: source->index routing env vars are deferred to Story 9.3 and must NOT be wired here. The canonical
+        // Tenants AppHost sets EventStoreIntegration__Routing__* on its memories server; the Folders 9.2 AppHost
+        // omits it (and the worker-side producer / folders->memories invoke authorization are Epic 10).
+        program.ShouldNotContain("EventStoreIntegration__Routing");
+    }
+
+    [Fact]
+    public void MemoriesSecretStoreComponentYamlShouldBeUnscopedLocalFileSecretStore()
+    {
+        YamlMappingNode component = LoadSingleYamlDocument(MemoriesSecretStorePath);
+
+        component.GetScalar("kind").ShouldBe("Component");
+        // Named "secretstore" (the name the Memories server resolves); the AppHost registers it under the unique
+        // resource id "memories-secretstore" so it does not collide with the shared statestore/pubsub.
+        component.GetMapping("metadata").GetScalar("name").ShouldBe("secretstore");
+
+        YamlMappingNode spec = component.GetMapping("spec");
+        spec.GetScalar("type").ShouldBe("secretstores.local.file");
+        spec.GetScalar("version").ShouldBe("v1");
+
+        // AC3 + Critical Note 7: the secret store reads the checked-in secrets.json so the local.file component
+        // initializes at boot.
+        IReadOnlyDictionary<string, string> metadata = ParseComponentMetadata(spec.GetSequence("metadata"));
+        metadata["secretsFile"].ShouldBe("DaprComponents/secrets.json");
+
+        // AC3: the memories-secretstore/memories-llm components stay unscoped (global), matching the Tenants
+        // AppHost — a scopes: field would wrongly restrict a global component to an app-id allow-list.
+        AssertUnscoped(component, MemoriesSecretStorePath);
+    }
+
+    [Fact]
+    public void MemoriesLlmComponentYamlShouldBeUnscopedEchoConversationComponent()
+    {
+        YamlMappingNode component = LoadSingleYamlDocument(MemoriesLlmPath);
+
+        component.GetScalar("kind").ShouldBe("Component");
+        component.GetMapping("metadata").GetScalar("name").ShouldBe("llm");
+
+        YamlMappingNode spec = component.GetMapping("spec");
+        // Dev-only echo conversation component (no real LLM, no cost); production swaps spec.type for a real provider.
+        spec.GetScalar("type").ShouldBe("conversation.echo");
+        spec.GetScalar("version").ShouldBe("v1");
+
+        AssertUnscoped(component, MemoriesLlmPath);
+    }
+
+    [Fact]
+    public void MemoriesLocalSecretsFileShouldExistAsEmptyJsonObject()
+    {
+        // Critical Note 7: secretstore.memories.yaml references secretsFile "DaprComponents/secrets.json"; the
+        // secretstores.local.file component fails to initialize at boot if it is missing. It is an empty object.
+        string path = RepositoryPath(MemoriesSecretsJsonPath);
+        File.Exists(path).ShouldBeTrue($"{MemoriesSecretsJsonPath} must exist for the local.file secret store to boot.");
+
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path, Encoding.UTF8));
+        document.RootElement.ValueKind.ShouldBe(JsonValueKind.Object);
+        document.RootElement.EnumerateObject().Any().ShouldBeFalse($"{MemoriesSecretsJsonPath} must be an empty object ({{}}).");
+    }
+
+    [Fact]
+    public void NewMemoriesComponentArtifactsShouldUseLfLineEndings()
+    {
+        // AC3 + project-context LF rule: the new Dapr YAML/JSON artifacts use LF (the .editorconfig pins YAML /
+        // container artifacts to LF). A stray CR would break the LF-normalized format gate and container tooling.
+        foreach (string path in new[] { MemoriesSecretStorePath, MemoriesLlmPath, MemoriesSecretsJsonPath })
+        {
+            File.ReadAllText(RepositoryPath(path), Encoding.UTF8)
+                .Contains('\r', StringComparison.Ordinal)
+                .ShouldBeFalse($"{path} must use LF line endings (no CR).");
+        }
+    }
+
+    private static void AssertUnscoped(YamlMappingNode component, string path)
+        => component.Children.ContainsKey(new YamlScalarNode("scopes"))
+            .ShouldBeFalse($"{path} must stay unscoped (global) — the memories secret-store/llm components carry no scopes: field.");
 
     private static void AssertFoldersScopes(YamlMappingNode component)
     {

@@ -12,9 +12,9 @@ spec:
     - name: protectedTopics
       value: system.tenants.events
     - name: publishingScopes
-      value: tenants=system.tenants.events;eventstore=;folders=;folders-workers=;folders-ui=
+      value: tenants=system.tenants.events;eventstore=;folders=;folders-workers=;folders-ui=;memories=
     - name: subscriptionScopes
-      value: folders=system.tenants.events;folders-workers=system.tenants.events;eventstore=;tenants=;folders-ui=
+      value: folders=system.tenants.events;folders-workers=system.tenants.events;eventstore=;tenants=;folders-ui=;memories=
     # Dead-letter topics per domain (deadletter.{domain}.events). Story 7.12 declares the dead-letter-depth
     # monitored-snapshot + alert-rule intent here; runtime per-subscription dead-letter routing and broker
     # endpoints are supplied by deployment tooling outside this repository.

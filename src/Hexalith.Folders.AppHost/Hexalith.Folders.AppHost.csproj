@@ -16,6 +16,7 @@
          projects are added by the helpers via SuppressBuild project metadata (built independently). -->
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Aspire\Hexalith.EventStore.Aspire.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants.Aspire\Hexalith.Tenants.Aspire.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Aspire\Hexalith.Memories.Aspire.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Keycloak" />

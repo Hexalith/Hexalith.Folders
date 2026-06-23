@@ -5,6 +5,7 @@ using CommunityToolkit.Aspire.Hosting.Dapr;
 
 using Hexalith.EventStore.Aspire;
 using Hexalith.Folders.Aspire;
+using Hexalith.Memories.Aspire;
 
 using Shouldly;
 using Xunit;
@@ -23,6 +24,7 @@ public sealed class AspireTopologyTests
         FoldersAspireModule.FoldersAppId.ShouldBe("folders");
         FoldersAspireModule.FoldersWorkersAppId.ShouldBe("folders-workers");
         FoldersAspireModule.FoldersUiAppId.ShouldBe("folders-ui");
+        FoldersAspireModule.MemoriesAppId.ShouldBe("memories");
         FoldersAspireModule.StateStoreComponentName.ShouldBe("statestore");
         FoldersAspireModule.PubSubComponentName.ShouldBe("pubsub");
     }
@@ -150,6 +152,163 @@ public sealed class AspireTopologyTests
     }
 
     [Fact]
+    public void AddHexalithMemoriesSearchIndexServerShouldRegisterMemoriesSidecarComponentsAndContainers()
+    {
+        // Story 9.2 / AC4-AC5: composing the platform Memories search-index helper over the shared
+        // statestore/pubsub adds exactly the memories sidecar (AppId "memories"), the memories-secretstore /
+        // memories-llm Dapr components, and the memories-vectors (Redis Stack) / memories-graphs (FalkorDB)
+        // containers. The helper references the cross-repo memories project with SuppressBuild, so this
+        // registration-only inspection composes the topology without building the Memories server.
+        IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder();
+        FoldersTopology topology = BuildGatewayOnlyComposition(builder);
+
+        string memoriesSecretStorePath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/secretstore.memories.yaml");
+        string memoriesLlmConfigPath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/llm.memories.yaml");
+        File.Exists(memoriesSecretStorePath).ShouldBeTrue($"Expected the checked-in Memories secret-store YAML at {memoriesSecretStorePath}.");
+        File.Exists(memoriesLlmConfigPath).ShouldBeTrue($"Expected the checked-in Memories LLM YAML at {memoriesLlmConfigPath}.");
+
+        HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
+            topology.EventStore.StateStore,
+            topology.EventStore.PubSub,
+            memoriesSecretStorePath,
+            memoriesLlmConfigPath,
+            serverName: FoldersAspireModule.MemoriesAppId);
+
+        // The memories project carries a Dapr sidecar whose AppId is exactly "memories".
+        string[] sidecarAppIds = [.. builder.Resources
+            .OfType<ProjectResource>()
+            .SelectMany(static resource => resource.Annotations.OfType<DaprSidecarAnnotation>())
+            .SelectMany(static sidecar => sidecar.Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>())
+            .Select(static options => options.Options.AppId)
+            .Where(static appId => appId is not null)
+            .Select(static appId => appId!)];
+        sidecarAppIds.ShouldContain(FoldersAspireModule.MemoriesAppId);
+
+        // The memories-secretstore / memories-llm Dapr components are registered by the helper.
+        string[] componentNames = [.. builder.Resources.OfType<IDaprComponentResource>().Select(static c => c.Name)];
+        componentNames.ShouldContain("memories-secretstore");
+        componentNames.ShouldContain("memories-llm");
+        memories.SecretStore.Resource.Name.ShouldBe("memories-secretstore");
+        memories.Llm.Resource.Name.ShouldBe("memories-llm");
+
+        // The memories-vectors (Redis Stack) / memories-graphs (FalkorDB) containers are registered by the helper.
+        string[] containerNames = [.. builder.Resources.OfType<ContainerResource>().Select(static c => c.Name)];
+        containerNames.ShouldContain("memories-vectors");
+        containerNames.ShouldContain("memories-graphs");
+
+        // AC4: the memories sidecar binds the platform-stable ports (HTTP 3502 / gRPC 50002) — distinct from the
+        // EventStore platform's 3501 — so the helper's port contract is pinned, not assumed.
+        DaprSidecarOptions memoriesSidecarOptions = builder.Resources
+            .OfType<ProjectResource>()
+            .SelectMany(static resource => resource.Annotations.OfType<DaprSidecarAnnotation>())
+            .SelectMany(static sidecar => sidecar.Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>())
+            .Select(static options => options.Options)
+            .Single(options => string.Equals(options.AppId, FoldersAspireModule.MemoriesAppId, StringComparison.Ordinal));
+        memoriesSidecarOptions.DaprHttpPort.ShouldBe(3502);
+        memoriesSidecarOptions.DaprGrpcPort.ShouldBe(50002);
+
+        // AC4: the helper-owned containers carry the expected upstream images (redis/redis-stack for the vector
+        // store, falkordb/falkordb for the graph store).
+        ContainerImage("memories-vectors", builder).ShouldBe("redis/redis-stack");
+        ContainerImage("memories-graphs", builder).ShouldBe("falkordb/falkordb");
+    }
+
+    [Fact]
+    public void AddHexalithMemoriesSearchIndexServerShouldReuseSharedStateStoreAndPubSubWithoutCreatingCopies()
+    {
+        // Story 9.2 / AC1: the Memories server reuses the SAME shared statestore/pubsub component instances the
+        // platform EventStore composition created — it must create no Folders-local copies. Composing the helper
+        // adds exactly the two memories-owned components (memories-secretstore / memories-llm) and leaves the
+        // single shared statestore + pubsub instances untouched.
+        IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder();
+        FoldersTopology topology = BuildGatewayOnlyComposition(builder);
+
+        string memoriesSecretStorePath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/secretstore.memories.yaml");
+        string memoriesLlmConfigPath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/llm.memories.yaml");
+
+        int stateStoreBefore = CountComponentsNamed(builder, FoldersAspireModule.StateStoreComponentName);
+        int pubSubBefore = CountComponentsNamed(builder, FoldersAspireModule.PubSubComponentName);
+        int componentsBefore = builder.Resources.OfType<IDaprComponentResource>().Count();
+
+        // The shared statestore/pubsub must already be single instances before Memories is composed.
+        stateStoreBefore.ShouldBe(1);
+        pubSubBefore.ShouldBe(1);
+
+        HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
+            topology.EventStore.StateStore,
+            topology.EventStore.PubSub,
+            memoriesSecretStorePath,
+            memoriesLlmConfigPath,
+            serverName: FoldersAspireModule.MemoriesAppId);
+
+        // No second statestore/pubsub component is created — the shared singletons are reused verbatim.
+        CountComponentsNamed(builder, FoldersAspireModule.StateStoreComponentName).ShouldBe(stateStoreBefore);
+        CountComponentsNamed(builder, FoldersAspireModule.PubSubComponentName).ShouldBe(pubSubBefore);
+
+        // The only new Dapr components are the two memories-owned ones.
+        string[] componentNames = [.. builder.Resources.OfType<IDaprComponentResource>().Select(static c => c.Name)];
+        componentNames.Length.ShouldBe(componentsBefore + 2);
+        componentNames.ShouldContain("memories-secretstore");
+        componentNames.ShouldContain("memories-llm");
+        memories.SecretStore.Resource.Name.ShouldBe("memories-secretstore");
+        memories.Llm.Resource.Name.ShouldBe("memories-llm");
+    }
+
+    [Fact]
+    public void ComposingMemoriesAlongsideFoldersShouldRemainAdditiveWithStandaloneMemoriesSidecar()
+    {
+        // Story 9.2 / AC1+AC4: hosting memories is purely additive. Composed alongside the full Folders topology
+        // it adds the standalone "memories" sidecar without perturbing the five production sidecars and without
+        // introducing any eventstore-admin resource (the gateway-only invariant is preserved). memories is hosted
+        // standalone — it is the sixth sidecar, not a reference target of folders/folders-workers/folders-ui
+        // (folders -> memories invoke wiring is deferred to Epic 10).
+        IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder();
+        FoldersTopology topology = BuildGatewayOnlyComposition(builder);
+
+        _ = builder.AddHexalithFolders(
+            topology.EventStore.StateStore,
+            topology.EventStore.PubSub,
+            topology.EventStore.EventStore,
+            topology.Tenants,
+            topology.Folders,
+            topology.FoldersWorkers,
+            topology.FoldersUi,
+            DaprConfigPath);
+
+        string memoriesSecretStorePath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/secretstore.memories.yaml");
+        string memoriesLlmConfigPath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/llm.memories.yaml");
+
+        _ = builder.AddHexalithMemoriesSearchIndexServer(
+            topology.EventStore.StateStore,
+            topology.EventStore.PubSub,
+            memoriesSecretStorePath,
+            memoriesLlmConfigPath,
+            serverName: FoldersAspireModule.MemoriesAppId);
+
+        string[] sidecarAppIds = [.. builder.Resources
+            .OfType<ProjectResource>()
+            .SelectMany(static resource => resource.Annotations.OfType<DaprSidecarAnnotation>())
+            .SelectMany(static sidecar => sidecar.Sidecar.Annotations.OfType<DaprSidecarOptionsAnnotation>())
+            .Select(static options => options.Options.AppId)
+            .Where(static appId => appId is not null)
+            .Select(static appId => appId!)
+            .Order(StringComparer.Ordinal)];
+
+        // The five production sidecars are preserved verbatim; memories is added as the sixth, standalone sidecar.
+        sidecarAppIds.ShouldBe(
+        [
+            FoldersAspireModule.EventStoreAppId,
+            FoldersAspireModule.FoldersAppId,
+            FoldersAspireModule.FoldersUiAppId,
+            FoldersAspireModule.FoldersWorkersAppId,
+            FoldersAspireModule.MemoriesAppId,
+            FoldersAspireModule.TenantsAppId,
+        ]);
+        sidecarAppIds.ShouldNotContain("eventstore-admin");
+        sidecarAppIds.ShouldNotContain("eventstore-admin-ui");
+    }
+
+    [Fact]
     public void AddHexalithEventStoreWithCheckedInYamlPathsShouldSourceReusableStateStoreAndPubSubComponents()
     {
         // AC3 production wiring: the AppHost passes the checked-in DaprComponents YAML files to the platform
@@ -234,6 +393,17 @@ public sealed class AspireTopologyTests
         _ = tenants.AddEventStoreDomainModule(eventStore, FoldersAspireModule.TenantsAppId, DaprConfigPath);
 
         return new FoldersTopology(eventStore, tenants, folders, foldersWorkers, foldersUi);
+    }
+
+    private static int CountComponentsNamed(IDistributedApplicationBuilder builder, string name)
+        => builder.Resources.OfType<IDaprComponentResource>().Count(c => string.Equals(c.Name, name, StringComparison.Ordinal));
+
+    private static string ContainerImage(string containerName, IDistributedApplicationBuilder builder)
+    {
+        ContainerResource container = builder.Resources
+            .OfType<ContainerResource>()
+            .Single(c => string.Equals(c.Name, containerName, StringComparison.Ordinal));
+        return container.Annotations.OfType<ContainerImageAnnotation>().Single().Image;
     }
 
     private static void AssertSidecarOptions(ProjectResource resource, string expectedAppId, string expectedConfigPath)

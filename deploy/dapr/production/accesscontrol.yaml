@@ -115,3 +115,22 @@ spec:
       - storeName: kubernetes
         defaultAccess: deny
         allowedSecrets: []
+---
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: hexalith-folders-production-accesscontrol-memories
+  namespace: hexalith-production
+  annotations:
+    hexalith.io/target-app-id: memories
+    hexalith.io/trust-domain-template: DAPR_TRUST_DOMAIN
+spec:
+  accessControl:
+    defaultAction: deny
+    trustDomain: "hexalith-production"
+    policies: []
+  secrets:
+    scopes:
+      - storeName: kubernetes
+        defaultAccess: deny
+        allowedSecrets: []

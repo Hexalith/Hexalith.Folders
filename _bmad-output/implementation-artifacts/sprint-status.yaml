@@ -185,7 +185,7 @@ development_status:
   # add Memories topology, apply hexalith-folders->folders-index routing config.
   epic-9: in-progress
   9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: done
-  9-2-add-memories-search-index-server-to-the-apphost-topology: backlog
+  9-2-add-memories-search-index-server-to-the-apphost-topology: done
   9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: backlog
   epic-9-retrospective: optional
 

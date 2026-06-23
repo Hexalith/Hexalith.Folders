@@ -21,6 +21,8 @@ public static class FoldersAspireModule
 
     public const string PubSubComponentName = "pubsub";
 
+    public const string MemoriesAppId = "memories";
+
     /// <summary>
     /// Wires the Folders-owned services (<c>folders</c>, <c>folders-workers</c>, <c>folders-ui</c>) onto the
     /// shared Hexalith platform topology.

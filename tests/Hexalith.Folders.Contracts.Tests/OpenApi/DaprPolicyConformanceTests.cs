@@ -32,6 +32,7 @@ public sealed class DaprPolicyConformanceTests
         FoldersAspireModule.FoldersAppId,
         FoldersAspireModule.FoldersWorkersAppId,
         FoldersAspireModule.FoldersUiAppId,
+        FoldersAspireModule.MemoriesAppId,
     ];
 
     [Fact]
@@ -231,6 +232,27 @@ public sealed class DaprPolicyConformanceTests
                 !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal))
             .SelectMany(static scope => scope.Value)
             .ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void MemoriesShouldRemainDenyByDefaultWithNoInvokeAuthorizationOrPubSubTopicsUntilEpic10()
+    {
+        // Story 9.2 / AC6: memories is registered as a deny-by-default production app-id with NO caller/invoke
+        // allow-rules and NO pub/sub topics. The worker-side producer, the folders/folders-workers -> memories
+        // invoke authorization (+ its 7-category negative tests), and any memories ingestion topic are all
+        // deferred to Epic 10. This guard fails closed if a speculative memories caller policy or topic scope is
+        // introduced before the producer exists — the honest deny-by-default posture for a topology-only story.
+        ProductionPolicy policy = LoadProductionPolicy();
+
+        TargetPolicy memories = policy.Targets.Single(t =>
+            string.Equals(t.TargetAppId, FoldersAspireModule.MemoriesAppId, StringComparison.Ordinal));
+        memories.DefaultAction.ShouldBe("deny");
+        memories.CallerPolicies.ShouldBeEmpty();
+
+        YamlMappingNode component = LoadSingleYamlDocument(PubSubPath);
+        IReadOnlyDictionary<string, string> componentMetadata = ParseComponentMetadata(component.GetMapping("spec").GetSequence("metadata"));
+        ParseTopicScopes(componentMetadata["publishingScopes"])[FoldersAspireModule.MemoriesAppId].ShouldBeEmpty();
+        ParseTopicScopes(componentMetadata["subscriptionScopes"])[FoldersAspireModule.MemoriesAppId].ShouldBeEmpty();
     }
 
     [Fact]

@@ -8,8 +8,9 @@
 # previous in-code component established -- do not change without a state-migration story).
 #
 # Component Scoping (Folders topology, Epic 9): the EventStore command gateway owns aggregate
-# actor state; Tenants writes projections; the Folders services read/write folder state. There is
-# no eventstore-admin or memories app-id in the Folders topology.
+# actor state; Tenants writes projections; the Folders services read/write folder state; the Memories
+# search-index server (Story 9.2) reuses this shared state store. There is no eventstore-admin app-id
+# in the gateway-only Folders topology.
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
@@ -35,3 +36,4 @@ scopes:
   - folders
   - folders-workers
   - folders-ui
+  - memories

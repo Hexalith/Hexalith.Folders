@@ -8,9 +8,10 @@
 # metadata (the Redis component silently ignores enableDeadLetter/deadLetterTopic).
 #
 # Component Scoping (Folders topology, Epic 9): the EventStore command gateway publishes tenant
-# events; the Tenants service and the Folders services subscribe. Local development intentionally
-# omits topic-level publishingScopes and subscriptionScopes so local experiments are not blocked by
-# production-only topic policy.
+# events; the Tenants service and the Folders services subscribe; the Memories search-index server
+# (Story 9.2) reuses this shared pub/sub. Local development intentionally omits topic-level
+# publishingScopes and subscriptionScopes so local experiments are not blocked by production-only
+# topic policy.
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
@@ -30,3 +31,4 @@ scopes:
   - folders
   - folders-workers
   - folders-ui
+  - memories
