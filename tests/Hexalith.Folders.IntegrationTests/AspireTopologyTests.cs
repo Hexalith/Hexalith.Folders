@@ -25,6 +25,8 @@ public sealed class AspireTopologyTests
         FoldersAspireModule.FoldersWorkersAppId.ShouldBe("folders-workers");
         FoldersAspireModule.FoldersUiAppId.ShouldBe("folders-ui");
         FoldersAspireModule.MemoriesAppId.ShouldBe("memories");
+        FoldersAspireModule.MemoriesSourceId.ShouldBe("hexalith-folders");
+        FoldersAspireModule.MemoriesIndexTenant.ShouldBe("folders-index");
         FoldersAspireModule.StateStoreComponentName.ShouldBe("statestore");
         FoldersAspireModule.PubSubComponentName.ShouldBe("pubsub");
     }
@@ -363,6 +365,72 @@ public sealed class AspireTopologyTests
         builder.Resources.OfType<IDaprComponentResource>().Count().ShouldBe(daprComponentsBeforeFolders);
         resources.StateStore.ShouldBeSameAs(eventStore.StateStore);
         resources.PubSub.ShouldBeSameAs(eventStore.PubSub);
+    }
+
+    [Fact]
+    public async Task MemoriesServerShouldCarryFoldersToFoldersIndexSourceRoutingWhenRoutingApplied()
+    {
+        // Story 9.3 / AC3: applying the production WithFoldersMemoriesSourceRouting helper on the composed
+        // Memories server sets exactly the two source->index routing env vars the Memories router binds under
+        // EventStoreIntegration:Routing — hexalith-folders -> folders-index plus AutoProvisionRoutedTenants=true.
+        // The test drives the SAME production helper Program.cs invokes (non-circular: it exercises the real
+        // wiring, not a re-implementation). Env vars are resolved by invoking the resource's
+        // EnvironmentCallbackAnnotations against a Publish-mode EnvironmentCallbackContext, so endpoint-backed
+        // reference expressions on the memories server resolve to manifest placeholders instead of throwing on an
+        // unallocated endpoint, while the literal routing strings resolve to their literal values.
+        IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder();
+        FoldersTopology topology = BuildGatewayOnlyComposition(builder);
+
+        string memoriesSecretStorePath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/secretstore.memories.yaml");
+        string memoriesLlmConfigPath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/llm.memories.yaml");
+
+        HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
+            topology.EventStore.StateStore,
+            topology.EventStore.PubSub,
+            memoriesSecretStorePath,
+            memoriesLlmConfigPath,
+            serverName: FoldersAspireModule.MemoriesAppId);
+
+        // Drive the production helper — the exact code path Program.cs uses (AC2/AC4: non-circular coverage).
+        IResourceBuilder<ProjectResource> routedMemories = memories.Server.WithFoldersMemoriesSourceRouting();
+
+        // AC2 return contract: the helper returns the SAME server builder for chaining (its documented
+        // <returns>), the property the canonical Tenants AppHost relies on to fluently chain the two
+        // .WithEnvironment(...) routing calls onto memories.Server.
+        routedMemories.ShouldBeSameAs(memories.Server);
+
+        DistributedApplicationExecutionContext executionContext = new(DistributedApplicationOperation.Publish);
+        EnvironmentCallbackContext environmentContext = new(
+            executionContext,
+            new Dictionary<string, object>(StringComparer.Ordinal),
+            TestContext.Current.CancellationToken);
+        foreach (EnvironmentCallbackAnnotation annotation in routedMemories.Resource.Annotations
+            .OfType<EnvironmentCallbackAnnotation>())
+        {
+            await annotation.Callback(environmentContext);
+        }
+
+        IDictionary<string, object> environment = environmentContext.EnvironmentVariables;
+        string sourceRoutingKey = $"EventStoreIntegration__Routing__SourceToTenantMap__{FoldersAspireModule.MemoriesSourceId}";
+
+        environment.ShouldSatisfyAllConditions(
+            () => environment.ShouldContainKey(sourceRoutingKey),
+            () => environment[sourceRoutingKey].ShouldBe(FoldersAspireModule.MemoriesIndexTenant),
+            () => environment.ShouldContainKey("EventStoreIntegration__Routing__AutoProvisionRoutedTenants"),
+            () => environment["EventStoreIntegration__Routing__AutoProvisionRoutedTenants"].ShouldBe("true"));
+    }
+
+    [Fact]
+    public void WithFoldersMemoriesSourceRoutingShouldThrowArgumentNullExceptionWhenServerIsNull()
+    {
+        // Story 9.3 / AC2: the production routing helper guards its public boundary with
+        // ArgumentNullException.ThrowIfNull(memoriesServer) (project-context: validate public boundaries),
+        // so a null server resource is rejected up front rather than silently producing a half-wired
+        // topology with no source->index routing. This is the helper's critical error case.
+        ArgumentNullException exception = Should.Throw<ArgumentNullException>(
+            static () => _ = FoldersAspireModule.WithFoldersMemoriesSourceRouting(null!));
+
+        exception.ParamName.ShouldBe("memoriesServer");
     }
 
     /// <summary>

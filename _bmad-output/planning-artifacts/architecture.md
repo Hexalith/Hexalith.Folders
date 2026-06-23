@@ -137,6 +137,7 @@ Two later technical research reports have been added as architecture inputs:
 - Use stable source URIs and idempotency keys for memory units, based on tenant/folder/file-version/content-hash metadata. Avoid raw path metadata unless C9 explicitly allows exposure.
 - Start with asynchronous indexing after file-write/commit events; a Memories outage must not roll back a durable Folders file operation. It should surface as retryable indexing status and operational evidence.
 - Large-file behavior remains coupled to C4. The Memories research identifies the current inline ingestion guardrail as a constraint; Folders should first expose explicit skipped/too-large status, then add chunked or reference-based ingestion only after limits are agreed.
+- The Epic 9 AppHost ships the `hexalith-folders → folders-index` source→index routing on the standalone `memories` server in Phase 1 (Story 9.3), but it stays dormant: end-to-end ingestion and search are activated only when the Epic 10 worker-side producer emits `SearchIndexEntryChanged` events with source `hexalith-folders`.
 
 **Hexalith.FrontComposer integration implications:**
 
@@ -397,6 +398,7 @@ dotnet new sln -n Hexalith.Folders --format slnx
 
 - EventStore (`AppId=eventstore`, gateway-only) + Tenants (`AppId=tenants`) + Memories search-index server (`AppId=memories`) + Folders.Server (`AppId=folders`) + Folders.Workers + Folders.UI (`AppId=folders-ui`) + optional Keycloak. Composed via the platform Aspire helpers (`AddHexalithEventStore` / `AddHexalithTenantsServer` / `AddHexalithMemoriesSearchIndexServer`); see Epic 9.
 - Shared Dapr `statestore` and `pubsub` components; Memories adds `memories-secretstore` + `memories-llm` components and `memories-vectors` + `memories-graphs` containers.
+- The `memories` resource is configured with `hexalith-folders → folders-index` source→index routing (`AutoProvisionRoutedTenants=true`) via `FoldersAspireModule.WithFoldersMemoriesSourceRouting`; this routing is dormant until the Epic 10 worker-side producer emits `SearchIndexEntryChanged` CloudEvents with source `hexalith-folders` (Story 9.3).
 - Production Dapr access control is deny-by-default with mTLS.
 
 **Submodule Policy:**

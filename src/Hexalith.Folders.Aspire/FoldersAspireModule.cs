@@ -24,6 +24,56 @@ public static class FoldersAspireModule
     public const string MemoriesAppId = "memories";
 
     /// <summary>
+    /// CloudEvents <c>source</c> the Epic 10 Folders worker-side producer stamps on its
+    /// <c>SearchIndexEntryChanged</c> events. It is the dictionary-key segment of the Memories router's
+    /// <c>SourceToTenantMap</c> routing entry (no in-repo CloudEvents-source constant exists yet, so this is its
+    /// canonical home). The Tenants analog is <c>hexalith-tenants</c>.
+    /// </summary>
+    public const string MemoriesSourceId = "hexalith-folders";
+
+    /// <summary>
+    /// Curated Memories index tenant the <see cref="MemoriesSourceId"/>-sourced events route into. It is the
+    /// value of the Memories router's <c>SourceToTenantMap</c> routing entry. The Tenants analog is
+    /// <c>tenants-index</c>.
+    /// </summary>
+    public const string MemoriesIndexTenant = "folders-index";
+
+    /// <summary>
+    /// Configures source-&gt;index routing on the standalone Memories search-index server so the Folders
+    /// producer's CloudEvents (source <see cref="MemoriesSourceId"/>, emitted by the Epic 10 worker) are routed
+    /// into the curated <see cref="MemoriesIndexTenant"/> partition, and that index tenant is auto-provisioned at
+    /// startup so it is <c>Active</c> before the first event arrives.
+    /// </summary>
+    /// <remarks>
+    /// Sets exactly two environment variables on the Memories server resource, mirroring the canonical Tenants
+    /// AppHost (<c>Hexalith.Tenants.AppHost/Program.cs</c>, which wires <c>hexalith-tenants → tenants-index</c>):
+    /// <list type="bullet">
+    /// <item><c>EventStoreIntegration__Routing__SourceToTenantMap__hexalith-folders = folders-index</c> — the
+    /// router's longest-prefix, case-insensitive source-&gt;tenant map entry.</item>
+    /// <item><c>EventStoreIntegration__Routing__AutoProvisionRoutedTenants = true</c> — makes the Memories
+    /// <c>RoutedTenantProvisioningStartupService</c> provision <see cref="MemoriesIndexTenant"/> at startup and
+    /// makes <c>EventStoreRoutingConfigValidator</c> defer its fail-fast "all routed tenants must exist" check so
+    /// the server boots cleanly even though no producer exists yet.</item>
+    /// </list>
+    /// The routing is dormant until the Epic 10 worker-side producer ships; until then no event flows, but the
+    /// contract is in place. The two double-underscore keys map the appsettings path
+    /// <c>EventStoreIntegration:Routing:...</c> to environment variables (dictionary keys are appended after the
+    /// section path; the source id is the dictionary-key segment, not colon-encoded).
+    /// </remarks>
+    /// <param name="memoriesServer">The Memories search-index server project resource builder
+    /// (<c>HexalithMemoriesSearchIndexServerResources.Server</c>).</param>
+    /// <returns>The same resource builder for chaining.</returns>
+    public static IResourceBuilder<ProjectResource> WithFoldersMemoriesSourceRouting(
+        this IResourceBuilder<ProjectResource> memoriesServer)
+    {
+        ArgumentNullException.ThrowIfNull(memoriesServer);
+
+        return memoriesServer
+            .WithEnvironment($"EventStoreIntegration__Routing__SourceToTenantMap__{MemoriesSourceId}", MemoriesIndexTenant)
+            .WithEnvironment("EventStoreIntegration__Routing__AutoProvisionRoutedTenants", "true");
+    }
+
+    /// <summary>
     /// Wires the Folders-owned services (<c>folders</c>, <c>folders-workers</c>, <c>folders-ui</c>) onto the
     /// shared Hexalith platform topology.
     /// </summary>

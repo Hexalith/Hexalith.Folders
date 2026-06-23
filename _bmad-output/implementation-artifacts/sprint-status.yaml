@@ -186,7 +186,7 @@ development_status:
   epic-9: in-progress
   9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: done
   9-2-add-memories-search-index-server-to-the-apphost-topology: done
-  9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: backlog
+  9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: done
   epic-9-retrospective: optional
 
   # Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection

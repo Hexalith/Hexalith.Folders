@@ -62,18 +62,23 @@ _ = builder.AddHexalithFolders(
 // the same statestore/pubsub Dapr components. The reusable Memories hosting recipe (memories-vectors Redis
 // Stack store + memories-graphs FalkorDB store + secret store + conversation/LLM component + the memories
 // project and its Dapr sidecar) lives in Hexalith.Memories.Aspire; this AppHost owns only the component
-// YAML paths. Source->index routing (9.3) and the worker-side producer / folders->memories invoke
-// authorization (Epic 10) are intentionally deferred, so the memories resource is left unconsumed here and
-// is not JWT-wired (parity with the canonical Tenants AppHost's Memories composition).
+// YAML paths. The worker-side producer / folders->memories invoke authorization stays deferred to Epic 10,
+// and memories is not JWT-wired (parity with the canonical Tenants AppHost's Memories composition).
 string memoriesSecretStorePath = ResolveDaprConfigPath(builder.AppHostDirectory, "secretstore.memories.yaml");
 string memoriesLlmConfigPath = ResolveDaprConfigPath(builder.AppHostDirectory, "llm.memories.yaml");
 
-_ = builder.AddHexalithMemoriesSearchIndexServer(
+HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
     eventStoreResources.StateStore,
     eventStoreResources.PubSub,
     memoriesSecretStorePath,
     memoriesLlmConfigPath,
     serverName: FoldersAspireModule.MemoriesAppId);
+
+// Story 9.3: route the Folders producer's CloudEvents (source "hexalith-folders", emitted by the Epic 10
+// worker) into the curated folders-index partition, auto-provisioning that index tenant at startup so it is
+// Active before the first event arrives. Dormant until the Epic 10 producer ships. Mirrors the canonical
+// Tenants AppHost's hexalith-tenants -> tenants-index routing chain.
+_ = memories.Server.WithFoldersMemoriesSourceRouting();
 
 if (keycloak is not null && realmUrl is not null)
 {
