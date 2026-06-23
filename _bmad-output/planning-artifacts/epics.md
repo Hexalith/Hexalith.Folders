@@ -1745,7 +1745,7 @@ So that the MVP test suite runs green at HEAD and the "conditionally release-rea
 
 Release stakeholders can accept the MVP once the bounded, non-planning release-acceptance conditions from the 2026-06-22 implementation-readiness review are closed: the canonical REST contract is fully served (47/47 operations), the operations console has an automated WCAG 2.2 AA gate, C3 retention has Legal sign-off, and the solution test baseline is honestly green.
 
-_Created 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Release-acceptance **closure** epic — not a feature workstream; no new product FR scope. Verified parity ground truth (adversarial workflow, 2026-06-22): REST 32/47, SDK 47/47, MCP 47/47, CLI 40/47 (7 diagnostics MCP-only by design); 15 operations declared by the spine and wrapped by SDK/CLI/MCP but missing a server route. Detailed as-built ACs live in the `8-*` story files under `implementation-artifacts/`._
+_Created 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Release-acceptance **closure** epic — not a feature workstream; no new product FR scope. Verified parity ground truth (adversarial workflow, 2026-06-22): REST 32/47, SDK 47/47, MCP 47/47, CLI 40/47 (7 diagnostics MCP-only by design); 15 operations declared by the spine and wrapped by SDK/CLI/MCP but missing a server route. Detailed as-built ACs live in the `8-*` story files under `implementation-artifacts/`. Story 8.5 was split 2026-06-23 (`sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split.md`): its dev scope (residual-reds honest-green baseline) stays in 8.5 (done); the externally blocked C3 Legal sign-off became Story 8.6 (blocked-pending-Legal) — the sole remaining MVP-release blocker._
 
 ### Story 8.1: Implement the 8 missing Bucket-A canonical REST server routes
 
@@ -1799,18 +1799,34 @@ So that the PRD accessibility release-validation path (NFR-A11Y-1..5, NFR-VER-3)
 **Then** it fails CI on AA violations across the three critical console journeys, covering keyboard nav, visible focus, semantic structure, contrast, and not-color-alone indicators, plus zoom (125/150/200%) and dense-identifier no-clipping (UX-DR31)
 **And** its green run is the recorded accessibility release-validation evidence.
 
-### Story 8.5: Close C3 Legal sign-off and drive the residual test baseline honestly green
+### Story 8.5: Drive the residual test baseline honestly green
+
+_Split 2026-06-23 (bmad-correct-course, `sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split.md`): the original story's AC1 — C3 Legal sign-off — was externally blocked-pending-Legal and is now **Story 8.6**. Story 8.5 retains the residual-reds + honest-green-baseline scope and is **done**._
 
 As a release stakeholder,
-I want C3 Legal sign-off recorded and the residual non-composition reds resolved or explicitly accepted,
-So that the MVP rests on a fully-approved governance posture and an honestly-green baseline.
+I want the residual non-composition reds resolved or explicitly accepted and the obsolete CI masks removed,
+So that the MVP rests on an honestly-green solution test baseline that proves — not hides — its own passing tests.
 
 **Acceptance Criteria:**
 
-**Given** PM approval recorded 2026-06-22 and Legal as the sole remaining C3 gate
-**When** Legal signs off and the residual reds are triaged (`Testing.Tests` ×4 governance, `Contracts.Tests` ×4 epic-1 CLI negative-scope, Epic 3 provider-boundary guards, `UI.E2E` ×40 Playwright provisioning)
-**Then** C3 flips to `approved` (c3-retention + governance YAML; release-blocking posture clears) and each residual red is fixed or explicitly accepted with rationale
-**And** `dotnet test Hexalith.Folders.slnx` is honestly green (zero unexplained reds), recorded as release evidence.
+**Given** the residual non-composition reds from the 2026-06-22 readiness snapshot (`Testing.Tests` ×4 governance, `Contracts.Tests` ×4 epic-1 CLI negative-scope, Epic 3 provider-boundary guards, `UI.E2E` ×40 Playwright provisioning)
+**When** each is triaged — verified-green-and-unmasked, or explicitly accepted with rationale — and the obsolete fail-open `--filter` masks in `run-baseline-ci-gates.ps1` are removed
+**Then** the union of CI gate lanes is honestly green (zero unexplained reds AND zero obsolete fail-open masks), the full 63-test UI.E2E lane runs in a Chromium-provisioned CI job, and the result is recorded as release evidence.
+
+### Story 8.6: Record C3 Legal sign-off and apply the in-lockstep C3 retention cascade
+
+_Split 2026-06-23 (bmad-correct-course) from Story 8.5 AC1. **BLOCKED-PENDING-LEGAL** — the sole remaining MVP-release blocker; turnkey the moment Legal signs (the full in-lockstep edit set is documented in the `8-6` story file)._
+
+As a release stakeholder,
+I want C3 Legal sign-off recorded and the full in-lockstep C3 retention cascade applied in one commit,
+So that the MVP rests on a fully-approved governance posture and the release-blocking posture clears.
+
+**Acceptance Criteria:**
+
+**Given** PM approval recorded 2026-06-22 and Legal as the sole remaining C3 gate, **and** recorded external Legal sign-off evidence in hand (never fabricated)
+**When** the dev records the Legal approval and applies the documented in-lockstep cascade in one commit (governance YAML first, then the C3 doc approval-state cells, the gate-script literals, the four `RetentionAndTenantDeletionConformanceTests` assertions, the NFR57 row, and the narrating docs)
+**Then** C3 flips to `approved` (`c0-c13-governance-evidence.yaml` + `c3-retention.md`; the `release_blocking_until_legal_approval` posture clears), `run-retention-deletion-gates.ps1` reports non-blocking, and the contract-spine lane stays green
+**And** the per-class retention values, tenant-deletion dispositions, `reference_pending_*` class identifiers, and runtime `RetentionClassToken` markers are unchanged (no spine/generated-client/aggregate change), closing the sole remaining MVP-release blocker.
 
 ## Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
 
@@ -1863,29 +1879,31 @@ Developers and AI agents can have authorized file changes asynchronously indexed
 
 _Phase 2 — gated on Epic 9 + C4 (large-file guardrail) and C9 (path-exposure policy). Stories are backlog stubs pending `create-story`; ACs below are seed-level and will be detailed per story. Architecture inputs: `architecture.md` §130–156 (Memories integration track)._
 
+_**Correction (2026-06-23, `sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism.md`):** The worker-side producer updates the Memories search index by **publishing `SearchIndexEntryChanged` / `SearchIndexEntryRemoved` CloudEvents** to `pubsub` / `memories-events` (source `hexalith-folders`, routed to `folders-index`) — the canonical mechanism proven by the live `hexalith-tenants → tenants-index` integration (`Hexalith.Tenants` `MemoriesSearchIndexEventPublisher`). It does **not** call `Hexalith.Memories.Client.Rest.IngestAsync`, which drives a separate RAG memory-ingestion subsystem (experimental `HXL001`; LLM embeddings → memory units) that the Epic 9 routing never ingests. Stories 10.1–10.4 are corrected accordingly; the in-review Story 10.3 `IngestAsync` egress is reworked to the event producer while the bridge projection, `/folders/events` subscription, orchestration, and authorization gating are preserved. The "Semantic-Indexing" naming is retained for traceability but denotes the syntactic/BM25 search index, not RAG embeddings (a full `semantic → search` rename is a tracked follow-up)._
+
 ### Story 10.1: Define the worker-side semantic-indexing port and Memories dependency
 
 **Given** the architecture restricts the Memories dependency to `Hexalith.Folders.Workers`
-**When** a worker-side semantic-indexing port is defined and `Hexalith.Folders.Workers` takes `Hexalith.Memories.Client.Rest` + `Hexalith.Memories.Contracts` references
+**When** a worker-side search-index publication port is defined and `Hexalith.Folders.Workers` takes a `Hexalith.Memories.Contracts` reference (the `SearchIndexEntryChanged` / `SearchIndexEntryRemoved` CloudEvent contracts) + Dapr pub/sub — NOT `Hexalith.Memories.Client.Rest`, whose `IngestAsync` drives the separate RAG memory-ingestion subsystem, not the search index
 **Then** no other project (Contracts, core, CLI, MCP, UI, Server) depends on Memories.
 
 ### Story 10.2: Build the Folders-owned indexing bridge projection
 
 **Given** durable Folders events as indexing triggers
-**When** a bridge projection tracks `file version → Memories workflow/memory unit/status`
+**When** a bridge projection tracks `file version → Memories search-index entry/status`
 **Then** it answers indexed / stale / skipped / failed / tombstoned / reconciliation-required per file version.
 
 ### Story 10.3: Author authorized asynchronous indexing on file-write and commit
 
 **Given** a file-write/commit event
-**When** indexing runs after authorization (tenant → ACL → path policy → sensitivity → size/type limits → Memories) using stable source URIs + idempotency keys
-**Then** a Memories outage surfaces as retryable indexing status and never rolls back a durable Folders file operation.
+**When**, after authorization (tenant → ACL → path policy → sensitivity → size/type limits), the worker publishes one curated `SearchIndexEntryChanged` CloudEvent per indexed unit (source `hexalith-folders`, pub/sub `pubsub` / topic `memories-events`, stable CloudEvent id and idempotency key)
+**Then** a Memories/pub-sub outage surfaces as retryable indexing status and never rolls back a durable Folders file operation.
 
-### Story 10.4: Emit SearchIndexEntryChanged CloudEvents from the workers
+### Story 10.4: Emit SearchIndexEntryRemoved on removal/archive and prove end-to-end routing
 
-**Given** the Epic 9 routing config (`hexalith-folders → folders-index`)
-**When** the worker emits `SearchIndexEntryChanged` CloudEvents (source `hexalith-folders`) to the memories pub/sub topic
-**Then** the Memories router ingests them into the `folders-index` partition (routing becomes live end-to-end).
+**Given** Story 10.3 publishes `SearchIndexEntryChanged` on file-write/commit into `folders-index`
+**When** the worker emits `SearchIndexEntryRemoved` CloudEvents (source `hexalith-folders`) for removed/archived/tombstoned units and the `folders-index` round-trip is exercised live against the Epic 9 routing
+**Then** removed units leave no stale searchable entry, a syntactic/BM25 query returns exactly one hit per live indexed unit, and routing is proven live end-to-end.
 
 ### Story 10.5: Expose an authorized Folders query facade over Memories
 

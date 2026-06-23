@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-23 (Story 10.2 done)
+# last_updated: 2026-06-23 (Story 10.3 corrected to SearchIndexEntryChanged publish)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -166,16 +166,22 @@ development_status:
   # Created 2026-06-22 via bmad-correct-course (sprint-change-proposal-2026-06-22) as a
   # release-acceptance closure epic (not a feature workstream). Closes the bounded MVP-release
   # conditions: 47/47 REST parity (8-1/8-2), wire-exercised parity + claim gate (8-3), axe a11y
-  # gate (8-4), C3 Legal sign-off + residual reds (8-5). Stories are stubs pending create-story.
+  # gate (8-4), residual-reds honest-green baseline (8-5), C3 Legal sign-off (8-6).
+  # Story 8.5 split 2026-06-23 (sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split):
+  # AC1 (C3 Legal sign-off) extracted to 8-6; 8-5 retains the residual-reds honest-green-baseline scope (done).
   epic-8: in-progress
   8-1-implement-bucket-a-missing-rest-server-routes: done
   8-2-implement-ops-console-diagnostics-rest-routes: done
   8-3-wire-exercise-cross-surface-parity-and-close-claim: done
   8-4-stand-up-axe-wcag-ci-gate: done
-  # 8-5: dev-completable scope (ACs 2-6) complete and review-ready 2026-06-23; AC1 (C3 Legal sign-off)
-  # is BLOCKED-PENDING-LEGAL (external Legal record not yet in hand — C3 left reference_pending, no fabricated
-  # approval per AD1). Do NOT mark epic-8 done until Legal signs and the C3 cascade flip is applied.
-  8-5-close-c3-legal-signoff-and-residual-reds: review
+  # 8-5 (key retained for traceability; rescoped to residual-reds honest-green baseline — ACs 2-6 of the
+  # original story): complete and review-approved 2026-06-23.
+  8-5-close-c3-legal-signoff-and-residual-reds: done
+  # 8-6: ready-for-dev but BLOCKED-PENDING-LEGAL — the sole remaining MVP-release blocker. AC1 (C3 Legal sign-off)
+  # split off from 8-5 on 2026-06-23; story file contexted/turnkey via bmad-create-story 2026-06-23 (refs verified
+  # at HEAD c7a79ac). Apply the full in-lockstep C3 cascade in one commit ONLY once Legal signs. C3 stays
+  # reference_pending; no fabricated approval (AD1). Do NOT mark epic-8 done until 8-6 is done.
+  8-6-record-c3-legal-signoff-and-apply-cascade: ready-for-dev
   epic-8-retrospective: optional
 
   # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
@@ -195,10 +201,25 @@ development_status:
 
   # Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
   # Phase 2 (gated on Epic 9 + C4 large-file + C9 path-exposure). Stubs pending create-story.
+  # Correction 2026-06-23 (sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism):
+  # the producer updates the Memories SEARCH INDEX by PUBLISHING SearchIndexEntryChanged /
+  # SearchIndexEntryRemoved CloudEvents to pubsub/memories-events (source hexalith-folders ->
+  # folders-index, upsert by (TenantId, AggregateId)), NOT by calling MemoriesClient.IngestAsync
+  # (the separate experimental-HXL001 RAG memory-ingestion subsystem). Story 10.3's IngestAsync egress
+  # is reworked; the bridge projection (10.2), /folders/events subscription, orchestration, and
+  # authorization gating are preserved. 10.4's SearchIndexEntryChanged emission folded forward into 10.3.
   epic-10: in-progress
   10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: done
   10-2-build-folders-owned-indexing-bridge-projection: done
-  10-3-author-authorized-async-indexing-on-file-write-and-commit: backlog
+  # 10-3 reverted review -> ready-for-dev: the in-review implementation targeted the wrong Memories
+  # subsystem (MemoriesClient.IngestAsync). Rework egress to publish SearchIndexEntryChanged via
+  # DaprClient.PublishEventAsync; reuse bridge/subscription/orchestration/gating; drop the
+  # Hexalith.Memories.Client.Rest reference. Production Dapr access-control is ALREADY correct
+  # (deny-by-default; folders-workers publishes to memories-events via the pubsub component, no invoke);
+  # only the DaprPolicyConformanceTests expectations + the 'deferred to Epic 10' comment change.
+  10-3-author-authorized-async-indexing-on-file-write-and-commit: ready-for-dev
+  # 10-4 re-scoped to SearchIndexEntryRemoved (removal/archive/tombstone) + live folders-index
+  # round-trip verification; its create-story must follow the corrected epics.md scope.
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog
   10-5-expose-authorized-folders-query-facade-over-memories: backlog
   epic-10-retrospective: optional
@@ -221,7 +242,7 @@ action_items:
     priority: medium
     status: open
   - epic: 9
-    action: "Carry the deferred folders/folders-workers -> memories invoke authorization into Epic 10: deny-by-default caller policies + 7-category negative-test rows + memories-topic pub/sub scope, updating the conformance closed-sets in lockstep when Story 10.4's producer lands."
+    action: "REVISED 2026-06-23 (sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism): the producer PUBLISHES SearchIndexEntryChanged via Dapr pub/sub, so a folders/folders-workers -> memories SERVICE-INVOKE authorization is NOT required and was never the right model. Production Dapr access-control already models this correctly (deny-by-default; folders-workers publishes to memories-events via the pubsub component; memories subscribes). Remaining work lands in Story 10.3: update tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs expectations (assert publish/subscribe scopes for memories-events; drop the 'deferred to Epic 10' framing), keeping the conformance closed-sets in lockstep."
     owner: "Murat / Amelia"
     priority: high
     status: open

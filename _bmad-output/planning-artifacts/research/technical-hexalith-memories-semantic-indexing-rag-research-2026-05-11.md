@@ -12,6 +12,9 @@ web_research_enabled: true
 source_verification: true
 ---
 
+> [!WARNING]
+> **SUPERSEDED (2026-06-23) — do not cite as current implementation guidance.** This 2026-05-11 research promotes the `Hexalith.Memories.Client.Rest.IngestAsync` RAG/memory-ingestion path (LLM-embedding workflow, "memory units", returned workflow instance id). That is **not** how Folders updates the Memories search index. The authoritative mechanism is **publishing `SearchIndexEntryChanged` / `SearchIndexEntryRemoved` CloudEvents** to `pubsub` / `memories-events` (source `hexalith-folders` → `folders-index`), per `memories-search-index-handoff-2026-06-23.md` and `sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism.md`. Read this document only for historical Memories-capability background.
+
 # Research Report: technical
 
 **Date:** 2026-05-11

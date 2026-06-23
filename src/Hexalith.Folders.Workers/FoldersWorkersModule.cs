@@ -73,7 +73,12 @@ public static class FoldersWorkersModule
         services.TryAddSingleton<ISemanticIndexingBridgeReadModel>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
         services.TryAddSingleton<ISemanticIndexingBridgeWriter>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
         services.AddMemoriesClient();
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddSingleton<ISemanticIndexingPolicyEvaluator, FailClosedSemanticIndexingPolicyEvaluator>();
+        services.TryAddSingleton<ISemanticIndexingContentMaterializer, FailClosedSemanticIndexingContentMaterializer>();
         services.TryAddTransient<ISemanticIndexingPort, MemoriesSemanticIndexingPort>();
+        services.TryAddTransient<SemanticIndexingProcessManager>();
+        services.TryAddTransient<FoldersSemanticIndexingEventProcessor>();
 
         return services;
     }
@@ -98,6 +103,35 @@ public static class FoldersWorkersModule
 
         endpoints.MapGet("/", () => Description);
         endpoints.MapEventStoreDomainEvents();
+        endpoints.MapFoldersSemanticIndexingEvents();
+
+        return endpoints;
+    }
+
+    private static IEndpointRouteBuilder MapFoldersSemanticIndexingEvents(this IEndpointRouteBuilder endpoints)
+    {
+        _ = endpoints.MapPost(FoldersSemanticIndexingDefaults.DomainEventsRoute, async (
+            Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventEnvelope envelope,
+            FoldersSemanticIndexingEventProcessor processor,
+            CancellationToken cancellationToken) =>
+        {
+            FoldersSemanticIndexingEventProcessingResult result = await processor
+                .ProcessAsync(envelope, cancellationToken)
+                .ConfigureAwait(false);
+            return result switch
+            {
+                FoldersSemanticIndexingEventProcessingResult.Processed => Results.Ok(),
+                FoldersSemanticIndexingEventProcessingResult.Duplicate => Results.Ok(),
+                FoldersSemanticIndexingEventProcessingResult.SkippedUnknownEventType => Results.Ok(),
+                FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload => Results.Problem(
+                    title: "Folders semantic-indexing event processing failed.",
+                    detail: "The folder event payload could not be deserialized.",
+                    statusCode: StatusCodes.Status500InternalServerError),
+                _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
+            };
+        }).WithTopic(
+            FoldersSemanticIndexingDefaults.PubSubName,
+            FoldersSemanticIndexingDefaults.DomainEventsTopicName);
 
         return endpoints;
     }

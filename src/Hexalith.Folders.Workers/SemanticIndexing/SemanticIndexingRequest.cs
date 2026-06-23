@@ -13,7 +13,8 @@ public sealed record SemanticIndexingRequest
         SemanticIndexingPolicyOutcome policy,
         string correlationId,
         string taskId,
-        string idempotencyKey)
+        string idempotencyKey,
+        byte[]? contentBytes = null)
     {
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(managedTenantId);
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(organizationId);
@@ -38,6 +39,7 @@ public sealed record SemanticIndexingRequest
         CorrelationId = correlationId;
         TaskId = taskId;
         IdempotencyKey = idempotencyKey;
+        ContentBytes = contentBytes;
     }
 
     public string ManagedTenantId { get; init; }
@@ -61,4 +63,6 @@ public sealed record SemanticIndexingRequest
     public string TaskId { get; init; }
 
     public string IdempotencyKey { get; init; }
+
+    public byte[]? ContentBytes { get; init; }
 }

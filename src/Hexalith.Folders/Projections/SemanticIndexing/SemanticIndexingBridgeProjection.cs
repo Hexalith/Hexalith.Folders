@@ -98,7 +98,12 @@ public sealed record SemanticIndexingBridgeProjection
             CorrelationId = update.CorrelationId,
             TaskId = update.TaskId,
             StatusObservedAt = update.ObservedAt,
-            Evidence = new SemanticIndexingEvidence(update.WorkflowId, update.MemoryUnitId, update.ResultFingerprint),
+            Evidence = current.Evidence with
+            {
+                WorkflowId = update.WorkflowId,
+                MemoryUnitId = update.MemoryUnitId,
+                ResultFingerprint = update.ResultFingerprint,
+            },
         };
     }
 
@@ -146,6 +151,7 @@ public sealed record SemanticIndexingBridgeProjection
             accepted.CorrelationId,
             accepted.TaskId,
             accepted.OccurredAt,
+            evidence: SemanticIndexingEvidence.FromMutation(accepted),
             freshness: Freshness(envelope, accepted.IdempotencyFingerprint));
     }
 

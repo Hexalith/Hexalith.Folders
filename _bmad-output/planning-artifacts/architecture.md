@@ -129,13 +129,13 @@ Two later technical research reports have been added as architecture inputs:
 
 **Hexalith.Memories integration implications:**
 
-- Treat `Hexalith.Memories` as a separate Dapr-enabled service and derived semantic index, not as an authoritative Folders datastore.
+- Treat `Hexalith.Memories` as a separate Dapr-enabled service and derived search index, not as an authoritative Folders datastore.
 - Keep Folders events, projections, logs, traces, metrics, audit records, and error responses metadata-only. File content may be read by workers after authorization and sent to Memories for indexing; it must not be embedded in Folders events.
-- Add a worker-side semantic-indexing port before referencing Memories directly. `Hexalith.Folders.Workers` is the only initial project that may depend on `Hexalith.Memories.Client.Rest` / `Hexalith.Memories.Contracts`; Contracts, core domain, CLI, MCP, UI, and Server must not take a direct Memories dependency.
-- Use durable Folders events as indexing triggers and a Folders-owned bridge projection to track `file version -> Memories workflow/memory unit/status`. This projection answers whether a file version is indexed, stale, skipped, failed, tombstoned, or reconciliation-required.
-- Authorize before indexing and before retrieval: tenant access, folder ACL, path policy, sensitivity classification, size/type limits, then Memories call. Search results must be security-trimmed and redacted by Folders policy before leaving the Folders API/SDK/MCP boundary.
-- Use stable source URIs and idempotency keys for memory units, based on tenant/folder/file-version/content-hash metadata. Avoid raw path metadata unless C9 explicitly allows exposure.
-- Start with asynchronous indexing after file-write/commit events; a Memories outage must not roll back a durable Folders file operation. It should surface as retryable indexing status and operational evidence.
+- Add a worker-side search-index publication port before referencing Memories directly. `Hexalith.Folders.Workers` is the only project that may depend on `Hexalith.Memories.Contracts` (the `SearchIndexEntryChanged` / `SearchIndexEntryRemoved` CloudEvent contracts) — it does not need `Hexalith.Memories.Client.Rest`, whose `IngestAsync` is the separate RAG memory-ingestion subsystem (experimental `HXL001`), not the search index. Contracts, core domain, CLI, MCP, UI, and Server must not take a direct Memories dependency.
+- Use durable Folders events as indexing triggers and a Folders-owned bridge projection to track `file version -> Memories search-index entry/status`. This projection answers whether a file version is indexed, stale, skipped, failed, tombstoned, or reconciliation-required.
+- Authorize before indexing and before retrieval: tenant access, folder ACL, path policy, sensitivity classification, size/type limits, then the Memories search-index publish. Search results must be security-trimmed and redacted by Folders policy before leaving the Folders API/SDK/MCP boundary.
+- Use stable CloudEvent ids and idempotency keys for search-index entries, based on tenant/folder/file-version/content-hash metadata; Memories upserts by the `(TenantId, AggregateId)` composite key. Keep raw path metadata out of the CloudEvent `Text`/`Attributes` unless C9 explicitly allows exposure.
+- Start with asynchronous indexing after file-write/commit events; a Memories or pub/sub outage must not roll back a durable Folders file operation. It should surface as retryable indexing status and operational evidence.
 - Large-file behavior remains coupled to C4. The Memories research identifies the current inline ingestion guardrail as a constraint; Folders should first expose explicit skipped/too-large status, then add chunked or reference-based ingestion only after limits are agreed.
 - The Epic 9 AppHost ships the `hexalith-folders → folders-index` source→index routing on the standalone `memories` server in Phase 1 (Story 9.3), but it stays dormant: end-to-end ingestion and search are activated only when the Epic 10 worker-side producer emits `SearchIndexEntryChanged` events with source `hexalith-folders`.
 
@@ -153,7 +153,7 @@ Two later technical research reports have been added as architecture inputs:
 
 These reports do not overturn the core architecture. They add two optional integration tracks that must preserve the existing invariants:
 
-- Memories extends context-query and RAG capability through worker-owned asynchronous indexing and an authorized Folders query facade.
+- Memories extends context-query capability through worker-owned asynchronous search-index publication (`SearchIndexEntryChanged` CloudEvents over Dapr pub/sub, source `hexalith-folders` → `folders-index`) and an authorized Folders query facade; the separate RAG/memory-ingestion path (`IngestAsync`) is out of MVP scope.
 - FrontComposer implements the read-only operations console shell and generated projection UI while Folders retains domain semantics, authorization, data access, and no-leakage policy.
 
 ### UX Design Integration Implications

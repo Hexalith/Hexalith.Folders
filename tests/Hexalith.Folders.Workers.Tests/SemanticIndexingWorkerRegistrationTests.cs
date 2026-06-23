@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System.Net;
 
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Workers;
@@ -8,6 +9,8 @@ using Hexalith.Memories.Client.Rest;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 using Shouldly;
 using Xunit;
@@ -29,6 +32,10 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             ValidateScopes = true,
         });
         provider.GetRequiredService<ISemanticIndexingPort>().ShouldNotBeNull();
+        provider.GetRequiredService<ISemanticIndexingPolicyEvaluator>().ShouldNotBeNull();
+        provider.GetRequiredService<ISemanticIndexingContentMaterializer>().ShouldNotBeNull();
+        provider.GetRequiredService<SemanticIndexingProcessManager>().ShouldNotBeNull();
+        provider.GetRequiredService<FoldersSemanticIndexingEventProcessor>().ShouldNotBeNull();
         provider.GetRequiredService<MemoriesClient>().ShouldNotBeNull();
     }
 
@@ -66,29 +73,71 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     }
 
     [Fact]
-    public async Task SemanticIndexingPortShouldReturnDeferredShellResultWithoutCallingMemories()
+    public async Task SemanticIndexingPortShouldCallMemoriesTypedClientIngestion()
     {
-        ServiceCollection services = CreateServiceCollection();
-        services.AddFoldersSemanticIndexingWorkers();
-        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
-        {
-            ValidateOnBuild = true,
-            ValidateScopes = true,
-        });
-        ISemanticIndexingPort port = provider.GetRequiredService<ISemanticIndexingPort>();
+        CapturingHandler handler = new(HttpStatusCode.Accepted, """{"instanceId":"workflow-a"}""");
+        MemoriesClient client = new(
+            new HttpClient(handler) { BaseAddress = new Uri("http://memories.local/") },
+            Options.Create(new MemoriesClientOptions()),
+            NullLogger<MemoriesClient>.Instance);
+        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(client);
 
         SemanticIndexingResult result = await port.IndexFileVersionAsync(
-            CreateRequest(),
+            CreateRequest(contentBytes: [1, 2, 3]),
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-        result.Status.ShouldBe(SemanticIndexingStatus.Deferred);
-        result.StatusCode.ShouldBe("deferred");
-        result.Retryable.ShouldBeTrue();
-        result.ReasonCode.ShouldBe("adapter_shell_not_producing");
+        result.Status.ShouldBe(SemanticIndexingStatus.Accepted);
+        result.Retryable.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("memories_accepted");
+        result.WorkflowInstanceId.ShouldBe("workflow-a");
+        handler.Requests.ShouldHaveSingleItem().RequestUri!.AbsolutePath.ShouldBe("/api/ingest");
+        handler.Payloads.ShouldHaveSingleItem().ShouldContain("folders-index", Case.Sensitive);
+        handler.Payloads[0].ShouldContain("folders://tenant-a/organizations/organization-a/folders/folder-a/versions/version-a", Case.Sensitive);
+        handler.Payloads[0].ShouldNotContain("C:/", Case.Sensitive);
     }
 
     [Fact]
-    public void SemanticIndexingPortShouldHonorCancelledTokenBeforeReturningDeferredResult()
+    public async Task SemanticIndexingPortShouldMapRemoteErrorsToRetryableFailure()
+    {
+        CapturingHandler handler = new(
+            HttpStatusCode.ServiceUnavailable,
+            """{"code":"UNAVAILABLE","message":"service unavailable","suggestion":"retry"}""");
+        MemoriesClient client = new(
+            new HttpClient(handler) { BaseAddress = new Uri("http://memories.local/") },
+            Options.Create(new MemoriesClientOptions()),
+            NullLogger<MemoriesClient>.Instance);
+        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(client);
+
+        SemanticIndexingResult result = await port.IndexFileVersionAsync(
+            CreateRequest(contentBytes: [1, 2, 3]),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.Status.ShouldBe(SemanticIndexingStatus.Failed);
+        result.Retryable.ShouldBeTrue();
+        result.ReasonCode.ShouldBe("memories_remote_error");
+    }
+
+    [Fact]
+    public async Task SemanticIndexingPortShouldMapInvalidAcceptedResponseToRetryableFailure()
+    {
+        CapturingHandler handler = new(HttpStatusCode.Accepted, "{}");
+        MemoriesClient client = new(
+            new HttpClient(handler) { BaseAddress = new Uri("http://memories.local/") },
+            Options.Create(new MemoriesClientOptions()),
+            NullLogger<MemoriesClient>.Instance);
+        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(client);
+
+        SemanticIndexingResult result = await port.IndexFileVersionAsync(
+            CreateRequest(contentBytes: [1, 2, 3]),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.Status.ShouldBe(SemanticIndexingStatus.Failed);
+        result.Retryable.ShouldBeTrue();
+        result.ReasonCode.ShouldBe("memories_invalid_response");
+    }
+
+    [Fact]
+    public async Task SemanticIndexingPortShouldHonorCancelledTokenBeforeCallingMemories()
     {
         ServiceCollection services = CreateServiceCollection();
         services.AddFoldersSemanticIndexingWorkers();
@@ -101,7 +150,8 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
 
-        Should.Throw<OperationCanceledException>(() => port.IndexFileVersionAsync(CreateRequest(), cancellation.Token));
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+            await port.IndexFileVersionAsync(CreateRequest(), cancellation.Token).ConfigureAwait(true)).ConfigureAwait(true);
     }
 
     [Fact]
@@ -228,6 +278,8 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         FoldersSemanticIndexingDefaults.IndexTenant.ShouldBe(ReadConstant(source, "MemoriesIndexTenant"));
         FoldersSemanticIndexingDefaults.PubSubName.ShouldBe("pubsub");
         FoldersSemanticIndexingDefaults.EventsTopicName.ShouldBe("memories-events");
+        FoldersSemanticIndexingDefaults.DomainEventsTopicName.ShouldBe("folders.events");
+        FoldersSemanticIndexingDefaults.DomainEventsRoute.ShouldBe("/folders/events");
     }
 
     private static ServiceCollection CreateServiceCollection()
@@ -241,7 +293,8 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     private static SemanticIndexingRequest CreateRequest(
         string managedTenantId = "tenant-a",
         string correlationId = "correlation-a",
-        string idempotencyKey = "idempotency-a")
+        string idempotencyKey = "idempotency-a",
+        byte[]? contentBytes = null)
         => new(
             managedTenantId,
             "organization-a",
@@ -256,7 +309,8 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             new SemanticIndexingPolicyOutcome(true, "tenant-sensitive", "allowed"),
             correlationId,
             "task-a",
-            idempotencyKey);
+            idempotencyKey,
+            contentBytes);
 
     private static IEnumerable<Type> ExpandTypeGraph(Type type)
     {
@@ -295,5 +349,35 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         }
 
         return directory?.FullName ?? throw new InvalidOperationException("Repository root was not found.");
+    }
+
+    private sealed class CapturingHandler : HttpMessageHandler
+    {
+        private readonly string _payload;
+        private readonly HttpStatusCode _statusCode;
+
+        public CapturingHandler(HttpStatusCode statusCode, string payload)
+        {
+            _statusCode = statusCode;
+            _payload = payload;
+        }
+
+        public List<HttpRequestMessage> Requests { get; } = [];
+
+        public List<string> Payloads { get; } = [];
+
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            Requests.Add(request);
+            Payloads.Add(request.Content is null
+                ? string.Empty
+                : await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(true));
+            return new HttpResponseMessage(_statusCode)
+            {
+                Content = new StringContent(_payload, System.Text.Encoding.UTF8, "application/json"),
+            };
+        }
     }
 }
