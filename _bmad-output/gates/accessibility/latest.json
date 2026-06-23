@@ -1,0 +1,9 @@
+{
+  "gate": "accessibility",
+  "status": "passed",
+  "exit_code": 0,
+  "report_path": "_bmad-output/gates/accessibility/latest.json",
+  "diagnostic_policy": "metadata-only",
+  "validation_class": "Hexalith.Folders.UI.E2E.Tests.Accessibility",
+  "standard": "WCAG-2.2-AA"
+}

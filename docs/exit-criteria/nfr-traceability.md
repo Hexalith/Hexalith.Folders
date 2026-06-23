@@ -100,14 +100,14 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
 | NFR59 | Data Retention & Cleanup | 1c992d43fe37 | covered | `7-11` | `tests/tools/run-retention-deletion-gates.ps1` | `docs/operations/retention-and-tenant-deletion.md` | — | Tech Lead | Not release-blocking; automated evidence current. |
 | NFR60 | Data Retention & Cleanup | e17d52781d8a | covered | `7-11` | `tests/tools/run-retention-deletion-gates.ps1` | `docs/operations/retention-and-tenant-deletion.md` | — | Tech Lead | Not release-blocking; automated evidence current. |
 | NFR61 | Data Retention & Cleanup | 256c0e6fde19 | covered | `7-11` | `tests/tools/run-retention-deletion-gates.ps1` `tests/tools/run-safety-invariant-gates.ps1` | `C9` | — | Audit | Not release-blocking; automated evidence current. |
-| NFR62 | Operations-Console Accessibility | ff52de1235b4 | reference-pending | `6-11` `7-17` | `tests/tools/run-operations-audit-docs-gates.ps1` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Release-blocking: manual WCAG 2.2 AA keyboard/screen-reader/zoom validation evidence pending. |
-| NFR63 | Operations-Console Accessibility | 3b162432839f | reference-pending | `6-11` `7-17` | `tests/tools/run-operations-audit-docs-gates.ps1` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Release-blocking: manual keyboard-navigation validation evidence pending. |
+| NFR62 | Operations-Console Accessibility | ff52de1235b4 | release-validation | `6-11` `7-17` `8-4` | `tests/tools/run-accessibility-ci-gates.ps1` | `docs/operations/accessibility-ci-gates.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Release-validation: axe / WCAG 2.2 AA CI gate (Story 8.4) automates contrast, structure, keyboard/focus, and zoom; manual screen-reader review remains owned release-validation evidence. |
+| NFR63 | Operations-Console Accessibility | 3b162432839f | covered | `6-11` `8-4` | `tests/tools/run-accessibility-ci-gates.ps1` | `docs/operations/accessibility-ci-gates.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Not release-blocking; keyboard-navigation operability automated by the axe gate's Playwright keyboard/focus assertions (Story 8.4). |
 | NFR64 | Operations-Console Accessibility | 3781a887fa7e | covered | `6-3` | `tests/tools/run-operations-audit-docs-gates.ps1` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | — | UX / Release Validation | Not release-blocking; automated evidence current. |
-| NFR65 | Operations-Console Accessibility | cb8877f00337 | reference-pending | `6-11` `7-17` | `tests/tools/run-operations-audit-docs-gates.ps1` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Release-blocking: manual focus/heading/contrast validation evidence pending. |
-| NFR66 | Operations-Console Accessibility | 5cde1ea41661 | reference-pending | `6-10` `7-17` | `tests/tools/run-operations-audit-docs-gates.ps1` | `docs/ux/ops-console-performance-budget.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Release-blocking: manual browser-zoom readability validation evidence pending. |
+| NFR65 | Operations-Console Accessibility | cb8877f00337 | covered | `6-11` `8-4` | `tests/tools/run-accessibility-ci-gates.ps1` | `docs/operations/accessibility-ci-gates.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Not release-blocking; focus-visible, heading structure, and contrast automated by the axe gate (Story 8.4). |
+| NFR66 | Operations-Console Accessibility | 5cde1ea41661 | covered | `6-10` `8-4` | `tests/tools/run-accessibility-ci-gates.ps1` | `docs/operations/accessibility-ci-gates.md` | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | UX / Release Validation | Not release-blocking; 125/150/200% browser-zoom + dense-identifier no-clipping automated by the axe gate (Story 8.4). |
 | NFR67 | Verification Expectations | f6704879b0f5 | covered | `7-16` | `tests/tools/run-nfr-traceability-gates.ps1` | `C0` | `_bmad-output/gates/nfr-traceability/latest.json` | Release Readiness | Not release-blocking; automated evidence current. |
 | NFR68 | Verification Expectations | fc40fb7b47cc | covered | `5-5` | `tests/tools/run-contract-parity-ci-gates.ps1` `tests/tools/run-safety-invariant-gates.ps1` | `C13` | — | Contracts | Not release-blocking; automated evidence current. |
-| NFR69 | Verification Expectations | e924c41216c4 | release-validation | `7-10` `7-11` | `tests/tools/run-capacity-calibration-gates.ps1` | `C1` `C3` | `docs/exit-criteria/c1-capacity.md` `docs/exit-criteria/c3-retention.md` `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | Release Readiness | Release-validation: perf/a11y/retention/backup evidence consolidated; a11y + backup remain reference-pending. |
+| NFR69 | Verification Expectations | e924c41216c4 | release-validation | `7-10` `7-11` | `tests/tools/run-capacity-calibration-gates.ps1` | `C1` `C3` | `docs/exit-criteria/c1-capacity.md` `docs/exit-criteria/c3-retention.md` `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | Release Readiness | Release-validation: perf/a11y/retention/backup evidence consolidated; backup remains reference-pending; a11y now automated by the axe / WCAG 2.2 AA CI gate (Story 8.4). |
 | NFR70 | Verification Expectations | e0b208ef5e3d | covered | `7-9` | `tests/tools/run-release-package-gates.ps1` `tests/tools/run-security-redaction-ci-gates.ps1` | `C0` | — | Security | Not release-blocking; automated evidence current. |
 <!-- /nfr-traceability-table -->
 
@@ -125,7 +125,7 @@ Every PRD/architecture NFR category is represented; the counts sum to the full 7
 | Integration & Contract Compatibility | NFR37–NFR46 | 10 | `tests/tools/run-contract-parity-ci-gates.ps1` `tests/tools/run-contract-spine-gates.ps1` |
 | Observability, Auditability & Replay | NFR47–NFR55 | 9 | `tests/tools/run-production-observability-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` |
 | Data Retention & Cleanup | NFR56–NFR61 | 6 | `tests/tools/run-retention-deletion-gates.ps1` `docs/exit-criteria/c3-retention.md` |
-| Operations-Console Accessibility | NFR62–NFR66 | 5 | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` `tests/tools/run-operations-audit-docs-gates.ps1` |
+| Operations-Console Accessibility | NFR62–NFR66 | 5 | `tests/tools/run-accessibility-ci-gates.ps1` `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` |
 | Verification Expectations | NFR67–NFR70 | 4 | `tests/tools/run-nfr-traceability-gates.ps1` `tests/tools/run-capacity-calibration-gates.ps1` |
 <!-- /nfr-category-rollup -->
 
@@ -141,7 +141,7 @@ below; the conformance test asserts all six classes are present and each cites a
 | `audit-completeness` | covered | `tests/tools/run-operations-audit-docs-gates.ps1` `docs/operations/audit-and-redaction.md` |
 | `workspace-and-context-query-performance-baselines` | release-validation | `tests/tools/run-capacity-calibration-gates.ps1` `docs/exit-criteria/c2-freshness.md` |
 | `cli-mcp-smoke-parity` | covered | `tests/tools/run-contract-parity-ci-gates.ps1` `tests/fixtures/parity-contract.yaml` |
-| `console-accessibility-responsive-validation` | reference-pending | `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` `docs/ux/ops-console-performance-budget.md` |
+| `console-accessibility-responsive-validation` | release-validation | `tests/tools/run-accessibility-ci-gates.ps1` `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` `docs/ux/ops-console-performance-budget.md` |
 | `operational-runbook-proof` | reference-pending | `docs/runbooks/tenant-deletion.md` `docs/operations/incident-alerting-and-recovery.md` |
 <!-- /nfr-bdd-evidence-rollup -->
 
@@ -163,8 +163,12 @@ bridge only cross-links to existing evidence and does not author those artifacts
   Consuming story: `7-11`. Surfaced by NFR57.
 - Live alert delivery tooling and backup/restore + recovery-drill tooling. Owner: Operations Runbook (Story
   7.17). Consuming story: `7-17`. Surfaced by NFR54 and NFR55.
-- Manual WCAG 2.2 AA keyboard, screen-reader, focus/contrast, and browser-zoom validation evidence. Owner: UX
-  / Release Validation. Consuming stories: `6-11`, `7-17`. Surfaced by NFR62, NFR63, NFR65, and NFR66.
+
+Operations-console accessibility (NFR62, NFR63, NFR65, NFR66) is no longer a release-blocking gap: Story 8.4
+wired the automated axe / WCAG 2.2 AA CI gate (`accessibility-gates`) covering contrast, structure,
+keyboard/focus, and 125/150/200 % zoom + dense-identifier no-clipping. The genuinely-manual residuals —
+screen-reader, forced-colors, and color-blindness review — remain owned release-validation evidence in
+`docs/ux/ops-console-accessibility-and-no-mutation-verification.md`, not release-blocking gaps.
 
 ## Metadata-only policy
 

@@ -254,7 +254,8 @@ public sealed partial class OperationsAuditDocsConformanceTests
             "who or what caused it",
             "from which surface",
             "whether the evidence can be trusted",
-            // Perceived-wait + budgets + accessibility, all release-validation (no new CI gate).
+            // Perceived-wait + budgets stay release-validation; accessibility now has an automated CI gate
+            // (Story 8.4 — the axe / WCAG 2.2 AA `accessibility-gates` job) so the doc must name it.
             "skeleton",
             "400 ms",
             "2 s",
@@ -265,13 +266,16 @@ public sealed partial class OperationsAuditDocsConformanceTests
             "reference_pending",
             "WCAG 2.2 AA",
             "AccessibilityContractSweepTests",
+            "accessibility-gates",
         })
         {
             console.ShouldContain(required, Case.Sensitive);
         }
 
-        console.ShouldContain("no", Case.Sensitive);
-        NormalizeWhitespace(console).ShouldContain("No new accessibility or performance CI gate", Case.Sensitive);
+        // Story 8.4 flipped the prior "no new accessibility CI gate" posture: the doc now records the automated
+        // axe / WCAG 2.2 AA CI gate, while no new *performance* CI gate is introduced.
+        NormalizeWhitespace(console).ShouldContain("axe / WCAG 2.2 AA CI gate", Case.Sensitive);
+        NormalizeWhitespace(console).ShouldContain("No new performance CI gate", Case.Sensitive);
     }
 
     [Fact]

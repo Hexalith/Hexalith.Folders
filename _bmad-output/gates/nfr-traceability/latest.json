@@ -4,7 +4,7 @@
   "exit_code": 0,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
-  "source_commit": "3ca0fdd245b61ec394eea4c801540c2fafa5bd2e",
+  "source_commit": "647ddc9e404120b72fbe7f89f0031305cedb45de",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
   "nfr_total": 70,
   "category_total": 9,
@@ -78,34 +78,6 @@
       "owner": "Legal + PM",
       "consuming_story": "7-11",
       "gap": "legal-pm-approval-of-retention-durations"
-    },
-    {
-      "nfr": "NFR62",
-      "criterion": "",
-      "owner": "UX / Release Validation",
-      "consuming_story": "7-17",
-      "gap": "manual-wcag-keyboard-screen-reader-zoom-validation-evidence"
-    },
-    {
-      "nfr": "NFR63",
-      "criterion": "",
-      "owner": "UX / Release Validation",
-      "consuming_story": "7-17",
-      "gap": "manual-keyboard-navigation-validation-evidence"
-    },
-    {
-      "nfr": "NFR65",
-      "criterion": "",
-      "owner": "UX / Release Validation",
-      "consuming_story": "7-17",
-      "gap": "manual-focus-heading-contrast-validation-evidence"
-    },
-    {
-      "nfr": "NFR66",
-      "criterion": "",
-      "owner": "UX / Release Validation",
-      "consuming_story": "7-17",
-      "gap": "manual-browser-zoom-readability-validation-evidence"
     }
   ]
 }

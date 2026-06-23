@@ -171,7 +171,7 @@ development_status:
   8-1-implement-bucket-a-missing-rest-server-routes: done
   8-2-implement-ops-console-diagnostics-rest-routes: done
   8-3-wire-exercise-cross-surface-parity-and-close-claim: done
-  8-4-stand-up-axe-wcag-ci-gate: backlog
+  8-4-stand-up-axe-wcag-ci-gate: done
   8-5-close-c3-legal-signoff-and-residual-reds: backlog
   epic-8-retrospective: optional
 

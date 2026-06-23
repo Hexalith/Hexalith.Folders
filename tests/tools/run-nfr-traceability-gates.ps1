@@ -75,11 +75,12 @@ function Write-NfrTraceabilityReport {
         [ordered]@{ nfr = 'NFR44'; criterion = 'C12'; owner = 'Provider Readiness'; consuming_story = '7-8'; gap = 'live-provider-drift-requires-credentials-absent-in-ci' },
         [ordered]@{ nfr = 'NFR54'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'live-alert-delivery-tooling-deferred' },
         [ordered]@{ nfr = 'NFR55'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'backup-restore-tooling-and-recovery-drill-evidence-deferred' },
-        [ordered]@{ nfr = 'NFR57'; criterion = 'C3'; owner = 'Legal + PM'; consuming_story = '7-11'; gap = 'legal-pm-approval-of-retention-durations' },
-        [ordered]@{ nfr = 'NFR62'; criterion = ''; owner = 'UX / Release Validation'; consuming_story = '7-17'; gap = 'manual-wcag-keyboard-screen-reader-zoom-validation-evidence' },
-        [ordered]@{ nfr = 'NFR63'; criterion = ''; owner = 'UX / Release Validation'; consuming_story = '7-17'; gap = 'manual-keyboard-navigation-validation-evidence' },
-        [ordered]@{ nfr = 'NFR65'; criterion = ''; owner = 'UX / Release Validation'; consuming_story = '7-17'; gap = 'manual-focus-heading-contrast-validation-evidence' },
-        [ordered]@{ nfr = 'NFR66'; criterion = ''; owner = 'UX / Release Validation'; consuming_story = '7-17'; gap = 'manual-browser-zoom-readability-validation-evidence' }
+        [ordered]@{ nfr = 'NFR57'; criterion = 'C3'; owner = 'Legal + PM'; consuming_story = '7-11'; gap = 'legal-pm-approval-of-retention-durations' }
+        # NFR62/63/65/66 (operations-console accessibility) were release-blocking manual gaps; Story 8.4 wired the
+        # automated axe / WCAG 2.2 AA CI gate (accessibility-gates), so they move out of release-blocking gaps —
+        # NFR63/65/66 to covered, NFR62 to release-validation (manual screen-reader review remains). Removing them
+        # here keeps the report's release_blocking_gaps in sync with the docs/exit-criteria/nfr-traceability.md
+        # reference-pending rows, which the conformance test cross-checks.
     )
 
     [ordered]@{

@@ -17,6 +17,34 @@ defined** — mirroring the Story 6.10 `reference_pending` discipline and the
 this doc and in the verification tests are **synthetic** (`acme`, `tenant-a`, `folder-1`, `workspace-1`, …); no
 real tenant / folder / credential / path / audit data appears.
 
+## Story 8.4 update (2026-06-23) — automated axe / WCAG 2.2 AA CI gate now wired
+
+**Story 8.4 reverses the Story 6.11 "no CI accessibility gate / no a11y package" deferral recorded below.** It
+adds `Deque.AxeCore.Playwright` (central package management) and stands up the automated **axe / WCAG 2.2 AA CI
+gate** — the `accessibility-gates` job in `.github/workflows/ci.yml`, driven by
+`tests/tools/run-accessibility-ci-gates.ps1` over the `Accessibility` namespace of the UI E2E lane against a
+**populated** stub-`IClient` host. Operator runbook: `docs/operations/accessibility-ci-gates.md`. The green gate
+run is the **NFR69 / NFR-VER-3 accessibility release-validation evidence**; the gate writes a metadata-only
+report to `_bmad-output/gates/accessibility/latest.json`.
+
+The gate is a **union** (axe ≠ full WCAG 2.2 AA). What it now **automates** (flipping the rows below from
+manual `reference_pending` to **covered by CI gate `accessibility-gates`**):
+
+| Area (section below) | Was | Now |
+| --- | --- | --- |
+| axe contrast (1.4.3) + name/role/value + semantic headings/landmarks + table structure + link/control names (§2, §8 contrast) | manual `reference_pending` | **covered — `accessibility-gates` (`ConsoleAxeWcagGateTests`)** |
+| Keyboard operability + visible-focus appearance (§4, §5) | `reference_pending` | **covered — `accessibility-gates` (`ConsoleKeyboardFocusGateTests`)** |
+| Browser zoom 125/150/200 % + dense-identifier no-clipping (§7, §8) | `reference_pending` | **covered — `accessibility-gates` (`ConsoleZoomReflowGateTests`)** |
+
+What **remains genuinely manual** (the gate does **not** automate these — they stay owned `reference_pending`
+release-validation evidence, method + owner unchanged): **screen-reader review** (§6), **forced-colors /
+high-contrast** (§9), and **color-blindness review** (§9). Owner: UX / Release Validation.
+
+NFR mapping after this flip (see `docs/exit-criteria/nfr-traceability.md`): **NFR63 / NFR65 / NFR66 → covered**;
+**NFR62 → release-validation** (axe + keyboard/focus + zoom automated; manual screen-reader remains); **NFR64**
+stays covered. The axe scan is scoped to the console page-content root; the shared FrontComposer shell chrome is
+out of scope for this story.
+
 ## Document control
 
 | Field | Value |
@@ -268,9 +296,10 @@ ops_console_accessibility_and_no_mutation:
 
 ## 13. Out of scope (deferred)
 
-- **No CI accessibility gate and no a11y/contrast/zoom package** — release-validated; `Directory.Packages.props`
-  is a forbidden touch, so `Deque.AxeCore.Playwright` (anticipated but never wired in the E2E README) is **not**
-  added.
+- **No CI accessibility gate and no a11y/contrast/zoom package** *(for Story 6.11 — **reversed by Story 8.4**,
+  see the Story 8.4 update at the top)*. At 6.11 time this was release-validated and `Directory.Packages.props`
+  was a forbidden touch, so `Deque.AxeCore.Playwright` (anticipated in the E2E README) was not added; Story 8.4
+  is the Epic-8 closure story that adds it and wires the `accessibility-gates` CI gate.
 - **No pinned C1/C2/C5 capacity numbers** — `reference_pending` (Workstream 7 owns the release rollup).
 - **Production console behaviour change — one scoped availability fix (QA automation pass).** The bUnit
   no-mutation + WCAG-structural sweeps surfaced **no** defect. The subsequent QA E2E automation pass (the

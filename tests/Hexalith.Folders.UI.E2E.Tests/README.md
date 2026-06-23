@@ -47,8 +47,9 @@ E2E tests under this project must follow the contract below. Any deviation is a 
 
 ### Accessibility
 
-- Every page-level smoke test must include an accessibility scan. The scanning library (`Deque.AxeCore.Playwright` or successor) is selected when the first real test lands.
-- Accessibility findings of severity `serious` or `critical` fail the test.
+- The console journeys carry an axe-core / WCAG 2.2 AA scan (`Deque.AxeCore.Playwright`, Story 8.4) under the `Accessibility/` namespace, run against a populated stub-`IClient` host.
+- axe is filtered to the cumulative WCAG AA tag set (`wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa`) and the test fails on **any** AA-tagged violation (Story 8.4 AD3 — stricter than the earlier `serious`/`critical` intent). Failure output is metadata-only (rule id + target selector + helpUrl, never raw HTML).
+- The gate is a union: the axe scan plus explicit Playwright keyboard-operability / visible-focus and zoom / no-clipping assertions, complemented by the bUnit `AccessibilityContractSweepTests` not-color-alone sweeps.
 
 ### Redaction
 

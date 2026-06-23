@@ -74,6 +74,10 @@
     <PackageVersion Include="Testcontainers" Version="4.12.0" />
     <PackageVersion Include="YamlDotNet" Version="18.0.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.60.0" />
+    <!-- Story 8.4: axe-core WCAG 2.2 AA scan over the Playwright-on-.NET UI E2E lane. .NET-Standard-2.1
+         compatible (resolves for net10.0). Reverses Story 6-11's lane-scoped "no a11y package" constraint. -->
+    <PackageVersion Include="Deque.AxeCore.Playwright" Version="4.11.3" />
+    <PackageVersion Include="Deque.AxeCore.Commons" Version="4.11.3" />
     <PackageVersion Include="bunit" Version="2.7.2" />
   </ItemGroup>
 </Project>

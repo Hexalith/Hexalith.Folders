@@ -165,9 +165,11 @@ never cancels a mutation (the console has none); it only cancels an in-flight re
 
 **Accessibility (WCAG 2.2 AA):** single `<h1>` per page, `<html lang="en">`, `FocusOnNavigate` to the heading,
 captioned tables with scoped headers, English-only for MVP. Automated structural conformance is verified by
-`AccessibilityContractSweepTests`. Manual checks — keyboard journeys, screen-reader, 125/150/200 % zoom,
-forced-colors, and color-blindness — are `reference_pending` with the method defined in the UX spec. No new
-accessibility or performance CI gate is introduced by this story.
+`AccessibilityContractSweepTests`, and an automated axe / WCAG 2.2 AA CI gate (`accessibility-gates`, Story 8.4)
+verifies contrast, structure, keyboard/focus, and 125/150/200 % zoom + dense-identifier no-clipping over the
+three console journeys (see `docs/operations/accessibility-ci-gates.md`). The genuinely-manual checks —
+screen-reader, forced-colors, and color-blindness — remain `reference_pending` with the method defined in the UX
+spec. No new performance CI gate is introduced; the perceived-wait page-load budgets stay release-validation.
 
 ## Metadata-only policy
 
