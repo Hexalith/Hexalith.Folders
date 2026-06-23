@@ -153,7 +153,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client", "Hexalith.FrontComposer.Shell"]);
-        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Memories.Aspire", "Hexalith.Tenants.Aspire"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
@@ -227,6 +227,33 @@ public sealed class ScaffoldContractTests
             adapterRefs.ShouldNotContain("Hexalith.Folders.Server");
             adapterRefs.ShouldNotContain("Hexalith.Folders.Workers");
             adapterRefs.ShouldNotContain("Hexalith.Folders.AppHost");
+        }
+
+        string[] foldersProjectsForbiddenFromMemoriesClient =
+        [
+            "Hexalith.Folders.Contracts",
+            "Hexalith.Folders",
+            "Hexalith.Folders.Server",
+            "Hexalith.Folders.Client",
+            "Hexalith.Folders.Cli",
+            "Hexalith.Folders.Mcp",
+            "Hexalith.Folders.UI",
+            "Hexalith.Folders.Testing",
+            "Hexalith.Folders.Aspire",
+            "Hexalith.Folders.AppHost",
+        ];
+        string[] forbiddenMemoriesClientReferences =
+        [
+            "Hexalith.Memories.Client.Rest",
+            "Hexalith.Memories.Contracts",
+        ];
+        foreach (string project in foldersProjectsForbiddenFromMemoriesClient)
+        {
+            HashSet<string> projectRefs = RequireReferences(references, project);
+            foreach (string forbidden in forbiddenMemoriesClientReferences)
+            {
+                projectRefs.ShouldNotContain(forbidden, $"{project} must not reference {forbidden}; Memories client dependencies are isolated to Hexalith.Folders.Workers.");
+            }
         }
     }
 

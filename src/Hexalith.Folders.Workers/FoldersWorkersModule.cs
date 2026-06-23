@@ -4,9 +4,11 @@ using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Workers.RepositoryProvisioning;
+using Hexalith.Folders.Workers.SemanticIndexing;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.DomainService;
+using Hexalith.Memories.Client.Rest;
 using Hexalith.Tenants.Client.Registration;
 using Hexalith.Tenants.Contracts.Events;
 
@@ -38,6 +40,7 @@ public static class FoldersWorkersModule
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddDaprClient();
+        services.AddFoldersSemanticIndexingWorkers();
 
         // AddFoldersTenantAccess already binds and validate-on-start's FoldersTenantEventOptions; do not rebind here.
         services.AddFoldersTenantAccess();
@@ -51,6 +54,16 @@ public static class FoldersWorkersModule
         services.AddOptions<EventStoreDomainEventsOptions>().ValidateOnStart();
         services.AddFoldersTenantEventProjection();
         services.AddFoldersRepositoryProvisioningWorkers();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersSemanticIndexingWorkers(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddMemoriesClient();
+        services.TryAddTransient<ISemanticIndexingPort, MemoriesSemanticIndexingPort>();
 
         return services;
     }

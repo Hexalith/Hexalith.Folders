@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-23 (Epic 9 closed + retrospective complete)
+# last_updated: 2026-06-23 (Story 10.1 done)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -195,8 +195,8 @@ development_status:
 
   # Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
   # Phase 2 (gated on Epic 9 + C4 large-file + C9 path-exposure). Stubs pending create-story.
-  epic-10: backlog
-  10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: backlog
+  epic-10: in-progress
+  10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: done
   10-2-build-folders-owned-indexing-bridge-projection: backlog
   10-3-author-authorized-async-indexing-on-file-write-and-commit: backlog
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog
