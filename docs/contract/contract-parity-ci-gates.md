@@ -38,6 +38,17 @@ The script runs exact project and filter allow-lists. It does not publish packag
 - `mcp-behavioral-parity`: MCP failure-kind, tool mapping, pre-SDK, post-SDK, and sourcing parity.
 - `mixed-surface-handoff`: cross-adapter behavior and mixed REST, SDK, CLI, and MCP handoff workflows.
 
+### Wire-exercised parity (Stories 8.1–8.3)
+
+The `rest-sdk-golden-parity` and `mixed-surface-handoff` lanes are **wire-exercised end-to-end** against an
+in-process host, not asserted at oracle-metadata level: all 47 operations have REST server routes (Stories
+8.1/8.2), the golden-lifecycle steps are driven over the real REST transport (and SDK/CLI/MCP equivalents),
+and cross-surface error parity is exercised on the wire — `idempotency_conflict` surfaces as HTTP 409 / CLI
+exit 68 / MCP `idempotency_conflict`, and ACL denials surface as the safe denial `not_found_to_caller` (404)
+uniformly across surfaces (the canonical `folder_acl_denied` → 403 gateway-hop mapping is covered at the
+route/adapter layers). The public **four-surface canonical-lifecycle parity claim is gated on these stories**
+passing; it is asserted to consumers only on green.
+
 ## Test Inventory
 
 The gate uses these exact projects and filters:

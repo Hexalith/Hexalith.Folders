@@ -3724,6 +3724,22 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        // Story 8.3: an aggregate-gate ACL rejection (FolderAclDenied family) propagated through the gateway
+        // surfaces the canonical folder_acl_denied category at 403 — not the generic denied_safe fallback —
+        // so the CLI exit code (66) and MCP failure kind (folder_acl_denied) match the parity oracle on every
+        // surface. This is the in-tenant ACL-evidence denial reached after layered authorization; the
+        // unknown-existence safe-denial path (404 not_found_to_caller) lives in FolderAuthorizationDenialMapper.
+        if (exception.StatusCode == StatusCodes.Status403Forbidden && reasonCode == "folder_acl_denied")
+        {
+            return SafeProblem(
+                StatusCodes.Status403Forbidden,
+                category: "folder_acl_denied",
+                code: "folder_acl_denied",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         return exception.StatusCode switch
         {
             StatusCodes.Status400BadRequest => SafeProblem(
@@ -3836,6 +3852,17 @@ public static class FoldersDomainServiceEndpoints
             "idempotency_conflict" => "idempotency_conflict",
             "idempotency-conflict" => "idempotency_conflict",
             "IdempotencyConflict" => "idempotency_conflict",
+            // Story 8.3: surface the canonical folder_acl_denied category (403) for an aggregate-gate ACL
+            // rejection propagated through the gateway hop. The PascalCase variants are the FolderResultCode
+            // names the /process rejection carries; the snake/kebab forms cover the gateway's problem reason.
+            // The pre-gateway layered-auth safe-denial path (FolderAclDenied → 404 not_found_to_caller, see
+            // FolderAuthorizationDenialMapper) is unaffected — this only completes the gateway-rejection leg.
+            "folder_acl_denied" => "folder_acl_denied",
+            "folder-acl-denied" => "folder_acl_denied",
+            "FolderAclDenied" => "folder_acl_denied",
+            "AclEvidenceMismatch" => "folder_acl_denied",
+            "AclEvidenceForeignFolder" => "folder_acl_denied",
+            "AclEvidenceUnsupportedAction" => "folder_acl_denied",
             "read_model_unavailable" => "read_model_unavailable",
             "read-model-unavailable" => "read_model_unavailable",
             "projection_stale" => "projection_stale",

@@ -7,6 +7,11 @@ that exposes the canonical Folders surface to MCP clients. It is an executable s
 process you launch, **not** a NuGet library — and it wraps the typed SDK (`Hexalith.Folders.Client`); it adds
 no behavior absent from the [Contract Spine](./api-reference.md).
 
+The four-surface parity this reference relies on is **wire-exercised** end-to-end (REST/SDK/CLI/MCP), gated on
+Stories 8.1–8.3 — including canonical cross-surface error parity (`idempotency_conflict` → MCP failure kind
+`idempotency_conflict`). See [Surface conventions](./api-reference.md#surface-conventions) and the
+[contract & parity CI gates](../contract/contract-parity-ci-gates.md).
+
 All examples are **metadata-only**: identifiers are opaque, synthetic references. Never place secrets, bearer
 tokens, raw file contents, base64 file bytes, diffs, provider payloads, real issuer/audience values, or local
 absolute paths in tool arguments, results, logs, or examples.

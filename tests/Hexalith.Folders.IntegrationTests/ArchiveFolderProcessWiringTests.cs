@@ -10,6 +10,7 @@ using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Parity.Testing;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.Folders;
@@ -734,7 +735,7 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
         InMemoryOrganizationProviderBindingRepository organizationRepository = new();
         Uri? hostUri = null;
-        InProcessEventStoreGatewayClient gateway = new(() => hostUri!, context);
+        InProcessRejectionPropagatingGatewayClient gateway = new(() => new HttpClient { BaseAddress = hostUri! }, () => context.PrincipalId);
 
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -938,7 +939,7 @@ public sealed class ArchiveFolderProcessWiringTests
     private sealed record TestHost(
         WebApplication App,
         HttpClient Client,
-        InProcessEventStoreGatewayClient Gateway,
+        InProcessRejectionPropagatingGatewayClient Gateway,
         MutableTenantAndClaimContext Context,
         InMemoryFolderRepository Repository,
         InMemoryFolderTenantAccessProjectionStore TenantStore,
@@ -972,99 +973,6 @@ public sealed class ArchiveFolderProcessWiringTests
                 AuthoritativeTenantId ?? string.Empty,
                 PrincipalId ?? string.Empty,
                 [actionToken]);
-    }
-
-    private sealed class InProcessEventStoreGatewayClient(
-        Func<Uri> baseAddress,
-        MutableTenantAndClaimContext context) : IEventStoreGatewayClient
-    {
-        public int LastWireEventCount { get; private set; }
-
-        public int ProcessCalls { get; private set; }
-
-        public async Task<SubmitCommandResponse> SubmitCommandAsync(
-            SubmitCommandRequest request,
-            CancellationToken cancellationToken = default)
-        {
-            ProcessCalls++;
-            using HttpClient client = new() { BaseAddress = baseAddress() };
-            CommandEnvelope envelope = new(
-                request.MessageId,
-                request.Tenant,
-                request.Domain,
-                request.AggregateId,
-                request.CommandType,
-                JsonSerializer.SerializeToUtf8Bytes(request.Payload),
-                request.CorrelationId ?? request.MessageId,
-                CausationId: null,
-                context.PrincipalId ?? "actor-present",
-                request.Extensions);
-
-            HttpResponseMessage response = await client
-                .PostAsJsonAsync("/process", new DomainServiceRequest(envelope, CurrentState: null), cancellationToken)
-                .ConfigureAwait(false);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new EventStoreGatewayException((int)response.StatusCode, response.ReasonPhrase ?? "Process failed", correlationId: request.CorrelationId);
-            }
-
-            DomainServiceWireResult result = (await response.Content
-                .ReadFromJsonAsync<DomainServiceWireResult>(cancellationToken)
-                .ConfigureAwait(false))!;
-            LastWireEventCount = result.Events.Count;
-
-            if (result.IsRejection)
-            {
-                throw ToGatewayException(result, request.CorrelationId ?? request.MessageId);
-            }
-
-            return new SubmitCommandResponse(request.CorrelationId ?? request.MessageId);
-        }
-
-        public Task<EventStoreQueryResult> SubmitQueryAsync(
-            SubmitQueryRequest request,
-            string? ifNoneMatch = null,
-            CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        public Task<EventStoreQueryResult<T>> SubmitQueryAsync<T>(
-            SubmitQueryRequest request,
-            string? ifNoneMatch = null,
-            CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        public Task<StreamReadPage> ReadStreamAsync(
-            StreamReadRequest request,
-            CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        private static EventStoreGatewayException ToGatewayException(DomainServiceWireResult result, string correlationId)
-        {
-            DomainServiceWireEvent rejection = result.Events.Single();
-            using JsonDocument document = JsonDocument.Parse(rejection.Payload);
-            string code = document.RootElement.TryGetProperty("code", out JsonElement camelCode)
-                ? camelCode.GetString() ?? "MalformedEvidence"
-                : document.RootElement.GetProperty("Code").GetString() ?? "MalformedEvidence";
-            int status = code switch
-            {
-                nameof(FolderResultCode.IdempotencyConflict) => 409,
-                nameof(FolderResultCode.FolderNotFound) => 404,
-                nameof(FolderResultCode.ProviderRateLimited) => 429,
-                nameof(FolderResultCode.ValidationFailed)
-                    or nameof(FolderResultCode.MalformedJsonPayload)
-                    or nameof(FolderResultCode.InvalidFolderId)
-                    or nameof(FolderResultCode.InvalidTenant)
-                    or nameof(FolderResultCode.ReservedTenant) => 400,
-                nameof(FolderResultCode.StaleProjection)
-                    or nameof(FolderResultCode.UnavailableProjection)
-                    or nameof(FolderResultCode.PolicyEvidenceUnavailable)
-                    or nameof(FolderResultCode.PolicyEvidenceStale)
-                    or nameof(FolderResultCode.AclEvidenceUnavailable) => 503,
-                _ => 403,
-            };
-
-            return new EventStoreGatewayException(status, "Rejected", correlationId: correlationId);
-        }
     }
 
     private sealed class ReadyRepositoryCreationReadinessValidator : IRepositoryCreationReadinessValidator

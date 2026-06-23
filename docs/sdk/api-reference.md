@@ -40,6 +40,12 @@ examples.
   the MCP server are parallel adapters of the same 47 canonical operations; the SDK is the canonical typed
   client and the CLI/MCP wrap it. Vocabularies (error categories, exit codes, failure kinds) are 1:1 with the
   parity oracle and are never collapsed or renamed.
+- **Parity is wire-exercised, not just contractual.** The four-surface canonical-lifecycle parity claim is
+  gated on Stories 8.1–8.3 and is now satisfied: all 47 operations have REST server routes (8.1/8.2), and the
+  golden-lifecycle and mixed-surface scenarios are exercised end-to-end over the real transport across
+  REST/SDK/CLI/MCP (8.3) — including canonical cross-surface error parity (`idempotency_conflict` → HTTP 409 /
+  CLI exit 68 / MCP `idempotency_conflict`; ACL denials as the safe denial `not_found_to_caller`). See the
+  [contract & parity CI gates](../contract/contract-parity-ci-gates.md) for the enforcing test lanes.
 
 ### Security
 

@@ -30,6 +30,12 @@
     <Compile Include="..\shared\Parity\MixedSurfaceScenario.cs">
       <Link>Parity\MixedSurfaceScenario.cs</Link>
     </Compile>
+    <!-- Story 8.3: shared rejection-propagating in-process gateway (linked, not copied). Replaces the
+         per-file flattening stubs so aggregate rejections surface as canonical wire-level problems
+         (folder_acl_denied → 403, idempotency_conflict → 409) across all four surfaces. -->
+    <Compile Include="..\shared\Parity\InProcessRejectionPropagatingGatewayClient.cs">
+      <Link>Parity\InProcessRejectionPropagatingGatewayClient.cs</Link>
+    </Compile>
   </ItemGroup>
   <!-- Story 5.6: link (not copy) the CLI test harness and the MCP test support so the cross-adapter
        behavioral-parity tests drive the *same* surface the per-adapter test suites already prove. The linked

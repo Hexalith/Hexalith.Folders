@@ -176,6 +176,55 @@ public sealed class ArchiveFolderEndpointTests
         }
     }
 
+    [Theory]
+    [InlineData("FolderAclDenied")]
+    [InlineData("folder_acl_denied")]
+    [InlineData("folder-acl-denied")]
+    [InlineData("AclEvidenceMismatch")]
+    [InlineData("AclEvidenceForeignFolder")]
+    [InlineData("AclEvidenceUnsupportedAction")]
+    public async Task ArchiveFolderEndpointShouldSurfaceCanonicalFolderAclDeniedFromGatewayRejection(string reasonCode)
+    {
+        // Story 8.3: a propagated aggregate-gate ACL rejection (FolderAclDenied family) carries its reason
+        // code through the gateway hop. The endpoint must surface the canonical folder_acl_denied category
+        // at 403 — not the generic tenant_access_denied/denied_safe fallback — so the CLI exit code (66) and
+        // MCP failure kind (folder_acl_denied) match the parity oracle. The unknown-existence safe-denial
+        // path (404 not_found_to_caller, FolderAuthorizationDenialMapper) is a separate layer and unaffected.
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                403,
+                "Gateway rejection",
+                type: "https://hexalith.dev/errors/internal-detail",
+                detail: "folder folder-a rejected by internal gateway",
+                correlationId: "correlation-gateway",
+                reasonCode: reasonCode),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("folder_acl_denied");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("folder_acl_denied");
+            document.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-gateway");
+            document.RootElement.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("metadata_only");
+            json.ShouldNotContain("folder folder-a rejected");
+            gateway.Requests.Count.ShouldBe(1);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
     [Fact]
     public async Task ArchiveFolderEndpointShouldReturnSchemaVersionHintWithoutGatewaySubmit()
     {

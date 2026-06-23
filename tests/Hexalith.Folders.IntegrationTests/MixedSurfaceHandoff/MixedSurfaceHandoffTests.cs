@@ -62,20 +62,16 @@ namespace Hexalith.Folders.IntegrationTests.MixedSurfaceHandoff;
 /// <para><b>Hermeticity (AC #9).</b> Host on <c>http://127.0.0.1:0</c>, in-memory repository / gateway /
 /// lifecycle read model / tenant projection store / permissions read model. No Dapr/Keycloak/Redis
 /// sidecars, no provider credentials, no GitHub/Forgejo network, no nested submodule init.</para>
-/// <para><b>In-process gateway response-flattening note (AC #5 nuance).</b> The
-/// <c>InProcessEventStoreGatewayClient</c> stub round-trips through <c>/process</c> but does not propagate
-/// the aggregate's <c>IsRejection</c> flag or rejection-payload back into a non-success <c>HttpResponse</c>
-/// from the calling endpoint. Consequently, an aggregate-side
-/// <see cref="FolderResultCode.IdempotencyConflict"/> does not surface as REST 409 / SDK exception / CLI
-/// exit 68 / MCP <c>idempotency_conflict</c> kind in this hermetic fixture — the production gateway is
-/// expected to translate that rejection at the gateway hop. The cross-surface conflict invariant
-/// <i>is</i> observable in this fixture as the aggregate-side ledger invariant: same idempotency key with
-/// a conflicting payload produces no second appended event, the second-and-later surface invocations
-/// receive the original-call's result envelope, and the aggregate's idempotency fingerprint reflects only
-/// the first writer. The cross-surface tests assert the aggregate-side invariant here. When the audit /
-/// gateway-rejection-propagation gap is closed, the surface-level <c>idempotency_conflict</c> assertions
-/// extend without test-design change (mirror Story 5.5's <c>RestInspectionOperationId</c> substitution
-/// pattern).</para>
+/// <para><b>Rejection identity preserved end-to-end (Story 8.3, AC #4).</b> The host uses the shared
+/// <see cref="InProcessRejectionPropagatingGatewayClient"/>, which round-trips through <c>/process</c> and
+/// propagates the aggregate's <c>IsRejection</c> by throwing an <c>EventStoreGatewayException</c> carrying
+/// the canonical status + reason code — exactly as the production gateway translates a rejection at the
+/// gateway hop. Consequently an aggregate-side <c>idempotency_conflict</c> now surfaces over the wire as
+/// REST/SDK 409 / CLI exit 68 / MCP <c>idempotency_conflict</c> kind, and the cross-surface conflict test
+/// asserts that surface-level behavior directly (in addition to the aggregate-side ledger invariant). ACL
+/// denials remain the canonical safe denial (404 not_found_to_caller) on every surface — the deliberate
+/// zero-cross-tenant-leakage invariant; the canonical folder_acl_denied → 403 gateway-hop mapping is proven
+/// at the route / adapter layers (see Story 8.3 Dev Notes AD2).</para>
 /// </remarks>
 public sealed class MixedSurfaceHandoffTests
 {
@@ -162,14 +158,19 @@ public sealed class MixedSurfaceHandoffTests
         restResponse.Headers.GetValues("X-Correlation-Id").Single().ShouldBe(identity.CorrelationId, "REST must echo the supplied X-Correlation-Id unchanged.");
         restResponse.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe(identity.TaskId, "REST must echo the supplied X-Hexalith-Task-Id unchanged.");
 
-        // ===== Step 2 — SDK mutating: ArchiveFolder (archive-on-archived is idempotent in the aggregate). =====
+        // ===== Step 2 — SDK mutating: ArchiveFolder, same (key, payload) as the REST step. =====
+        // This is one logical command continued on the SDK surface: with the SAME idempotency key and
+        // payload as the REST writer, the aggregate's idempotency ledger recognizes it as a replay and
+        // returns 'accepted' (202) WITHOUT a second appended event — proving the SDK observes REST's write
+        // over the wire through the propagating gateway. (A second archive with a DIFFERENT key would be a
+        // real 403 safe denial — the prior false-green that the flattening gateway masked as 202.)
         MixedSurfaceStep sdkStep = MixedSurfaceScenario.Steps.Single(s => s.ExecutingSurface == "sdk");
         ParityRow sdkRow = ParityScenarios.Row(sdkStep.OperationId);
         sdkRow.AdapterExpectations.ShouldContain("sdk");
 
         AcceptedCommand sdkResult = await host.SdkClient.ArchiveFolderAsync(
             folderId: "folder-a",
-            idempotency_Key: identity.ArchiveKeySdk,
+            idempotency_Key: identity.ArchiveKeyRest,
             x_Correlation_Id: identity.CorrelationId,
             x_Hexalith_Task_Id: identity.TaskId,
             body: new ArchiveFolderRequest
@@ -278,17 +279,18 @@ public sealed class MixedSurfaceHandoffTests
     [Fact]
     public async Task MutatingArchiveAcrossAllFourSurfacesEchoesCallerSuppliedTaskAndCorrelationOnEachSurfaceResponse()
     {
-        // AC #2 (identity-propagation, mutating leg, all four surfaces) + AC #10. The default
-        // OneTaskMoves... scenario covers identity echo only on REST + SDK (CLI / MCP are query steps
-        // there); the replay / conflict tests drive CLI + MCP mutations but only assert aggregate-side
-        // ledger invariants. This test closes the AC #2 gap by driving an ArchiveFolder mutation through
-        // each of the four surfaces with a shared (task_id, correlation_id) triple and per-surface unique
-        // idempotency keys, asserting each surface echoes both caller-supplied identifiers unchanged on
-        // its success response. The aggregate treats archive-on-archived idempotently, so each successive
-        // surface produces a fresh AcceptedCommand response (or MCP success envelope) — proving each
-        // surface's identity-echo path independently.
+        // AC #2 (identity-propagation, mutating leg, all four surfaces) + AC #10. This drives ONE logical
+        // ArchiveFolder command through each of the four surfaces with a shared (task_id, correlation_id,
+        // idempotency_key, payload), asserting each surface echoes both caller-supplied identifiers
+        // unchanged on its success response. The REST surface is the first writer (fresh 202); the SDK,
+        // CLI, and MCP surfaces submit the SAME key + payload, so the aggregate's idempotency ledger
+        // recognizes each as a replay and returns 'accepted' (202 / success envelope) WITHOUT a second
+        // appended event — proving each surface's identity-echo path over the real wire. (Using DIFFERENT
+        // keys here would archive-on-archived and surface a real 403 on surfaces 2–4; the flattening
+        // gateway previously masked that as a false-green 202.)
         const string sharedTaskId = "task_echo_fixed_00000000000000";
         const string sharedCorrelationId = "corr_echo_fixed_00000000000000";
+        const string sharedKey = "key_echo_shared_0000000000000";
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
@@ -297,7 +299,7 @@ public sealed class MixedSurfaceHandoffTests
 
         // ----- REST -----
         using HttpRequestMessage restRequest = CreateArchiveRequest(
-            "folder-a", "key_echo_rest_0000000000000", sharedCorrelationId, sharedTaskId);
+            "folder-a", sharedKey, sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient
             .SendAsync(restRequest, TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
@@ -308,7 +310,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- SDK -----
         AcceptedCommand sdkResult = await host.SdkClient.ArchiveFolderAsync(
             folderId: "folder-a",
-            idempotency_Key: "key_echo_sdk_00000000000000",
+            idempotency_Key: sharedKey,
             x_Correlation_Id: sharedCorrelationId,
             x_Hexalith_Task_Id: sharedTaskId,
             body: BuildArchiveBody(),
@@ -324,7 +326,7 @@ public sealed class MixedSurfaceHandoffTests
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--task-id", sharedTaskId,
-            "--idempotency-key", "key_echo_cli_00000000000000",
+            "--idempotency-key", sharedKey,
             "--correlation-id", sharedCorrelationId,
             "--request", """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""").ConfigureAwait(true);
         cliOutcome.ExitCode.ShouldBe(0, $"CLI mutating step must reach 'accepted' (exit 0). StdErr: {cliOutcome.StdErr}");
@@ -339,7 +341,7 @@ public sealed class MixedSurfaceHandoffTests
         string mcpResultJson = await FolderTools.ArchiveFolder(
             host.McpPipeline,
             folderId: "folder-a",
-            idempotencyKey: "key_echo_mcp_00000000000000",
+            idempotencyKey: sharedKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
             requestJson: """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""",
@@ -424,15 +426,14 @@ public sealed class MixedSurfaceHandoffTests
     }
 
     [Fact]
-    public async Task SameIdempotencyKeyWithConflictingPayloadAcrossFourSurfacesAssertsAggregateLedgerInvariant()
+    public async Task SameIdempotencyKeyWithConflictingPayloadAcrossFourSurfacesSurfacesCanonicalConflictAndAggregateLedgerInvariant()
     {
-        // AC #5 (conflict leg) + AC #10. Same (task_id, correlation_id, idempotency_key) on four surfaces;
-        // surfaces B/C/D each use a DIFFERENT payload than surface A. The aggregate's idempotency ledger
-        // detects the conflict — no second writer event is appended; the stored fingerprint remains the
-        // first writer's. The in-process gateway stub flattens the aggregate rejection to the wire (see
-        // class-level remarks) — when the gateway-rejection propagation gap is closed, the same four-call
-        // chain will additionally surface canonical 'idempotency_conflict' to each surface without
-        // test-design change.
+        // AC #2 (idempotency_conflict leg) + AC #10. Same (task_id, correlation_id, idempotency_key) on four
+        // surfaces; surfaces B/C/D each use a DIFFERENT payload than surface A. The aggregate's idempotency
+        // ledger detects the fingerprint conflict and rejects — and, with the rejection-propagating gateway,
+        // each surface now surfaces the canonical `idempotency_conflict` at its transport boundary: REST/SDK
+        // HTTP 409, CLI exit 68, MCP failure kind `idempotency_conflict` (all 1:1 with the parity oracle).
+        // The aggregate-side ledger invariant still holds: no second event is appended.
         const string sharedTaskId = "task_conflict_fixed_000000000";
         const string sharedCorrelationId = "corr_conflict_fixed_00000000";
         const string sharedIdempotencyKey = "key_conflict_fixed_0000000000";
@@ -445,7 +446,7 @@ public sealed class MixedSurfaceHandoffTests
         host.Repository.ResetAppendCounters();
         int eventsBeforeChain = host.Repository.EventsAppended;
 
-        // ----- REST first writer with payload P (reason: caller_requested). -----
+        // ----- REST first writer with payload P (reason: caller_requested) → 202. -----
         using HttpRequestMessage restRequest = CreateArchiveRequest(
             "folder-a", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId,
             reasonCode: "caller_requested");
@@ -454,21 +455,26 @@ public sealed class MixedSurfaceHandoffTests
         int eventsAfterFirstWrite = host.Repository.EventsAppended;
         eventsAfterFirstWrite.ShouldBeGreaterThan(eventsBeforeChain);
 
-        // ----- SDK conflicting payload P' (reason: policy_retention). -----
-        _ = await host.SdkClient.ArchiveFolderAsync(
-            folderId: "folder-a",
-            idempotency_Key: sharedIdempotencyKey,
-            x_Correlation_Id: sharedCorrelationId,
-            x_Hexalith_Task_Id: sharedTaskId,
-            body: new ArchiveFolderRequest
-            {
-                RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
-                ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Policy_retention,
-            },
-            cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        // ----- SDK conflicting payload P' → HTTP 409 idempotency_conflict. -----
+        HexalithFoldersApiException sdkException = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
+            await host.SdkClient.ArchiveFolderAsync(
+                folderId: "folder-a",
+                idempotency_Key: sharedIdempotencyKey,
+                x_Correlation_Id: sharedCorrelationId,
+                x_Hexalith_Task_Id: sharedTaskId,
+                body: new ArchiveFolderRequest
+                {
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Policy_retention,
+                },
+                cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
+            .ConfigureAwait(true);
+        sdkException.StatusCode.ShouldBe((int)HttpStatusCode.Conflict, "SDK conflicting payload must surface HTTP 409.");
+        ProblemDetails sdkProblem = ((HexalithFoldersApiException<ProblemDetails>)sdkException).Result;
+        ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("idempotency_conflict", "SDK must surface the canonical idempotency_conflict category.");
 
-        // ----- CLI conflicting payload P'' (reason: operator_review). -----
-        _ = await host.RunCliAsync(
+        // ----- CLI conflicting payload P'' → exit 68, stderr carries idempotency_conflict. -----
+        CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "archive",
             "--folder-id", "folder-a",
             "--base-address", host.HostUri.ToString(),
@@ -477,9 +483,11 @@ public sealed class MixedSurfaceHandoffTests
             "--idempotency-key", sharedIdempotencyKey,
             "--correlation-id", sharedCorrelationId,
             "--request", """{"requestSchemaVersion":"v1","archiveReasonCode":"operator_review"}""").ConfigureAwait(true);
+        cliOutcome.ExitCode.ShouldBe(68, $"CLI conflicting payload must surface exit 68 (idempotency_conflict). StdErr: {cliOutcome.StdErr}");
+        cliOutcome.StdErr.ShouldContain("idempotency_conflict", customMessage: "CLI stderr must carry the canonical idempotency_conflict category.");
 
-        // ----- MCP conflicting payload (reason: policy_retention again). -----
-        _ = await FolderTools.ArchiveFolder(
+        // ----- MCP conflicting payload → failure kind idempotency_conflict. -----
+        string mcpResultJson = await FolderTools.ArchiveFolder(
             host.McpPipeline,
             folderId: "folder-a",
             idempotencyKey: sharedIdempotencyKey,
@@ -487,6 +495,9 @@ public sealed class MixedSurfaceHandoffTests
             correlationId: sharedCorrelationId,
             requestJson: """{"requestSchemaVersion":"v1","archiveReasonCode":"policy_retention"}""",
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResultJson);
+        mcpJson.Value<string>("kind").ShouldBe("idempotency_conflict", $"MCP must surface failure kind idempotency_conflict. Envelope: {mcpResultJson}");
+        mcpJson.Value<string>("code").ShouldBe("idempotency_conflict");
 
         // ===== Aggregate ledger invariant: no second writer event for conflicting payload. =====
         int eventsAfterFullChain = host.Repository.EventsAppended;
@@ -601,14 +612,16 @@ public sealed class MixedSurfaceHandoffTests
         SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder-a", sharedCorrelationId);
 
         // Drive REST + SDK mutations with the shared correlation (the last mutating step's correlation is
-        // what the surrogate evidence-snapshot ends up carrying).
+        // what the surrogate evidence-snapshot ends up carrying). The SDK uses the SAME idempotency key +
+        // payload as the REST writer, so it is an idempotent replay (202) over the wire — not an
+        // archive-on-archived 403 (the former flattening-masked false-green).
         using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_audit_rest", sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
 
         _ = await host.SdkClient.ArchiveFolderAsync(
             folderId: "folder-a",
-            idempotency_Key: "key_audit_sdk",
+            idempotency_Key: "key_audit_rest",
             x_Correlation_Id: sharedCorrelationId,
             x_Hexalith_Task_Id: sharedTaskId,
             body: BuildArchiveBody(),
@@ -663,6 +676,92 @@ public sealed class MixedSurfaceHandoffTests
         mcpInner.ShouldNotBeNull();
         mcpInner!.Value<string>("lifecycleState").ShouldBe(restLifecycleState, "MCP observes the same lifecycle state as REST.");
         AssertNoForbiddenContent(mcpResultJson, surfaceLabel: "MCP envelope");
+    }
+
+    [Fact]
+    public async Task CrossSurfaceAclDeniedArchiveSurfacesParitySafeDenialOnEverySurface()
+    {
+        // AC #2 (ACL-denied leg) + AC #10. The principal has tenant access and the folder exists and is
+        // readable (read_metadata granted) but lacks the archive_folder ACL grant. VERIFIED production
+        // behavior: layered authorization denies the archive at the folder-ACL layer and the wire surfaces
+        // the canonical SAFE DENIAL — HTTP 404 not_found_to_caller — on every surface, NOT a distinct
+        // folder_acl_denied. This is the deliberate zero-cross-tenant-leakage invariant: an ACL-denied
+        // resource is externally indistinguishable from a non-existent one (SafeAuthorizationDenialMapping
+        // FolderAclDenied → 404 not_found_to_caller). This test pins the four-surface PARITY of that safe
+        // denial (REST/SDK 404, CLI exit 73, MCP kind not_found).
+        //
+        // The canonical folder_acl_denied → 403 surfacing (the case where the aggregate-gate ACL rejection
+        // is the propagated outcome) is proven where it actually applies: the gateway-hop mapping
+        // (Server.Tests ArchiveFolderEndpointShouldSurfaceCanonicalFolderAclDeniedFromGatewayRejection) and
+        // the adapter projection (Story 5.6 CrossAdapterBehavioralParityTests). Forcing the wire to emit a
+        // distinct folder_acl_denied here would let a caller distinguish denied-vs-nonexistent and is a
+        // safe-denial regression — so this leg asserts the true safe denial (Story 8.3 Dev Notes AD2).
+        const string correlationId = "corr_acl_denied_0000000000";
+        const string taskId = "task_acl_denied_0000000000";
+
+        await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
+        SeedTenant(host.TenantStore, "tenant-a", "user-a");
+        SeedArchiveDeniedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+        ParityRow archiveRow = ParityScenarios.Row("ArchiveFolder");
+        archiveRow.Transport.ErrorCodeSet.ShouldContain("folder_acl_denied", "ArchiveFolder declares folder_acl_denied in its error_code_set (the canonical ACL-denial category).");
+
+        const string requestJson = """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""";
+
+        // ----- REST -----
+        using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_acl_rest_000000000000", correlationId, taskId);
+        using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        string restBody = await restResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        restResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound, $"REST ACL denial must surface the safe denial 404 not_found_to_caller. Got {(int)restResponse.StatusCode}: {restBody}");
+        using JsonDocument restDoc = JsonDocument.Parse(restBody);
+        string restCategory = restDoc.RootElement.GetProperty("category").GetString()!;
+        restCategory.ShouldBe("not_found", "ACL denial is externally indistinguishable from not-found (safe denial).");
+        AssertNoForbiddenContent(restBody, surfaceLabel: "REST");
+
+        // ----- SDK -----
+        HexalithFoldersApiException sdkException = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
+            await host.SdkClient.ArchiveFolderAsync(
+                folderId: "folder-a",
+                idempotency_Key: "key_acl_sdk_0000000000000",
+                x_Correlation_Id: correlationId,
+                x_Hexalith_Task_Id: taskId,
+                body: BuildArchiveBody(),
+                cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
+            .ConfigureAwait(true);
+        sdkException.StatusCode.ShouldBe((int)HttpStatusCode.NotFound, "SDK ACL denial must surface the safe denial 404.");
+        ProblemDetails sdkProblem = ((HexalithFoldersApiException<ProblemDetails>)sdkException).Result;
+        ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("not_found", "SDK must surface the canonical safe-denial not_found category.");
+
+        // ----- CLI -----
+        CliInvocationOutcome cliOutcome = await host.RunCliAsync(
+            "folder", "archive",
+            "--folder-id", "folder-a",
+            "--base-address", host.HostUri.ToString(),
+            "--token", "synthetic-test-token",
+            "--task-id", taskId,
+            "--idempotency-key", "key_acl_cli_0000000000000",
+            "--correlation-id", correlationId,
+            "--request", requestJson).ConfigureAwait(true);
+        cliOutcome.ExitCode.ShouldBe(73, $"CLI ACL safe denial must surface exit 73 (NotFound). StdErr: {cliOutcome.StdErr}");
+        cliOutcome.StdErr.ShouldContain("not_found", customMessage: "CLI stderr must carry the canonical not_found safe-denial category.");
+
+        // ----- MCP -----
+        string mcpResultJson = await FolderTools.ArchiveFolder(
+            host.McpPipeline,
+            folderId: "folder-a",
+            idempotencyKey: "key_acl_mcp_0000000000000",
+            taskId: taskId,
+            correlationId: correlationId,
+            requestJson: requestJson,
+            cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+        Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResultJson);
+        mcpJson.Value<string>("kind").ShouldBe("not_found", $"MCP must surface failure kind not_found (safe denial). Envelope: {mcpResultJson}");
+
+        // ===== Cross-surface byte-for-byte category equivalence: every surface returns the SAME safe denial. =====
+        restCategory.ShouldBe("not_found");
+        cliOutcome.StdErr.ShouldContain(restCategory);
+        mcpJson.Value<string>("kind").ShouldBe(restCategory);
     }
 
     // =====================================================================================================
@@ -758,6 +857,31 @@ public sealed class MixedSurfaceHandoffTests
             [
                 new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User(principalId), "archive_folder", Sequence: 1, EffectiveAt: Now.AddMinutes(-1)),
                 new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User(principalId), "read_metadata", Sequence: 2, EffectiveAt: Now.AddMinutes(-1)),
+            ],
+            new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
+            RevocationFreshnessEstablished: true,
+            TaskScope: null));
+
+    /// <summary>
+    /// Seeds a principal that has tenant access and a present folder-scope permission snapshot but is NOT
+    /// granted the <c>archive_folder</c> ACL action — so layered authorization denies the archive at the
+    /// folder-ACL layer and the aggregate gate surfaces <c>FolderAclDenied</c> (the canonical
+    /// folder_acl_denied → 403 path, Story 8.3 AC #2). <c>read_metadata</c> is granted so the folder is an
+    /// established, readable resource (not an unknown-existence safe-denial case).
+    /// </summary>
+    private static void SeedArchiveDeniedPermissions(
+        InMemoryEffectivePermissionsReadModel readModel,
+        string tenantId,
+        string organizationId,
+        string folderId,
+        string principalId)
+        => readModel.Save(new EffectivePermissionsReadModelSnapshot(
+            tenantId,
+            organizationId,
+            folderId,
+            EffectivePermissionsFolderLifecycleState.Active,
+            [
+                new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User(principalId), "read_metadata", Sequence: 1, EffectiveAt: Now.AddMinutes(-1)),
             ],
             new EffectivePermissionsFreshness("read_your_writes", Now, "permission-watermark-a", Stale: false, ReasonCode: null),
             RevocationFreshnessEstablished: true,
@@ -869,7 +993,7 @@ public sealed class MixedSurfaceHandoffTests
             HttpClient sdkHttpClient,
             ToolPipeline mcpPipeline,
             HttpClient mcpHttpClient,
-            InProcessEventStoreGatewayClient gateway,
+            InProcessRejectionPropagatingGatewayClient gateway,
             InMemoryFolderRepository repository,
             InMemoryFolderTenantAccessProjectionStore tenantStore,
             InMemoryEffectivePermissionsReadModel permissions,
@@ -899,7 +1023,7 @@ public sealed class MixedSurfaceHandoffTests
 
         public ToolPipeline McpPipeline { get; }
 
-        public InProcessEventStoreGatewayClient Gateway { get; }
+        public InProcessRejectionPropagatingGatewayClient Gateway { get; }
 
         public InMemoryFolderRepository Repository { get; }
 
@@ -921,7 +1045,7 @@ public sealed class MixedSurfaceHandoffTests
             TimeProvider timeProvider = new FixedTimeProvider(Now);
             InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
             Func<HttpClient>? eventStoreClientFactory = null;
-            InProcessEventStoreGatewayClient gateway = new(() => eventStoreClientFactory!(), context);
+            InProcessRejectionPropagatingGatewayClient gateway = new(() => eventStoreClientFactory!(), () => context.PrincipalId);
 
             WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
             {
@@ -1029,56 +1153,6 @@ public sealed class MixedSurfaceHandoffTests
                 AuthoritativeTenantId ?? string.Empty,
                 PrincipalId ?? string.Empty,
                 [actionToken]);
-    }
-
-    private sealed class InProcessEventStoreGatewayClient(
-        Func<HttpClient> clientFactory,
-        MutableTenantAndClaimContext context) : IEventStoreGatewayClient
-    {
-        public int ProcessCalls { get; private set; }
-
-        public async Task<SubmitCommandResponse> SubmitCommandAsync(
-            SubmitCommandRequest request,
-            CancellationToken cancellationToken = default)
-        {
-            ProcessCalls++;
-            using HttpClient client = clientFactory();
-            CommandEnvelope envelope = new(
-                request.MessageId,
-                request.Tenant,
-                request.Domain,
-                request.AggregateId,
-                request.CommandType,
-                JsonSerializer.SerializeToUtf8Bytes(request.Payload),
-                request.CorrelationId ?? request.MessageId,
-                CausationId: null,
-                context.PrincipalId ?? "actor-present",
-                request.Extensions);
-
-            HttpResponseMessage response = await client
-                .PostAsJsonAsync("/process", new DomainServiceRequest(envelope, CurrentState: null), cancellationToken)
-                .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-
-            return new SubmitCommandResponse(request.CorrelationId ?? request.MessageId);
-        }
-
-        public Task<EventStoreQueryResult> SubmitQueryAsync(
-            SubmitQueryRequest request,
-            string? ifNoneMatch = null,
-            CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        public Task<EventStoreQueryResult<T>> SubmitQueryAsync<T>(
-            SubmitQueryRequest request,
-            string? ifNoneMatch = null,
-            CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        public Task<StreamReadPage> ReadStreamAsync(
-            StreamReadRequest request,
-            CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
     }
 
     private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
