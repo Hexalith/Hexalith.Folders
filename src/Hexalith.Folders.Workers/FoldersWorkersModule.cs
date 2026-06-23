@@ -10,7 +10,6 @@ using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.DomainService;
-using Hexalith.Memories.Client.Rest;
 using Hexalith.Tenants.Client.Registration;
 using Hexalith.Tenants.Contracts.Events;
 
@@ -72,7 +71,6 @@ public static class FoldersWorkersModule
         services.TryAddSingleton<EventStoreSemanticIndexingBridgeStore>();
         services.TryAddSingleton<ISemanticIndexingBridgeReadModel>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
         services.TryAddSingleton<ISemanticIndexingBridgeWriter>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
-        services.AddMemoriesClient();
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddSingleton<ISemanticIndexingPolicyEvaluator, FailClosedSemanticIndexingPolicyEvaluator>();
         services.TryAddSingleton<ISemanticIndexingContentMaterializer, FailClosedSemanticIndexingContentMaterializer>();

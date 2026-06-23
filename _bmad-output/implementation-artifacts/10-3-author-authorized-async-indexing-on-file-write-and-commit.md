@@ -4,7 +4,7 @@ baseline_commit: 3209d8e
 
 # Story 10.3: Author authorized asynchronous indexing on file-write and commit
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -91,17 +91,17 @@ Out of scope:
   - [x] Enforce C4 limits and Memories inline ingestion constraints; no silent truncation.
   - [x] Keep raw paths, file bytes, diffs, and provider payloads out of logs, bridge records, test names, and failure messages.
 
-- [ ] Task 5 - Publish a curated SearchIndexEntryChanged CloudEvent (AC: 5, 6, 7) — **REWORK from IngestAsync**
-  - [ ] Rewrite `MemoriesSemanticIndexingPort` to inject `DaprClient` and call `PublishEventAsync(PubSubName, EventsTopicName, entry, cloudEventMetadata, ct)`; remove `MemoriesClient`/`IngestAsync`/`HXL001` suppression/`IngestedBy`.
-  - [ ] Build `SearchIndexEntryChanged { TenantId = "folders-index", AggregateId = CaseId, Text = curatedText, Attributes = flat string dict, CorrelationId, CausationId }`; set CloudEvent metadata `cloudevent.id`/`type`/`source`.
-  - [ ] Map the former `MetadataField` entries to plain string `Attributes` (drop `MetadataOrigin`/confidence); re-confirm no C9-sensitive value (raw path) is included.
-  - [ ] Translate Dapr publish failure to a retryable `Failed` result (`memories_publish_error`); keep `OperationCanceledException` rethrow on caller cancellation.
-  - [ ] Drop the `Hexalith.Memories.Client.Rest` `ProjectReference` (`.csproj`) and the `AddMemoriesClient()` registration; ship the `ScaffoldContractTests` allowlist edit (L156) in the SAME change set.
+- [x] Task 5 - Publish a curated SearchIndexEntryChanged CloudEvent (AC: 5, 6, 7) — **REWORK from IngestAsync**
+  - [x] Rewrite `MemoriesSemanticIndexingPort` to inject `DaprClient` and call `PublishEventAsync(PubSubName, EventsTopicName, entry, cloudEventMetadata, ct)`; remove `MemoriesClient`/`IngestAsync`/`HXL001` suppression/`IngestedBy`.
+  - [x] Build `SearchIndexEntryChanged { TenantId = "folders-index", AggregateId = CaseId, Text = curatedText, Attributes = flat string dict, CorrelationId, CausationId }`; set CloudEvent metadata `cloudevent.id`/`type`/`source`.
+  - [x] Map the former `MetadataField` entries to plain string `Attributes` (drop `MetadataOrigin`/confidence); re-confirm no C9-sensitive value (raw path) is included.
+  - [x] Translate Dapr publish failure to a retryable `Failed` result (`memories_publish_error`); keep `OperationCanceledException` rethrow on caller cancellation.
+  - [x] Drop the `Hexalith.Memories.Client.Rest` `ProjectReference` (`.csproj`) and the `AddMemoriesClient()` registration; ship the `ScaffoldContractTests` allowlist edit (L156) in the SAME change set.
 
-- [ ] Task 6 - Update the Dapr policy conformance test for the active pub/sub path (AC: 9) — **REWORK**
-  - [ ] Do NOT edit `deploy/dapr/production/*.yaml` or `tests/fixtures/dapr-policy-conformance.yaml` — production access-control is already correct (deny-by-default; `folders-workers` publishes to `memories-events` via the `pubsub` component; no invoke).
-  - [ ] Update `tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs`: keep `memories.DefaultAction == deny` + empty `folders-workers` invoke policies; assert the `memories-events` publish (`folders-workers`) / subscribe (`memories`) scopes are active; drop the "deferred to Epic 10" framing.
-  - [ ] Update the now-stale assertions in `SemanticIndexingProcessManagerTests`, `EventStoreSemanticIndexingBridgeStoreTests`, `SemanticIndexingEndpointE2ETests`, and `SemanticIndexingWorkerRegistrationTests` (`WorkflowId`/`MemoryUnitId` now null; port mocks `DaprClient.PublishEventAsync`, not `MemoriesClient`).
+- [x] Task 6 - Update the Dapr policy conformance test for the active pub/sub path (AC: 9) — **REWORK**
+  - [x] **DECISION OVERRIDE (Jerome, 2026-06-23): wired the pub/sub scope now.** The original sub-bullet ("do NOT edit `deploy/dapr/production/*.yaml`; access-control already correct") rested on a false premise — the production `pubsub.yaml` did **not** authorize `memories-events` (`folders-workers` publish + `memories` subscribe scopes were empty). To make AC9's "assert the scopes are active" literally true and the producer actually authorized in prod, `deploy/dapr/production/pubsub.yaml` was edited: `protectedTopics` += `memories-events`; `publishingScopes` `folders-workers=memories-events`; `subscriptionScopes` `memories=memories-events`. `accesscontrol.yaml` + `dapr-policy-conformance.yaml` (invoke fixture) were left untouched (no invoke path; semantic hash unchanged).
+  - [x] Update `tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs`: keep `memories.DefaultAction == deny` + empty `folders-workers` invoke policies; assert the `memories-events` publish (`folders-workers`) / subscribe (`memories`) scopes are active; drop the "deferred to Epic 10" framing. (Also updated `ProductionPubSubComponentShouldConstrainTenantEventTopicScopes` for the new active scopes.)
+  - [x] Update the now-stale assertions in `SemanticIndexingProcessManagerTests`, `EventStoreSemanticIndexingBridgeStoreTests`, `SemanticIndexingEndpointE2ETests`, and `SemanticIndexingWorkerRegistrationTests` (`WorkflowId`/`MemoryUnitId` → single `PublishedEventId`; port substitutes `DaprClient.PublishEventAsync` via NSubstitute, not `MemoriesClient`).
 
 - [x] Task 7 - Add focused worker and boundary tests (AC: 1, 3, 4, 7, 8, 10, 11)
   - [x] Add worker orchestration tests with fake bridge writer, fake content materializer, fake policy evaluator, and fake port.
@@ -115,7 +115,7 @@ Out of scope:
   - [x] Run `dotnet test tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj`.
   - [x] Run `dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj`.
   - [x] Run `dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj`.
-  - [x] Dapr policy/conformance files did not change; focused Dapr policy gate not required.
+  - [x] Dapr policy files changed (`pubsub.yaml` + `DaprPolicyConformanceTests`, per Jerome's decision) — ran the Dapr policy conformance gate green (9/9) via the full `Hexalith.Folders.Contracts.Tests` lane (274/274).
 
 ## Dev Notes
 
@@ -257,7 +257,53 @@ await _daprClient.PublishEventAsync(
 > [!WARNING]
 > **SUPERSEDED 2026-06-23.** The record below documents the original `MemoriesClient.IngestAsync` implementation, which targeted the wrong Memories subsystem and is being reworked to the `SearchIndexEntryChanged` Dapr-publish model (see the rework banner and ACs above). Its green test evidence is obsolete: the `IngestAsync` egress, the `MetadataField` mapping, the `Hexalith.Memories.Client.Rest` reference, the `HXL001` suppression, and the non-null `WorkflowId`/`MemoryUnitId` assertions must all change. The File List below is the pre-rework set; the rework additionally touches the `.csproj`, `ScaffoldContractTests`, `DaprPolicyConformanceTests`, and the bridge-store / endpoint-E2E tests.
 
-### Agent Model Used
+### Rework Dev Record (2026-06-23 — SearchIndexEntryChanged publish; supersedes the IngestAsync record below)
+
+**Agent Model Used:** Claude Opus 4.8 (1M context)
+
+**Debug Log References**
+
+- Rewrote `MemoriesSemanticIndexingPort` to inject `DaprClient` (not `MemoriesClient`) and publish one curated `SearchIndexEntryChanged` per unit via `PublishEventAsync("pubsub", "memories-events", entry, cloudEventMetadata, ct)`; `TenantId="folders-index"`, `AggregateId=CaseId` (`{tenant}:{org}:{folder}`), `CorrelationId`/`CausationId=TaskId`; metadata `cloudevent.id`=source URI, `type`=`nameof(SearchIndexEntryChanged)`, `source`="hexalith-folders". Dropped `IngestAsync`/`HXL001`/`IngestedBy`/`MetadataField`.
+- Full `WorkflowId`/`MemoryUnitId` → single `PublishedEventId` (= `cloudevent.id`) rename across `SemanticIndexingResult`, `SemanticIndexingResultUpdate`, `SemanticIndexingEvidence`, `SemanticIndexingBridgeProjection.ApplyIndexingResult`, and `SemanticIndexingProcessManager` (chose design-decision (c)'s full-rename path, not the deferred-null fallback).
+- Removed `Hexalith.Memories.Client.Rest` `ProjectReference` + `AddMemoriesClient()`; updated `ScaffoldContractTests` allowlist. `Hexalith.Memories.Contracts` stays (Workers-only). `DaprException` resolves via `using Dapr;` (Dapr.Common assembly, base of Dapr SDK exceptions).
+- Per Jerome's decision (AskUserQuestion 2026-06-23), wired the production pub/sub scope now: `deploy/dapr/production/pubsub.yaml` `protectedTopics`+=`memories-events`, `publishingScopes` `folders-workers=memories-events`, `subscriptionScopes` `memories=memories-events`; updated both pub/sub facts in `DaprPolicyConformanceTests`.
+- `dotnet build Hexalith.Folders.slnx`: 0 warnings / 0 errors.
+- `dotnet test tests/Hexalith.Folders.Workers.Tests`: 50/50. `tests/Hexalith.Folders.Tests`: 1327/1327. `tests/Hexalith.Folders.Testing.Tests`: 60/60. `tests/Hexalith.Folders.Contracts.Tests` (incl. Dapr policy conformance 9/9): 274/274.
+- `dotnet format whitespace --verify-no-changes`: clean over Folders-owned `src`/`tests` (only pre-existing `Hexalith.Memories` submodule ENDOFLINE noise, out of scope/read-only).
+
+**Completion Notes**
+
+- ✅ AC5/AC6/AC7 reworked to the Dapr pub/sub `SearchIndexEntryChanged` publish model; the bridge projection (10.2), `/folders/events` subscription, `SemanticIndexingProcessManager` orchestration, and authorization/policy/materialization gating (Tasks 1–4) are preserved unchanged.
+- **AC4 vs AC5 reconciliation:** the curated `Text` + flat `Attributes` are built inside the port from `SemanticIndexingRequest` fields exactly as the Dev-Notes verbatim publish pattern shows (design A). `Text` = `IndexingTextDescriptor` + `FileVersionId` + `TypeClassification` (C9-safe, descriptor-derived, never raw bytes/paths), with the `{typeClassification} {fileVersionId}` fallback. Materialized bytes stay strictly in-worker for the size-eligibility gate only — `ContentBytes` was removed from `SemanticIndexingRequest`, so no bytes reach the egress at all (stronger than the literal AC).
+- **AC9 / Task 6 sub-bullet 1 deviation (user-directed):** the reworked story claimed `pubsub.yaml` already authorized `memories-events` and said "do not edit yaml", but the file did not (verified). Jerome chose "wire the pub/sub scope now" so the producer is authorized in production and AC9's "scopes are active" is literally true. `memories` stays deny-by-default with no invoke caller policies; only the pub/sub component scopes changed. `accesscontrol.yaml` + invoke conformance fixture untouched (semantic hash unchanged).
+- **AggregateId granularity:** kept folder-level `CaseId` (`{tenant}:{org}:{folder}`) per the verbatim AC5 publish pattern; the per-file-version identity is carried by `cloudevent.id` (= source URI, echoed back as `ScoredResult.SourceUri`).
+- Added `NSubstitute` to `Hexalith.Folders.Workers.Tests.csproj` (centrally-pinned, project-approved test double) to substitute the abstract `DaprClient`; no new solution dependency.
+- Metadata-only preserved: no raw paths, bytes, diffs, provider payloads, or drive-letters in events/attributes/logs/tests (asserted in the port test).
+
+**File List (authoritative — rework change set)**
+
+- `src/Hexalith.Folders/Projections/SemanticIndexing/SemanticIndexingEvidence.cs`
+- `src/Hexalith.Folders/Projections/SemanticIndexing/SemanticIndexingResultUpdate.cs`
+- `src/Hexalith.Folders/Projections/SemanticIndexing/SemanticIndexingBridgeProjection.cs`
+- `src/Hexalith.Folders.Workers/SemanticIndexing/MemoriesSemanticIndexingPort.cs`
+- `src/Hexalith.Folders.Workers/SemanticIndexing/SemanticIndexingResult.cs`
+- `src/Hexalith.Folders.Workers/SemanticIndexing/SemanticIndexingRequest.cs`
+- `src/Hexalith.Folders.Workers/SemanticIndexing/SemanticIndexingProcessManager.cs`
+- `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
+- `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`
+- `deploy/dapr/production/pubsub.yaml`
+- `tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj`
+- `tests/Hexalith.Folders.Workers.Tests/SemanticIndexingWorkerRegistrationTests.cs`
+- `tests/Hexalith.Folders.Workers.Tests/SemanticIndexingProcessManagerTests.cs`
+- `tests/Hexalith.Folders.Workers.Tests/SemanticIndexingEndpointE2ETests.cs`
+- `tests/Hexalith.Folders.Workers.Tests/EventStoreSemanticIndexingBridgeStoreTests.cs`
+- `tests/Hexalith.Folders.Tests/Projections/SemanticIndexing/SemanticIndexingBridgeProjectionTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`
+- `_bmad-output/implementation-artifacts/10-3-author-authorized-async-indexing-on-file-write-and-commit.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+### Agent Model Used (superseded — original IngestAsync impl)
 
 GPT-5 Codex
 
@@ -306,3 +352,4 @@ GPT-5 Codex
 - 2026-06-23: Story context created by BMAD create-story workflow. Ultimate context engine analysis completed - comprehensive developer guide created.
 - 2026-06-23: Added worker-side semantic-indexing event path, orchestration, content/policy ports, safe bridge mutation evidence, real Memories typed-client ingestion, focused worker tests, and green verification evidence; story moved to review.
 - 2026-06-23: CORRECTED via bmad-correct-course (`sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism`). The `IngestAsync` egress targeted the wrong Memories subsystem (RAG ingestion, not the search index); reverted `review → ready-for-dev`. Scope + ACs 4/5/6/9 + Tasks 5/6 reworked to publish `SearchIndexEntryChanged` via Dapr pub/sub; bridge/subscription/orchestration/gating preserved. Added "Mechanism Correction & Dev Guidance"; prior Dev Agent Record superseded.
+- 2026-06-23: REWORK IMPLEMENTED (bmad-dev-story, Claude Opus 4.8). Rewrote `MemoriesSemanticIndexingPort` to publish a curated `SearchIndexEntryChanged` CloudEvent via `DaprClient` pub/sub (`pubsub`/`memories-events`); dropped `Hexalith.Memories.Client.Rest` reference + `AddMemoriesClient()`; renamed bridge evidence `WorkflowId`/`MemoryUnitId` → `PublishedEventId`; removed `ContentBytes` from `SemanticIndexingRequest` (bytes stay in-worker). Per Jerome's decision, wired the production `memories-events` pub/sub scope in `deploy/dapr/production/pubsub.yaml` and updated `DaprPolicyConformanceTests`. Tasks 5 & 6 complete; build 0W/0E; Workers.Tests 50/50, Folders.Tests 1327/1327, Testing.Tests 60/60, Contracts.Tests 274/274. Story → review.

@@ -8,16 +8,14 @@ public sealed record SemanticIndexingResult
         SemanticIndexingStatus status,
         string reasonCode,
         bool retryable,
-        string? memoryUnitId = null,
-        string? workflowInstanceId = null)
+        string? publishedEventId = null)
     {
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(reasonCode);
 
         Status = status;
         ReasonCode = reasonCode;
         Retryable = retryable;
-        MemoryUnitId = memoryUnitId;
-        WorkflowInstanceId = workflowInstanceId;
+        PublishedEventId = publishedEventId;
     }
 
     public SemanticIndexingStatus Status { get; init; }
@@ -28,7 +26,9 @@ public sealed record SemanticIndexingResult
 
     public bool Retryable { get; init; }
 
-    public string? MemoryUnitId { get; init; }
-
-    public string? WorkflowInstanceId { get; init; }
+    /// <summary>
+    /// Gets the published <c>SearchIndexEntryChanged</c> CloudEvent id (= the stable source URI) recorded as the
+    /// post-publish traceability handle. The search-index pub/sub path returns no Memories-side workflow/memory-unit id.
+    /// </summary>
+    public string? PublishedEventId { get; init; }
 }

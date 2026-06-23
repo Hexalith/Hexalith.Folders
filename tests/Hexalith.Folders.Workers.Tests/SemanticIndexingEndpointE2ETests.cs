@@ -79,14 +79,13 @@ public sealed class SemanticIndexingEndpointE2ETests
             SemanticIndexingRequest request = host.Port.Requests.ShouldHaveSingleItem();
             request.Source.ToUriString().ShouldStartWith("folders://tenant-a/organizations/organization-a/folders/folder-a/");
             request.Source.ToUriString().ShouldNotContain("C:/", Case.Sensitive);
-            request.ContentBytes.ShouldNotBeNull();
 
             SemanticIndexingBridgeEntry indexed = (await host.Bridge.GetFileVersionAsync(
                 SemanticIndexingFileVersionIdentity.From(mutation),
                 TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotBeNull();
             indexed.Status.ShouldBe(SemanticIndexingBridgeStatus.Indexed);
             indexed.ReasonCode.ShouldBe("memories_accepted");
-            indexed.Evidence.WorkflowId.ShouldBe("workflow-a");
+            indexed.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
             indexed.Identity.SourceUri.ShouldNotContain("C:/", Case.Sensitive);
         }
         finally
@@ -217,7 +216,7 @@ public sealed class SemanticIndexingEndpointE2ETests
             SemanticIndexingStatus.Accepted,
             "memories_accepted",
             retryable: false,
-            workflowInstanceId: "workflow-a"));
+            publishedEventId: "folders://tenant-a/published-a"));
 
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {

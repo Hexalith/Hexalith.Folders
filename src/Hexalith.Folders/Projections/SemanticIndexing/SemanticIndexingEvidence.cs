@@ -5,8 +5,7 @@ namespace Hexalith.Folders.Projections.SemanticIndexing;
 public sealed record SemanticIndexingEvidence
 {
     public SemanticIndexingEvidence(
-        string? workflowId = null,
-        string? memoryUnitId = null,
+        string? publishedEventId = null,
         string? resultFingerprint = null,
         string? pathPolicyClass = null,
         long? byteLength = null,
@@ -24,8 +23,10 @@ public sealed record SemanticIndexingEvidence
             throw new ArgumentOutOfRangeException(nameof(observedByteLength), observedByteLength, "Observed content length evidence must not be negative.");
         }
 
-        WorkflowId = SemanticIndexingBridgeValidation.RequireOptionalValue(workflowId, nameof(workflowId));
-        MemoryUnitId = SemanticIndexingBridgeValidation.RequireOptionalValue(memoryUnitId, nameof(memoryUnitId));
+        // PublishedEventId is the SearchIndexEntryChanged CloudEvent id (= the stable source URI), recorded as the
+        // post-publish traceability handle (Story 10.3 design decision (c)). It replaces the former IngestAsync
+        // WorkflowId/MemoryUnitId pair; the search-index pub/sub path returns no Memories-side workflow/memory-unit id.
+        PublishedEventId = SemanticIndexingBridgeValidation.RequireOptionalValue(publishedEventId, nameof(publishedEventId));
         ResultFingerprint = SemanticIndexingBridgeValidation.RequireOptionalValue(resultFingerprint, nameof(resultFingerprint));
         PathPolicyClass = SemanticIndexingBridgeValidation.RequireOptionalValue(pathPolicyClass, nameof(pathPolicyClass));
         ByteLength = byteLength;
@@ -34,9 +35,7 @@ public sealed record SemanticIndexingEvidence
         ObservedByteLength = observedByteLength;
     }
 
-    public string? WorkflowId { get; init; }
-
-    public string? MemoryUnitId { get; init; }
+    public string? PublishedEventId { get; init; }
 
     public string? ResultFingerprint { get; init; }
 

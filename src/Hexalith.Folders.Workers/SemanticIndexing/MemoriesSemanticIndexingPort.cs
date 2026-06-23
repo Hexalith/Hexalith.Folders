@@ -1,17 +1,28 @@
-using Hexalith.Memories.Client.Rest;
+using System.Globalization;
+
+using Dapr;
+using Dapr.Client;
+
 using Hexalith.Memories.Contracts.V1;
 
 namespace Hexalith.Folders.Workers.SemanticIndexing;
 
+/// <summary>
+/// Publishes one curated <see cref="SearchIndexEntryChanged"/> CloudEvent per indexed unit to the Memories
+/// search index via Dapr pub/sub (component <c>pubsub</c>, topic <c>memories-events</c>). Memories upserts the
+/// entry by the composite key (<c>TenantId</c>, <c>AggregateId</c>) into its search index, so re-publishing the
+/// same state is harmless. This is the search-index path — it deliberately does NOT call
+/// <c>MemoriesClient.IngestAsync</c> (the separate experimental RAG memory-ingestion subsystem). It follows the
+/// <c>Hexalith.Tenants</c> <c>MemoriesSearchIndexEventPublisher</c> precedent.
+/// </summary>
 internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
 {
-    private const string IngestedBy = "hexalith-folders-workers";
-    private readonly MemoriesClient _memoriesClient;
+    private readonly DaprClient _daprClient;
 
-    public MemoriesSemanticIndexingPort(MemoriesClient memoriesClient)
+    public MemoriesSemanticIndexingPort(DaprClient daprClient)
     {
-        ArgumentNullException.ThrowIfNull(memoriesClient);
-        _memoriesClient = memoriesClient;
+        ArgumentNullException.ThrowIfNull(daprClient);
+        _daprClient = daprClient;
     }
 
     public async ValueTask<SemanticIndexingResult> IndexFileVersionAsync(
@@ -20,81 +31,91 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
     {
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
-        if (request.ContentBytes is null || request.ContentBytes.Length == 0)
+
+        // The CloudEvent id is the stable per-unit source URI; Memories echoes it back verbatim as
+        // ScoredResult.SourceUri and it is the post-publish traceability handle (PublishedEventId).
+        string cloudEventId = request.Source.ToUriString();
+
+        SearchIndexEntryChanged entry = new()
         {
-            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "content_bytes_unavailable", retryable: true);
-        }
+            TenantId = FoldersSemanticIndexingDefaults.IndexTenant,
+            AggregateId = CaseId(request),
+            Text = BuildText(request),
+            Attributes = BuildAttributes(request),
+            CorrelationId = request.CorrelationId,
+            CausationId = request.TaskId,
+        };
+
+        Dictionary<string, string> metadata = new(StringComparer.Ordinal)
+        {
+            ["cloudevent.id"] = cloudEventId,
+            ["cloudevent.type"] = nameof(SearchIndexEntryChanged),
+            ["cloudevent.source"] = FoldersSemanticIndexingDefaults.CloudEventsSource,
+        };
 
         try
         {
-            Dictionary<string, MetadataField> metadata = CreateMetadata(request);
-
-#pragma warning disable HXL001 // Approved Story 10.3 integration point for Folders worker-side Memories ingestion.
-            string workflowInstanceId = await _memoriesClient.IngestAsync(
-                FoldersSemanticIndexingDefaults.IndexTenant,
-                CaseId(request),
-                request.Source.ToUriString(),
-                request.ContentBytes,
-                request.Content.MediaType,
-                IngestedBy,
+            await _daprClient.PublishEventAsync(
+                FoldersSemanticIndexingDefaults.PubSubName,
+                FoldersSemanticIndexingDefaults.EventsTopicName,
+                entry,
                 metadata,
                 cancellationToken).ConfigureAwait(false);
-#pragma warning restore HXL001
 
             return new SemanticIndexingResult(
                 SemanticIndexingStatus.Accepted,
                 "memories_accepted",
                 retryable: false,
-                workflowInstanceId: workflowInstanceId);
+                publishedEventId: cloudEventId);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             throw;
         }
-        catch (MemoriesRemoteException exception)
+        catch (OperationCanceledException)
         {
-            string reasonCode = string.Equals(exception.Error.Code, "INVALID_RESPONSE", StringComparison.Ordinal)
-                ? "memories_invalid_response"
-                : "memories_remote_error";
-            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, reasonCode, retryable: true);
+            // A timeout not tied to the caller's token is a transient remote outage, not a rejected Folders
+            // operation; record it as retryable so the bridge entry stays eligible for re-evaluation.
+            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_publish_error", retryable: true);
         }
-        catch (HttpRequestException)
+        catch (DaprException)
         {
-            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_transport_error", retryable: true);
-        }
-        catch (TaskCanceledException)
-        {
-            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_timeout", retryable: true);
-        }
-        catch (InvalidOperationException)
-        {
-            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_invalid_response", retryable: true);
+            return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_publish_error", retryable: true);
         }
     }
 
-    private static Dictionary<string, MetadataField> CreateMetadata(SemanticIndexingRequest request)
+    // The curated, C9-safe searchable text: descriptor + non-sensitive identity tokens + type classification.
+    // Never raw bytes, never raw path segments. Empty descriptor falls back to "{typeClassification} {fileVersionId}".
+    private static string BuildText(SemanticIndexingRequest request)
+    {
+        string descriptor = request.Content.IndexingTextDescriptor;
+        string typeClassification = request.Content.TypeClassification;
+        string fileVersionId = request.FileVersionId;
+
+        return string.IsNullOrWhiteSpace(descriptor)
+            ? string.Create(CultureInfo.InvariantCulture, $"{typeClassification} {fileVersionId}")
+            : string.Create(CultureInfo.InvariantCulture, $"{descriptor} {fileVersionId} {typeClassification}");
+    }
+
+    // Flat, exactly-matched string attributes (BM25 has no metadata origin/confidence). Every value is a metadata-
+    // safe identifier or classification; pathPolicyOutcome is a classification, not a raw path.
+    private static Dictionary<string, string> BuildAttributes(SemanticIndexingRequest request)
         => new(StringComparer.Ordinal)
         {
-            ["folders.managedTenantId"] = Field(request.ManagedTenantId),
-            ["folders.organizationId"] = Field(request.OrganizationId),
-            ["folders.folderId"] = Field(request.FolderId),
-            ["folders.fileVersionId"] = Field(request.FileVersionId),
-            ["folders.contentHash"] = Field(request.ContentHash),
-            ["folders.contentDescriptor"] = Field(request.Content.IndexingTextDescriptor),
-            ["folders.sizeClassification"] = Field(request.Content.SizeClassification),
-            ["folders.typeClassification"] = Field(request.Content.TypeClassification),
-            ["folders.sensitivityClassification"] = Field(request.Policy.SensitivityClassification),
-            ["folders.pathPolicyOutcome"] = Field(request.Policy.PathPolicyOutcome),
-            ["folders.correlationId"] = Field(request.CorrelationId),
-            ["folders.taskId"] = Field(request.TaskId),
-            ["folders.idempotencyKey"] = Field(request.IdempotencyKey),
+            ["folders.managedTenantId"] = request.ManagedTenantId,
+            ["folders.organizationId"] = request.OrganizationId,
+            ["folders.folderId"] = request.FolderId,
+            ["folders.fileVersionId"] = request.FileVersionId,
+            ["folders.contentHash"] = request.ContentHash,
+            ["folders.contentDescriptor"] = request.Content.IndexingTextDescriptor,
+            ["folders.sizeClassification"] = request.Content.SizeClassification,
+            ["folders.typeClassification"] = request.Content.TypeClassification,
+            ["folders.sensitivityClassification"] = request.Policy.SensitivityClassification,
+            ["folders.pathPolicyOutcome"] = request.Policy.PathPolicyOutcome,
         };
-
-    private static MetadataField Field(string value)
-        => new(value, MetadataOrigin.Human, 1.0f);
 
     private static string CaseId(SemanticIndexingRequest request)
         => string.Create(
-            System.Globalization.CultureInfo.InvariantCulture,
+            CultureInfo.InvariantCulture,
             $"{request.ManagedTenantId}:{request.OrganizationId}:{request.FolderId}");
 }

@@ -31,7 +31,7 @@ public sealed class SemanticIndexingProcessManagerTests
             SemanticIndexingStatus.Accepted,
             "memories_accepted",
             retryable: false,
-            workflowInstanceId: "workflow-a"));
+            publishedEventId: "folders://tenant-a/published-a"));
         SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
 
         IReadOnlyList<SemanticIndexingBridgeEntry> results = await manager.ProcessFolderEventsAsync(
@@ -39,6 +39,7 @@ public sealed class SemanticIndexingProcessManagerTests
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Indexed);
+        results[0].Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
         bridge.AppliedEnvelopes.ShouldHaveSingleItem().Sequence.ShouldBe(1);
         policy.Evaluated.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Stale);
         SemanticIndexingContentMaterializationRequest materializationRequest = materializer.Requests.ShouldHaveSingleItem();

@@ -1,16 +1,21 @@
 using System.Text.RegularExpressions;
-using System.Net;
 
+using Dapr;
+using Dapr.Client;
+
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Workers;
 using Hexalith.Folders.Workers.SemanticIndexing;
-using Hexalith.EventStore.Client.Projections;
-using Hexalith.Memories.Client.Rest;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
+
+using NSubstitute;
+
+// Alias the one Memories contract used here: its V1 namespace also defines a Case type that collides with
+// Shouldly.Case used by the metadata-safety assertions.
+using SearchIndexEntryChanged = Hexalith.Memories.Contracts.V1.SearchIndexEntryChanged;
 
 using Shouldly;
 using Xunit;
@@ -20,7 +25,7 @@ namespace Hexalith.Folders.Workers.Tests;
 public sealed class SemanticIndexingWorkerRegistrationTests
 {
     [Fact]
-    public void AddFoldersSemanticIndexingWorkersShouldRegisterPortAndMemoriesTypedClient()
+    public void AddFoldersSemanticIndexingWorkersShouldRegisterPortAndDaprClient()
     {
         ServiceCollection services = CreateServiceCollection();
 
@@ -36,7 +41,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         provider.GetRequiredService<ISemanticIndexingContentMaterializer>().ShouldNotBeNull();
         provider.GetRequiredService<SemanticIndexingProcessManager>().ShouldNotBeNull();
         provider.GetRequiredService<FoldersSemanticIndexingEventProcessor>().ShouldNotBeNull();
-        provider.GetRequiredService<MemoriesClient>().ShouldNotBeNull();
+        provider.GetRequiredService<DaprClient>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -69,89 +74,83 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             ValidateScopes = true,
         });
         provider.GetRequiredService<ISemanticIndexingPort>().ShouldNotBeNull();
-        provider.GetRequiredService<MemoriesClient>().ShouldNotBeNull();
+        provider.GetRequiredService<DaprClient>().ShouldNotBeNull();
     }
 
     [Fact]
-    public async Task SemanticIndexingPortShouldCallMemoriesTypedClientIngestion()
+    public async Task SemanticIndexingPortShouldPublishCuratedSearchIndexEntryChangedCloudEvent()
     {
-        CapturingHandler handler = new(HttpStatusCode.Accepted, """{"instanceId":"workflow-a"}""");
-        MemoriesClient client = new(
-            new HttpClient(handler) { BaseAddress = new Uri("http://memories.local/") },
-            Options.Create(new MemoriesClientOptions()),
-            NullLogger<MemoriesClient>.Instance);
-        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(client);
+        DaprClient dapr = Substitute.For<DaprClient>();
+        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(dapr);
 
         SemanticIndexingResult result = await port.IndexFileVersionAsync(
-            CreateRequest(contentBytes: [1, 2, 3]),
+            CreateRequest(),
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
+        const string expectedSourceUri = "folders://tenant-a/organizations/organization-a/folders/folder-a/versions/version-a";
         result.Status.ShouldBe(SemanticIndexingStatus.Accepted);
         result.Retryable.ShouldBeFalse();
         result.ReasonCode.ShouldBe("memories_accepted");
-        result.WorkflowInstanceId.ShouldBe("workflow-a");
-        handler.Requests.ShouldHaveSingleItem().RequestUri!.AbsolutePath.ShouldBe("/api/ingest");
-        handler.Payloads.ShouldHaveSingleItem().ShouldContain("folders-index", Case.Sensitive);
-        handler.Payloads[0].ShouldContain("folders://tenant-a/organizations/organization-a/folders/folder-a/versions/version-a", Case.Sensitive);
-        handler.Payloads[0].ShouldNotContain("C:/", Case.Sensitive);
+        result.PublishedEventId.ShouldBe(expectedSourceUri);
+
+        object?[] arguments = dapr.ReceivedCalls().ShouldHaveSingleItem().GetArguments();
+        arguments[0].ShouldBe(FoldersSemanticIndexingDefaults.PubSubName);
+        arguments[1].ShouldBe(FoldersSemanticIndexingDefaults.EventsTopicName);
+        SearchIndexEntryChanged entry = arguments[2].ShouldBeOfType<SearchIndexEntryChanged>();
+        Dictionary<string, string> metadata = arguments[3].ShouldBeOfType<Dictionary<string, string>>();
+
+        entry.TenantId.ShouldBe("folders-index");
+        entry.AggregateId.ShouldBe("tenant-a:organization-a:folder-a");
+        entry.Text.ShouldContain("version-a", Case.Sensitive);
+        entry.Text.ShouldNotContain("C:/", Case.Sensitive);
+        entry.CorrelationId.ShouldBe("correlation-a");
+        entry.CausationId.ShouldBe("task-a");
+        entry.Attributes["folders.managedTenantId"].ShouldBe("tenant-a");
+        entry.Attributes["folders.fileVersionId"].ShouldBe("version-a");
+        entry.Attributes["folders.sensitivityClassification"].ShouldBe("tenant-sensitive");
+        // Plain-string attributes only: correlation/task/idempotency belong on the event header, not the filter map.
+        entry.Attributes.ShouldNotContainKey("folders.idempotencyKey");
+        entry.Attributes.ShouldNotContainKey("folders.correlationId");
+
+        metadata["cloudevent.id"].ShouldBe(expectedSourceUri);
+        metadata["cloudevent.type"].ShouldBe(nameof(SearchIndexEntryChanged));
+        metadata["cloudevent.source"].ShouldBe("hexalith-folders");
     }
 
     [Fact]
-    public async Task SemanticIndexingPortShouldMapRemoteErrorsToRetryableFailure()
+    public async Task SemanticIndexingPortShouldMapDaprPublishFailureToRetryableFailure()
     {
-        CapturingHandler handler = new(
-            HttpStatusCode.ServiceUnavailable,
-            """{"code":"UNAVAILABLE","message":"service unavailable","suggestion":"retry"}""");
-        MemoriesClient client = new(
-            new HttpClient(handler) { BaseAddress = new Uri("http://memories.local/") },
-            Options.Create(new MemoriesClientOptions()),
-            NullLogger<MemoriesClient>.Instance);
-        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(client);
+        DaprClient dapr = Substitute.For<DaprClient>();
+        dapr.PublishEventAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<SearchIndexEntryChanged>(),
+                Arg.Any<Dictionary<string, string>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(Task.FromException(new DaprException("memories pub/sub unavailable")));
+        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(dapr);
 
         SemanticIndexingResult result = await port.IndexFileVersionAsync(
-            CreateRequest(contentBytes: [1, 2, 3]),
+            CreateRequest(),
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         result.Status.ShouldBe(SemanticIndexingStatus.Failed);
         result.Retryable.ShouldBeTrue();
-        result.ReasonCode.ShouldBe("memories_remote_error");
+        result.ReasonCode.ShouldBe("memories_publish_error");
+        result.PublishedEventId.ShouldBeNull();
     }
 
     [Fact]
-    public async Task SemanticIndexingPortShouldMapInvalidAcceptedResponseToRetryableFailure()
+    public async Task SemanticIndexingPortShouldHonorCancelledTokenBeforePublishing()
     {
-        CapturingHandler handler = new(HttpStatusCode.Accepted, "{}");
-        MemoriesClient client = new(
-            new HttpClient(handler) { BaseAddress = new Uri("http://memories.local/") },
-            Options.Create(new MemoriesClientOptions()),
-            NullLogger<MemoriesClient>.Instance);
-        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(client);
-
-        SemanticIndexingResult result = await port.IndexFileVersionAsync(
-            CreateRequest(contentBytes: [1, 2, 3]),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
-
-        result.Status.ShouldBe(SemanticIndexingStatus.Failed);
-        result.Retryable.ShouldBeTrue();
-        result.ReasonCode.ShouldBe("memories_invalid_response");
-    }
-
-    [Fact]
-    public async Task SemanticIndexingPortShouldHonorCancelledTokenBeforeCallingMemories()
-    {
-        ServiceCollection services = CreateServiceCollection();
-        services.AddFoldersSemanticIndexingWorkers();
-        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
-        {
-            ValidateOnBuild = true,
-            ValidateScopes = true,
-        });
-        ISemanticIndexingPort port = provider.GetRequiredService<ISemanticIndexingPort>();
+        DaprClient dapr = Substitute.For<DaprClient>();
+        ISemanticIndexingPort port = new MemoriesSemanticIndexingPort(dapr);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
 
         await Should.ThrowAsync<OperationCanceledException>(async () =>
             await port.IndexFileVersionAsync(CreateRequest(), cancellation.Token).ConfigureAwait(true)).ConfigureAwait(true);
+        dapr.ReceivedCalls().ShouldBeEmpty();
     }
 
     [Fact]
@@ -293,8 +292,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     private static SemanticIndexingRequest CreateRequest(
         string managedTenantId = "tenant-a",
         string correlationId = "correlation-a",
-        string idempotencyKey = "idempotency-a",
-        byte[]? contentBytes = null)
+        string idempotencyKey = "idempotency-a")
         => new(
             managedTenantId,
             "organization-a",
@@ -309,8 +307,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             new SemanticIndexingPolicyOutcome(true, "tenant-sensitive", "allowed"),
             correlationId,
             "task-a",
-            idempotencyKey,
-            contentBytes);
+            idempotencyKey);
 
     private static IEnumerable<Type> ExpandTypeGraph(Type type)
     {
@@ -349,35 +346,5 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         }
 
         return directory?.FullName ?? throw new InvalidOperationException("Repository root was not found.");
-    }
-
-    private sealed class CapturingHandler : HttpMessageHandler
-    {
-        private readonly string _payload;
-        private readonly HttpStatusCode _statusCode;
-
-        public CapturingHandler(HttpStatusCode statusCode, string payload)
-        {
-            _statusCode = statusCode;
-            _payload = payload;
-        }
-
-        public List<HttpRequestMessage> Requests { get; } = [];
-
-        public List<string> Payloads { get; } = [];
-
-        protected override async Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            Requests.Add(request);
-            Payloads.Add(request.Content is null
-                ? string.Empty
-                : await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(true));
-            return new HttpResponseMessage(_statusCode)
-            {
-                Content = new StringContent(_payload, System.Text.Encoding.UTF8, "application/json"),
-            };
-        }
     }
 }

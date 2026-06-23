@@ -154,8 +154,7 @@ public sealed class SemanticIndexingBridgeProjectionTests
                 retryable: false,
                 "correlation-index-a",
                 "task-index-a",
-                "workflow-a",
-                "memory-unit-a",
+                "published-a",
                 "result-fingerprint-a",
                 OccurredAt.AddMinutes(5)));
         SemanticIndexingBridgeEntry staleResult = SemanticIndexingBridgeProjection.ApplyIndexingResult(
@@ -167,8 +166,7 @@ public sealed class SemanticIndexingBridgeProjectionTests
                 retryable: false,
                 "correlation-index-b",
                 "task-index-b",
-                "workflow-b",
-                "memory-unit-b",
+                "published-b",
                 "result-fingerprint-b",
                 OccurredAt.AddMinutes(5)));
         SemanticIndexingBridgeEntry tombstoned = Apply(Mutation(fileOperationKind: "remove", contentHashReference: null)).Entries.Values.ShouldHaveSingleItem();
@@ -181,14 +179,12 @@ public sealed class SemanticIndexingBridgeProjectionTests
                 retryable: false,
                 "correlation-index-c",
                 "task-index-c",
-                "workflow-c",
-                "memory-unit-c",
+                "published-c",
                 "result-fingerprint-c",
                 OccurredAt.AddMinutes(5)));
 
         indexed.Status.ShouldBe(SemanticIndexingBridgeStatus.Indexed);
-        indexed.Evidence.WorkflowId.ShouldBe("workflow-a");
-        indexed.Evidence.MemoryUnitId.ShouldBe("memory-unit-a");
+        indexed.Evidence.PublishedEventId.ShouldBe("published-a");
         staleResult.ShouldBe(current);
         ignoredAfterTombstone.ShouldBe(tombstoned);
     }
@@ -273,7 +269,7 @@ public sealed class SemanticIndexingBridgeProjectionTests
         skipped.Retryable.ShouldBeFalse();
         reconcile.Status.ShouldBe(SemanticIndexingBridgeStatus.ReconciliationRequired);
         reconcile.StatusCode.ShouldBe("reconciliation_required");
-        reconcile.Evidence.WorkflowId.ShouldBe("workflow-x");
+        reconcile.Evidence.PublishedEventId.ShouldBe("published-x");
     }
 
     [Fact]
@@ -391,8 +387,7 @@ public sealed class SemanticIndexingBridgeProjectionTests
             retryable,
             "correlation-result-x",
             "task-result-x",
-            "workflow-x",
-            "memory-unit-x",
+            "published-x",
             "result-fingerprint-x",
             OccurredAt.AddMinutes(5));
 

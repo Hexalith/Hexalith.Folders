@@ -9,8 +9,7 @@ public sealed record SemanticIndexingResultUpdate
         bool retryable,
         string correlationId,
         string taskId,
-        string? workflowId,
-        string? memoryUnitId,
+        string? publishedEventId,
         string? resultFingerprint,
         DateTimeOffset observedAt)
     {
@@ -30,8 +29,7 @@ public sealed record SemanticIndexingResultUpdate
         Retryable = retryable;
         CorrelationId = correlationId;
         TaskId = taskId;
-        WorkflowId = workflowId;
-        MemoryUnitId = memoryUnitId;
+        PublishedEventId = publishedEventId;
         ResultFingerprint = resultFingerprint;
         ObservedAt = observedAt;
     }
@@ -48,9 +46,7 @@ public sealed record SemanticIndexingResultUpdate
 
     public string TaskId { get; }
 
-    public string? WorkflowId { get; }
-
-    public string? MemoryUnitId { get; }
+    public string? PublishedEventId { get; }
 
     public string? ResultFingerprint { get; }
 

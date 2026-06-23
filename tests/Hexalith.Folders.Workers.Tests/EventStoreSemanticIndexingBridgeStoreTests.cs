@@ -131,8 +131,7 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
                 retryable: false,
                 "correlation-result-stale",
                 "task-result-stale",
-                "workflow-stale",
-                "memory-unit-stale",
+                "folders://tenant-a/published-stale",
                 "result-fingerprint-stale",
                 OccurredAt.AddMinutes(5)),
             TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -142,7 +141,7 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
             currentIdentity,
             TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotBeNull();
         current.Status.ShouldBe(SemanticIndexingBridgeStatus.Stale);
-        current.Evidence.WorkflowId.ShouldBeNull();
+        current.Evidence.PublishedEventId.ShouldBeNull();
     }
 
     private static WorkspaceFileMutationAccepted Mutation(

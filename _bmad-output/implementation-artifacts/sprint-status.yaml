@@ -217,7 +217,7 @@ development_status:
   # Hexalith.Memories.Client.Rest reference. Production Dapr access-control is ALREADY correct
   # (deny-by-default; folders-workers publishes to memories-events via the pubsub component, no invoke);
   # only the DaprPolicyConformanceTests expectations + the 'deferred to Epic 10' comment change.
-  10-3-author-authorized-async-indexing-on-file-write-and-commit: ready-for-dev
+  10-3-author-authorized-async-indexing-on-file-write-and-commit: review
   # 10-4 re-scoped to SearchIndexEntryRemoved (removal/archive/tombstone) + live folders-index
   # round-trip verification; its create-story must follow the corrected epics.md scope.
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog

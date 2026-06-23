@@ -19,6 +19,7 @@ public sealed class DaprPolicyConformanceTests
     private const string ExpectedNamespace = "hexalith-production";
     private const string ExpectedDaprSystemNamespace = "dapr-system";
     private const string ExpectedTenantEventsTopic = "system.tenants.events";
+    private const string ExpectedMemoriesEventsTopic = "memories-events";
     private const string PolicyPath = "deploy/dapr/production/accesscontrol.yaml";
     private const string MtlsPath = "deploy/dapr/production/daprsystem.yaml";
     private const string PubSubPath = "deploy/dapr/production/pubsub.yaml";
@@ -212,7 +213,7 @@ public sealed class DaprPolicyConformanceTests
 
         IReadOnlyDictionary<string, string> componentMetadata = ParseComponentMetadata(spec.GetSequence("metadata"));
         componentMetadata["protectedTopics"].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .ShouldContain(ExpectedTenantEventsTopic);
+            .ShouldBe([ExpectedTenantEventsTopic, ExpectedMemoriesEventsTopic], ignoreOrder: true);
 
         IReadOnlyDictionary<string, string[]> publishingScopes = ParseTopicScopes(componentMetadata["publishingScopes"]);
         IReadOnlyDictionary<string, string[]> subscriptionScopes = ParseTopicScopes(componentMetadata["subscriptionScopes"]);
@@ -224,24 +225,33 @@ public sealed class DaprPolicyConformanceTests
         subscriptionScopes[FoldersAspireModule.FoldersAppId].ShouldBe([ExpectedTenantEventsTopic]);
         subscriptionScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBe([ExpectedTenantEventsTopic]);
 
-        publishingScopes.Where(static scope => !string.Equals(scope.Key, FoldersAspireModule.TenantsAppId, StringComparison.Ordinal))
+        // Story 10.3 (AC9): the worker-side producer publishes SearchIndexEntryChanged to memories-events, so
+        // folders-workers is scoped to publish it and memories is scoped to subscribe — the only memories-events
+        // scopes. No other app may touch the topic.
+        publishingScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
+        subscriptionScopes[FoldersAspireModule.MemoriesAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
+
+        publishingScopes.Where(static scope =>
+                !string.Equals(scope.Key, FoldersAspireModule.TenantsAppId, StringComparison.Ordinal) &&
+                !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal))
             .SelectMany(static scope => scope.Value)
             .ShouldBeEmpty();
         subscriptionScopes.Where(static scope =>
                 !string.Equals(scope.Key, FoldersAspireModule.FoldersAppId, StringComparison.Ordinal) &&
-                !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal))
+                !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal) &&
+                !string.Equals(scope.Key, FoldersAspireModule.MemoriesAppId, StringComparison.Ordinal))
             .SelectMany(static scope => scope.Value)
             .ShouldBeEmpty();
     }
 
     [Fact]
-    public void MemoriesShouldRemainDenyByDefaultWithNoInvokeAuthorizationOrPubSubTopicsUntilEpic10()
+    public void MemoriesShouldStayDenyByDefaultForInvokeAndSubscribeOnlyToMemoriesEventsViaPubSub()
     {
-        // Story 9.2 / AC6: memories is registered as a deny-by-default production app-id with NO caller/invoke
-        // allow-rules and NO pub/sub topics. The worker-side producer, the folders/folders-workers -> memories
-        // invoke authorization (+ its 7-category negative tests), and any memories ingestion topic are all
-        // deferred to Epic 10. This guard fails closed if a speculative memories caller policy or topic scope is
-        // introduced before the producer exists — the honest deny-by-default posture for a topology-only story.
+        // Story 10.3 (AC9): the worker-side producer publishes SearchIndexEntryChanged to memories-events via the
+        // pubsub COMPONENT — there is no folders/folders-workers -> memories Dapr service-invoke, so memories stays
+        // deny-by-default with NO caller/invoke allow-rules. The only authorized pub/sub path is folders-workers
+        // publishing memories-events and memories subscribing it; memories never publishes. This guard fails closed
+        // if a speculative memories invoke caller policy or a publish scope is introduced.
         ProductionPolicy policy = LoadProductionPolicy();
 
         TargetPolicy memories = policy.Targets.Single(t =>
@@ -252,7 +262,8 @@ public sealed class DaprPolicyConformanceTests
         YamlMappingNode component = LoadSingleYamlDocument(PubSubPath);
         IReadOnlyDictionary<string, string> componentMetadata = ParseComponentMetadata(component.GetMapping("spec").GetSequence("metadata"));
         ParseTopicScopes(componentMetadata["publishingScopes"])[FoldersAspireModule.MemoriesAppId].ShouldBeEmpty();
-        ParseTopicScopes(componentMetadata["subscriptionScopes"])[FoldersAspireModule.MemoriesAppId].ShouldBeEmpty();
+        ParseTopicScopes(componentMetadata["subscriptionScopes"])[FoldersAspireModule.MemoriesAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
+        ParseTopicScopes(componentMetadata["publishingScopes"])[FoldersAspireModule.FoldersWorkersAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
     }
 
     [Fact]

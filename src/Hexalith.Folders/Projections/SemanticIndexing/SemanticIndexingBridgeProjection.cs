@@ -100,8 +100,7 @@ public sealed record SemanticIndexingBridgeProjection
             StatusObservedAt = update.ObservedAt,
             Evidence = current.Evidence with
             {
-                WorkflowId = update.WorkflowId,
-                MemoryUnitId = update.MemoryUnitId,
+                PublishedEventId = update.PublishedEventId,
                 ResultFingerprint = update.ResultFingerprint,
             },
         };

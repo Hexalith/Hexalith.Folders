@@ -74,7 +74,7 @@ public sealed class SemanticIndexingProcessManager
             .ConfigureAwait(false);
         if (!policy.IsAllowed)
         {
-            return await RecordAsync(entry, MapPolicyStatus(policy), policy.ReasonCode, policy.Retryable, null, null, cancellationToken).ConfigureAwait(false);
+            return await RecordAsync(entry, MapPolicyStatus(policy), policy.ReasonCode, policy.Retryable, null, cancellationToken).ConfigureAwait(false);
         }
 
         SemanticIndexingContentMaterializationResult materialized = await _contentMaterializer
@@ -101,7 +101,6 @@ public sealed class SemanticIndexingProcessManager
                 materialized.ReasonCode,
                 materialized.Retryable,
                 null,
-                null,
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -114,7 +113,6 @@ public sealed class SemanticIndexingProcessManager
                 "content_too_large",
                 retryable: false,
                 null,
-                null,
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -125,7 +123,6 @@ public sealed class SemanticIndexingProcessManager
                 SemanticIndexingBridgeStatus.Skipped,
                 "content_type_unsupported",
                 retryable: false,
-                null,
                 null,
                 cancellationToken).ConfigureAwait(false);
         }
@@ -140,8 +137,7 @@ public sealed class SemanticIndexingProcessManager
             MapIndexingStatus(result),
             result.ReasonCode,
             result.Retryable,
-            result.WorkflowInstanceId,
-            result.MemoryUnitId,
+            result.PublishedEventId,
             cancellationToken).ConfigureAwait(false);
     }
 
@@ -170,8 +166,7 @@ public sealed class SemanticIndexingProcessManager
                 policy.PathPolicyOutcome),
             entry.CorrelationId,
             entry.TaskId,
-            DeriveIdempotencyKey(entry.Identity),
-            materialized.ContentBytes);
+            DeriveIdempotencyKey(entry.Identity));
     }
 
     private Task<SemanticIndexingBridgeEntry?> RecordAsync(
@@ -179,8 +174,7 @@ public sealed class SemanticIndexingProcessManager
         SemanticIndexingBridgeStatus status,
         string reasonCode,
         bool retryable,
-        string? workflowId,
-        string? memoryUnitId,
+        string? publishedEventId,
         CancellationToken cancellationToken)
         => _bridgeWriter.RecordIndexingResultAsync(
             new SemanticIndexingResultUpdate(
@@ -190,9 +184,8 @@ public sealed class SemanticIndexingProcessManager
                 retryable,
                 entry.CorrelationId,
                 entry.TaskId,
-                workflowId,
-                memoryUnitId,
-                DeriveResultFingerprint(entry.Identity, status, reasonCode, workflowId, memoryUnitId),
+                publishedEventId,
+                DeriveResultFingerprint(entry.Identity, status, reasonCode, publishedEventId),
                 _timeProvider.GetUtcNow()),
             cancellationToken);
 
@@ -246,8 +239,7 @@ public sealed class SemanticIndexingProcessManager
         SemanticIndexingFileVersionIdentity identity,
         SemanticIndexingBridgeStatus status,
         string reasonCode,
-        string? workflowId,
-        string? memoryUnitId)
+        string? publishedEventId)
         => "sir-" + Hash(
             identity.ManagedTenantId,
             identity.FolderId,
@@ -256,8 +248,7 @@ public sealed class SemanticIndexingProcessManager
             identity.SourceUri,
             status.ToStatusCode(),
             reasonCode,
-            workflowId ?? string.Empty,
-            memoryUnitId ?? string.Empty);
+            publishedEventId ?? string.Empty);
 
     private static string Hash(params string[] parts)
     {
