@@ -1,7 +1,9 @@
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Workers;
 using Hexalith.Folders.Workers.SemanticIndexing;
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.Memories.Client.Rest;
 
 using Microsoft.Extensions.Configuration;
@@ -28,6 +30,23 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         });
         provider.GetRequiredService<ISemanticIndexingPort>().ShouldNotBeNull();
         provider.GetRequiredService<MemoriesClient>().ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void AddFoldersSemanticIndexingWorkersShouldRegisterEventStoreBackedBridge()
+    {
+        ServiceCollection services = CreateServiceCollection();
+
+        services.AddFoldersSemanticIndexingWorkers();
+
+        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateOnBuild = true,
+            ValidateScopes = true,
+        });
+        provider.GetRequiredService<IReadModelStore>().ShouldNotBeNull();
+        provider.GetRequiredService<ISemanticIndexingBridgeReadModel>().ShouldBeOfType<EventStoreSemanticIndexingBridgeStore>();
+        provider.GetRequiredService<ISemanticIndexingBridgeWriter>().ShouldBeOfType<EventStoreSemanticIndexingBridgeStore>();
     }
 
     [Fact]

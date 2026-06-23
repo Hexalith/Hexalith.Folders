@@ -1,6 +1,6 @@
 # Test Automation Summary
 
-> Canonical latest-run summary for Story 10.2. Durable per-story copy: [`10-2-test-summary.md`](./10-2-test-summary.md).
+> Durable per-story summary for Story 10.2. Canonical latest-run copy: [`test-summary.md`](./test-summary.md).
 > Previous run (Story 10.1): [`10-1-test-summary.md`](./10-1-test-summary.md).
 
 **Workflow:** `bmad-qa-generate-e2e-tests`

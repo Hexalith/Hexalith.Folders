@@ -12,6 +12,7 @@ using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.OpsConsole;
 using Hexalith.Folders.Queries.ProviderReadiness;
+using Hexalith.Folders.Projections.SemanticIndexing;
 
 using Dapr.Client;
 
@@ -135,6 +136,17 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IWorkspaceFileSensitivityClassifier, WorkspaceFileSensitivityClassifier>();
         services.TryAddSingleton<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
         services.TryAddSingleton<WorkspaceFileContextQueryHandler>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddFoldersSemanticIndexingBridge(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.TryAddSingleton<InMemorySemanticIndexingBridgeStore>();
+        services.TryAddSingleton<ISemanticIndexingBridgeReadModel>(static sp => sp.GetRequiredService<InMemorySemanticIndexingBridgeStore>());
+        services.TryAddSingleton<ISemanticIndexingBridgeWriter>(static sp => sp.GetRequiredService<InMemorySemanticIndexingBridgeStore>());
 
         return services;
     }

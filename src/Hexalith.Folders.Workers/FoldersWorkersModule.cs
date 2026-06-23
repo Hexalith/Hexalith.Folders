@@ -2,10 +2,12 @@ using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Workers.RepositoryProvisioning;
 using Hexalith.Folders.Workers.SemanticIndexing;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
+using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.DomainService;
 using Hexalith.Memories.Client.Rest;
@@ -62,6 +64,14 @@ public static class FoldersWorkersModule
     {
         ArgumentNullException.ThrowIfNull(services);
 
+        services.AddDaprClient();
+        services.AddFoldersSemanticIndexingBridge();
+        services.AddEventStoreReadModelStore();
+        services.RemoveAll<ISemanticIndexingBridgeReadModel>();
+        services.RemoveAll<ISemanticIndexingBridgeWriter>();
+        services.TryAddSingleton<EventStoreSemanticIndexingBridgeStore>();
+        services.TryAddSingleton<ISemanticIndexingBridgeReadModel>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
+        services.TryAddSingleton<ISemanticIndexingBridgeWriter>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
         services.AddMemoriesClient();
         services.TryAddTransient<ISemanticIndexingPort, MemoriesSemanticIndexingPort>();
 
