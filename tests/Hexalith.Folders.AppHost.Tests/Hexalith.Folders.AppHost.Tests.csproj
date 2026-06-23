@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Referencing the AppHost (IsAspireProjectResource=false so this test project is not itself an Aspire
+         resource) generates the Projects.Hexalith_Folders_AppHost metadata type the testing builder boots. -->
+    <ProjectReference Include="..\..\src\Hexalith.Folders.AppHost\Hexalith.Folders.AppHost.csproj">
+      <IsAspireProjectResource>false</IsAspireProjectResource>
+    </ProjectReference>
+    <!-- Stable app-id / topic constants the cross-process assertions pin against. -->
+    <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

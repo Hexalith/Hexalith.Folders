@@ -24,6 +24,7 @@ public sealed class ScaffoldContractTests
         "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj",
         "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj",
         "src/Hexalith.Folders/Hexalith.Folders.csproj",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
         "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
         "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
         "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
@@ -71,6 +72,7 @@ public sealed class ScaffoldContractTests
         "src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj",
         "src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj",
         "src/Hexalith.Folders/Hexalith.Folders.csproj",
+        "tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj",
         "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
         "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
         "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
@@ -171,6 +173,7 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Workers.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Workers", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Testing.Tests", ["Hexalith.Folders", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.IntegrationTests", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.Cli", "Hexalith.Folders.Client", "Hexalith.Folders.Mcp", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Hexalith.Memories.Aspire"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost.Tests", ["Hexalith.Folders.AppHost", "Hexalith.Folders.Aspire"]);
         AssertReferences(references, "Hexalith.Folders.LoadTests.Tests", ["Hexalith.Folders.LoadTests"]);
         AssertReferences(references, "Hexalith.Folders.PatternExamples", ["Hexalith.Folders.Client", "Hexalith.Folders.Contracts"]);
     }
