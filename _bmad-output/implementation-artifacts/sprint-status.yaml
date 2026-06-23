@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-23T12:00:00+02:00
+last_updated: 2026-06-23
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -167,12 +167,15 @@ development_status:
   # release-acceptance closure epic (not a feature workstream). Closes the bounded MVP-release
   # conditions: 47/47 REST parity (8-1/8-2), wire-exercised parity + claim gate (8-3), axe a11y
   # gate (8-4), C3 Legal sign-off + residual reds (8-5). Stories are stubs pending create-story.
-  epic-8: backlog
+  epic-8: in-progress
   8-1-implement-bucket-a-missing-rest-server-routes: done
   8-2-implement-ops-console-diagnostics-rest-routes: done
   8-3-wire-exercise-cross-surface-parity-and-close-claim: done
   8-4-stand-up-axe-wcag-ci-gate: done
-  8-5-close-c3-legal-signoff-and-residual-reds: backlog
+  # 8-5: dev-completable scope (ACs 2-6) complete and review-ready 2026-06-23; AC1 (C3 Legal sign-off)
+  # is BLOCKED-PENDING-LEGAL (external Legal record not yet in hand — C3 left reference_pending, no fabricated
+  # approval per AD1). Do NOT mark epic-8 done until Legal signs and the C3 cascade flip is applied.
+  8-5-close-c3-legal-signoff-and-residual-reds: review
   epic-8-retrospective: optional
 
   # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology

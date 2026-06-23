@@ -23,6 +23,10 @@ public sealed class GitHubDependencyGuardTests
             .Order(StringComparer.Ordinal)
             .ToArray();
 
+        // Allow-list rationale (architecture A-6): Octokit is confined to the GitHub provider adapter. The only
+        // legitimate concrete-adapter reference outside src/.../Providers/GitHub/ is the composition-root DI
+        // registration in FoldersServiceCollectionExtensions.cs (the GitHub adapter is wired there) — this entry is a
+        // deliberate, architecture-sanctioned exception, NOT a weakened guard. Do not broaden it to relax the boundary.
         references.ShouldAllBe(path =>
             path.StartsWith("src/Hexalith.Folders/Providers/GitHub/", StringComparison.Ordinal)
             || string.Equals(path, "src/Hexalith.Folders/Hexalith.Folders.csproj", StringComparison.Ordinal)

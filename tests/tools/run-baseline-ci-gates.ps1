@@ -24,14 +24,34 @@ $results = @()
 $unitTestProjects = @(
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj'
-        filter = 'FullyQualifiedName!~Hexalith.Folders.Tests.Providers.GitHub.GitHubDependencyGuardTests.OctokitReferencesStayInsideGitHubProviderBoundary&FullyQualifiedName!~Hexalith.Folders.Tests.Providers.Abstractions.ProviderCapabilityBoundaryTests.ProviderAbstractionsShouldNotReferenceOutOfScopeRuntimeOrAdapterDependencies'
+        # Story 8.5 AC4 (realizing the 7.18 AC6 "no fail-open --filter" principle): the obsolete exclusion that hid
+        # the two provider-boundary guards (OctokitReferencesStayInsideGitHubProviderBoundary,
+        # ProviderAbstractionsShouldNotReferenceOutOfScopeRuntimeOrAdapterDependencies) is removed. Both are green at
+        # HEAD (re-scoped by 174d634: Octokit is allow-listed composition-root DI per architecture A-6; the
+        # Abstractions folder has no Dapr per S-5), so the baseline lane now runs the full Folders.Tests project and
+        # CI proves the guards rather than masking them.
+        filter = ''
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests'
+        # Story 8.5 AC6 triage: this is a deliberate division-of-labor allow-list, not a fail-open mask. The baseline
+        # lane runs only the hermetic deployment/conformance classes here; the contract-spine drift, parity-oracle,
+        # safety-invariant, and Epic-1 negative-scope guard classes run in the focused contract-spine / safety /
+        # contract-parity gates. The full Contracts.Tests project is 256/256 green and covered across those gates.
+        # QA gap (qa-generate-e2e-tests, 2026-06-23): the two browserless Playwright-CI-lane conformance classes
+        # (Accessibility/E2e CiWorkflowConformanceTests) are added here — they pin the accessibility-gates / e2e-gates
+        # jobs + gate scripts + operator docs (pure file/YAML/JSON reads, no Chromium) and previously ran in NO CI
+        # lane, which is itself the masked-test anti-pattern AC6 forbids. The baseline lane is their intended home.
+        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests'
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj'
+        # Story 8.5 AC6 triage: this exclusion is KEPT as genuinely environment-gated, not an obsolete mask. The two
+        # codegen-regeneration tests spawn nested out-of-process toolchain work — GeneratedClientAndHelpersMatchIsolatedRegeneration
+        # runs `dotnet restore` (network) + `dotnet msbuild /t:Generate...` in a temp tree, and
+        # HelperGenerationTargetRegeneratesWhenContractSpineChanges runs `dotnet msbuild` helper regeneration — both of
+        # which violate this lane's fast hermetic --no-restore/--no-build contract. The isolated-regeneration assertion
+        # is exercised by the contract-and-parity gate (run-contract-parity-ci-gates.ps1, ClientGenerationTests).
         filter = 'FullyQualifiedName!~Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration&FullyQualifiedName!~Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGenerationTargetRegeneratesWhenContractSpineChanges'
     },
     [ordered]@{
@@ -44,7 +64,13 @@ $unitTestProjects = @(
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj'
-        filter = 'FullyQualifiedName!~Hexalith.Folders.Testing.Tests.FixtureContractTests.DeferredArtifactAreasCarryMachineCheckableOwnershipNotes&FullyQualifiedName!~Hexalith.Folders.Testing.Tests.ExitCriteriaDecisionArtifactTests.ExitCriteriaDecisionArtifactsExistWithRequiredDecisionShape&FullyQualifiedName!~Hexalith.Folders.Testing.Tests.ScaffoldContractTests.SolutionContainsOnlyCanonicalBuildableProjects&FullyQualifiedName!~Hexalith.Folders.Testing.Tests.ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection'
+        # Story 8.5 AC2 (realizing the 7.18 AC6 "no fail-open --filter" principle): the obsolete exclusion that hid
+        # the four governance/scaffold tests (FixtureContractTests.DeferredArtifactAreasCarryMachineCheckableOwnershipNotes,
+        # ExitCriteriaDecisionArtifactTests.ExitCriteriaDecisionArtifactsExistWithRequiredDecisionShape, and the two
+        # ScaffoldContractTests.{SolutionContainsOnlyCanonicalBuildableProjects,ProjectReferencesFollowAllowedDependencyDirection})
+        # is removed. All four are green at HEAD (fixed by 174d634 scaffold split + 103fa18 governance docs), so the
+        # baseline lane now runs the full Testing.Tests project (60/60) and CI proves them rather than masking them.
+        filter = ''
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj'
@@ -52,7 +78,12 @@ $unitTestProjects = @(
     },
     [ordered]@{
         project_path = 'tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj'
-        filter = 'FullyQualifiedName!~Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShould'
+        # Story 8.5 AC6 triage: the former TenantSubscriptionEndpointShould exclusion is RE-INCLUDED. The three
+        # endpoint tests are green and hermetic — they start an in-process slim WebApplication bound to
+        # 127.0.0.1:0 with an in-memory projection store and need NO Dapr sidecar (the earlier "needs a sidecar"
+        # speculation is disproven: full Workers.Tests is 19/19 in ~300ms with no external dependency). Workers.Tests
+        # runs in no other focused gate, so leaving them masked would hide green tests (the 7.18 AC6 anti-pattern).
+        filter = ''
     },
     # Hermetic SDK lifecycle example tests (RecordingHandler, no AppHost/Dapr/network). Running them here
     # in PR CI satisfies the "examples ... validated by CI" clause for the consumer SDK quickstart/reference.

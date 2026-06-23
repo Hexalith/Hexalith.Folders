@@ -180,3 +180,37 @@ jobs:
         shell: pwsh
         timeout-minutes: 30
         run: ./tests/tools/run-accessibility-ci-gates.ps1 -SkipBrowserInstall
+
+  e2e-gates:
+    name: e2e-gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Initialize root-level build submodules
+        run: git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            Directory.Packages.props
+            global.json
+            nuget.config
+            **/*.csproj
+
+      - name: Provision Playwright Chromium browser
+        shell: pwsh
+        timeout-minutes: 15
+        run: ./tests/install-playwright.ps1
+
+      - name: Run full UI end-to-end gate
+        shell: pwsh
+        timeout-minutes: 30
+        run: ./tests/tools/run-e2e-ci-gates.ps1 -SkipBrowserInstall

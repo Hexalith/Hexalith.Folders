@@ -14,11 +14,11 @@
   "unit_test_projects": [
     {
       "project_path": "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
-      "filter": "FullyQualifiedName!~Hexalith.Folders.Tests.Providers.GitHub.GitHubDependencyGuardTests.OctokitReferencesStayInsideGitHubProviderBoundary&FullyQualifiedName!~Hexalith.Folders.Tests.Providers.Abstractions.ProviderCapabilityBoundaryTests.ProviderAbstractionsShouldNotReferenceOutOfScopeRuntimeOrAdapterDependencies"
+      "filter": ""
     },
     {
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests"
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests"
     },
     {
       "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
@@ -34,7 +34,7 @@
     },
     {
       "project_path": "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
-      "filter": "FullyQualifiedName!~Hexalith.Folders.Testing.Tests.FixtureContractTests.DeferredArtifactAreasCarryMachineCheckableOwnershipNotes&FullyQualifiedName!~Hexalith.Folders.Testing.Tests.ExitCriteriaDecisionArtifactTests.ExitCriteriaDecisionArtifactsExistWithRequiredDecisionShape&FullyQualifiedName!~Hexalith.Folders.Testing.Tests.ScaffoldContractTests.SolutionContainsOnlyCanonicalBuildableProjects&FullyQualifiedName!~Hexalith.Folders.Testing.Tests.ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection"
+      "filter": ""
     },
     {
       "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
@@ -42,7 +42,7 @@
     },
     {
       "project_path": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
-      "filter": "FullyQualifiedName!~Hexalith.Folders.Workers.Tests.WorkersTenantEventTests.TenantSubscriptionEndpointShould"
+      "filter": ""
     },
     {
       "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",

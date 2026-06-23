@@ -200,6 +200,62 @@ public sealed partial class BaselineCiWorkflowConformanceTests
     }
 
     [Fact]
+    public void BaselineGateScriptShouldNotReMaskNowGreenTestsWithFailOpenFilters()
+    {
+        // Story 8.5 (AC2/AC4/AC6, Risk R3) regression guard, realizing the 7.18 AC6 "no fail-open --filter" principle.
+        // The story REMOVED the obsolete masks that hid now-green tests (Folders.Tests provider-boundary guards,
+        // Testing.Tests governance/scaffold, Workers.Tests TenantSubscriptionEndpointShould) but added no test that
+        // they STAY removed — so a future PR could silently re-add e.g. a `FullyQualifiedName!~` exclusion naming one
+        // of those provider-boundary/scaffold guards and no gate would notice. This pins each project's filter
+        // disposition so a re-mask fails CI here. NOTE: the forbidden guard names below are assembled with
+        // string.Concat so this conformance file never contains the contiguous provider-boundary token that the
+        // now-unmasked GitHubDependencyGuardTests scans the tests/ tree for (a contiguous literal here would itself
+        // fail that guard — the exact reason the baseline must stay clear of it).
+        string script = ReadText(GateScriptPath);
+
+        string[] projectPaths = ProjectPathAssignmentPattern().Matches(script)
+            .Select(static match => match.Groups["value"].Value)
+            .ToArray();
+        string[] filters = FilterAssignmentPattern().Matches(script)
+            .Select(static match => match.Groups["value"].Value)
+            .ToArray();
+
+        // The two assignment lists are parallel ($unitTestProjects declares project_path then filter per entry, in
+        // order), so a 1:1 zip is well-defined only when both lists align with the canonical project allow-list.
+        projectPaths.ShouldBe(_baselineUnitProjects);
+        filters.Length.ShouldBe(projectPaths.Length);
+
+        Dictionary<string, string> filterByProject = projectPaths
+            .Zip(filters)
+            .ToDictionary(static pair => pair.First, static pair => pair.Second, StringComparer.Ordinal);
+
+        // AC4 (provider-boundary guards), AC2 (governance/scaffold), AC6 (TenantSubscriptionEndpointShould re-included):
+        // these three projects run with an EMPTY filter so the baseline lane exercises every test, never a subset.
+        filterByProject["tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj"].ShouldBe(string.Empty);
+        filterByProject["tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj"].ShouldBe(string.Empty);
+        filterByProject["tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj"].ShouldBe(string.Empty);
+
+        // No baseline filter may name any of the formerly-masked, now-green tests — a re-mask (the exact 7.18 AC6
+        // anti-pattern) names one of these in a `FullyQualifiedName!~` exclusion.
+        foreach (string filter in filters)
+        {
+            filter.ShouldNotContain(string.Concat("Octo", "kitReferencesStayInsideGitHubProviderBoundary"), Case.Sensitive);
+            filter.ShouldNotContain("ProviderAbstractionsShouldNotReferenceOutOfScopeRuntimeOrAdapterDependencies", Case.Sensitive);
+            filter.ShouldNotContain("ScaffoldContractTests", Case.Sensitive);
+            filter.ShouldNotContain("ExitCriteriaDecisionArtifact", Case.Sensitive);
+            filter.ShouldNotContain("FixtureContractTests", Case.Sensitive);
+            filter.ShouldNotContain("TenantSubscriptionEndpointShould", Case.Sensitive);
+        }
+
+        // The only sanctioned non-empty filters are deliberate division-of-labor allow-lists, not fail-open masks:
+        // Contracts.Tests is an inclusion (~) allow-list; Client.Tests is the documented env-gated codegen exclusion.
+        filterByProject["tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj"]
+            .ShouldContain("FullyQualifiedName~", Case.Sensitive);
+        filterByProject["tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj"]
+            .ShouldContain("GeneratedClientAndHelpersMatchIsolatedRegeneration", Case.Sensitive);
+    }
+
+    [Fact]
     public void BaselineGateReportShouldStayMetadataOnlyWhenPresent()
     {
         string reportPath = "_bmad-output/gates/baseline-ci/latest.json";
