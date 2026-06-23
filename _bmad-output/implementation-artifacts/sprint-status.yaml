@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-23 (Story 10.3 D1 production follow-ups closed: folders.events prod pub/sub scope + EventStore TopicOverride pinned + Aspire cross-process harness; → review)
+last_updated: 2026-06-23 (Story 10.5 created via create-story: read facade = Option B Memories.Client.Rest in Server; full closure + full parity; backlog → ready-for-dev)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -221,7 +221,7 @@ development_status:
   # 10-4 re-scoped to SearchIndexEntryRemoved (removal/archive/tombstone) + live folders-index
   # round-trip verification; its create-story must follow the corrected epics.md scope.
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: backlog
-  10-5-expose-authorized-folders-query-facade-over-memories: backlog
+  10-5-expose-authorized-folders-query-facade-over-memories: ready-for-dev
   epic-10-retrospective: optional
 
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.
