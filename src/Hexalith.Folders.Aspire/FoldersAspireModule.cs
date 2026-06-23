@@ -39,6 +39,22 @@ public static class FoldersAspireModule
     public const string MemoriesIndexTenant = "folders-index";
 
     /// <summary>
+    /// The single, tenant-agnostic Dapr topic the EventStore actor host publishes managed-tenant folder domain
+    /// events to (via <see cref="EventStorePublisherFolderTopicOverrideKey"/>), and the topic the Folders worker
+    /// semantic-indexing subscriber (<c>/folders/events</c>) listens on. Must stay in lockstep with the worker's
+    /// <c>FoldersSemanticIndexingDefaults.DomainEventsTopicName</c> (a Workers-side test pins this equality).
+    /// </summary>
+    public const string FolderDomainEventsTopic = "folders.events";
+
+    /// <summary>
+    /// The EventStore publisher topic-override configuration key (double-underscore env form of
+    /// <c>EventStore:Publisher:TopicOverrides:folders</c>) that redirects the <c>folders</c> domain's per-tenant
+    /// <c>{tenantId}.folders.events</c> publish topic to the fixed <see cref="FolderDomainEventsTopic"/> so every
+    /// managed tenant's folder events reach the worker on one subscription.
+    /// </summary>
+    public const string EventStorePublisherFolderTopicOverrideKey = "EventStore__Publisher__TopicOverrides__folders";
+
+    /// <summary>
     /// Configures source-&gt;index routing on the standalone Memories search-index server so the Folders
     /// producer's CloudEvents (source <see cref="MemoriesSourceId"/>, emitted by the Epic 10 worker) are routed
     /// into the curated <see cref="MemoriesIndexTenant"/> partition, and that index tenant is auto-provisioned at
@@ -71,6 +87,31 @@ public static class FoldersAspireModule
         return memoriesServer
             .WithEnvironment($"EventStoreIntegration__Routing__SourceToTenantMap__{MemoriesSourceId}", MemoriesIndexTenant)
             .WithEnvironment("EventStoreIntegration__Routing__AutoProvisionRoutedTenants", "true");
+    }
+
+    /// <summary>
+    /// Redirects the EventStore actor host's <c>folders</c>-domain publish topic to the single, tenant-agnostic
+    /// <see cref="FolderDomainEventsTopic"/> so every managed tenant's folder domain events
+    /// (<c>{tenantId}.folders.events</c> by the D6 convention) reach the Folders worker semantic-indexing
+    /// subscriber on one fixed <c>/folders/events</c> subscription.
+    /// </summary>
+    /// <remarks>
+    /// Sets exactly the <see cref="EventStorePublisherFolderTopicOverrideKey"/> environment variable
+    /// (<c>EventStore:Publisher:TopicOverrides:folders = folders.events</c>) on the EventStore resource;
+    /// <c>EventPublisherOptions.GetPubSubTopic</c> honours it with no EventStore SDK change. Cross-tenant isolation
+    /// is preserved in the worker by the bridge projection's per-tenant keys, not by per-topic separation. The
+    /// production EventStore deployment must carry the same override (recorded in
+    /// <c>deploy/dapr/production/sidecar-config-bindings.yaml</c> and
+    /// <c>docs/operations/container-images-and-dapr-app-ids.md</c>; pinned by deployment conformance tests).
+    /// </remarks>
+    /// <param name="eventStore">The EventStore actor-host project resource builder (the folder-events publisher).</param>
+    /// <returns>The same resource builder for chaining.</returns>
+    public static IResourceBuilder<ProjectResource> WithFoldersDomainEventTopicOverride(
+        this IResourceBuilder<ProjectResource> eventStore)
+    {
+        ArgumentNullException.ThrowIfNull(eventStore);
+
+        return eventStore.WithEnvironment(EventStorePublisherFolderTopicOverrideKey, FolderDomainEventsTopic);
     }
 
     /// <summary>

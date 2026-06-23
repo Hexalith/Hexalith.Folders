@@ -54,8 +54,18 @@ dotnet publish src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj -c Release --o
 3. CI or release deployment tooling assigns registry ownership, release tags, and immutable digests outside the sanitized repository artifacts.
 4. Staging and production manifests keep the same Dapr app IDs and production config names while selecting environment-owned image references.
 
+## Required Production Environment Overrides
+
+The EventStore actor host (`eventstore`) hosts the folder aggregate actors and publishes their domain events. By the D6 per-tenant convention it would publish folder events to `{tenantId}.folders.events`, but the `folders-workers` semantic-indexing subscriber listens on the single, tenant-agnostic `folders.events` topic. The production `hexalith-eventstore` deployment **must** therefore set this functional environment override (it is recorded on the `hexalith-eventstore` deployment fragment in `deploy/dapr/production/sidecar-config-bindings.yaml` and pinned by `ContainerImageConformanceTests`):
+
+```text
+EventStore__Publisher__TopicOverrides__folders = folders.events
+```
+
+Without it, folder events publish to a per-tenant topic the worker never subscribes, so semantic indexing silently never fires. The local AppHost wires the same override through `FoldersAspireModule.WithFoldersDomainEventTopicOverride`, keeping dev and production in lockstep. Cross-tenant isolation is preserved in the worker by the bridge projection's per-tenant keys, not by per-topic separation.
+
 ## Production Evidence
 
-`deploy/containers/production/service-images.yaml` binds each service deployment to its stable image repository and Dapr app ID. `deploy/dapr/production/sidecar-config-bindings.yaml` proves sidecar injection with exact `dapr.io/app-id` and `dapr.io/config` annotations.
+`deploy/containers/production/service-images.yaml` binds each service deployment to its stable image repository and Dapr app ID. `deploy/dapr/production/sidecar-config-bindings.yaml` proves sidecar injection with exact `dapr.io/app-id` and `dapr.io/config` annotations, and records the `eventstore` folder-events publish-topic override (`EventStore__Publisher__TopicOverrides__folders`).
 
 Do not add registry credentials, pull secrets, tenant data, provider payloads, endpoint inventories, file contents, or generated diffs to image labels, reports, manifests, logs, or docs examples.

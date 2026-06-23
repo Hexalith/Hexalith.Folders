@@ -433,6 +433,53 @@ public sealed class AspireTopologyTests
         exception.ParamName.ShouldBe("memoriesServer");
     }
 
+    [Fact]
+    public async Task WithFoldersDomainEventTopicOverrideShouldRedirectFolderEventsToFixedWorkerTopic()
+    {
+        // Story 10.3 (D1): the AppHost redirects the eventstore actor host's folders-domain publish topic to the
+        // single folders.events topic the worker subscribes (/folders/events) via WithFoldersDomainEventTopicOverride.
+        // Drive the SAME production helper Program.cs invokes (non-circular) and resolve the env var off the resource
+        // by invoking its EnvironmentCallbackAnnotations against a Publish-mode context (the 9.3 routing idiom). This
+        // pins the dev half of the D1 wiring so it cannot be silently dropped (the conformance suite pins the prod half).
+        IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder();
+        IResourceBuilder<ProjectResource> eventStore = builder.AddProject(
+            "eventstore-test", RepositoryPath("src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj"));
+
+        IResourceBuilder<ProjectResource> overridden = eventStore.WithFoldersDomainEventTopicOverride();
+
+        // Same-builder chaining contract (mirrors WithFoldersMemoriesSourceRouting).
+        overridden.ShouldBeSameAs(eventStore);
+
+        DistributedApplicationExecutionContext executionContext = new(DistributedApplicationOperation.Publish);
+        EnvironmentCallbackContext environmentContext = new(
+            executionContext,
+            new Dictionary<string, object>(StringComparer.Ordinal),
+            TestContext.Current.CancellationToken);
+        foreach (EnvironmentCallbackAnnotation annotation in overridden.Resource.Annotations
+            .OfType<EnvironmentCallbackAnnotation>())
+        {
+            await annotation.Callback(environmentContext);
+        }
+
+        IDictionary<string, object> environment = environmentContext.EnvironmentVariables;
+        environment.ShouldSatisfyAllConditions(
+            () => environment.ShouldContainKey(FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey),
+            () => environment[FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey]
+                .ShouldBe(FoldersAspireModule.FolderDomainEventsTopic),
+            () => FoldersAspireModule.FolderDomainEventsTopic.ShouldBe("folders.events"));
+    }
+
+    [Fact]
+    public void WithFoldersDomainEventTopicOverrideShouldThrowArgumentNullExceptionWhenEventStoreIsNull()
+    {
+        // Story 10.3 (D1): the override helper guards its public boundary (project-context: validate public
+        // boundaries) so a null eventstore resource is rejected up front rather than half-wiring the topology.
+        ArgumentNullException exception = Should.Throw<ArgumentNullException>(
+            static () => _ = FoldersAspireModule.WithFoldersDomainEventTopicOverride(null!));
+
+        exception.ParamName.ShouldBe("eventStore");
+    }
+
     /// <summary>
     /// Builds the gateway-only platform composition the Folders AppHost uses (EventStore command gateway with
     /// no admin server / admin UI, plus the Tenants domain-module sidecar) over fake project resources.

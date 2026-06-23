@@ -15,6 +15,7 @@ public sealed partial class ContainerImageConformanceTests
 {
     private const string DirectoryBuildTargetsPath = "Directory.Build.targets";
     private const string ServiceImagesPath = "deploy/containers/production/service-images.yaml";
+    private const string SidecarBindingsPath = "deploy/dapr/production/sidecar-config-bindings.yaml";
     private const string GateScriptPath = "tests/tools/run-container-image-gates.ps1";
     private const string OperatorDocPath = "docs/operations/container-images-and-dapr-app-ids.md";
 
@@ -91,6 +92,40 @@ public sealed partial class ContainerImageConformanceTests
             binding.Registry.ShouldBe("deployment-owned");
             binding.Namespace.ShouldBe("hexalith-production");
         }
+    }
+
+    [Fact]
+    public void ProductionEventStoreDeploymentShouldCarryFolderDomainEventTopicOverride()
+    {
+        // Story 10.3 (D1): folder semantic indexing only fires if the eventstore actor host republishes folder
+        // domain events to the single folders.events topic the worker subscribes (/folders/events). Pin that
+        // functional override on the production eventstore deployment fragment AND in the operator doc so it
+        // cannot silently rot — the 2.8/2.8b "green tests, broken wiring" trap the D1 review flagged. The dev
+        // AppHost wires the same key via FoldersAspireModule.WithFoldersDomainEventTopicOverride (dev↔prod parity).
+        YamlMappingNode[] documents = LoadYamlDocuments(SidecarBindingsPath);
+        YamlMappingNode eventStore = documents.Single(document =>
+            string.Equals(document.GetMapping("metadata").GetScalar("name"), "hexalith-eventstore", StringComparison.Ordinal));
+
+        YamlSequenceNode containers = eventStore
+            .GetMapping("spec")
+            .GetMapping("template")
+            .GetMapping("spec")
+            .GetSequence("containers");
+
+        (string Name, string Value)[] environment = containers.Children
+            .Cast<YamlMappingNode>()
+            .SelectMany(container => container.GetSequence("env").Children.Cast<YamlMappingNode>())
+            .Select(entry => (entry.GetScalar("name"), entry.GetScalar("value")))
+            .ToArray();
+
+        environment.ShouldContain(
+            entry => string.Equals(entry.Name, FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey, StringComparison.Ordinal)
+                && string.Equals(entry.Value, FoldersAspireModule.FolderDomainEventsTopic, StringComparison.Ordinal),
+            $"hexalith-eventstore must set {FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey}={FoldersAspireModule.FolderDomainEventsTopic} so managed-tenant folder events reach the worker subscription.");
+
+        string operatorDoc = ReadText(OperatorDocPath);
+        operatorDoc.ShouldContain(FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey, Case.Sensitive);
+        operatorDoc.ShouldContain(FoldersAspireModule.FolderDomainEventsTopic, Case.Sensitive);
     }
 
     [Fact]
@@ -185,6 +220,14 @@ public sealed partial class ContainerImageConformanceTests
         stream.Load(reader);
         stream.Documents.Count.ShouldBe(1);
         return stream.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
+    }
+
+    private static YamlMappingNode[] LoadYamlDocuments(string relativePath)
+    {
+        using StreamReader reader = File.OpenText(RepositoryPath(relativePath));
+        YamlStream stream = new();
+        stream.Load(reader);
+        return [.. stream.Documents.Select(static document => document.RootNode.ShouldBeOfType<YamlMappingNode>())];
     }
 
     private static string ReadText(string relativePath)

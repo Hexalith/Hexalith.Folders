@@ -277,6 +277,10 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         FoldersSemanticIndexingDefaults.EventsTopicName.ShouldBe("memories-events");
         FoldersSemanticIndexingDefaults.DomainEventsTopicName.ShouldBe("folders.events");
         FoldersSemanticIndexingDefaults.DomainEventsRoute.ShouldBe("/folders/events");
+
+        // Story 10.3 (D1): the worker's subscribed topic must equal the AppHost's EventStore publish-topic
+        // override (FoldersAspireModule.FolderDomainEventsTopic) or the cross-process binding silently breaks.
+        FoldersSemanticIndexingDefaults.DomainEventsTopicName.ShouldBe(ReadConstant(source, "FolderDomainEventsTopic"));
     }
 
     private static ServiceCollection CreateServiceCollection()

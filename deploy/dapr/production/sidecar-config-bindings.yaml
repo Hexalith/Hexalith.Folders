@@ -12,6 +12,17 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: eventstore
         dapr.io/config: hexalith-folders-production-accesscontrol-eventstore
+    spec:
+      # Story 10.3 (D1): the EventStore actor host MUST publish managed-tenant folder domain events to the single
+      # folders.events topic the worker subscribes on /folders/events. Without this override folder events publish
+      # to {tenantId}.folders.events and the worker never receives them, so semantic indexing silently never fires.
+      # Deployment tooling owns the image/registry/ports; this functional publish-topic override is repo-owned and
+      # pinned by ContainerImageConformanceTests (kept in lockstep with the AppHost helper for dev parity).
+      containers:
+        - name: eventstore
+          env:
+            - name: EventStore__Publisher__TopicOverrides__folders
+              value: folders.events
 ---
 apiVersion: apps/v1
 kind: Deployment

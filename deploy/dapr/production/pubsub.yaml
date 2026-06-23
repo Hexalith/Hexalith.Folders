@@ -10,11 +10,15 @@ spec:
   version: v1
   metadata:
     - name: protectedTopics
-      value: system.tenants.events,memories-events
+      value: system.tenants.events,memories-events,folders.events
+    # Story 10.3 (D1): the EventStore actor host (appId "eventstore") publishes managed-tenant folder domain
+    # events to the single, tenant-agnostic folders.events topic (via EventStore:Publisher:TopicOverrides:folders);
+    # folders-workers subscribes that topic on /folders/events for semantic indexing. Cross-tenant isolation is
+    # preserved in the worker by the bridge projection's per-tenant keys, not by per-topic separation.
     - name: publishingScopes
-      value: tenants=system.tenants.events;eventstore=;folders=;folders-workers=memories-events;folders-ui=;memories=
+      value: tenants=system.tenants.events;eventstore=folders.events;folders=;folders-workers=memories-events;folders-ui=;memories=
     - name: subscriptionScopes
-      value: folders=system.tenants.events;folders-workers=system.tenants.events;eventstore=;tenants=;folders-ui=;memories=memories-events
+      value: folders=system.tenants.events;folders-workers=system.tenants.events,folders.events;eventstore=;tenants=;folders-ui=;memories=memories-events
     # Dead-letter topics per domain (deadletter.{domain}.events). Story 7.12 declares the dead-letter-depth
     # monitored-snapshot + alert-rule intent here; runtime per-subscription dead-letter routing and broker
     # endpoints are supplied by deployment tooling outside this repository.
