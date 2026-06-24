@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-24 (Story 10.5 implemented via bmad-dev-story on post-10.4 baseline e612052: authorized workspace-scoped context-search facade + indexing-status projection over folders-index; Option-B MemoriesFolderSearchSource in Server; read_context_search token; ListFolderAsync bridge read; OpenAPI ops + SDK regen; MCP/CLI parity; production folders→memories Dapr allow-rule + conformance; UX IndexingStatus page; PRD FR58 + architecture §Query Facade. Build 0W/0E; Folders 1358, Server 540, Workers 62, Contracts 275, Client 288, Cli 709, Mcp 662, Integration 631 green; pre-existing .slnx-inventory red unchanged. in-progress → review)
+last_updated: 2026-06-24 (Story 10.5 implemented via bmad-dev-story on post-10.4 baseline e612052 authorized workspace-scoped context-search facade + indexing-status projection over folders-index; Option-B MemoriesFolderSearchSource in Server; read_context_search token; ListFolderAsync bridge read; OpenAPI ops + SDK regen; MCP/CLI parity; production folders→memories Dapr allow-rule + conformance; UX IndexingStatus page; PRD FR58 + architecture §Query Facade. Build 0W/0E; Folders 1358, Server 540, Workers 62, Contracts 275, Client 288, Cli 709, Mcp 662, Integration 631 green; pre-existing .slnx-inventory red unchanged. in-progress → review)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
