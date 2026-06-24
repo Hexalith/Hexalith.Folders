@@ -39,7 +39,7 @@ The latest report must carry the current full source commit, required C3 class c
 
 ## Approval rules
 
-C3 is `reference_pending` until this artifact contains explicit Legal + PM approval evidence. While approval is pending, `pwsh ./tests/tools/run-retention-deletion-gates.ps1` may complete local static validation with `status: release-blocked`, but live package publishing must fail before any package push. After approval, update C3, governance evidence, the gate, release package validation, tests, and latest evidence together.
+C3 is `approved`: this artifact now contains explicit Legal + PM approval evidence (PM Jerome 2026-06-22; Legal Jérôme Piquot 2026-06-24, Louveciennes). `pwsh ./tests/tools/run-retention-deletion-gates.ps1` completes local static validation and now reports `status: passed` / `policy_status: approved`; before approval it reported `status: release-blocked` and live package publishing was required to fail before any package push. The C3 doc, governance evidence, the gate, release package validation, tests, and latest evidence were updated together in one commit.
 
 In short: pending approval blocks live release while still allowing local static validation to produce bounded evidence.
 

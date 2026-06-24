@@ -737,6 +737,66 @@ namespace Hexalith.Folders.Client.Generated
         System.Threading.Tasks.Task<FileTreeResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
+        /// Search the authorized Folders semantic search index without content.
+        /// </summary>
+        /// <remarks>
+        /// Searches the Memories search index (folders-index) for file versions the caller is authorized to see, scoped to one tenant/folder/workspace. Authorization (tenant access, folder ACL) runs BEFORE any egress; every hit is then security-trimmed and hydrated from the authoritative Folders read before returning. The result is metadata-only: no content snippets, matched-line text, raw paths, source URIs, memory-unit ids, or raw search text in audit are returned. The index is eventually consistent (async pub/sub-fed) and non-authoritative. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only, authorized, security-trimmed search result.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContextIndexSearchResult> SearchFolderIndexedFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, ContextIndexSearchRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Search the authorized Folders semantic search index without content.
+        /// </summary>
+        /// <remarks>
+        /// Searches the Memories search index (folders-index) for file versions the caller is authorized to see, scoped to one tenant/folder/workspace. Authorization (tenant access, folder ACL) runs BEFORE any egress; every hit is then security-trimmed and hydrated from the authoritative Folders read before returning. The result is metadata-only: no content snippets, matched-line text, raw paths, source URIs, memory-unit ids, or raw search text in audit are returned. The index is eventually consistent (async pub/sub-fed) and non-authoritative. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only, authorized, security-trimmed search result.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ContextIndexSearchResult> SearchFolderIndexedFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, ContextIndexSearchRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Inspect the metadata-only semantic-indexing status of a folder's file versions.
+        /// </summary>
+        /// <remarks>
+        /// Returns the read-only, metadata-only indexing status (indexed / stale / skipped / failed / tombstoned / reconciliation_required) per file version for a tenant-scoped folder, after tenant access and folder ACL. Backs the read-only operations-console projection. No content, snippets, raw paths, source URIs, or memory-unit ids are returned; redacted entries are visibly distinct from unknown/missing. Eventually consistent (the bridge is async pub/sub-fed). Safe-denial Problem Details do not disclose hidden existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only folder indexing-status projection.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FolderIndexingStatusResult> GetFolderIndexingStatusAsync(string folderId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Inspect the metadata-only semantic-indexing status of a folder's file versions.
+        /// </summary>
+        /// <remarks>
+        /// Returns the read-only, metadata-only indexing status (indexed / stale / skipped / failed / tombstoned / reconciliation_required) per file version for a tenant-scoped folder, after tenant access and folder ACL. Backs the read-only operations-console projection. No content, snippets, raw paths, source URIs, or memory-unit ids are returned; redacted entries are visibly distinct from unknown/missing. Eventually consistent (the bridge is async pub/sub-fed). Safe-denial Problem Details do not disclose hidden existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only folder indexing-status projection.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FolderIndexingStatusResult> GetFolderIndexingStatusAsync(string folderId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
         /// Glob authorized file metadata without content previews.
         /// </summary>
         /// <remarks>
@@ -6125,6 +6185,374 @@ namespace Hexalith.Folders.Client.Generated
         }
 
         /// <summary>
+        /// Search the authorized Folders semantic search index without content.
+        /// </summary>
+        /// <remarks>
+        /// Searches the Memories search index (folders-index) for file versions the caller is authorized to see, scoped to one tenant/folder/workspace. Authorization (tenant access, folder ACL) runs BEFORE any egress; every hit is then security-trimmed and hydrated from the authoritative Folders read before returning. The result is metadata-only: no content snippets, matched-line text, raw paths, source URIs, memory-unit ids, or raw search text in audit are returned. The index is eventually consistent (async pub/sub-fed) and non-authoritative. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only, authorized, security-trimmed search result.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ContextIndexSearchResult> SearchFolderIndexedFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, ContextIndexSearchRequest body)
+        {
+            return SearchFolderIndexedFilesAsync(folderId, workspaceId, x_Correlation_Id, x_Hexalith_Task_Id, x_Hexalith_Freshness, body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Search the authorized Folders semantic search index without content.
+        /// </summary>
+        /// <remarks>
+        /// Searches the Memories search index (folders-index) for file versions the caller is authorized to see, scoped to one tenant/folder/workspace. Authorization (tenant access, folder ACL) runs BEFORE any egress; every hit is then security-trimmed and hydrated from the authoritative Folders read before returning. The result is metadata-only: no content snippets, matched-line text, raw paths, source URIs, memory-unit ids, or raw search text in audit are returned. The index is eventually consistent (async pub/sub-fed) and non-authoritative. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only, authorized, security-trimmed search result.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ContextIndexSearchResult> SearchFolderIndexedFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, ContextIndexSearchRequest body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (folderId == null)
+                throw new System.ArgumentNullException("folderId");
+
+            if (workspaceId == null)
+                throw new System.ArgumentNullException("workspaceId");
+
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+
+                    if (x_Correlation_Id != null)
+                        request_.Headers.TryAddWithoutValidation("X-Correlation-Id", ConvertToString(x_Correlation_Id, System.Globalization.CultureInfo.InvariantCulture));
+
+                    if (x_Hexalith_Task_Id != null)
+                        request_.Headers.TryAddWithoutValidation("X-Hexalith-Task-Id", ConvertToString(x_Hexalith_Task_Id, System.Globalization.CultureInfo.InvariantCulture));
+
+                    if (x_Hexalith_Freshness != null)
+                        request_.Headers.TryAddWithoutValidation("X-Hexalith-Freshness", ConvertToString(x_Hexalith_Freshness, System.Globalization.CultureInfo.InvariantCulture));
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search"
+                    urlBuilder_.Append("api/v1/folders/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/workspaces/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/context/index-search");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ContextIndexSearchResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 403)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 408)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Context query exceeded the proposed C4 server-side duration budget.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Context query response would exceed C4 proposed response budget.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 422)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Context query input exceeds C4 proposed bounds before execution.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new HexalithFoldersApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Inspect the metadata-only semantic-indexing status of a folder's file versions.
+        /// </summary>
+        /// <remarks>
+        /// Returns the read-only, metadata-only indexing status (indexed / stale / skipped / failed / tombstoned / reconciliation_required) per file version for a tenant-scoped folder, after tenant access and folder ACL. Backs the read-only operations-console projection. No content, snippets, raw paths, source URIs, or memory-unit ids are returned; redacted entries are visibly distinct from unknown/missing. Eventually consistent (the bridge is async pub/sub-fed). Safe-denial Problem Details do not disclose hidden existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only folder indexing-status projection.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FolderIndexingStatusResult> GetFolderIndexingStatusAsync(string folderId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness)
+        {
+            return GetFolderIndexingStatusAsync(folderId, x_Correlation_Id, x_Hexalith_Task_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Inspect the metadata-only semantic-indexing status of a folder's file versions.
+        /// </summary>
+        /// <remarks>
+        /// Returns the read-only, metadata-only indexing status (indexed / stale / skipped / failed / tombstoned / reconciliation_required) per file version for a tenant-scoped folder, after tenant access and folder ACL. Backs the read-only operations-console projection. No content, snippets, raw paths, source URIs, or memory-unit ids are returned; redacted entries are visibly distinct from unknown/missing. Eventually consistent (the bridge is async pub/sub-fed). Safe-denial Problem Details do not disclose hidden existence.
+        /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
+        /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
+        /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <returns>Metadata-only folder indexing-status projection.</returns>
+        /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FolderIndexingStatusResult> GetFolderIndexingStatusAsync(string folderId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
+        {
+            if (folderId == null)
+                throw new System.ArgumentNullException("folderId");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+
+                    if (x_Correlation_Id != null)
+                        request_.Headers.TryAddWithoutValidation("X-Correlation-Id", ConvertToString(x_Correlation_Id, System.Globalization.CultureInfo.InvariantCulture));
+
+                    if (x_Hexalith_Task_Id != null)
+                        request_.Headers.TryAddWithoutValidation("X-Hexalith-Task-Id", ConvertToString(x_Hexalith_Task_Id, System.Globalization.CultureInfo.InvariantCulture));
+
+                    if (x_Hexalith_Freshness != null)
+                        request_.Headers.TryAddWithoutValidation("X-Hexalith-Freshness", ConvertToString(x_Hexalith_Freshness, System.Globalization.CultureInfo.InvariantCulture));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/v1/folders/{folderId}/indexing-status"
+                    urlBuilder_.Append("api/v1/folders/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/indexing-status");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<FolderIndexingStatusResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 403)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new HexalithFoldersApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Glob authorized file metadata without content previews.
         /// </summary>
         /// <remarks>
@@ -10934,6 +11362,189 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContextIndexSearchRequest
+    {
+
+        [Newtonsoft.Json.JsonProperty("requestSchemaVersion", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string RequestSchemaVersion { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string QueryFamily { get; set; }
+
+        /// <summary>
+        /// Search input is request payload only. Audit metadata records query family and counts, never raw search text.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("queryText", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string QueryText { get; set; }
+
+        /// <summary>
+        /// C4 result bound; defaults to the maximum when omitted. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Limit { get; set; }
+
+        /// <summary>
+        /// Opaque, non-secret pagination cursor returned by a prior call's `nextCursor`. Echo back to retrieve the next page. The server MUST treat the cursor as non-authoritative for tenant access, ACL, or sensitivity classification.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("cursor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Cursor { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContextIndexSearchResult
+    {
+
+        /// <summary>
+        /// Metadata-only search hits after authorization, security-trimming, and authoritative hydration. No raw paths, snippets, source URIs, or memory-unit ids are present.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<ContextIndexSearchItem> Items { get; set; } = new System.Collections.Generic.List<ContextIndexSearchItem>();
+
+        /// <summary>
+        /// Opaque, non-secret cursor for the next page; absent when there are no further results.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("nextCursor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string NextCursor { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ContextIndexSearchLimits Limits { get; set; } = new ContextIndexSearchLimits();
+
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContextIndexSearchItem
+    {
+
+        /// <summary>
+        /// Opaque, non-disclosing file-version handle. Not a filesystem path, source URI, or memory-unit id.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("fileVersionReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FileVersionReference { get; set; }
+
+        /// <summary>
+        /// Authoritative indexing status from the Folders-owned bridge read model (never inferred from the index).
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("indexingStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ContextIndexSearchItemIndexingStatus IndexingStatus { get; set; }
+
+        /// <summary>
+        /// Sensitivity tier of the metadata (e.g. tenant_sensitive, restricted).
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Sensitivity { get; set; }
+
+        /// <summary>
+        /// Redaction marker, visibly distinct from unknown/missing; never silently hidden.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ContextIndexSearchItemRedaction Redaction { get; set; }
+
+        /// <summary>
+        /// Relevance score from the search axis (BM25); ordering signal only.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Score { get; set; }
+
+    }
+
+    /// <summary>
+    /// C4 query metadata. Query duration uses x-hexalith-query-timeout-ms: 2000 and aggregate response budget uses x-hexalith-response-budget-bytes: 1048576. Raw search text is never included.
+    /// <br/>
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContextIndexSearchLimits
+    {
+
+        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string QueryFamily { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ConfiguredLimit { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ActualCount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ActualBytes { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ElapsedMilliseconds { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsTruncated { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ContextIndexSearchLimitsTruncatedReason TruncatedReason { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FolderIndexingStatusResult
+    {
+
+        /// <summary>
+        /// Metadata-only indexing-status entries for the folder's file versions, after authorization.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<FolderIndexingStatusEntry> Items { get; set; } = new System.Collections.Generic.List<FolderIndexingStatusEntry>();
+
+        /// <summary>
+        /// True when the folder has more entries than the bounded projection page returned.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsTruncated { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FolderIndexingStatusEntry
+    {
+
+        /// <summary>
+        /// Opaque, non-disclosing file-version handle. Not a filesystem path, source URI, or memory-unit id.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("fileVersionReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FileVersionReference { get; set; }
+
+        /// <summary>
+        /// Authoritative indexing status from the Folders-owned bridge read model.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("indexingStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FolderIndexingStatusEntryIndexingStatus IndexingStatus { get; set; }
+
+        /// <summary>
+        /// Metadata-safe reason classification (e.g. memories_accepted, content_too_large); never a raw path or payload.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ReasonCode { get; set; }
+
+        /// <summary>
+        /// Sensitivity tier of the metadata (e.g. tenant_sensitive, restricted).
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Sensitivity { get; set; }
+
+        /// <summary>
+        /// Redaction marker, visibly distinct from unknown/missing; never silently hidden.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FolderIndexingStatusEntryRedaction Redaction { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FileGlobRequest
     {
 
@@ -13005,6 +13616,102 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"request_body_stream")]
         Request_body_stream = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ContextIndexSearchItemIndexingStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"indexed")]
+        Indexed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"stale")]
+        Stale = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"skipped")]
+        Skipped = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed")]
+        Failed = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tombstoned")]
+        Tombstoned = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown")]
+        Unknown = 6,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ContextIndexSearchItemRedaction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"not_redacted")]
+        Not_redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ContextIndexSearchLimitsTruncatedReason
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"result_count_limit")]
+        Result_count_limit = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_budget_limit")]
+        Response_budget_limit = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"not_truncated")]
+        Not_truncated = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FolderIndexingStatusEntryIndexingStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"indexed")]
+        Indexed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"stale")]
+        Stale = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"skipped")]
+        Skipped = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed")]
+        Failed = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tombstoned")]
+        Tombstoned = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown")]
+        Unknown = 6,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FolderIndexingStatusEntryRedaction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"not_redacted")]
+        Not_redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
 
     }
 

@@ -56,7 +56,7 @@ public sealed class TransportParityConformanceTests
     // ---------------------------------------------------------------------------------------------------
 
     [Fact]
-    public void OracleCarriesTheExpectedFortySevenDistinctRows()
+    public void OracleCarriesTheExpectedDistinctRows()
     {
         ParityOracle.Rows.Count.ShouldBe(ParityScenarios.ExpectedOperationCount);
         ParityOracle.Rows.Select(row => row.OperationId).Distinct(StringComparer.Ordinal).Count()

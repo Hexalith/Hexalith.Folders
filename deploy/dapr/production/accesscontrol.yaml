@@ -128,7 +128,17 @@ spec:
   accessControl:
     defaultAction: deny
     trustDomain: "hexalith-production"
-    policies: []
+    policies:
+      # Story 10.5: the Folders Server query facade reads the Memories search index via GET /api/search.
+      # folders-workers publishes to memories-events over pub/sub (no invoke) and gets no invoke allow-rule here.
+      - appId: folders
+        defaultAction: deny
+        trustDomain: "hexalith-production"
+        namespace: "hexalith-production"
+        operations:
+          - name: /api/search
+            httpVerb: ["GET"]
+            action: allow
   secrets:
     scopes:
       - storeName: kubernetes

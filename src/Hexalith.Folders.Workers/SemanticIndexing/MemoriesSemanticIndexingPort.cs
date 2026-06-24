@@ -3,6 +3,7 @@ using System.Globalization;
 using Dapr;
 using Dapr.Client;
 
+using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Memories.Contracts.V1;
 
 namespace Hexalith.Folders.Workers.SemanticIndexing;
@@ -214,10 +215,10 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
     private static Dictionary<string, string> BuildAttributes(SemanticIndexingRequest request)
         => new(StringComparer.Ordinal)
         {
-            ["folders.managedTenantId"] = request.ManagedTenantId,
-            ["folders.organizationId"] = request.OrganizationId,
-            ["folders.folderId"] = request.FolderId,
-            ["folders.fileVersionId"] = request.FileVersionId,
+            [FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute] = request.ManagedTenantId,
+            [FoldersSemanticIndexingAttributes.OrganizationIdAttribute] = request.OrganizationId,
+            [FoldersSemanticIndexingAttributes.FolderIdAttribute] = request.FolderId,
+            [FoldersSemanticIndexingAttributes.FileVersionIdAttribute] = request.FileVersionId,
             ["folders.contentHash"] = request.ContentHash,
             ["folders.contentDescriptor"] = request.Content.IndexingTextDescriptor,
             ["folders.sizeClassification"] = request.Content.SizeClassification,
@@ -235,10 +236,10 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
             ? new Dictionary<string, string>(request.IndexedAttributes, StringComparer.Ordinal)
             : new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                ["folders.managedTenantId"] = request.ManagedTenantId,
-                ["folders.organizationId"] = request.OrganizationId,
-                ["folders.folderId"] = request.FolderId,
-                ["folders.fileVersionId"] = request.FileVersionId,
+                [FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute] = request.ManagedTenantId,
+                [FoldersSemanticIndexingAttributes.OrganizationIdAttribute] = request.OrganizationId,
+                [FoldersSemanticIndexingAttributes.FolderIdAttribute] = request.FolderId,
+                [FoldersSemanticIndexingAttributes.FileVersionIdAttribute] = request.FileVersionId,
             };
 
         attributes[FoldersSemanticIndexingDefaults.StatusAttributeKey] = FoldersSemanticIndexingDefaults.StatusArchived;

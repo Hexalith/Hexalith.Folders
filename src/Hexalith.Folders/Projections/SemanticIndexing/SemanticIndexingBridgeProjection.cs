@@ -278,6 +278,19 @@ public sealed record SemanticIndexingBridgeProjection
                 continue;
             }
 
+            // A file removal is a hard delete (the removal egress publishes SearchIndexEntryRemoved, which drops the
+            // document) and always wins over a later folder archive (a soft delete that re-publishes the document as
+            // folders.status=archived). Once an entry is tombstoned — by a prior remove, or by a prior archive — re-
+            // flipping it to "folder_archived" would route it back through the soft-delete egress and RESURRECT in
+            // Memories the document a prior hard delete already removed. We key off Status, not ReasonCode, because the
+            // removal egress overwrites a removed entry's ReasonCode to its result code (e.g. memories_accepted), so a
+            // ReasonCode == "folder_file_removed" check would miss the post-egress entry. So skip tombstoned entries:
+            // a removed file stays removed, and re-archiving an already-tombstoned entry is a no-op.
+            if (current.Status is SemanticIndexingBridgeStatus.Tombstoned)
+            {
+                continue;
+            }
+
             entries[key] = current with
             {
                 Status = SemanticIndexingBridgeStatus.Tombstoned,

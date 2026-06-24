@@ -16,7 +16,8 @@ namespace Hexalith.Folders.Parity.Testing;
 internal static class ParityScenarios
 {
     /// <summary>The number of canonical operation rows the oracle is expected to carry.</summary>
-    public const int ExpectedOperationCount = 47;
+    /// <remarks>Raised from 47 to 49 by Story 10.5 (the two context-search facade ops: SearchFolderIndexedFiles, GetFolderIndexingStatus).</remarks>
+    public const int ExpectedOperationCount = 49;
 
     /// <summary>The vocabulary of <c>auth_outcome_class</c> values permitted by the oracle schema.</summary>
     public static readonly IReadOnlySet<string> AuthOutcomeClassVocabulary = new HashSet<string>(StringComparer.Ordinal)

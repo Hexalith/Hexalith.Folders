@@ -20,5 +20,10 @@
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.DomainService\Hexalith.EventStore.DomainService.csproj" />
     <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants.Client\Hexalith.Tenants.Client.csproj" />
     <ProjectReference Include="$(HexalithTenantsRoot)\src\Hexalith.Tenants.Contracts\Hexalith.Tenants.Contracts.csproj" />
+    <!-- Story 10.5 (Option B): the authorized search facade reads the Memories search index via the typed
+         MemoriesClient.SearchAsync, mirroring Hexalith.Tenants.UI. This is the ONLY Folders project besides
+         Workers that references Memories; the read path NEVER touches the [Experimental] RAG IngestAsync APIs. -->
+    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Contracts\Hexalith.Memories.Contracts.csproj" />
+    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Client.Rest\Hexalith.Memories.Client.Rest.csproj" />
   </ItemGroup>
 </Project>

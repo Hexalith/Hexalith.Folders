@@ -681,6 +681,10 @@ Functional Requirements are organized by capability area. Each block traces back
 - FR56: The system can expose operation timelines for folder, workspace, file, lock, commit, provider, status, and authorization events.
 - FR57: Platform engineers can inspect provider support evidence for GitHub and Forgejo where it affects operational readiness.
 
+### Authorized Search Facade
+
+- FR58: Developers and AI agents (via API, SDK, MCP, and CLI) can search the content that Folders has indexed into the Memories search index and receive only results they are authorized to see — security-trimmed to their tenant/folder/workspace, hydrated from the authoritative Folders read, and redacted to metadata-only — without Folders ever leaking another managed tenant's content, raw paths, snippets, source URIs, or hidden-resource existence.
+
 ## Non-Functional Requirements
 
 ### Security and Tenant Isolation

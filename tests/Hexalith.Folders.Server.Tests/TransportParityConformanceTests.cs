@@ -59,8 +59,9 @@ public sealed class TransportParityConformanceTests
     /// <summary>The count of oracle operations the REST server currently implements as <c>/api/v1</c> endpoints.</summary>
     /// <remarks>Story 8.1 raised this from 32 to 40 by implementing the 8 Bucket-A canonical REST routes;
     /// Story 8.2 raised it from 40 to 47 by implementing the 7 Bucket-B ops-console diagnostics routes (full
-    /// REST parity). CLI stays 40/47 — the 7 diagnostics are MCP-only by design.</remarks>
-    public const int ImplementedRestOperationCount = 47;
+    /// REST parity). Story 10.5 raised it from 47 to 49 by adding the context-search facade ops
+    /// (SearchFolderIndexedFiles, GetFolderIndexingStatus). CLI stays at the 7-diagnostics MCP-only gap by design.</remarks>
+    public const int ImplementedRestOperationCount = 49;
 
     /// <summary>
     /// Documented endpoint-name aliases where the ASP.NET <c>.WithName(...)</c> diverges from the contract
@@ -87,7 +88,7 @@ public sealed class TransportParityConformanceTests
     // ---------------------------------------------------------------------------------------------------
 
     [Fact]
-    public void OracleCarriesTheExpectedFortySevenDistinctRows()
+    public void OracleCarriesTheExpectedDistinctRows()
     {
         ParityOracle.Rows.Count.ShouldBe(ParityScenarios.ExpectedOperationCount);
         ParityOracle.Rows.Select(row => row.OperationId).Distinct(StringComparer.Ordinal).Count()

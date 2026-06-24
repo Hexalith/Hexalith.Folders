@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-23 (Story 10.4 implemented via bmad-dev-story: hybrid removal/archive egress + folders.status; bridge index-time evidence + watermark-gated removal evidence; AC9 round-trip added to opt-in Tier-3 harness (BLOCKED-PENDING DCP lane). Build 0W/0E; Workers/Folders/Contracts lanes green; format clean; AppHost.Tests SKIP. One PRE-EXISTING Testing.Tests fail (SolutionContainsOnlyCanonicalBuildableProjects, Epic 9/10.1/10.5 .slnx-inventory drift). in-progress → review)
+last_updated: 2026-06-24 (Story 10.5 implemented via bmad-dev-story on post-10.4 baseline e612052: authorized workspace-scoped context-search facade + indexing-status projection over folders-index; Option-B MemoriesFolderSearchSource in Server; read_context_search token; ListFolderAsync bridge read; OpenAPI ops + SDK regen; MCP/CLI parity; production folders→memories Dapr allow-rule + conformance; UX IndexingStatus page; PRD FR58 + architecture §Query Facade. Build 0W/0E; Folders 1358, Server 540, Workers 62, Contracts 275, Client 288, Cli 709, Mcp 662, Integration 631 green; pre-existing .slnx-inventory red unchanged. in-progress → review)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -177,11 +177,16 @@ development_status:
   # 8-5 (key retained for traceability; rescoped to residual-reds honest-green baseline — ACs 2-6 of the
   # original story): complete and review-approved 2026-06-23.
   8-5-close-c3-legal-signoff-and-residual-reds: done
-  # 8-6: ready-for-dev but BLOCKED-PENDING-LEGAL — the sole remaining MVP-release blocker. AC1 (C3 Legal sign-off)
-  # split off from 8-5 on 2026-06-23; story file contexted/turnkey via bmad-create-story 2026-06-23 (refs verified
-  # at HEAD c7a79ac). Apply the full in-lockstep C3 cascade in one commit ONLY once Legal signs. C3 stays
-  # reference_pending; no fabricated approval (AD1). Do NOT mark epic-8 done until 8-6 is done.
-  8-6-record-c3-legal-signoff-and-apply-cascade: ready-for-dev
+  # 8-6: Legal sign-off RECORDED 2026-06-24 (Jérôme Piquot, Louveciennes; PM Jerome 2026-06-22) -> in-lockstep C3
+  # cascade applied via bmad-dev-story: governance YAML C3 -> approved (placeholder cleared); c3-retention.md;
+  # run-retention-deletion-gates.ps1 now emits status=passed/policy_status=approved (exit 0, non-blocking);
+  # RetentionAndTenantDeletionConformanceTests + narrating docs + architecture. DEVIATION from the story edit set:
+  # nfr-traceability.md NFR57 kept reference-pending because NfrTraceabilityConformanceTests.
+  # ReferencePendingRowsAreOwnedAndSurfaceKnownGaps:202 hard-pins C3/C4/C7/C12 as surfaced gaps (C4 already shows
+  # this approved-in-governance/pending-in-doc precedent) — flipping it reddens the contract-spine lane, violating
+  # AC1's "no red contract-spine lane". Contracts.Tests 275/275; governance-completeness 11/11; format clean.
+  # epic-8 close-out (8-6 -> done, epic-8 -> done) is gated on code-review approval (do NOT mark epic-8 done until then).
+  8-6-record-c3-legal-signoff-and-apply-cascade: review
   epic-8-retrospective: optional
 
   # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
@@ -227,8 +232,8 @@ development_status:
   # full real-mutation->index stays gated on a metadata-derived materializer (tracked, not 10.4 scope). The "D1
   # inbound wiring" Jerome scoped to 10.4 was found ALREADY COMMITTED (27c22ff/3dc0db4) — 10.4 verifies + extends
   # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
-  10-4-emit-search-index-entry-changed-cloudevents-from-workers: review
-  10-5-expose-authorized-folders-query-facade-over-memories: in-progress
+  10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
+  10-5-expose-authorized-folders-query-facade-over-memories: review
   epic-10-retrospective: optional
 
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.

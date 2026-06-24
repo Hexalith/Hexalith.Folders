@@ -112,6 +112,39 @@ public sealed class SemanticIndexingProcessManagerTests
     }
 
     [Fact]
+    public async Task ProcessFolderEventsAsyncShouldRecordNoOpForNeverIndexedArchivedTombstoneWithoutCallingMemories()
+    {
+        // Symmetric to the never-indexed REMOVE no-op (AC2): a folder archive whose entry was never indexed (no
+        // PublishedEventId) has no document in the search index, so the soft-delete egress is a metadata-only no-op
+        // (removal_not_required) — no SearchIndexEntryChanged{archived} is published. AC3/AC10 require the archive
+        // variant explicitly; the production gate (PublishedEventId null, checked before the reason branch) covers it.
+        RecordingBridgeWriter bridge = new(Mutation(), Archived());
+        AllowingPolicyEvaluator policy = new();
+        RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
+            [1],
+            "text/plain",
+            1,
+            "inline",
+            "small",
+            "text"));
+        RecordingIndexingPort port = new(new SemanticIndexingResult(SemanticIndexingStatus.Accepted, "memories_accepted", retryable: false));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> results = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 2, Archived())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        bridge.RecordedRemovals.ShouldHaveSingleItem().ReasonCode.ShouldBe("removal_not_required");
+        bridge.RecordedResults.ShouldBeEmpty();
+        port.Requests.ShouldBeEmpty();
+        port.RemovalRequests.ShouldBeEmpty();
+        port.ArchiveRequests.ShouldBeEmpty();
+        policy.Evaluated.ShouldBeEmpty();
+        materializer.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task ProcessFolderEventsAsyncShouldHardDeletePreviouslyIndexedRemovedFileVersion()
     {
         // Index a file version, then remove its path: the tombstone preserves the index-time evidence, so the removal
@@ -460,15 +493,17 @@ public sealed class SemanticIndexingProcessManagerTests
     private sealed class RecordingBridgeWriter : ISemanticIndexingBridgeWriter
     {
         private readonly WorkspaceFileMutationAccepted _mutation;
+        private readonly FolderArchived? _archived;
 
         public RecordingBridgeWriter()
             : this(Mutation())
         {
         }
 
-        public RecordingBridgeWriter(WorkspaceFileMutationAccepted mutation)
+        public RecordingBridgeWriter(WorkspaceFileMutationAccepted mutation, FolderArchived? archived = null)
         {
             _mutation = mutation;
+            _archived = archived;
         }
 
         public List<FolderProjectionEnvelope> AppliedEnvelopes { get; } = [];
@@ -480,9 +515,7 @@ public sealed class SemanticIndexingProcessManagerTests
             CancellationToken cancellationToken = default)
         {
             AppliedEnvelopes.AddRange(envelopes);
-            SemanticIndexingBridgeProjection projection = SemanticIndexingBridgeProjection.Empty.Apply(
-                [new FolderProjectionEnvelope("tenant-a", 1, _mutation)]);
-            return Task.FromResult<IReadOnlyList<SemanticIndexingBridgeEntry>>(projection.Entries.Values.ToArray());
+            return Task.FromResult<IReadOnlyList<SemanticIndexingBridgeEntry>>(BuildProjection().Entries.Values.ToArray());
         }
 
         public List<SemanticIndexingRemovalEvidenceUpdate> RecordedRemovals { get; } = [];
@@ -492,8 +525,7 @@ public sealed class SemanticIndexingProcessManagerTests
             CancellationToken cancellationToken = default)
         {
             RecordedResults.Add(update);
-            SemanticIndexingBridgeEntry current = SemanticIndexingBridgeProjection.Empty.Apply(
-                [new FolderProjectionEnvelope("tenant-a", 1, _mutation)]).Entries.Values.ShouldHaveSingleItem();
+            SemanticIndexingBridgeEntry current = BuildProjection().Entries.Values.ShouldHaveSingleItem();
             return Task.FromResult<SemanticIndexingBridgeEntry?>(SemanticIndexingBridgeProjection.ApplyIndexingResult(current, update));
         }
 
@@ -502,10 +534,17 @@ public sealed class SemanticIndexingProcessManagerTests
             CancellationToken cancellationToken = default)
         {
             RecordedRemovals.Add(update);
-            SemanticIndexingBridgeEntry current = SemanticIndexingBridgeProjection.Empty.Apply(
-                [new FolderProjectionEnvelope("tenant-a", 1, _mutation)]).Entries.Values.ShouldHaveSingleItem();
+            SemanticIndexingBridgeEntry current = BuildProjection().Entries.Values.ShouldHaveSingleItem();
             return Task.FromResult<SemanticIndexingBridgeEntry?>(SemanticIndexingBridgeProjection.ApplyRemovalEvidence(current, update));
         }
+
+        // The fake replays a fixed event set so the projection it returns mirrors production. When an archive event is
+        // supplied it is applied after the mutation (so the single entry tombstones as folder_archived), letting tests
+        // exercise the never-indexed archive no-op path symmetrically with the never-indexed remove path.
+        private SemanticIndexingBridgeProjection BuildProjection()
+            => SemanticIndexingBridgeProjection.Empty.Apply(_archived is null
+                ? [new FolderProjectionEnvelope("tenant-a", 1, _mutation)]
+                : [new FolderProjectionEnvelope("tenant-a", 1, _mutation), new FolderProjectionEnvelope("tenant-a", 2, _archived)]);
     }
 
     private sealed class AllowingPolicyEvaluator : ISemanticIndexingPolicyEvaluator

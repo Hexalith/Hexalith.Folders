@@ -1,0 +1,94 @@
+@page "/folders/{FolderId}/indexing-status"
+@using System.Globalization
+@using Hexalith.Folders.Client.Generated
+@using Hexalith.Folders.UI.Components
+@using Hexalith.Folders.UI.Components.Models
+@using Hexalith.Folders.UI.Services
+@using Hexalith.FrontComposer.Shell.Components.Badges
+
+<PageTitle>Hexalith Folders — Indexing status</PageTitle>
+
+@* Story 10.5 (AC13): the read-only, metadata-only semantic-indexing status projection for a folder. Tenant scope
+   banner -> h1 -> per-file-version status table read directly from the bridge projection (status never inferred)
+   -> freshness. Strictly read-only; no content, snippets, raw paths, diffs, or mutation. *@
+<div data-testid="console-page-indexing-status-root">
+    <TenantScopeBanner />
+    <h1>Semantic-indexing status</h1>
+
+    @if (_loading)
+    {
+        <SkeletonState Label="indexing status" TestId="console-page-indexing-status-loading" OnCancel="CancelAsync" />
+    }
+    else if (_cancelled)
+    {
+        <p data-testid="console-page-indexing-status-cancelled">Loading cancelled.</p>
+        <a href="@ReloadHref()" data-testid="console-page-indexing-status-reload">Reload</a>
+    }
+    else if (_error is not null)
+    {
+        <ConsoleErrorPanel Error="@_error" />
+    }
+    else if (_unavailable || _status is null)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.ReadModelUnavailable" />
+    }
+    else if (_status.Items is null || _status.Items.Count == 0)
+    {
+        <ConsoleEmptyState Reason="EmptyStateReason.NoMatches" />
+    }
+    else
+    {
+        <table data-testid="console-page-indexing-status-table">
+            <caption>
+                Semantic-indexing status per file version — read directly from the Folders-owned bridge projection;
+                status is never inferred from a failed operation. Metadata-only (no content, paths, or snippets).
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">File version</th>
+                    <th scope="col">Indexing status</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Disclosure</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (FolderIndexingStatusEntry row in _status.Items)
+                {
+                    <tr data-testid="console-page-indexing-status-row">
+                        <td>
+                            <SafeCopyId Value="@row.FileVersionReference" ColumnHeader="File version" />
+                        </td>
+                        <td>
+                            <FcStatusBadge Slot="@StatusSlot(row.IndexingStatus)"
+                                           Label="@StatusLabel(row.IndexingStatus)"
+                                           ColumnHeader="Indexing status" />
+                        </td>
+                        <td>@row.ReasonCode</td>
+                        <td>
+                            @if (row.Redaction == FolderIndexingStatusEntryRedaction.Redacted)
+                            {
+                                <RedactedField Disclosure="FieldDisclosure.Redacted" ColumnHeader="Disclosure" />
+                            }
+                            else
+                            {
+                                <span data-testid="console-page-indexing-status-sensitivity">@row.Sensitivity</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (_status.IsTruncated)
+        {
+            <p data-testid="console-page-indexing-status-truncated">
+                Showing the first results; more indexed file versions exist than are displayed.
+            </p>
+        }
+
+        <p data-testid="console-page-indexing-status-freshness">
+            <span>Projection freshness:</span>
+            <span>@FreshnessLabel() · observed @ObservedAtLabel()</span>
+        </p>
+    }
+</div>

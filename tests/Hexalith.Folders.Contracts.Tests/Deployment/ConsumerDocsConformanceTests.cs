@@ -72,9 +72,9 @@ public sealed partial class ConsumerDocsConformanceTests
     {
         (HashSet<string> spineOps, HashSet<string> spineTags) = ParseSpineInventory();
 
-        // Sanity floor: the spine must carry the canonical 47-operation / 9-tag surface, so the equality
+        // Sanity floor: the spine must carry the canonical 49-operation / 9-tag surface, so the equality
         // below cannot pass against an empty or truncated parse.
-        spineOps.Count.ShouldBe(47);
+        spineOps.Count.ShouldBe(49);
         spineTags.Count.ShouldBe(9);
 
         string doc = ReadText(ApiReferencePath);
@@ -124,11 +124,11 @@ public sealed partial class ConsumerDocsConformanceTests
     }
 
     [Fact]
-    public void McpReferenceEnumeratesAllFortySevenToolsAndTwoResources()
+    public void McpReferenceEnumeratesAllFortyNineToolsAndTwoResources()
     {
         (HashSet<string> spineOps, _) = ParseSpineInventory();
         HashSet<string> expectedTools = spineOps.Select(Kebab).ToHashSet(StringComparer.Ordinal);
-        expectedTools.Count.ShouldBe(47);
+        expectedTools.Count.ShouldBe(49);
 
         string doc = ReadText(McpReferencePath);
 
@@ -138,7 +138,7 @@ public sealed partial class ConsumerDocsConformanceTests
             docTools[match.Groups[1].Value] = match.Groups[2].Value;
         }
 
-        AssertSetEquals(docTools.Keys, expectedTools, "MCP reference must enumerate exactly the 47 spine tools.");
+        AssertSetEquals(docTools.Keys, expectedTools, "MCP reference must enumerate exactly the 49 spine tools.");
 
         // Every documented tool name must be the kebab-case of its operationId (no renamed tools).
         foreach ((string tool, string operationId) in docTools)
@@ -430,7 +430,7 @@ public sealed partial class ConsumerDocsConformanceTests
         AssertToolCountInSection(doc, "### Folder tools", 11);
         AssertToolCountInSection(doc, "### Workspace tools", 8);
         AssertToolCountInSection(doc, "### File tools", 3);
-        AssertToolCountInSection(doc, "### Context tools", 5);
+        AssertToolCountInSection(doc, "### Context tools", 7);
         AssertToolCountInSection(doc, "### Commit tools", 5);
         AssertToolCountInSection(doc, "### Diagnostics tools", 7);
         AssertToolCountInSection(doc, "### Audit tools", 4);
@@ -569,7 +569,7 @@ public sealed partial class ConsumerDocsConformanceTests
     public void FileCommitFlowDiagramNodesAreCanonicalSpineOperations()
     {
         (HashSet<string> spineOps, _) = ParseSpineInventory();
-        spineOps.Count.ShouldBe(47, "the spine must carry the canonical 47-operation surface.");
+        spineOps.Count.ShouldBe(49, "the spine must carry the canonical 49-operation surface.");
 
         string diagram = ReadText(FileCommitDiagramPath);
         HashSet<string> nodeOps = FlowOperationNode().Matches(diagram)

@@ -43,7 +43,7 @@ reports `stale: true` with a `reasonCode`, never an error.
 
 ### Retention markers (reference-pending)
 
-Each page carries a `retentionClass` marker that is **reference-pending until Legal + PM approval of C3**. The
+Each page carries a `retentionClass` marker that is a deliberately-preserved `TODO(reference-pending):` marker; **C3 retention is now approved** (PM 2026-06-22; Legal 2026-06-24), but Story 7.11 AC11 keeps the runtime markers and the `reference_pending_*` class identifiers unchanged to avoid a contract/client/parity/UI regeneration cascade (AD3). The
 handlers emit explicit `TODO(reference-pending):` markers —
 `AuditTrailQueryHandler.RetentionClassToken` (`TODO(reference-pending): C3 audit metadata retention approval`)
 and `OperationTimelineQueryHandler.RetentionClassToken` (`TODO(reference-pending): C3 timeline retention

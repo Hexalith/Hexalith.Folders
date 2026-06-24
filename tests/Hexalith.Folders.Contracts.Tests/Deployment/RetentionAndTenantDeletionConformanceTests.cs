@@ -37,15 +37,14 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
     {
         string c3 = ReadText(C3Path);
 
-        c3.ShouldContain("policy status: reference_pending", Case.Sensitive);
+        c3.ShouldContain("policy status: approved", Case.Sensitive);
 
         // PM approval (Jerome) was recorded 2026-06-22 via the bmad-correct-course Sprint Change Proposal;
-        // Legal sign-off remains outstanding, so the release must stay blocked until Legal approves. These
-        // assertions keep the policy honest: the posture still blocks release, and the approval record
-        // truthfully shows PM-approved / Legal-pending rather than claiming a Legal sign-off that has not
-        // happened.
-        c3.ShouldContain("release posture: release_blocking_until_legal_approval", Case.Sensitive);
-        c3.ShouldContain("approval record: PM approved (Jerome) 2026-06-22; Legal sign-off pending", Case.Sensitive);
+        // Legal sign-off (Jérôme Piquot) was recorded 2026-06-24 at Louveciennes, clearing the sole remaining
+        // gate. These assertions keep the policy honest: the posture now records approved-for-live-release, and
+        // the approval record truthfully shows PM-approved + Legal-approved with the recorded signer and date.
+        c3.ShouldContain("release posture: approved_for_live_release", Case.Sensitive);
+        c3.ShouldContain("approval record: PM approved (Jerome) 2026-06-22; Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes", Case.Sensitive);
         c3.ShouldContain("validation command: `pwsh ./tests/tools/run-retention-deletion-gates.ps1`", Case.Sensitive);
 
         MarkdownRow[] rows = ReadMarkdownRows(C3Path, "Retention class identifier");
@@ -62,8 +61,8 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             row["Observability evidence"].ShouldNotBeNullOrWhiteSpace();
             row["Owner"].ShouldBe("Tech Lead");
             row["Authority"].ShouldBe("Legal + PM");
-            // Each required row must still record Legal as pending — PM approval alone does not unblock release.
-            row["Approval state"].ShouldContain("Legal approval pending", Case.Insensitive);
+            // Each required row records the recorded Legal approval (2026-06-24) alongside the PM approval.
+            row["Approval state"].ShouldContain("Legal approved", Case.Insensitive);
             row["Review date"].ShouldBe("2026-05-11");
         }
     }
@@ -111,15 +110,14 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         YamlMappingNode c3 = criteria.Children.Cast<YamlMappingNode>()
             .Single(node => node.GetRetentionScalar("criterion_id") == "C3");
 
-        c3.GetRetentionScalar("status").ShouldBe("reference_pending");
+        c3.GetRetentionScalar("status").ShouldBe("approved");
         c3.GetRetentionScalar("artifact_path").ShouldBe(C3Path);
         c3.GetRetentionScalar("verification_command").ShouldBe(@".\tests\tools\run-retention-deletion-gates.ps1");
-        c3.GetRetentionScalar("result_summary").ShouldContain("blocks live release publishing", Case.Sensitive);
-        // After PM approval, exactly one open placeholder remains — the Legal sign-off. `.Single()` still
-        // enforces that the release stays blocked on an outstanding approval: it throws if the placeholder
-        // is removed to claim full approval.
-        c3.GetRetentionSequence("open_policy_placeholders").Children.Cast<YamlMappingNode>()
-            .Single().GetRetentionScalar("id").ShouldBe("C3-legal-approval");
+        c3.GetRetentionScalar("result_summary").ShouldContain("approved for live release publishing", Case.Sensitive);
+        // PM approval (2026-06-22) and Legal approval (2026-06-24) are both recorded, so no open placeholder
+        // remains. The empty-sequence assertion is the lockstep counterpart to the prior `.Single()` guard:
+        // it throws if a stale placeholder is reintroduced after the criterion has been approved.
+        c3.GetRetentionSequence("open_policy_placeholders").Children.ShouldBeEmpty();
     }
 
     [Fact]
@@ -144,10 +142,10 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             "result_summaries",
             "missing-c3-class",
             "invalid-tenant-deletion-disposition",
-            "missing-release-blocking-posture",
+            "missing-approved-release-posture",
             "recursive-submodule-setup",
             "unsafe-diagnostic-field",
-            "release-blocked",
+            "passed",
         })
         {
             script.ShouldContain(required, Case.Sensitive);
@@ -207,8 +205,8 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         RequiredString(root, "gate").ShouldBe("retention-deletion");
         RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
         RequiredString(root, "report_path").ShouldBe(ReportPath);
-        RequiredString(root, "policy_status").ShouldBe("reference_pending");
-        RequiredString(root, "status").ShouldBe("release-blocked");
+        RequiredString(root, "policy_status").ShouldBe("approved");
+        RequiredString(root, "status").ShouldBe("passed");
         RequiredString(root, "source_commit").Length.ShouldBe(40);
         ReadStringArray(root, "required_data_classes").ShouldBe(RequiredClasses);
         ReadStringArray(root, "artifact_paths").ShouldContain(C3Path);

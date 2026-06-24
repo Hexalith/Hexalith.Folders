@@ -258,14 +258,14 @@ function Assert-NoRecursiveSubmoduleSetup {
 
 function Assert-C3Policy {
     $c3 = Get-Content -Raw -Path (Join-Path $repositoryRoot 'docs/exit-criteria/c3-retention.md')
-    if (-not $c3.Contains('policy status: reference_pending', [StringComparison]::Ordinal)) {
+    if (-not $c3.Contains('policy status: approved', [StringComparison]::Ordinal)) {
         Fail-Gate -Category 'policy-source' -Reason 'missing-policy-status'
     }
 
-    # PM approved 2026-06-22 (Jerome); Legal sign-off is still outstanding, so the release stays blocked
-    # until Legal approves. The posture must still mark the release as blocking pending Legal.
-    if (-not $c3.Contains('release posture: release_blocking_until_legal_approval', [StringComparison]::Ordinal)) {
-        Fail-Gate -Category 'policy-source' -Reason 'missing-release-blocking-posture'
+    # PM approved 2026-06-22 (Jerome); Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes), so the
+    # release posture is cleared for live publishing. The posture must record the approved-for-release state.
+    if (-not $c3.Contains('release posture: approved_for_live_release', [StringComparison]::Ordinal)) {
+        Fail-Gate -Category 'policy-source' -Reason 'missing-approved-release-posture'
     }
 
     $script:policyRows = Read-MarkdownTable -RelativePath 'docs/exit-criteria/c3-retention.md' -HeaderSentinel 'Retention class identifier'
@@ -285,7 +285,7 @@ function Assert-C3Policy {
             Fail-Gate -Category 'policy-source' -Reason "invalid-tenant-deletion-disposition class=$required"
         }
 
-        if (-not $row.'Approval state'.Contains('Legal approval pending', [StringComparison]::OrdinalIgnoreCase)) {
+        if (-not $row.'Approval state'.Contains('Legal approved', [StringComparison]::OrdinalIgnoreCase)) {
             Fail-Gate -Category 'policy-source' -Reason "unexpected-c3-approval-state class=$required"
         }
     }
@@ -335,10 +335,9 @@ function Assert-GovernanceEvidence {
     $governance = Get-Content -Raw -Path (Join-Path $repositoryRoot 'docs/exit-criteria/c0-c13-governance-evidence.yaml')
     foreach ($expected in @(
             'criterion_id: C3',
-            'status: reference_pending',
+            'status: approved',
             'artifact_path: docs/exit-criteria/c3-retention.md',
-            'verification_command: .\tests\tools\run-retention-deletion-gates.ps1',
-            'C3-legal-approval')) {
+            'verification_command: .\tests\tools\run-retention-deletion-gates.ps1')) {
         if (-not $governance.Contains($expected, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'governance-evidence' -Reason "governance-evidence-drift expected=$expected"
         }
@@ -384,12 +383,12 @@ try {
     Assert-ReleaseReadiness
     Assert-NoRecursiveSubmoduleSetup
 
-    Write-RetentionDeletionReport -Status 'release-blocked' -PolicyStatus 'reference_pending' -ExitCode 0
+    Write-RetentionDeletionReport -Status 'passed' -PolicyStatus 'approved' -ExitCode 0
     $report = Get-Content -Raw -Path $latestReportPath | ConvertFrom-Json
     Assert-MetadataOnlyJson -Node $report -Category 'metadata-only-report'
     Add-Result -Category 'metadata-only-report' -Status 'passed' -ExitCode 0
-    Write-RetentionDeletionReport -Status 'release-blocked' -PolicyStatus 'reference_pending' -ExitCode 0
-    Write-Host 'RETENTION-DELETION status=release-blocked policy_status=reference_pending'
+    Write-RetentionDeletionReport -Status 'passed' -PolicyStatus 'approved' -ExitCode 0
+    Write-Host 'RETENTION-DELETION status=passed policy_status=approved'
 }
 catch {
     if (-not ($script:results | Where-Object { $_.status -eq 'failed' })) {

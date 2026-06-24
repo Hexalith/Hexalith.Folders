@@ -1,11 +1,11 @@
 {
   "gate": "retention-deletion",
-  "status": "release-blocked",
-  "policy_status": "reference_pending",
+  "status": "passed",
+  "policy_status": "approved",
   "exit_code": 0,
   "report_path": "_bmad-output/gates/retention-deletion/latest.json",
   "diagnostic_policy": "metadata-only",
-  "source_commit": "caa260310880c6948a8fc8cc0bbeccfccf102192",
+  "source_commit": "e6120525dd783eac730eca5b58196290ec690ef0",
   "required_data_classes": [
     "Audit metadata",
     "Workspace status",
@@ -101,5 +101,5 @@
       "exit_code": 0
     }
   ],
-  "elapsed_ms": 888
+  "elapsed_ms": 944
 }

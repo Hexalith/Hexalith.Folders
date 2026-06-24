@@ -112,9 +112,9 @@ The retention disposition vocabulary and tenant-deletion behavior are **referenc
 | `retained` |
 | `anonymized` |
 
-C3 is **`reference_pending`** until Legal + PM approval; this document does **not** change the
+C3 retention is **approved** (PM 2026-06-22; Legal 2026-06-24); per Story 7.11 AC11 this document still does **not** change the
 `AuditTrailQueryHandler.RetentionClassToken` / `OperationTimelineQueryHandler.RetentionClassToken`
-reference-pending markers (see [`audit-and-redaction.md`](audit-and-redaction.md)).
+reference-pending markers, and the C3 `reference_pending_*` retention-class identifiers are likewise preserved (see [`audit-and-redaction.md`](audit-and-redaction.md)).
 
 ## Metadata-only policy
 

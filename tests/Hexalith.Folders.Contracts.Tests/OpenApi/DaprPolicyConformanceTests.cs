@@ -255,19 +255,25 @@ public sealed class DaprPolicyConformanceTests
     }
 
     [Fact]
-    public void MemoriesShouldStayDenyByDefaultForInvokeAndSubscribeOnlyToMemoriesEventsViaPubSub()
+    public void MemoriesShouldStayDenyByDefaultAndAllowOnlyTheFoldersSearchInvokeAndMemoriesEventsSubscribe()
     {
         // Story 10.3 (AC9): the worker-side producer publishes SearchIndexEntryChanged to memories-events via the
-        // pubsub COMPONENT — there is no folders/folders-workers -> memories Dapr service-invoke, so memories stays
-        // deny-by-default with NO caller/invoke allow-rules. The only authorized pub/sub path is folders-workers
-        // publishing memories-events and memories subscribing it; memories never publishes. This guard fails closed
-        // if a speculative memories invoke caller policy or a publish scope is introduced.
+        // pubsub COMPONENT (no invoke). Story 10.5 adds the ONLY memories invoke allow-rule: the Folders Server query
+        // facade reads the search index via folders -> memories GET /api/search. memories stays deny-by-default; the
+        // only caller policy is folders for exactly that one read operation (folders-workers gets no invoke rule —
+        // its egress is pub/sub only). This guard fails closed if any other memories invoke or publish scope appears.
         ProductionPolicy policy = LoadProductionPolicy();
 
         TargetPolicy memories = policy.Targets.Single(t =>
             string.Equals(t.TargetAppId, FoldersAspireModule.MemoriesAppId, StringComparison.Ordinal));
         memories.DefaultAction.ShouldBe("deny");
-        memories.CallerPolicies.ShouldBeEmpty();
+
+        CallerPolicy foldersCaller = memories.CallerPolicies.ShouldHaveSingleItem();
+        foldersCaller.SourceAppId.ShouldBe(FoldersAspireModule.FoldersAppId);
+        Operation searchOperation = foldersCaller.Operations.ShouldHaveSingleItem();
+        searchOperation.Name.ShouldBe("/api/search");
+        searchOperation.HttpVerbs.ShouldBe(["GET"]);
+        searchOperation.Action.ShouldBe("allow");
 
         YamlMappingNode component = LoadSingleYamlDocument(PubSubPath);
         IReadOnlyDictionary<string, string> componentMetadata = ParseComponentMetadata(component.GetMapping("spec").GetSequence("metadata"));

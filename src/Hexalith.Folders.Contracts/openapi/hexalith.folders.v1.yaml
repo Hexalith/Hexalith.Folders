@@ -2851,6 +2851,201 @@ paths:
         adapterStages:
           - pre-sdk
           - post-sdk
+  /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search:
+    post:
+      tags:
+        - context-queries
+      operationId: SearchFolderIndexedFiles
+      summary: Search the authorized Folders semantic search index without content.
+      description: >
+        Searches the Memories search index (folders-index) for file versions the caller is authorized to see,
+        scoped to one tenant/folder/workspace. Authorization (tenant access, folder ACL) runs BEFORE any egress;
+        every hit is then security-trimmed and hydrated from the authoritative Folders read before returning. The
+        result is metadata-only: no content snippets, matched-line text, raw paths, source URIs, memory-unit ids,
+        or raw search text in audit are returned. The index is eventually consistent (async pub/sub-fed) and
+        non-authoritative. Safe-denial Problem Details do not disclose hidden resource existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/WorkspaceId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextIndexSearchRequest"
+      responses:
+        "200":
+          description: Metadata-only, authorized, security-trimmed search result.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContextIndexSearchResult"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "408":
+          $ref: "#/components/responses/ContextQueryTimeout"
+        "413":
+          $ref: "#/components/responses/ContextResponseLimitExceeded"
+        "422":
+          $ref: "#/components/responses/ContextInputLimitExceeded"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-eventually-consistent-search-index-watermark-and-non-authoritative-hydration
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, then security-trimmed query execution and authoritative hydration
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - query_execution
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - input_limit_exceeded
+        - response_limit_exceeded
+        - query_timeout
+        - read_model_unavailable
+        - redacted
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: workspace_id
+          sensitivity: tenant_sensitive
+          description: Opaque workspace reference.
+        - name: query_family
+          sensitivity: public_metadata
+          description: Search query family only; raw search text is excluded.
+        - name: result_count
+          sensitivity: tenant_sensitive
+          description: Count only; file-version handles and match text are excluded from audit.
+        - name: truncation
+          sensitivity: public_metadata
+          description: Truncation flag and reason.
+        - name: configured_limit
+          sensitivity: public_metadata
+          description: C4 configured bound.
+        - name: elapsed_milliseconds
+          sensitivity: public_metadata
+          description: Server-side elapsed time.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+          - mcp
+          - cli
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - c4_bounds
+          - metadata_only_results
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
+  /api/v1/folders/{folderId}/indexing-status:
+    get:
+      tags:
+        - context-queries
+      operationId: GetFolderIndexingStatus
+      summary: Inspect the metadata-only semantic-indexing status of a folder's file versions.
+      description: >
+        Returns the read-only, metadata-only indexing status (indexed / stale / skipped / failed / tombstoned /
+        reconciliation_required) per file version for a tenant-scoped folder, after tenant access and folder ACL.
+        Backs the read-only operations-console projection. No content, snippets, raw paths, source URIs, or
+        memory-unit ids are returned; redacted entries are visibly distinct from unknown/missing. Eventually
+        consistent (the bridge is async pub/sub-fed). Safe-denial Problem Details do not disclose hidden existence.
+      parameters:
+        - $ref: "#/components/parameters/FolderId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/Freshness"
+      responses:
+        "200":
+          description: Metadata-only folder indexing-status projection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FolderIndexingStatusResult"
+        "400":
+          $ref: "#/components/responses/ValidationFailure"
+        "401":
+          $ref: "#/components/responses/SafeAuthorizationDenial401"
+        "403":
+          $ref: "#/components/responses/SafeAuthorizationDenial403"
+        "404":
+          $ref: "#/components/responses/SafeAuthorizationDenial404"
+        "503":
+          $ref: "#/components/responses/ReadModelUnavailable"
+      x-hexalith-read-consistency:
+        class: eventually_consistent
+        freshnessBehavior: reports-eventually-consistent-bridge-projection-watermark
+      x-hexalith-correlation:
+        correlationHeader: X-Correlation-Id
+        taskHeader: X-Hexalith-Task-Id
+        causation: query-correlation-only
+        adapterBehavior: caller-provided-or-generated-correlation
+      x-hexalith-authorization:
+        requirement: tenant access, folder ACL, then bridge read-model projection read
+        tenantAuthority: authentication-context-and-eventstore-envelope
+        safeDenial: externally-indistinguishable
+        order:
+          - tenant_access
+          - folder_acl
+          - query_execution
+      x-hexalith-canonical-error-categories:
+        - authentication_failure
+        - tenant_access_denied
+        - folder_acl_denied
+        - read_model_unavailable
+        - validation_error
+        - internal_error
+      x-hexalith-audit-metadata-keys:
+        - name: folder_id
+          sensitivity: tenant_sensitive
+          description: Opaque folder reference.
+        - name: result_count
+          sensitivity: tenant_sensitive
+          description: Count only; file-version handles are excluded from audit.
+        - name: correlation_id
+          sensitivity: tenant_sensitive
+          description: Opaque correlation reference.
+      x-hexalith-parity-dimensions:
+        transportParity:
+          - rest
+          - sdk
+          - mcp
+        behavioralParity:
+          - read_consistency
+          - authorization_before_observation
+          - metadata_only_results
+          - safe_denial
+        adapterStages:
+          - pre-sdk
+          - post-sdk
   /api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob:
     post:
       tags:
@@ -8330,6 +8525,194 @@ components:
           type: string
           maxLength: 256
           description: Opaque, non-secret pagination cursor returned by a prior call's `FileTreeResult.page.cursor`. Echo back to retrieve the next page. The server MUST treat the cursor as non-authoritative for tenant access, ACL, path policy, or sensitivity classification.
+    ContextIndexSearchRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - requestSchemaVersion
+        - queryFamily
+        - queryText
+      properties:
+        requestSchemaVersion:
+          type: string
+          const: v1
+        queryFamily:
+          type: string
+          const: semantic_reference_pending
+        queryText:
+          type: string
+          minLength: 1
+          maxLength: 256
+          description: Search input is request payload only. Audit metadata records query family and counts, never raw search text.
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 500
+          maxResultCount: 500
+          description: "C4 result bound; defaults to the maximum when omitted. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+        cursor:
+          type: string
+          maxLength: 256
+          description: Opaque, non-secret pagination cursor returned by a prior call's `nextCursor`. Echo back to retrieve the next page. The server MUST treat the cursor as non-authoritative for tenant access, ACL, or sensitivity classification.
+    ContextIndexSearchResult:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - limits
+        - freshness
+      properties:
+        items:
+          type: array
+          maxItems: 500
+          maxResultCount: 500
+          description: Metadata-only search hits after authorization, security-trimming, and authoritative hydration. No raw paths, snippets, source URIs, or memory-unit ids are present.
+          items:
+            $ref: "#/components/schemas/ContextIndexSearchItem"
+        nextCursor:
+          type: string
+          maxLength: 256
+          description: Opaque, non-secret cursor for the next page; absent when there are no further results.
+        limits:
+          $ref: "#/components/schemas/ContextIndexSearchLimits"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    ContextIndexSearchItem:
+      type: object
+      additionalProperties: false
+      required:
+        - fileVersionReference
+        - indexingStatus
+        - sensitivity
+        - redaction
+        - score
+      properties:
+        fileVersionReference:
+          type: string
+          description: Opaque, non-disclosing file-version handle. Not a filesystem path, source URI, or memory-unit id.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        indexingStatus:
+          type: string
+          enum:
+            - indexed
+            - stale
+            - skipped
+            - failed
+            - tombstoned
+            - reconciliation_required
+            - unknown
+          description: Authoritative indexing status from the Folders-owned bridge read model (never inferred from the index).
+        sensitivity:
+          type: string
+          description: Sensitivity tier of the metadata (e.g. tenant_sensitive, restricted).
+        redaction:
+          type: string
+          enum:
+            - not_redacted
+            - redacted
+          description: Redaction marker, visibly distinct from unknown/missing; never silently hidden.
+        score:
+          type: number
+          format: double
+          description: Relevance score from the search axis (BM25); ordering signal only.
+    ContextIndexSearchLimits:
+      type: object
+      additionalProperties: false
+      description: >
+        C4 query metadata. Query duration uses x-hexalith-query-timeout-ms: 2000 and aggregate response budget
+        uses x-hexalith-response-budget-bytes: 1048576. Raw search text is never included.
+      required:
+        - queryFamily
+        - configuredLimit
+        - actualCount
+        - actualBytes
+        - elapsedMilliseconds
+        - isTruncated
+        - truncatedReason
+      properties:
+        queryFamily:
+          type: string
+          const: semantic_reference_pending
+        configuredLimit:
+          type: integer
+          minimum: 0
+        actualCount:
+          type: integer
+          minimum: 0
+        actualBytes:
+          type: integer
+          minimum: 0
+          maximum: 1048576
+        elapsedMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+        isTruncated:
+          type: boolean
+        truncatedReason:
+          type: string
+          enum:
+            - result_count_limit
+            - response_budget_limit
+            - query_timeout
+            - not_truncated
+    FolderIndexingStatusResult:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - isTruncated
+        - freshness
+      properties:
+        items:
+          type: array
+          maxItems: 500
+          maxResultCount: 500
+          description: Metadata-only indexing-status entries for the folder's file versions, after authorization.
+          items:
+            $ref: "#/components/schemas/FolderIndexingStatusEntry"
+        isTruncated:
+          type: boolean
+          description: True when the folder has more entries than the bounded projection page returned.
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
+    FolderIndexingStatusEntry:
+      type: object
+      additionalProperties: false
+      required:
+        - fileVersionReference
+        - indexingStatus
+        - reasonCode
+        - sensitivity
+        - redaction
+      properties:
+        fileVersionReference:
+          type: string
+          description: Opaque, non-disclosing file-version handle. Not a filesystem path, source URI, or memory-unit id.
+          x-hexalith-sensitive-metadata-tier: tenant_sensitive
+        indexingStatus:
+          type: string
+          enum:
+            - indexed
+            - stale
+            - skipped
+            - failed
+            - tombstoned
+            - reconciliation_required
+            - unknown
+          description: Authoritative indexing status from the Folders-owned bridge read model.
+        reasonCode:
+          type: string
+          description: Metadata-safe reason classification (e.g. memories_accepted, content_too_large); never a raw path or payload.
+        sensitivity:
+          type: string
+          description: Sensitivity tier of the metadata (e.g. tenant_sensitive, restricted).
+        redaction:
+          type: string
+          enum:
+            - not_redacted
+            - redacted
+          description: Redaction marker, visibly distinct from unknown/missing; never silently hidden.
     FileGlobRequest:
       type: object
       additionalProperties: false

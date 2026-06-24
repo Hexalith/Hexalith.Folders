@@ -102,6 +102,21 @@ internal static class ContextCommand
                     CommandOptions.ReadBody<FileRangeReadRequest>(body),
                     ct))));
 
+        command.Subcommands.Add(BodyQuery(
+            "index-search",
+            "Search the authorized Folders semantic index (query; requires --task-id). Metadata-only output.",
+            pipeline,
+            global,
+            static (parseResult, client, sourcing, folderId, workspaceId, freshness, body, ct) => CommandFactory.AsObject(
+                client.SearchFolderIndexedFilesAsync(
+                    folderId,
+                    workspaceId,
+                    sourcing.CorrelationId,
+                    sourcing.TaskId!,
+                    freshness,
+                    CommandOptions.ReadBody<ContextIndexSearchRequest>(body),
+                    ct))));
+
         return command;
     }
 

@@ -201,7 +201,11 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
             $"/api/search?tenantId={FoldersAspireModule.MemoriesIndexTenant}&axis=syntactic&maxResults=10&query={Uri.EscapeDataString(query)}";
         if (statusFilter is not null)
         {
-            url += $"&attr:{FoldersSemanticIndexingDefaults.StatusAttributeKey}={Uri.EscapeDataString(statusFilter)}";
+            // The Memories /api/search endpoint binds attribute filters ONLY from query keys prefixed "attribute."
+            // (ReadAttributeFilters strips that prefix to derive the attribute name). The remaining key must equal the
+            // worker's upsert attribute key (folders.status), since index-time and query-time both run it through
+            // SyntacticSearchService.BuildAttributeTag(key, value). An "attr:" prefix is silently dropped (no filtering).
+            url += $"&attribute.{FoldersSemanticIndexingDefaults.StatusAttributeKey}={Uri.EscapeDataString(statusFilter)}";
         }
 
         SearchResult? result = await memories

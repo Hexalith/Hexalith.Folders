@@ -49,16 +49,11 @@ criteria:
   - criterion_id: C3
     title: Retention policy evidence
     owner: Tech Lead
-    status: reference_pending
+    status: approved
     artifact_path: docs/exit-criteria/c3-retention.md
     verification_command: .\tests\tools\run-retention-deletion-gates.ps1
-    result_summary: Machine-validated retention and tenant-deletion evidence is present; PM approved 2026-06-22; Legal approval is the sole remaining sign-off and blocks live release publishing.
-    open_policy_placeholders:
-      - id: C3-legal-approval
-        owner: Legal
-        reason: Retention durations must receive Legal sign-off before production enforcement.
-        verification_gap: Recorded Legal approval signature on per-data-class retention values and tenant-deletion dispositions is missing (PM approved 2026-06-22).
-        consuming_story: 7-11-enforce-c3-retention-and-tenant-deletion-behavior
+    result_summary: Machine-validated retention and tenant-deletion evidence is present; PM approved 2026-06-22 (Jerome) and Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes); retention durations and tenant-deletion dispositions are approved for live release publishing.
+    open_policy_placeholders: []
   - criterion_id: C4
     title: Input limit evidence
     owner: Architect

@@ -1,5 +1,5 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: f2242cda6101550c35f2586512ec92ca7f8522c1556611dcc0350835750c784e
+# contract_spine_sha256: 9d8515d4d33ccea6c06d8d35e114ee47143ce3bb8dac2cb2d9a697b63e982951
 # parity_schema_sha256: f9c0c3a3d0d74bd6062ca18299f35e25301b0c545b4bed4746e214154b716fca
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
@@ -1543,6 +1543,73 @@
     - canonical_error_category: 'response_limit_exceeded'
       cli_exit_code: 69
       mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+  adapter_expectations:
+    - 'cli'
+    - 'mcp'
+    - 'rest'
+    - 'sdk'
+  ownership:
+    owner_workstream: 'C13 parity oracle generation'
+    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+    known_omissions:
+      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
+    mutation_rules:
+      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
+    non_policy_placeholder: true
+    synthetic_data_only: true
+- operation_id: 'GetFolderIndexingStatus'
+  operation_family: 'context_query'
+  read_consistency_class: 'eventually-consistent'
+  transport_parity:
+    auth_outcome_class: 'folder_acl_denied'
+    error_code_set:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
+    audit_metadata_keys:
+      - 'correlation_id'
+      - 'folder_id'
+      - 'result_count'
+    correlation_field_path: 'headers.X-Correlation-Id'
+    terminal_states:
+      - 'context_returned'
+  behavioral_parity:
+    pre_sdk_error_class: 'none'
+    idempotency_key_sourcing: 'not_accepted'
+    correlation_id_sourcing: 'caller_provided'
+    task_id_sourcing: 'caller_provided'
+    credential_sourcing: 'sdk_configuration'
+    cli_exit_code: 0
+    mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'tenant_access_denied'
       cli_exit_code: 66
@@ -4331,6 +4398,98 @@
     - canonical_error_category: 'projection_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'projection_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'query_timeout'
+      cli_exit_code: 1
+      mcp_failure_kind: 'query_timeout'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'read_model_unavailable'
+      cli_exit_code: 72
+      mcp_failure_kind: 'read_model_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'redacted'
+      cli_exit_code: 75
+      mcp_failure_kind: 'redacted'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'response_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'response_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'tenant_access_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'tenant_access_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
+  adapter_expectations:
+    - 'cli'
+    - 'mcp'
+    - 'rest'
+    - 'sdk'
+  ownership:
+    owner_workstream: 'C13 parity oracle generation'
+    future_test_use: 'SDK, REST, CLI, and MCP parity tests consume this generated row.'
+    known_omissions:
+      - 'Runtime adapter behavior is implemented by later Epic 5 stories.'
+    mutation_rules:
+      - 'Regenerate from the Contract Spine; do not hand-edit operation rows.'
+    non_policy_placeholder: true
+    synthetic_data_only: true
+- operation_id: 'SearchFolderIndexedFiles'
+  operation_family: 'context_query'
+  read_consistency_class: 'eventually-consistent'
+  transport_parity:
+    auth_outcome_class: 'folder_acl_denied'
+    error_code_set:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
+    audit_metadata_keys:
+      - 'configured_limit'
+      - 'correlation_id'
+      - 'elapsed_milliseconds'
+      - 'folder_id'
+      - 'query_family'
+      - 'result_count'
+      - 'truncation'
+      - 'workspace_id'
+    correlation_field_path: 'headers.X-Correlation-Id'
+    terminal_states:
+      - 'context_returned'
+  behavioral_parity:
+    pre_sdk_error_class: 'none'
+    idempotency_key_sourcing: 'not_accepted'
+    correlation_id_sourcing: 'caller_provided'
+    task_id_sourcing: 'caller_provided'
+    credential_sourcing: 'sdk_configuration'
+    cli_exit_code: 0
+    mcp_failure_kind: 'none'
+  outcome_mapping:
+    - canonical_error_category: 'authentication_failure'
+      cli_exit_code: 65
+      mcp_failure_kind: 'authentication_failure'
+      pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'folder_acl_denied'
+      cli_exit_code: 66
+      mcp_failure_kind: 'folder_acl_denied'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'input_limit_exceeded'
+      cli_exit_code: 69
+      mcp_failure_kind: 'input_limit_exceeded'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'internal_error'
+      cli_exit_code: 1
+      mcp_failure_kind: 'internal_error'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'query_timeout'
       cli_exit_code: 1

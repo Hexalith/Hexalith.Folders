@@ -21,6 +21,27 @@ public sealed class InMemorySemanticIndexingBridgeStore : ISemanticIndexingBridg
         }
     }
 
+    public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
+        string managedTenantId,
+        string folderId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managedTenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        lock (_sync)
+        {
+            IReadOnlyList<SemanticIndexingBridgeEntry> folderEntries = _entries.Values
+                .Where(entry =>
+                    string.Equals(entry.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+                    && string.Equals(entry.Identity.FolderId, folderId, StringComparison.Ordinal))
+                .OrderBy(static entry => entry.Identity.ReadModelKey, StringComparer.Ordinal)
+                .ToArray();
+            return Task.FromResult(folderEntries);
+        }
+    }
+
     public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ApplyFolderEventsAsync(
         IReadOnlyCollection<FolderProjectionEnvelope> envelopes,
         CancellationToken cancellationToken = default)

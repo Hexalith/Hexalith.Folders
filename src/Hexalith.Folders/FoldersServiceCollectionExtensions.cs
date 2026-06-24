@@ -7,6 +7,7 @@ using Hexalith.Folders.Observability;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Credentials;
 using Hexalith.Folders.Queries.Audit;
+using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
@@ -136,6 +137,25 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IWorkspaceFileSensitivityClassifier, WorkspaceFileSensitivityClassifier>();
         services.TryAddSingleton<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
         services.TryAddSingleton<WorkspaceFileContextQueryHandler>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the Story 10.5 authorized context-search facade over the Memories search index. The egress source
+    /// (<see cref="IFolderSearchSource"/>) and the bridge read model default to fail-safe <c>Unavailable</c>
+    /// implementations; a host with a live Memories gateway (the Server) overrides <see cref="IFolderSearchSource"/>.
+    /// Registered scoped so a live gateway backed by a typed HttpClient does not become a captive dependency.
+    /// </summary>
+    public static IServiceCollection AddFoldersContextSearchQueries(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddFoldersLayeredAuthorization();
+        services.TryAddScoped<IFolderSearchSource, UnavailableFolderSearchSource>();
+        services.TryAddScoped<ISemanticIndexingBridgeReadModel, UnavailableSemanticIndexingBridgeReadModel>();
+        services.TryAddScoped<ContextSearchQueryHandler>();
+        services.TryAddScoped<FolderIndexingStatusQueryHandler>();
 
         return services;
     }

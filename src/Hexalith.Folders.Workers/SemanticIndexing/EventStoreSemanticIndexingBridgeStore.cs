@@ -44,6 +44,46 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         return result.Value;
     }
 
+    public async Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
+        string managedTenantId,
+        string folderId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managedTenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
+
+        // IReadModelStore has no scan/enumerate primitive, so the tenant-prefixed folder index record is the only
+        // safe enumeration mechanism: read the index, then fan out a point GetAsync per entry key (read-only — no
+        // ReadModelWritePolicy). The index key is tenant-prefixed by construction; each loaded entry is additionally
+        // guarded against the requested (managedTenantId, folderId) so a poisoned index can never surface a foreign
+        // tenant's or folder's entry (belt-and-braces, mirroring IsSamePath's defense).
+        ReadModelEntry<SemanticIndexingBridgeFolderIndex> index = await _store
+            .GetAsync<SemanticIndexingBridgeFolderIndex>(StateStoreName, FolderIndexKey(managedTenantId, folderId), cancellationToken)
+            .ConfigureAwait(false);
+        if (index.Value is null)
+        {
+            return [];
+        }
+
+        List<SemanticIndexingBridgeEntry> entries = [];
+        foreach (string key in index.Value.EntryKeys.Order(StringComparer.Ordinal))
+        {
+            ReadModelEntry<SemanticIndexingBridgeEntry> current = await _store
+                .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, key, cancellationToken)
+                .ConfigureAwait(false);
+            if (current.Value is { } entry
+                && string.Equals(entry.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+                && string.Equals(entry.Identity.FolderId, folderId, StringComparison.Ordinal))
+            {
+                entries.Add(entry);
+            }
+        }
+
+        return entries
+            .OrderBy(static entry => entry.Identity.ReadModelKey, StringComparer.Ordinal)
+            .ToArray();
+    }
+
     public async Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ApplyFolderEventsAsync(
         IReadOnlyCollection<FolderProjectionEnvelope> envelopes,
         CancellationToken cancellationToken = default)

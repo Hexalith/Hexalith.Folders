@@ -20,7 +20,7 @@ namespace Hexalith.Folders.Mcp.Tests;
 public sealed class RegistrationTests
 {
     [Fact]
-    public void DiscoversAllFortySevenToolsAndTwoResources()
+    public void DiscoversAllToolsAndTwoResources()
     {
         ServiceCollection services = [];
         services
@@ -30,7 +30,9 @@ public sealed class RegistrationTests
 
         using ServiceProvider provider = services.BuildServiceProvider();
 
-        provider.GetServices<McpServerTool>().Count().ShouldBe(47);
+        // 47 baseline + Story 10.5's two context-search facade tools (search-folder-indexed-files,
+        // get-folder-indexing-status) = 49, keeping the MCP tool surface 1:1 with the canonical op spine.
+        provider.GetServices<McpServerTool>().Count().ShouldBe(49);
         provider.GetServices<McpServerResource>().Count().ShouldBe(2);
     }
 }

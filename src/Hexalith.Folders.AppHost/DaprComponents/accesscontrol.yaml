@@ -25,3 +25,7 @@ spec:
         defaultAction: allow
         trustDomain: "public"
         namespace: "default"
+      - appId: memories
+        defaultAction: allow
+        trustDomain: "public"
+        namespace: "default"

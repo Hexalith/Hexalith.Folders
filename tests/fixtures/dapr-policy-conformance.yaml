@@ -2,7 +2,7 @@ version: 1
 policyProvenance:
   path: deploy/dapr/production/accesscontrol.yaml
   hashAlgorithm: sha256-normalized-policy-v1
-  semanticSha256: "3619cdd96bde2f73ff46a9058ab648aa74490bb0c16873796b5ab8a5aa6329e3"
+  semanticSha256: "a3f2e9fe6bfe848f8c280e7d886e651ea2e9080604de1cd8057afe54be76607e"
   normalization: "Parsed Dapr Configuration accessControl semantics; comments and YAML line endings are ignored."
 mtlsEvidence:
   path: deploy/dapr/production/daprsystem.yaml
@@ -31,7 +31,13 @@ targetPolicies:
   - targetAppId: folders-ui
     allowRules: []
   - targetAppId: memories
-    allowRules: []
+    allowRules:
+      - id: memories.folders.api-search.get
+        sourceAppId: folders
+        operation: /api/search
+        httpVerb: GET
+        namespace: hexalith-production
+        trustDomain: hexalith-production
 # Negative-control note: with the current minimal allow-list (only eventstore -> folders), both
 # "unknown-source-app" (e.g. external-worker) and "known-unauthorized-source-app" (e.g. folders-ui)
 # are denied via the global deny-by-default path because no scoped caller policy exists for them yet.
@@ -192,6 +198,85 @@ cases:
     sourceAppId: eventstore
     operation: /project
     httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: public
+    negativeCategory: wrong-trust-domain
+    expectedOutcome: "403"
+  - id: allow-memories-folders-api-search-get
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: folders
+    operation: /api/search
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    expectedOutcome: allow
+  - id: deny-search-unknown-source
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: external-worker
+    operation: /api/search
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: unknown-source-app
+    expectedOutcome: "403"
+  - id: deny-search-known-unauthorized-source
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: folders-ui
+    operation: /api/search
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: known-unauthorized-source-app
+    expectedOutcome: "403"
+  - id: deny-search-wrong-target
+    ruleId: memories.folders.api-search.get
+    targetAppId: folders
+    sourceAppId: folders
+    operation: /api/search
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-target-app
+    expectedOutcome: "403"
+  - id: deny-search-wrong-operation
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: folders
+    operation: /api/ingest
+    httpVerb: GET
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-operation
+    expectedOutcome: "403"
+  - id: deny-search-wrong-http-verb
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: folders
+    operation: /api/search
+    httpVerb: POST
+    namespace: hexalith-production
+    trustDomain: hexalith-production
+    negativeCategory: wrong-http-verb
+    expectedOutcome: "403"
+  - id: deny-search-wrong-namespace
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: folders
+    operation: /api/search
+    httpVerb: GET
+    namespace: default
+    trustDomain: hexalith-production
+    negativeCategory: wrong-namespace
+    expectedOutcome: "403"
+  - id: deny-search-wrong-trust-domain
+    ruleId: memories.folders.api-search.get
+    targetAppId: memories
+    sourceAppId: folders
+    operation: /api/search
+    httpVerb: GET
     namespace: hexalith-production
     trustDomain: public
     negativeCategory: wrong-trust-domain

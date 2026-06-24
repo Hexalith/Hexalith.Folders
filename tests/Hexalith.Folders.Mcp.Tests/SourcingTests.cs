@@ -81,6 +81,6 @@ public sealed class SourcingTests
             seen++;
         }
 
-        seen.ShouldBe(47); // All 47 canonical operations are exposed as tools.
+        seen.ShouldBe(49); // All 49 canonical operations are exposed as tools (Story 10.5 added 2).
     }
 }

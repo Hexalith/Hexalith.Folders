@@ -150,7 +150,7 @@ public sealed class ScaffoldContractTests
 
         AssertReferences(references, "Hexalith.Folders.Contracts", []);
         AssertReferences(references, "Hexalith.Folders", ["Hexalith.Folders.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
@@ -236,11 +236,13 @@ public sealed class ScaffoldContractTests
             adapterRefs.ShouldNotContain("Hexalith.Folders.AppHost");
         }
 
+        // Story 10.5 (Option B): Hexalith.Folders.Server is the ONE non-Worker project allowed to reference the
+        // Memories client/contracts, for the authorized read-only search facade (mirrors Hexalith.Tenants.UI).
+        // Every other Folders project stays Memories-free and reaches the facade only through the generated SDK.
         string[] foldersProjectsForbiddenFromMemoriesClient =
         [
             "Hexalith.Folders.Contracts",
             "Hexalith.Folders",
-            "Hexalith.Folders.Server",
             "Hexalith.Folders.Client",
             "Hexalith.Folders.Cli",
             "Hexalith.Folders.Mcp",
@@ -259,7 +261,7 @@ public sealed class ScaffoldContractTests
             HashSet<string> projectRefs = RequireReferences(references, project);
             foreach (string forbidden in forbiddenMemoriesClientReferences)
             {
-                projectRefs.ShouldNotContain(forbidden, $"{project} must not reference {forbidden}; Memories client dependencies are isolated to Hexalith.Folders.Workers.");
+                projectRefs.ShouldNotContain(forbidden, $"{project} must not reference {forbidden}; Memories client dependencies are isolated to Hexalith.Folders.Workers (producer) and Hexalith.Folders.Server (Story 10.5 read facade).");
             }
         }
     }

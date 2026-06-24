@@ -47,11 +47,11 @@ Every tool result carries `correlationId`. Failure results add four more fields:
   (unlike the CLI's `--allow-auto-key`). The caller always supplies the key.
 - **Task-scoped tools** require a `taskId` argument.
 
-## Tools (47)
+## Tools (49)
 
 Tools are defined across **8 tool-type files**. The tool name is the kebab-case form of the canonical
-`operation_id`. Counts: Provider 4, Folder 11, Workspace 8, File 3, Context 5, Commit 5, Diagnostics 7,
-Audit 4 = **47**.
+`operation_id`. Counts: Provider 4, Folder 11, Workspace 8, File 3, Context 7, Commit 5, Diagnostics 7,
+Audit 4 = **49**.
 
 ### Provider tools (`ProviderTools.cs`)
 
@@ -106,8 +106,10 @@ Audit 4 = **47**.
 | `list-folder-files` | `ListFolderFiles` | no | yes |
 | `get-folder-file-metadata` | `GetFolderFileMetadata` | no | yes |
 | `search-folder-files` | `SearchFolderFiles` | no | yes |
+| `search-folder-indexed-files` | `SearchFolderIndexedFiles` | no | yes |
 | `glob-folder-files` | `GlobFolderFiles` | no | yes |
 | `read-file-range` | `ReadFileRange` | no | yes |
+| `get-folder-indexing-status` | `GetFolderIndexingStatus` | no | no |
 
 ### Commit tools (`CommitTools.cs`)
 

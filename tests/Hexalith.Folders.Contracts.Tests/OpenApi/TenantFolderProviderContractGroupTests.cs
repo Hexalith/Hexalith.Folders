@@ -40,8 +40,10 @@ public sealed class TenantFolderProviderContractGroupTests
         "ListFolderFiles",
         "GetFolderFileMetadata",
         "SearchFolderFiles",
+        "SearchFolderIndexedFiles",
         "GlobFolderFiles",
         "ReadFileRange",
+        "GetFolderIndexingStatus",
         "CommitWorkspace",
         "GetWorkspaceStatus",
         "GetWorkspaceCleanupStatus",
@@ -70,6 +72,7 @@ public sealed class TenantFolderProviderContractGroupTests
         "ValidateProviderReadiness",
         "GetFolderFileMetadata",
         "SearchFolderFiles",
+        "SearchFolderIndexedFiles",
         "GlobFolderFiles",
         "ReadFileRange",
     ];

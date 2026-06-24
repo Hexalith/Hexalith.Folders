@@ -71,6 +71,7 @@ public static class FoldersServerModule
         services.AddFoldersLifecycleStatus();
         services.AddFoldersAuditQueries();
         services.AddFoldersFileContextQueries();
+        services.AddFoldersContextSearchFacade();
         services.AddFoldersProviderReadiness();
         services.AddFoldersOpsConsoleDiagnostics();
 

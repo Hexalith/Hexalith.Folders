@@ -26,7 +26,7 @@ This runbook defines the C3 tenant-deletion evidence posture for release review.
 
 ## Manual review checklist
 
-- Verify C3 remains `reference_pending` unless explicit approval records are present.
+- Verify C3 is `approved` with the explicit Legal + PM approval records present (PM 2026-06-22; Legal 2026-06-24).
 - Verify deleted and tombstoned records are counted by tenant-scoped synthetic IDs only.
 - Verify retained records are metadata-only.
 - Verify anonymized records remove display aliases while preserving authoritative tenant-scoped IDs.

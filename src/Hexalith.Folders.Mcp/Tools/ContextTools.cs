@@ -88,4 +88,29 @@ internal static class ContextTools
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
             client.ReadFileRangeAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<FileRangeReadRequest>(requestJson), ct)), cancellationToken);
+
+    [McpServerTool(Name = "search-folder-indexed-files")]
+    [Description("Search the authorized Folders semantic search index (query, task-scoped). Metadata-only results.")]
+    public static Task<string> SearchFolderIndexedFiles(
+        ToolPipeline pipeline,
+        [Description("Opaque folder identifier.")] string folderId,
+        [Description("Opaque workspace identifier.")] string workspaceId,
+        [Description("Caller-provided task ID (required for this task-scoped query).")] string taskId,
+        [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
+        [Description("Optional read-consistency: eventually_consistent (the search index is async pub/sub-fed).")] string? freshness = null,
+        [Description("Request body as inline JSON matching the ContextIndexSearchRequest contract schema.")] string? requestJson = null,
+        CancellationToken cancellationToken = default)
+        => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
+            client.SearchFolderIndexedFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<ContextIndexSearchRequest>(requestJson), ct)), cancellationToken);
+
+    [McpServerTool(Name = "get-folder-indexing-status")]
+    [Description("Inspect the metadata-only semantic-indexing status of a folder's file versions (query). Not task-scoped.")]
+    public static Task<string> GetFolderIndexingStatus(
+        ToolPipeline pipeline,
+        [Description("Opaque folder identifier.")] string folderId,
+        [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
+        [Description("Optional read-consistency: eventually_consistent (the bridge projection is async pub/sub-fed).")] string? freshness = null,
+        CancellationToken cancellationToken = default)
+        => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
+            client.GetFolderIndexingStatusAsync(folderId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
 }

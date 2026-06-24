@@ -217,8 +217,10 @@ Read-only file-context queries (tree, metadata, search, glob, range-read). See
 | `ListFolderFiles` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree` | Read-only. |
 | `GetFolderFileMetadata` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata` | POST-as-query; read-only. |
 | `SearchFolderFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search` | POST-as-query; read-only. |
+| `SearchFolderIndexedFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search` | POST-as-query; read-only; eventually-consistent search index. |
 | `GlobFolderFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob` | POST-as-query; read-only. |
 | `ReadFileRange` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read` | POST-as-query; read-only. |
+| `GetFolderIndexingStatus` | GET | `/api/v1/folders/{folderId}/indexing-status` | Read-only; eventually-consistent indexing-status projection. |
 
 ## SDK operation reference (typed client)
 
@@ -241,7 +243,7 @@ idempotency-key helpers without introducing any field, state, or behavior absent
 | `query-status` | `GetWorkspaceStatusAsync`, `GetWorkspaceCleanupStatusAsync`, `GetReconciliationStatusAsync`, `GetTaskStatusAsync` |
 | `audit` | `ListAuditTrailAsync`, `GetAuditRecordAsync`, `ListOperationTimelineAsync`, `GetOperationTimelineEntryAsync` |
 | `ops-console` | `GetReadinessDiagnosticsAsync`, `GetProjectionFreshnessAsync`, `GetProviderStatusDiagnosticsAsync`, `GetLockDiagnosticsAsync`, `GetDirtyStateDiagnosticsAsync`, `GetSyncStatusDiagnosticsAsync`, `GetFailedOperationDiagnosticsAsync` |
-| `context-queries` | `ListFolderFilesAsync`, `GetFolderFileMetadataAsync`, `SearchFolderFilesAsync`, `GlobFolderFilesAsync`, `ReadFileRangeAsync` |
+| `context-queries` | `ListFolderFilesAsync`, `GetFolderFileMetadataAsync`, `SearchFolderFilesAsync`, `SearchFolderIndexedFilesAsync`, `GlobFolderFilesAsync`, `ReadFileRangeAsync`, `GetFolderIndexingStatusAsync` |
 
 ### Golden lifecycle ordering
 

@@ -23,6 +23,7 @@ public static class EffectivePermissionsActionCatalog
         "commit",
         "query_status",
         "query_audit",
+        "read_context_search",
         "view_operations_console",
         "create_folder",
     ];
@@ -33,6 +34,7 @@ public static class EffectivePermissionsActionCatalog
         ["read_file_content"] = EffectivePermissionLevel.Read,
         ["query_status"] = EffectivePermissionLevel.Read,
         ["query_audit"] = EffectivePermissionLevel.Read,
+        ["read_context_search"] = EffectivePermissionLevel.Read,
         ["view_operations_console"] = EffectivePermissionLevel.Read,
         ["prepare_workspace"] = EffectivePermissionLevel.Write,
         ["lock_workspace"] = EffectivePermissionLevel.Write,

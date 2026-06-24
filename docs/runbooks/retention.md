@@ -9,7 +9,7 @@ Give operators the recurring-cadence view of retention: when read-model compacti
 ## Preconditions
 
 - The acting principal is authorized for the managed tenant before any tenant-scoped retention evidence is read; tenant authority comes from authenticated context, never from a query parameter.
-- C3 retention durations remain `reference_pending` until explicit Legal + PM approval evidence is present; treat durations as proposed, not production policy, until then.
+- C3 retention durations are `approved`: explicit Legal + PM approval evidence is present (PM 2026-06-22; Legal 2026-06-24, Louveciennes), so the durations are production policy.
 - No retention step performs cross-tenant search, provider payload inspection, raw file inspection, or credential review.
 
 ## Procedure
@@ -25,7 +25,7 @@ Run the conformance gate `pwsh ./tests/tools/run-adr-runbook-docs-gates.ps1`, wh
 
 ## Escalation and handoff
 
-- Missing or stale C3 approval evidence escalates to Legal + PM; the gap stays surfaced as `reference_pending` and is not silently treated as covered.
+- C3 approval evidence is recorded (PM 2026-06-22; Legal 2026-06-24); should it ever go missing or stale, escalate to Legal + PM rather than silently treating the criterion as covered.
 - A failed cleanup or compaction cadence escalates to the on-call operator named in the alerts runbook (`./alerts.md`) with the tenant-scoped synthetic identifiers only.
 
 ## Related evidence

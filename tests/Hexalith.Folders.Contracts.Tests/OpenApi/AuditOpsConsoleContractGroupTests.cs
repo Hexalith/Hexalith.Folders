@@ -34,6 +34,16 @@ public sealed class AuditOpsConsoleContractGroupTests
 
     private static readonly string[] StoryOperationIds = [.. AuditOperationIds, .. OpsConsoleOperationIds];
 
+    // Story 10.5 context search-index facade operations post-date this audit/ops-console review story. They read
+    // the eventually-consistent Memories search index (and its async bridge projection), which is non-authoritative
+    // and deliberately does NOT surface the projection-stale / projection-unavailable read-model vocabulary the
+    // earlier-story sweep widened. They are excluded from the earlier-story propagation sweep accordingly.
+    private static readonly string[] LaterStoryContextIndexOperationIds =
+    [
+        "SearchFolderIndexedFiles",
+        "GetFolderIndexingStatus",
+    ];
+
     [Fact]
     public void AuditOpsConsoleOperations_MatchStoryAllowListAndResolveRefs()
     {
@@ -380,6 +390,7 @@ public sealed class AuditOpsConsoleContractGroupTests
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
         Operation[] earlierStoryOperations = EnumerateOperations(root)
             .Where(o => !StoryOperationIds.Contains(o.OperationId, StringComparer.Ordinal))
+            .Where(o => !LaterStoryContextIndexOperationIds.Contains(o.OperationId, StringComparer.Ordinal))
             .ToArray();
 
         // Triggers for projection-stale / projection-unavailable propagation: any operation that already

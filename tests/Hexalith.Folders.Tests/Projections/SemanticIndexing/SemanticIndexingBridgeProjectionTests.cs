@@ -100,6 +100,47 @@ public sealed class SemanticIndexingBridgeProjectionTests
     }
 
     [Fact]
+    public void FolderArchiveAfterFileRemoveShouldNotResurrectHardDeletedEntry()
+    {
+        // Hybrid-removal invariant (AC1/AC4): a file removal is a hard delete and must stay removed. A folder archive
+        // arriving AFTER the remove (higher sequence) must NOT flip the already-tombstoned entry to "folder_archived",
+        // because that routes it through the soft-delete egress and re-publishes (resurrects) the document the hard
+        // delete already dropped. The entry's reason must stay folder_file_removed.
+        SemanticIndexingBridgeEntry entry = SemanticIndexingBridgeProjection.Empty.Apply(
+            [
+                new FolderProjectionEnvelope("tenant-a", 1, Mutation()),
+                new FolderProjectionEnvelope("tenant-a", 2, Mutation(fileOperationKind: "remove", contentHashReference: null)),
+                new FolderProjectionEnvelope("tenant-a", 3, Archived()),
+            ]).Entries.Values.ShouldHaveSingleItem();
+
+        entry.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        entry.ReasonCode.ShouldBe("folder_file_removed");
+    }
+
+    [Fact]
+    public void FolderArchiveShouldNotReindexEntryAlreadyHardDeletedAfterRemovalEvidenceRecorded()
+    {
+        // The realistic cross-batch sequence: a file is removed (tombstone folder_file_removed), then the removal egress
+        // publishes SearchIndexEntryRemoved and records its outcome, OVERWRITING ReasonCode to "memories_accepted" while
+        // freezing Status=Tombstoned. A later FolderArchived must still treat the entry as a hard delete and leave it
+        // untouched — the guard keys off Status (Tombstoned), not the now-mutated ReasonCode.
+        SemanticIndexingBridgeEntry tombstoned = Apply(Mutation(fileOperationKind: "remove", contentHashReference: null)).Entries.Values.ShouldHaveSingleItem();
+        SemanticIndexingBridgeEntry afterRemovalEgress = SemanticIndexingBridgeProjection.ApplyRemovalEvidence(
+            tombstoned,
+            RemovalEvidence(tombstoned.Identity, "memories_accepted", watermark: tombstoned.Freshness.Watermark));
+        afterRemovalEgress.ReasonCode.ShouldBe("memories_accepted");
+
+        SemanticIndexingBridgeEntry afterArchive = SemanticIndexingBridgeProjection
+            .FromEntries([afterRemovalEgress])
+            .Apply([new FolderProjectionEnvelope("tenant-a", 2, Archived())])
+            .Entries.Values.ShouldHaveSingleItem();
+
+        // The archive did not re-route the already-removed entry through the soft-delete egress.
+        afterArchive.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        afterArchive.ReasonCode.ShouldBe("memories_accepted");
+    }
+
+    [Fact]
     public void CommitEventsShouldAttachMetadataOnlyEvidenceWithoutMarkingIndexed()
     {
         SemanticIndexingBridgeEntry entry = SemanticIndexingBridgeProjection.Empty.Apply(

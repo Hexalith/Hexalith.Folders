@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
@@ -1025,6 +1026,107 @@ public static class FoldersDomainServiceEndpoints
                 cancellationToken).ConfigureAwait(false);
         })
         .WithName("ReadFileRange")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        // Story 10.5: authorized search over the Memories search index (folders-index). Non-mutating,
+        // eventually_consistent (the index is async pub/sub-fed), rejects Idempotency-Key, metadata-only result.
+        endpoints.MapPost("/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search", async (
+            string folderId,
+            string workspaceId,
+            HttpContext httpContext,
+            ContextSearchQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+                httpContext,
+                correlationId,
+                taskId,
+                [folderId, workspaceId],
+                requireEventuallyConsistent: true);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            ContextIndexSearchHttpRequest? body = await ReadContextBodyAsync<ContextIndexSearchHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
+            if (body is null
+                || !IsSchemaVersionV1(body.RequestSchemaVersion)
+                || !string.Equals(body.QueryFamily, ContextSearchQueryHandler.QueryFamily, StringComparison.Ordinal))
+            {
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+            }
+
+            ContextSearchQueryResult result = await handler.HandleAsync(
+                new ContextSearchQuery(
+                    folderId,
+                    workspaceId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(ContextSearchQueryHandler.ActionToken),
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext),
+                    body.QueryText,
+                    body.Limit,
+                    body.Cursor),
+                cancellationToken).ConfigureAwait(false);
+
+            return ContextSearchToHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("SearchFolderIndexedFiles")
+        .AddEndpointFilter<FolderAuditEndpointFilter>();
+
+        // Story 10.5: read-only, metadata-only indexing-status projection for a folder (console-backing read).
+        // Non-mutating, eventually_consistent, rejects Idempotency-Key.
+        endpoints.MapGet("/api/v1/folders/{folderId}/indexing-status", async (
+            string folderId,
+            HttpContext httpContext,
+            FolderIndexingStatusQueryHandler handler,
+            ITenantContextAccessor tenantContext,
+            IEventStoreClaimTransformEvidenceAccessor claimTransformEvidence,
+            CancellationToken cancellationToken)
+            =>
+        {
+            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
+                httpContext,
+                correlationId,
+                taskId,
+                [folderId],
+                requireEventuallyConsistent: true);
+            if (envelopeFailure is not null)
+            {
+                return envelopeFailure;
+            }
+
+            FolderIndexingStatusQueryResult result = await handler.HandleAsync(
+                new FolderIndexingStatusQuery(
+                    folderId,
+                    tenantContext.AuthoritativeTenantId,
+                    tenantContext.PrincipalId,
+                    claimTransformEvidence.GetEvidence(ContextSearchQueryHandler.ActionToken),
+                    correlationId,
+                    taskId,
+                    ClientTenantIds(httpContext),
+                    ClientPrincipalIds(httpContext)),
+                cancellationToken).ConfigureAwait(false);
+
+            return FolderIndexingStatusToHttpResult(httpContext, result, correlationId, taskId);
+        })
+        .WithName("GetFolderIndexingStatus")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
         endpoints.MapGet("/api/v1/folders/{folderId}/branch-ref-policy", async (
@@ -4335,6 +4437,215 @@ public static class FoldersDomainServiceEndpoints
             freshness.ProjectionWatermark,
             freshness.Stale);
 
+    private static IResult ContextSearchToHttpResult(
+        HttpContext httpContext,
+        ContextSearchQueryResult result,
+        string? correlationId,
+        string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case ContextSearchResultCode.Allowed:
+                AddContextSearchSuccessHeaders(httpContext, result);
+                return Results.Json(
+                    new ContextIndexSearchResultResponse(
+                        [.. result.Items.Select(static item => new ContextIndexSearchItemResponse(
+                            item.FileVersionReference,
+                            item.IndexingStatus,
+                            item.Sensitivity,
+                            item.Redaction,
+                            item.Score))],
+                        result.NextCursor,
+                        new ContextIndexSearchLimitsResponse(
+                            result.Limits.QueryFamily,
+                            result.Limits.ConfiguredLimit,
+                            result.Limits.ActualCount,
+                            result.Limits.ActualBytes,
+                            result.Limits.ElapsedMilliseconds,
+                            result.Limits.IsTruncated,
+                            result.Limits.TruncatedReason),
+                        ToFreshnessResponse(result.Freshness)),
+                    ResponseJsonOptions);
+
+            case ContextSearchResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.ValidationFailed:
+                return SafeProblem(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "validation_error",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.Redacted:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "redacted",
+                    code: "redacted",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.InputLimitExceeded:
+                return SafeProblem(
+                    StatusCodes.Status422UnprocessableEntity,
+                    category: "input_limit_exceeded",
+                    code: "input_limit_exceeded",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.ResponseLimitExceeded:
+                return SafeProblem(
+                    StatusCodes.Status413PayloadTooLarge,
+                    category: "response_limit_exceeded",
+                    code: "response_limit_exceeded",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.QueryTimeout:
+                return SafeProblem(
+                    StatusCodes.Status408RequestTimeout,
+                    category: "query_timeout",
+                    code: "query_timeout",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case ContextSearchResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
+    private static void AddContextSearchSuccessHeaders(HttpContext httpContext, ContextSearchQueryResult result)
+    {
+        if (!string.IsNullOrWhiteSpace(result.CorrelationId)
+            && !ContainsControlChars(result.CorrelationId))
+        {
+            httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
+            && !ContainsControlChars(result.Freshness.ReadConsistency))
+        {
+            httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+        }
+    }
+
+    private static IResult FolderIndexingStatusToHttpResult(
+        HttpContext httpContext,
+        FolderIndexingStatusQueryResult result,
+        string? correlationId,
+        string? taskId)
+    {
+        if (result.AuthorizationDenial is not null)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(result.AuthorizationDenial);
+        }
+
+        switch (result.Code)
+        {
+            case FolderIndexingStatusResultCode.Allowed:
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                {
+                    httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency) && !ContainsControlChars(result.Freshness.ReadConsistency))
+                {
+                    httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
+                }
+
+                return Results.Json(
+                    new FolderIndexingStatusResultResponse(
+                        [.. result.Items.Select(static item => new FolderIndexingStatusItemResponse(
+                            item.FileVersionReference,
+                            item.IndexingStatus,
+                            item.ReasonCode,
+                            item.Sensitivity,
+                            item.Redaction))],
+                        result.IsTruncated,
+                        ToFreshnessResponse(result.Freshness)),
+                    ResponseJsonOptions);
+
+            case FolderIndexingStatusResultCode.AuthenticationRequired:
+                return SafeProblem(
+                    StatusCodes.Status401Unauthorized,
+                    category: "authentication_failure",
+                    code: "authentication_failure",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderIndexingStatusResultCode.NotFoundSafe:
+                return SafeProblem(
+                    StatusCodes.Status404NotFound,
+                    category: "not_found",
+                    code: "not_found",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderIndexingStatusResultCode.ReadModelUnavailable:
+                return SafeProblem(
+                    StatusCodes.Status503ServiceUnavailable,
+                    category: "read_model_unavailable",
+                    code: "read_model_unavailable",
+                    retryable: true,
+                    correlationId: correlationId,
+                    taskId: taskId);
+
+            case FolderIndexingStatusResultCode.AuthorizationDenied:
+            default:
+                return SafeProblem(
+                    StatusCodes.Status403Forbidden,
+                    category: "tenant_access_denied",
+                    code: "denied_safe",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: taskId);
+        }
+    }
+
     private static IResult ToHttpResult(HttpContext httpContext, BranchRefPolicyQueryResult result, string? correlationId, string? taskId)
     {
         if (result.AuthorizationDenial is not null)
@@ -6008,6 +6319,47 @@ public static class FoldersDomainServiceEndpoints
         PathMetadata? Path,
         long? StartOffset,
         long? EndOffset);
+
+    private sealed record ContextIndexSearchHttpRequest(
+        string? RequestSchemaVersion,
+        string? QueryFamily,
+        string? QueryText,
+        int? Limit,
+        string? Cursor);
+
+    private sealed record ContextIndexSearchResultResponse(
+        IReadOnlyList<ContextIndexSearchItemResponse> Items,
+        string? NextCursor,
+        ContextIndexSearchLimitsResponse Limits,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record ContextIndexSearchItemResponse(
+        string FileVersionReference,
+        string IndexingStatus,
+        string Sensitivity,
+        string Redaction,
+        double Score);
+
+    private sealed record ContextIndexSearchLimitsResponse(
+        string QueryFamily,
+        int ConfiguredLimit,
+        int ActualCount,
+        long ActualBytes,
+        long ElapsedMilliseconds,
+        bool IsTruncated,
+        string TruncatedReason);
+
+    private sealed record FolderIndexingStatusResultResponse(
+        IReadOnlyList<FolderIndexingStatusItemResponse> Items,
+        bool IsTruncated,
+        FreshnessMetadataResponse Freshness);
+
+    private sealed record FolderIndexingStatusItemResponse(
+        string FileVersionReference,
+        string IndexingStatus,
+        string ReasonCode,
+        string Sensitivity,
+        string Redaction);
 
     private sealed record AcceptedCommandResponse(
         DateTimeOffset AcceptedAt,
