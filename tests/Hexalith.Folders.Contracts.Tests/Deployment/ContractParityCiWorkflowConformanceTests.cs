@@ -42,12 +42,13 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
 
     private static readonly string[] _rootBuildSubmodules =
     [
-        "Hexalith.AI.Tools",
-        "Hexalith.Commons",
-        "Hexalith.EventStore",
-        "Hexalith.FrontComposer",
-        "Hexalith.Memories",
-        "Hexalith.Tenants",
+        "references/Hexalith.AI.Tools",
+        "references/Hexalith.Builds",
+        "references/Hexalith.Commons",
+        "references/Hexalith.EventStore",
+        "references/Hexalith.FrontComposer",
+        "references/Hexalith.Memories",
+        "references/Hexalith.Tenants",
     ];
 
     private static readonly string[] _excludedLanes =
@@ -208,7 +209,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         documentation.ShouldContain("metadata-only");
         documentation.ShouldContain("contract-spine.yml");
         documentation.ShouldContain("Stories 7.6 and 7.8");
-        documentation.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants");
 
         foreach (string category in _categories)
         {

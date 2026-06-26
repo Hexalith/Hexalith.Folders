@@ -63,7 +63,7 @@ The script writes `_bmad-output/gates/security-redaction-ci/latest.json` with ga
 Use only the explicit root-level command:
 
 ```text
-git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
 ```
 
 Nested recursive initialization is forbidden unless the user explicitly requests nested submodule work.

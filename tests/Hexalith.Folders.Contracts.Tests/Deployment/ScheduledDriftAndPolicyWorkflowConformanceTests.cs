@@ -21,12 +21,13 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
 
     private static readonly string[] _rootBuildSubmodules =
     [
-        "Hexalith.AI.Tools",
-        "Hexalith.Commons",
-        "Hexalith.EventStore",
-        "Hexalith.FrontComposer",
-        "Hexalith.Memories",
-        "Hexalith.Tenants",
+        "references/Hexalith.AI.Tools",
+        "references/Hexalith.Builds",
+        "references/Hexalith.Commons",
+        "references/Hexalith.EventStore",
+        "references/Hexalith.FrontComposer",
+        "references/Hexalith.Memories",
+        "references/Hexalith.Tenants",
     ];
 
     private static readonly string[] _nightlyCategories =
@@ -216,7 +217,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         documentation.ShouldContain("Story 7.15");
         documentation.ShouldContain("Story 7.16");
         documentation.ShouldContain("Story 7.17");
-        documentation.ShouldContain("git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants");
 
         foreach (string category in _nightlyCategories.Concat(_policyCategories))
         {

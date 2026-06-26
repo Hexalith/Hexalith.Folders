@@ -165,6 +165,25 @@ public sealed class MemoriesFolderSearchSourceTests
     }
 
     [Fact]
+    public async Task MalformedSuccessPayloadShouldMapToUnavailableNeverThrow()
+    {
+        FakeMemoriesClient client = new(new SearchResult
+        {
+            Results = null!,
+            TotalCount = 1,
+            HasIndexedMemoryUnits = true,
+            Query = "needle",
+        });
+        MemoriesFolderSearchSource source = new(client);
+
+        FolderSearchSourceResult result = await source.SearchAsync(Request, TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderSearchSourceStatus.Unavailable);
+        result.Hits.ShouldBeEmpty();
+        result.RawCount.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task SearchTimeoutShouldMapToTimeoutNeverThrow()
     {
         FakeMemoriesClient client = new(static async (_, ct) =>

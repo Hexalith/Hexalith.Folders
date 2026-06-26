@@ -30,12 +30,13 @@ public sealed partial class E2eCiWorkflowConformanceTests
 
     private static readonly string[] _rootBuildSubmodules =
     [
-        "Hexalith.AI.Tools",
-        "Hexalith.Commons",
-        "Hexalith.EventStore",
-        "Hexalith.FrontComposer",
-        "Hexalith.Memories",
-        "Hexalith.Tenants",
+        "references/Hexalith.AI.Tools",
+        "references/Hexalith.Builds",
+        "references/Hexalith.Commons",
+        "references/Hexalith.EventStore",
+        "references/Hexalith.FrontComposer",
+        "references/Hexalith.Memories",
+        "references/Hexalith.Tenants",
     ];
 
     [Fact]

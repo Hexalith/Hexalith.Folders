@@ -76,6 +76,38 @@ public sealed class ContextSearchQueryHandlerTests
         source.Requests.ShouldBeEmpty();
     }
 
+    [Theory]
+    [InlineData("bad-cursor")]
+    [InlineData("memories-search:-1")]
+    [InlineData("")]
+    public async Task MalformedCursorShouldReturnValidationBeforeEgress(string cursor)
+    {
+        RecordingFolderSearchSource source = new();
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(
+            Query(cursor: cursor),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.ValidationFailed);
+        source.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task InvalidNegativeLimitShouldNotEchoInvalidLimitInSafeMetadata()
+    {
+        RecordingFolderSearchSource source = new();
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(
+            Query(limit: -1),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.ValidationFailed);
+        result.Limits.ConfiguredLimit.ShouldBe(500);
+        source.Requests.ShouldBeEmpty();
+    }
+
     [Fact]
     public async Task TenantDenialShouldReturnBeforeSourceObservation()
     {
@@ -332,7 +364,7 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
-    public async Task PaginationShouldAdvanceByRawSourceRowsWhenAllRowsAreDiscarded()
+    public async Task AllDiscardedRowsShouldNotExposeRawSourcePagination()
     {
         RecordingFolderSearchSource source = new()
         {
@@ -346,16 +378,30 @@ public sealed class ContextSearchQueryHandlerTests
 
         first.Code.ShouldBe(ContextSearchResultCode.Allowed);
         first.Items.ShouldBeEmpty();
-        first.Limits.IsTruncated.ShouldBeTrue();
-        first.NextCursor.ShouldNotBeNull();
+        first.Limits.IsTruncated.ShouldBeFalse();
+        first.NextCursor.ShouldBeNull();
+        source.Requests.Count.ShouldBe(1);
+    }
 
-        ContextSearchQueryResult second = await handler.HandleAsync(
-            Query(limit: 1, cursor: first.NextCursor),
-            TestContext.Current.CancellationToken);
+    [Fact]
+    public async Task SourceReturningMoreRowsThanRequestedShouldNotExceedLimit()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-1"), Hit("fv-2")],
+            TotalCount = 10,
+            RawCount = 2,
+        };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1"), Entry("fv-2")]));
 
-        second.Code.ShouldBe(ContextSearchResultCode.Allowed);
-        source.Requests.Count.ShouldBe(2);
-        source.Requests[1].Offset.ShouldBe(1);
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(limit: 1), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        ContextSearchItem item = result.Items.ShouldHaveSingleItem();
+        item.FileVersionReference.ShouldBe("fv-1");
+        result.Limits.ConfiguredLimit.ShouldBe(1);
+        result.Limits.IsTruncated.ShouldBeTrue();
+        result.NextCursor.ShouldBe("memories-search:1");
     }
 
     [Fact]

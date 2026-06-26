@@ -93,7 +93,7 @@ Scheduled evidence feeds later release stories:
 Use only the root-level submodule initialization command:
 
 ```text
-git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
 ```
 
 Nested recursive initialization is forbidden unless explicitly requested for nested-submodule work.

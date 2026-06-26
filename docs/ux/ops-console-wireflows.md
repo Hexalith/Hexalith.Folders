@@ -871,10 +871,10 @@ Prior Epic 6 artifacts the notes describe (composition, not reinvention):
 
 Framework source confirmations and reconciliations:
 
-- `Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Components/Layout/FrontComposerNavigation.razor.cs`
+- `references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Components/Layout/FrontComposerNavigation.razor.cs`
   — `BuildRoute` produces `/{boundedContext.ToLowerInvariant()}/{ToKebab(typeName)}` (the D2 route
   convention `/{boundedContextLowercase}/{projectionTypeNameKebabCase}`).
-- `Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Attributes/` — `[Projection]`,
+- `references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Attributes/` — `[Projection]`,
   `[BoundedContext]`, `[Command]`, `[ProjectionTemplate]` are real attributes; **`[ProjectionSlot]`
   and `[ProjectionViewOverride]` are NOT attributes** — they are descriptor records
   (`ProjectionSlotDescriptor`, `ProjectionViewOverrideDescriptor`) in the Rendering namespace driven

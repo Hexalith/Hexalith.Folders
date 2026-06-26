@@ -129,7 +129,7 @@ Two later technical research reports have been added as architecture inputs:
 
 **Hexalith.Memories integration implications:**
 
-- Treat `Hexalith.Memories` as a separate Dapr-enabled service and derived search index, not as an authoritative Folders datastore.
+- Treat Hexalith.Memories as a separate Dapr-enabled service and derived search index, not as an authoritative Folders datastore.
 - Keep Folders events, projections, logs, traces, metrics, audit records, and error responses metadata-only. File content may be read by workers after authorization and sent to Memories for indexing; it must not be embedded in Folders events.
 - Add a worker-side search-index publication port before referencing Memories directly. `Hexalith.Folders.Workers` is the only project that may depend on `Hexalith.Memories.Contracts` (the `SearchIndexEntryChanged` / `SearchIndexEntryRemoved` CloudEvent contracts) — it does not need `Hexalith.Memories.Client.Rest`, whose `IngestAsync` is the separate RAG memory-ingestion subsystem (experimental `HXL001`), not the search index. The Story 10.5 authorized read facade (Option B) adds the one further exception: `Hexalith.Folders.Server` may reference `Hexalith.Memories.Client.Rest` + `Hexalith.Memories.Contracts` and call `MemoriesClient.SearchAsync` (syntactic search index only, never `IngestAsync`), mirroring `Hexalith.Tenants.UI`. Contracts, core domain, CLI, MCP, and UI must still take no direct Memories dependency and reach the facade only through the generated SDK over REST.
 - Use durable Folders events as indexing triggers and a Folders-owned bridge projection to track `file version -> Memories search-index entry/status`. This projection answers whether a file version is indexed, stale, skipped, failed, tombstoned, or reconciliation-required.
@@ -989,10 +989,14 @@ Hexalith.Folders/
 ├── _bmad-output/                               # exists; planning artifacts (PRD, architecture, research)
 ├── _bmad/                                      # exists; BMAD installer
 │
-├── Hexalith.AI.Tools/                          # submodule — root-level only
-├── Hexalith.EventStore/                        # submodule — root-level only
-├── Hexalith.FrontComposer/                     # submodule — root-level only
-├── Hexalith.Tenants/                           # submodule — root-level only
+├── references/                                # repository-declared submodules; never initialize recursively
+│   ├── Hexalith.AI.Tools/
+│   ├── Hexalith.Builds/
+│   ├── Hexalith.Commons/
+│   ├── Hexalith.EventStore/
+│   ├── Hexalith.FrontComposer/
+│   ├── Hexalith.Memories/
+│   └── Hexalith.Tenants/
 │
 ├── src/
 │   ├── Hexalith.Folders.Contracts/             # C0 Contract Spine + DTOs + extensions

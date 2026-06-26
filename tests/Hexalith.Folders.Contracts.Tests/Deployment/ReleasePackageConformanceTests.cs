@@ -37,12 +37,13 @@ public sealed partial class ReleasePackageConformanceTests
 
     private static readonly string[] RootBuildSubmodules =
     [
-        "Hexalith.AI.Tools",
-        "Hexalith.Commons",
-        "Hexalith.EventStore",
-        "Hexalith.FrontComposer",
-        "Hexalith.Memories",
-        "Hexalith.Tenants",
+        "references/Hexalith.AI.Tools",
+        "references/Hexalith.Builds",
+        "references/Hexalith.Commons",
+        "references/Hexalith.EventStore",
+        "references/Hexalith.FrontComposer",
+        "references/Hexalith.Memories",
+        "references/Hexalith.Tenants",
     ];
 
     [Fact]
@@ -316,7 +317,7 @@ public sealed partial class ReleasePackageConformanceTests
             "packages: write",
             "dotnet nuget push",
             "--skip-duplicate",
-            "git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants",
+            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants",
             "PR CI",
             "scheduled drift",
             "policy conformance",

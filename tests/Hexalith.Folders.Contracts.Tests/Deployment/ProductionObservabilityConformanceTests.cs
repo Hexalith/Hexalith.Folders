@@ -255,7 +255,7 @@ public sealed partial class ProductionObservabilityConformanceTests
             "metadata-only",
             "reviewer",
             "rerun",
-            "git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants",
+            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants",
         })
         {
             operations.ShouldContain(required, Case.Sensitive);
@@ -303,10 +303,10 @@ public sealed partial class ProductionObservabilityConformanceTests
         Should.Throw<ShouldAssertException>(() => AssertManifestMetadataOnly("token: synthetic_pat_value"));
         Should.Throw<ShouldAssertException>(() => AssertManifestMetadataOnly("evidence_path: /home/runner/work/secret"));
 
-        // Recursive-submodule detection: the forbidden recursive form is flagged; the approved root-level command is not.
+        // Recursive-submodule detection: the forbidden recursive form is flagged; the approved references command is not.
         string recursiveToken = string.Concat("--", "recursive");
         ("git submodule update --init " + recursiveToken).Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeTrue();
-        "git submodule update --init Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
+        "git submodule update --init references/Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
     }
 
     private static SignalIntent[] ParseSignals(YamlMappingNode spec)

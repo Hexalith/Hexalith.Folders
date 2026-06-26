@@ -43,20 +43,25 @@ public sealed class ScaffoldContractTests
 
     private static readonly string[] ExpectedSolutionProjects =
     [
-        "Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj",
-        "Hexalith.EventStore/src/Hexalith.EventStore/Hexalith.EventStore.csproj",
-        "Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj",
-        "Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj",
-        "Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj",
-        "Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj",
-        "Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj",
-        "Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj",
+        "references/Hexalith.Commons/src/libraries/Hexalith.Commons.ServiceDefaults/Hexalith.Commons.ServiceDefaults.csproj",
+        "references/Hexalith.Commons/src/libraries/Hexalith.Commons.UniqueIds/Hexalith.Commons.UniqueIds.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.Admin.Abstractions/Hexalith.EventStore.Admin.Abstractions.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.Aspire/Hexalith.EventStore.Aspire.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Hexalith.EventStore.Client.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Hexalith.EventStore.Contracts.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/Hexalith.EventStore.DomainService.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Hexalith.EventStore.ServiceDefaults.csproj",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore/Hexalith.EventStore.csproj",
+        "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Contracts/Hexalith.FrontComposer.Contracts.csproj",
+        "references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Shell/Hexalith.FrontComposer.Shell.csproj",
+        "references/Hexalith.Memories/src/Hexalith.Memories.Aspire/Hexalith.Memories.Aspire.csproj",
+        "references/Hexalith.Memories/src/Hexalith.Memories.Contracts/Hexalith.Memories.Contracts.csproj",
+        "references/Hexalith.Tenants/src/Hexalith.Tenants.Aspire/Hexalith.Tenants.Aspire.csproj",
+        "references/Hexalith.Tenants/src/Hexalith.Tenants.Client/Hexalith.Tenants.Client.csproj",
+        "references/Hexalith.Tenants/src/Hexalith.Tenants.Contracts/Hexalith.Tenants.Contracts.csproj",
+        "references/Hexalith.Tenants/src/Hexalith.Tenants.Server/Hexalith.Tenants.Server.csproj",
+        "references/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj",
         "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
         "samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj",
         "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
@@ -92,12 +97,13 @@ public sealed class ScaffoldContractTests
 
     private static readonly string[] RequiredCanonicalSubmodules =
     [
-        "Hexalith.AI.Tools",
-        "Hexalith.Commons",
-        "Hexalith.EventStore",
-        "Hexalith.FrontComposer",
-        "Hexalith.Memories",
-        "Hexalith.Tenants",
+        "references/Hexalith.AI.Tools",
+        "references/Hexalith.Builds",
+        "references/Hexalith.Commons",
+        "references/Hexalith.EventStore",
+        "references/Hexalith.FrontComposer",
+        "references/Hexalith.Memories",
+        "references/Hexalith.Tenants",
     ];
 
     [Fact]
@@ -590,12 +596,13 @@ public sealed class ScaffoldContractTests
         }
         foreach (string submodule in new[]
         {
-            "Hexalith.AI.Tools/",
-            "Hexalith.Commons/",
-            "Hexalith.EventStore/",
-            "Hexalith.FrontComposer/",
-            "Hexalith.Memories/",
-            "Hexalith.Tenants/",
+            "references/Hexalith.AI.Tools/",
+            "references/Hexalith.Builds/",
+            "references/Hexalith.Commons/",
+            "references/Hexalith.EventStore/",
+            "references/Hexalith.FrontComposer/",
+            "references/Hexalith.Memories/",
+            "references/Hexalith.Tenants/",
         })
         {
             if (relative.StartsWith(submodule, StringComparison.OrdinalIgnoreCase))

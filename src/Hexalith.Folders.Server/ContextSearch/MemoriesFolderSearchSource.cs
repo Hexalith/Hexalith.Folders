@@ -76,6 +76,13 @@ internal sealed class MemoriesFolderSearchSource(
             return FolderSearchSourceResult.Unavailable();
         }
 
+        IReadOnlyList<MemoriesScoredResult>? results = searchResult.Results;
+        if (results is null)
+        {
+            _logger.LogWarning("Memories search index returned a malformed success payload with no results collection.");
+            return FolderSearchSourceResult.Unavailable();
+        }
+
         // In-band degradation (syntactic axis down / partial) is reported safely, not as content.
         if (searchResult.Degraded
             || searchResult.UnavailableAxes?.Any(static axis =>
@@ -85,11 +92,11 @@ internal sealed class MemoriesFolderSearchSource(
                 FolderSearchSourceStatus.Degraded,
                 [],
                 searchResult.TotalCount,
-                searchResult.Results.Count);
+                results.Count);
         }
 
         List<FolderSearchSourceHit> hits = [];
-        foreach (MemoriesScoredResult scored in searchResult.Results)
+        foreach (MemoriesScoredResult scored in results)
         {
             // Recover identity from SourceUri ONLY (never the dropped ContentSnippet or the MemoryUnitId); malformed
             // entries are skipped. The handler re-checks every component against the authorized scope.
@@ -103,7 +110,7 @@ internal sealed class MemoriesFolderSearchSource(
             FolderSearchSourceStatus.Available,
             hits,
             searchResult.TotalCount,
-            searchResult.Results.Count);
+            results.Count);
     }
 
     private static IReadOnlyDictionary<string, string> BuildAttributeFilters(FolderSearchSourceRequest request)

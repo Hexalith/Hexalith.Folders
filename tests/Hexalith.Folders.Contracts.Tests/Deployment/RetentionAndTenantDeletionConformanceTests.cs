@@ -79,7 +79,7 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             "_bmad-output/gates/retention-deletion/latest.json",
             "pending approval blocks live release",
             "metadata-only",
-            "git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants",
+            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants",
         })
         {
             operations.ShouldContain(required, Case.Sensitive);
@@ -270,10 +270,10 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         Should.Throw<ShouldAssertException>(() => AssertMetadataOnlyJson(absolutePath.RootElement));
 
         // Recursive-submodule detection semantics: the forbidden recursive form is flagged while
-        // the approved root-level command is not.
+        // the approved references command is not.
         string recursiveToken = string.Concat("--", "recursive");
         ("git submodule update --init " + recursiveToken).Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeTrue();
-        "git submodule update --init Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
+        "git submodule update --init references/Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
     }
 
     private static void AssertRequiredPolicyRows(MarkdownRow[] rows)

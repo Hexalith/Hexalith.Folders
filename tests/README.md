@@ -5,10 +5,10 @@ Hexalith.Folders uses a .NET-first test framework: xUnit v3 for execution, Shoul
 ## Setup
 
 1. Install the .NET SDK version from `global.json`.
-2. Initialize only root-level submodules when needed:
+2. Initialize only repository-declared submodules under `references/` when needed:
 
    ```powershell
-   git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventStore Hexalith.FrontComposer Hexalith.Memories Hexalith.Tenants
+   git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
    ```
 
 3. Restore from the repository root:

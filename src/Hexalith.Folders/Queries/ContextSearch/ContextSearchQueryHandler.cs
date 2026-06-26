@@ -156,8 +156,16 @@ public sealed class ContextSearchQueryHandler(
         }
 
         List<ContextSearchItem> items = [];
+        int observedSourceRows = 0;
         foreach (FolderSearchSourceHit hit in sourceResult.Hits)
         {
+            if (observedSourceRows >= limit || items.Count >= limit)
+            {
+                break;
+            }
+
+            observedSourceRows++;
+
             // Security-trim (defense in depth): a poisoned/stale index could echo a foreign hit despite the
             // server-side attribute filter; drop anything whose recovered identity is not the authorized scope.
             if (!string.Equals(hit.ManagedTenantId, allowed.AuthoritativeTenantId, StringComparison.Ordinal)
@@ -200,10 +208,16 @@ public sealed class ContextSearchQueryHandler(
 
         stopwatch.Stop();
 
-        int nextOffset = offset > int.MaxValue - sourceResult.RawCount
+        int rawRowsAdvanced = Math.Max(
+            observedSourceRows,
+            Math.Clamp(sourceResult.RawCount, 0, limit));
+        int nextOffset = offset > int.MaxValue - rawRowsAdvanced
             ? int.MaxValue
-            : offset + sourceResult.RawCount;
-        bool hasMore = sourceResult.RawCount >= limit && nextOffset > offset;
+            : offset + rawRowsAdvanced;
+        bool hasMore = items.Count >= limit
+            && rawRowsAdvanced > 0
+            && nextOffset > offset
+            && sourceResult.TotalCount > nextOffset;
         string? nextCursor = hasMore ? BuildCursor(nextOffset) : null;
         FolderLifecycleFreshness freshness = new(
             EventuallyConsistent,
@@ -256,11 +270,18 @@ public sealed class ContextSearchQueryHandler(
             return ContextSearchResultCode.InputLimitExceeded;
         }
 
+        if (query.Cursor is not null && !TryParseCursor(query.Cursor, out _))
+        {
+            return ContextSearchResultCode.ValidationFailed;
+        }
+
         return null;
     }
 
     private static int EffectiveLimit(ContextSearchQuery query)
-        => Math.Min(query.Limit ?? MaxResultCount, MaxResultCount);
+        => query.Limit is > 0
+            ? Math.Min(query.Limit.Value, MaxResultCount)
+            : MaxResultCount;
 
     private static bool IsVisible(SemanticIndexingBridgeStatus status)
         => status is SemanticIndexingBridgeStatus.Indexed or SemanticIndexingBridgeStatus.Stale;
@@ -315,15 +336,18 @@ public sealed class ContextSearchQueryHandler(
 
     private static int ParseOffset(string? cursor)
     {
-        if (string.IsNullOrWhiteSpace(cursor)
-            || !cursor.StartsWith(CursorPrefix, StringComparison.Ordinal)
-            || !int.TryParse(cursor[CursorPrefix.Length..], NumberStyles.None, CultureInfo.InvariantCulture, out int offset)
-            || offset < 0)
-        {
-            return 0;
-        }
-
+        _ = TryParseCursor(cursor, out int offset);
         return offset;
+    }
+
+    private static bool TryParseCursor(string? cursor, out int offset)
+    {
+        offset = 0;
+        return cursor is null
+            || (!string.IsNullOrWhiteSpace(cursor)
+                && cursor.StartsWith(CursorPrefix, StringComparison.Ordinal)
+                && int.TryParse(cursor[CursorPrefix.Length..], NumberStyles.None, CultureInfo.InvariantCulture, out offset)
+                && offset >= 0);
     }
 
     private static string BuildCursor(int offset)
