@@ -124,6 +124,9 @@ public sealed class AppHostPlatformCompositionConformanceTests
         // is added by the helper via SuppressBuild project metadata, not referenced here.
         csproj.ShouldNotContain(@"Hexalith.Memories.Server\Hexalith.Memories.Server.csproj");
         csproj.ShouldNotContain(@"Hexalith.Memories\Hexalith.Memories.csproj");
+
+        // Security service ownership stays with the EventStore Aspire helper.
+        csproj.ShouldNotContain(@"Aspire.Hosting.Keycloak");
     }
 
     [Fact]
@@ -135,6 +138,21 @@ public sealed class AppHostPlatformCompositionConformanceTests
         // used; the platform helpers (AddHexalithEventStoreGatewayProject / AddHexalithTenantsServer) compose them.
         program.ShouldNotContain("Projects.Hexalith_EventStore");
         program.ShouldNotContain("Projects.Hexalith_Tenants");
+    }
+
+    [Fact]
+    public void AppHostProgramShouldInitializeSharedEventStoreSecurityResource()
+    {
+        string program = File.ReadAllText(RepositoryPath(AppHostProgramPath), Encoding.UTF8);
+
+        program.ShouldContain("AddHexalithEventStoreSecurity()");
+        program.ShouldContain("WithJwtBearerSecurity(security)");
+        program.ShouldContain("WithSecurityDependency(security)");
+        program.ShouldContain("Folders__Authentication__Authority");
+        program.ShouldNotContain("builder.AddKeycloak(");
+        program.ShouldNotContain("Authentication__JwtBearer__Authority");
+        program.ShouldNotContain("Authentication__JwtBearer__Issuer");
+        program.ShouldNotContain("Authentication__JwtBearer__Audience");
     }
 
     [Fact]

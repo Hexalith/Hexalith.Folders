@@ -11,15 +11,8 @@ string resiliencyConfigPath = ResolveDaprConfigPath(builder.AppHostDirectory, "r
 string stateStoreComponentPath = ResolveDaprConfigPath(builder.AppHostDirectory, "statestore.yaml");
 string pubSubComponentPath = ResolveDaprConfigPath(builder.AppHostDirectory, "pubsub.yaml");
 
-IResourceBuilder<KeycloakResource>? keycloak = null;
-ReferenceExpression? realmUrl = null;
-if (!string.Equals(builder.Configuration["EnableKeycloak"], "false", StringComparison.OrdinalIgnoreCase))
-{
-    keycloak = builder.AddKeycloak("keycloak", 8180)
-        .WithRealmImport("./KeycloakRealms");
-    EndpointReference keycloakEndpoint = keycloak.GetEndpoint("http");
-    realmUrl = ReferenceExpression.Create($"{keycloakEndpoint}/realms/hexalith");
-}
+// Shared local security resource used by HTTP services during Aspire orchestration.
+HexalithEventStoreSecurityResources? security = builder.AddHexalithEventStoreSecurity();
 
 // EventStore command gateway, composed gateway-only (no admin server / admin UI) via the platform Aspire
 // helper. The helper owns the eventstore sidecar plus the shared statestore/pubsub Dapr components, sourced
@@ -88,36 +81,21 @@ HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemorie
 // Tenants AppHost's hexalith-tenants -> tenants-index routing chain.
 _ = memories.Server.WithFoldersMemoriesSourceRouting();
 
-if (keycloak is not null && realmUrl is not null)
+if (security is not null)
 {
-    ConfigureJwt(eventStore, keycloak, realmUrl);
-    ConfigureJwt(tenants, keycloak, realmUrl);
-    ConfigureJwt(folders, keycloak, realmUrl);
-    ConfigureJwt(foldersWorkers, keycloak, realmUrl);
+    _ = eventStore.WithJwtBearerSecurity(security);
+    _ = tenants.WithJwtBearerSecurity(security);
+    _ = folders.WithJwtBearerSecurity(security);
+    _ = foldersWorkers.WithJwtBearerSecurity(security);
 
     _ = foldersUi
-        .WithReference(keycloak)
-        .WaitFor(keycloak)
-        .WithEnvironment("Folders__Authentication__Authority", realmUrl)
-        .WithEnvironment("Folders__Authentication__ClientId", "hexalith-folders");
+        .WithSecurityDependency(security)
+        .WithEnvironment("Folders__Authentication__Authority", security.RealmUrl)
+        .WithEnvironment("Folders__Authentication__ClientId", "hexalith-folders")
+        .WithEnvironment("Folders__Authentication__RequireHttpsMetadata", security.RequireHttpsMetadata ? "true" : "false");
 }
 
 builder.Build().Run();
-
-static void ConfigureJwt(
-    IResourceBuilder<ProjectResource> resource,
-    IResourceBuilder<KeycloakResource> keycloak,
-    ReferenceExpression realmUrl)
-{
-    _ = resource
-        .WithReference(keycloak)
-        .WaitFor(keycloak)
-        .WithEnvironment("Authentication__JwtBearer__Authority", realmUrl)
-        .WithEnvironment("Authentication__JwtBearer__Issuer", realmUrl)
-        .WithEnvironment("Authentication__JwtBearer__Audience", "hexalith-eventstore")
-        .WithEnvironment("Authentication__JwtBearer__RequireHttpsMetadata", "false")
-        .WithEnvironment("Authentication__JwtBearer__SigningKey", "");
-}
 
 static string ResolveDaprConfigPath(string appHostDirectory, string fileName)
 {
