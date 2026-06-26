@@ -30,6 +30,9 @@ public static class FoldersSemanticIndexingAttributes
     /// <summary>Exact-match attribute carrying the folder id.</summary>
     public const string FolderIdAttribute = "folders.folderId";
 
+    /// <summary>Exact-match attribute carrying the workspace id.</summary>
+    public const string WorkspaceIdAttribute = "folders.workspaceId";
+
     /// <summary>Exact-match attribute carrying the opaque file-version id.</summary>
     public const string FileVersionIdAttribute = "folders.fileVersionId";
 

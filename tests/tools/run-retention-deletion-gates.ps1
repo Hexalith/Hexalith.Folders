@@ -256,8 +256,39 @@ function Assert-NoRecursiveSubmoduleSetup {
     }
 }
 
+function Get-GovernanceCriterionBlock {
+    param(
+        [Parameter(Mandatory = $true)][string]$Content,
+        [Parameter(Mandatory = $true)][string]$CriterionId
+    )
+
+    $lines = $Content -split "`r?`n"
+    $start = -1
+    for ($i = 0; $i -lt $lines.Length; $i++) {
+        if ($lines[$i] -match "^\s*-\s+criterion_id:\s+$([regex]::Escape($CriterionId))\s*$") {
+            $start = $i
+            break
+        }
+    }
+
+    if ($start -lt 0) {
+        Fail-Gate -Category 'governance-evidence' -Reason "missing-governance-criterion criterion=$CriterionId"
+    }
+
+    $end = $lines.Length
+    for ($i = $start + 1; $i -lt $lines.Length; $i++) {
+        if ($lines[$i] -match '^\s*-\s+criterion_id:\s+') {
+            $end = $i
+            break
+        }
+    }
+
+    return ($lines[$start..($end - 1)] -join "`n")
+}
+
 function Assert-C3Policy {
     $c3 = Get-Content -Raw -Path (Join-Path $repositoryRoot 'docs/exit-criteria/c3-retention.md')
+    $legalApproval = 'Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes'
     if (-not $c3.Contains('policy status: approved', [StringComparison]::Ordinal)) {
         Fail-Gate -Category 'policy-source' -Reason 'missing-policy-status'
     }
@@ -285,7 +316,7 @@ function Assert-C3Policy {
             Fail-Gate -Category 'policy-source' -Reason "invalid-tenant-deletion-disposition class=$required"
         }
 
-        if (-not $row.'Approval state'.Contains('Legal approved', [StringComparison]::OrdinalIgnoreCase)) {
+        if (-not $row.'Approval state'.Contains($legalApproval, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'policy-source' -Reason "unexpected-c3-approval-state class=$required"
         }
     }
@@ -333,14 +364,21 @@ function Assert-TenantDeletionDocs {
 
 function Assert-GovernanceEvidence {
     $governance = Get-Content -Raw -Path (Join-Path $repositoryRoot 'docs/exit-criteria/c0-c13-governance-evidence.yaml')
+    $c3 = Get-GovernanceCriterionBlock -Content $governance -CriterionId 'C3'
     foreach ($expected in @(
             'criterion_id: C3',
             'status: approved',
             'artifact_path: docs/exit-criteria/c3-retention.md',
-            'verification_command: .\tests\tools\run-retention-deletion-gates.ps1')) {
-        if (-not $governance.Contains($expected, [StringComparison]::Ordinal)) {
+            'verification_command: .\tests\tools\run-retention-deletion-gates.ps1',
+            'Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes)',
+            'open_policy_placeholders: []')) {
+        if (-not $c3.Contains($expected, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'governance-evidence' -Reason "governance-evidence-drift expected=$expected"
         }
+    }
+
+    if ($c3.Contains('C3-legal-approval', [StringComparison]::Ordinal)) {
+        Fail-Gate -Category 'governance-evidence' -Reason 'stale-c3-legal-placeholder'
     }
 
     Add-Result -Category 'governance-evidence' -Status 'passed' -ExitCode 0

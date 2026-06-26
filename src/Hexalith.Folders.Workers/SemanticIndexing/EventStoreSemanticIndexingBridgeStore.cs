@@ -31,6 +31,8 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         _logger = logger;
     }
 
+    public bool IsAvailable => true;
+
     public async Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
         SemanticIndexingFileVersionIdentity identity,
         CancellationToken cancellationToken = default)
@@ -39,6 +41,26 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
 
         ReadModelEntry<SemanticIndexingBridgeEntry> result = await _store
             .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, identity.ReadModelKey, cancellationToken)
+            .ConfigureAwait(false);
+
+        return result.Value;
+    }
+
+    public async Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+        string managedTenantId,
+        string folderId,
+        string fileVersionId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managedTenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileVersionId);
+
+        ReadModelEntry<SemanticIndexingBridgeEntry> result = await _store
+            .GetAsync<SemanticIndexingBridgeEntry>(
+                StateStoreName,
+                SemanticIndexingBridgeKeys.FileVersion(managedTenantId, folderId, fileVersionId),
+                cancellationToken)
             .ConfigureAwait(false);
 
         return result.Value;

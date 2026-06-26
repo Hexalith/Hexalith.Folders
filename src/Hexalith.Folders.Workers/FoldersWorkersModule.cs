@@ -66,9 +66,9 @@ public static class FoldersWorkersModule
         services.AddDaprClient();
         services.AddFoldersSemanticIndexingBridge();
 
-        // The fail-closed policy evaluator gates indexing on tenant-access authority, so the tenant-access
-        // projection store must be resolvable even when this registration is used standalone.
-        services.AddFoldersTenantAccess();
+        // The fail-closed policy evaluator gates indexing on tenant-access and folder ACL/action freshness, so the
+        // authorization projections must be resolvable even when this registration is used standalone.
+        services.AddFoldersLayeredAuthorization();
         services.AddEventStoreReadModelStore();
         services.RemoveAll<ISemanticIndexingBridgeReadModel>();
         services.RemoveAll<ISemanticIndexingBridgeWriter>();

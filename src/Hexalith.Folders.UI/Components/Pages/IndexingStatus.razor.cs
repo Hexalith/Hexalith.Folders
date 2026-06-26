@@ -40,6 +40,8 @@ public partial class IndexingStatus : ComponentBase, IDisposable
     {
         ResetState();
         CancellationToken token = _cts!.Token;
+        string folderId = FolderId;
+        string correlationId = _correlationId;
 
         // Eventually-consistent read-only browsing; the indexing-status read is not task-scoped (console view).
         string? taskId = null;
@@ -47,31 +49,50 @@ public partial class IndexingStatus : ComponentBase, IDisposable
         try
         {
             _status = await Client
-                .GetFolderIndexingStatusAsync(FolderId, _correlationId, taskId, ReadConsistencyClass.Eventually_consistent, token)
+                .GetFolderIndexingStatusAsync(folderId, correlationId, taskId, ReadConsistencyClass.Eventually_consistent, token)
                 .ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+        catch (OperationCanceledException) when (IsCurrentRequest(folderId, correlationId) && _cts.IsCancellationRequested)
         {
             _cancelled = true;
             _loading = false;
             return;
         }
+        catch (OperationCanceledException) when (!IsCurrentRequest(folderId, correlationId))
+        {
+            return;
+        }
+        catch (OperationCanceledException) when (IsCurrentRequest(folderId, correlationId))
+        {
+            _unavailable = true;
+            _loading = false;
+            return;
+        }
         catch (HexalithFoldersApiException ex)
         {
-            _error = ConsoleErrorPresenter.FromException(ex, _correlationId);
-            _loading = false;
+            if (IsCurrentRequest(folderId, correlationId))
+            {
+                _error = ConsoleErrorPresenter.FromException(ex, correlationId);
+                _loading = false;
+            }
+
             return;
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException) when (IsCurrentRequest(folderId, correlationId))
         {
             _unavailable = true;
             _loading = false;
             return;
         }
-        catch (TaskCanceledException)
+        catch (TaskCanceledException) when (IsCurrentRequest(folderId, correlationId))
         {
             _unavailable = true;
             _loading = false;
+            return;
+        }
+
+        if (!IsCurrentRequest(folderId, correlationId))
+        {
             return;
         }
 
@@ -85,10 +106,15 @@ public partial class IndexingStatus : ComponentBase, IDisposable
         _unavailable = false;
         _cancelled = false;
         _status = null;
+        _cts?.Cancel();
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
         _correlationId = Guid.NewGuid().ToString();
     }
+
+    private bool IsCurrentRequest(string folderId, string correlationId)
+        => string.Equals(FolderId, folderId, StringComparison.Ordinal)
+            && string.Equals(_correlationId, correlationId, StringComparison.Ordinal);
 
     private Task CancelAsync()
     {
@@ -102,6 +128,7 @@ public partial class IndexingStatus : ComponentBase, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
+        _cts?.Cancel();
         _cts?.Dispose();
         GC.SuppressFinalize(this);
     }

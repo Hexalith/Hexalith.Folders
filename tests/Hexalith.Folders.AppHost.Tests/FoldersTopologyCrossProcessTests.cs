@@ -1,10 +1,13 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
 
 using Dapr.Client;
 
+using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aspire;
 using Hexalith.Folders.Workers.SemanticIndexing;
 
@@ -74,6 +77,60 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
     }
 
     /// <summary>
+    /// Publishes an EventStore-shaped folder-domain envelope through the live <c>folders.events</c> pub/sub route from
+    /// the EventStore Dapr sidecar. This is the cross-process smoke for the Story 10.3 D1 route itself: publisher
+    /// sidecar → broker topic → folders-workers subscriber endpoint. The worker's fail-closed materializer/authorization
+    /// may record a non-indexed bridge outcome, but the live route must accept the same envelope shape EventStore emits.
+    /// </summary>
+    [Fact]
+    public async Task EventStoreSidecarShouldPublishFolderEnvelopeToWorkerSubscriberTopic()
+    {
+        _fixture.SkipIfUnavailable();
+
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        using DaprClient dapr = CreateDaprClient("eventstore", "Could not resolve the eventstore Dapr sidecar HTTP endpoint for the folders.events publish probe.");
+        WorkspaceFileMutationAccepted mutation = new(
+            "tenant-a",
+            "organization-a",
+            "folder-a",
+            "workspace-a",
+            FolderWorkspaceLifecycleEvent.FileMutated,
+            "operation-cross-process-a",
+            "add",
+            "PutFileInline",
+            "tenant-sensitive",
+            "path-digest-cross-process-a",
+            "sha256:crossprocess",
+            128,
+            "text/plain",
+            "inline_decoded",
+            128,
+            "principal-a",
+            "correlation-cross-process-a",
+            "task-cross-process-a",
+            "idempotency-cross-process-a",
+            "fingerprint-cross-process-a",
+            DateTimeOffset.UtcNow);
+
+        EventStoreDomainEventEnvelope envelope = new(
+            "message-cross-process-a",
+            "folder-a",
+            "tenant-a",
+            typeof(WorkspaceFileMutationAccepted).FullName!,
+            1,
+            DateTimeOffset.UtcNow,
+            mutation.CorrelationId,
+            "json",
+            JsonSerializer.SerializeToUtf8Bytes(mutation));
+
+        await dapr.PublishEventAsync(
+            FoldersSemanticIndexingDefaults.PubSubName,
+            FoldersAspireModule.FolderDomainEventsTopic,
+            envelope,
+            cancellationToken).ConfigureAwait(true);
+    }
+
+    /// <summary>
     /// Story 10.4 AC9 — the live publish → route → index → search → remove round-trip against the real
     /// <c>folders-index</c>. It seeds the index by publishing a real <see cref="SearchIndexEntryChanged"/> through the
     /// worker pub/sub component (option (b): do not depend on the fail-closed content materializer), then proves:
@@ -89,7 +146,9 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
         _fixture.SkipIfUnavailable();
 
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
-        using DaprClient dapr = CreateWorkerDaprClient();
+        using DaprClient dapr = CreateDaprClient(
+            FoldersAspireModule.FoldersWorkersAppId,
+            "Could not resolve a folders-workers Dapr sidecar HTTP endpoint for the AC9 round-trip seed on this host.");
         using HttpClient memories = _fixture.App.CreateHttpClient(FoldersAspireModule.MemoriesAppId);
 
         const string query = "hexalithfoldersroundtripseed";
@@ -217,12 +276,12 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
     // Builds a Dapr client bound to the running folders-workers sidecar's HTTP endpoint so the round-trip publishes a
     // real CloudEvent through the same pub/sub component the worker uses. Skips cleanly when the sidecar endpoint
     // cannot be resolved on the current host (the round-trip is BLOCKED-PENDING the DCP lane regardless).
-    private DaprClient CreateWorkerDaprClient()
+    private DaprClient CreateDaprClient(string resourceName, string skipReason)
     {
-        Uri? endpoint = TryResolveDaprHttpEndpoint(FoldersAspireModule.FoldersWorkersAppId);
+        Uri? endpoint = TryResolveDaprHttpEndpoint(resourceName);
         if (endpoint is null)
         {
-            Assert.Skip("Could not resolve a folders-workers Dapr sidecar HTTP endpoint for the AC9 round-trip seed on this host.");
+            Assert.Skip(skipReason);
         }
 
         return new DaprClientBuilder()

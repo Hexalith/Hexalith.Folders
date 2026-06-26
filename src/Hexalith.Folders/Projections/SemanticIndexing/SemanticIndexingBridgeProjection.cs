@@ -135,7 +135,7 @@ public sealed record SemanticIndexingBridgeProjection
 
         return current with
         {
-            ReasonCode = update.ReasonCode,
+            ReasonCode = update.Retryable ? current.ReasonCode : update.ReasonCode,
             Retryable = update.Retryable,
             CorrelationId = update.CorrelationId,
             TaskId = update.TaskId,

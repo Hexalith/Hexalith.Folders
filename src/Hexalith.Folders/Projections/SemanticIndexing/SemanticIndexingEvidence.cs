@@ -12,6 +12,8 @@ public sealed record SemanticIndexingEvidence
         string? mediaType = null,
         string? transportEvidenceKind = null,
         long? observedByteLength = null,
+        string? actorPrincipalId = null,
+        string? authorizationActionToken = null,
         string? indexedText = null,
         IReadOnlyDictionary<string, string>? indexedAttributes = null)
     {
@@ -35,6 +37,8 @@ public sealed record SemanticIndexingEvidence
         MediaType = SemanticIndexingBridgeValidation.RequireOptionalValue(mediaType, nameof(mediaType));
         TransportEvidenceKind = SemanticIndexingBridgeValidation.RequireOptionalValue(transportEvidenceKind, nameof(transportEvidenceKind));
         ObservedByteLength = observedByteLength;
+        ActorPrincipalId = SemanticIndexingBridgeValidation.RequireOptionalValue(actorPrincipalId, nameof(actorPrincipalId));
+        AuthorizationActionToken = SemanticIndexingBridgeValidation.RequireOptionalValue(authorizationActionToken, nameof(authorizationActionToken));
 
         // IndexedText / IndexedAttributes retain the exact metadata-only curated document that was published on the
         // SearchIndexEntryChanged upsert. The Memories upsert is a destructive full-field overwrite (Story 10.4
@@ -58,6 +62,10 @@ public sealed record SemanticIndexingEvidence
 
     public long? ObservedByteLength { get; init; }
 
+    public string? ActorPrincipalId { get; init; }
+
+    public string? AuthorizationActionToken { get; init; }
+
     public string? IndexedText { get; init; }
 
     public IReadOnlyDictionary<string, string>? IndexedAttributes { get; init; }
@@ -71,6 +79,8 @@ public sealed record SemanticIndexingEvidence
             byteLength: accepted.ByteLength,
             mediaType: accepted.MediaType,
             transportEvidenceKind: accepted.TransportEvidenceKind,
-            observedByteLength: accepted.ObservedByteLength);
+            observedByteLength: accepted.ObservedByteLength,
+            actorPrincipalId: accepted.ActorPrincipalId,
+            authorizationActionToken: "mutate_files");
     }
 }

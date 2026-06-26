@@ -2,6 +2,7 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.FolderList;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -27,7 +28,13 @@ public sealed class SemanticIndexingProcessManagerTests
             3,
             "inline",
             "small",
-            "text"));
+            "text",
+            "materialized curated text",
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [FoldersSemanticIndexingDefaults.StatusAttributeKey] = FoldersSemanticIndexingDefaults.StatusActive,
+                ["folders.contentDescriptor"] = "inline",
+            }));
         RecordingIndexingPort port = new(new SemanticIndexingResult(
             SemanticIndexingStatus.Accepted,
             "memories_accepted",
@@ -50,7 +57,10 @@ public sealed class SemanticIndexingProcessManagerTests
         materializationRequest.ExpectedMediaType.ShouldBe("text/plain");
         materializationRequest.TransportEvidenceKind.ShouldBe("inline_decoded");
         materializationRequest.ObservedByteLength.ShouldBe(128);
-        port.Requests.ShouldHaveSingleItem().Source.ToUriString().ShouldStartWith("folders://tenant-a/");
+        SemanticIndexingRequest request = port.Requests.ShouldHaveSingleItem();
+        request.Source.ToUriString().ShouldStartWith("folders://tenant-a/");
+        request.Content.CuratedText.ShouldBe("materialized curated text");
+        request.Content.CuratedAttributes["folders.contentDescriptor"].ShouldBe("inline");
         bridge.RecordedResults.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Indexed);
     }
 
@@ -275,7 +285,7 @@ public sealed class SemanticIndexingProcessManagerTests
 
         SemanticIndexingBridgeEntry removed = removalResults.ShouldHaveSingleItem();
         removed.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
-        removed.ReasonCode.ShouldBe("memories_publish_error");
+        removed.ReasonCode.ShouldBe("folder_file_removed");
         removed.Retryable.ShouldBeTrue();
     }
 
@@ -349,7 +359,7 @@ public sealed class SemanticIndexingProcessManagerTests
     public async Task ProcessFolderEventsAsyncShouldSkipRedactedSensitivityBeforeReadingContent()
     {
         RecordingBridgeWriter bridge = new(Mutation(pathPolicyClass: "credential"));
-        FailClosedSemanticIndexingPolicyEvaluator policy = new(new EnabledTenantAccessStore());
+        FailClosedSemanticIndexingPolicyEvaluator policy = new(new EnabledTenantAccessStore(), new AllowingFolderPermissionEvidenceProvider());
         RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
             [1, 2, 3],
             "text/plain",
@@ -374,7 +384,7 @@ public sealed class SemanticIndexingProcessManagerTests
     public async Task ProcessFolderEventsAsyncShouldFailClosedWhenTenantAccessIsUnavailableBeforeReadingContent()
     {
         RecordingBridgeWriter bridge = new();
-        FailClosedSemanticIndexingPolicyEvaluator policy = new(new MissingTenantAccessStore());
+        FailClosedSemanticIndexingPolicyEvaluator policy = new(new MissingTenantAccessStore(), new ThrowingFolderPermissionEvidenceProvider());
         RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
             [1, 2, 3],
             "text/plain",
@@ -393,6 +403,34 @@ public sealed class SemanticIndexingProcessManagerTests
         // materialized or sent to Memories.
         results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Failed);
         bridge.RecordedResults.ShouldHaveSingleItem().ReasonCode.ShouldBe("tenant_access_unavailable");
+        materializer.Requests.ShouldBeEmpty();
+        port.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ProcessFolderEventsAsyncShouldFailClosedWhenFolderAclDoesNotAuthorizeBeforeReadingContent()
+    {
+        RecordingBridgeWriter bridge = new();
+        DenyingFolderPermissionEvidenceProvider folderAcl = new();
+        FailClosedSemanticIndexingPolicyEvaluator policy = new(new EnabledTenantAccessStore(), folderAcl);
+        RecordingContentMaterializer materializer = new(SemanticIndexingContentMaterializationResult.Available(
+            [1, 2, 3],
+            "text/plain",
+            3,
+            "inline",
+            "small",
+            "text"));
+        RecordingIndexingPort port = new(new SemanticIndexingResult(SemanticIndexingStatus.Accepted, "memories_accepted", retryable: false));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> results = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, Mutation())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Skipped);
+        bridge.RecordedResults.ShouldHaveSingleItem().ReasonCode.ShouldBe("folder_acl_denied");
+        folderAcl.Requests.ShouldHaveSingleItem().ActionToken.ShouldBe("mutate_files");
+        folderAcl.Requests[0].PrincipalId.ShouldBe("principal-a");
         materializer.Requests.ShouldBeEmpty();
         port.Requests.ShouldBeEmpty();
     }
@@ -672,5 +710,36 @@ public sealed class SemanticIndexingProcessManagerTests
 
         public Task SaveAsync(FolderTenantAccessProjection projection, CancellationToken cancellationToken = default)
             => Task.CompletedTask;
+    }
+
+    private sealed class AllowingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(FolderPermissionEvidenceResult.Allowed("permission-watermark-a", organizationId: "organization-a"));
+    }
+
+    private sealed class DenyingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public List<FolderPermissionEvidenceRequest> Requests { get; } = [];
+
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            Requests.Add(request);
+            return Task.FromResult(FolderPermissionEvidenceResult.FromStatus(
+                FolderPermissionEvidenceStatus.Denied,
+                "permission-watermark-a"));
+        }
+    }
+
+    private sealed class ThrowingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("Folder ACL should not be queried after tenant access fails.");
     }
 }

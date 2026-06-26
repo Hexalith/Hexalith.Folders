@@ -43,6 +43,12 @@ public sealed class FoldersSemanticIndexingEventProcessor
         // a redelivered event re-applies to the same bridge entry, whose fingerprint short-circuits re-indexing, so a
         // non-stale entry is never sent to Memories twice. No in-process dedup is kept here — a per-request set would
         // reset on every Dapr delivery (the processor is transient) and only give a false sense of idempotency.
+        if (string.IsNullOrWhiteSpace(envelope.EventTypeName) || envelope.Payload is null || envelope.Payload.Length == 0)
+        {
+            LogUnprocessablePayload(envelope);
+            return FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload;
+        }
+
         if (!s_eventTypes.TryGetValue(envelope.EventTypeName, out Type? eventType))
         {
             return FoldersSemanticIndexingEventProcessingResult.SkippedUnknownEventType;

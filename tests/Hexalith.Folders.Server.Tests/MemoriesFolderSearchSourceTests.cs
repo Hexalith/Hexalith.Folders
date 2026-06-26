@@ -67,7 +67,21 @@ public sealed class MemoriesFolderSearchSourceTests
         filters[FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute].ShouldBe("tenant-a");
         filters[FoldersSemanticIndexingAttributes.OrganizationIdAttribute].ShouldBe("org-a");
         filters[FoldersSemanticIndexingAttributes.FolderIdAttribute].ShouldBe("folder-a");
+        filters[FoldersSemanticIndexingAttributes.WorkspaceIdAttribute].ShouldBe("workspace-a");
         filters[FoldersSemanticIndexingAttributes.StatusAttribute].ShouldBe(FoldersSemanticIndexingAttributes.StatusActive);
+    }
+
+    [Theory]
+    [MemberData(nameof(LeakageCorpusValues))]
+    public async Task ShouldDropEveryLeakageCorpusSnippetFromResults(string sentinel)
+    {
+        FakeMemoriesClient client = new(Result(
+            Scored("folders://tenant-a/organizations/org-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-a", 2.5, sentinel)));
+        MemoriesFolderSearchSource source = new(client);
+
+        FolderSearchSourceResult result = await source.SearchAsync(Request, TestContext.Current.CancellationToken);
+
+        JsonSerializer.Serialize(result).ShouldNotContain(sentinel, Shouldly.Case.Sensitive);
     }
 
     [Fact]
@@ -83,6 +97,22 @@ public sealed class MemoriesFolderSearchSourceTests
 
         FolderSearchSourceHit hit = result.Hits.ShouldHaveSingleItem();
         hit.FileVersionId.ShouldBe("fv-ok");
+    }
+
+    [Fact]
+    public async Task ShouldDropHitsWithNonFiniteScores()
+    {
+        FakeMemoriesClient client = new(Result(
+            Scored("folders://tenant-a/organizations/org-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-nan", double.NaN, "x"),
+            Scored("folders://tenant-a/organizations/org-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-inf", double.PositiveInfinity, "x"),
+            Scored("folders://tenant-a/organizations/org-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-ok", 1.0, "x")));
+        MemoriesFolderSearchSource source = new(client);
+
+        FolderSearchSourceResult result = await source.SearchAsync(Request, TestContext.Current.CancellationToken);
+
+        FolderSearchSourceHit hit = result.Hits.ShouldHaveSingleItem();
+        hit.FileVersionId.ShouldBe("fv-ok");
+        result.RawCount.ShouldBe(3);
     }
 
     [Fact]
@@ -134,6 +164,22 @@ public sealed class MemoriesFolderSearchSourceTests
         result.Hits.ShouldBeEmpty();
     }
 
+    [Fact]
+    public async Task SearchTimeoutShouldMapToTimeoutNeverThrow()
+    {
+        FakeMemoriesClient client = new(static async (_, ct) =>
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, ct).ConfigureAwait(false);
+            return Result();
+        });
+        MemoriesFolderSearchSource source = new(client);
+
+        FolderSearchSourceResult result = await source.SearchAsync(Request, TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe(FolderSearchSourceStatus.Timeout);
+        result.Hits.ShouldBeEmpty();
+    }
+
     private static SearchResult Result(params ScoredResult[] results)
         => new()
         {
@@ -153,10 +199,41 @@ public sealed class MemoriesFolderSearchSourceTests
             SourceType = SourceType.File,
         };
 
+    public static IEnumerable<object[]> LeakageCorpusValues()
+    {
+        string path = Path.Combine(FindRepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json");
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
+        foreach (JsonElement sample in document.RootElement.GetProperty("sentinel_samples").EnumerateArray())
+        {
+            string? value = sample.GetProperty("value").GetString();
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                yield return [value];
+            }
+        }
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "tests", "fixtures", "audit-leakage-corpus.json")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException("audit-leakage-corpus.json not found relative to test base directory.");
+    }
+
     private sealed class FakeMemoriesClient : MemoriesClient
     {
         private readonly SearchResult? _result;
         private readonly Exception? _throw;
+        private readonly Func<SearchRequest, CancellationToken, Task<SearchResult>>? _search;
 
         public FakeMemoriesClient(SearchResult result)
             : base(new HttpClient(), Options.Create(new MemoriesClientOptions()), NullLogger<MemoriesClient>.Instance)
@@ -166,11 +243,20 @@ public sealed class MemoriesFolderSearchSourceTests
             : base(new HttpClient(), Options.Create(new MemoriesClientOptions()), NullLogger<MemoriesClient>.Instance)
             => _throw = toThrow;
 
+        public FakeMemoriesClient(Func<SearchRequest, CancellationToken, Task<SearchResult>> search)
+            : base(new HttpClient(), Options.Create(new MemoriesClientOptions()), NullLogger<MemoriesClient>.Instance)
+            => _search = search;
+
         public SearchRequest? LastRequest { get; private set; }
 
         public override Task<SearchResult> SearchAsync(SearchRequest request, CancellationToken ct)
         {
             LastRequest = request;
+            if (_search is not null)
+            {
+                return _search(request, ct);
+            }
+
             return _throw is not null ? throw _throw : Task.FromResult(_result!);
         }
     }

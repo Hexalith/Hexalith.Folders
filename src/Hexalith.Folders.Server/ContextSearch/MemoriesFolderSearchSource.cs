@@ -29,6 +29,7 @@ internal sealed class MemoriesFolderSearchSource(
     private const string FoldersMarker = "folders";
     private const string WorkspacesMarker = "workspaces";
     private const string FileVersionsMarker = "file-versions";
+    private static readonly TimeSpan QueryTimeout = TimeSpan.FromSeconds(2);
 
     private readonly MemoriesClient _memoriesClient = memoriesClient;
     private readonly ILogger<MemoriesFolderSearchSource> _logger =
@@ -42,6 +43,8 @@ internal sealed class MemoriesFolderSearchSource(
         cancellationToken.ThrowIfCancellationRequested();
 
         MemoriesSearchResult searchResult;
+        using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(QueryTimeout);
         try
         {
             searchResult = await _memoriesClient
@@ -53,8 +56,15 @@ internal sealed class MemoriesFolderSearchSource(
                         MaxResults: request.Limit,
                         Offset: request.Offset,
                         AttributeFilters: BuildAttributeFilters(request)),
-                    cancellationToken)
+                    timeout.Token)
                 .ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogWarning(
+                "Memories search index timed out after {TimeoutMilliseconds} ms; degrading the context-search facade.",
+                QueryTimeout.TotalMilliseconds);
+            return new FolderSearchSourceResult(FolderSearchSourceStatus.Timeout, [], 0, 0);
         }
         catch (Exception ex) when (IsMemoriesUnavailable(ex, cancellationToken))
         {
@@ -71,7 +81,11 @@ internal sealed class MemoriesFolderSearchSource(
             || searchResult.UnavailableAxes?.Any(static axis =>
                 string.Equals(axis, FoldersSemanticIndexingAttributes.SearchAxis, StringComparison.OrdinalIgnoreCase)) == true)
         {
-            return new FolderSearchSourceResult(FolderSearchSourceStatus.Degraded, [], searchResult.TotalCount);
+            return new FolderSearchSourceResult(
+                FolderSearchSourceStatus.Degraded,
+                [],
+                searchResult.TotalCount,
+                searchResult.Results.Count);
         }
 
         List<FolderSearchSourceHit> hits = [];
@@ -85,7 +99,11 @@ internal sealed class MemoriesFolderSearchSource(
             }
         }
 
-        return new FolderSearchSourceResult(FolderSearchSourceStatus.Available, hits, searchResult.TotalCount);
+        return new FolderSearchSourceResult(
+            FolderSearchSourceStatus.Available,
+            hits,
+            searchResult.TotalCount,
+            searchResult.Results.Count);
     }
 
     private static IReadOnlyDictionary<string, string> BuildAttributeFilters(FolderSearchSourceRequest request)
@@ -93,15 +111,12 @@ internal sealed class MemoriesFolderSearchSource(
         Dictionary<string, string> filters = new(StringComparer.Ordinal)
         {
             [FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute] = request.ManagedTenantId,
+            [FoldersSemanticIndexingAttributes.OrganizationIdAttribute] = request.OrganizationId,
             [FoldersSemanticIndexingAttributes.FolderIdAttribute] = request.FolderId,
+            [FoldersSemanticIndexingAttributes.WorkspaceIdAttribute] = request.WorkspaceId,
             // Exclude archived (soft-deleted) units without re-evaluating folder state (Story 10.4 enabler).
             [FoldersSemanticIndexingAttributes.StatusAttribute] = FoldersSemanticIndexingAttributes.StatusActive,
         };
-
-        if (request.OrganizationId.Length > 0)
-        {
-            filters[FoldersSemanticIndexingAttributes.OrganizationIdAttribute] = request.OrganizationId;
-        }
 
         return filters;
     }
@@ -110,7 +125,8 @@ internal sealed class MemoriesFolderSearchSource(
     {
         hit = default!;
         string sourceUri = scored.SourceUri;
-        if (string.IsNullOrWhiteSpace(sourceUri)
+        if (!double.IsFinite(scored.Score)
+            || string.IsNullOrWhiteSpace(sourceUri)
             || !sourceUri.StartsWith(SourceUriScheme, StringComparison.Ordinal))
         {
             return false;

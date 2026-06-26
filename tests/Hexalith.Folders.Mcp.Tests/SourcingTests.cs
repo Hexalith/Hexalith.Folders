@@ -63,6 +63,37 @@ public sealed class SourcingTests
     }
 
     [Fact]
+    public async Task IndexingStatusQueryOmitsTaskHeaderBecauseItIsNotTaskScoped()
+    {
+        const string body = """
+            {
+              "items": [],
+              "isTruncated": false,
+              "freshness": {
+                "readConsistency": "eventually_consistent",
+                "observedAt": "2026-06-26T00:00:00Z",
+                "projectionWatermark": "watermark-a",
+                "stale": false
+              }
+            }
+            """;
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, body);
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
+
+        string result = await ContextTools.GetFolderIndexingStatus(
+            pipeline,
+            "folder-a",
+            correlationId: "corr-indexing-status",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        TestSupport.Kind(result).ShouldBeNull();
+        TestSupport.CapturedRequest request = handler.Requests.ShouldHaveSingleItem();
+        request.CorrelationId.ShouldBe("corr-indexing-status");
+        request.TaskId.ShouldBeNull();
+        request.Uri!.AbsolutePath.ShouldBe("/api/v1/folders/folder-a/indexing-status");
+    }
+
+    [Fact]
     public void MutatingToolsDeclareIdempotencyKeyAndQueryToolsDoNot()
     {
         IEnumerable<MethodInfo> toolMethods = typeof(ToolPipeline).Assembly.GetTypes()

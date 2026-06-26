@@ -4499,15 +4499,6 @@ public static class FoldersDomainServiceEndpoints
                     correlationId: correlationId,
                     taskId: taskId);
 
-            case ContextSearchResultCode.Redacted:
-                return SafeProblem(
-                    StatusCodes.Status404NotFound,
-                    category: "redacted",
-                    code: "redacted",
-                    retryable: false,
-                    correlationId: correlationId,
-                    taskId: taskId);
-
             case ContextSearchResultCode.InputLimitExceeded:
                 return SafeProblem(
                     StatusCodes.Status422UnprocessableEntity,

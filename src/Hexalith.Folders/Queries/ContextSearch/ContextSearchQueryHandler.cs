@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json;
 
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.SemanticIndexing;
@@ -46,6 +47,7 @@ public sealed class ContextSearchQueryHandler(
     private const int MaxResultCount = 500;
     private const int MaxCursorLength = 256;
     private const long MaxResponseBytes = 1048576;
+    private static readonly JsonSerializerOptions ResponseBudgetJsonOptions = new(JsonSerializerDefaults.Web);
 
     private readonly LayeredFolderAuthorizationService _authorizationService = authorizationService;
     private readonly IFolderSearchSource _source = source;
@@ -74,12 +76,6 @@ public sealed class ContextSearchQueryHandler(
             return SafeResult(ContextSearchResultCode.NotFoundSafe, query);
         }
 
-        ContextSearchResultCode? boundsFailure = ValidateC4Bounds(query);
-        if (boundsFailure is not null)
-        {
-            return SafeResult(boundsFailure.Value, query);
-        }
-
         // Layered authorization BEFORE any egress: JWT -> claim transform -> tenant-access freshness -> folder ACL ->
         // EventStore validator -> Dapr deny-by-default. The caller targets the `folders` domain service; the
         // folders -> memories egress is governed separately by the production Dapr access-control allow-rule.
@@ -103,10 +99,20 @@ public sealed class ContextSearchQueryHandler(
             return SafeResult(MapAuthorizationDenial(authorization), query, authorization);
         }
 
+        ContextSearchResultCode? boundsFailure = ValidateC4Bounds(query);
+        if (boundsFailure is not null)
+        {
+            return SafeResult(boundsFailure.Value, query);
+        }
+
         LayeredFolderAuthorizationAllowedContext allowed = authorization.AllowedContext;
         int limit = EffectiveLimit(query);
         int offset = ParseOffset(query.Cursor);
         string organizationId = allowed.OrganizationId ?? string.Empty;
+        if (organizationId.Length == 0)
+        {
+            return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
+        }
 
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -149,32 +155,7 @@ public sealed class ContextSearchQueryHandler(
             return SafeResult(sourceFailure.Value, query);
         }
 
-        // Hydrate from the authoritative Folders read: the index is non-authoritative and may be stale, so a hit only
-        // survives if a current bridge entry exists for the same file version AND the entry is in a live indexed state.
-        IReadOnlyList<SemanticIndexingBridgeEntry> folderEntries;
-        try
-        {
-            folderEntries = await _bridgeReadModel
-                .ListFolderAsync(allowed.AuthoritativeTenantId, query.FolderId, cancellationToken)
-                .ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            _logger.LogWarning(
-                ex,
-                "Context search hydration failed safely. Exception type: {ExceptionType}",
-                ex.GetType().FullName);
-            return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
-        }
-
-        Dictionary<string, SemanticIndexingBridgeEntry> entriesByFileVersion = new(StringComparer.Ordinal);
-        foreach (SemanticIndexingBridgeEntry entry in folderEntries)
-        {
-            entriesByFileVersion[entry.Identity.FileVersionId] = entry;
-        }
-
         List<ContextSearchItem> items = [];
-        long actualBytes = 0;
         foreach (FolderSearchSourceHit hit in sourceResult.Hits)
         {
             // Security-trim (defense in depth): a poisoned/stale index could echo a foreign hit despite the
@@ -182,39 +163,66 @@ public sealed class ContextSearchQueryHandler(
             if (!string.Equals(hit.ManagedTenantId, allowed.AuthoritativeTenantId, StringComparison.Ordinal)
                 || !string.Equals(hit.FolderId, query.FolderId, StringComparison.Ordinal)
                 || !string.Equals(hit.WorkspaceId, query.WorkspaceId, StringComparison.Ordinal)
-                || (organizationId.Length > 0 && !string.Equals(hit.OrganizationId, organizationId, StringComparison.Ordinal)))
+                || !string.Equals(hit.OrganizationId, organizationId, StringComparison.Ordinal))
             {
                 continue;
             }
 
             // Authoritative hydration: drop hits without a current bridge entry, in a non-live state, or whose
             // hydrated identity disagrees with the recovered hit (the bridge read, not the index, is the truth).
-            if (!entriesByFileVersion.TryGetValue(hit.FileVersionId, out SemanticIndexingBridgeEntry? entry)
+            SemanticIndexingBridgeEntry? entry;
+            try
+            {
+                entry = await _bridgeReadModel
+                    .GetFileVersionByIdAsync(allowed.AuthoritativeTenantId, query.FolderId, hit.FileVersionId, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Context search hydration failed safely. Exception type: {ExceptionType}",
+                    ex.GetType().FullName);
+                return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
+            }
+
+            if (entry is null
                 || !IsVisible(entry.Status)
+                || !string.Equals(entry.Identity.OrganizationId, organizationId, StringComparison.Ordinal)
                 || !string.Equals(entry.Identity.WorkspaceId, query.WorkspaceId, StringComparison.Ordinal))
             {
                 continue;
             }
 
             ContextSearchItem item = MapItem(hit, entry);
-            actualBytes += EstimateBytes(item);
-            if (actualBytes > MaxResponseBytes)
-            {
-                return SafeResult(ContextSearchResultCode.ResponseLimitExceeded, query);
-            }
-
             items.Add(item);
         }
 
         stopwatch.Stop();
 
-        int nextOffset = offset + sourceResult.Hits.Count;
-        bool hasMore = sourceResult.TotalCount > nextOffset;
+        int nextOffset = offset > int.MaxValue - sourceResult.RawCount
+            ? int.MaxValue
+            : offset + sourceResult.RawCount;
+        bool hasMore = sourceResult.RawCount >= limit && nextOffset > offset;
+        string? nextCursor = hasMore ? BuildCursor(nextOffset) : null;
+        FolderLifecycleFreshness freshness = new(
+            EventuallyConsistent,
+            _clock.UtcNow,
+            allowed.FreshnessWatermark,
+            Stale: false,
+            "search_index");
+        string truncatedReason = hasMore ? TruncatedResultCount : NotTruncated;
+        long actualBytes = EstimateResponseBytes(items, nextCursor, freshness, limit, hasMore, truncatedReason, actualBytes: 0);
+        actualBytes = EstimateResponseBytes(items, nextCursor, freshness, limit, hasMore, truncatedReason, actualBytes);
+        if (actualBytes > MaxResponseBytes)
+        {
+            return SafeResult(ContextSearchResultCode.ResponseLimitExceeded, query);
+        }
 
         return new ContextSearchQueryResult(
             ContextSearchResultCode.Allowed,
             items,
-            hasMore ? BuildCursor(nextOffset) : null,
+            nextCursor,
             new ContextSearchLimits(
                 QueryFamily,
                 limit,
@@ -222,13 +230,8 @@ public sealed class ContextSearchQueryHandler(
                 actualBytes,
                 stopwatch.ElapsedMilliseconds,
                 hasMore,
-                hasMore ? TruncatedResultCount : NotTruncated),
-            new FolderLifecycleFreshness(
-                EventuallyConsistent,
-                _clock.UtcNow,
-                allowed.FreshnessWatermark,
-                Stale: false,
-                "search_index"),
+                truncatedReason),
+            freshness,
             query.CorrelationId,
             query.TaskId,
             AuthorizationDenial: null);
@@ -281,12 +284,34 @@ public sealed class ContextSearchQueryHandler(
                 || pathPolicyClass.Contains("credential", StringComparison.Ordinal)
                 || pathPolicyClass.Contains("redacted", StringComparison.Ordinal));
 
-    private static long EstimateBytes(ContextSearchItem item)
-        => item.FileVersionReference.Length
-            + item.IndexingStatus.Length
-            + item.Sensitivity.Length
-            + item.Redaction.Length
-            + 24;
+    private static long EstimateResponseBytes(
+        IReadOnlyList<ContextSearchItem> items,
+        string? nextCursor,
+        FolderLifecycleFreshness freshness,
+        int limit,
+        bool hasMore,
+        string truncatedReason,
+        long actualBytes)
+        => JsonSerializer.SerializeToUtf8Bytes(
+            new ContextSearchResponseBudgetProbe(
+                items,
+                nextCursor,
+                new ContextSearchLimits(
+                    QueryFamily,
+                    limit,
+                    items.Count,
+                    actualBytes,
+                    0,
+                    hasMore,
+                    truncatedReason),
+                freshness),
+            ResponseBudgetJsonOptions).Length;
+
+    private sealed record ContextSearchResponseBudgetProbe(
+        IReadOnlyList<ContextSearchItem> Items,
+        string? NextCursor,
+        ContextSearchLimits Limits,
+        FolderLifecycleFreshness Freshness);
 
     private static int ParseOffset(string? cursor)
     {

@@ -177,6 +177,8 @@ public sealed class SemanticIndexingProcessManager
                     entry.Evidence.MediaType,
                     entry.Evidence.TransportEvidenceKind,
                     entry.Evidence.ObservedByteLength,
+                    policy.SensitivityClassification,
+                    policy.PathPolicyOutcome,
                     entry.CorrelationId,
                     entry.TaskId),
                 cancellationToken)
@@ -257,6 +259,7 @@ public sealed class SemanticIndexingProcessManager
             entry.Identity.ManagedTenantId,
             entry.Identity.OrganizationId,
             entry.Identity.FolderId,
+            entry.Identity.WorkspaceId,
             entry.Identity.FileVersionId,
             entry.Identity.ContentHashReference!,
             source,
@@ -265,7 +268,9 @@ public sealed class SemanticIndexingProcessManager
                 materialized.LengthBytes,
                 materialized.ContentType!,
                 materialized.SizeClassification,
-                materialized.TypeClassification),
+                materialized.TypeClassification,
+                materialized.CuratedText!,
+                materialized.CuratedAttributes!),
             new SemanticIndexingPolicyOutcome(
                 authorizedForIndexing: true,
                 policy.SensitivityClassification,

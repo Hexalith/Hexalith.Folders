@@ -61,8 +61,8 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             row["Observability evidence"].ShouldNotBeNullOrWhiteSpace();
             row["Owner"].ShouldBe("Tech Lead");
             row["Authority"].ShouldBe("Legal + PM");
-            // Each required row records the recorded Legal approval (2026-06-24) alongside the PM approval.
-            row["Approval state"].ShouldContain("Legal approved", Case.Insensitive);
+            // Each required row records the exact Legal signer, date, and location alongside the PM approval.
+            row["Approval state"].ShouldContain("Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes", Case.Sensitive);
             row["Review date"].ShouldBe("2026-05-11");
         }
     }
@@ -113,6 +113,7 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         c3.GetRetentionScalar("status").ShouldBe("approved");
         c3.GetRetentionScalar("artifact_path").ShouldBe(C3Path);
         c3.GetRetentionScalar("verification_command").ShouldBe(@".\tests\tools\run-retention-deletion-gates.ps1");
+        c3.GetRetentionScalar("result_summary").ShouldContain("Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes)", Case.Sensitive);
         c3.GetRetentionScalar("result_summary").ShouldContain("approved for live release publishing", Case.Sensitive);
         // PM approval (2026-06-22) and Legal approval (2026-06-24) are both recorded, so no open placeholder
         // remains. The empty-sequence assertion is the lockstep counterpart to the prior `.Single()` guard:
@@ -140,9 +141,14 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             "artifact_paths",
             "validation_categories",
             "result_summaries",
+            "Get-GovernanceCriterionBlock",
             "missing-c3-class",
             "invalid-tenant-deletion-disposition",
             "missing-approved-release-posture",
+            "stale-c3-legal-placeholder",
+            "Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes",
+            "Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes)",
+            "open_policy_placeholders: []",
             "recursive-submodule-setup",
             "unsafe-diagnostic-field",
             "passed",

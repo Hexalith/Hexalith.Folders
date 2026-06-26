@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-23 (Story 10.3 corrected to SearchIndexEntryChanged publish)
+# last_updated: 2026-06-26 (Story 10.3 code review chunk patches applied; review -> done)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-24 (Story 10.5 implemented via bmad-dev-story on post-10.4 baseline e612052 authorized workspace-scoped context-search facade + indexing-status projection over folders-index; Option-B MemoriesFolderSearchSource in Server; read_context_search token; ListFolderAsync bridge read; OpenAPI ops + SDK regen; MCP/CLI parity; production folders→memories Dapr allow-rule + conformance; UX IndexingStatus page; PRD FR58 + architecture §Query Facade. Build 0W/0E; Folders 1358, Server 540, Workers 62, Contracts 275, Client 288, Cli 709, Mcp 662, Integration 631 green; pre-existing .slnx-inventory red unchanged. in-progress → review)
+last_updated: 2026-06-26 (Story 10.3 code review chunk patches applied and review -> done; AC3 ACL/action freshness, AC4 materialized curated text/attributes, tombstone retry intent, null envelope drop, and Tier-3 EventStore-sidecar publish probe fixed; verified Folders build, scoped worker/AppHost builds, Workers.Tests 64/64, bridge projection 20/20, AppHost 4 skipped; normal full build/test blocked by missing nested Hexalith.Memories/Hexalith.PolymorphicSerializations submodule per repo policy)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -185,8 +185,10 @@ development_status:
   # ReferencePendingRowsAreOwnedAndSurfaceKnownGaps:202 hard-pins C3/C4/C7/C12 as surfaced gaps (C4 already shows
   # this approved-in-governance/pending-in-doc precedent) — flipping it reddens the contract-spine lane, violating
   # AC1's "no red contract-spine lane". Contracts.Tests 275/275; governance-completeness 11/11; format clean.
-  # epic-8 close-out (8-6 -> done, epic-8 -> done) is gated on code-review approval (do NOT mark epic-8 done until then).
-  8-6-record-c3-legal-signoff-and-apply-cascade: review
+  # 2026-06-26 code-review patches applied: latest retention evidence regenerated, stale approved-policy prose fixed,
+  # C3-scoped governance gate strengthened, and exact Legal signer/date/location asserted. Focused C3 conformance
+  # 8/8 plus retention gate green. 8-6 -> done; epic-8 close-out remains explicit/manual.
+  8-6-record-c3-legal-signoff-and-apply-cascade: done
   epic-8-retrospective: optional
 
   # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
@@ -221,8 +223,12 @@ development_status:
   # folders.events pub/sub scope + EventStore TopicOverride override are wired and pinned (dev AppHost helper +
   # hermetic Aspire test; prod deployment fragment + operator doc + conformance), and the Tier-3 Aspire
   # cross-process harness (tests/Hexalith.Folders.AppHost.Tests) is created (opt-in; runs on a DCP-capable lane —
-  # the Epic 9 live-boot residual). All 9 findings ticked; full suite green. → review.
-  10-3-author-authorized-async-indexing-on-file-write-and-commit: review
+  # the Epic 9 live-boot residual). All 9 findings ticked; full suite green. 2026-06-26 code-review chunk:
+  # AC3 ACL/action freshness, AC4 materialized curated text/attributes, tombstone retry intent, null/empty
+  # envelope drop, and Tier-3 EventStore-sidecar publish probe fixed. Focused verification green; normal full
+  # build/test blocked locally by missing nested Hexalith.Memories/Hexalith.PolymorphicSerializations submodule
+  # per repo policy. -> done.
+  10-3-author-authorized-async-indexing-on-file-write-and-commit: done
   # 10-4 contexted via bmad-create-story 2026-06-23 (refs verified at HEAD 4d9cd21 by a 4-agent adversarial
   # review). Jerome's decisions: HYBRID removal — file-remove -> hard SearchIndexEntryRemoved; folder-archive ->
   # soft SearchIndexEntryChanged{folders.status=archived} (full-document re-send, the Memories upsert is

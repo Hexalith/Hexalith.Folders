@@ -167,6 +167,41 @@ public sealed class SemanticIndexingEndpointE2ETests
     }
 
     [Fact]
+    public async Task SemanticIndexingSubscriptionEndpointShouldDropEnvelopeMissingTypeOrPayload()
+    {
+        WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);
+        try
+        {
+            EventStoreDomainEventEnvelope envelope = new(
+                "message-malformed-envelope-a",
+                "folder-a",
+                "tenant-a",
+                null!,
+                1,
+                OccurredAt,
+                "correlation-malformed-a",
+                "json",
+                null!);
+
+            HttpResponseMessage response = await host.Client
+                .PostAsJsonAsync(
+                    FoldersSemanticIndexingDefaults.DomainEventsRoute,
+                    envelope,
+                    TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            host.Policy.Evaluated.ShouldBeEmpty();
+            host.Materializer.Requests.ShouldBeEmpty();
+            host.Port.Requests.ShouldBeEmpty();
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task SemanticIndexingSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutSideEffects()
     {
         WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);

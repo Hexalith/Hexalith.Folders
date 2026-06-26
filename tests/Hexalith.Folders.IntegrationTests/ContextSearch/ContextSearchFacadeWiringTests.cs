@@ -72,6 +72,7 @@ public sealed class ContextSearchFacadeWiringTests
             items[0].GetProperty("fileVersionReference").GetString().ShouldBe("fv-a");
             json.ShouldNotContain("fv-b", Case.Sensitive);
             json.ShouldNotContain("folders://", Case.Sensitive);
+            AssertNoLeakageCorpusValue(json);
             document.RootElement.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
         }
         finally
@@ -88,14 +89,17 @@ public sealed class ContextSearchFacadeWiringTests
         TestHost host = await StartHostAsync(source, bridge).ConfigureAwait(true);
         try
         {
-            // user-a is authorized in the tenant and for folder-a only; folder-b/c/x have no ACL evidence, so an
-            // unauthorized folder, a cross-tenant folder id, and a nonexistent folder all resolve to the SAME
-            // safe-denial via the layered authorization, externally indistinguishable.
+            // user-a is authorized in tenant-a for folder-a only. Then the caller context is switched to tenant-b
+            // for the cross-tenant probe. Unauthorized, cross-tenant, and nonexistent targets all resolve to the
+            // SAME safe-denial via layered authorization, externally indistinguishable.
             SeedTenant(host, "tenant-a", "user-a");
+            SeedTenant(host, "tenant-b", "user-b");
             SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
 
             string unauthorized = await DenialBodyAsync(host, "folder-b", "corr-unauth").ConfigureAwait(true);
-            string crossTenant = await DenialBodyAsync(host, "folder-c", "corr-cross").ConfigureAwait(true);
+            host.Context.Set("tenant-b", "user-b");
+            string crossTenant = await DenialBodyAsync(host, "folder-a", "corr-cross").ConfigureAwait(true);
+            host.Context.Set("tenant-a", "user-a");
             string nonexistent = await DenialBodyAsync(host, "folder-x", "corr-absent").ConfigureAwait(true);
 
             // The egress seam must never be reached for a denied caller (deny before observation).
@@ -108,6 +112,9 @@ public sealed class ContextSearchFacadeWiringTests
             a.ShouldBe(b);
             b.ShouldBe(c);
             a.ShouldContain("metadata_only");
+            AssertNoLeakageCorpusValue(unauthorized);
+            AssertNoLeakageCorpusValue(crossTenant);
+            AssertNoLeakageCorpusValue(nonexistent);
         }
         finally
         {
@@ -153,6 +160,43 @@ public sealed class ContextSearchFacadeWiringTests
 
     private static string NormalizeCorrelation(string body)
         => Regex.Replace(body, "corr-[a-z]+", "corr-NORMALIZED", RegexOptions.CultureInvariant);
+
+    private static void AssertNoLeakageCorpusValue(string body)
+    {
+        foreach (string sentinel in LeakageCorpusValues())
+        {
+            body.ShouldNotContain(sentinel, Case.Sensitive);
+        }
+    }
+
+    private static string[] LeakageCorpusValues()
+    {
+        string path = Path.Combine(FindRepositoryRoot(), "tests", "fixtures", "audit-leakage-corpus.json");
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllText(path));
+        return document.RootElement
+            .GetProperty("sentinel_samples")
+            .EnumerateArray()
+            .Select(static sample => sample.GetProperty("value").GetString())
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => value!)
+            .ToArray();
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "tests", "fixtures", "audit-leakage-corpus.json")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException("audit-leakage-corpus.json not found relative to test base directory.");
+    }
 
     private static HttpRequestMessage SearchRequest(string folderId, string workspaceId, string queryText, string correlationId)
     {
@@ -345,7 +389,8 @@ public sealed class ContextSearchFacadeWiringTests
             return Task.FromResult(new FolderSearchSourceResult(
                 Status,
                 Hits,
-                TotalCount == 0 ? Hits.Count : TotalCount));
+                TotalCount == 0 ? Hits.Count : TotalCount,
+                Hits.Count));
         }
     }
 
@@ -353,12 +398,24 @@ public sealed class ContextSearchFacadeWiringTests
     {
         private readonly List<SemanticIndexingBridgeEntry> _entries = [];
 
+        public bool IsAvailable => true;
+
         public void Add(SemanticIndexingBridgeEntry entry) => _entries.Add(entry);
 
         public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
             SemanticIndexingFileVersionIdentity identity,
             CancellationToken cancellationToken = default)
             => Task.FromResult(_entries.FirstOrDefault(e => e.Identity.ReadModelKey == identity.ReadModelKey));
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+            string managedTenantId,
+            string folderId,
+            string fileVersionId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(_entries.FirstOrDefault(e =>
+                string.Equals(e.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+                && string.Equals(e.Identity.FolderId, folderId, StringComparison.Ordinal)
+                && string.Equals(e.Identity.FileVersionId, fileVersionId, StringComparison.Ordinal)));
 
         public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
             string managedTenantId,

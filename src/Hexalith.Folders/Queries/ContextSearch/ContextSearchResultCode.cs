@@ -12,7 +12,6 @@ public enum ContextSearchResultCode
     AuthorizationDenied,
     NotFoundSafe,
     ValidationFailed,
-    Redacted,
     InputLimitExceeded,
     ResponseLimitExceeded,
     QueryTimeout,

@@ -2902,6 +2902,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-eventually-consistent-search-index-watermark-and-non-authoritative-hydration
+      x-hexalith-query-timeout-ms: 2000
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -2923,7 +2924,6 @@ paths:
         - response_limit_exceeded
         - query_timeout
         - read_model_unavailable
-        - redacted
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:

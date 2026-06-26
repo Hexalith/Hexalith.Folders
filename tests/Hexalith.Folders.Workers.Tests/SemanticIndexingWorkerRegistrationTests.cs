@@ -110,6 +110,9 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         entry.CorrelationId.ShouldBe("correlation-a");
         entry.CausationId.ShouldBe("task-a");
         entry.Attributes["folders.managedTenantId"].ShouldBe("tenant-a");
+        entry.Attributes["folders.organizationId"].ShouldBe("organization-a");
+        entry.Attributes["folders.folderId"].ShouldBe("folder-a");
+        entry.Attributes["folders.workspaceId"].ShouldBe("workspace-a");
         entry.Attributes["folders.fileVersionId"].ShouldBe("version-a");
         entry.Attributes["folders.sensitivityClassification"].ShouldBe("tenant-sensitive");
         // The live upsert path stamps folders.status = active so the Story 10.5 facade can distinguish live vs archived.
@@ -348,6 +351,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
                 "tenant-a",
                 "organization-a",
                 "folder-a",
+                "workspace-a",
                 "version-a",
                 "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 null!,
@@ -360,6 +364,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
                 "tenant-a",
                 "organization-a",
                 "folder-a",
+                "workspace-a",
                 "version-a",
                 "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 new SemanticIndexingSourceIdentity("folders", "tenant-a", "organizations/organization-a/folders/folder-a/versions/version-a"),
@@ -372,6 +377,7 @@ public sealed class SemanticIndexingWorkerRegistrationTests
                 "tenant-a",
                 "organization-a",
                 "folder-a",
+                "workspace-a",
                 "version-a",
                 "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 new SemanticIndexingSourceIdentity("folders", "tenant-a", "organizations/organization-a/folders/folder-a/versions/version-a"),
@@ -474,13 +480,35 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             managedTenantId,
             "organization-a",
             "folder-a",
+            "workspace-a",
             "version-a",
             "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             // Use a fixed, valid source authority so this helper isolates the parameter under test.
             // Threading managedTenantId here would make the nested SemanticIndexingSourceIdentity validation
             // fire first (paramName "sourceAuthority") and mask the SemanticIndexingRequest boundary check.
             new SemanticIndexingSourceIdentity("folders", "tenant-a", "organizations/organization-a/folders/folder-a/versions/version-a"),
-            new SemanticIndexingContentDescriptor("authorized-file-version", 1024, "text/markdown", "small", "text"),
+            new SemanticIndexingContentDescriptor(
+                "authorized-file-version",
+                1024,
+                "text/markdown",
+                "small",
+                "text",
+                "authorized-file-version version-a text",
+                new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    [FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute] = managedTenantId,
+                    [FoldersSemanticIndexingAttributes.OrganizationIdAttribute] = "organization-a",
+                    [FoldersSemanticIndexingAttributes.FolderIdAttribute] = "folder-a",
+                    [FoldersSemanticIndexingAttributes.WorkspaceIdAttribute] = "workspace-a",
+                    [FoldersSemanticIndexingAttributes.FileVersionIdAttribute] = "version-a",
+                    ["folders.contentHash"] = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    ["folders.contentDescriptor"] = "authorized-file-version",
+                    ["folders.sizeClassification"] = "small",
+                    ["folders.typeClassification"] = "text",
+                    ["folders.sensitivityClassification"] = "tenant-sensitive",
+                    ["folders.pathPolicyOutcome"] = "allowed",
+                    [FoldersSemanticIndexingDefaults.StatusAttributeKey] = FoldersSemanticIndexingDefaults.StatusActive,
+                }),
             new SemanticIndexingPolicyOutcome(true, "tenant-sensitive", "allowed"),
             correlationId,
             "task-a");

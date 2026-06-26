@@ -9,11 +9,27 @@ namespace Hexalith.Folders.Projections.SemanticIndexing;
 /// </summary>
 public sealed class UnavailableSemanticIndexingBridgeReadModel : ISemanticIndexingBridgeReadModel
 {
+    public bool IsAvailable => false;
+
     public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
         SemanticIndexingFileVersionIdentity identity,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(identity);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return Task.FromResult<SemanticIndexingBridgeEntry?>(null);
+    }
+
+    public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+        string managedTenantId,
+        string folderId,
+        string fileVersionId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managedTenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileVersionId);
         cancellationToken.ThrowIfCancellationRequested();
 
         return Task.FromResult<SemanticIndexingBridgeEntry?>(null);

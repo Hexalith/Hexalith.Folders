@@ -7,6 +7,8 @@ public sealed class InMemorySemanticIndexingBridgeStore : ISemanticIndexingBridg
     private readonly object _sync = new();
     private readonly Dictionary<string, SemanticIndexingBridgeEntry> _entries = new(StringComparer.Ordinal);
 
+    public bool IsAvailable => true;
+
     public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
         SemanticIndexingFileVersionIdentity identity,
         CancellationToken cancellationToken = default)
@@ -17,6 +19,25 @@ public sealed class InMemorySemanticIndexingBridgeStore : ISemanticIndexingBridg
         lock (_sync)
         {
             _entries.TryGetValue(identity.ReadModelKey, out SemanticIndexingBridgeEntry? entry);
+            return Task.FromResult(entry);
+        }
+    }
+
+    public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+        string managedTenantId,
+        string folderId,
+        string fileVersionId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(managedTenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(folderId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileVersionId);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        string key = SemanticIndexingBridgeKeys.FileVersion(managedTenantId, folderId, fileVersionId);
+        lock (_sync)
+        {
+            _entries.TryGetValue(key, out SemanticIndexingBridgeEntry? entry);
             return Task.FromResult(entry);
         }
     }

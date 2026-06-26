@@ -1,5 +1,5 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: 9d8515d4d33ccea6c06d8d35e114ee47143ce3bb8dac2cb2d9a697b63e982951
+# contract_spine_sha256: 7c54d0ef8241050fded47acc78af4c2d7dfadcacfa057fb0096ebfce1c54346e
 # parity_schema_sha256: f9c0c3a3d0d74bd6062ca18299f35e25301b0c545b4bed4746e214154b716fca
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
@@ -4449,7 +4449,6 @@
       - 'internal_error'
       - 'query_timeout'
       - 'read_model_unavailable'
-      - 'redacted'
       - 'response_limit_exceeded'
       - 'tenant_access_denied'
       - 'validation_error'
@@ -4498,10 +4497,6 @@
     - canonical_error_category: 'read_model_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'read_model_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'redacted'
-      cli_exit_code: 75
-      mcp_failure_kind: 'redacted'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'response_limit_exceeded'
       cli_exit_code: 69

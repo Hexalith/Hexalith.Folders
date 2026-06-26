@@ -6,6 +6,7 @@ public sealed record SemanticIndexingRequest
         string managedTenantId,
         string organizationId,
         string folderId,
+        string workspaceId,
         string fileVersionId,
         string contentHash,
         SemanticIndexingSourceIdentity source,
@@ -17,6 +18,7 @@ public sealed record SemanticIndexingRequest
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(managedTenantId);
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(organizationId);
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(folderId);
+        SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(workspaceId);
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(fileVersionId);
         SemanticIndexingValidation.ThrowIfNullOrWhiteSpace(contentHash);
         ArgumentNullException.ThrowIfNull(source);
@@ -28,6 +30,7 @@ public sealed record SemanticIndexingRequest
         ManagedTenantId = managedTenantId;
         OrganizationId = organizationId;
         FolderId = folderId;
+        WorkspaceId = workspaceId;
         FileVersionId = fileVersionId;
         ContentHash = contentHash;
         Source = source;
@@ -42,6 +45,8 @@ public sealed record SemanticIndexingRequest
     public string OrganizationId { get; init; }
 
     public string FolderId { get; init; }
+
+    public string WorkspaceId { get; init; }
 
     public string FileVersionId { get; init; }
 

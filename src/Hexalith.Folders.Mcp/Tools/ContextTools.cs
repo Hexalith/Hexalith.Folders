@@ -112,5 +112,5 @@ internal static class ContextTools
         [Description("Optional read-consistency: eventually_consistent (the bridge projection is async pub/sub-fed).")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetFolderIndexingStatusAsync(folderId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetFolderIndexingStatusAsync(folderId, s.CorrelationId, null, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
 }

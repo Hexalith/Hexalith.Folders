@@ -4,7 +4,7 @@ baseline_commit: c7a79ac75a7801d8733fd5c495902f53939f597b
 
 # Story 8.6: Record C3 Legal sign-off and apply the in-lockstep C3 retention cascade
 
-Status: review — Legal sign-off **recorded 2026-06-24 (Jérôme Piquot, Louveciennes; PM Jerome 2026-06-22)**; the in-lockstep C3 cascade was applied and validated (Contracts.Tests 275/275, governance-completeness 11/11, retention gate non-blocking `status=passed`/`policy_status=approved`, `dotnet format` clean on the changed `.cs`). One scoped deviation from the documented edit set is recorded in the Dev Agent Record (NFR57 kept reference-pending to satisfy the contract-spine guard). Per the bmad-dev-story workflow the final 8-6 → `done` and the Epic-8 close-out are gated on code-review approval.
+Status: done — Legal sign-off **recorded 2026-06-24 (Jérôme Piquot, Louveciennes; PM Jerome 2026-06-22)**; the in-lockstep C3 cascade was applied, code-review findings were patched, and validation is green for the focused C3 gates/tests (RetentionAndTenantDeletionConformanceTests 8/8, retention gate non-blocking `status=passed`/`policy_status=approved`). One scoped deviation from the documented edit set is recorded in the Dev Agent Record (NFR57 kept reference-pending to satisfy the contract-spine guard).
 
 <!-- Created 2026-06-23 via bmad-correct-course (sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split.md). -->
 <!-- 2026-06-23 bmad-create-story 8-6: file:line references re-verified at HEAD c7a79ac (governance YAML :52,:55,:56-61 and RetentionAndTenantDeletionConformanceTests lockstep literals confirmed); checklist validation passed with no critical misses. Status flipped backlog → ready-for-dev per stakeholder decision; the BLOCKED-PENDING-LEGAL guard is retained deliberately — do NOT implement until recorded Legal sign-off (AD1). -->
@@ -18,7 +18,7 @@ So that the MVP release rests on a fully-approved governance posture and the `re
 
 ## Context
 
-This is the **AC1 split-off from Story 8.5** and the **sole remaining Epic-8 MVP-release blocker**. PM approval was recorded 2026-06-22 (Jerome). C3 stays `status: reference_pending` with a `release_blocking_until_legal_approval` posture; **Legal is the sole remaining governance gate** (`architecture.md:181,195,206`; readiness review Critical #1). Story 7.11 already wired the entire machine-validated retention cascade (the parseable per-class table, the gate `run-retention-deletion-gates.ps1`, the conformance suite, the release-package wiring, the D-7 commit-TTL / D-10 audit-projection inheritance) — so **only the approval record + status flip + their lockstep test/gate assertions remain**. The authoritative live status lives in `c0-c13-governance-evidence.yaml`, not the architecture prose table (`architecture.md:195`).
+This is the **AC1 split-off from Story 8.5** and was the **sole remaining Epic-8 MVP-release blocker**. At creation, PM approval had been recorded 2026-06-22 (Jerome), while C3 still had `status: reference_pending` with a `release_blocking_until_legal_approval` posture and Legal was the remaining governance gate (`architecture.md:181,195,206`; readiness review Critical #1). Story 7.11 already wired the entire machine-validated retention cascade (the parseable per-class table, the gate `run-retention-deletion-gates.ps1`, the conformance suite, the release-package wiring, the D-7 commit-TTL / D-10 audit-projection inheritance) — so this story applies the recorded Legal approval plus status flip and lockstep test/gate assertions. The authoritative live status lives in `c0-c13-governance-evidence.yaml`, not the architecture prose table (`architecture.md:195`).
 
 **This is a governance/verification change, not product-feature work.** No spine/OpenAPI/generated-client/aggregate/REST-CLI-MCP-behavior change; the per-class retention values, tenant-deletion dispositions, the `reference_pending_*` class identifiers, and the runtime `RetentionClassToken` TODO markers are all **kept** (AD3) — only the **approval state** flips.
 
@@ -55,7 +55,15 @@ This is the **AC1 split-off from Story 8.5** and the **sole remaining Epic-8 MVP
 - [x] **Task 3 — Validate & finalize (AC: 1)**
   - [x] `run-retention-deletion-gates.ps1` non-blocking (exit 0, `status=passed policy_status=approved`); full `Contracts.Tests` green incl. flipped `RetentionAndTenantDeletionConformanceTests` + `NfrTraceabilityConformanceTests` + `OperationsAuditDocsConformanceTests` (**275/275**); `run-governance-completeness-gates.ps1` green (**11/11**); `run-release-package-gates.ps1` no longer blocks live publish on `policy_status`.
   - [x] `dotnet format whitespace` + `analyzers` clean on the changed `.cs` (exit 0). Full-solution `dotnet build`/format **deferred**: the working tree carries unrelated concurrent Story 10.4/10.5 changes (Server/Workers/Projections/test projects + untracked ContextSearch); the only 8.6 `.cs` edit compiled and passed in the Contracts.Tests run.
-  - [x] File List / Completion Notes / Change Log updated with the recorded Legal approval reference; Story 8.6 → `review`. **Per the bmad-dev-story workflow (Step 9), the final 8-6 → `done` and Epic 8 → `done` are gated on code-review approval** (intentionally NOT set here; the story's Task-3 "→ done/epic-8 done" wording predates the standardized dev→review→code-review→done flow).
+  - [x] File List / Completion Notes / Change Log updated with the recorded Legal approval reference; Story 8.6 initially moved to `review` under the bmad-dev-story workflow, then code-review patches were applied and Story 8.6 moved to `done` on 2026-06-26. Epic 8 close-out remains explicit/manual.
+
+### Review Findings
+
+- [x] [Review][Patch] Retention evidence report is stale for the reviewed commit [_bmad-output/gates/retention-deletion/latest.json:8]
+- [x] [Review][Patch] C3 retention doc still says values are not final and an authority gap remains [docs/exit-criteria/c3-retention.md:13]
+- [x] [Review][Patch] Retention gate governance-evidence check is not scoped to the C3 node and does not reject stale Legal placeholders [tests/tools/run-retention-deletion-gates.ps1:334]
+- [x] [Review][Patch] C3 approval assertions accept generic Legal-approved text without the recorded signer/date/location [tests/tools/run-retention-deletion-gates.ps1:288]
+- [x] [Review][Patch] Story context still describes C3 as reference_pending with Legal as the remaining gate [_bmad-output/implementation-artifacts/8-6-record-c3-legal-signoff-and-apply-cascade.md:21]
 
 ## Dev Notes
 

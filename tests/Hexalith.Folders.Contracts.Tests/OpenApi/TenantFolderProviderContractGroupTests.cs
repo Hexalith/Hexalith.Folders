@@ -153,6 +153,24 @@ public sealed class TenantFolderProviderContractGroupTests
     }
 
     [Fact]
+    public void ContextIndexSearchOperationDeclaresTimeoutAndNoTopLevelRedactedOutcome()
+    {
+        Operation operation = EnumerateOperations(LoadYamlMapping(_openApiFilePath))
+            .Single(o => o.OperationId == "SearchFolderIndexedFiles");
+
+        GetScalar(operation.Node, "x-hexalith-query-timeout-ms").ShouldBe("2000");
+
+        string[] categories = RequiredSequence(operation.Node, "x-hexalith-canonical-error-categories")
+            .OfType<YamlScalarNode>()
+            .Select(value => value.Value ?? string.Empty)
+            .ToArray();
+
+        categories.ShouldContain("query_timeout", operation.OperationId);
+        categories.ShouldContain("read_model_unavailable", operation.OperationId);
+        categories.ShouldNotContain("redacted", "context-index search redaction is an item-level marker, not a top-level safe-denial outcome.");
+    }
+
+    [Fact]
     public void ContractGroupOperations_DoNotExposeTenantAuthorityOrSecretMaterial()
     {
         YamlMappingNode root = LoadYamlMapping(_openApiFilePath);

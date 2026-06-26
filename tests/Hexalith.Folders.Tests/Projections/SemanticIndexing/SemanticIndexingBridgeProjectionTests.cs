@@ -387,6 +387,20 @@ public sealed class SemanticIndexingBridgeProjectionTests
     }
 
     [Fact]
+    public void ApplyRemovalEvidenceShouldPreserveTombstoneIntentWhenRetryable()
+    {
+        SemanticIndexingBridgeEntry tombstoned = Apply(Mutation(fileOperationKind: "remove", contentHashReference: null)).Entries.Values.ShouldHaveSingleItem();
+
+        SemanticIndexingBridgeEntry recorded = SemanticIndexingBridgeProjection.ApplyRemovalEvidence(
+            tombstoned,
+            RemovalEvidence(tombstoned.Identity, "memories_publish_error", tombstoned.Freshness.Watermark, retryable: true));
+
+        recorded.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        recorded.ReasonCode.ShouldBe("folder_file_removed");
+        recorded.Retryable.ShouldBeTrue();
+    }
+
+    [Fact]
     public void ApplyRemovalEvidenceShouldIgnoreStaleWatermark()
     {
         SemanticIndexingBridgeEntry tombstoned = SemanticIndexingBridgeProjection.Empty.Apply(
@@ -516,11 +530,12 @@ public sealed class SemanticIndexingBridgeProjectionTests
     private static SemanticIndexingRemovalEvidenceUpdate RemovalEvidence(
         SemanticIndexingFileVersionIdentity identity,
         string reasonCode,
-        long watermark)
+        long watermark,
+        bool retryable = false)
         => new(
             identity,
             reasonCode,
-            retryable: false,
+            retryable,
             "correlation-removal-x",
             "task-removal-x",
             "folders://tenant-a/published-a",

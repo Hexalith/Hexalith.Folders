@@ -2,7 +2,8 @@ namespace Hexalith.Folders.Queries.ContextSearch;
 
 /// <summary>
 /// A Memories-free request to the search source, carrying only the authoritative scope the handler already
-/// authorized. The source constrains the index query by these values (the load-bearing tenant security-trim).
+/// authorized. The source constrains the index query by these values as defense in depth; the handler remains the
+/// load-bearing security boundary and re-checks every hit before hydration.
 /// </summary>
 /// <param name="ManagedTenantId">The authoritative managed tenant id (primary security-trim key).</param>
 /// <param name="OrganizationId">The authoritative organization id, or empty when not resolved.</param>

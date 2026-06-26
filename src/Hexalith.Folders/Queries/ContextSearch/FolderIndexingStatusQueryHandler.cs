@@ -26,6 +26,7 @@ public sealed class FolderIndexingStatusQueryHandler(
     private const string SensitivityRestricted = "restricted";
     private const string RedactionNone = "not_redacted";
     private const string RedactionRedacted = "redacted";
+    private const string UnknownReasonCode = "unknown";
     private const int MaxItems = 500;
 
     private readonly LayeredFolderAuthorizationService _authorizationService = authorizationService;
@@ -74,6 +75,10 @@ public sealed class FolderIndexingStatusQueryHandler(
         }
 
         LayeredFolderAuthorizationAllowedContext allowed = authorization.AllowedContext;
+        if (!_bridgeReadModel.IsAvailable)
+        {
+            return SafeResult(FolderIndexingStatusResultCode.ReadModelUnavailable, query);
+        }
 
         IReadOnlyList<SemanticIndexingBridgeEntry> entries;
         try
@@ -93,13 +98,16 @@ public sealed class FolderIndexingStatusQueryHandler(
 
         bool truncated = entries.Count > MaxItems;
         List<FolderIndexingStatusItem> items = new(Math.Min(entries.Count, MaxItems));
-        foreach (SemanticIndexingBridgeEntry entry in entries.Take(MaxItems))
+        foreach (SemanticIndexingBridgeEntry entry in entries
+            .OrderByDescending(static entry => StatusPriority(entry.Status))
+            .ThenBy(static entry => entry.Identity.ReadModelKey, StringComparer.Ordinal)
+            .Take(MaxItems))
         {
             bool redacted = IsSensitive(entry.Evidence.PathPolicyClass);
             items.Add(new FolderIndexingStatusItem(
                 entry.Identity.FileVersionId,
                 entry.StatusCode,
-                entry.ReasonCode,
+                SafeReasonCode(entry.ReasonCode),
                 redacted ? SensitivityRestricted : SensitivityTenant,
                 redacted ? RedactionRedacted : RedactionNone));
         }
@@ -124,6 +132,35 @@ public sealed class FolderIndexingStatusQueryHandler(
             && (pathPolicyClass.Contains("secret", StringComparison.Ordinal)
                 || pathPolicyClass.Contains("credential", StringComparison.Ordinal)
                 || pathPolicyClass.Contains("redacted", StringComparison.Ordinal));
+
+    private static int StatusPriority(SemanticIndexingBridgeStatus status)
+        => status switch
+        {
+            SemanticIndexingBridgeStatus.Failed => 5,
+            SemanticIndexingBridgeStatus.ReconciliationRequired => 4,
+            SemanticIndexingBridgeStatus.Tombstoned => 3,
+            SemanticIndexingBridgeStatus.Stale => 2,
+            SemanticIndexingBridgeStatus.Skipped => 1,
+            _ => 0,
+        };
+
+    private static string SafeReasonCode(string? reasonCode)
+    {
+        if (string.IsNullOrWhiteSpace(reasonCode) || reasonCode.Length > 128)
+        {
+            return UnknownReasonCode;
+        }
+
+        foreach (char ch in reasonCode)
+        {
+            if (!char.IsAsciiLetterOrDigit(ch) && ch is not '_' and not '-' and not '.')
+            {
+                return UnknownReasonCode;
+            }
+        }
+
+        return reasonCode;
+    }
 
     private FolderIndexingStatusQueryResult SafeResult(
         FolderIndexingStatusResultCode code,

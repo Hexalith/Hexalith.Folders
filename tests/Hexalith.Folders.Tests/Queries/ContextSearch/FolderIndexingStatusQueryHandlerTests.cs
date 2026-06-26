@@ -4,6 +4,8 @@ using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Tests.Queries.Folders;
 
+using System.Text.Json;
+
 using Shouldly;
 
 using Xunit;
@@ -71,6 +73,82 @@ public sealed class FolderIndexingStatusQueryHandlerTests
         result.Freshness.ReadConsistency.ShouldBe("eventually_consistent");
     }
 
+    [Fact]
+    public async Task UnavailableBridgeShouldReturnReadModelUnavailable()
+    {
+        StubBridge bridge = new([], isAvailable: false);
+        FolderIndexingStatusQueryHandler handler = Handler(bridge);
+
+        FolderIndexingStatusQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderIndexingStatusResultCode.ReadModelUnavailable);
+        result.Items.ShouldBeEmpty();
+        result.Freshness.Stale.ShouldBeTrue();
+        bridge.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ThrowingBridgeShouldReturnReadModelUnavailable()
+    {
+        FolderIndexingStatusQueryHandler handler = Handler(new ThrowingBridge());
+
+        FolderIndexingStatusQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderIndexingStatusResultCode.ReadModelUnavailable);
+        result.Items.ShouldBeEmpty();
+        result.Freshness.Stale.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task TruncationShouldPrioritizeFailuresBeforeKeyOrder()
+    {
+        List<SemanticIndexingBridgeEntry> entries =
+        [
+            .. Enumerable.Range(0, 500)
+                .Select(i => Entry($"fv-{i:D3}", SemanticIndexingBridgeStatus.Indexed)),
+            Entry("fv-critical", SemanticIndexingBridgeStatus.Failed),
+        ];
+        FolderIndexingStatusQueryHandler handler = Handler(new StubBridge(entries));
+
+        FolderIndexingStatusQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderIndexingStatusResultCode.Allowed);
+        result.IsTruncated.ShouldBeTrue();
+        result.Items.Count.ShouldBe(500);
+        result.Items.ShouldContain(i => i.FileVersionReference == "fv-critical" && i.IndexingStatus == "failed");
+    }
+
+    [Fact]
+    public async Task UnsafeReasonCodeShouldBeScrubbed()
+    {
+        FolderIndexingStatusQueryHandler handler = Handler(new StubBridge(
+        [
+            Entry("fv-1", SemanticIndexingBridgeStatus.Failed, reasonCode: "<script>alert(1)</script>"),
+        ]));
+
+        FolderIndexingStatusQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        FolderIndexingStatusItem item = result.Items.ShouldHaveSingleItem();
+        item.ReasonCode.ShouldBe("unknown");
+    }
+
+    [Fact]
+    public async Task ResultShouldBeMetadataOnlyWithNoPathOrSnippetOrSourceUri()
+    {
+        FolderIndexingStatusQueryHandler handler = Handler(new StubBridge(
+        [
+            Entry("fv-1", SemanticIndexingBridgeStatus.Indexed, pathPolicyClass: "tenant_secret_document"),
+        ]));
+
+        FolderIndexingStatusQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("folders://", Case.Sensitive);
+        serialized.ShouldNotContain("snippet", Case.Insensitive);
+        serialized.ShouldNotContain("sourceUri", Case.Insensitive);
+        serialized.ShouldNotContain("normalizedPath", Case.Insensitive);
+    }
+
     private static FolderIndexingStatusQueryHandler Handler(
         ISemanticIndexingBridgeReadModel bridge,
         IFolderTenantAccessProjectionStore? tenantStore = null)
@@ -107,7 +185,8 @@ public sealed class FolderIndexingStatusQueryHandlerTests
     private static SemanticIndexingBridgeEntry Entry(
         string fileVersionId,
         SemanticIndexingBridgeStatus status,
-        string? pathPolicyClass = "tenant_sensitive_document")
+        string? pathPolicyClass = "tenant_sensitive_document",
+        string reasonCode = "memories_accepted")
         => new(
             new SemanticIndexingFileVersionIdentity(
                 "tenant-a",
@@ -120,7 +199,7 @@ public sealed class FolderIndexingStatusQueryHandlerTests
                 "hash-" + fileVersionId,
                 $"folders://tenant-a/organizations/org-a/folders/folder-a/workspaces/workspace-a/file-versions/{fileVersionId}"),
             status,
-            "memories_accepted",
+            reasonCode,
             retryable: false,
             "correlation-a",
             "task-a",
@@ -141,14 +220,26 @@ public sealed class FolderIndexingStatusQueryHandlerTests
             ProjectionWatermark = "tenant_watermark_v1",
         };
 
-    private sealed class StubBridge(IReadOnlyList<SemanticIndexingBridgeEntry> entries) : ISemanticIndexingBridgeReadModel
+    private sealed class StubBridge(IReadOnlyList<SemanticIndexingBridgeEntry> entries, bool isAvailable = true) : ISemanticIndexingBridgeReadModel
     {
         public List<(string Tenant, string Folder)> Requests { get; } = [];
+
+        public bool IsAvailable => isAvailable;
 
         public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
             SemanticIndexingFileVersionIdentity identity,
             CancellationToken cancellationToken = default)
-            => Task.FromResult<SemanticIndexingBridgeEntry?>(null);
+            => Task.FromResult(entries.FirstOrDefault(e => e.Identity.ReadModelKey == identity.ReadModelKey));
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+            string managedTenantId,
+            string folderId,
+            string fileVersionId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(entries.FirstOrDefault(e =>
+                string.Equals(e.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+                && string.Equals(e.Identity.FolderId, folderId, StringComparison.Ordinal)
+                && string.Equals(e.Identity.FileVersionId, fileVersionId, StringComparison.Ordinal)));
 
         public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
             string managedTenantId,
@@ -158,5 +249,28 @@ public sealed class FolderIndexingStatusQueryHandlerTests
             Requests.Add((managedTenantId, folderId));
             return Task.FromResult(entries);
         }
+    }
+
+    private sealed class ThrowingBridge : ISemanticIndexingBridgeReadModel
+    {
+        public bool IsAvailable => true;
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
+            SemanticIndexingFileVersionIdentity identity,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("bridge unavailable");
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+            string managedTenantId,
+            string folderId,
+            string fileVersionId,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("bridge unavailable");
+
+        public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
+            string managedTenantId,
+            string folderId,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("bridge unavailable");
     }
 }

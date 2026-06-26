@@ -39,8 +39,8 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
         // The CloudEvent id is the stable per-unit source URI; Memories echoes it back verbatim as
         // ScoredResult.SourceUri and it is the post-publish traceability handle (PublishedEventId).
         string cloudEventId = request.Source.ToUriString();
-        string text = BuildText(request);
-        Dictionary<string, string> attributes = BuildAttributes(request);
+        string text = request.Content.CuratedText;
+        Dictionary<string, string> attributes = new(request.Content.CuratedAttributes, StringComparer.Ordinal);
 
         SearchIndexEntryChanged entry = new()
         {
@@ -195,38 +195,6 @@ internal sealed class MemoriesSemanticIndexingPort : ISemanticIndexingPort
             return new SemanticIndexingResult(SemanticIndexingStatus.Failed, "memories_publish_error", retryable: true);
         }
     }
-
-    // The curated, C9-safe searchable text: descriptor + non-sensitive identity tokens + type classification.
-    // Never raw bytes, never raw path segments. Empty descriptor falls back to "{typeClassification} {fileVersionId}".
-    private static string BuildText(SemanticIndexingRequest request)
-    {
-        string descriptor = request.Content.IndexingTextDescriptor;
-        string typeClassification = request.Content.TypeClassification;
-        string fileVersionId = request.FileVersionId;
-
-        return string.IsNullOrWhiteSpace(descriptor)
-            ? string.Create(CultureInfo.InvariantCulture, $"{typeClassification} {fileVersionId}")
-            : string.Create(CultureInfo.InvariantCulture, $"{descriptor} {fileVersionId} {typeClassification}");
-    }
-
-    // Flat, exactly-matched string attributes (BM25 has no metadata origin/confidence). Every value is a metadata-
-    // safe identifier or classification; pathPolicyOutcome is a classification, not a raw path. folders.status records
-    // the live/archived lifecycle so the Story 10.5 facade can filter soft-deleted units without inferring state.
-    private static Dictionary<string, string> BuildAttributes(SemanticIndexingRequest request)
-        => new(StringComparer.Ordinal)
-        {
-            [FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute] = request.ManagedTenantId,
-            [FoldersSemanticIndexingAttributes.OrganizationIdAttribute] = request.OrganizationId,
-            [FoldersSemanticIndexingAttributes.FolderIdAttribute] = request.FolderId,
-            [FoldersSemanticIndexingAttributes.FileVersionIdAttribute] = request.FileVersionId,
-            ["folders.contentHash"] = request.ContentHash,
-            ["folders.contentDescriptor"] = request.Content.IndexingTextDescriptor,
-            ["folders.sizeClassification"] = request.Content.SizeClassification,
-            ["folders.typeClassification"] = request.Content.TypeClassification,
-            ["folders.sensitivityClassification"] = request.Policy.SensitivityClassification,
-            ["folders.pathPolicyOutcome"] = request.Policy.PathPolicyOutcome,
-            [FoldersSemanticIndexingDefaults.StatusAttributeKey] = FoldersSemanticIndexingDefaults.StatusActive,
-        };
 
     // Clone the original index-time attributes and overwrite only folders.status -> archived. When the preserved
     // evidence carries no attributes (legacy entries), reconstruct the metadata-safe subset available from identity.

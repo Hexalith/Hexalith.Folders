@@ -1,3 +1,4 @@
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Projections.TenantAccess;
 
@@ -7,12 +8,17 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
 {
     private const int MaxPathPolicyClassLength = 80;
 
+    private readonly IFolderPermissionEvidenceProvider _folderPermissionEvidenceProvider;
     private readonly IFolderTenantAccessProjectionStore _tenantAccessStore;
 
-    public FailClosedSemanticIndexingPolicyEvaluator(IFolderTenantAccessProjectionStore tenantAccessStore)
+    public FailClosedSemanticIndexingPolicyEvaluator(
+        IFolderTenantAccessProjectionStore tenantAccessStore,
+        IFolderPermissionEvidenceProvider folderPermissionEvidenceProvider)
     {
         ArgumentNullException.ThrowIfNull(tenantAccessStore);
+        ArgumentNullException.ThrowIfNull(folderPermissionEvidenceProvider);
         _tenantAccessStore = tenantAccessStore;
+        _folderPermissionEvidenceProvider = folderPermissionEvidenceProvider;
     }
 
     public async ValueTask<SemanticIndexingPolicyEvaluationResult> EvaluateAsync(
@@ -24,10 +30,7 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
 
         // Gate 1 (AC3 order): tenant-access authority. Indexing authority comes from the Folders tenant-access
         // projection, not the client-carried event evidence. Fail closed when the tenant is unknown to the worker,
-        // disabled, has no authorized principals, or its projection is in a replay-conflict / malformed-evidence
-        // state. Per-folder ACL freshness is deferred: the bridge entry carries no principal/action to key an ACL
-        // lookup, so full per-folder-ACL gating requires a SemanticIndexingBridgeEntry schema extension (tracked as
-        // a follow-up story).
+        // disabled, has no authorized principals, or its projection is in a replay-conflict / malformed-evidence state.
         FolderTenantAccessProjection? tenantAccess = await _tenantAccessStore
             .GetAsync(entry.Identity.ManagedTenantId, cancellationToken)
             .ConfigureAwait(false);
@@ -40,7 +43,47 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
             return SemanticIndexingPolicyEvaluationResult.Failed("tenant_access_unavailable", retryable: true);
         }
 
-        // Gate 2 (AC3 order): path policy evidence carried on the durable accepted event.
+        // Gate 2 (AC3 order): folder ACL/action authorization freshness, keyed by the actor/action captured on the
+        // durable accepted mutation event. Missing or stale evidence fails closed before content materialization.
+        if (string.IsNullOrWhiteSpace(entry.Evidence.ActorPrincipalId)
+            || string.IsNullOrWhiteSpace(entry.Evidence.AuthorizationActionToken))
+        {
+            return SemanticIndexingPolicyEvaluationResult.Failed(
+                "authorization_evidence_unavailable",
+                retryable: true);
+        }
+
+        FolderPermissionEvidenceResult folderPermission = await _folderPermissionEvidenceProvider
+            .GetEvidenceAsync(
+                new FolderPermissionEvidenceRequest(
+                    entry.Identity.ManagedTenantId,
+                    entry.Evidence.ActorPrincipalId,
+                    ActorSafeIdentifier(entry.Evidence.ActorPrincipalId),
+                    entry.Evidence.AuthorizationActionToken,
+                    entry.Identity.FolderId,
+                    entry.CorrelationId,
+                    entry.TaskId,
+                    FolderOperationPolicyClass.Mutation,
+                    AllowBoundedStale: false),
+                cancellationToken)
+            .ConfigureAwait(false);
+        if (folderPermission.Status != FolderPermissionEvidenceStatus.Allowed)
+        {
+            bool retryable = folderPermission.Retryable || folderPermission.Status == FolderPermissionEvidenceStatus.Stale;
+            return folderPermission.Status is FolderPermissionEvidenceStatus.Denied or FolderPermissionEvidenceStatus.NotFoundSafe
+                ? SemanticIndexingPolicyEvaluationResult.Skipped("folder_acl_denied", retryable: false)
+                : SemanticIndexingPolicyEvaluationResult.Failed(folderPermission.OutcomeCode, retryable);
+        }
+
+        if (!string.IsNullOrWhiteSpace(folderPermission.OrganizationId)
+            && !string.Equals(folderPermission.OrganizationId, entry.Identity.OrganizationId, StringComparison.Ordinal))
+        {
+            return SemanticIndexingPolicyEvaluationResult.Failed(
+                "authorization_evidence_malformed",
+                retryable: false);
+        }
+
+        // Gate 3 (AC3 order): path policy evidence carried on the durable accepted event.
         if (string.IsNullOrWhiteSpace(entry.Evidence.PathPolicyClass))
         {
             return SemanticIndexingPolicyEvaluationResult.Failed(
@@ -56,7 +99,7 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
                 retryable: false);
         }
 
-        // Gate 3 (AC3 order): sensitivity classification.
+        // Gate 4 (AC3 order): sensitivity classification.
         if (IsRedactedSensitivity(pathPolicyClass))
         {
             return SemanticIndexingPolicyEvaluationResult.Skipped(
@@ -64,7 +107,7 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
                 retryable: false);
         }
 
-        // Gate 4 (AC3 order): size / type limits. Require at least one length signal (declared or observed) plus a
+        // Gate 5 (AC3 order): size / type limits. Require at least one length signal (declared or observed) plus a
         // media type before sizing.
         if ((entry.Evidence.ByteLength ?? entry.Evidence.ObservedByteLength) is null
             || string.IsNullOrWhiteSpace(entry.Evidence.MediaType))
@@ -104,6 +147,9 @@ internal sealed class FailClosedSemanticIndexingPolicyEvaluator : ISemanticIndex
         => pathPolicyClass.Contains("secret", StringComparison.Ordinal)
             || pathPolicyClass.Contains("credential", StringComparison.Ordinal)
             || pathPolicyClass.Contains("redacted", StringComparison.Ordinal);
+
+    private static string ActorSafeIdentifier(string principalId)
+        => "sha256:" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(principalId))).ToLowerInvariant();
 
     private static bool IsSupportedInlineContentType(string? contentType)
         => !string.IsNullOrWhiteSpace(contentType)

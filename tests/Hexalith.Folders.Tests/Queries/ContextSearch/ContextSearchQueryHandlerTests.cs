@@ -93,6 +93,23 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
+    public async Task TenantDenialShouldWinOverInputLimitBeforeSourceObservation()
+    {
+        RecordingFolderSearchSource source = new();
+        ContextSearchQueryHandler handler = Handler(
+            source,
+            new StubBridgeReadModel([]),
+            tenantStore: new CountingTenantAccessProjectionStore(TenantProjection(principals: ["someone-else"])));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(
+            Query(limit: 501),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.AuthorizationDenied);
+        source.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task AuthorizedSearchShouldReachSourceWithAuthoritativeScopedRequest()
     {
         RecordingFolderSearchSource source = new()
@@ -122,6 +139,19 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
+    public async Task AuthorizedSearchWithoutOrganizationShouldFailClosedBeforeSourceObservation()
+    {
+        RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1")]), organizationId: null);
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.ReadModelUnavailable);
+        result.Items.ShouldBeEmpty();
+        source.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task CrossTenantHitShouldBeTrimmedEvenWhenTheIndexEchoesIt()
     {
         // The shared folders-index could echo a foreign hit despite the server-side filter; the Folders-side
@@ -143,11 +173,73 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
+    public async Task CrossWorkspaceHitShouldBeTrimmedEvenWhenTheIndexEchoesIt()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-b", workspaceId: "workspace-b"), Hit("fv-a")],
+            TotalCount = 2,
+        };
+        ContextSearchQueryHandler handler = Handler(
+            source,
+            new StubBridgeReadModel([Entry("fv-a"), Entry("fv-b", workspaceId: "workspace-b")]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        ContextSearchItem item = result.Items.ShouldHaveSingleItem();
+        item.FileVersionReference.ShouldBe("fv-a");
+    }
+
+    [Fact]
+    public async Task CrossOrganizationHitShouldBeTrimmedEvenWhenTheIndexEchoesIt()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-b", organizationId: "org-b"), Hit("fv-a")],
+            TotalCount = 2,
+        };
+        ContextSearchQueryHandler handler = Handler(
+            source,
+            new StubBridgeReadModel([Entry("fv-a"), Entry("fv-b", organizationId: "org-b")]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        ContextSearchItem item = result.Items.ShouldHaveSingleItem();
+        item.FileVersionReference.ShouldBe("fv-a");
+    }
+
+    [Fact]
     public async Task HitWithoutAuthoritativeBridgeEntryShouldBeDropped()
     {
         // The index is non-authoritative: a hit with no current bridge entry must not be returned.
         RecordingFolderSearchSource source = new() { Hits = [Hit("fv-ghost")] };
         ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        result.Items.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task HydratedEntryOutsideAuthorizedWorkspaceShouldBeDropped()
+    {
+        RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1", workspaceId: "workspace-b")]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        result.Items.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task HydratedEntryOutsideAuthorizedOrganizationShouldBeDropped()
+    {
+        RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry("fv-1", organizationId: "org-b")]));
 
         ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
 
@@ -240,6 +332,33 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
+    public async Task PaginationShouldAdvanceByRawSourceRowsWhenAllRowsAreDiscarded()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [],
+            RawCount = 1,
+            TotalCount = 5,
+        };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([]));
+
+        ContextSearchQueryResult first = await handler.HandleAsync(Query(limit: 1), TestContext.Current.CancellationToken);
+
+        first.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        first.Items.ShouldBeEmpty();
+        first.Limits.IsTruncated.ShouldBeTrue();
+        first.NextCursor.ShouldNotBeNull();
+
+        ContextSearchQueryResult second = await handler.HandleAsync(
+            Query(limit: 1, cursor: first.NextCursor),
+            TestContext.Current.CancellationToken);
+
+        second.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        source.Requests.Count.ShouldBe(2);
+        source.Requests[1].Offset.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task ResultShouldBeMetadataOnlyWithNoPathOrSnippetOrSourceUri()
     {
         RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
@@ -254,10 +373,25 @@ public sealed class ContextSearchQueryHandlerTests
         serialized.ShouldNotContain("normalizedPath", Case.Insensitive);
     }
 
+    [Fact]
+    public async Task OversizedSerializedResponseShouldReturnResponseLimitExceeded()
+    {
+        string oversizedFileVersionId = new('a', 1_100_000);
+        RecordingFolderSearchSource source = new() { Hits = [Hit(oversizedFileVersionId)] };
+        ContextSearchQueryHandler handler = Handler(source, new StubBridgeReadModel([Entry(oversizedFileVersionId)]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.ResponseLimitExceeded);
+        result.Items.ShouldBeEmpty();
+        result.Limits.ActualBytes.ShouldBe(0);
+    }
+
     private static ContextSearchQueryHandler Handler(
         IFolderSearchSource source,
         ISemanticIndexingBridgeReadModel bridge,
-        IFolderTenantAccessProjectionStore? tenantStore = null)
+        IFolderTenantAccessProjectionStore? tenantStore = null,
+        string? organizationId = "org-a")
     {
         FixedUtcClock clock = new(Now);
         LayeredFolderAuthorizationService authorization = new(
@@ -266,7 +400,7 @@ public sealed class ContextSearchQueryHandlerTests
                 clock,
                 new TenantAccessOptions()),
             new RecordingFolderPermissionEvidenceProvider(
-                FolderPermissionEvidenceResult.Allowed("permission_watermark_v1", organizationId: "org-a")),
+                FolderPermissionEvidenceResult.Allowed("permission_watermark_v1", organizationId: organizationId)),
             new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
             new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1")),
             clock);
@@ -356,6 +490,8 @@ public sealed class ContextSearchQueryHandlerTests
 
         public long TotalCount { get; init; }
 
+        public int? RawCount { get; init; }
+
         public Task<FolderSearchSourceResult> SearchAsync(
             FolderSearchSourceRequest request,
             CancellationToken cancellationToken = default)
@@ -364,7 +500,8 @@ public sealed class ContextSearchQueryHandlerTests
             return Task.FromResult(new FolderSearchSourceResult(
                 Status,
                 Hits,
-                TotalCount == 0 ? Hits.Count : TotalCount));
+                TotalCount == 0 ? Hits.Count : TotalCount,
+                RawCount ?? Hits.Count));
         }
     }
 
@@ -378,10 +515,22 @@ public sealed class ContextSearchQueryHandlerTests
 
     private sealed class StubBridgeReadModel(IReadOnlyList<SemanticIndexingBridgeEntry> entries) : ISemanticIndexingBridgeReadModel
     {
+        public bool IsAvailable => true;
+
         public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
             SemanticIndexingFileVersionIdentity identity,
             CancellationToken cancellationToken = default)
-            => Task.FromResult<SemanticIndexingBridgeEntry?>(null);
+            => Task.FromResult(entries.FirstOrDefault(e => e.Identity.ReadModelKey == identity.ReadModelKey));
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+            string managedTenantId,
+            string folderId,
+            string fileVersionId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(entries.FirstOrDefault(e =>
+                string.Equals(e.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+                && string.Equals(e.Identity.FolderId, folderId, StringComparison.Ordinal)
+                && string.Equals(e.Identity.FileVersionId, fileVersionId, StringComparison.Ordinal)));
 
         public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
             string managedTenantId,

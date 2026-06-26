@@ -2,8 +2,16 @@ namespace Hexalith.Folders.Projections.SemanticIndexing;
 
 public interface ISemanticIndexingBridgeReadModel
 {
+    bool IsAvailable { get; }
+
     Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
         SemanticIndexingFileVersionIdentity identity,
+        CancellationToken cancellationToken = default);
+
+    Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+        string managedTenantId,
+        string folderId,
+        string fileVersionId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
