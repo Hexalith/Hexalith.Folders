@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-27 (Epic 8 retrospective completed; epic-8 close-out -> done; action items recorded)
+# last_updated: 2026-06-27 (Epic 10 retrospective completed; epic-10 close-out -> done; action items recorded)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-27 (Epic 8 retrospective completed; epic-8 close-out -> done; action items recorded)
+last_updated: 2026-06-27 (Epic 10 retrospective completed; epic-10 close-out -> done; action items recorded)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -215,7 +215,7 @@ development_status:
   # (the separate experimental-HXL001 RAG memory-ingestion subsystem). Story 10.3's IngestAsync egress
   # is reworked; the bridge projection (10.2), /folders/events subscription, orchestration, and
   # authorization gating are preserved. 10.4's SearchIndexEntryChanged emission folded forward into 10.3.
-  epic-10: in-progress
+  epic-10: done
   10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: done
   10-2-build-folders-owned-indexing-bridge-projection: done
   # 10-3 reworked to publish SearchIndexEntryChanged via Dapr pub/sub (not IngestAsync); the 9 code-review
@@ -240,10 +240,40 @@ development_status:
   # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
   10-5-expose-authorized-folders-query-facade-over-memories: done
-  epic-10-retrospective: optional
+  epic-10-retrospective: done
 
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.
 action_items:
+  - epic: 10
+    action: "Stand up and run the DCP-capable AppHost lane for Epic 10 live evidence: topology boot, folders-index auto-provisioning, SearchIndexEntryChanged, SearchIndexEntryRemoved, archived status filtering, and query-facade search/hydration."
+    owner: "Jerome / Platform"
+    priority: high
+    status: open
+  - epic: 10
+    action: "Wire the Server-side EventStore-backed semantic-indexing bridge read model for the query facade and indexing-status paths, or record an explicit release limitation."
+    owner: "Amelia / Winston"
+    priority: high
+    status: open
+  - epic: 10
+    action: "Replace or extend the fail-closed content materializer so real folder mutation evidence can populate the search index under C4/C9 policy."
+    owner: "Amelia / Murat"
+    priority: high
+    status: open
+  - epic: 10
+    action: "Resolve the Memories read-facade egress policy: route Memories:BaseAddress through Dapr sidecar invoke or revise policy evidence so it does not over-claim Dapr enforcement."
+    owner: "Winston / Platform"
+    priority: medium
+    status: open
+  - epic: 10
+    action: "Reconcile .slnx canonical inventory drift in ScaffoldContractTests.SolutionContainsOnlyCanonicalBuildableProjects while preserving intentional submodule project entries."
+    owner: "Amelia"
+    priority: medium
+    status: open
+  - epic: 10
+    action: "Resolve SemanticIndexing versus SearchIndexing naming drift by renaming safely or adding a clear ADR explaining the retained term and its limits."
+    owner: "Paige / Winston / Amelia"
+    priority: low
+    status: open
   - epic: 9
     action: "Stand up a DCP-capable `aspire run` boot lane (CI or local) — or `aspire update` to align CLI 13.4.5 to DCP/Hosting 13.4.6 — and record live-boot evidence (all 6 services healthy, no eventstore-admin*, folders-index auto-provisioned). Closes the live-boot half of AC6/AC7 owed across 9.1/9.2/9.3."
     owner: "Jerome / Platform"
@@ -263,22 +293,22 @@ action_items:
     action: "REVISED 2026-06-23 (sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism): the producer PUBLISHES SearchIndexEntryChanged via Dapr pub/sub, so a folders/folders-workers -> memories SERVICE-INVOKE authorization is NOT required and was never the right model. Production Dapr access-control already models this correctly (deny-by-default; folders-workers publishes to memories-events via the pubsub component; memories subscribes). Remaining work lands in Story 10.3: update tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs expectations (assert publish/subscribe scopes for memories-events; drop the 'deferred to Epic 10' framing), keeping the conformance closed-sets in lockstep."
     owner: "Murat / Amelia"
     priority: high
-    status: open
+    status: done
   - epic: 9
     action: "Run create-story for Epic 10 stubs 10.1-10.5 and confirm C4 (large-file) + C9 (path-exposure) gating readiness before Epic 10 kickoff."
     owner: "John"
     priority: high
-    status: open
+    status: done
   - epic: 9
     action: "Document and proactively align the cross-repo CommunityToolkit.Aspire.Hosting.Dapr / Aspire version coupling between Folders and the platform .Aspire submodules to prevent NU1605 recurrence."
     owner: "Amelia"
     priority: medium
-    status: open
+    status: in-progress
   - epic: 9
     action: "Reconcile dev-record test counts at story close (not only at review) — minor under-counts recurred in 9.2/9.3."
     owner: "Amelia"
     priority: low
-    status: open
+    status: done
   - epic: 8
     action: "Add or extend a guard that rejects new in-process EventStore gateway test doubles which do not propagate DomainServiceWireResult rejections with canonical reason codes."
     owner: "Amelia / Murat"
