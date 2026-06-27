@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-26 (Story 10.3 code review chunk patches applied; review -> done)
+# last_updated: 2026-06-27 (Epic 8 retrospective completed; epic-8 close-out -> done; action items recorded)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-26 (Story 10.5 code review patches applied and review -> done; focused core/server/integration/MCP/CLI verification green; Server/Integration Memories tests used sibling Hexalith.Memories root overrides to avoid nested submodule init per repo policy)
+last_updated: 2026-06-27 (Epic 8 retrospective completed; epic-8 close-out -> done; action items recorded)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -169,7 +169,7 @@ development_status:
   # gate (8-4), residual-reds honest-green baseline (8-5), C3 Legal sign-off (8-6).
   # Story 8.5 split 2026-06-23 (sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split):
   # AC1 (C3 Legal sign-off) extracted to 8-6; 8-5 retains the residual-reds honest-green-baseline scope (done).
-  epic-8: in-progress
+  epic-8: done
   8-1-implement-bucket-a-missing-rest-server-routes: done
   8-2-implement-ops-console-diagnostics-rest-routes: done
   8-3-wire-exercise-cross-surface-parity-and-close-claim: done
@@ -187,9 +187,9 @@ development_status:
   # AC1's "no red contract-spine lane". Contracts.Tests 275/275; governance-completeness 11/11; format clean.
   # 2026-06-26 code-review patches applied: latest retention evidence regenerated, stale approved-policy prose fixed,
   # C3-scoped governance gate strengthened, and exact Legal signer/date/location asserted. Focused C3 conformance
-  # 8/8 plus retention gate green. 8-6 -> done; epic-8 close-out remains explicit/manual.
+  # 8/8 plus retention gate green. 2026-06-27 retrospective completed; epic-8 explicit close-out -> done.
   8-6-record-c3-legal-signoff-and-apply-cascade: done
-  epic-8-retrospective: optional
+  epic-8-retrospective: done
 
   # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
   # Created 2026-06-22 via bmad-correct-course
@@ -278,4 +278,39 @@ action_items:
     action: "Reconcile dev-record test counts at story close (not only at review) — minor under-counts recurred in 9.2/9.3."
     owner: "Amelia"
     priority: low
+    status: open
+  - epic: 8
+    action: "Add or extend a guard that rejects new in-process EventStore gateway test doubles which do not propagate DomainServiceWireResult rejections with canonical reason codes."
+    owner: "Amelia / Murat"
+    priority: high
+    status: open
+  - epic: 8
+    action: "Reconcile the remaining Epic 5 provider-readiness idempotency_key_not_accepted strings to canonical idempotency_key_not_allowed, or document a deliberate exception in contract/parity evidence."
+    owner: "Amelia"
+    priority: medium
+    status: open
+  - epic: 8
+    action: "Extend Story 8.1 REST negative-path coverage for authenticated 403 safe denial, selected 404/503 read legs, and route-level ListFolderAclEntries 200 shape."
+    owner: "Murat / Amelia"
+    priority: medium
+    status: open
+  - epic: 8
+    action: "Generalize governance gate freshness and exact approval-record checks so approval-backed criteria cannot pass with stale reports or generic Legal-approved text."
+    owner: "Murat"
+    priority: high
+    status: open
+  - epic: 8
+    action: "Codify the C3/C4 precedent that governance-approved criteria may still have separately owned reference-pending NFR traceability rows."
+    owner: "Paige / Winston"
+    priority: medium
+    status: open
+  - epic: 8
+    action: "Preserve full UI E2E and accessibility gates as part of the honest-green baseline; keep no-filter and forbidden-substring conformance checks intact when CI changes."
+    owner: "Murat / Amelia"
+    priority: high
+    status: open
+  - epic: 8
+    action: "Decide whether seed-backed MVP diagnostics and transition-evidence read models become projection-backed production implementations or remain explicitly owned limitations."
+    owner: "Winston / Amelia"
+    priority: medium
     status: open
