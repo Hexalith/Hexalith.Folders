@@ -1,7 +1,7 @@
 ## Shared Hexalith LLM Instructions
 
 Before starting any work in this repository, read and follow
-[`references/Hexalith.AI.Tools/hexalith-llm-instructions.md`](./references/Hexalith.AI.Tools/hexalith-llm-instructions.md).
+`references/Hexalith.AI.Tools/hexalith-llm-instructions.md`.
 
 ## Git Submodules
 
