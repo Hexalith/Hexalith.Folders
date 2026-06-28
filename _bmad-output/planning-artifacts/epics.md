@@ -23,8 +23,16 @@ partyModeReviewedAt: '2026-05-11'
 storiesReviewedAt: '2026-05-11'
 finalValidationRefreshedAt: '2026-05-11'
 implementationReadinessPatchedAt: '2026-05-12'
-epicCount: 8
-storyCount: 93
+epicCount: 10
+storyCount: 102
+productEpicCount: 6
+nonProductWorkstreams:
+  - workstream-7-release-governance
+  - epic-8-release-closure
+  - epic-9-architecture-platform-runway
+phase2CapabilityEpics:
+  - epic-10-worker-side-semantic-indexing
+countsReviewedAt: "2026-06-27"
 ---
 
 # Hexalith.Folders - Epic Breakdown
@@ -125,6 +133,10 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 - FR55: The system can exclude file contents, provider tokens, credential material, and secrets from events, logs, traces, projections, audit records, diagnostics, and console responses.
 - FR56: The system can expose operation timelines for folder, workspace, file, lock, commit, provider, status, and authorization events.
 - FR57: Platform engineers can inspect provider support evidence for GitHub and Forgejo where it affects operational readiness.
+
+#### Authorized Search Facade
+
+- FR58: Developers and AI agents (via API, SDK, MCP, and CLI) can search the content that Folders has indexed into the Memories search index and receive only results they are authorized to see — security-trimmed to their tenant/folder/workspace, hydrated from the authoritative Folders read, and redacted to metadata-only — without Folders ever leaking another managed tenant's content, raw paths, snippets, source URIs, or hidden-resource existence.
 
 ### NonFunctional Requirements
 
@@ -468,6 +480,7 @@ These come from the Architecture document and represent technical/infrastructure
 - FR55: Epic 4 (write-side: redaction in events/projections/logs/traces/metrics) + Epic 6 (read-side: console rendering with classification + lock-icon affordance)
 - FR56: Epic 6 — operation timelines for folder, workspace, file, lock, commit, provider, status, authorization events
 - FR57: Epic 6 — provider support evidence visibility for GitHub and Forgejo
+- FR58: Epic 10 — authorized Memories search-index query facade with Folders-side tenant/folder/workspace trimming, authoritative hydration, and metadata-only redaction
 
 ## Epic List
 
@@ -1877,7 +1890,9 @@ So that routing is in place (dormant until Epic 10) and the planning artifacts r
 
 Developers and AI agents can have authorized file changes asynchronously indexed into Memories via a worker-side producer and a Folders-owned bridge projection, activating the Epic 9 routing and exposing an authorized, security-trimmed Folders query facade.
 
-_Phase 2 — gated on Epic 9 + C4 (large-file guardrail) and C9 (path-exposure policy). Stories are backlog stubs pending `create-story`; ACs below are seed-level and will be detailed per story. Architecture inputs: `architecture.md` §130–156 (Memories integration track)._
+_Phase 2 — gated on Epic 9 + C4 (large-file guardrail) and C9 (path-exposure policy). Stories 10.1-10.5 now have implementation story files and are marked done in sprint status; remaining Epic 10 work is release-readiness evidence and follow-up closure captured by sprint action items, not seed-level story discovery. Architecture inputs: `architecture.md` Memories integration track._
+
+**FRs covered:** FR58
 
 _**Correction (2026-06-23, `sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism.md`):** The worker-side producer updates the Memories search index by **publishing `SearchIndexEntryChanged` / `SearchIndexEntryRemoved` CloudEvents** to `pubsub` / `memories-events` (source `hexalith-folders`, routed to `folders-index`) — the canonical mechanism proven by the live `hexalith-tenants → tenants-index` integration (`Hexalith.Tenants` `MemoriesSearchIndexEventPublisher`). It does **not** call `Hexalith.Memories.Client.Rest.IngestAsync`, which drives a separate RAG memory-ingestion subsystem (experimental `HXL001`; LLM embeddings → memory units) that the Epic 9 routing never ingests. Stories 10.1–10.4 are corrected accordingly; the in-review Story 10.3 `IngestAsync` egress is reworked to the event producer while the bridge projection, `/folders/events` subscription, orchestration, and authorization gating are preserved. The "Semantic-Indexing" naming is retained for traceability but denotes the syntactic/BM25 search index, not RAG embeddings (a full `semantic → search` rename is a tracked follow-up)._
 

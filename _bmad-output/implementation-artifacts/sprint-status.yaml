@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-27 (Epic 10 retrospective completed; epic-10 close-out -> done; action items recorded)
+# last_updated: 2026-06-28 (Correct-course artifact synchronization applied; release-readiness action items preserved)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-27 (Epic 10 retrospective completed; epic-10 close-out -> done; action items recorded)
+last_updated: 2026-06-28 (Correct-course artifact synchronization applied; release-readiness action items preserved)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -244,6 +244,11 @@ development_status:
 
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.
 action_items:
+  - epic: planning
+    action: "Apply the 2026-06-27 correct-course artifact synchronization: epics.md counts/classification/FR58 coverage, UX FR58 addendum, wireflow FR58 note, C3/C4 NFR traceability clarification, and architecture live-state wording."
+    owner: "Paige / Winston / Amelia"
+    priority: high
+    status: done
   - epic: 10
     action: "Stand up and run the DCP-capable AppHost lane for Epic 10 live evidence: topology boot, folders-index auto-provisioning, SearchIndexEntryChanged, SearchIndexEntryRemoved, archived status filtering, and query-facade search/hydration."
     owner: "Jerome / Platform"

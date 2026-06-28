@@ -155,12 +155,16 @@ bridge only cross-links to existing evidence and does not author those artifacts
 
 - `C7` — lock revalidation budget and mid-task revocation evidence. Owner: Architecture. Consuming story:
   `4-3`. Surfaced by NFR18.
-- `C4` — PM approval of context-query input bounds and large-file/payload limits. Owner: PM. Consuming story:
-  `4-8`. Surfaced by NFR26 and NFR28.
+- `C4` — PM-approved context-query input bounds and large-file/payload limits are recorded in
+  `docs/exit-criteria/c4-input-limits.md`. This row remains reference-pending only for downstream
+  evidence and conformance-guard visibility. Owner: PM. Consuming story: `4-8`. Surfaced by NFR26
+  and NFR28.
 - `C12` — live provider drift checks requiring provider credentials absent in CI. Owner: Provider Readiness.
   Consuming story: `7-8`. Surfaced by NFR44.
-- `C3` — Legal + PM approval of retention durations and tenant-deletion dispositions. Owner: Legal + PM.
-  Consuming story: `7-11`. Surfaced by NFR57.
+- `C3` — Legal + PM-approved retention durations and tenant-deletion dispositions are recorded in
+  `docs/exit-criteria/c3-retention.md`. This row remains reference-pending only for downstream
+  evidence and conformance-guard visibility. Owner: Legal + PM. Consuming story: `7-11`. Surfaced
+  by NFR57.
 - Live alert delivery tooling and backup/restore + recovery-drill tooling. Owner: Operations Runbook (Story
   7.17). Consuming story: `7-17`. Surfaced by NFR54 and NFR55.
 

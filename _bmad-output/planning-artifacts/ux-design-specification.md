@@ -139,6 +139,11 @@ These identifiers are the authoritative UX-DR traceability set for Epic 6 and re
 | UX-DR31 | Test the UI at desktop, tablet, and mobile fallback widths, at 125%, 150%, and 200% browser zoom, and with dense identifiers and long paths in tables, timelines, metadata trees, and trust summaries. |
 | UX-DR32 | Validate accessibility with automated checks, keyboard-only walkthroughs for the three critical journeys, screen reader review, forced-colors/high-contrast checks where supported, color-blindness review, and focus management checks. |
 
+FR58 UX alignment addendum: Memories search-index coverage is a backend discovery capability for
+authorized folder metadata. Current UX obligations are limited to preserving existing browse/search,
+status, removal, archive, and governance signals without adding content preview surfaces or bypassing
+Folders authorization and tenant trimming.
+
 ## Desired Emotional Response
 
 ### Primary Emotional Goals

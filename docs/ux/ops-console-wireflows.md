@@ -20,11 +20,11 @@ Story 6.5.
   reviewer (and downstream story author) verifies diagnostic pages against. Markdown-presence and
   ID-completeness checks (32 UX-DR IDs, 12 taxonomy terms, 9 state-sets) can be asserted against
   this file.
-- known_omissions: No screen-level visual mockups, no component-API signatures beyond names already
-  shipped in Stories 6.2–6.4, no resolved values for the reference-pending platform inputs in the
-  "Pending and Deferred Inputs" section (C2 status-freshness target, C3 retention durations, C4
-  metadata-filter vocabulary, `ProjectionAvailability` redacted/unknown freeze, French
-  localization). These remain owned elsewhere.
+- known_omissions: No screen-level visual mockups and no component-API signatures beyond names already
+  shipped in Stories 6.2–6.4. C3 and C4 governance approvals are now recorded in
+  `docs/exit-criteria/`; remaining reference-pending rows in NFR traceability track downstream
+  evidence and guard posture only. C2 status-freshness target, `ProjectionAvailability`
+  redacted/unknown freeze, French localization, and visual mockups remain owned elsewhere.
 - mutation_rules: This document is a reviewed contract. Downstream stories reference and preserve
   its IDs/names verbatim; they do not redefine, re-number, or fork the UX-DR identifiers, the C6
   state names, the operator-disposition labels, or the `FieldDisclosure` members. Changes to the
@@ -56,6 +56,10 @@ The operations console is, in MVP:
 These notes are a **reviewed contract for Stories 6.6–6.10**, not an implementation. Story 6.5
 writes no C# and changes no build/test/contract/SDK artifact. The single product-tree deliverable
 is this file.
+
+FR58 note: Memories-backed discovery must reuse these existing operations-console browse/search and
+status patterns. It must not introduce folder-content preview, cross-tenant visibility, or an
+authorization path outside the Folders query facade.
 
 ## Downstream Gate
 

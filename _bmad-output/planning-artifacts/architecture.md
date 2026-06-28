@@ -137,7 +137,11 @@ Two later technical research reports have been added as architecture inputs:
 - Use stable CloudEvent ids and idempotency keys for search-index entries, based on tenant/folder/file-version/content-hash metadata; Memories upserts by the `(TenantId, AggregateId)` composite key. Keep raw path metadata out of the CloudEvent `Text`/`Attributes` unless C9 explicitly allows exposure.
 - Start with asynchronous indexing after file-write/commit events; a Memories or pub/sub outage must not roll back a durable Folders file operation. It should surface as retryable indexing status and operational evidence.
 - Large-file behavior remains coupled to C4. The Memories research identifies the current inline ingestion guardrail as a constraint; Folders should first expose explicit skipped/too-large status, then add chunked or reference-based ingestion only after limits are agreed.
-- The Epic 9 AppHost ships the `hexalith-folders → folders-index` source→index routing on the standalone `memories` server in Phase 1 (Story 9.3), but it stays dormant: end-to-end ingestion and search are activated only when the Epic 10 worker-side producer emits `SearchIndexEntryChanged` events with source `hexalith-folders`.
+- Epic 10 implemented the worker-side producer, removal/archive bridge, and Folders-owned read facade
+  that activate the Epic 9 `hexalith-folders -> folders-index` routing. Release readiness still
+  requires live DCP-capable AppHost evidence for topology boot, index auto-provisioning,
+  `SearchIndexEntryChanged`/`SearchIndexEntryRemoved` publication, archive filtering, and query
+  facade hydration.
 
 **Hexalith.FrontComposer integration implications:**
 
