@@ -446,3 +446,6 @@ _bmad-output/process-notes/predev-preflight-*Z.json
 .claude/.story-automator-active
 
 .fake
+.bmad-loop/runs/
+.bmad-loop/cache/
+_bmad/config.user.yaml
