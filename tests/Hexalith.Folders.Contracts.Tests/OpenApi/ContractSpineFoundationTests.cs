@@ -22,6 +22,7 @@ public sealed class ContractSpineFoundationTests
         "x-hexalith-idempotency-ttl-tier",
         "x-hexalith-lifecycle-states",
         "x-hexalith-parity-dimensions",
+        "x-hexalith-query-timeout-ms",
         "x-hexalith-read-consistency",
         "x-hexalith-sensitive-metadata-tier",
     ];

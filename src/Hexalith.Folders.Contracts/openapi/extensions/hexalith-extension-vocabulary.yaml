@@ -259,6 +259,29 @@ x-hexalith-read-consistency:
   example:
     class: eventually_consistent
     freshnessBehavior: returns-projection-watermark-when-available
+x-hexalith-query-timeout-ms:
+  summary: Query timeout soft target in milliseconds.
+  allowedLocations:
+    - OpenAPI Operation Object for bounded query operations
+    - Extension vocabulary definition
+  requirement: Required for query operations that expose a canonical query_timeout category.
+  referencePendingPolicy: C4 timeout values remain reference-pending until approved; declared values are soft targets, not raw implementation telemetry.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: integer
+    minimum: 1
+    description: Soft query timeout target in milliseconds; response telemetry must remain metadata-only.
+  example: 2000
 x-hexalith-lifecycle-states:
   summary: Workspace and task lifecycle vocabulary.
   allowedLocations:

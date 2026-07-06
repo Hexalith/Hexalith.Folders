@@ -9,7 +9,6 @@ using Hexalith.Folders.Workers.SemanticIndexing;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Subscriptions;
-using Hexalith.EventStore.DomainService;
 using Hexalith.Tenants.Client.Registration;
 using Hexalith.Tenants.Contracts.Events;
 
@@ -104,8 +103,40 @@ public static class FoldersWorkersModule
         ArgumentNullException.ThrowIfNull(endpoints);
 
         endpoints.MapGet("/", () => Description);
-        endpoints.MapEventStoreDomainEvents();
+        endpoints.MapFoldersTenantEvents();
         endpoints.MapFoldersSemanticIndexingEvents();
+
+        return endpoints;
+    }
+
+    private static IEndpointRouteBuilder MapFoldersTenantEvents(this IEndpointRouteBuilder endpoints)
+    {
+        EventStoreDomainEventsOptions options = endpoints.ServiceProvider
+            .GetRequiredService<IOptions<EventStoreDomainEventsOptions>>().Value;
+
+        _ = endpoints.MapPost(options.SubscriptionRoute, async (
+            EventStoreDomainEventEnvelope envelope,
+            EventStoreDomainEventProcessor processor,
+            CancellationToken cancellationToken) =>
+        {
+            EventStoreDomainEventProcessingResult result = await processor
+                .ProcessAsync(envelope, cancellationToken)
+                .ConfigureAwait(false);
+
+            return result switch
+            {
+                EventStoreDomainEventProcessingResult.Processed => Results.Ok(),
+                EventStoreDomainEventProcessingResult.Duplicate => Results.Ok(),
+                EventStoreDomainEventProcessingResult.SkippedUnknownEventType => Results.Ok(),
+                EventStoreDomainEventProcessingResult.SkippedNoHandlers => Results.Ok(),
+                EventStoreDomainEventProcessingResult.SkippedAggregateMismatch => Results.Ok(),
+
+                // Tenant-access projection payload failures must be retryable. The processor releases
+                // the message claim for this result, and the response body stays metadata-only.
+                EventStoreDomainEventProcessingResult.FailedInvalidPayload => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
+                _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
+            };
+        }).WithTopic(options.PubSubName, options.TopicName);
 
         return endpoints;
     }

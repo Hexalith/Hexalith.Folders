@@ -5163,6 +5163,9 @@ x-hexalith-canonical-error-categories:
 x-hexalith-read-consistency:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-read-consistency
   foundationUse: Non-mutating operations declare read consistency, freshness, and projection behavior without accepting idempotency keys.
+x-hexalith-query-timeout-ms:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-query-timeout-ms
+  foundationUse: Bounded query operations declare metadata-only timeout soft targets in milliseconds.
 x-hexalith-lifecycle-states:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-lifecycle-states
   foundationUse: C6 vocabulary is descriptive here; state transition implementation is deferred.
