@@ -37,10 +37,10 @@ public sealed class GitHubDependencyGuardTests
     }
 
     [Fact]
-    public void CentralPackageManagementPinsOctokitVersion()
+    public void SharedBuildPackageManagementPinsOctokitVersion()
     {
         string root = FindRepositoryRoot();
-        string packagesProps = File.ReadAllText(Path.Combine(root, "Directory.Packages.props"));
+        string packagesProps = File.ReadAllText(Path.Combine(root, "references", "Hexalith.Builds", "Props", "Directory.Packages.props"));
 
         packagesProps.ShouldContain("PackageVersion Include=\"Octokit\" Version=\"14.0.0\"", Case.Sensitive);
     }
