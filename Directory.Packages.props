@@ -5,31 +5,10 @@
     <Hexalith1BuildPackageProps>$(MSBuildThisFileDirectory)references/Hexalith.Builds/Props/Directory.Packages.props</Hexalith1BuildPackageProps>
     <Hexalith2BuildPackageProps>$(MSBuildThisFileDirectory)../Hexalith.Builds/Props/Directory.Packages.props</Hexalith2BuildPackageProps>
     <Hexalith3BuildPackageProps>$(MSBuildThisFileDirectory)../../Hexalith.Builds/Props/Directory.Packages.props</Hexalith3BuildPackageProps>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <!-- Import the required Hexalith.Packages.props file. -->
   <Import Project="$(Hexalith1BuildPackageProps)" Condition="Exists('$(Hexalith1BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
   <Import Project="$(Hexalith2BuildPackageProps)" Condition="Exists('$(Hexalith2BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
   <Import Project="$(Hexalith3BuildPackageProps)" Condition="'$(HexalithVersionsLoaded)' != 'true'" />
-  <ItemGroup Label="Blazor">
-    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.14.3" />
-  </ItemGroup>
-  <ItemGroup Label="CLI">
-    <PackageVersion Include="System.CommandLine" Version="2.0.9" />
-  </ItemGroup>
-  <ItemGroup Label="MCP">
-    <PackageVersion Include="ModelContextProtocol" Version="1.4.0" />
-  </ItemGroup>
-  <ItemGroup Label="Application">
-    <PackageVersion Include="NSwag.MSBuild" Version="14.7.1" />
-    <PackageVersion Include="Octokit" Version="14.0.0" />
-  </ItemGroup>
-  <ItemGroup Label="Testing">
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.9" />
-    <PackageVersion Include="NBomber" Version="6.5.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.61.0" />
-    <!-- Story 8.4: axe-core WCAG 2.2 AA scan over the Playwright-on-.NET UI E2E lane. .NET-Standard-2.1
-         compatible (resolves for net10.0). Reverses Story 6-11's lane-scoped "no a11y package" constraint. -->
-    <PackageVersion Include="Deque.AxeCore.Playwright" Version="4.12.0" />
-    <PackageVersion Include="Deque.AxeCore.Commons" Version="4.12.0" />
-  </ItemGroup>
 </Project>

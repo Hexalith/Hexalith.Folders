@@ -246,6 +246,7 @@ public sealed class ClientGenerationTests
                 "Directory.Build.props",
                 "Directory.Packages.props",
                 "global.json",
+                "references/Hexalith.Builds/Props/Directory.Packages.props",
                 "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
                 "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
                 "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
