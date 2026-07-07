@@ -172,4 +172,16 @@ From `_bmad-output/implementation-artifacts/sprint-status.yaml`:
 - `epic-11: backlog`
 - `11-1-establish-refactor-baseline-and-governance-pin-map: backlog`
 
+---
+
+## 12. Post-baseline annotation — pending cross-epic delta (2026-07-07, correct-course)
+
+> Appended after baseline capture; §§1–11 above are the unchanged HEAD evidence snapshot.
+
+**Story 10.6 (reopened Epic 10) intentionally changes worker semantic-indexing behavior.** This baseline pinned the *fail-closed* content materializer (`src/Hexalith.Folders.Workers/SemanticIndexing/FailClosedSemanticIndexingContentMaterializer.cs`, always `Unavailable`) as HEAD evidence. Story 10.6 replaces it with a **metadata-derived materializer** so authorized mutations populate the Memories search index under C4/C9 (FR58).
+
+- **Sequencing:** Story 10.6 must land **before Story 11.10** (Server/Workers EventStore/Memories SDK alignment), which rewrites the same Workers indexing code. 11.10 must then rebase on and **preserve the new metadata-derived behavior**, not re-freeze the placeholder.
+- **Scope:** internal worker behavior only — no REST/OpenAPI/envelope/parity change; the §10 wire-preservation invariant is unaffected.
+- Ref: `_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-content-materializer.md`.
+
 Per Story 11.1 constraints these remain `backlog` — the story is not review-approved. This artifact does **not** change sprint status.

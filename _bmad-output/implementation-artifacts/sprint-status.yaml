@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110)
+# last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110)
+last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system

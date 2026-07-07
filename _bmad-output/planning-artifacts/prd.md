@@ -685,7 +685,7 @@ Functional Requirements are organized by capability area. Each block traces back
 
 - FR58: Developers and AI agents (via API, SDK, MCP, and CLI) can search the content that Folders has indexed into the Memories search index and receive only results they are authorized to see — security-trimmed to their tenant/folder/workspace, hydrated from the authoritative Folders read, and redacted to metadata-only — without Folders ever leaking another managed tenant's content, raw paths, snippets, source URIs, or hidden-resource existence.
 
-Scope note: FR58 is part of the current PRD requirements inventory and is implemented through Epic 10's worker-side search-index producer, bridge projection, and authorized Folders query facade. Remaining Epic 10 work is release-readiness evidence and follow-up closure, not a future PRD addition.
+Scope note: FR58 is part of the current PRD requirements inventory and is implemented through Epic 10's worker-side search-index producer, bridge projection, and authorized Folders query facade. Index population is delivered in two increments: (1) a metadata-derived content materializer (reopened Epic 10 **Story 10.6**) that populates the search index from mutation *metadata* evidence under C4/C9 — no raw path/body/snippet exposure — making FR58 "search the content" resolve to authorized metadata-token recall; and (2) authorized real-content materialization as an explicit **C9-gated follow-up** (Security + PM sign-off) for full body-text recall. Remaining Epic 10 work (10.6 + live DCP evidence + Server bridge-read wiring) is release-readiness closure, not a future PRD addition.
 
 ## Non-Functional Requirements
 

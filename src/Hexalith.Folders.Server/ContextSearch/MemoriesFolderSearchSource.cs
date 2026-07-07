@@ -167,7 +167,10 @@ internal sealed class MemoriesFolderSearchSource(
         {
             MemoriesRemoteException => true,
             HttpRequestException => true,
-            // MemoriesClient with no configured base address (Memories:BaseAddress unset) throws this.
+            // Defensive: a malformed/misconfigured invoke endpoint surfaces as InvalidOperationException;
+            // degrade to unavailable rather than 500. Post-10.5 egress correction the base address is always
+            // composed (the Dapr `.../v1.0/invoke/memories/method/` sidecar URL, or an explicit
+            // `Memories:BaseAddress` direct-URL override), so "unset base address" is no longer the trigger.
             InvalidOperationException => true,
             // A timeout from the client (not the caller cancelling the operation).
             TaskCanceledException or OperationCanceledException => !cancellationToken.IsCancellationRequested,

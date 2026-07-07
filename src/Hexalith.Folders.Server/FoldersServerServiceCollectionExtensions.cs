@@ -75,13 +75,17 @@ public static class FoldersServerServiceCollectionExtensions
         return services;
     }
 
+    // Stable Dapr app-id contract for the Memories search-index server (project-context #71).
+    private const string MemoriesDaprAppId = "memories";
+
     /// <summary>
     /// Registers the Story 10.5 authorized context-search facade (Option B). Adds the typed Memories search client
-    /// (a direct base-address HttpClient; the production Dapr <c>folders -&gt; memories</c> invoke allow-rule governs the
-    /// egress when the base address routes via the sidecar), binds its endpoint/token from configuration, and wires
-    /// the live <see cref="MemoriesFolderSearchSource"/> as the <see cref="IFolderSearchSource"/>. The live gateway is
-    /// registered before the core defaults so the core <c>TryAdd</c> keeps it; it degrades safely when Memories is
-    /// unconfigured. The bridge read model stays the fail-safe <c>Unavailable</c> default until a Server-side
+    /// and routes its egress through THIS app's Dapr sidecar service-invocation API, so the production deny-by-default
+    /// <c>folders -&gt; memories</c> <c>GET /api/search</c> invoke allow-rule + mTLS are the operative network-layer
+    /// control (consistent with architecture I-3/S-4). Binds the token/endpoint from configuration and wires the live
+    /// <see cref="MemoriesFolderSearchSource"/> as the <see cref="IFolderSearchSource"/>. The live gateway is
+    /// registered before the core defaults so the core <c>TryAdd</c> keeps it; it degrades safely when the sidecar or
+    /// Memories is unreachable. The bridge read model stays the fail-safe <c>Unavailable</c> default until a Server-side
     /// EventStore-backed read model is wired on a DCP-capable lane (the live-boot residual inherited from Epic 9).
     /// </summary>
     public static IServiceCollection AddFoldersContextSearchFacade(this IServiceCollection services)
@@ -91,9 +95,21 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddMemoriesClient();
         services.AddOptions<MemoriesClientOptions>().Configure<IConfiguration>(static (options, configuration) =>
         {
+            // Compose the base address as this sidecar's service-invocation endpoint; MemoriesClient issues
+            // `GET api/search` relative to it, yielding `.../v1.0/invoke/memories/method/api/search` — a genuine
+            // Dapr invoke governed by the deny-by-default allow-rule + mTLS. Mirrors Hexalith.Memories.Server's
+            // eventstore-invoke idiom. An explicit absolute `Memories:BaseAddress` still wins as a direct-URL
+            // override (hermetic tests / non-Dapr hosting).
             if (Uri.TryCreate(configuration["Memories:BaseAddress"], UriKind.Absolute, out Uri? endpoint))
             {
                 options.Endpoint = endpoint;
+            }
+            else
+            {
+                string daprHttpEndpoint = configuration["DAPR_HTTP_ENDPOINT"]
+                    ?? $"http://localhost:{configuration["DAPR_HTTP_PORT"] ?? "3500"}";
+                options.Endpoint = new Uri(
+                    $"{daprHttpEndpoint.TrimEnd('/')}/v1.0/invoke/{MemoriesDaprAppId}/method/");
             }
 
             string? apiToken = configuration["HEXALITH_MEMORIES_API_TOKEN"];
