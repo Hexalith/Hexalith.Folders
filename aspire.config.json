@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj"
+  }
+}
