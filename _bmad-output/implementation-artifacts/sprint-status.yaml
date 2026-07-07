@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-07-07 (Correct-course Epic 11 approval applied; domain-focus platform-refactor backlog added)
+# last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-07-07 (Correct-course Epic 11 approval applied; domain-focus platform-refactor backlog added)
+last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -215,7 +215,12 @@ development_status:
   # (the separate experimental-HXL001 RAG memory-ingestion subsystem). Story 10.3's IngestAsync egress
   # is reworked; the bridge projection (10.2), /folders/events subscription, orchestration, and
   # authorization gating are preserved. 10.4's SearchIndexEntryChanged emission folded forward into 10.3.
-  epic-10: done
+  # REOPENED 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-content-materializer.md) to
+  # own Story 10.6: replace the fail-closed content materializer with a metadata-derived materializer so real
+  # folder mutation evidence populates the Memories search index under C4/C9 (delivers the open Epic 10 retro
+  # action item; FR58). Metadata-derived now; authorized real-content materialization is a C9-gated follow-up.
+  # Lands BEFORE Epic 11 Story 11.10 (which rewrites the same Workers indexing code); Story 11.1 pin map annotated.
+  epic-10: in-progress
   10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: done
   10-2-build-folders-owned-indexing-bridge-projection: done
   # 10-3 reworked to publish SearchIndexEntryChanged via Dapr pub/sub (not IngestAsync); the 9 code-review
@@ -240,6 +245,7 @@ development_status:
   # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
   10-5-expose-authorized-folders-query-facade-over-memories: done
+  10-6-replace-fail-closed-content-materializer-with-metadata-derived: ready-for-dev
   epic-10-retrospective: done
 
   # Epic 11: Domain-Focus Platform Refactoring And Governance Closure
@@ -247,8 +253,14 @@ development_status:
   # Non-product technical alignment epic: removes local platform copies, consumes shared
   # Commons/EventStore/FrontComposer/Memories primitives, deletes ServiceDefaults, and
   # preserves existing wire behavior through governance gates.
-  epic-11: backlog
-  11-1-establish-refactor-baseline-and-governance-pin-map: backlog
+  # 2026-07-07: Story 11.1 was implemented + inline-reviewed + committed via the spec-kernel /
+  # bmad-loop (codex adapter) pipeline, NOT the classic create-story flow: spec-11-1-*.md
+  # (status=done, followup_review_recommended=false) + the committed baseline evidence artifact
+  # 11-1-establish-refactor-baseline-and-governance-pin-map.md (commits d6e9f47/40cc5e1). Status
+  # here reconciled backlog->done to match that committed reality; the evidence artifact was NOT
+  # overwritten by a classic story file (user decision, /bmad-create-story 11.1). epic-11 -> in-progress.
+  epic-11: in-progress
+  11-1-establish-refactor-baseline-and-governance-pin-map: done
   11-2-land-platform-prerequisite-apis-in-shared-modules: backlog
   11-3-apply-wire-preserving-repo-hygiene-and-fragile-gate-fixes: backlog
   11-4-consolidate-server-transport-envelope-and-route-helper-duplication: backlog
@@ -276,20 +288,35 @@ action_items:
     priority: high
     status: open
   - epic: 10
-    action: "Wire the Server-side EventStore-backed semantic-indexing bridge read model for the query facade and indexing-status paths, or record an explicit release limitation."
+    # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-190839):
+    # "record an explicit release limitation" branch taken. The deployed Server facade runs on the
+    # fail-safe Unavailable bridge read model (context-search -> zero items; indexing-status ->
+    # ReadModelUnavailable); limitation recorded in architecture.md Query Facade (Story 10.5)
+    # section + epics.md Epic 10 note. The wiring itself is re-homed to Epic 11 Story 11.10 (AC added).
+    action: "Wire the Server-side EventStore-backed semantic-indexing bridge read model for the query facade and indexing-status paths, or record an explicit release limitation. RESOLVED (record-limitation branch): limitation recorded in architecture.md + epics.md; wiring re-homed to Epic 11 Story 11.10."
     owner: "Amelia / Winston"
     priority: high
-    status: open
+    status: done
   - epic: 10
     action: "Replace or extend the fail-closed content materializer so real folder mutation evidence can populate the search index under C4/C9 policy."
     owner: "Amelia / Murat"
     priority: high
-    status: open
+    status: in-progress   # 2026-07-07 correct-course: owned by reopened Story 10.6 (metadata-derived; real-content = C9-gated follow-up); lands before Epic 11 Story 11.10.
   - epic: 10
-    action: "Resolve the Memories read-facade egress policy: route Memories:BaseAddress through Dapr sidecar invoke or revise policy evidence so it does not over-claim Dapr enforcement."
+    # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-memories-facade-dapr-egress):
+    # "route through the Dapr sidecar invoke" branch taken (make the enforcement real, not weaken the claim).
+    # The Server facade composes Memories:BaseAddress as the sidecar service-invocation endpoint
+    # ({DAPR_HTTP_ENDPOINT}/v1.0/invoke/memories/method/), so the search egress traverses Dapr and the
+    # production folders->memories GET /api/search invoke allow-rule + mTLS are the operative network-layer
+    # control (architecture I-3/S-4/Query Facade aligned; over-claim caveat removed). No client-code change
+    # (MemoriesClient composes BaseAddress + api/search); explicit absolute Memories:BaseAddress stays a
+    # direct-URL override for hermetic tests. New hermetic FoldersContextSearchFacadeRegistrationTests pins
+    # the composed endpoint; existing DaprPolicyConformanceTests now validate a path the live client exercises.
+    # Live aspire-run proof remains BLOCKED-PENDING the DCP lane (carried Epic 9 residual, not new).
+    action: "Resolve the Memories read-facade egress policy: route Memories:BaseAddress through Dapr sidecar invoke or revise policy evidence so it does not over-claim Dapr enforcement. RESOLVED (route-through-sidecar branch)."
     owner: "Winston / Platform"
     priority: medium
-    status: open
+    status: done
   - epic: 10
     action: "Reconcile .slnx canonical inventory drift in ScaffoldContractTests.SolutionContainsOnlyCanonicalBuildableProjects while preserving intentional submodule project entries."
     owner: "Amelia"
@@ -336,15 +363,24 @@ action_items:
     priority: low
     status: done
   - epic: 8
-    action: "Add or extend a guard that rejects new in-process EventStore gateway test doubles which do not propagate DomainServiceWireResult rejections with canonical reason codes."
+    # Re-homed 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-193110): scheduled into
+    # Epic 11 Story 11.7 (test-helper consolidation) with two added acceptance criteria — (1) consolidate the
+    # rejection-propagating InProcessRejectionPropagatingGatewayClient onto the shared Hexalith.Folders.Testing
+    # surface as the single canonical acceptance-path double + dedup the nine RecordingEventStoreGatewayClient
+    # flattening copies in Server.Tests into one documented request-recording double; (2) add the
+    # EventStoreGatewayDoubleConformanceTests allowlist guard (ScaffoldContractTests source-scan idiom) that
+    # rejects new ad-hoc IEventStoreGatewayClient doubles + a positive test proving canonical FolderResultCode
+    # rejection propagation. Completion signal (no flattening copies exist; shared propagating helper is the
+    # approved pattern) is delivered when Story 11.7 reaches done.
+    action: "Add or extend a guard that rejects new in-process EventStore gateway test doubles which do not propagate DomainServiceWireResult rejections with canonical reason codes. RE-HOMED to Epic 11 Story 11.7 (two ACs added)."
     owner: "Amelia / Murat"
     priority: high
-    status: open
+    status: in-progress
   - epic: 8
     action: "Reconcile the remaining Epic 5 provider-readiness idempotency_key_not_accepted strings to canonical idempotency_key_not_allowed, or document a deliberate exception in contract/parity evidence."
     owner: "Amelia"
     priority: medium
-    status: open
+    status: done
   - epic: 8
     action: "Extend Story 8.1 REST negative-path coverage for authenticated 403 safe denial, selected 404/503 read legs, and route-level ListFolderAclEntries 200 shape."
     owner: "Murat / Amelia"

@@ -1901,7 +1901,9 @@ So that routing is in place (dormant until Epic 10) and the planning artifacts r
 
 Developers and AI agents can have authorized file changes asynchronously indexed into Memories via a worker-side producer and a Folders-owned bridge projection, activating the Epic 9 routing and exposing an authorized, security-trimmed Folders query facade.
 
-_Phase 2 capability track for PRD FR58. Epic 9 is complete; C4 and C9 are approved policy constraints. Stories 10.1-10.5 have implementation story files and are marked done in sprint status; remaining Epic 10 work is release-readiness evidence and follow-up closure captured by sprint action items, not seed-level story discovery. Architecture inputs: `architecture.md` Memories integration track._
+_Phase 2 capability track for PRD FR58. Epic 9 is complete; C4 and C9 are approved policy constraints. Stories 10.1-10.5 have implementation story files and are marked done in sprint status; remaining Epic 10 work is release-readiness evidence and follow-up closure captured by sprint action items, not seed-level story discovery. Architecture inputs: `architecture.md` Memories integration track. **Known release limitation:** the deployed Server query facade runs on the fail-safe `Unavailable` bridge read model (context-search returns zero items; indexing-status returns `ReadModelUnavailable`) until the Server-side EventStore-backed read model is wired under Epic 11 Story 11.10; recorded in `architecture.md` §"Query Facade (Story 10.5)"._
+
+_**Reopened 2026-07-07 via bmad-correct-course (`sprint-change-proposal-2026-07-07-content-materializer.md`):** Story 10.6 added to deliver the deferred Epic 10 retro action item — replace the fail-closed content materializer with a metadata-derived materializer so real folder mutation evidence populates the search index under C4/C9. Sequenced to land before Epic 11 **Story 11.10** (Server/Workers EventStore/Memories SDK alignment, which rewrites the same Workers indexing code); Story 11.1's governance pin map is annotated with this pending behavior delta._
 
 **FRs covered:** FR58
 
@@ -1966,6 +1968,26 @@ So that results are security-trimmed, hydrated from Folders authority, and redac
 **Given** indexed content in Memories
 **When** a Folders query facade serves search-index results
 **Then** results are authorized, security-trimmed, and redacted by Folders policy before leaving the API/SDK/MCP/CLI boundary, with PRD FR58, architecture query-facade guidance, and UX FR58 backend-discovery constraints synchronized.
+
+### Story 10.6: Replace the fail-closed content materializer with a metadata-derived materializer under C4/C9
+
+As a developer or AI-agent consumer,
+I want authorized folder mutations to produce real curated search-index text from metadata evidence,
+So that the Memories search index is actually populated on live mutations without leaking raw content, paths, or snippets.
+
+**Acceptance Criteria:**
+
+**Given** the worker default `ISemanticIndexingContentMaterializer` is the fail-closed placeholder that always returns `Unavailable("content_materializer_unavailable")`
+**When** a metadata-derived materializer is implemented and registered in `FoldersWorkersModule` in its place (fail-closed retained as an explicit fallback)
+**Then** an authorized, policy-passing mutation yields `Available` curated text/attributes and the worker publishes a real `SearchIndexEntryChanged` into `folders-index` instead of dead-ending at materialization.
+
+**Given** C9 classifies paths/repo/branch/commit as tenant-sensitive and forbids raw path/content in the CloudEvent `Text`/`Attributes` unless explicitly allowed
+**When** the materializer builds `CuratedText`/`CuratedAttributes` from mutation metadata evidence (type/size classification, media type, folder/org identity, path-policy outcome)
+**Then** the published `Text`/`Attributes` contain no raw file path, no file body, no snippet, and no source URI, asserted against a sensitive-path corpus; and C4 size/type gates (`content_too_large`/`content_type_unsupported`) plus idempotent/replay-stable CloudEvent ids remain green.
+
+**Given** Epic 11 Story 11.1 has already pinned worker-indexing behavior (the fail-closed placeholder) as its governance baseline, Story 11.10 will rewrite the same Workers indexing code, and the live `aspire run` round-trip remains BLOCKED-PENDING the DCP-capable lane
+**When** Story 10.6 lands before Story 11.10 — with Story 11.1's pin map annotated to record this intentional delta — updating `SemanticIndexingWorkerRegistrationTests` / `SemanticIndexingProcessManagerTests` / `SemanticIndexingEndpointE2ETests` in lockstep
+**Then** Story 11.10 rebases on and preserves the new metadata-derived behavior (not the placeholder), real mutation→curated-text→index is proven at the worker/port boundary (unit + Tier-3 opt-in harness), the live end-to-end proof is carried as the same DCP blocker, and authorized real-content materialization is recorded as an explicit C9-gated follow-up (Security + PM sign-off) — not silently dropped.
 
 ## Epic 11: Domain-Focus Platform Refactoring And Governance Closure
 
@@ -2063,7 +2085,13 @@ So that later refactors change production seams once and tests stay focused.
 
 **Given** duplicated `FixedTimeProvider`, static tenant/claim context accessors, gateway clients, recording providers, repository helpers, and root walkers exist
 **When** canonical helpers are added to `Hexalith.Folders.Testing`
-**Then** test projects consume those helpers, platform fakes are adopted where available, and test counts only change when a deleted local implementation no longer needs local re-testing.
+**Then** test projects consume those helpers, platform fakes are adopted where available, and test counts only change when a deleted local implementation no longer needs local re-testing
+**And** the rejection-propagating in-process gateway double (`InProcessRejectionPropagatingGatewayClient`, currently linked only into `Hexalith.Folders.IntegrationTests` from `tests/shared/Parity/`) becomes the single canonical acceptance-path `IEventStoreGatewayClient` double on the shared `Hexalith.Folders.Testing` surface, and the nine copy-pasted `RecordingEventStoreGatewayClient` flattening doubles in `Hexalith.Folders.Server.Tests` are consolidated into one shared request-recording double documented as request-shape evidence only, never acceptance or parity evidence.
+
+**Given** the Epic 8 (Story 8.3) retrospective action item to guard against rejection-flattening gateway doubles, and the standing 2.8/2.8b "green tests, broken production wiring" rule in `project-context.md`
+**When** the test-double consolidation lands
+**Then** an automated conformance guard (e.g. `EventStoreGatewayDoubleConformanceTests` in `tests/Hexalith.Folders.Testing.Tests`, following the `ScaffoldContractTests` repo-root source-scan idiom) fails the build when any test source declares an `IEventStoreGatewayClient` double outside the approved allowlist — the canonical rejection-propagating double, the single shared recording double, and the named `ThrowingEventStoreGatewayClient` / `UnsupportedGatewayClient` negative-path doubles — so new ad-hoc flattening copies cannot be introduced
+**And** a positive behavioral test proves the canonical double propagates a `DomainServiceWireResult` rejection as an `EventStoreGatewayException` carrying the canonical `FolderResultCode` reason code (e.g. `FolderAclDenied`) rather than flattening it to an accepted response.
 
 ### Story 11.8: Adopt Commons/EventStore primitives in the Folders domain
 
@@ -2101,6 +2129,7 @@ So that Folders stops reimplementing request routing, subscription mapping, and 
 **Given** EventStore and Memories expose the required seams
 **When** Server/Workers are refactored
 **Then** authorization moves into `IDomainServiceAdmissionStage` or equivalent, `FoldersDomainServiceRequestHandler` is deleted where safe, `MapEventStoreDomainEvents` replaces local mapping, and Memories publication/search wrappers are shared
+**And** the Server-side EventStore-backed semantic-indexing bridge read model is wired for the query facade and indexing-status paths — `EventStoreSemanticIndexingBridgeStore` is relocated from `Hexalith.Folders.Workers` into a Server-referenceable project and registered in `AddFoldersContextSearchFacade` (replacing the fail-safe `UnavailableSemanticIndexingBridgeReadModel` default), closing the Epic 10 deferral recorded in `architecture.md` §"Query Facade (Story 10.5)", and the live `folders-index` search/status round-trip is proven on the DCP-capable lane (or the residual is re-carried with evidence)
 **And** REST parity and worker semantic-indexing behavior remain unchanged.
 
 ### Story 11.11: Harden FrontComposer and Fluent UI conformance below the shell
