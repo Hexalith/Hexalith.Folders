@@ -239,10 +239,12 @@ public static partial class ProviderReadinessEndpoints
 
         if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
         {
+            // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
+            // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
             return SafeProblem(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
-                "idempotency_key_not_accepted",
+                "idempotency_key_not_allowed",
                 retryable: false,
                 correlationId);
         }
@@ -297,10 +299,12 @@ public static partial class ProviderReadinessEndpoints
         string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
         if (ReadHeader(httpContext, "Idempotency-Key") is not null)
         {
+            // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
+            // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
             return SafeProblem(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
-                "idempotency_key_not_accepted",
+                "idempotency_key_not_allowed",
                 retryable: false,
                 correlationId);
         }

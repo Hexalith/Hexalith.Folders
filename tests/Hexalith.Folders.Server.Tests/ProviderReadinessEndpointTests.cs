@@ -100,7 +100,7 @@ public sealed class ProviderReadinessEndpointTests
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         json.ShouldContain("\"category\":\"validation_error\"");
-        json.ShouldContain("\"code\":\"idempotency_key_not_accepted\"");
+        json.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
         bindingReader.Calls.ShouldBe(0);
     }
 
@@ -122,7 +122,7 @@ public sealed class ProviderReadinessEndpointTests
         using JsonDocument document = JsonDocument.Parse(json);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        json.ShouldContain("\"code\":\"idempotency_key_not_accepted\"");
+        json.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
         json.ShouldNotContain(unsafeCorrelation, Case.Sensitive);
         document.RootElement.GetProperty("correlationId").GetString().ShouldStartWith("correlation_");
         bindingReader.Calls.ShouldBe(0);
@@ -347,7 +347,7 @@ public sealed class ProviderReadinessEndpointTests
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        json.ShouldContain("\"code\":\"idempotency_key_not_accepted\"");
+        json.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
         readModel.Calls.ShouldBe(0);
     }
 
