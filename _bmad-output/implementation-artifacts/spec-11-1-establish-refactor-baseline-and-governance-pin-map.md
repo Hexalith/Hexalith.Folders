@@ -2,8 +2,8 @@
 title: '11.1 establish refactor baseline and governance pin map'
 type: 'chore'
 created: '2026-07-07T12:00:00+02:00'
-status: 'in-progress'
-baseline_revision: 'a63aba85cba9832013d8e2740601966c03c454c2'
+status: 'done'
+baseline_revision: '5ce25e47dee8f7e63e7dbe3bcfc3b2e5d777b0b4'
 review_loop_iteration: 0
 followup_review_recommended: false
 context:
@@ -54,11 +54,11 @@ warnings: []
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `_bmad-output/implementation-artifacts/11-1-establish-refactor-baseline-and-governance-pin-map.md` -- Create a story evidence artifact with sections for HEAD/branch/tree state, audit-drift notes, submodule SHA map, solution/project/package inventory, route/parity counts, workflow pins, focused gate results, known blockers, and next-story handoff constraints.
-- [ ] `_bmad-output/gates/*/latest.json` -- Refresh or cite focused gate reports produced by the verification commands; do not sanitize away failures or reference-pending statuses.
-- [ ] `_bmad-output/implementation-artifacts/sprint-status.yaml` -- Capture current `epic-11` and `11-1-establish-refactor-baseline-and-governance-pin-map` status in the evidence artifact; do not claim completion before review.
-- [ ] `tests/tools/run-baseline-ci-gates.ps1` -- Run as evidence and record counts/status in the artifact; do not change the script unless a command itself proves a stale pin that belongs to Story 11.1.
-- [ ] `.github/workflows/ci.yml`, `.github/workflows/contract-spine.yml`, `.github/workflows/nightly-drift.yml`, `.github/workflows/policy-conformance.yml`, `.github/workflows/release-packages.yml`, `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `tests/fixtures/parity-contract.json`, `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs` -- Record current workflow, route, parity, release-package, and scaffold pins in the artifact without product-code edits.
+- [x] `_bmad-output/implementation-artifacts/11-1-establish-refactor-baseline-and-governance-pin-map.md` -- Create a story evidence artifact with sections for HEAD/branch/tree state, audit-drift notes, submodule SHA map, solution/project/package inventory, route/parity counts, workflow pins, focused gate results, known blockers, and next-story handoff constraints.
+- [x] `_bmad-output/gates/*/latest.json` -- Refresh or cite focused gate reports produced by the verification commands; do not sanitize away failures or reference-pending statuses.
+- [x] `_bmad-output/implementation-artifacts/sprint-status.yaml` -- Capture current `epic-11` and `11-1-establish-refactor-baseline-and-governance-pin-map` status in the evidence artifact; do not claim completion before review.
+- [x] `tests/tools/run-baseline-ci-gates.ps1` -- Run as evidence and record counts/status in the artifact; do not change the script unless a command itself proves a stale pin that belongs to Story 11.1.
+- [x] `.github/workflows/ci.yml`, `.github/workflows/contract-spine.yml`, `.github/workflows/nightly-drift.yml`, `.github/workflows/policy-conformance.yml`, `.github/workflows/release-packages.yml`, `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`, `tests/fixtures/parity-contract.json`, `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs` -- Record current workflow, route, parity, release-package, and scaffold pins in the artifact without product-code edits.
 
 **Acceptance Criteria:**
 - Given the current repository HEAD, when Story 11.1 baseline evidence is generated, then the artifact records the actual commit, branch, clean/dirty state, submodule SHAs, and explicit drift from audit seed `533806b`.
@@ -70,7 +70,28 @@ warnings: []
 
 ## Spec Change Log
 
+- 2026-07-07 (implement): `baseline_revision` advanced from `a63aba8` to current HEAD `5ce25e4` (prior runs blocked pre-implementation on a transient dirty tree; tree clean on this run). Factual pin correction recorded in the evidence artifact: the parity oracle fixture is `tests/fixtures/parity-contract.yaml` (no bare `parity-contract.json` exists; the only `.json` sibling is the schema `parity-contract.schema.json`); Code Map/Tasks reference to `parity-contract.json` is read-as-`.yaml`. No `<intent-contract>` change.
+
 ## Review Triage Log
+
+### 2026-07-07 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 10: (high 0, medium 1, low 9)
+- defer: 0
+- reject: 1
+- addressed_findings:
+  - `[medium]` `[patch]` `submodules: false` occurrence count was stated as 13 in §6 and §9 while the per-workflow breakdown and grep both yield 12 (ci ×6 + release-packages ×3 + contract-spine ×1 + nightly-drift ×1 + policy-conformance ×1) — corrected both sites to 12 (grep-verified).
+  - `[low]` `[patch]` §7 gate #3 build PASS attributed the transient `MSB3883` failure to a specific external IDE build host as fact — reworded to "external cause inferred, not captured" and noted the clean retry was not re-verified in-session.
+  - `[low]` `[patch]` §7 blanket "the baseline is deterministic/reproducible" overstated given gates #3/#11/#12a do not reproduce clean standalone — scoped the claim to the passing gates #4/#6/#7/#8/#9/#10.
+  - `[low]` `[patch]` §5 `diagnostics_count: 0` sourced from a fixture comment, not an enforced field — relabelled as a documentation-header value (value 0 is correct).
+  - `[low]` `[patch]` §5 "mirrored in `Client.Tests`" implied the same `ImplementedRestOperationCount` symbol — corrected to `ParityScenarios.ExpectedOperationCount = 49` at `tests/shared/Parity/ParityScenarios.cs:20` (verified: value mirrored, constant differs).
+  - `[low]` `[patch]` §9 pin-map cited an unqualified `TransportParityConformanceTests.cs` (two files share the class name) — qualified with the `Server.Tests/` path plus the Client.Tests mirror note.
+  - `[low]` `[patch]` §9 "5 packable … Cli + ServiceDefaults excluded" overloaded "packable" (7 src csproj carry `IsPackable=true`) — clarified as the 5-project release/publish set vs manifest-level exclusion (grep-verified 7 `IsPackable=true`).
+  - `[low]` `[patch]` spec change-log wording implied a bare `parity-contract.json` exists — corrected to name the only `.json` sibling `parity-contract.schema.json`.
+  - `[low]` `[patch]` §4 import phrasing understated the `$(Hexalith*BuildPackageProps)` MSBuild-property indirection — added the indirection note (250-entry count unchanged/correct).
+  - `[low]` `[patch]` §2 `d50b603` labelled "pre-Epic-11" with no structural-impact note — added "structural claims re-verified at HEAD".
+  - reject (no action): committed `release-packages/latest.json` reads `passed` while a standalone run fails on stale capacity-calibration evidence — the artifact already discloses this divergence honestly (gate #11 + blocker #2); carried forward as a residual risk, not an artifact defect.
 
 ## Design Notes
 
@@ -91,3 +112,25 @@ The evidence artifact should be concise but machine-auditable. Prefer tables wit
 - `pwsh ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` -- expected: passed or exact blocker recorded.
 - `pwsh ./tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId $(git rev-parse HEAD)` -- expected: passed or exact blocker recorded.
 - `dotnet format whitespace --verify-no-changes` and `dotnet format analyzers --verify-no-changes --severity warn` -- expected: no changes needed or exact blocker recorded.
+
+## Auto Run Result
+
+Status: done
+
+**Summary of implemented change:** Story 11.1 (chore, documentation-only) produced the Epic 11 refactor baseline evidence artifact `11-1-establish-refactor-baseline-and-governance-pin-map.md` at HEAD `5ce25e4`: HEAD/branch/clean-tree state; drift vs audit seed `533806b` (4 commits ahead; EventStore/Memories/Tenants submodule bumps preserved, not reverted); 8-module non-recursive SHA map; solution/project/package inventory (50 `.slnx` projects, central package management via the Builds submodule); route/parity counts (49 REST operations / 49 parity ops); workflow pins (5 workflows, `submodules: false` ×12); focused gate results; known blockers; an 8-row governance pin map naming lockstep files for later Epic 11 stories; next-story handoff constraints; and captured sprint status (`epic-11`/`11-1` = `backlog`, not flipped). No product code, generated artifacts, or `references/` content changed.
+
+**Files changed:**
+- `11-1-establish-refactor-baseline-and-governance-pin-map.md` (new) — baseline evidence + governance pin-map artifact.
+- `spec-11-1-establish-refactor-baseline-and-governance-pin-map.md` (modified) — `baseline_revision`→`5ce25e4`, five Execution tasks marked done, Spec Change Log + Review Triage Log + this Auto Run Result; `status`→`done`.
+
+**Review findings breakdown:** 10 patches applied (1 medium: `submodules: false` count 13→12 in §6/§9; 9 low: build-PASS external-cause attribution softened, reproducibility claim scoped to passing gates, `diagnostics_count` framing, Client.Tests parity-constant name `ParityScenarios.ExpectedOperationCount`, §9 unqualified test path qualified, "packable" vs `IsPackable=true` (7) clarified, change-log `.json` wording, import-indirection note, `d50b603` structural-impact note). 0 deferred. 1 rejected (committed `release-packages/latest.json` `passed` vs standalone fail — already honestly disclosed in the artifact). No intent_gap / bad_spec → no re-derivation loopback (`review_loop_iteration` = 0).
+
+**Follow-up review recommendation:** false — all fixes are localized, tree-verified factual/wording corrections to a documentation-only artifact with no behavior/API/security/data impact.
+
+**Verification performed:** restore PASS; `build -c Release` 0W/0E (clean retry after a transient concurrent-build file-lock); baseline-ci PASS (9 unit-test projects); ScaffoldContractTests 10/0/0; contract-parity, security-redaction, safety-invariants, governance-completeness, dapr-policy gates PASS; format analyzers PASS; `release-package` and solution-root `format whitespace` BLOCKED for env/ordering reasons (recorded honestly, not masked). Post-review re-verification: no residual `×13`; corrected counts grep-verified (12); `ParityScenarios.ExpectedOperationCount` and 7×`IsPackable=true` confirmed; working tree scoped to the two `_bmad-output` files only.
+
+**Residual risks:**
+- `run-release-package-gates.ps1` fails standalone on `stale-capacity-calibration-evidence` (CI regenerates capacity-calibration in-job first); committed `release-packages/latest.json` reads the CI-representative `passed`; packages pack clean.
+- Solution-root `dotnet format whitespace` flags only `references/**` submodule EOL (0 Folders-owned files; `references/` out of scope).
+- DCP/AppHost live-boot (Epic 10 AC9) remains env-blocked; AppHost.Tests skip cleanly (Tier-3).
+- Reference-pending NFR rows C3/C4/C7/C12 remain hard-pinned as owned, surfaced gaps.
