@@ -142,6 +142,8 @@ Two later technical research reports have been added as architecture inputs:
   requires live DCP-capable AppHost evidence for topology boot, index auto-provisioning,
   `SearchIndexEntryChanged`/`SearchIndexEntryRemoved` publication, archive filtering, and query
   facade hydration.
+- FR58 is already part of the current PRD requirements inventory. C4 and C9 are approved policy
+  constraints for the implementation, not unsatisfied gates that make FR58 a future PRD addition.
 
 **Hexalith.FrontComposer integration implications:**
 
@@ -318,7 +320,7 @@ The honest finding: **the starter is a sibling-module template, not a CLI-genera
 
 **Rationale for Selection:**
 
-Hexalith.Tenants is the closest functional analogue: it is an event-sourced .NET 10 module that consumes EventStore, publishes via Dapr pub/sub, exposes a domain service, and ships AppHost + Aspire + ServiceDefaults + Testing helpers. Hexalith.EventStore.Admin.* (Cli, Mcp, UI) provides the proven adapter patterns for the CLI, MCP, and read-only operations console surfaces the PRD requires. Combining the two minimizes reinvention while staying faithful to ecosystem conventions.
+Hexalith.Tenants is the closest functional analogue: it is an event-sourced .NET 10 module that consumes EventStore, publishes via Dapr pub/sub, exposes a domain service, and ships AppHost + Aspire + Testing helpers. Current Hexalith domain-module guidance replaces per-module ServiceDefaults with shared `Hexalith.Commons.ServiceDefaults`. Hexalith.EventStore.Admin.* (Cli, Mcp, UI) provides the proven adapter patterns for the CLI, MCP, and read-only operations console surfaces the PRD requires. Combining the two minimizes reinvention while staying faithful to ecosystem conventions.
 
 ### Recommended Project Layout
 
@@ -336,9 +338,8 @@ Hexalith.Folders/
 │   ├── Hexalith.Folders.Mcp                ← MCP server wrapping the SDK (REFERENCE: EventStore.Admin.Mcp)
 │   ├── Hexalith.Folders.UI                 ← read-only ops console (Blazor) (REFERENCE: EventStore.Admin.UI)
 │   ├── Hexalith.Folders.Workers            ← Git/workspace process managers reacting to events (NEW; per EventStore aggregate research)
-│   ├── Hexalith.Folders.Aspire             ← Aspire AppHost helper extensions (REFERENCE: Tenants.Aspire)
-│   ├── Hexalith.Folders.AppHost            ← .NET Aspire AppHost (REFERENCE: Tenants.AppHost)
-│   ├── Hexalith.Folders.ServiceDefaults    ← shared service-defaults extensions (REFERENCE: Tenants.ServiceDefaults)
+│   ├── Hexalith.Folders.Aspire             ← thin Folders-specific Aspire constants/helpers only; no duplicated platform Dapr topology
+│   ├── Hexalith.Folders.AppHost            ← .NET Aspire AppHost used for local/test topology; sanctioned module-test exception
 │   └── Hexalith.Folders.Testing            ← in-memory fakes + builders + conformance assertions (REFERENCE: Tenants.Testing)
 ├── tests/
 │   ├── Hexalith.Folders.Contracts.Tests
@@ -1261,10 +1262,6 @@ Hexalith.Folders/
 │   │   │   └── accesscontrol.yaml              # local dev: defaultAction allow
 │   │   └── appsettings.json
 │   │
-│   ├── Hexalith.Folders.ServiceDefaults/       # shared service-defaults
-│   │   ├── Hexalith.Folders.ServiceDefaults.csproj
-│   │   └── ServiceDefaultsExtensions.cs        # OpenTelemetry, health checks, Dapr resilience
-│   │
 │   └── Hexalith.Folders.Testing/               # in-memory fakes + builders + conformance
 │       ├── Hexalith.Folders.Testing.csproj
 │       ├── Fakes/
@@ -1345,7 +1342,7 @@ Hexalith.Folders/
 **Component Boundaries:**
 
 - **`Hexalith.Folders.Contracts`** owns the C0 Contract Spine (OpenAPI 3.1 + extension vocabulary) and all DTOs. NO behavior; no Hexalith.EventStore reference.
-- **`Hexalith.Folders`** owns the domain model (aggregates + state + projections + provider adapters + authorization + idempotency + caching + redaction). References Contracts only.
+- **`Hexalith.Folders`** owns the domain model (aggregates + state + folder-specific projections + provider ports + folder authorization policy + idempotency semantics). It may reference narrow shared platform packages for platform-owned behavior such as TenantAccess, query cursors, read-model stores, telemetry abstractions, unique IDs, redaction helpers, and secret-store abstractions. It must not host duplicated platform boilerplate or take infrastructure package dependencies directly unless an ADR records the exception.
 - **`Hexalith.Folders.Server`** is the REST transport host + EventStore domain-service host. References core domain.
 - **`Hexalith.Folders.Client`** is the canonical SDK + tenant-event subscription wiring. References Contracts only (consumed by Server, CLI, MCP, UI).
 - **`Hexalith.Folders.Workers`** owns process managers / reconcilers / rate-limit buckets / tenant-event handlers. References core domain.
@@ -1624,6 +1621,8 @@ Additional addressed items: S-2 OIDC underspecification (Edit D); D-3 Postgres-e
 - Production retention policy (C3) evolution as legal/compliance landscape changes; the artifact at `docs/exit-criteria/c3-retention.md` should be reviewed annually.
 - Pluggable production exporters (Jaeger / Tempo / App Insights / Datadog) selected per deployment; per-environment exporter binding remains an operations concern.
 
+**Domain-focus refactoring closure:** Before post-MVP platform alignment is considered complete, Folders must have no local ServiceDefaults project, no local copies of shared TenantAccess/cursor/read-model/telemetry/secret/correlation helpers where shared platform APIs exist, no hand-rolled Dapr subscription mapping where EventStore SDK mapping exists, and no UI shell/auth/token duplication where FrontComposer supplies a primitive.
+
 ### Implementation Handoff
 
 **AI Agent Guidelines:**
@@ -1644,7 +1643,7 @@ dotnet new sln -n Hexalith.Folders --format slnx
 # Mirror Hexalith.Tenants Directory.Build.props (HexalithEventStoreRoot/HexalithTenantsRoot sibling-submodule detection) and Directory.Packages.props (third-party packages)
 # Create projects in dependency order:
 #   src/Hexalith.Folders.Contracts → src/Hexalith.Folders → src/Hexalith.Folders.Server →
-#   src/Hexalith.Folders.Client → src/Hexalith.Folders.{Cli,Mcp,UI,Workers,Aspire,AppHost,ServiceDefaults,Testing}
+#   src/Hexalith.Folders.Client → src/Hexalith.Folders.{Cli,Mcp,UI,Workers,Aspire,AppHost,Testing}
 # Mirror tests/ 1:1 with src/.
 # Create samples/Hexalith.Folders.Sample{,.Tests}.
 # Create placeholder files:

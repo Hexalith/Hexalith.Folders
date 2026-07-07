@@ -140,7 +140,7 @@ The MVP must enforce tenant-scoped authorization and must prevent cross-tenant f
 
 ### Growth Features (Post-MVP)
 
-Post-MVP growth should expand reliability and operational depth after the core workflow is proven. Candidate growth features include repair commands, deeper drift detection, richer provider contract tests, brownfield folder or repository adoption, large-file policy enforcement, advanced provider capability recipes, and broader operations workflows.
+Post-MVP growth should expand reliability and operational depth after the core workflow is proven. Candidate growth features include repair commands, deeper drift detection, richer provider contract tests, brownfield folder or repository adoption, large-file policy enforcement, advanced provider capability recipes, broader operations workflows, and technical platform-alignment work that removes local copies of shared Hexalith platform capabilities without changing product semantics.
 
 Known post-MVP pressure points include local-first folders that promote to Git-backed storage, auto-commit command mode, disposable working-copy repair, evented repair console workflows, drift-first operations views, multiple Git organizations per tenant, and module-managed local storage policy.
 
@@ -315,7 +315,7 @@ The MVP must support the repository-backed task flow: validate provider readines
 
 ### Architectural Boundaries
 
-Hexalith.Tenants remains the source of truth for tenant identity, tenant lifecycle, and tenant membership. Hexalith.EventStore provides command, aggregate, event, and projection mechanics. Hexalith.Folders owns folder-specific policy, folder ACLs, provider binding references, workspace state, file-operation facts, commit metadata, and operational projections.
+Hexalith.Tenants remains the source of truth for tenant identity, tenant lifecycle, and tenant membership. Hexalith.EventStore provides command, aggregate, event, projection, query, cursor, read-model, and domain-service mechanics where those mechanics are platform-owned. Hexalith.Commons, Hexalith.FrontComposer, and Hexalith.Memories provide shared boilerplate for cross-module helpers, UI shell behavior, and search-index integration where applicable. Hexalith.Folders owns folder-specific policy, folder ACLs, provider binding references, workspace state, file-operation facts, commit metadata, provider ports, and operational projections.
 
 Hexalith.Folders owns intent, policy, state, and audit. Git providers own provider-specific repository and Git mechanics behind narrow provider ports. File contents and temporary working-copy material must remain outside EventStore; events, logs, projections, traces, and console responses must never contain file contents, provider tokens, credential material, or secrets.
 
@@ -684,6 +684,8 @@ Functional Requirements are organized by capability area. Each block traces back
 ### Authorized Search Facade
 
 - FR58: Developers and AI agents (via API, SDK, MCP, and CLI) can search the content that Folders has indexed into the Memories search index and receive only results they are authorized to see — security-trimmed to their tenant/folder/workspace, hydrated from the authoritative Folders read, and redacted to metadata-only — without Folders ever leaking another managed tenant's content, raw paths, snippets, source URIs, or hidden-resource existence.
+
+Scope note: FR58 is part of the current PRD requirements inventory and is implemented through Epic 10's worker-side search-index producer, bridge projection, and authorized Folders query facade. Remaining Epic 10 work is release-readiness evidence and follow-up closure, not a future PRD addition.
 
 ## Non-Functional Requirements
 

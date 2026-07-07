@@ -15,13 +15,13 @@ stepsCompleted:
   - 13
   - 14
 inputDocuments:
-  - "D:/Hexalith.Folders/_bmad-output/planning-artifacts/product-brief-Hexalith.Folders.md"
-  - "D:/Hexalith.Folders/_bmad-output/planning-artifacts/prd.md"
-  - "D:/Hexalith.Folders/_bmad-output/planning-artifacts/prd-validation-report.md"
-  - "D:/Hexalith.Folders/_bmad-output/planning-artifacts/research/technical-frontcomposer-integration-for-hexalith-folders-ui-research-2026-05-11.md"
-  - "D:/Hexalith.Folders/_bmad-output/project-context.md"
-  - "D:/Hexalith.Folders/Hexalith.FrontComposer/_bmad-output/project-context.md"
-  - "D:/Hexalith.Folders/Hexalith.EventStore/_bmad-output/project-context.md"
+  - "_bmad-output/planning-artifacts/product-brief-Hexalith.Folders.md"
+  - "_bmad-output/planning-artifacts/prd.md"
+  - "_bmad-output/planning-artifacts/prd-validation-report.md"
+  - "_bmad-output/planning-artifacts/research/technical-frontcomposer-integration-for-hexalith-folders-ui-research-2026-05-11.md"
+  - "_bmad-output/project-context.md"
+  - "references/Hexalith.FrontComposer/_bmad-output/project-context.md"
+  - "references/Hexalith.EventStore/_bmad-output/project-context.md"
 workflowType: "ux-design"
 projectName: "Hexalith.Folders"
 userName: "Jerome"
@@ -31,8 +31,8 @@ lastStep: 14
 completedAt: "2026-05-11"
 implementationReadinessPatchedAt: "2026-05-12"
 completedArtifacts:
-  uxDesignSpecification: "D:/Hexalith.Folders/_bmad-output/planning-artifacts/ux-design-specification.md"
-  designDirections: "D:/Hexalith.Folders/_bmad-output/planning-artifacts/ux-design-directions.html"
+  uxDesignSpecification: "_bmad-output/planning-artifacts/ux-design-specification.md"
+  designDirections: "_bmad-output/planning-artifacts/ux-design-directions.html"
 ---
 
 # UX Design Specification Hexalith.Folders
@@ -381,7 +381,7 @@ Redacted, inaccessible, unknown, unavailable, failed, delayed, dirty, locked, re
 
 ### Design Directions Explored
 
-The design direction showcase was generated at `D:/Hexalith.Folders/_bmad-output/planning-artifacts/ux-design-directions.html`.
+The design direction showcase was generated at `_bmad-output/planning-artifacts/ux-design-directions.html`.
 
 Six directions were explored:
 
@@ -598,7 +598,7 @@ These components cover the general operational-console structure. Custom work sh
 
 ### Component Implementation Strategy
 
-Build custom components on top of Fluent UI primitives and FrontComposer conventions. Do not introduce a separate component library.
+Build custom components on top of Fluent UI primitives and FrontComposer conventions. Do not introduce a separate component library. Reuse FrontComposer Shell services and components for user context, token relay, OIDC bootstrapping, loading states, safe copy, banners, and icons where a shared primitive exists. Use FluentDataGrid and Fluent input/button components for production pages; raw interactive HTML controls and undefined styling hooks are implementation debt, not acceptable MVP patterns.
 
 Custom components should consume semantic state models rather than raw strings wherever possible. State labels, icons, tooltips, and accessibility labels should derive from the same canonical state vocabulary used by API, CLI, MCP, and SDK surfaces.
 

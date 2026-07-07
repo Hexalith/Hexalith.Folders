@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-06-28 (Correct-course artifact synchronization applied; release-readiness action items preserved)
+# last_updated: 2026-07-07 (Correct-course Epic 11 approval applied; domain-focus platform-refactor backlog added)
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-06-28 (Correct-course artifact synchronization applied; release-readiness action items preserved)
+last_updated: 2026-07-07 (Correct-course Epic 11 approval applied; domain-focus platform-refactor backlog added)
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -241,6 +241,27 @@ development_status:
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
   10-5-expose-authorized-folders-query-facade-over-memories: done
   epic-10-retrospective: done
+
+  # Epic 11: Domain-Focus Platform Refactoring And Governance Closure
+  # Created 2026-07-07 via bmad-correct-course from fable_Folders_changes.md.
+  # Non-product technical alignment epic: removes local platform copies, consumes shared
+  # Commons/EventStore/FrontComposer/Memories primitives, deletes ServiceDefaults, and
+  # preserves existing wire behavior through governance gates.
+  epic-11: backlog
+  11-1-establish-refactor-baseline-and-governance-pin-map: backlog
+  11-2-land-platform-prerequisite-apis-in-shared-modules: backlog
+  11-3-apply-wire-preserving-repo-hygiene-and-fragile-gate-fixes: backlog
+  11-4-consolidate-server-transport-envelope-and-route-helper-duplication: backlog
+  11-5-consolidate-domain-provider-duplication-and-fix-provider-correctness-defects: backlog
+  11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport: backlog
+  11-7-consolidate-test-helpers-into-hexalith-folders-testing: backlog
+  11-8-adopt-commons-eventstore-primitives-in-the-folders-domain: backlog
+  11-9-delete-service-defaults-and-consume-commons-service-defaults: backlog
+  11-10-align-server-and-workers-with-eventstore-memories-sdk-seams: backlog
+  11-11-harden-frontcomposer-and-fluent-ui-conformance-below-the-shell: backlog
+  11-12-modernize-generated-client-and-shared-idempotency-ulid-helpers: backlog
+  11-13-final-cleanup-adrs-documentation-and-verification: backlog
+  epic-11-retrospective: optional
 
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.
 action_items:
