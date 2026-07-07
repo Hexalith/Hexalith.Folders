@@ -2034,6 +2034,7 @@ So that later refactors do not fail unrelated governance checks.
 **Given** tracked cache files, temporary diffs, stale E2E docs, and fragile text-based tests exist
 **When** hygiene fixes are applied
 **Then** tracked `.lscache` files and root litter are removed, stale READMEs are corrected, fragile auth/package/process pins are made behavioral or flexible, and Aspire version text is aligned to authoritative package pins
+**And** the governance-completeness gate enforces fresh, exact approval records generically for every approval-backed exit criterion — `GovernanceCompletenessGateTests` rejects a missing/dropped `approval` block, an unsatisfied required authority, a generic (non-named) approver, and a missing/future/stale `approved_on` under the mandatory `approval_policy.max_age_days` window — so no approval-backed criterion (C3/C4 today) can pass with a stale report or a generic "Legal-approved" phrase (delivered ahead of Story 11.3 via bmad-correct-course `sprint-change-proposal-2026-07-07-governance-approval-freshness.md`)
 **And** no REST/OpenAPI behavior changes.
 
 ### Story 11.4: Consolidate Server transport, envelope, and route helper duplication

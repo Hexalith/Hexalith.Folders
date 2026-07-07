@@ -21,6 +21,40 @@ diagnostic_policy:
     - credential_material
     - tenant_data
     - local_absolute_path
+approval_policy:
+  # Governance freshness + exact approval-record policy for approval-backed criteria (those whose
+  # `approved` status rests on a human sign-off rather than a machine-validated gate). Enforced
+  # generically by GovernanceCompletenessGateTests over every criterion that carries an `approval`
+  # block, so no approval-backed criterion can pass with a stale report or a generic "Legal-approved"
+  # phrase in place of a named, dated signer.
+  #
+  # Mandatory global freshness window: an approval whose newest required-authority sign-off is older
+  # than this many days fails closed and forces a governance re-review. This is an intentional
+  # time-based redden, not a defect; refresh the sign-off (or widen the window by decision) to clear.
+  max_age_days: 365
+  # Approver values too generic to be an exact approval record. A required-authority record whose
+  # approver (trimmed, case-insensitive) is one of these — or equal to its own authority name — fails
+  # closed, so a bare "Legal" / "PM" / "signed" phrase cannot stand in for a named signer.
+  generic_approver_tokens:
+    - approved
+    - approve
+    - legal
+    - legal-approved
+    - legally approved
+    - pm
+    - pm-approved
+    - pending
+    - pending-review
+    - tbd
+    - todo
+    - placeholder
+    - signed
+    - sign-off
+    - signoff
+    - none
+    - 'n/a'
+    - unknown
+    - yes
 criteria:
   - criterion_id: C0
     title: Contract Spine source of truth
@@ -54,6 +88,18 @@ criteria:
     verification_command: .\tests\tools\run-retention-deletion-gates.ps1
     result_summary: Machine-validated retention and tenant-deletion evidence is present; PM approved 2026-06-22 (Jerome) and Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes); retention durations and tenant-deletion dispositions are approved for live release publishing.
     open_policy_placeholders: []
+    approval:
+      required_authorities:
+        - PM
+        - Legal
+      records:
+        - authority: PM
+          approver: Jerome
+          approved_on: '2026-06-22'
+        - authority: Legal
+          approver: Jérôme Piquot
+          approved_on: '2026-06-24'
+          location: Louveciennes
   - criterion_id: C4
     title: Input limit evidence
     owner: Architect
@@ -62,6 +108,13 @@ criteria:
     verification_command: dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~ExitCriteriaDecisionArtifactTests
     result_summary: Proposed query and payload limits are PM-approved (Jerome, 2026-06-22) and binding for Contract Spine enforcement.
     open_policy_placeholders: []
+    approval:
+      required_authorities:
+        - PM
+      records:
+        - authority: PM
+          approver: Jerome
+          approved_on: '2026-06-22'
   - criterion_id: C5
     title: Release scalability quantifier evidence
     owner: Release Readiness

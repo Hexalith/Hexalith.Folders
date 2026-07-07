@@ -51,6 +51,16 @@ public sealed class GovernanceCompletenessGateTests
         "C13",
     ];
 
+    // Criteria whose `approved` status rests on a human governance sign-off (not a machine-validated
+    // gate). Each MUST carry a well-formed `approval` block; the block cannot be silently dropped to
+    // dodge the freshness/exact-record checks. Extend this set whenever a new criterion becomes
+    // approval-backed, in lockstep with adding its `approval` block to the evidence YAML.
+    private static readonly string[] ApprovalBackedCriteria =
+    [
+        "C3",
+        "C4",
+    ];
+
     [Fact]
     public void WorkflowAndScriptExposeOneOfflineGovernanceCompletenessCommand()
     {
@@ -79,6 +89,12 @@ public sealed class GovernanceCompletenessGateTests
         documentation.ShouldContain("idempotency_sample_unmapped");
         documentation.ShouldContain("cache_key_unscoped");
         documentation.ShouldContain("parity_completeness_mismatch");
+        documentation.ShouldContain("approval_record_missing");
+        documentation.ShouldContain("approval_authority_unsatisfied");
+        documentation.ShouldContain("approval_approver_generic");
+        documentation.ShouldContain("approval_date_invalid");
+        documentation.ShouldContain("approval_date_future");
+        documentation.ShouldContain("approval_stale");
         AssertMetadataOnly(documentation);
     }
 
@@ -145,6 +161,98 @@ public sealed class GovernanceCompletenessGateTests
         EvaluateExitCriteriaRows([invalidPath]).ShouldContain(d => d.Category == "artifact_path_invalid");
 
         foreach (GateDiagnostic diagnostic in EvaluateExitCriteriaRows([invalidPlaceholder, invalidPath]))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+    }
+
+    [Fact]
+    public void ApprovalBackedCriteriaCarryFreshExactApprovalRecords()
+    {
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(root);
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        YamlMappingNode[] rows = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>().ToArray();
+
+        // The mandatory global freshness window must be a positive number of days.
+        policy.MaxAgeDays.ShouldBeGreaterThan(0);
+        policy.GenericApproverTokens.ShouldNotBeEmpty();
+
+        // Every pinned approval-backed criterion must be `approved` and must carry an `approval` block —
+        // the block cannot be dropped to escape the checks.
+        foreach (string criterion in ApprovalBackedCriteria)
+        {
+            YamlMappingNode row = rows.Single(r => RequiredScalar(r, "criterion_id") == criterion);
+            RequiredScalar(row, "status").ShouldBe("approved", criterion);
+            HasApprovalBlock(row).ShouldBeTrue($"{criterion} must carry a structured approval block");
+        }
+
+        // Validate every row that declares an approval block (pinned or future), so a newly approval-backed
+        // criterion is covered even before someone extends ApprovalBackedCriteria.
+        GateDiagnostic[] diagnostics = rows
+            .Where(HasApprovalBlock)
+            .SelectMany(row => EvaluateApprovalRecords(row, policy, today))
+            .ToArray();
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
+    }
+
+    [Fact]
+    public void ApprovalRecordNegativeControlsFailClosedWithBoundedDiagnostics()
+    {
+        ApprovalPolicy policy = SyntheticApprovalPolicy();
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        string fresh = today.AddDays(-10).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        string future = today.AddDays(30).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        string stale = today.AddDays(-(policy.MaxAgeDays + 30)).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+        // A criterion with no approval block at all.
+        GateDiagnostic[] missingBlock = EvaluateApprovalRecords(RowWithoutApproval("C-MISSING"), policy, today);
+        missingBlock.ShouldContain(d => d.Category == "approval_record_missing" && d.Identifier == "C-MISSING");
+
+        // A generic approver ("Legal") standing in for a named signer.
+        GateDiagnostic[] generic = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-GENERIC", ["Legal"], [("Legal", "Legal", fresh)]), policy, today);
+        generic.ShouldContain(d => d.Category == "approval_approver_generic" && d.Identifier == "C-GENERIC:Legal");
+
+        // A future-dated approval.
+        GateDiagnostic[] futureDated = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-FUTURE", ["PM"], [("PM", "Jerome", future)]), policy, today);
+        futureDated.ShouldContain(d => d.Category == "approval_date_future" && d.Identifier == "C-FUTURE:PM");
+
+        // A malformed approval date.
+        GateDiagnostic[] malformed = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-MALFORMED", ["PM"], [("PM", "Jerome", "2026-13-40")]), policy, today);
+        malformed.ShouldContain(d => d.Category == "approval_date_invalid" && d.Identifier == "C-MALFORMED:PM");
+
+        // A required authority (Legal) with no record.
+        GateDiagnostic[] unsatisfied = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-UNSAT", ["PM", "Legal"], [("PM", "Jerome", fresh)]), policy, today);
+        unsatisfied.ShouldContain(d => d.Category == "approval_authority_unsatisfied" && d.Identifier == "C-UNSAT:Legal");
+
+        // A stale approval older than the mandatory global max-age window.
+        GateDiagnostic[] staleDiagnostics = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-STALE", ["PM"], [("PM", "Jerome", stale)]), policy, today);
+        staleDiagnostics.ShouldContain(d => d.Category == "approval_stale" && d.Identifier == "C-STALE:PM");
+
+        // A per-criterion review_by date that has already passed.
+        GateDiagnostic[] reviewExpired = EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-REVIEW", ["PM"], [("PM", "Jerome", fresh)], reviewBy: stale), policy, today);
+        reviewExpired.ShouldContain(d => d.Category == "approval_stale" && d.Identifier == "C-REVIEW");
+
+        // A fully valid, fresh, exactly-recorded approval produces no diagnostics.
+        EvaluateApprovalRecords(
+            SyntheticApprovalRow("C-OK", ["PM", "Legal"], [("PM", "Jerome", fresh), ("Legal", "Jérôme Piquot", fresh)]),
+            policy, today).ShouldBeEmpty();
+
+        foreach (GateDiagnostic diagnostic in missingBlock
+            .Concat(generic).Concat(futureDated).Concat(malformed)
+            .Concat(unsatisfied).Concat(staleDiagnostics).Concat(reviewExpired))
         {
             AssertMetadataOnly(diagnostic.ToString());
         }
@@ -372,6 +480,143 @@ public sealed class GovernanceCompletenessGateTests
             AssertMetadataOnly(diagnostic.ToString());
         }
     }
+
+    private static bool HasApprovalBlock(YamlMappingNode row) =>
+        row.Children.TryGetValue(new YamlScalarNode("approval"), out YamlNode? node) && node is YamlMappingNode;
+
+    private static ApprovalPolicy LoadApprovalPolicy(YamlMappingNode root)
+    {
+        YamlMappingNode policy = RequiredMapping(root, "approval_policy");
+        int maxAgeDays = int.Parse(RequiredScalar(policy, "max_age_days"), CultureInfo.InvariantCulture);
+        HashSet<string> tokens = RequiredSequence(policy, "generic_approver_tokens")
+            .Children
+            .Select(node => RequiredScalar(node, "generic_approver_token").ToLowerInvariant())
+            .ToHashSet(StringComparer.Ordinal);
+        return new ApprovalPolicy(maxAgeDays, tokens);
+    }
+
+    private static ApprovalPolicy SyntheticApprovalPolicy() =>
+        new(365, new HashSet<string>(StringComparer.Ordinal) { "approved", "legal", "pm", "signed", "pending", "placeholder", "none" });
+
+    private static GateDiagnostic[] EvaluateApprovalRecords(YamlMappingNode row, ApprovalPolicy policy, DateOnly today)
+    {
+        const string path = "docs/exit-criteria/c0-c13-governance-evidence.yaml";
+        List<GateDiagnostic> diagnostics = [];
+        string criterion = RequiredScalar(row, "criterion_id");
+
+        if (!row.Children.TryGetValue(new YamlScalarNode("approval"), out YamlNode? approvalNode)
+            || approvalNode is not YamlMappingNode approval)
+        {
+            diagnostics.Add(new("exit-criteria", "approval_record_missing", criterion, path));
+            return diagnostics.ToArray();
+        }
+
+        string[] requiredAuthorities = approval.Children.TryGetValue(new YamlScalarNode("required_authorities"), out YamlNode? authoritiesNode)
+            && authoritiesNode is YamlSequenceNode authoritiesSeq
+                ? authoritiesSeq.Children.Select(node => RequiredScalar(node, "authority")).ToArray()
+                : [];
+
+        YamlMappingNode[] records = approval.Children.TryGetValue(new YamlScalarNode("records"), out YamlNode? recordsNode)
+            && recordsNode is YamlSequenceNode recordsSeq
+                ? recordsSeq.Children.OfType<YamlMappingNode>().ToArray()
+                : [];
+
+        if (requiredAuthorities.Length == 0 || records.Length == 0)
+        {
+            diagnostics.Add(new("exit-criteria", "approval_record_missing", criterion, path));
+            return diagnostics.ToArray();
+        }
+
+        foreach (string authority in requiredAuthorities)
+        {
+            YamlMappingNode[] matching = records
+                .Where(record => string.Equals(TryScalar(record, "authority"), authority, StringComparison.Ordinal))
+                .ToArray();
+
+            if (matching.Length != 1)
+            {
+                diagnostics.Add(new("exit-criteria", "approval_authority_unsatisfied", $"{criterion}:{authority}", path));
+                continue;
+            }
+
+            YamlMappingNode record = matching[0];
+            string approver = (TryScalar(record, "approver") ?? string.Empty).Trim();
+            if (approver.Length < 2
+                || policy.GenericApproverTokens.Contains(approver.ToLowerInvariant())
+                || string.Equals(approver, authority, StringComparison.OrdinalIgnoreCase))
+            {
+                diagnostics.Add(new("exit-criteria", "approval_approver_generic", $"{criterion}:{authority}", path));
+            }
+
+            string approvedOnRaw = TryScalar(record, "approved_on") ?? string.Empty;
+            if (!DateOnly.TryParseExact(approvedOnRaw, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly approvedOn))
+            {
+                diagnostics.Add(new("exit-criteria", "approval_date_invalid", $"{criterion}:{authority}", path));
+                continue;
+            }
+
+            if (approvedOn > today)
+            {
+                diagnostics.Add(new("exit-criteria", "approval_date_future", $"{criterion}:{authority}", path));
+            }
+            else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+            {
+                diagnostics.Add(new("exit-criteria", "approval_stale", $"{criterion}:{authority}", path));
+            }
+        }
+
+        // Optional per-criterion review-by / expiry date: if present it must be a valid date strictly
+        // in the future, so an approval cannot sit indefinitely past its own declared re-review date.
+        if (approval.Children.TryGetValue(new YamlScalarNode("review_by"), out YamlNode? reviewByNode)
+            && reviewByNode is YamlScalarNode { Value: { Length: > 0 } } reviewByScalar)
+        {
+            if (!DateOnly.TryParseExact(reviewByScalar.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly reviewBy))
+            {
+                diagnostics.Add(new("exit-criteria", "approval_date_invalid", criterion, path));
+            }
+            else if (reviewBy <= today)
+            {
+                diagnostics.Add(new("exit-criteria", "approval_stale", criterion, path));
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
+    private static string? TryScalar(YamlMappingNode mapping, string key) =>
+        mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value)
+            && value is YamlScalarNode { Value: { Length: > 0 } } scalar
+                ? scalar.Value
+                : null;
+
+    private static YamlMappingNode SyntheticApprovalRow(
+        string criterionId,
+        string[] requiredAuthorities,
+        (string authority, string approver, string approvedOn)[] records,
+        string? reviewBy = null)
+    {
+        YamlSequenceNode authorities = new(requiredAuthorities.Select(authority => (YamlNode)new YamlScalarNode(authority)));
+        YamlSequenceNode recordNodes = new(records.Select(record => (YamlNode)new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(record.authority),
+            new YamlScalarNode("approver"), new YamlScalarNode(record.approver),
+            new YamlScalarNode("approved_on"), new YamlScalarNode(record.approvedOn))));
+
+        YamlMappingNode approval = new(
+            new YamlScalarNode("required_authorities"), authorities,
+            new YamlScalarNode("records"), recordNodes);
+
+        if (reviewBy is not null)
+        {
+            approval.Children[new YamlScalarNode("review_by")] = new YamlScalarNode(reviewBy);
+        }
+
+        return new YamlMappingNode(
+            new YamlScalarNode("criterion_id"), new YamlScalarNode(criterionId),
+            new YamlScalarNode("approval"), approval);
+    }
+
+    private static YamlMappingNode RowWithoutApproval(string criterionId) =>
+        new(new YamlScalarNode("criterion_id"), new YamlScalarNode(criterionId));
 
     private static GateDiagnostic[] EvaluateExitCriteriaRows(IReadOnlyList<YamlMappingNode> rows)
     {
@@ -1024,6 +1269,8 @@ public sealed class GovernanceCompletenessGateTests
             new YamlScalarNode("evidence_link"), new YamlScalarNode("tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs"));
 
     private sealed record CacheKeyCandidate(string RepositoryPath, int Line, string DataScope, bool HasTenantScope, string? ExceptionRuleId);
+
+    private sealed record ApprovalPolicy(int MaxAgeDays, HashSet<string> GenericApproverTokens);
 
     private sealed record CorpusSchemaConstraints(
         Regex SchemaVersionPattern,

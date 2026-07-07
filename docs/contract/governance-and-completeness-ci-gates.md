@@ -1,6 +1,6 @@
 # Governance And Completeness CI Gates
 
-The governance/completeness gate is the local and CI entry point for Story 1.16 checks. It validates exit-criteria evidence, idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exceptions, and parity completeness without Aspire, Dapr sidecars, provider credentials, network calls, or nested submodule initialization.
+The governance/completeness gate is the local and CI entry point for Story 1.16 checks. It validates exit-criteria evidence (including fresh, exact approval records for approval-backed criteria), idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exceptions, and parity completeness without Aspire, Dapr sidecars, provider credentials, network calls, or nested submodule initialization.
 
 ## Local Command
 
@@ -42,12 +42,28 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `exit_criteria_duplicate`: a criterion appears more than once.
 - `exit_criteria_malformed`: required evidence metadata is missing or contains an invalid placeholder.
 - `artifact_path_invalid`: an evidence path is absolute, escapes the repository, or points to an unreadable artifact.
+- `approval_record_missing`: an approval-backed criterion (for example C3 or C4) is missing its structured `approval` block, its required authorities, or its records.
+- `approval_authority_unsatisfied`: a required approval authority has no record, or more than one record, in the criterion's approval block.
+- `approval_approver_generic`: an approval record names a generic approver (for example "Legal", "PM", or "signed") or repeats the authority name instead of an exact signer.
+- `approval_date_invalid`: an approval record's `approved_on`, or a criterion's `review_by`, is missing or is not a valid `yyyy-MM-dd` date.
+- `approval_date_future`: an approval record's `approved_on` is dated in the future.
+- `approval_stale`: an approval record is older than the mandatory `approval_policy.max_age_days` window, or a per-criterion `review_by` date has already passed.
 - `idempotency_sample_unmapped`: a corpus sample lacks exactly one stable consumption map entry.
 - `pattern_example_invalid`: a C# example is unmarked, stale, or not part of the compilable examples project.
 - `cache_key_unscoped`: a tenant-data cache key candidate lacks tenant scope and no reviewed exception applies.
 - `parity_completeness_mismatch`: OpenAPI operations and generated parity rows differ, duplicate, or omit required metadata.
 
 Diagnostics may include gate names, rule IDs, criterion IDs, sample IDs, operation IDs, schema pointers, repository-relative paths, bounded categories, counts, and safe hashes. Diagnostics must not include raw payloads, file contents, diffs, provider tokens, credentials, tenant data, local absolute paths, production URLs, cache key values, provider responses, or unauthorized-resource hints.
+
+## Approval Records
+
+Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention and `C4` input limits) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryFreshExactApprovalRecords` enforces this generically so no approval-backed criterion can pass with a stale report or a generic "Legal-approved" phrase:
+
+- Every required authority has exactly one record with a specific (non-generic, non-authority-name) approver and a valid, non-future `approved_on`.
+- `approval_policy.max_age_days` is a mandatory global freshness window: an approval older than the window fails closed and forces a governance re-review. This time-based redden is intentional — refresh the sign-off (or widen the window by decision) to clear it.
+- An optional per-criterion `review_by` date must be a valid date strictly in the future.
+
+The bespoke C3 retention checks in `RetentionAndTenantDeletionConformanceTests` remain the stricter retention-specific gate; this generic floor covers every approval-backed criterion, including future ones.
 
 ## Contribution Checklist
 
