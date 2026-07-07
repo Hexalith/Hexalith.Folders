@@ -66,7 +66,18 @@ Resource 'tenants' failed to reach [Running]
 - Current State: Finished   Start: 17:26:28   Stop: 17:26:30   Exit Code: 134 (SIGABRT)
 ```
 
-`eventstore` reached Running; **`tenants` aborts ~2 s after launch (exit 134 / SIGABRT)** and never reaches Running, so the fixture's `WaitForResourceAsync("tenants", Running)` waits out the full budget. This is a distinct, newly-surfaced defect — **the live lane's job is exactly to surface this.** Root cause not yet pinned: DCP forwards per-resource stdout/stderr to the dashboard (not to greppable files), so the abort reason needs the Aspire dashboard resource logs, ideally on a **non-saturated DCP host** (leading hypothesis: a startup dependency/actor-registration FailFast aggravated by CPU contention, since the SIGABRT is deterministic at ~2 s).
+`eventstore` reached Running; **`tenants` aborts ~2 s after launch (exit 134 / SIGABRT)** and never reaches Running, so the fixture's `WaitForResourceAsync("tenants", Running)` waits out the full budget. This is a distinct, newly-surfaced defect — **the live lane's job is exactly to surface this.**
+
+**Root cause — PINNED** (from DCP's per-resource stderr, `/tmp/aspire-dcp<sid>/<guid>_err`; the box's load was **not** involved):
+```
+Unhandled exception. System.InvalidOperationException: No keyed service for type
+'Hexalith.EventStore.DomainService.EventStoreDomainDiagnostics' using key type 'System.String'
+has been registered.
+  at Program …/references/Hexalith.Tenants/src/Hexalith.Tenants/Program.cs:line 67
+  at Hexalith.EventStore.DomainService.EventStoreDomainServiceExtensions.ValidateDomainQueryHandlerRoutes
+  at …UseEventStoreDomainService  →  Tenants/Program.cs:line 173
+```
+Tenants `Program.cs:67` registers `TenantTelemetry` via `serviceProvider.GetRequiredKeyedService<EventStoreDomainDiagnostics>("tenants")`, whose own comment says the keyed diagnostics is *"registered by `AddEventStoreDomainService`."* The **pinned EventStore submodule (`v3.43.0-9 @ c0fe028e`) does not register that keyed `EventStoreDomainDiagnostics("tenants")`** that the **pinned Tenants submodule (`v2.3.0-6 @ d923393`)** requires → the `TenantTelemetry` factory throws during the SDK's startup `ValidateDomainQueryHandlerRoutes`, the exception is unhandled, and the process aborts (134). **This is a Tenants ↔ EventStore submodule version/contract drift — not Folders code and not load.** It is deterministic and reproduces on a quiet host.
 
 ### Artifact / status impact
 - `sprint-status.yaml:280` DCP-lane action → **partially satisfied** (lane stood up + operational; two blockers fixed) with a **new follow-up** (Blocker C). Epic 9 AC6 live-boot, Story 10.3 D1#3, 10.4 AC9, 10.5 AC15 remain **owed** until Blocker C clears and the round-trip runs green.
@@ -79,7 +90,7 @@ Resource 'tenants' failed to reach [Running]
 **Direct adjustment**, in three moves:
 
 1. **Keep both fixes.** Blocker A is already committed upstream in the submodule (`d923393`) — good. **Commit the AppHost SDK bump** (`13.4.6`) in the Folders repo; it is the substantive unblock and is verified.
-2. **Open a focused defect for Blocker C** (`tenants` exit 134 on AppHost boot). Re-run the opt-in lane on a **quiet DCP host** and read the `tenants` resource logs from the Aspire dashboard to root-cause; then land the AC9 green.
+2. **Open a focused defect for Blocker C** (`tenants` exit 134 on AppHost boot) — **root cause pinned**: align the **EventStore ↔ Tenants submodule versions** so `AddEventStoreDomainService` registers the keyed `EventStoreDomainDiagnostics("tenants")` that Tenants `Program.cs:67` requires (bump the EventStore submodule to the version that ships the keyed-diagnostics registration, or align Tenants to the EventStore SDK's current diagnostics API — a platform decision). Then land the AC9 green (the DCP lane itself is proven, so this is the last gate).
 3. **Harden against regression:** add a build/test guard asserting `Aspire.AppHost.Sdk` version == `Aspire.Hosting` package version (this exact drift is what cost Epic 9 its live-boot half).
 
 Effort: fixes are done/one-line; Blocker C triage is bounded (needs a quiet host + dashboard). Risk: low for the fixes; Blocker C is the only thing between here and the AC9 green.
@@ -98,8 +109,8 @@ Replace the 2-branch `GetProjectPath` probe with `RepositoryProjectPaths.GetRefe
 ```
 Rationale: align the SDK-staged DCP (→ 0.24.3) with the `Aspire.Hosting` 13.4.6 package so `dcp start-apiserver --tls-cert-file` is accepted. This is the actual resolution of the Epic 9 "DCP `--tls-cert-file`" residual.
 
-### 4.3 NEW defect — `tenants` domain-service aborts (exit 134) on AppHost boot
-Open a story/bug: on a DCP-capable host, `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true` lane boots the topology but `tenants` exits 134 (SIGABRT) ~2 s post-launch (eventstore OK). Acceptance: identify the abort cause from dashboard resource logs, fix, and land `SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` green (proves SearchIndexEntryChanged seed → search hit, SearchIndexEntryRemoved → 0, archived-status filter). Prereq: a **non-saturated** DCP host.
+### 4.3 NEW defect — `tenants` domain-service aborts (exit 134) on AppHost boot — ROOT CAUSE PINNED
+On a DCP-capable host the lane boots the topology but `tenants` exits 134 (SIGABRT) ~2 s post-launch (eventstore OK) because its startup DI resolution of the keyed `EventStoreDomainDiagnostics("tenants")` (Tenants `Program.cs:67`, validated in the SDK's `ValidateDomainQueryHandlerRoutes`) throws — the pinned EventStore submodule (`v3.43.0-9`) doesn't register it; the pinned Tenants submodule (`v2.3.0-6`) requires it. **Fix = align the EventStore ↔ Tenants submodule versions** (bump EventStore to the version whose `AddEventStoreDomainService` registers the keyed diagnostics, or align Tenants to the current SDK). Acceptance: on a DCP host the lane reaches all-6-Running and `SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` passes (SearchIndexEntryChanged seed → search hit, SearchIndexEntryRemoved → 0, archived-status filter). **This is a platform submodule-alignment decision (owner: Jerome/platform), independent of Folders.**
 
 ### 4.4 Regression guard (recommended)
 Add a lightweight test/MSBuild check asserting `Aspire.AppHost.Sdk` == `Aspire.Hosting` version so SDK/package drift can never silently re-block the live lane.
