@@ -1,0 +1,118 @@
+# Sprint Change Proposal — Stand up & run the DCP-capable AppHost lane (Epic 10 live evidence)
+
+- **Date:** 2026-07-07
+- **Author:** Amelia (dev) via `bmad-correct-course`, for Jérôme Piquot
+- **Trigger (verbatim):** "Stand up and run the DCP-capable AppHost lane for Epic 10 live evidence: topology boot, folders-index auto-provisioning, SearchIndexEntryChanged, SearchIndexEntryRemoved, archived status filtering, and query-facade search/hydration."
+- **Change scope classification:** **Moderate** (two real fixes applied + one newly-surfaced defect to triage; backlog/status reconciliation needed). Routes to Developer + PO.
+- **Mode:** Batch (operational investigation was run first; findings presented together).
+
+---
+
+## Section 1 — Issue Summary
+
+Epic 9 and Epic 10 carried a standing residual: the live-boot half of the AppHost topology was **never verified**, blamed on an "environment-wide Aspire CLI 13.4.5 / DCP `--tls-cert-file` mismatch." Multiple acceptance items were parked as **BLOCKED-PENDING the DCP-capable lane**:
+
+- **Epic 9 AC6** (stories 9.1 / 9.2 / 9.3) — live-boot half.
+- **Story 10.3** D1 #3 — the Tier-3 cross-process harness `tests/Hexalith.Folders.AppHost.Tests` (built, never executed live).
+- **Story 10.4 AC9** — the 6-service seed → search → remove → archive round-trip against the real `folders-index`.
+- **Story 10.5 AC15** — live `folders-index` round-trip / query-facade sign-off.
+- **sprint-status.yaml:280** — the literal action this proposal executes.
+
+This change **stands the lane up**. The DCP lane is now **operational** — it composes, DCP orchestrates, the dashboard comes up, containers start, and all six services launch. Getting there required fixing **two real, latent defects** the live boot surfaced (neither of which any structural/conformance test could catch). A **third defect** (a service-startup crash) now blocks the final all-Running state and therefore the AC9 round-trip green; it is precisely characterised below for follow-up.
+
+---
+
+## Section 2 — Impact Analysis (what the live lane proved)
+
+### Environment reality (corrects the Epic 9 framing)
+The environment **is** DCP-capable today. The `aspire` CLI (13.4.5) is **not on the code path** the harness uses — `DistributedApplicationTestingBuilder` drives DCP straight from the NuGet packages — so the "CLI blocker" framing was a red herring for this lane.
+
+| Capability | State |
+|---|---|
+| Docker daemon | 29.4.3, reachable |
+| Dapr runtime | 1.18.1 (placement / scheduler / redis / zipkin up) |
+| DCP orchestration | 13.4.6 → dcp **0.24.3** present in NuGet cache |
+| Aspire.Hosting(.Testing) | 13.4.6 |
+
+### Blocker A — Tenants project-path composition (FIXED, committed)
+`references/Hexalith.Tenants/…/TenantsServerProjectMetadata.ProjectPath` used the legacy 2-branch probe (`<root>/src/…` and `<root>/Hexalith.Tenants/src/…`) and **omitted the canonical `<root>/references/Hexalith.Tenants/src/…` layout** that Folders uses. Result: topology composition threw
+`Project file '<root>/Hexalith.Tenants/src/Hexalith.Tenants/Hexalith.Tenants.csproj' was not found` at `Program.cs:42` (`AddHexalithTenantsServer`). EventStore and Memories were already references-aware via the shared `RepositoryProjectPaths.GetReferencedModuleProjectPath` helper; Tenants was the lone laggard.
+
+- **Fix:** switch `TenantsServerProjectMetadata` to `GetReferencedModuleProjectPath("Hexalith.Tenants","src","Hexalith.Tenants","Hexalith.Tenants.csproj")` — mirrors EventStore/Memories.
+- **Status:** **committed in the submodule as `d923393`** ("refactor(TenantsServerProjectMetadata): simplify project path resolution and enhance documentation"), parent pointer bumped `9c7aa5c → d923393` (uncommitted in parent). Verified: composition now proceeds past Tenants.
+- **Blast radius:** platform bug affecting **every** consumer that hosts Tenants under `references/` — this fix belongs upstream in `Hexalith.Tenants`.
+
+### Blocker B — DCP `--tls-cert-file` / AppHost SDK version drift (FIXED)
+The real "Epic 9 environment-wide DCP mismatch," pinned to a **version-pin drift inside the Folders AppHost csproj**:
+
+- `Aspire.AppHost.Sdk` was pinned **13.3.5**, which stages `aspire.hosting.orchestration.linux-x64/13.3.5 → dcp 0.23.6`. **dcp 0.23.6 does not support `--tls-cert-file`.**
+- `Aspire.Hosting` (package, `Directory.Packages.props`) is **13.4.6**, which **emits** `dcp start-apiserver … --tls-cert-file …`.
+- Direct-run evidence: `dcp … the program finished with an error {"ExitCode": 1, "error": "unknown flag: --tls-cert-file"}` → the apiserver dies → `KubernetesService.EnsureKubernetesAsync` then times out at its hardcoded 20 s connect window (the symptom seen from the harness).
+
+| orchestration pkg | dcp version | supports `--tls-cert-file` |
+|---|---|---|
+| 13.3.5 | 0.23.6 | ❌ NO |
+| 13.4.5 / **13.4.6** | 0.24.3 | ✅ YES |
+
+- **Fix:** `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj` → `Aspire.AppHost.Sdk/13.3.5` **→ `13.4.6`** (one line). Now stages dcp 0.24.3 which accepts the flag. **Folders-repo change, no submodule involved.** Status: applied in working tree (uncommitted).
+- **Verified live (post-fix):** `start-apiserver … --tls-cert-file` accepted (no "unknown flag"); Aspire dashboard "Now listening on https://localhost:17217"; "Distributed application started"; DCP brought up `memories-vectors` (Redis Stack) + `memories-graphs` (FalkorDB) containers; ~10 DCP-managed processes (6 services + Dapr sidecars); `eventstore` reached **Running**.
+- **Dead-ends ruled out (do not pursue):** (1) box CPU saturation (load ~15.6/16 from other sessions + two long-running `java` procs) slowed boot but was **not** the cause; (2) `DcpPublisher__*` timeout env vars **do not** widen the hardcoded 20 s `EnsureKubernetes` Polly timeout, and they carry mixed TimeSpan/int types (`ContainerRuntimeInitializationTimeout` is a TimeSpan; an integer value overflows `CancelAfter`).
+
+### Blocker C — `tenants` service aborts on startup (NEW, open)
+With A + B fixed, the topology boots far enough to launch every service, but the fixture times out (8 min) waiting on `tenants`:
+
+```
+Resource 'tenants' failed to reach [Running]
+- Current State: Finished   Start: 17:26:28   Stop: 17:26:30   Exit Code: 134 (SIGABRT)
+```
+
+`eventstore` reached Running; **`tenants` aborts ~2 s after launch (exit 134 / SIGABRT)** and never reaches Running, so the fixture's `WaitForResourceAsync("tenants", Running)` waits out the full budget. This is a distinct, newly-surfaced defect — **the live lane's job is exactly to surface this.** Root cause not yet pinned: DCP forwards per-resource stdout/stderr to the dashboard (not to greppable files), so the abort reason needs the Aspire dashboard resource logs, ideally on a **non-saturated DCP host** (leading hypothesis: a startup dependency/actor-registration FailFast aggravated by CPU contention, since the SIGABRT is deterministic at ~2 s).
+
+### Artifact / status impact
+- `sprint-status.yaml:280` DCP-lane action → **partially satisfied** (lane stood up + operational; two blockers fixed) with a **new follow-up** (Blocker C). Epic 9 AC6 live-boot, Story 10.3 D1#3, 10.4 AC9, 10.5 AC15 remain **owed** until Blocker C clears and the round-trip runs green.
+- **Concurrency caveat (important):** this working tree is being edited by **other concurrent sessions** (Epic 11 refactor). During this run the Tenants fix was committed by another session (`d923393`), and `references/Hexalith.Memories` + several `Hexalith.Folders.Server` files show unrelated in-flight changes. **No sprint-status/epics edits were made here** to avoid clobbering concurrent work.
+
+---
+
+## Section 3 — Recommended Approach
+
+**Direct adjustment**, in three moves:
+
+1. **Keep both fixes.** Blocker A is already committed upstream in the submodule (`d923393`) — good. **Commit the AppHost SDK bump** (`13.4.6`) in the Folders repo; it is the substantive unblock and is verified.
+2. **Open a focused defect for Blocker C** (`tenants` exit 134 on AppHost boot). Re-run the opt-in lane on a **quiet DCP host** and read the `tenants` resource logs from the Aspire dashboard to root-cause; then land the AC9 green.
+3. **Harden against regression:** add a build/test guard asserting `Aspire.AppHost.Sdk` version == `Aspire.Hosting` package version (this exact drift is what cost Epic 9 its live-boot half).
+
+Effort: fixes are done/one-line; Blocker C triage is bounded (needs a quiet host + dashboard). Risk: low for the fixes; Blocker C is the only thing between here and the AC9 green.
+
+---
+
+## Section 4 — Detailed Change Proposals
+
+### 4.1 `references/Hexalith.Tenants/src/Hexalith.Tenants.Aspire/TenantsServerProjectMetadata.cs` — DONE (submodule `d923393`)
+Replace the 2-branch `GetProjectPath` probe with `RepositoryProjectPaths.GetReferencedModuleProjectPath("Hexalith.Tenants","src","Hexalith.Tenants","Hexalith.Tenants.csproj")` (references-aware; mirrors EventStore/Memories). Rationale: resolves the `references/` submodule layout Folders uses. **Upstream to `Hexalith.Tenants` main** — platform-wide fix.
+
+### 4.2 `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj` — APPLIED (uncommitted)
+```
+- <Project Sdk="Aspire.AppHost.Sdk/13.3.5">
++ <Project Sdk="Aspire.AppHost.Sdk/13.4.6">
+```
+Rationale: align the SDK-staged DCP (→ 0.24.3) with the `Aspire.Hosting` 13.4.6 package so `dcp start-apiserver --tls-cert-file` is accepted. This is the actual resolution of the Epic 9 "DCP `--tls-cert-file`" residual.
+
+### 4.3 NEW defect — `tenants` domain-service aborts (exit 134) on AppHost boot
+Open a story/bug: on a DCP-capable host, `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true` lane boots the topology but `tenants` exits 134 (SIGABRT) ~2 s post-launch (eventstore OK). Acceptance: identify the abort cause from dashboard resource logs, fix, and land `SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` green (proves SearchIndexEntryChanged seed → search hit, SearchIndexEntryRemoved → 0, archived-status filter). Prereq: a **non-saturated** DCP host.
+
+### 4.4 Regression guard (recommended)
+Add a lightweight test/MSBuild check asserting `Aspire.AppHost.Sdk` == `Aspire.Hosting` version so SDK/package drift can never silently re-block the live lane.
+
+---
+
+## Section 5 — Implementation Handoff
+
+- **Developer:** commit 4.2 (AppHost SDK bump) in Folders; confirm `references/Hexalith.Tenants` pointer bump to `d923393` is committed in the parent **separately from** the concurrent Epic 11 changes; add 4.4.
+- **PO / Jerome:** upstream `d923393` to `Hexalith.Tenants` main; schedule the Blocker-C re-run on a quiet DCP host; reconcile sprint-status once Blocker C clears (deferred here due to concurrent edits).
+- **Success criteria:** on a quiet DCP host, the opt-in lane boots all 6 resources to Running and `SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` passes — closing Epic 9 AC6 live-boot, 10.3 D1#3, 10.4 AC9, 10.5 AC15.
+
+### Verification log (this session)
+- Build: `Hexalith.Folders.AppHost.Tests` (+ cross-repo servers) 0 warn / 0 err, both fixes compile.
+- run#1 → Blocker A (composition, `Program.cs:42`). run#2/#5 → Blocker B symptom (`EnsureKubernetes` 20 s). direct-run → Blocker B root cause (`unknown flag: --tls-cert-file`, ExitCode 1). run#6 (post-fixes) → apiserver + dashboard + containers + 6 services up; eventstore Running; `tenants` exit 134 (Blocker C).
+- Hermetic behaviour unchanged: without the opt-in env var the harness skips (env-var gate untouched), so normal CI stays green.
