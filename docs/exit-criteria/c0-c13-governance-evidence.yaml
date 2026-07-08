@@ -55,6 +55,13 @@ approval_policy:
     - 'n/a'
     - unknown
     - yes
+# Governance-approval / NFR-traceability decoupling precedent (see architecture.md §"Architecture Exit
+# Criteria" → "Governance-approval / NFR-traceability decoupling precedent" and docs/exit-criteria/
+# nfr-traceability.md "Status semantics"). A criterion's `approved` status here and the status of the NFR
+# rows that cite it in nfr-traceability.md are separately-owned tracks: approving a criterion does NOT
+# auto-convert its cited NFR rows to `covered`, and a lingering `reference-pending` NFR row does NOT reopen
+# this approval. C3 and C4 are approved below yet still own reference-pending rows (NFR57 cites C3; NFR26 and
+# NFR28 cite C4), hard-pinned by NfrTraceabilityConformanceTests.ReferencePendingRowsAreOwnedAndSurfaceKnownGaps.
 criteria:
   - criterion_id: C0
     title: Contract Spine source of truth

@@ -32,7 +32,12 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
   that is collected at release time rather than on every PR.
 - `reference-pending` — an owned gap remains. The row stays visible with owner, gap, consuming story, and
   release-blocking semantics. Reference-pending rows are **not** converted to covered by writing narrative;
-  they block the release-readiness review until their owner records the missing evidence.
+  they block the release-readiness review until their owner records the missing evidence. A row that cites a
+  governance criterion already marked `approved` in `docs/exit-criteria/c0-c13-governance-evidence.yaml` still
+  stays `reference-pending` while a separately-owned downstream evidence or conformance-guard gap remains:
+  criterion approval and NFR-row status are distinct tracks, so approving the criterion never auto-converts
+  its cited rows (precedent: `C3` with `NFR57`, and `C4` with `NFR26` / `NFR28`, are approved criteria whose
+  cited rows stay reference-pending below).
 
 ## NFR traceability table
 

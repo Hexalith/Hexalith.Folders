@@ -1032,6 +1032,8 @@ So that I can diagnose provider setup before agents run workspace tasks.
 
 Developers and AI agents can prepare workspaces, acquire locks, mutate files safely, query bounded context, commit changes, and receive deterministic failure, status, idempotency, and redaction behavior through the canonical repository-backed task lifecycle.
 
+_**MVP limitation (owned, 2026-07-07 via bmad-correct-course, `sprint-change-proposal-2026-07-07-seed-backed-read-models.md`):** the workspace **transition-evidence** read model (`IWorkspaceTransitionEvidenceReadModel`; C6 lifecycle, FR46 operational evidence) is a **seed-backed dev/test seam** (`InMemoryWorkspaceTransitionEvidenceReadModel`, `TryAddSingleton` default) with no production projection; in a deployed host it is empty and reads return safe `NotFoundSafe`. Authoring + wiring its EventStore-backed projection is owned by Epic 11 **Story 11.10**, alongside the Epic 6 ops-console diagnostics read model; see `architecture.md` §"Ops Console & Transition-Evidence Read Models (MVP limitation)". The lifecycle **determinism** NFR (NFR52, Story 4.15) is unaffected — it covers the projection-backed lifecycle/status/lock/cleanup/task read models and remains green._
+
 ### Story 4.1: Implement Folder aggregate state machine with C6 transition matrix
 
 As a domain developer,
@@ -1361,6 +1363,8 @@ Operators, tenant administrators, and audit reviewers can find a workspace, prov
 
 This epic implements UX-DR1 through UX-DR30 directly; UX-DR31 and UX-DR32 are verified through Story 6.11 and release-evidenced through Workstream 7.
 Epic 6 owns the console experience, while Epics 3-5 own the readiness, lifecycle, parity, status, and evidence semantics that make the console truthful. Console stories must consume those shared semantics rather than defining UI-only state names or hidden control paths.
+
+_**MVP limitation (owned, 2026-07-07 via bmad-correct-course, `sprint-change-proposal-2026-07-07-seed-backed-read-models.md`):** the deployed ops-console **diagnostics** read model (`IOpsConsoleDiagnosticsReadModel`, seven views) is a **seed-backed dev/test seam** (`InMemoryOpsConsoleDiagnosticsReadModel`, `TryAddSingleton` default) with no production projection; in a deployed host it is empty and diagnostic reads return safe `NotFoundSafe` (metadata-only, no leak). The console is read-model-based and safe, but unpopulated — a documented deferral, not a defect. Authoring + wiring the EventStore-backed diagnostics projection is owned by Epic 11 **Story 11.10**; see `architecture.md` §"Ops Console & Transition-Evidence Read Models (MVP limitation)". The same limitation and owner apply to the Epic 4 workspace transition-evidence read model._
 
 ### Story 6.1: Audit and operation-timeline query endpoints
 
@@ -2035,6 +2039,7 @@ So that later refactors do not fail unrelated governance checks.
 **When** hygiene fixes are applied
 **Then** tracked `.lscache` files and root litter are removed, stale READMEs are corrected, fragile auth/package/process pins are made behavioral or flexible, and Aspire version text is aligned to authoritative package pins
 **And** the governance-completeness gate enforces fresh, exact approval records generically for every approval-backed exit criterion — `GovernanceCompletenessGateTests` rejects a missing/dropped `approval` block, an unsatisfied required authority, a generic (non-named) approver, and a missing/future/stale `approved_on` under the mandatory `approval_policy.max_age_days` window — so no approval-backed criterion (C3/C4 today) can pass with a stale report or a generic "Legal-approved" phrase (delivered ahead of Story 11.3 via bmad-correct-course `sprint-change-proposal-2026-07-07-governance-approval-freshness.md`)
+**And** the honest-green gate baseline is preserved when CI changes: `ci.yml` keeps the `e2e-gates` (full 63-test `Hexalith.Folders.UI.E2E.Tests` lane) and `accessibility-gates` (axe / WCAG 2.2 AA) jobs present and blocking, `run-e2e-ci-gates.ps1` never narrows the lane (`--filter`/`-namespace`/`FullyQualifiedName` stay absent; report `scope=full-ui-e2e-lane`), the AD7 forbidden-substring set (`upload-artifact`/`secrets.`/`services:`/`dotnet publish`/`docker`/`playwright install`/`--recursive`) stays absent from `ci.yml` and the gate scripts, and the CI-workflow conformance classes — `E2eCiWorkflowConformanceTests`, `AccessibilityCiWorkflowConformanceTests`, plus the new consolidated `HonestGreenGateBaselineConformanceTests` (both gate jobs present + blocking; the five sibling conformance classes referenced) — stay green (closes the Epic 8 "preserve full UI E2E and accessibility gates … keep no-filter and forbidden-substring conformance checks intact when CI changes" action item)
 **And** no REST/OpenAPI behavior changes.
 
 ### Story 11.4: Consolidate Server transport, envelope, and route helper duplication
@@ -2094,6 +2099,10 @@ So that later refactors change production seams once and tests stay focused.
 **Then** an automated conformance guard (e.g. `EventStoreGatewayDoubleConformanceTests` in `tests/Hexalith.Folders.Testing.Tests`, following the `ScaffoldContractTests` repo-root source-scan idiom) fails the build when any test source declares an `IEventStoreGatewayClient` double outside the approved allowlist — the canonical rejection-propagating double, the single shared recording double, and the named `ThrowingEventStoreGatewayClient` / `UnsupportedGatewayClient` negative-path doubles — so new ad-hoc flattening copies cannot be introduced
 **And** a positive behavioral test proves the canonical double propagates a `DomainServiceWireResult` rejection as an `EventStoreGatewayException` carrying the canonical `FolderResultCode` reason code (e.g. `FolderAclDenied`) rather than flattening it to an accepted response.
 
+**Given** test-helper consolidation renames or moves test classes/projects that the CI-workflow conformance FQN pins depend on
+**When** helpers move into `Hexalith.Folders.Testing`
+**Then** the honest-green gate baseline is not weakened: the `e2e-gates` + `accessibility-gates` jobs stay present and blocking in `ci.yml`, the full 63-test `UI.E2E.Tests` lane stays un-narrowed (no `--filter`/`-namespace`/`FullyQualifiedName`), and `E2eCiWorkflowConformanceTests` / `AccessibilityCiWorkflowConformanceTests` / `HonestGreenGateBaselineConformanceTests` stay green — any conformance-class or `UI.E2E.Tests` rename moves its FQN pins in the same commit.
+
 ### Story 11.8: Adopt Commons/EventStore primitives in the Folders domain
 
 As a domain maintainer,
@@ -2131,7 +2140,8 @@ So that Folders stops reimplementing request routing, subscription mapping, and 
 **When** Server/Workers are refactored
 **Then** authorization moves into `IDomainServiceAdmissionStage` or equivalent, `FoldersDomainServiceRequestHandler` is deleted where safe, `MapEventStoreDomainEvents` replaces local mapping, and Memories publication/search wrappers are shared
 **And** the Server-side EventStore-backed semantic-indexing bridge read model is wired for the query facade and indexing-status paths — `EventStoreSemanticIndexingBridgeStore` is relocated from `Hexalith.Folders.Workers` into a Server-referenceable project and registered in `AddFoldersContextSearchFacade` (replacing the fail-safe `UnavailableSemanticIndexingBridgeReadModel` default), closing the Epic 10 deferral recorded in `architecture.md` §"Query Facade (Story 10.5)", and the live `folders-index` search/status round-trip is proven on the DCP-capable lane (or the residual is re-carried with evidence)
-**And** REST parity and worker semantic-indexing behavior remain unchanged.
+**And** the seed-backed ops-console **diagnostics** (`IOpsConsoleDiagnosticsReadModel`, seven views) and workspace **transition-evidence** (`IWorkspaceTransitionEvidenceReadModel`) read models are given EventStore-backed projections and registered in Server (replacing the `InMemoryOpsConsoleDiagnosticsReadModel` / `InMemoryWorkspaceTransitionEvidenceReadModel` `TryAddSingleton` defaults) — these two have no projection logic today, so both authoring and wiring are in scope — closing the deferral recorded in `architecture.md` §"Ops Console & Transition-Evidence Read Models (MVP limitation)", with the live populated read proven on the DCP-capable lane (or the residual re-carried with evidence)
+**And** REST parity, console read-model-based behavior, worker semantic-indexing behavior, and the NFR52 lifecycle-determinism evidence (Story 4.15) remain unchanged.
 
 ### Story 11.11: Harden FrontComposer and Fluent UI conformance below the shell
 
@@ -2144,6 +2154,8 @@ So that Epic 6 satisfies FrontComposer governance in implementation, not only la
 **Given** current UI pages/components contain local user context, token relay, icons, raw tables/controls, undefined `fc-*` classes, and custom loading/copy/banner components
 **When** UI conformance hardening lands
 **Then** Shell user-context/token/OIDC/test helpers are used, icons/components are upstreamed or consumed from FrontComposer, tables use FluentDataGrid, raw interactive controls are removed, accordions are used for multi-section pages, and no mutation/file-content boundary is weakened.
+
+**And** UI hardening does not shrink the accessibility or E2E coverage: `Hexalith.Folders.UI.E2E.Tests` keeps all 63 cases running in the blocking `e2e-gates` + `accessibility-gates` jobs (no `--filter` narrowing, no skipped Accessibility cases), and the axe / WCAG 2.2 AA gate plus `E2eCiWorkflowConformanceTests` / `AccessibilityCiWorkflowConformanceTests` / `HonestGreenGateBaselineConformanceTests` stay green.
 
 ### Story 11.12: Modernize the generated client and shared idempotency/ULID helpers
 
@@ -2168,3 +2180,5 @@ So that downstream agents can trust the new module boundary.
 **Given** Stories 11.1-11.12 are complete
 **When** final cleanup runs
 **Then** obsolete local code/tests are deleted or re-pointed, PRD/epics/architecture/UX/project-context are synchronized, ADRs record AppHost/Aspire exception, ServiceDefaults deletion, query-handler conformance decision, and reserved-tenant decision, and the final verification checklist from `fable_Folders_changes.md` is satisfied or explicitly blocked with evidence.
+
+**And** the final verification confirms the honest-green gate baseline is intact end-to-end: both `e2e-gates` (full 63-test lane) and `accessibility-gates` (axe / WCAG 2.2 AA) jobs are present and blocking in `ci.yml`, the no-filter and AD7 forbidden-substring invariants hold, and all five CI-workflow conformance classes plus `HonestGreenGateBaselineConformanceTests` are green — with any deviation explicitly blocked with evidence, never silently relaxed.

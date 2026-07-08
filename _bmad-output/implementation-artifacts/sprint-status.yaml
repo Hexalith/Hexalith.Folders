@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev)
+# last_updated: 2026-07-08 (Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green))
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-07-07 (Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev)
+last_updated: 2026-07-08 (Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green))
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -261,7 +261,7 @@ development_status:
   # overwritten by a classic story file (user decision, /bmad-create-story 11.1). epic-11 -> in-progress.
   epic-11: in-progress
   11-1-establish-refactor-baseline-and-governance-pin-map: done
-  11-2-land-platform-prerequisite-apis-in-shared-modules: backlog
+  11-2-land-platform-prerequisite-apis-in-shared-modules: ready-for-dev
   11-3-apply-wire-preserving-repo-hygiene-and-fragile-gate-fixes: backlog
   11-4-consolidate-server-transport-envelope-and-route-helper-duplication: backlog
   11-5-consolidate-domain-provider-duplication-and-fix-provider-correctness-defects: backlog
@@ -382,6 +382,13 @@ action_items:
     priority: medium
     status: done
   - epic: 8
+    # Scoped 2026-07-08 via bmad-correct-course (sprint-change-proposal-2026-07-08-rest-negative-path-coverage.md):
+    # Minor/Direct-Adjustment, test-only. Four route-level Server.Tests additions approved as drafted —
+    # (1) ListFolderAclEntries 200 entry-shape/aclEntryId round-trip; (2) authenticated 403 denied_safe via
+    # tenant-mismatch for ACL-list + retry-eligibility reads (no new denying-double needed);
+    # (3) op7 GetWorkspaceRetryEligibility 404 (unknown workspace) + 503 (throwing read model);
+    # (4) op3 UpdateFolderAclEntry route-level 404 via faulting-gateway double. No src/spine/parity change.
+    # Stays open pending implementation (recommended: focused bmad-dev-story). Owner Amelia impl / Murat verify.
     action: "Extend Story 8.1 REST negative-path coverage for authenticated 403 safe denial, selected 404/503 read legs, and route-level ListFolderAclEntries 200 shape."
     owner: "Murat / Amelia"
     priority: medium
@@ -397,12 +404,33 @@ action_items:
     priority: medium
     status: open
   - epic: 8
-    action: "Preserve full UI E2E and accessibility gates as part of the honest-green baseline; keep no-filter and forbidden-substring conformance checks intact when CI changes."
+    # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-honest-green-gate-baseline.md):
+    # the four existing CI-workflow conformance tests (E2e/Accessibility/ContractParity/SecurityRedaction +
+    # Baseline) already enforce the full-63 UI.E2E lane, axe/WCAG 2.2 AA, the no-filter (no --filter/-namespace/
+    # FullyQualifiedName narrowing) and AD7 forbidden-substring invariants. The gap was governance-register
+    # coverage, now closed: (1) Story 11.1 pin map names the two E2E/accessibility conformance classes + the new
+    # guard + both invariants and adds a §10 honest-green-baseline handoff constraint; (2) explicit "preserve gates
+    # when CI changes" ACs added to Epic 11 Stories 11.3/11.7/11.11/11.13; (3) new consolidated belt-and-suspenders
+    # guard tests/Hexalith.Folders.Contracts.Tests/Deployment/HonestGreenGateBaselineConformanceTests.cs (both gate
+    # jobs present+blocking, no-filter, AD7 absent, five sibling conformance classes referenced) — authored + GREEN
+    # (build 0 warnings; 4/4 pass; 42/42 across the CI-workflow conformance classes).
+    action: "Preserve full UI E2E and accessibility gates as part of the honest-green baseline; keep no-filter and forbidden-substring conformance checks intact when CI changes. RESOLVED: pinned in Story 11.1 register + Epic 11 ACs (11.3/11.7/11.11/11.13) + new HonestGreenGateBaselineConformanceTests guard (green)."
     owner: "Murat / Amelia"
     priority: high
-    status: open
+    status: done
   - epic: 8
-    action: "Decide whether seed-backed MVP diagnostics and transition-evidence read models become projection-backed production implementations or remain explicitly owned limitations."
+    # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-seed-backed-read-models):
+    # "record-limitation branch" taken (mirrors the same-day Memories query-facade bridge resolution at line 296).
+    # The ops-console diagnostics (IOpsConsoleDiagnosticsReadModel, 7 views) and workspace transition-evidence
+    # (IWorkspaceTransitionEvidenceReadModel) read models stay seed-backed InMemory TryAddSingleton defaults for
+    # MVP; production returns safe NotFoundSafe (metadata-only, no leak). Unlike the six replay-projected read
+    # models (lifecycle/branch-ref/lock/status/cleanup/task, deterministic via InMemoryFolderRepository + Story
+    # 4.15/NFR52), these two have NO projection anywhere -> Story 11.10 must author AND wire the EventStore-backed
+    # projections. Drift reconciled: architecture.md line 155 wording + new section "Ops Console & Transition-
+    # Evidence Read Models (MVP limitation)"; epics.md Epic 6/Epic 4 notes; Story 11.10 gained an AC; deferred-
+    # work.md dated section. NFR51/NFR52 remain honestly covered (nfr-traceability.md untouched; optional gate-
+    # lockstep follow-up owned by Murat). Wiring re-homed to Epic 11 Story 11.10.
+    action: "Decide whether seed-backed MVP diagnostics and transition-evidence read models become projection-backed production implementations or remain explicitly owned limitations. RESOLVED (record-limitation branch): owned limitation for MVP; drift reconciled in architecture.md/epics.md/deferred-work.md; production-projection wiring re-homed to Epic 11 Story 11.10 (AC added)."
     owner: "Winston / Amelia"
     priority: medium
-    status: open
+    status: done
