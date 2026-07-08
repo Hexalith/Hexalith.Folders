@@ -8,6 +8,20 @@
 
 ---
 
+## ✅ Status update — 2026-07-08: the topology boots live under DCP (live-boot evidence achieved)
+
+After the EventStore `3.43.0` packages were published, run #8 of the opt-in lane is **`Test Run Successful` — 2 passed, 2 skipped, 0 failed**:
+- ✅ `FullFoldersTopologyBootsRunningAcrossProcesses` — **all 6 resources reached Running** (eventstore, tenants, folders, folders-workers, folders-ui, memories).
+- ✅ `EventStorePublisherAndFolderWorkerSubscriberAreLive` — pub/sub participants live, folders gateway endpoint resolved.
+- ⏭️ `SeedRemoveAndArchiveRoundTripAgainstFoldersIndex` (AC9) + the folders.events probe — SKIP (Blocker D, below).
+
+**These two passes are the Epic 9 AC6 live-boot + Story 10.3 D1#3 evidence.** Blockers A, B, C are resolved. Two follow-ups remain (see §3):
+
+- **Blocker C — durable fix.** C was fixed by building the **Tenants server from source** (`-p:UseHexalithProjectReferences=true` → source DomainService `v3.43.0-16`). The published-package route (bump `Hexalith.EventStore.*` pins `3.42.0→3.43.0`) is **not viable as-is**: it breaks `Hexalith.Folders.Server` with `CS1704` because the pins are deliberately one minor *behind* the EventStore submodule source so source wins version-resolution; matching them ties the version → source-vs-package collision. Durable fix is a **platform decision**: let the Epic 11 refactor (removing EventStore refs from the Folders domain csproj) land first, then bump; or keep the EventStore source ahead of the published package; or build the Tenants server in source mode by default. The source-mode build here is a **local proof, not committed**.
+- **Blocker D — AC9 round-trip (SKIP, not fail).** The harness resolves the Dapr sidecar HTTP endpoint on the **project** resource (`App.GetEndpoint("folders-workers","dapr-http")`), but it lives on a **separate sidecar resource** and isn't host-exposed by the default `DaprSidecarOptions` in `FoldersAspireModule.cs`. Running the seed→search→remove→archive assertions needs the sidecar HTTP endpoint **resolvable + host-reachable** — a small design story touching the AppHost topology + the harness.
+
+---
+
 ## Section 1 — Issue Summary
 
 Epic 9 and Epic 10 carried a standing residual: the live-boot half of the AppHost topology was **never verified**, blamed on an "environment-wide Aspire CLI 13.4.5 / DCP `--tls-cert-file` mismatch." Multiple acceptance items were parked as **BLOCKED-PENDING the DCP-capable lane**:
