@@ -291,9 +291,12 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
 
     private Uri? TryResolveDaprHttpEndpoint(string resourceName)
     {
+        // The Dapr sidecar HTTP endpoint lives on the CommunityToolkit `{appId}-dapr` DaprSidecar resource under the
+        // endpoint name "http" (the daprd process exposes it host-reachably), NOT on the project resource under
+        // "dapr-http". Resolve the sidecar resource so the round-trip can publish through the real sidecar.
         try
         {
-            return _fixture.App.GetEndpoint(resourceName, "dapr-http");
+            return _fixture.App.GetEndpoint($"{resourceName}-dapr", "http");
         }
         catch (Exception exception) when (exception is InvalidOperationException or ArgumentException)
         {
