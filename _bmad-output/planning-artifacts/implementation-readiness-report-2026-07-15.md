@@ -3,6 +3,12 @@ stepsCompleted:
   - step-01-document-discovery
   - step-02-prd-analysis
   - step-03-epic-coverage-validation
+  - step-04-ux-alignment
+  - step-05-epic-quality-review
+  - step-06-final-assessment
+status: not-ready
+assessedAt: 2026-07-15
+assessor: Codex — BMAD Implementation Readiness workflow
 inputDocuments:
   prd: _bmad-output/planning-artifacts/prd.md
   architecture: _bmad-output/planning-artifacts/architecture.md
@@ -558,3 +564,328 @@ No FR number is wholly absent from the epics document. The gaps below are missin
 - Verified full semantic coverage: 72.4%
 
 The numeric coverage map is complete, but it overstates readiness because it was written against older requirement wording. The 16 partial rows must be reconciled before the epics can be treated as a faithful implementation path for the finalized 2026-07-14 PRD.
+
+## UX Alignment Assessment
+
+### UX Document Status
+
+**Found:** `ux-design-specification.md` is a complete, whole-document UX specification with 32 stable traceability requirements (`UX-DR1`–`UX-DR32`), three critical user flows, six domain-specific component definitions, responsive behavior, and accessibility verification guidance. No sharded or competing UX document was found.
+
+### UX ↔ PRD Alignment
+
+#### Strong Alignment
+
+- The UX centers the same PRD outcome: find a workspace, prove its tenant boundary, and understand its trust state from safe evidence.
+- The read-only console boundary is consistent throughout: no mutation, repair, file editing, raw diffs, credential reveal, unrestricted browsing, or unauthorized-resource confirmation.
+- Metadata-only folder orientation, audit timelines, provider readiness, lock/dirty/commit/failure evidence, freshness, correlation/task identifiers, and safe denial states trace directly to PRD journeys UJ5, UJ6, UJ8, and UJ9 and FR31, FR36, and FR52–FR57.
+- Redacted, denied, inaccessible, unknown, missing, stale, unavailable, and failed states are deliberately distinguishable; this aligns with C9 and the PRD’s requirement that redaction never appear as missing data or silent truncation.
+- WCAG 2.2 AA, keyboard access, visible focus, semantic structure, non-color-only status, responsive fallback, zoom testing, screen-reader review, and forced-colors testing align with NFR65–NFR73.
+- UX-DR1 correctly requires Hexalith.FrontComposer Shell plus Fluent UI Blazor and prohibits a separate design system.
+- FR58 is treated as a backend metadata-token discovery capability without adding content-preview or authorization-bypass UI.
+
+#### Alignment Issues
+
+**UX-PRD-1 — Global search scope is ambiguous (Critical).** UX-DR2 and several narrative sections call for “global search” across tenant, folder, workspace, repository binding, task, correlation ID, provider, state, and time window. The current PRD permits only explicitly authorized tenant/folder scope and forbids global cross-tenant browsing or resource inference.
+
+- Required correction: Define “global” as global only within the caller’s already-authorized tenant/folder search scope. Authorization and safe-scope establishment must precede candidate lookup, filtering, result counting, suggestions, and empty-state classification.
+
+**UX-PRD-2 — Canonical state and disposition vocabulary is stale/incomplete (High).** UX-DR13 requires canonical vocabulary, but UX-DR15 lists a mixed set of workspace states, folder lifecycle states, freshness states, and visibility states. It omits `requested`, `preparing`, `changes_staged`, `unknown_provider_outcome`, and `reconciliation_required` as explicit workspace lifecycle terms.
+
+- Required correction: Model and display separate dimensions for workspace lifecycle, lock state, operator disposition, folder lifecycle, projection freshness, and visibility/redaction. Use the finalized PRD’s exact lowercase wire vocabulary.
+
+**UX-PRD-3 — Automatic reconciliation experience is underspecified (High).** The PRD requires `unknown_provider_outcome` to enter bounded automatic evidence checks immediately, with no more than five checks and a 15-minute ceiling before `reconciliation_required`. It also requires last check, next scheduled check or escalation condition, and safe reason metadata.
+
+- Required correction: Add explicit UX requirements and flow states for auto-reconciling progress, evidence-check budget, next scheduled check, exhausted/conflicting evidence, transition to human escalation, and prohibited retry/takeover actions.
+
+**UX-PRD-4 — Incident-mode dual authorization is absent (Critical).** The UX specification covers degraded/stale/unavailable views but does not explicitly require incident-admin permission plus current tenant/folder authorization before bounded event evidence is shown.
+
+- Required correction: Add the FR56/OQ9 dual-authorization rule, revoked/wrong-tenant/hidden-resource states, C9 redaction, persistent degraded warning, last checkpoint, bounded time window, correlation copy, and metadata-only denial audit to the UX traceability set.
+
+### UX ↔ Architecture Alignment
+
+#### Architectural Support Present
+
+- Architecture explicitly takes the UX specification as an input and selects a FrontComposer-hosted Blazor interactive-server console using Fluent UI components.
+- It supports projection-first read models, a Folders/Tenants user-context bridge, metadata-only query DTOs, workspace/readiness/audit/status projections, and a separate `folders-ui` service.
+- Architecture maps the six UX domain components: Workspace Trust Summary, Tenant Scope Banner, Metadata-Only Folder Tree, Diagnostic Timeline, Trust Matrix, and Redaction/Inaccessibility State.
+- F-4 through F-7 support operator-facing disposition labels, redaction affordances, guarded degraded mode, console page-load budgets, skeleton loading at 400 ms, and cancel affordance at two seconds.
+- C9, path-policy authorization order, sentinel leakage tests, Dapr deny-by-default policy, tenant-prefixed caches, and safe read models provide the security foundation required by the UX.
+- The automated `accessibility-gates`/axe CI path, UI E2E coverage, zoom/responsive checks, and Fluent UI foundation support UX-DR30–UX-DR32.
+
+#### Architectural Gaps and Contradictions
+
+**UX-ARCH-1 — Production diagnostic evidence is unpopulated (Critical blocker).** Architecture states that `IOpsConsoleDiagnosticsReadModel` and `IWorkspaceTransitionEvidenceReadModel` are seed-backed test seams only. No deployed projection populates them, so readiness, lock, dirty-state, failure, provider, sync, projection-freshness, and transition-evidence reads return safe-empty `NotFoundSafe` results.
+
+- Impact: The core UX promise—real workspace trust, diagnosis, and incident evidence—cannot be achieved in a deployed host despite the UI being structurally safe.
+- Required correction: Complete Epic 11 Story 11.10 to author and register EventStore-backed projections, then prove populated positive, degraded, replay, authorization, and live DCP-capable scenarios. This is the architecture counterpart of PRD OQ6.
+
+**UX-ARCH-2 — Incident authorization is weaker than the PRD (Critical blocker).** Architecture F-6 grants incident-stream access using `eventstore:permission=admin`; it does not require the same actor to retain current normal tenant/folder authorization. This conflicts with FR56 and OQ9.
+
+- Impact: An incident administrator could observe protected tenant/folder evidence outside current scope.
+- Required correction: Amend F-6, Story 6.9, and Story 11.10 to require both authorities before event observation and to audit safe denials.
+
+**UX-ARCH-3 — Unknown-outcome disposition conflicts with the finalized PRD (High).** The C6 table labels `unknown_provider_outcome` as `awaiting-human`; the PRD defines it as auto-reconciling during the bounded automatic evidence-check window. Architecture also describes it inconsistently as immediately entering `reconciliation_required` in older sections.
+
+- Impact: Console labels and client guidance can instruct premature human action or hide active automatic reconciliation.
+- Required correction: Reconcile C6, process patterns, F-4 mappings, UX labels, API/SDK/CLI/MCP states, and transition tests to `auto-reconciling` during the bounded check budget, then `awaiting-human` only after transition to `reconciliation_required`.
+
+**UX-ARCH-4 — Architecture structure does not fully project the UX component/page model (High).** The conceptual architecture names all six custom components and search-first flows, but the “complete” directory tree lists only disposition, technical-state, redaction, copy, skeleton, and loading components. It does not map Workspace Trust Summary, Tenant Scope Banner, Metadata-Only Folder Tree, Diagnostic Timeline, Trust Matrix, global authorized search/results, or access-evidence pages.
+
+- Impact: Implementers can satisfy the architecture tree while omitting several normative UX-DR components and the primary discovery flow.
+- Required correction: Update the architecture structure and requirements-to-structure mapping with the missing components, pages, query ports, projections, and authorization-before-search boundaries.
+
+**UX-ARCH-5 — Hosting terminology is internally stale (Medium).** Architecture alternates between “Blazor Server” and the newer “Blazor Web App with Interactive Server rendering” used by Epic 6 and the project context.
+
+- Required correction: Normalize the architecture to the current Blazor Web App/Interactive Server model and its exact FrontComposer/Fluent UI V5 integration seam.
+
+**UX-ARCH-6 — UX implementation phases are ambiguous (Medium).** The UX roadmap puts Diagnostic Timeline, Trust Matrix, Provider Readiness Evidence, and Access Evidence in “Phase 2,” while the current MVP PRD and Epic 6 require those capabilities for release.
+
+- Required correction: Clarify that UX phases are implementation sequencing within the MVP, not product-release deferrals, or move any truly deferred component out of MVP acceptance explicitly.
+
+### Warnings
+
+- The finalized PRD was updated on 2026-07-14 after the UX and architecture baselines. Both downstream documents contain stale terminology and must be reconciled to the current authority hierarchy before implementation acceptance.
+- The architecture’s own “READY WITH MINOR GAPS” conclusion predates and conflicts with its later documented production read-model limitations and the PRD’s OQ6/OQ9 release blockers. The current assessment must use the later facts, not the older readiness conclusion.
+- Safe-empty production behavior prevents leakage but does not satisfy a diagnostic product outcome. “Fail-safe” and “implemented UX capability” must not be treated as equivalent.
+
+### UX Alignment Conclusion
+
+The UX concept is coherent and well specified, and the architecture supports most foundational choices. Alignment is **not implementation-ready** until the production diagnostic projections and dual-authorized incident path are completed. State/disposition vocabulary, authorized search scope, automatic reconciliation UX, and the architecture’s concrete page/component mapping also require reconciliation with the finalized PRD.
+
+## Epic Quality Review
+
+### Review Baseline
+
+- Declared metadata: 11 epics, 115 stories, 6 product epics.
+- Actual headings: 11 numbered epics plus Release Readiness Workstream 7, containing **116 story headings**.
+- BDD form: all 116 stories contain at least one Given/When/Then sequence.
+- Scenario depth: 113 of 116 stories contain exactly one Given/When/Then sequence; Story 3.4 has two When/Then paths, while Stories 10.6 and 11.7 contain three full scenarios.
+- The epics document declares its ACs “terse planning ACs” and points to separate implementation story files for authoritative as-built detail. That external detail may help execution, but it does not make this canonical planning artifact independently implementation-ready.
+
+### Epic Compliance Matrix
+
+| Epic/workstream | User-value focus | No future-epic dependency | Story sizing | AC completeness | Current FR traceability | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| Epic 1 — Bootstrap Canonical Contract | ✗ Primarily scaffold, schemas, codegen, fixtures, and CI | ✓ | ✗ Several multi-capability stories | ⚠ Mostly one happy-path planning scenario | ⚠ Current PRD clauses have drifted | 🔴 Technical runway presented as a product epic |
+| Epic 2 — Folder Access and Lifecycle | ✓ Tenant-admin and authorized-user outcomes | ✗ Story 2.8 required later Story 2.8b to become real | ⚠ Story 2.6 is broad | ⚠ Denial/state/idempotency matrices are sparse | ⚠ FR4/13/14 gaps | 🔴 Independence defect; otherwise user-centric |
+| Epic 3 — Provider Readiness and Binding | ✓ Clear provider-readiness user outcome | ✓ | ✗ Story 3.4 combines adapter, lifecycle behavior, versions, drift, and contract tests | ⚠ Failure and authority rows incomplete | ⚠ FR15/19 gaps | 🟠 Valuable but not fully refined |
+| Epic 4 — Workspace Task Lifecycle | ✓ Core product job | ✗ Production transition evidence deferred to Epic 11 Story 11.10 | ✗ Multiple epic-sized/risk-bundled stories | ⚠ Critical state, idempotency, and failure rows missing | ⚠ Eight partial FR rows touch this epic | 🔴 Cannot deliver its stated outcome independently |
+| Epic 5 — Cross-Surface Parity | ✓ Users receive coherent behavior across surfaces | ✓ | ⚠ Golden/mixed-surface scenarios are broad | ⚠ Oracle helps, but planning ACs omit current expired-key rules | ✓/⚠ Mostly traceable | 🟠 Sound structure with stale contract details |
+| Epic 6 — Trust Console and Audit | ✓ Strong operator/auditor value | ✗ Production diagnostics deferred to Epic 11 Story 11.10 | ✗ Wireflow, page bundle, and accessibility verification are oversized | ⚠ Incident authorization and safe-empty cases incomplete | ⚠ FR56 gap | 🔴 Console is safe but cannot deliver populated production diagnosis |
+| Workstream 7 — Release Readiness | ✗ Intentionally technical governance/evidence | ✓ | ⚠ Some broad evidence stories | ⚠ Often one umbrella scenario | NFR evidence, no new FR | 🟠 Correct as a separate workstream; must not be treated as a product epic |
+| Epic 8 — Release Acceptance Closure | ✗ Corrective route/test/governance closure | ✓ | ✗ Stories 8.1, 8.2, and 8.5 are multi-lane bundles | ⚠ Hard-coded 47-operation denominator is stale | No new FR | 🔴 Release-closure plan mislabeled as an epic |
+| Epic 9 — AppHost/Memory Topology | ✗ Infrastructure alignment | ✗ Routing is explicitly dormant until future Epic 10 | ⚠ Technical slices are reasonably bounded | ⚠ Mostly structural assertions | No new FR | 🔴 Technical epic with an explicit future dependency |
+| Epic 10 — Search-Index Capability | ✓ Eventual FR58 user capability | ✗ Deployed facade remains empty/unavailable until Epic 11 Story 11.10 | ✗ Early stories are horizontal technical layers; Story 10.6 is broad | ⚠ Search/status, failure, and release evidence incomplete | ✓ number mapped; evidence open | 🔴 User outcome is not independently deliverable |
+| Epic 11 — Platform Refactoring | ✗ Refactoring, deduplication, package seams, and governance | ✓ sequentially, but relies on cross-repository prerequisites | ✗ Several stories are epic-sized and multi-repository | ⚠ Behavior preservation is broad rather than scenario-complete | No new FR | 🔴 Technical refactoring program mislabeled as a product epic |
+
+### 🔴 Critical Violations
+
+#### EQ-C1 — Essential behavior is deferred to a future epic
+
+Epics 4, 6, and 10 explicitly declare that essential production behavior is owned by future Epic 11 Story 11.10:
+
+- Epic 4 cannot provide populated workspace transition evidence for FR46.
+- Epic 6 cannot provide populated readiness, lock, dirty-state, failure, provider, sync, or projection-freshness diagnostics.
+- Epic 10 cannot hydrate deployed search results or provide a functioning indexing-status facade.
+
+This violates the rule that Epic N must not require Epic N+1 to deliver its outcome. Safe-empty output prevents leakage, but it is not the user value promised by those epics.
+
+**Recommendation:** Move the required Story 11.10 projection/composition work into the owning product epics before their completion points, or mark Epics 4/6/10 incomplete and resequence Story 11.10 as prerequisite product work. Do not close these epics on interface-only or seed-only behavior.
+
+#### EQ-C2 — Story 2.8 was knowingly non-completable without later Story 2.8b
+
+The document states that Story 2.8 “could not reach done” until Story 2.8b wired the archive command into the real `/process` path. Story 2.8’s original acceptance path therefore depended on a later story and allowed unit-green/production-broken completion.
+
+**Recommendation:** Merge 2.8b’s production-wiring and no-mock acceptance evidence into Story 2.8’s definition, or reframe 2.8 as contract/domain-only and make the vertical production slice a correctly sequenced story before any archive capability is claimed.
+
+#### EQ-C3 — Technical programs are modeled as product epics
+
+- Epic 1 is a scaffold/contract/codegen/CI runway. Its title is consumer-framed, but no consumer can complete a product job from it alone.
+- Epic 8 is release-acceptance corrective work with no new product FR.
+- Epic 9 is platform topology alignment with no product FR and no active value until Epic 10.
+- Epic 11 is a multi-repository refactoring/governance program with no new product FR.
+
+Workstream 7 correctly acknowledges this distinction, but Epics 8, 9, and 11 do not follow it consistently.
+
+**Recommendation:** Keep user-value epics as the product backlog. Move contract runway, release closure, infrastructure alignment, and refactoring into explicitly separate enablement/release/technical-debt plans with their own gates. Where technical work is indispensable, attach the smallest enabling slice to the first user story it unlocks.
+
+#### EQ-C4 — Epic 9 explicitly requires future Epic 10
+
+Epic 9’s routing is described as dormant until Epic 10’s producer. It therefore cannot provide a usable outcome or validate its own value independently.
+
+**Recommendation:** Combine a thin end-to-end publish/index/query proof into Epic 9, or treat Epic 9 solely as a technical enablement workstream rather than a product epic.
+
+### 🟠 Major Issues
+
+#### EQ-M1 — Story sizing is frequently too large
+
+High-confidence oversized or multi-concern stories include:
+
+- Stories 1.4, 1.7, 1.9, 1.11, 1.14, and 1.16: bundle multiple decision families, capability groups, or independent CI gates.
+- Story 2.6: spans JWT, tenant projection, ACL, EventStore validators, Dapr policy, safe errors, and denial audit.
+- Story 3.4: combines a Forgejo adapter, full lifecycle behavior, version snapshots, drift classification, nightly checks, and readiness gating.
+- Story 4.1: implements and verifies the entire 11-state × event transition matrix.
+- Story 4.8: implements six context-query families plus every authorization, content, and semantic-backend boundary.
+- Story 4.13: spans failures across readiness, binding, preparation, locks, files, context, commit, cleanup, read models, and authorization.
+- Story 4.16: combines sentinel redaction, path security, encoding equivalence, cross-tenant isolation, parallel locks, and interruption behavior.
+- Stories 5.5 and 5.7: exercise broad nine-step, multi-surface lifecycle suites.
+- Stories 6.5, 6.6, and 6.11: respectively cover the full 32-requirement wireflow, multiple diagnostic pages, and all automated/manual accessibility/responsive validation.
+- Stories 8.1 and 8.2: implement eight and seven routes respectively; Story 8.5 spans multiple unrelated test baselines and CI masks.
+- Story 10.6: combines materializer behavior, C4/C9 policy, cross-story governance, integration tests, live-environment evidence, and a future-content decision.
+- Stories 11.2, 11.3, 11.5, 11.7, 11.8, 11.10, 11.11, and 11.13: span multiple modules, repositories, behavior families, gates, documentation, or release evidence. Story 11.10 alone contains at least four separable deliverables: domain-service admission/mapping, Memories bridge composition, diagnostics projections, and transition-evidence projections.
+
+**Recommendation:** Split by independently testable behavior or risk family. Each resulting story should produce one vertical or one narrowly bounded enabling outcome and should not require simultaneous changes across unrelated gates.
+
+#### EQ-M2 — Planning acceptance criteria are too terse for implementation readiness
+
+All stories use BDD syntax, but syntax is not completeness. The one-scenario pattern omits predictable negative and boundary behavior in high-risk stories. Examples:
+
+- Story 2.3 lacks duplicate, cross-tenant, archived/invalid state, idempotency replay/conflict/expiry, and real gateway-path cases.
+- Story 2.4 lacks unknown/hidden principal, stale membership, delegated-scope, revocation, and safe-enumeration cases.
+- Story 3.5 does not enumerate missing credential, insufficient permission, unavailable provider, invalid ref policy, repository conflict, rate limit, or unknown compatibility outcomes.
+- Story 4.4 omits non-owner, revoked, expired-key, replay, dirty, unknown-outcome, and reconciliation rows.
+- Story 4.12 omits single-commit task terminality, known retryable/non-retryable failures, bounded evidence checks, authorization revocation, and remote-ref confirmation variants.
+- Story 6.9 omits current tenant/folder authorization, wrong-tenant, revoked, hidden-resource, and denial-audit scenarios.
+- Story 10.5 omits non-empty success, stale/archived/revoked-hit dropping, index unavailable, bridge unavailable, and all-surface behavior.
+
+**Recommendation:** Bring the authoritative scenario matrices into the planning story definitions or link versioned, immutable acceptance artifacts directly. At minimum, every safety-critical story needs happy, denied, stale/revoked, replay/conflict/expiry, unknown/reconciliation, and no-side-effect rows applicable to its behavior.
+
+#### EQ-M3 — Current traceability is numeric rather than semantic
+
+The epics map says 58/58, yet 16 FRs are only partially aligned with the finalized PRD. A story cannot claim traceability merely because it lists the same FR number.
+
+**Recommendation:** Regenerate the FR coverage map from the finalized PRD and add clause-level links or acceptance rows for the 16 partial requirements identified in Epic Coverage Validation.
+
+#### EQ-M4 — Story and epic metadata is inconsistent
+
+Frontmatter declares `storyCount: 115`, but the document contains 116 story headings because Story 2.8b is counted structurally but not reflected in metadata.
+
+**Impact:** Sprint metrics, coverage checks, and automated planning consumers can use the wrong denominator.
+
+**Recommendation:** Normalize Story 2.8b to the project’s standard identifier scheme and update `storyCount`, sprint status, indexes, and cross-references atomically.
+
+#### EQ-M5 — Several stories are horizontal technical layers with no independently consumable value
+
+Examples include Stories 1.3, 2.1, 2.2, 2.9, 3.2, 10.1, 10.2, and most of Epic 11. These may be legitimate engineering tasks, but they are not independently valuable user stories.
+
+**Recommendation:** Either label them explicitly as enablers with a bounded technical acceptance purpose or fold them into the first vertical user story that consumes them. Do not count their completion as product-value completion.
+
+#### EQ-M6 — Epic 11 has an external multi-repository prerequisite hidden inside a story
+
+Story 11.2 requires new or confirmed APIs across Commons, EventStore, FrontComposer, and Memories before downstream Folders refactors can proceed. This is a cross-repository delivery program, not a normal same-repository story.
+
+**Recommendation:** Replace Story 11.2 with explicit upstream dependency records per repository, required API/version/commit, owner, approval, release availability, and fallback. Start dependent Folders stories only after the exact prerequisites are consumable.
+
+### 🟡 Minor Concerns
+
+- The `2.8b` identifier breaks the otherwise numeric story scheme and complicates stable sorting and automation.
+- Epic 10’s title is implementation-centric (“Worker-Side Semantic-Indexing Producer And Bridge Projection”) despite having a user-facing FR58 outcome. Rename it around authorized metadata discovery and indexing status.
+- Several stories use terms that have since changed in the PRD: stale lock-state labels, 47-operation parity counts, old idempotency scope, and old unknown-outcome disposition.
+- The epics document mixes planned, as-built, corrective, reopened, done, and deferred status prose. A canonical planning artifact should distinguish current backlog contract from historical commentary more cleanly.
+- The note delegating authoritative ACs to implementation story files creates two acceptance sources. Define one precedence rule and ensure the planning artifact cannot claim completeness when the referenced story file is missing or stale.
+
+### Dependency Analysis
+
+| Scope | Dependency finding | Compliance |
+| --- | --- | --- |
+| Epic 1 | Internal sequence is backward-only; starter → contracts → generation/gates | ✓ |
+| Epic 2 | Story 2.8 requires later 2.8b production wiring | ✗ Critical |
+| Epic 3 | Provider port precedes adapters; creation/binding follow readiness | ✓ |
+| Epic 4 | Transition-evidence production capability deferred to Epic 11.10 | ✗ Critical |
+| Epic 5 | Depends only on earlier contract/lifecycle work | ✓ |
+| Epic 6 | Story 6.5 correctly gates later 6.6–6.10, but production diagnostics depend on Epic 11.10 | ✗ Critical overall |
+| Workstream 7 | Consumes prior evidence; no future dependency found | ✓ as workstream |
+| Epic 8 | Stories 8.1/8.2 precede 8.3; no future dependency found | ✓ sequence, though technical closure |
+| Epic 9 | Routing remains dormant until future Epic 10 | ✗ Critical |
+| Epic 10 | Internal producer/bridge/facade order is backward-only, but deployed facade depends on Epic 11.10 | ✗ Critical overall |
+| Epic 11 | Story 11.2 precedes downstream adoption; Story 10.6 precedes 11.10. No later-epic dependency, but external repositories are blocking dependencies | ⚠ External coordination required |
+
+### Special Implementation Checks
+
+#### Starter Template
+
+Architecture correctly states that no generic starter fits and selects a sibling-module pattern: Hexalith.Tenants structure plus EventStore.Admin CLI/MCP/UI conventions. Stories 1.1 and 1.2 cover scaffold and root configuration, so the starter requirement is present.
+
+Minor improvement: pin the exact reference layout/version or source commit used for scaffolding and enumerate the expected project inventory in the AC rather than saying only “expected layout.”
+
+#### Greenfield/Brownfield Posture
+
+- Initial scaffold, root configuration, fixtures, Contract Spine, generation, and early CI gates are present.
+- Existing-system integration with EventStore, Tenants, FrontComposer, Memories, Dapr, Aspire, GitHub, and Forgejo is explicit.
+- No unmanaged local-folder migration is planned, consistently with the current MVP non-goal.
+
+#### Persistence and Entity Timing
+
+No “create every database/table up front” violation was found. EventStore aggregates, Dapr-backed projections, idempotency records, and bridge read models are introduced around the capabilities that need them. The Contract Spine defines public schemas early, which is intentional contract-first design rather than premature database design.
+
+### Epic Quality Conclusion
+
+The six primary product epics contain a coherent user-value sequence, but the backlog as a whole does not meet implementation-readiness standards. Future-epic dependencies prevent three product epics from delivering their outcomes, several technical programs are mislabeled as product epics, at least a dozen stories are materially oversized, and most planning ACs lack the negative/boundary scenarios required by the finalized PRD. The backlog requires structural correction before it can be treated as an independent, sequenced implementation plan.
+
+## Summary and Recommendations
+
+### Overall Readiness Status
+
+## NOT READY
+
+The planning set is not ready to authorize a clean Phase 4 implementation start. The PRD is strong, but the UX, architecture, and epics were not fully reconciled after the PRD’s 2026-07-14 finalization. Numeric FR coverage is 100%, while verified full semantic coverage is only 72.4%. Essential production behavior for three product epics is explicitly deferred to a future refactoring epic, and the deployed trust-console/search evidence paths remain safely empty rather than functionally complete.
+
+Proceeding without correction would make implementation teams choose among conflicting authorities for tenant administration, lock identity/state, idempotency expiry, incident authorization, cleanup/archive behavior, and operator disposition. That is precisely the ambiguity an implementation-readiness gate is intended to stop.
+
+### Critical Issues Requiring Immediate Action
+
+1. **Reconcile the finalized PRD into every downstream artifact.** Sixteen FRs are only partially represented in the epics. The highest-risk drift concerns tenant-admin authority (FR4/FR15), archive/retention (FR13/FR14), canonical lock identity and vocabulary (FR25/FR28/FR29), all-mutations idempotency and expired keys (FR41/FR42/FR44), and dual-authorized incident evidence (FR56).
+
+2. **Remove future-epic dependencies from product outcomes.** Epics 4, 6, and 10 cannot deliver their stated behavior until Epic 11 Story 11.10. Story 2.8 also required later Story 2.8b. Re-sequence or relocate the missing work into the owning product epics before those epics can be called complete.
+
+3. **Implement and verify production diagnostic/read-model projections.** `IOpsConsoleDiagnosticsReadModel`, `IWorkspaceTransitionEvidenceReadModel`, and the Server-side semantic-index bridge are unpopulated or unavailable in deployed composition. Complete the projection authoring/wiring and prove populated positive, degraded, replay, authorization, and live search/status cases. This closes the core of OQ5 and OQ6.
+
+4. **Fix the incident-view security contract.** Architecture F-6 and Story 6.9 currently rely on incident/admin permission without explicitly requiring current tenant/folder authorization. Enforce both authorities before any event observation, retain C9 redaction, and add wrong-tenant, revoked, hidden-resource, degraded, and denial-audit tests. This closes OQ9.
+
+5. **Resolve state, reconciliation, and lock contradictions.** `unknown_provider_outcome` must be auto-reconciling during the bounded five-check/15-minute evidence budget and only become awaiting-human after `reconciliation_required`. Lock state must use only the finalized five-value vocabulary, and locks must serialize the canonical managed-tenant/provider/repository/ref identity including aliases.
+
+6. **Close the explicit open release decisions/evidence.** OQ1–OQ10 remain declared blockers in the PRD. OQ1–OQ4 establish timing, file-policy, authorization, and provider denominators; OQ5–OQ9 close current implementation/evidence gaps; OQ10 freezes release-calibration evidence. Approval identity/date and evidence digest are required, not only implementation or green tests.
+
+7. **Correct backlog structure before execution.** Separate technical runway/release/refactoring programs from product epics, split oversized stories, remove forward dependencies, update the story count from 115 to 116 or normalize the corrective story, and replace terse umbrella ACs with scenario-complete acceptance matrices.
+
+### Recommended Next Steps
+
+1. **Run one authority-reconciliation pass** across `prd.md`, `architecture.md`, `ux-design-specification.md`, `epics.md`, the OpenAPI Contract Spine, C13 parity inventory, error catalog, C6 matrix, and project context. Use the finalized PRD and current 49-row generated inventory as the starting authority; eliminate stale 47-operation, old lock-state, old idempotency, and old incident-access prose.
+
+2. **Patch the 16 partial FR rows** using the exact recommendations in Epic Coverage Validation. Regenerate the FR coverage map from requirement clauses rather than preserving numeric claims manually.
+
+3. **Rebuild the delivery structure around vertical value:**
+   - keep product outcomes in user-value epics;
+   - move Epic 1, Workstream 7, and Epics 8/9/11 into explicit enablement, release, infrastructure, and refactoring plans;
+   - move the necessary projection/composition slices from Story 11.10 into the product epics they unblock;
+   - split multi-route, multi-repository, multi-risk, and multi-gate stories.
+
+4. **Close the security/contract decisions before further dependent work:** approve C7 timing (OQ1), publish file-policy behavior (OQ2), publish the complete authorization matrix (OQ3), approve the provider compatibility catalog (OQ4), align canonical lock identity (OQ7), align all-mutations idempotency/read-key rejection (OQ8), and approve dual incident authorization (OQ9).
+
+5. **Complete the production evidence paths:** author and register the diagnostics, transition-evidence, and semantic-index bridge projections; replace safe-empty defaults; exercise real gateway and DCP-capable paths; record non-empty FR58 search/indexing status and populated console evidence.
+
+6. **Expand acceptance criteria for every safety-critical story.** Add applicable rows for happy path, wrong tenant, hidden resource, stale/revoked authority, non-owner lock, alias collision, replay, conflict, expired key, known failure, unknown outcome, bounded reconciliation, cleanup/archive ineligibility, no side effects, safe audit, and metadata-only outputs.
+
+7. **Repair planning metadata and traceability automation:** normalize Story 2.8b, correct the 116-story denominator, synchronize sprint status and indexes, and make CI fail when the planning FR text, C13 inventory, or referenced story acceptance artifact drifts.
+
+8. **Re-run Implementation Readiness** after the artifact corrections and blocker evidence are complete. Do not carry the current “architecture ready” or “58/58 covered” labels forward without revalidation.
+
+### Assessment Totals
+
+This assessment documented **51 issue records across four categories**, with related risks intentionally cross-referenced:
+
+- 16 partially covered functional requirements
+- 10 UX/PRD/architecture alignment issues
+- 15 epic-quality issues (4 critical, 6 major, 5 minor)
+- 10 explicit open release items
+
+The most important finding is not the raw count. It is that several “complete” or “covered” labels describe safe scaffolds, seed-only seams, or numeric mappings rather than deployed user outcomes. Those labels must be corrected before implementation planning can be trusted.
+
+### Final Note
+
+The artifacts contain a strong product contract and unusually thoughtful safety constraints. The remaining work is reconciliation and delivery integrity: make every downstream artifact tell the same story, ensure each product epic delivers its outcome without future rescue work, and require real production-path evidence where the product promises diagnostic or search behavior.
+
+Address the critical issues before proceeding to implementation. If the team deliberately proceeds with an accepted exception, record the exact scope, owner, expiry/revisit condition, and evidence impact rather than treating the exception as readiness.
+
+**Assessment date:** 2026-07-15  
+**Assessor:** Codex — BMAD Implementation Readiness workflow
