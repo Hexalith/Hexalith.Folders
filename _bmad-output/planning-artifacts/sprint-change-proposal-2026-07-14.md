@@ -448,11 +448,11 @@ dotnet format whitespace --verify-no-changes ; dotnet format analyzers --verify-
 
 ## I. Unresolved decisions (need human ratification)
 
-1. **MVP definition — Option A (control-plane MVP, correct the claims) vs Option B (product MVP, build the data plane).** *Recommend **B*** — it matches the product brief's stated purpose; A only if there is a business reason to ship a control plane first. Either way the Epic 7/8 "release readiness/acceptance" framing must be corrected. (Owner: John + Winston.)
-2. **Where does the durable `IFolderRepository` live** — expand Epic 11 Story 11.10, or a new Epic 12 story? *Recommend **Epic 12*** (it is product work, not refactor; 11.10 is scoped to read-model wiring). (Owner: Winston.)
-3. **`FolderStreamName` vs `OrganizationStreamName` reserved-tenant semantics** — pick one canonical rule (ordinal/no-trim vs trim/ignore-case) deliberately; not exploitable but inconsistent (`HXF-LOW-001`). *Recommend the strict ordinal/no-trim anti-disclosure variant.* (Owner: Winston/Amelia.)
-4. **AppHost/Aspire retention vs the domain-module "no AppHost/Aspire/ServiceDefaults" rule** — Epic 11 already carries an ADR to keep AppHost+Aspire and delete ServiceDefaults; ratify it. (Owner: Winston.)
-5. **Rate-limiting ownership** — app-layer vs ingress/gateway (`HXF-SEC-005`). *Recommend app-layer minimums plus documented ingress expectations.* (Owner: Winston.)
+1. **MVP definition — Option A (control-plane MVP, correct the claims) vs Option B (product MVP, build the data plane).** ✅ **RATIFIED 2026-07-14 (Jerome): Option B.** Epic 12 (durable persistence + Git round-trip) is chartered; the current MVP is reframed as a **control-plane MVP**; Epic 7/8 annotated in `sprint-status.yaml` (still `done` for their bounded scope; not product-shippable). FR-traceability reconciliation carried in the claims-correction action item. (Owner: John + Winston.)
+2. **Where does the durable `IFolderRepository` live** — expand Epic 11 Story 11.10, or a new Epic 12 story? ✅ **RATIFIED 2026-07-14: new Epic 12** (Story 12-1). 11.10 stays scoped to read-model/SDK-seam wiring and is gated on 12-1/12-2/12-3. (Owner: Winston.)
+3. **`FolderStreamName` vs `OrganizationStreamName` reserved-tenant semantics** — pick one canonical rule (ordinal/no-trim vs trim/ignore-case) deliberately; not exploitable but inconsistent (`HXF-LOW-001`). *Recommended: the strict ordinal/no-trim anti-disclosure variant.* **Still open (low priority, code-local)** — apply with test-pin lockstep when Epic 13 touches the stream-name code. (Owner: Winston/Amelia.)
+4. **AppHost/Aspire retention vs the domain-module "no AppHost/Aspire/ServiceDefaults" rule** — Epic 11 already carries an ADR to keep AppHost+Aspire and delete ServiceDefaults; ratify it. **Still open.** (Owner: Winston.)
+5. **Rate-limiting ownership** — app-layer vs ingress/gateway (`HXF-SEC-005`). *Recommend app-layer minimums plus documented ingress expectations.* **Still open** (Epic 13 Story 13-6). (Owner: Winston.)
 
 ## J. Audit limitations
 

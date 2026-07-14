@@ -1,5 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
-# last_updated: 2026-07-14 (Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green))
+# last_updated: 2026-07-14 (Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green)))
 # project: Hexalith.Folders
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: 2026-07-14 (Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green))
+last_updated: '2026-07-14 (Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green)))'
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -141,6 +141,13 @@ development_status:
   # 2-8b verification). 7-18 closed GREEN 2026-05-31 (Server.Tests 434/0/0,
   # IntegrationTests 592/0, Folders.Tests 1314/0). Epic-7 close-out completed
   # 2026-06-22 via bmad-correct-course (sprint-change-proposal-2026-06-22).
+  # HONESTY ANNOTATION 2026-07-14 (sprint-change-proposal-2026-07-14 audit, Option B ratified): this epic
+  # closed CONTROL-PLANE / contract / operational-evidence / gate readiness — NOT durable product
+  # capability. The 6-agent audit established that no accepted mutation persists durably (InMemory repo +
+  # ADR-0001 NoOp + Prod won't boot), content is discarded on upload, tasks never complete, and the Git
+  # write path is stubbed. "MVP Release Readiness" here means the control-plane MVP; the PRODUCT MVP is not
+  # ready until new Epic 12 (durable persistence + Git round-trip) lands. Status stays 'done' for its
+  # bounded scope; the naming is retained for traceability but must not be read as product-shippable.
   epic-7: done
   7-1-deploy-production-dapr-deny-by-default-access-control: done
   7-2-configure-production-oidc-and-secret-store-integration: done
@@ -169,6 +176,12 @@ development_status:
   # gate (8-4), residual-reds honest-green baseline (8-5), C3 Legal sign-off (8-6).
   # Story 8.5 split 2026-06-23 (sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split):
   # AC1 (C3 Legal sign-off) extracted to 8-6; 8-5 retains the residual-reds honest-green-baseline scope (done).
+  # HONESTY ANNOTATION 2026-07-14 (sprint-change-proposal-2026-07-14 audit, Option B ratified): this
+  # "acceptance closure" (incl. the C3 Legal sign-off) accepted PARITY + a11y + honest-green-gate +
+  # governance criteria — it did NOT accept durable document persistence/retrieval/versioning/commit,
+  # which the audit shows are non-functional (all Unavailable*/InMemory* stubs). The Legal sign-off scope
+  # should be re-examined against what actually ships once the MVP is reframed as control-plane. Status
+  # stays 'done' for its bounded acceptance criteria; product acceptance is deferred to Epic 12.
   epic-8: done
   8-1-implement-bucket-a-missing-rest-server-routes: done
   8-2-implement-ops-console-diagnostics-rest-routes: done
@@ -245,7 +258,7 @@ development_status:
   # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
   10-5-expose-authorized-folders-query-facade-over-memories: done
-  10-6-replace-fail-closed-content-materializer-with-metadata-derived: review
+  10-6-replace-fail-closed-content-materializer-with-metadata-derived: in-progress
   epic-10-retrospective: done
 
   # Epic 11: Domain-Focus Platform Refactoring And Governance Closure
@@ -261,7 +274,7 @@ development_status:
   # overwritten by a classic story file (user decision, /bmad-create-story 11.1). epic-11 -> in-progress.
   epic-11: in-progress
   11-1-establish-refactor-baseline-and-governance-pin-map: done
-  11-2-land-platform-prerequisite-apis-in-shared-modules: ready-for-dev
+  11-2-land-platform-prerequisite-apis-in-shared-modules: review
   11-3-apply-wire-preserving-repo-hygiene-and-fragile-gate-fixes: backlog
   11-4-consolidate-server-transport-envelope-and-route-helper-duplication: backlog
   11-5-consolidate-domain-provider-duplication-and-fix-provider-correctness-defects: backlog
@@ -283,11 +296,11 @@ development_status:
   # complete, and Production cannot boot. Blocker findings HXF-CORE-001..005 + HXF-REL-001/003/004.
   # GATING: Story 10.6 (content materializer) and Story 11.10 (read-model/SDK-seam wiring) validate only
   # against fakes until Epic 12's durable IFolderRepository + content store + Git write path exist; both
-  # are gated on 12-1/12-2/12-3. OPEN DECISION carried in the planning action item below: MVP-definition
-  # Option A (declare a control-plane MVP, correct the Epic 7/8 "release-ready/accepted" claims) vs
-  # Option B (build this data plane; recommended). Epic 12 exists as backlog under BOTH options (A defers
-  # it, B prioritizes it); do not start stories until the A/B decision + durable-IFolderRepository-home
-  # decision (Epic 12 vs expand 11.10) are ratified by PM John + Architect Winston.
+  # are gated on 12-1/12-2/12-3. RATIFIED 2026-07-14 (Jerome, "do recommended"): OPTION B — build this
+  # data plane; durable-IFolderRepository home = new Epic 12 (not an expansion of 11.10). Stories may now
+  # be created (bmad-create-story) with acceptance criteria that assert restart-surviving, real-Git
+  # round-trip behavior (NOT fake-backed). Do NOT auto-start implementation on the CI-red tree — land the
+  # HXF-OPS-001 CI fix first, then sequence 12-1 -> 12-2/12-3 -> 12-4 -> 12-5.
   epic-12: backlog
   12-1-eventstore-backed-folder-repository-retire-noop-and-implement-projection-replay: backlog
   12-2-durable-projections-and-task-completion-pipeline: backlog
@@ -302,7 +315,8 @@ development_status:
   # homed in Epic 11. (Already in Epic 11 — do NOT duplicate: bearer https/loopback guard HXF-SEC-001 ->
   # 11.6 [elevate priority]; Forgejo socket leak HXF-PERF-002 -> 11.5; probe-path alignment HXF-REL-006
   # -> 11.9; UI sync-over-async/token-relay HXF-UI-001 -> 11.11.) Phase-0 items 13-1/13-2/13-3 are small
-  # and independent of the Epic 12 data-plane work and can start immediately after the A/B decision.
+  # and independent of the Epic 12 data-plane work and can start immediately (A/B decision RATIFIED
+  # Option B 2026-07-14) — sequence right after the HXF-OPS-001 CI-red fix.
   epic-13: backlog
   13-1-forgejo-ssrf-egress-guard-private-and-metadata-ip-block: backlog                 # HXF-SEC-002
   13-2-fail-safe-fallback-authorization-policy-and-sidecar-only-app-port: backlog       # HXF-SEC-003
