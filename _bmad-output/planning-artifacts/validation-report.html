@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PRD Validation: Hexalith.Folders</title>
+<style>
+  :root {
+    --bg: #fafaf9; --surface: #ffffff; --border: #e7e5e4;
+    --text: #1c1917; --muted: #78716c;
+    --verdict-strong: #16a34a; --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706; --verdict-broken: #dc2626;
+    --sev-low: #64748b; --sev-medium: #ca8a04;
+    --sev-high: #ea580c; --sev-critical: #dc2626;
+    --grade-exc: #16a34a; --grade-good: #65a30d;
+    --grade-fair: #d97706; --grade-poor: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+  header.report-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle {
+    color: var(--muted); font-size: 13px; margin-top: 4px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .grade {
+    padding: 10px 18px; border-radius: 8px; font-weight: 600;
+    color: white; font-size: 15px; white-space: nowrap;
+  }
+  .grade-excellent { background: var(--grade-exc); }
+  .grade-good { background: var(--grade-good); }
+  .grade-fair { background: var(--grade-fair); }
+  .grade-poor { background: var(--grade-poor); }
+  .synthesis {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--muted); border-radius: 8px;
+    padding: 18px 22px; margin-bottom: 24px; font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+  .dimension-summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px; margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px; cursor: pointer; user-select: none; list-style: none;
+    display: flex; align-items: center; gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before { content: "▸"; color: var(--muted); transition: transform 0.15s ease; }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline; margin: 0; font-size: 16px; font-weight: 600;
+    letter-spacing: -0.005em; flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px; padding: 3px 10px; border-radius: 999px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em; color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+  .findings-list { padding: 0 20px 4px; }
+  article.finding { padding: 14px 0; border-top: 1px solid var(--border); }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px; padding: 3px 8px; border-radius: 4px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100,116,139,.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202,138,4,.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234,88,12,.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220,38,38,.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+  .reviewer-source {
+    font-size: 12px; color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .mechanical {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; margin-top: 24px; font-size: 14px;
+  }
+  .mechanical h3 {
+    margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+  footer.report-footer {
+    margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="report-header">
+    <div class="title">
+      <h1>Hexalith.Folders — Validation Report</h1>
+      <div class="subtitle">_bmad-output/planning-artifacts/prd.md</div>
+    </div>
+    <div class="grade grade-fair">Fair</div>
+  </header>
+
+  <div class="synthesis">
+    <p>This is a substantive, unusually product-specific platform PRD: it has a clear thesis, an explicit repository-backed MVP cut, credible stakeholder journeys, a sharp content-exclusion boundary, and strong product-specific NFR and verification material. It is not currently a reliable build/release source of truth, however, because approved decisions and implementation-era scope changes have not been reconciled into it; four dimensions are therefore thin, with the greatest risks in decision-readiness, done-ness, scope honesty, and downstream usability.</p>
+    <p>The adversarial review materially reinforces that conclusion by exposing unresolved authority boundaries, asynchronous authorization revocation, repository/ref locking identity, remote commit durability, privileged operator access, and error-detail leakage risks. The PRD is strong as a product thesis but is not ready to serve as the authoritative chain-top contract.</p>
+  </div>
+
+  <div class="dimension-summary">
+    <div class="dim-card"><div class="dim-name">Decision-readiness</div><div class="dim-verdict" style="color:var(--verdict-thin)">thin</div></div>
+    <div class="dim-card"><div class="dim-name">Substance over theater</div><div class="dim-verdict" style="color:var(--verdict-strong)">strong</div></div>
+    <div class="dim-card"><div class="dim-name">Strategic coherence</div><div class="dim-verdict" style="color:var(--verdict-adequate)">adequate</div></div>
+    <div class="dim-card"><div class="dim-name">Done-ness clarity</div><div class="dim-verdict" style="color:var(--verdict-thin)">thin</div></div>
+    <div class="dim-card"><div class="dim-name">Scope honesty</div><div class="dim-verdict" style="color:var(--verdict-thin)">thin</div></div>
+    <div class="dim-card"><div class="dim-name">Downstream usability</div><div class="dim-verdict" style="color:var(--verdict-thin)">thin</div></div>
+    <div class="dim-card"><div class="dim-name">Shape fit</div><div class="dim-verdict" style="color:var(--verdict-adequate)">adequate</div></div>
+  </div>
+
+  <section class="dimension"><details open>
+    <summary><h2>Decision-readiness</h2><span class="verdict-pill verdict-thin">thin</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The PRD makes defensible decisions around repository-backed-first scope, the diagnostic-only console, and safety-preserving resource fallback. It is nevertheless stale at decisions that now govern release behavior, and several unresolved items remain buried as prose despite complete status.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Approved C3 and C4 decisions remain marked TBD</h3><span class="finding-location">§ Deferred Quantitative Targets</span></header><div class="finding-note">Approved retention and bounded-input policies are absent from the PRD’s current decision state.</div><div class="finding-fix"><strong>Fix:</strong> Replace both TBD rows with approved values, dates, and canonical artifact links.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">MVP webhook acceptance contradicts the MVP boundary</h3><span class="finding-location">§ MVP Acceptance Evidence</span></header><div class="finding-note">Replay-safe webhook evidence is required while architecture excludes webhook ingestion from MVP.</div><div class="finding-fix"><strong>Fix:</strong> Decide the product posture and move webhook evidence to Post-MVP if no-webhook is the accepted cut.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Projection-only console wording excludes the incident exception</h3><span class="finding-location">§ Public Surfaces; § Observability</span></header><div class="finding-note">Absolute projection-only language conflicts with the ACL-checked incident-mode event-stream view.</div><div class="finding-fix"><strong>Fix:</strong> Add a bounded exception with authorization, redaction, audit, warning, and read-only requirements.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Unresolved decisions are buried rather than registered</h3><span class="finding-location">§ Data Schemas; § Workspace State</span></header><div class="finding-note">File transport, lock defaults, batch atomicity, and related choices lack owners or deadlines.</div><div class="finding-fix"><strong>Fix:</strong> Reconcile resolved decisions and register genuine open items with owner and revisit condition.</div></article>
+    </div>
+  </details></section>
+
+  <section class="dimension"><details>
+    <summary><h2>Substance over theater</h2><span class="verdict-pill verdict-strong">strong</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The vision and differentiation are specific to managed agent workspaces. Journeys expose real concurrency, parity, recovery, and audit needs, while NFRs carry concrete latency, isolation, idempotency, redaction, accessibility, and verification boundaries. No substantive theater finding is warranted.</p>
+    </div></div>
+  </details></section>
+
+  <section class="dimension"><details>
+    <summary><h2>Strategic coherence</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The core bet—one tenant-scoped canonical lifecycle for repository-backed agent file work—is coherent across scope, journeys, and features. Success criteria do not yet test the thesis strongly enough.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Success measures do not support a go/no-go decision</h3><span class="finding-location">§ Success Criteria</span></header><div class="finding-note">Adoption and task completion lack targets, populations, windows, baselines, sources, and counter-metrics.</div><div class="finding-fix"><strong>Fix:</strong> Add stable IDs and measurable definitions, including failure, recovery, latency, and integration-cost counter-metrics.</div></article>
+    </div>
+  </details></section>
+
+  <section class="dimension"><details open>
+    <summary><h2>Done-ness clarity</h2><span class="verdict-pill verdict-thin">thin</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The PRD contains useful acceptance material in error, security, quality-gate, latency, and MVP-evidence sections. The FR inventory still mostly states capabilities without testable consequences, and idempotency coverage disagrees across sections.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Many FRs are capability labels rather than done conditions</h3><span class="finding-location">§ Functional Requirements</span></header><div class="finding-note">FR13, FR14, FR27, FR31, FR46, and others omit testable consequences or stable acceptance references.</div><div class="finding-fix"><strong>Fix:</strong> Add at least one verifiable consequence or named acceptance reference to every FR.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Idempotency scope is internally incomplete</h3><span class="finding-location">§ Command and Query Contract; § Reliability</span></header><div class="finding-note">The operation table, journeys, and blanket mutation rule cover different command sets.</div><div class="finding-fix"><strong>Fix:</strong> Create one normative matrix for every mutating MVP operation.</div></article>
+    </div>
+  </details></section>
+
+  <section class="dimension"><details open>
+    <summary><h2>Scope honesty</h2><span class="verdict-pill verdict-thin">thin</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The repository-backed MVP cut and explicit non-goals are honest. Later edits blur the boundary by combining metadata-token search, future body-content search, an undefined gate, and implementation status in FR58.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">FR58 has two incompatible product meanings</h3><span class="finding-location">§ Authorized Search Facade</span></header><div class="finding-note">“Search the content” is presented as satisfied by metadata-token recall while full body-text recall is separately gated.</div><div class="finding-fix"><strong>Fix:</strong> Split metadata-token search from full-content search and assign each a precise phase and acceptance boundary.</div></article>
+    </div>
+  </details></section>
+
+  <section class="dimension"><details open>
+    <summary><h2>Downstream usability</h2><span class="verdict-pill verdict-thin">thin</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The artifact has contiguous FR and journey inventories and rich source material, but lacks stable vocabulary and full downstream round-trip. FR58, C9, success measures, and state terminology are the main breaks.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">FR58 does not round-trip into downstream coverage</h3><span class="finding-location">§ Authorized Search Facade</span></header><div class="finding-note">FR58 is current in the PRD while architecture coverage still declares FR1–FR57 and C9 is undefined.</div><div class="finding-fix"><strong>Fix:</strong> Reconcile PRD, architecture, epics, tests, and release gates against one approved FR58 meaning.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Core domain vocabulary has no glossary</h3><span class="finding-location">§ Capability Terms; § Workspace State</span></header><div class="finding-note">Load-bearing nouns and state terms drift in casing and granularity.</div><div class="finding-fix"><strong>Fix:</strong> Add a concise glossary and normative state-vocabulary table.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Journeys and success measures lack stable IDs</h3><span class="finding-location">§ Success Criteria; § User Journeys</span></header><div class="finding-note">Only FRs have stable identifiers, weakening extraction and cross-references.</div><div class="finding-fix"><strong>Fix:</strong> Assign UJ1–UJ9 and SM1–SMn IDs with minimal references.</div></article>
+    </div>
+  </details></section>
+
+  <section class="dimension"><details>
+    <summary><h2>Shape fit</h2><span class="verdict-pill verdict-adequate">adequate</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>The capability-first API/backend shape fits a chain-top infrastructure product, and stakeholder journeys expose multi-role needs without persona theater. The PRD has begun to absorb implementation status, weakening its durability.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Historical classification and live status are mixed</h3><span class="finding-location">§ Project Classification; § Authorized Search Facade</span></header><div class="finding-note">Greenfield inception language coexists with active story and release-readiness status.</div><div class="finding-fix"><strong>Fix:</strong> Declare the current posture and move delivery status to implementation artifacts.</div></article>
+    </div>
+  </details></section>
+
+  <section class="reviewer-section"><details>
+    <summary><h2>Adversarial review — 22 findings</h2><span class="reviewer-source">review-adversarial-general.md</span></summary>
+    <div class="dim-body"><div class="dim-judgment">
+      <p>Verdict: not ready as an authoritative chain-top PRD; material governance, MVP-scope, security, authority, and verifiability conflicts remain.</p>
+    </div></div>
+    <div class="findings-list">
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">No trustworthy current-baseline marker</h3><span class="finding-location">frontmatter and inputs</span></header><div class="finding-note">May completion metadata coexists with later decisions and delivery references, while the listed inputs omit qualifying sources.</div><div class="finding-fix"><strong>Fix:</strong> Refresh dates/status and enumerate the source set for the current baseline.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Greenfield framing hides current constraints</h3><span class="finding-location">§ Project Classification</span></header><div class="finding-note">The historical label encourages downstream readers to ignore compatibility, migration, and regression realities.</div><div class="finding-fix"><strong>Fix:</strong> Mark greenfield as inception context and state the present posture.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">C3 and C4 remain falsely open</h3><span class="finding-location">§ Deferred Quantitative Targets</span></header><div class="finding-note">Approved binding policies contradict the PRD’s TBD state.</div><div class="finding-fix"><strong>Fix:</strong> Reconcile approved values and authority links.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Webhook evidence conflicts with forbidden MVP ingress</h3><span class="finding-location">§ MVP Acceptance Evidence</span></header><div class="finding-note">Inbound webhooks, outbound callbacks, and worker retries are not distinguished.</div><div class="finding-fix"><strong>Fix:</strong> Define each mechanism and its release phase.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Projection-only console conflicts with incident stream</h3><span class="finding-location">§ Public Surfaces</span></header><div class="finding-note">The incident path lacks product actor, permissions, redaction, audit, warning, availability, and evidence.</div><div class="finding-fix"><strong>Fix:</strong> Remove it or specify the complete bounded exception.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Contract authority is unstable</h3><span class="finding-location">contract sections</span></header><div class="finding-note">REST, SDK, and OpenAPI authority lack a tie-breaker for schema, transport, generated client, and adapters.</div><div class="finding-fix"><strong>Fix:</strong> Define the authority hierarchy and versioning/parity duties.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">SDK, CLI, and MCP minimum scope is undecidable</h3><span class="finding-location">scope and fallback sections</span></header><div class="finding-note">Must-have surface language conflicts with “MVP or near-MVP” and fallback cuts.</div><div class="finding-fix"><strong>Fix:</strong> Name the minimum release set and required evidence.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Repository binding conflicts with brownfield exclusion</h3><span class="finding-location">FR19 and non-goals</span></header><div class="finding-note">MVP repository eligibility, history, working tree, and default-branch constraints are undefined.</div><div class="finding-fix"><strong>Fix:</strong> Bound the repository states MVP can bind.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Tenant administration is disconnected from MVP evidence</h3><span class="finding-location">Journey 9; FR4–FR14</span></header><div class="finding-note">Grant/revoke, permissions, archive, and retained evidence are not coherently phased or accepted.</div><div class="finding-fix"><strong>Fix:</strong> Include them in MVP acceptance or phase them explicitly.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">FR58 mislabels metadata recall as content search</h3><span class="finding-location">FR58</span></header><div class="finding-note">A materially weaker capability can pass under a misleading headline.</div><div class="finding-fix"><strong>Fix:</strong> Rename the MVP capability and reserve content search for body content.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">FR58 is not integrated into the product case</h3><span class="finding-location">FR58</span></header><div class="finding-note">It lacks journey, metric, feature, evidence, error, freshness, and phase integration while embedding story status.</div><div class="finding-fix"><strong>Fix:</strong> Add product-level behavior and move delivery status downstream.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Workspace state conflates independent dimensions</h3><span class="finding-location">§ Workspace State and Concurrency</span></header><div class="finding-note">Concurrency, working-copy condition, availability, and lifecycle outcomes use incompatible state lists.</div><div class="finding-fix"><strong>Fix:</strong> Define orthogonal dimensions, composition, precedence, and vocabulary.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Authorization revocation during asynchronous work is undefined</h3><span class="finding-location">security and lifecycle requirements</span></header><div class="finding-note">Authority changes after prepare or lock have no freshness, revalidation, or terminal-state rule.</div><div class="finding-fix"><strong>Fix:</strong> Require checkpoints, fail-closed behavior, and reconciliation outcomes.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Platform-operator cross-tenant authority is missing</h3><span class="finding-location">operator journeys</span></header><div class="finding-note">Privileged role scope, consent, redaction, and audit are undefined.</div><div class="finding-fix"><strong>Fix:</strong> Define need-to-know authority and visible metadata.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Lock collision identity is unspecified</h3><span class="finding-location">lock invariant</span></header><div class="finding-note">Aliases, folders, and branch refs may mutate the same underlying repository concurrently.</div><div class="finding-fix"><strong>Fix:</strong> Define canonical repository/ref identity and the serialization key.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Commit does not prove remote durability</h3><span class="finding-location">workflow and demo outcome</span></header><div class="finding-note">A local SHA could pass without provider-backed persistence after cleanup.</div><div class="finding-fix"><strong>Fix:</strong> Define local commit, push/sync, remote confirmation, and durability evidence.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Error details are an unconstrained leakage surface</h3><span class="finding-location">error contract</span></header><div class="finding-note">Safe fields, size, visibility, and unauthorized/nonexistent equivalence are undefined.</div><div class="finding-fix"><strong>Fix:</strong> Define bounded metadata-only detail schemas per error category.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">100% gates lack stable denominators</h3><span class="finding-location">quality gates</span></header><div class="finding-note">Partial inventories let tests choose a convenient denominator.</div><div class="finding-fix"><strong>Fix:</strong> Reference canonical versioned operation, ACL, and parity inventories.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">File policy outcomes remain ambiguous</h3><span class="finding-location">file-policy requirements</span></header><div class="finding-note">Traversal, symlink, normalization, collision, encoding, binary, size, and filtering behavior are not normative.</div><div class="finding-fix"><strong>Fix:</strong> State outcomes or reference one approved policy artifact.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">Success is mostly feature existence</h3><span class="finding-location">§ Success Criteria</span></header><div class="finding-note">Task completion, adoption, reliability, and operator burden lack measurable thresholds.</div><div class="finding-fix"><strong>Fix:</strong> Add cohorts, windows, targets, and counter-metrics.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-high">high</span><h3 class="finding-title">Sensitive metadata defaults remain open</h3><span class="finding-location">privacy and diagnostics requirements</span></header><div class="finding-note">Paths, commit messages, names, branches, and provider diagnostics depend on “where appropriate.”</div><div class="finding-fix"><strong>Fix:</strong> Adopt approved default classification and permitted-view rules.</div></article>
+      <article class="finding"><header><span class="badge badge-sev-medium">medium</span><h3 class="finding-title">No durable rationale trail</h3><span class="finding-location">workspace sources</span></header><div class="finding-note">No memlog or addendum preserves why major product decisions changed.</div><div class="finding-fix"><strong>Fix:</strong> Bootstrap a decision log in the next Update and preserve relevant rationale.</div></article>
+    </div>
+  </details></section>
+
+  <div class="mechanical">
+    <h3>Mechanical notes</h3>
+    <ul>
+      <li>FR IDs are contiguous and unique from FR1 through FR58.</li>
+      <li>Journeys are contiguous but lack stable UJ IDs; success measures have no IDs.</li>
+      <li>C9 is referenced by FR58 but is not defined in the PRD; the exit-criteria table defines C1–C5.</li>
+      <li>No glossary exists for load-bearing domain vocabulary.</li>
+      <li>State vocabulary drifts across product, lifecycle, provider/workspace, and reconciliation states.</li>
+      <li>No assumptions, PM notes, Open Questions, or Assumptions Index exist despite unresolved wording.</li>
+      <li>Frontmatter says greenfield and complete with May dates while the body contains later status.</li>
+      <li>No .memlog.md or addendum.md exists in the PRD workspace.</li>
+    </ul>
+  </div>
+
+  <footer class="report-footer">
+    <div class="meta">
+      <span>Rubric: .agents/skills/bmad-prd/assets/prd-validation-checklist.md</span>
+      <span>Generated: 2026-07-14T22:29:30+02:00</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
