@@ -32,7 +32,7 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
         result.LengthBytes.ShouldBe(1024);
         result.SizeClassification.ShouldBe("small");
         result.TypeClassification.ShouldBe("text");
-        result.CuratedText.ShouldNotBeNullOrWhiteSpace();
+        result.CuratedText.ShouldBe("text fv-version-a organization-a folder-a small");
         Encoding.UTF8.GetString(result.ContentBytes!).ShouldBe(result.CuratedText);
 
         IReadOnlyDictionary<string, string> attributes = result.CuratedAttributes.ShouldNotBeNull();
@@ -65,6 +65,56 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
         result.TypeClassification.ShouldBe("json");
         result.CuratedAttributes![FoldersSemanticIndexingAttributes.SizeClassificationAttribute].ShouldBe("medium");
         result.CuratedAttributes[FoldersSemanticIndexingAttributes.TypeClassificationAttribute].ShouldBe("json");
+    }
+
+    [Fact]
+    public async Task MaterializeAsyncShouldClassifyEverySupportedApplicationMediaType()
+    {
+        (string MediaType, string ExpectedClassification)[] cases =
+        [
+            ("application/xml", "xml"),
+            ("application/x-yaml", "yaml"),
+            ("application/yaml", "yaml"),
+            ("application/markdown", "markdown"),
+        ];
+        MetadataDerivedSemanticIndexingContentMaterializer materializer = new();
+
+        foreach ((string mediaType, string expectedClassification) in cases)
+        {
+            SemanticIndexingContentMaterializationResult result = await materializer
+                .MaterializeAsync(
+                    CreateRequest(expectedMediaType: mediaType),
+                    TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            result.ContentType.ShouldBe(mediaType);
+            result.TypeClassification.ShouldBe(expectedClassification);
+            result.CuratedText.ShouldStartWith($"{expectedClassification} ", Case.Sensitive);
+            result.CuratedAttributes![FoldersSemanticIndexingAttributes.TypeClassificationAttribute]
+                .ShouldBe(expectedClassification);
+        }
+    }
+
+    [Fact]
+    public async Task MaterializeAsyncShouldUseInclusiveSmallContentBoundary()
+    {
+        MetadataDerivedSemanticIndexingContentMaterializer materializer = new();
+
+        SemanticIndexingContentMaterializationResult atBoundary = await materializer
+            .MaterializeAsync(
+                CreateRequest(expectedByteLength: 65_536),
+                TestContext.Current.CancellationToken)
+            .ConfigureAwait(true);
+        SemanticIndexingContentMaterializationResult aboveBoundary = await materializer
+            .MaterializeAsync(
+                CreateRequest(expectedByteLength: 65_537),
+                TestContext.Current.CancellationToken)
+            .ConfigureAwait(true);
+
+        atBoundary.SizeClassification.ShouldBe("small");
+        atBoundary.CuratedAttributes![FoldersSemanticIndexingAttributes.SizeClassificationAttribute].ShouldBe("small");
+        aboveBoundary.SizeClassification.ShouldBe("medium");
+        aboveBoundary.CuratedAttributes![FoldersSemanticIndexingAttributes.SizeClassificationAttribute].ShouldBe("medium");
     }
 
     [Fact]
@@ -158,6 +208,9 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
 
         await Should.ThrowAsync<ArgumentNullException>(async () =>
             await materializer.MaterializeAsync(null!, TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
+        SemanticIndexingContentMaterializationRequest invalidIdentityRequest = CreateRequest() with { Identity = null! };
+        await Should.ThrowAsync<ArgumentNullException>(async () =>
+            await materializer.MaterializeAsync(invalidIdentityRequest, TestContext.Current.CancellationToken).ConfigureAwait(true)).ConfigureAwait(true);
 
         using CancellationTokenSource cancellation = new();
         await cancellation.CancelAsync().ConfigureAwait(true);
@@ -219,6 +272,7 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
         entry.Attributes[FoldersSemanticIndexingAttributes.WorkspaceIdAttribute].ShouldBe("workspace-a");
         entry.Attributes[FoldersSemanticIndexingAttributes.FileVersionIdAttribute].ShouldBe("fv-version-a");
         entry.Attributes[FoldersSemanticIndexingAttributes.StatusAttribute].ShouldBe(FoldersSemanticIndexingAttributes.StatusActive);
+        entry.Text.ShouldBe("text fv-version-a organization-a folder-a small");
         entry.Text.ShouldNotContain("C:/", Case.Sensitive);
         entry.Text.ShouldNotContain("secret-token", Case.Sensitive);
         entry.Text.ShouldNotContain("file://", Case.Sensitive);

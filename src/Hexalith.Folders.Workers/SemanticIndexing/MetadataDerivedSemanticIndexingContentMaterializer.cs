@@ -15,6 +15,7 @@ internal sealed class MetadataDerivedSemanticIndexingContentMaterializer : ISema
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(request.Identity);
         cancellationToken.ThrowIfCancellationRequested();
 
         if (string.IsNullOrWhiteSpace(request.ExpectedMediaType))

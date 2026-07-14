@@ -4,7 +4,7 @@ baseline_commit: 40cc5e1
 
 # Story 10.6: Replace the fail-closed content materializer with a metadata-derived materializer under C4/C9
 
-Status: review
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -100,6 +100,16 @@ Story 10.6 replaces `FailClosedSemanticIndexingContentMaterializer` with a `Meta
   - [x] `sprint-status.yaml`: flip the materializer action item `in-progress → done`; add the new `open` C9-gated real-content follow-up entry (owner incl. Security + PM) with a `#` provenance comment; refresh `last_updated`. Do NOT touch prose already authored in `prd.md`/`architecture.md`/`epics.md`/`11-1-*.md`.
 - [x] Task 6 — Build + verify (AC 10, 11)
   - [x] `dotnet build Hexalith.Folders.slnx`; then Workers.Tests, Folders.Tests, Testing.Tests, Contracts.Tests; `dotnet format whitespace --verify-no-changes` over Folders-owned src/tests; AppHost.Tests skip clean. Record any DCP/Aspire env blocker; carry the live round-trip forward as the standing DCP blocker.
+
+### Review Findings
+
+- [x] [Review][Defer] Missing Tier-3 real-materializer proof — deferred because AC10 remains pending until Story 10.6's runtime prerequisites land. The existing mutation smoke only publishes an envelope without asserting an indexed outcome, while the index round-trip seeds `SearchIndexEntryChanged` directly and bypasses the materializer.
+- [x] [Review][Patch] Guard a null materialization identity instead of throwing an unclassified `NullReferenceException` [src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs:18]
+- [x] [Review][Patch] Pin the real curated-text token composition so searchable metadata cannot regress to constant text [tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs:35]
+- [x] [Review][Patch] Cover every supported XML, YAML, and Markdown media-type classification branch [tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs:71]
+- [x] [Review][Patch] Cover both sides of the inclusive 64-KiB size-classification boundary [tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs:99]
+- [x] [Review][Defer] EventStore write side emits no accepted folder-mutation events for the worker subscription [src/Hexalith.Folders.Server/FolderDomainProcessor.cs:1257] — deferred, pre-existing
+- [x] [Review][Defer] Production effective-permissions read model is never populated, so the indexing policy gate denies delivered mutations [src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:247] — deferred, pre-existing
 
 ## Dev Notes
 
