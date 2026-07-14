@@ -33,6 +33,7 @@ public sealed partial class SecurityRedactionCiWorkflowConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 
@@ -210,7 +211,7 @@ public sealed partial class SecurityRedactionCiWorkflowConformanceTests
         documentation.ShouldContain("metadata-only");
         documentation.ShouldContain("contract-spine.yml");
         documentation.ShouldContain("Stories 7.8");
-        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
 
         foreach (string category in _categories)
         {

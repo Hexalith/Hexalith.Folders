@@ -44,6 +44,7 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 
@@ -258,7 +259,7 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
         documentation.ShouldContain("C1");
         documentation.ShouldContain("C2");
         documentation.ShouldContain("C5");
-        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
 
         foreach (string step in _requiredSteps)
         {

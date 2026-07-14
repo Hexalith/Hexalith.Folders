@@ -12,7 +12,7 @@ and `beta`. Checkout uses `submodules: false`; the workflow then initializes onl
 build submodules and never initializes nested submodules recursively:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 ```
 
 The `e2e-gates` job runs on its own runner — a separate job, so the Playwright Chromium provisioning does not

@@ -43,6 +43,7 @@ public sealed partial class ReleasePackageConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 
@@ -104,11 +105,22 @@ public sealed partial class ReleasePackageConformanceTests
         publishJob.GetReleaseMapping("permissions").Children.Keys.Select(static key => key.ToString()).Order(StringComparer.Ordinal)
             .ShouldBe(["contents", "packages"]);
 
+        foreach (string jobName in new[] { "release-package-conformance", "publish-packages" })
+        {
+            YamlMappingNode packageJob = jobs.GetReleaseMapping(jobName);
+            FindNamedStep(packageJob, "Restore").GetReleaseScalar("run")
+                .ShouldBe("dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false");
+            FindNamedStep(packageJob, "Build").GetReleaseScalar("run")
+                .ShouldBe("dotnet build Hexalith.Folders.slnx -c Release -p:UseNuGetDeps=true --no-restore -m:1");
+        }
+
         string workflowText = ReadText(WorkflowPath);
         foreach (string command in new[]
         {
             "dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false",
             "dotnet build Hexalith.Folders.slnx --no-restore -m:1",
+            "dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false",
+            "dotnet build Hexalith.Folders.slnx -c Release -p:UseNuGetDeps=true --no-restore -m:1",
             "./tests/tools/run-contract-parity-ci-gates.ps1",
             "./tests/tools/run-security-redaction-ci-gates.ps1",
             "./tests/tools/run-capacity-smoke-ci-gates.ps1",
@@ -217,6 +229,8 @@ public sealed partial class ReleasePackageConformanceTests
             "ContinuousIntegrationBuild=true",
             "IncludeSymbols=true",
             "SymbolPackageFormat=snupkg",
+            "'-p:Configuration=Release'",
+            "'-p:UseNuGetDeps=true'",
             "-m:1",
             "dotnet",
             "nuget",
@@ -317,7 +331,7 @@ public sealed partial class ReleasePackageConformanceTests
             "packages: write",
             "dotnet nuget push",
             "--skip-duplicate",
-            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants",
+            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
             "PR CI",
             "scheduled drift",
             "policy conformance",

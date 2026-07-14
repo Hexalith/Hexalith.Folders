@@ -36,6 +36,7 @@ public sealed partial class E2eCiWorkflowConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 

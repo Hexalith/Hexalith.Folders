@@ -331,7 +331,7 @@ function Assert-TenantDeletionDocs {
             '_bmad-output/gates/retention-deletion/latest.json',
             'pending approval blocks live release',
             'metadata-only',
-            'git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants')) {
+            'git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants')) {
         if (-not $operations.Contains($expected, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'tenant-deletion-matrix' -Reason "missing-operations-doc-text expected=$expected"
         }

@@ -30,7 +30,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -114,7 +114,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -128,10 +128,10 @@ jobs:
             **/*.csproj
 
       - name: Restore
-        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+        run: dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false
 
       - name: Build
-        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+        run: dotnet build Hexalith.Folders.slnx -c Release -p:UseNuGetDeps=true --no-restore -m:1
 
       - name: Run release package dry-run gates
         if: ${{ github.event_name == 'release' }}
@@ -163,7 +163,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -177,10 +177,10 @@ jobs:
             **/*.csproj
 
       - name: Restore
-        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+        run: dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false
 
       - name: Build
-        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+        run: dotnet build Hexalith.Folders.slnx -c Release -p:UseNuGetDeps=true --no-restore -m:1
 
       - name: Publish release packages
         shell: pwsh

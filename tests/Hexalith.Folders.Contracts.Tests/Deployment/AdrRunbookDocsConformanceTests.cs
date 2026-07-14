@@ -86,7 +86,7 @@ public sealed partial class AdrRunbookDocsConformanceTests
     ];
 
     private static readonly string SubmoduleCommand =
-        "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants";
+        "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants";
 
     private sealed record AdrManifestRow(string Area, string File, IReadOnlyList<string> DecisionIds);
 

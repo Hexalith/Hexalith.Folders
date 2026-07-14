@@ -17,11 +17,15 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 
     private static readonly string[] _baselineCategories =
     [
+        "dependency-mode",
         "restore",
         "build",
         "format",
         "lint",
         "unit-tests",
+        "package-mode-restore",
+        "package-mode-build",
+        "package-mode-test",
     ];
 
     private static readonly string[] _baselineUnitProjects =
@@ -45,6 +49,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 
@@ -139,6 +144,29 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         script.ShouldContain("Hexalith.Folders.slnx");
         script.ShouldContain("Invoke-BaselineCommand -Category 'restore' -Arguments @('restore', 'Hexalith.Folders.slnx'");
         script.ShouldContain("Invoke-BaselineCommand -Category 'build' -Arguments @('build', 'Hexalith.Folders.slnx', '--no-restore'");
+        script.ShouldContain("Assert-DependencyMode -Label 'default'", Case.Sensitive);
+        script.ShouldContain("Assert-DependencyMode -Label 'debug' -AdditionalArguments @('-p:Configuration=Debug')", Case.Sensitive);
+        script.ShouldContain("Assert-DependencyMode -Label 'release-package' -AdditionalArguments @('-p:Configuration=Release', '-p:UseNuGetDeps=true')", Case.Sensitive);
+        foreach (string propertyName in new[]
+        {
+            "UseHexalithProjectReferences",
+            "UseNuGetDeps",
+            "HexalithEventStoreFromSource",
+            "HexalithTenantsFromSource",
+            "HexalithMemoriesFromSource",
+            "HexalithFrontComposerFromSource",
+            "HexalithFrontComposerTestingFromSource",
+        })
+        {
+            script.ShouldContain(propertyName, Case.Sensitive);
+        }
+
+        script.ShouldContain("Invoke-BaselineCommand -Category 'package-mode-restore'", Case.Sensitive);
+        script.ShouldContain("@('restore', $packageModeProject, '-p:Configuration=Release', '-p:UseNuGetDeps=true', '--force'", Case.Sensitive);
+        script.ShouldContain("Invoke-BaselineCommand -Category 'package-mode-build'", Case.Sensitive);
+        script.ShouldContain("@('build', $packageModeProject, '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore'", Case.Sensitive);
+        script.ShouldContain("Invoke-BaselineCommand -Category 'package-mode-test'", Case.Sensitive);
+        script.ShouldContain("@('test', $packageModeProject, '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore', '--no-build')", Case.Sensitive);
         script.ShouldContain("--no-restore");
         script.ShouldContain("Invoke-BaselineCommand -Category 'format' -Arguments @('format', 'whitespace', 'Hexalith.Folders.slnx'");
         script.ShouldContain("--verify-no-changes");

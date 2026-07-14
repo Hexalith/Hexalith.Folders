@@ -2,7 +2,7 @@
 title: 'Restore green build and test validation'
 type: 'bugfix'
 created: '2026-07-14'
-status: 'in-review'
+status: 'done'
 review_loop_iteration: 0
 baseline_commit: 'df7b5f3fd3f8c270051a5544ae8dcb6bab52a8fb'
 context:
@@ -78,3 +78,55 @@ context:
 - `pwsh ./tests/tools/run-capacity-smoke-ci-gates.ps1` -- expected: hermetic capacity smoke succeeds.
 - `pwsh ./tests/install-playwright.ps1 -SkipBuild && pwsh ./tests/tools/run-e2e-ci-gates.ps1 -SkipRestoreBuild -SkipBrowserInstall` -- expected: browser suite passes when Chromium/localhost prerequisites are available.
 - `dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -m:1 -p:NuGetAudit=false && dotnet build Hexalith.Folders.slnx -c Release --no-restore -m:1` -- expected: package dependency graph builds with zero errors.
+
+## Suggested Review Order
+
+**Dependency graph selection**
+
+- Defines default/source/package selection and the dedicated Testing availability flag.
+  [`Directory.Build.props:15`](../../Directory.Build.props#L15)
+
+- Selects the exact Testing dependency and fails closed on partial source checkouts.
+  [`Hexalith.Folders.UI.Tests.csproj:9`](../../tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj#L9)
+
+- Verifies default, Debug, Release graphs and a fresh package-mode UI lane.
+  [`run-baseline-ci-gates.ps1:139`](../../tests/tools/run-baseline-ci-gates.ps1#L139)
+
+- Consumes the moved storage fake from its FrontComposer Testing owner.
+  [`BadgeRenderingFixture.cs:7`](../../tests/Hexalith.Folders.UI.Tests/BadgeRenderingFixture.cs#L7)
+
+**Release packaging**
+
+- Runs restore, build, and pack in one explicit Release/package graph.
+  [`run-release-package-gates.ps1:317`](../../tests/tools/run-release-package-gates.ps1#L317)
+
+- Mirrors explicit package mode across conformance and publishing jobs.
+  [`release-packages.yml:131`](../../.github/workflows/release-packages.yml#L131)
+
+- Locks packaging workflow commands against configuration drift.
+  [`ReleasePackageConformanceTests.cs:108`](../../tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs#L108)
+
+**Root submodule policy**
+
+- Documents exact root initialization and explicit recursive prohibition.
+  [`AGENTS.md:9`](../../AGENTS.md#L9)
+
+- Centralizes the exact eight-submodule root set.
+  [`ScaffoldContractTests.cs:98`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L98)
+
+- Applies the canonical nonrecursive command throughout CI.
+  [`ci.yml:27`](../../.github/workflows/ci.yml#L27)
+
+- Gives contributors the same root-only setup command.
+  [`README.md:14`](../../README.md#L14)
+
+**Operational evidence**
+
+- Explains dependency-mode and package-mode regression evidence.
+  [`baseline-ci-gates.md:15`](../../docs/operations/baseline-ci-gates.md#L15)
+
+- Explains consistent Release/package restore, build, and pack behavior.
+  [`release-packages.md:33`](../../docs/operations/release-packages.md#L33)
+
+- Records two pre-existing hardening items outside this fix.
+  [`deferred-work.md:466`](deferred-work.md#L466)

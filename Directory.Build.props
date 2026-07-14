@@ -24,6 +24,7 @@
     <HexalithTenantsFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithTenantsRoot)\src\Hexalith.Tenants.Contracts\Hexalith.Tenants.Contracts.csproj')">true</HexalithTenantsFromSource>
     <HexalithMemoriesFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithMemoriesRoot)\src\Hexalith.Memories.Contracts\Hexalith.Memories.Contracts.csproj')">true</HexalithMemoriesFromSource>
     <HexalithFrontComposerFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Shell\Hexalith.FrontComposer.Shell.csproj')">true</HexalithFrontComposerFromSource>
+    <HexalithFrontComposerTestingFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Testing\Hexalith.FrontComposer.Testing.csproj')">true</HexalithFrontComposerTestingFromSource>
   </PropertyGroup>
 
   <PropertyGroup>

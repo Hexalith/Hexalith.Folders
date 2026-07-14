@@ -24,7 +24,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -37,7 +37,7 @@ jobs:
             nuget.config
             **/*.csproj
 
-      - name: Run restore, build, format, lint, and unit-tests
+      - name: Run dependency-mode, restore, build, format, lint, unit-tests, package-mode-restore, package-mode-build, and package-mode-test
         shell: pwsh
         timeout-minutes: 25
         run: ./tests/tools/run-baseline-ci-gates.ps1
@@ -53,7 +53,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -88,7 +88,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -123,7 +123,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -158,7 +158,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -192,7 +192,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-level build submodules
-        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5

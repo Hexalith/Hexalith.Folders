@@ -462,3 +462,10 @@ Items from the code review triage (Blind Hunter + Edge Case Hunter + Acceptance 
 - Dapr invoke allow-rule is conditional because the facade uses a direct Memories base-address client (`src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:91`, `deploy/dapr/production/accesscontrol.yaml`) — accepted in the story's 2026-06-24 review resolutions and documented in architecture; revisit when egress is pinned to sidecar invocation.
 - Generated `ContextIndexSearchRequest.Limit` is non-nullable despite optional OpenAPI semantics (`src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs:11383`) — pre-existing systemic NSwag optional-numeric pattern already recorded for 10.5; fix spine-wide rather than hand-edit generated code.
 - Required test lane still has the pre-existing `.slnx` inventory red (`_bmad-output/implementation-artifacts/10-5-expose-authorized-folders-query-facade-over-memories.md`) — pre-existing and documented in the story completion notes; do not treat as caused by the 10.5 facade chunk.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-run-tests-and-fix-failures.md`
+  summary: Harden the canonical submodule command contract to parse and compare the exact nonrecursive command token set.
+  evidence: The pre-existing substring-based assertion in `ScaffoldContractTests.AssertCanonicalInitCommandPresent` can accept comments, recursive commands, or extra nested paths that merely contain the required substrings.
+- source_spec: `_bmad-output/implementation-artifacts/spec-run-tests-and-fix-failures.md`
+  summary: Reject contradictory explicit Hexalith dependency-mode switches during MSBuild evaluation.
+  evidence: The pre-existing configuration permits `UseHexalithProjectReferences=true` and `UseNuGetDeps=true` simultaneously, allowing different dependency projects to select inconsistent graphs.

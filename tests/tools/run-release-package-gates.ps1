@@ -314,8 +314,8 @@ function Invoke-RestoreBuild {
         return
     }
 
-    Invoke-DotNet -Category 'restore-build' -Arguments @('restore', 'Hexalith.Folders.slnx', '-m:1', '-p:NuGetAudit=false')
-    Invoke-DotNet -Category 'restore-build' -Arguments @('build', 'Hexalith.Folders.slnx', '--no-restore', '-m:1')
+    Invoke-DotNet -Category 'restore-build' -Arguments @('restore', 'Hexalith.Folders.slnx', '-p:Configuration=Release', '-p:UseNuGetDeps=true', '-m:1', '-p:NuGetAudit=false')
+    Invoke-DotNet -Category 'restore-build' -Arguments @('build', 'Hexalith.Folders.slnx', '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore', '-m:1')
     Add-Result -Category 'restore-build' -Status 'passed' -ExitCode 0
 }
 
@@ -333,6 +333,7 @@ function Invoke-Packages {
             $package.projectPath,
             '-c',
             'Release',
+            '-p:UseNuGetDeps=true',
             '--no-restore',
             '-m:1',
             '-o',

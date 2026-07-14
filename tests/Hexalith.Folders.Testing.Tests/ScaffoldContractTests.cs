@@ -103,6 +103,7 @@ public sealed class ScaffoldContractTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 
@@ -291,6 +292,36 @@ public sealed class ScaffoldContractTests
         DescendantsByLocalName(buildProps, "LangVersion").Single().Value.ShouldBe("latest");
         DescendantsByLocalName(packagesProps, "ManagePackageVersionsCentrally").Single().Value.ShouldBe("true");
         projectsWithInlineVersions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void FrontComposerTestingDependencyFailsClosedOnPartialSourceCheckout()
+    {
+        string root = RepositoryRoot();
+        XDocument buildProps = XDocument.Load(Path.Combine(root, "Directory.Build.props"));
+        XElement testingSourceFlag = DescendantsByLocalName(buildProps, "HexalithFrontComposerTestingFromSource").Single();
+        string sourceFlagCondition = ((string?)testingSourceFlag.Attribute("Condition")).ShouldNotBeNull();
+
+        sourceFlagCondition.ShouldContain("'$(UseHexalithProjectReferences)' == 'true'", Case.Sensitive);
+        sourceFlagCondition.ShouldContain("Hexalith.FrontComposer.Testing\\Hexalith.FrontComposer.Testing.csproj", Case.Sensitive);
+
+        XDocument uiTestsProject = XDocument.Load(Path.Combine(root, "tests", "Hexalith.Folders.UI.Tests", "Hexalith.Folders.UI.Tests.csproj"));
+        XElement testingProjectReference = DescendantsByLocalName(uiTestsProject, "ProjectReference")
+            .Single(reference => ((string?)reference.Attribute("Include"))?.Contains("Hexalith.FrontComposer.Testing", StringComparison.Ordinal) == true);
+        ((string?)testingProjectReference.Attribute("Condition")).ShouldBe("'$(HexalithFrontComposerTestingFromSource)' == 'true'");
+
+        XElement testingPackageReference = DescendantsByLocalName(uiTestsProject, "PackageReference")
+            .Single(reference => string.Equals((string?)reference.Attribute("Include"), "Hexalith.FrontComposer.Testing", StringComparison.Ordinal));
+        ((string?)testingPackageReference.Attribute("Condition")).ShouldBe("'$(HexalithFrontComposerFromSource)' != 'true'");
+
+        XElement validationTarget = DescendantsByLocalName(uiTestsProject, "Target")
+            .Single(target => string.Equals((string?)target.Attribute("Name"), "ValidateFrontComposerTestingSourceAvailability", StringComparison.Ordinal));
+        string validationCondition = ((string?)validationTarget.Attribute("Condition")).ShouldNotBeNull();
+        validationCondition.ShouldContain("'$(UseHexalithProjectReferences)' == 'true'", Case.Sensitive);
+        validationCondition.ShouldContain("'$(HexalithFrontComposerFromSource)' == 'true'", Case.Sensitive);
+        validationCondition.ShouldContain("'$(HexalithFrontComposerTestingFromSource)' != 'true'", Case.Sensitive);
+        DescendantsByLocalName(validationTarget, "Error").Single().Attribute("Text")?.Value
+            .ShouldContain("complete root FrontComposer submodule checkout", Case.Sensitive);
     }
 
     [Fact]

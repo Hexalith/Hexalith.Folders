@@ -92,7 +92,7 @@ Rerun calibration after runtime, provider, workspace lifecycle, lock, idempotenc
 Use only root-level submodule initialization:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 ```
 
 Do not initialize nested submodules for this lane.

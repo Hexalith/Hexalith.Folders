@@ -48,7 +48,7 @@ Story 7.10 owns final capacity calibration, target hardware profile, p95 and thr
 CI checkout uses `submodules: false`, then initializes only root-level build submodules:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 ```
 
 Nested recursive submodule initialization is forbidden unless explicitly requested for nested submodule work.

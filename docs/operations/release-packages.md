@@ -30,9 +30,9 @@ Run the same package gate locally without feed credentials:
 pwsh ./tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId 0123456789abcdef0123456789abcdef01234567
 ```
 
-The gate restores and builds by default, packs only manifest-listed projects, validates `.nupkg` and `.snupkg` outputs, and writes package artifacts under `_bmad-output/gates/release-packages/packages/`.
+The gate restores, builds, and packs in one explicit Release/package dependency mode by default (`Configuration=Release`, `UseNuGetDeps=true`). It never reuses default Debug/source assets for package output. It packs only manifest-listed projects, validates `.nupkg` and `.snupkg` outputs, and writes package artifacts under `_bmad-output/gates/release-packages/packages/`.
 
-When restore/build already ran in the same job, use:
+When an explicit Release/package restore and build already ran in the same job, use:
 
 ```powershell
 pwsh ./tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId 0123456789abcdef0123456789abcdef01234567 -SkipRestoreBuild
@@ -89,7 +89,7 @@ The release package gate fails closed under these categories:
 CI checkout uses `submodules: false`. Initialize only root-level build submodules:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 ```
 
 Nested recursive submodule initialization is forbidden unless explicitly requested for nested submodule work.

@@ -5,7 +5,7 @@ Story 7.5 defines the pull-request lane for public contract and cross-surface pa
 The workflow is `.github/workflows/ci.yml`. It runs for `pull_request` and pushes to `main`, `next`, `alpha`, and `beta`. Checkout uses `submodules: false`; the workflow then initializes only the documented root-level build submodules:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 ```
 
 Nested recursive initialization is forbidden unless a maintainer explicitly requests nested submodule work.

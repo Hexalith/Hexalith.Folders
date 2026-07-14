@@ -5,18 +5,22 @@ Story 7.4 defines the pull-request baseline lane for mechanical repository healt
 The workflow is `.github/workflows/ci.yml`. It runs for `pull_request` and pushes to `main`, `next`, `alpha`, and `beta`. Checkout uses `submodules: false`; the workflow then initializes only the documented root-level build submodules and never initializes nested submodules recursively:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
 ```
 
 ## Gate Categories
 
 `tests/tools/run-baseline-ci-gates.ps1` exposes these failure categories:
 
+- `dependency-mode`: evaluates the UI test project in unqualified/default, explicit Debug, and explicit Release/package modes and blocks unless the global source/package properties and representative source-availability flags agree.
 - `restore`: `dotnet restore Hexalith.Folders.slnx -p:NuGetAudit=false`
 - `build`: `dotnet build Hexalith.Folders.slnx --no-restore`
 - `format`: `dotnet format whitespace Hexalith.Folders.slnx --verify-no-changes --no-restore --include ./src/ ./tests/ ./samples/`
 - `lint`: `dotnet format analyzers Hexalith.Folders.slnx --verify-no-changes --no-restore --severity warn --include ./src/ ./tests/ ./samples/`
 - `unit-tests`: explicit hermetic unit-test project allow-list
+- `package-mode-restore`: fresh explicit Release/package restore of `Hexalith.Folders.UI.Tests`.
+- `package-mode-build`: explicit Release/package build of `Hexalith.Folders.UI.Tests` without reusing source-mode assets.
+- `package-mode-test`: executes the UI tests against `Hexalith.FrontComposer.Testing` from its NuGet package, including `InMemoryStorageService` consumption.
 
 The `build` gate needs the root-level submodule working trees present (the `Hexalith.Folders.Server`/`Workers`/`AppHost` host projects reference sibling submodule source). Those submodules are independent repositories with their own formatting standards (for example, CRLF line-endings), so the `format` and `lint` gates are deliberately scoped with `--include ./src/ ./tests/ ./samples/` to evaluate only this repository's own code. The exact `./src/` path form matters: a bare `--include src tests` matches no files and makes the gate pass vacuously.
 

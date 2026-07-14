@@ -106,7 +106,7 @@ function Write-BaselineCiReport {
         report_path = '_bmad-output/gates/baseline-ci/latest.json'
         diagnostic_policy = 'metadata-only'
         solution = 'Hexalith.Folders.slnx'
-        categories = @('restore', 'build', 'format', 'lint', 'unit-tests')
+        categories = @('dependency-mode', 'restore', 'build', 'format', 'lint', 'unit-tests', 'package-mode-restore', 'package-mode-build', 'package-mode-test')
         unit_test_projects = $unitTestProjects
         results = $Results
     } | ConvertTo-Json -Depth 8 | Set-Content -Path $reportPath -Encoding utf8NoBOM
@@ -136,12 +136,91 @@ function Invoke-BaselineCommand {
     }
 }
 
+function Assert-DependencyMode {
+    param(
+        [Parameter(Mandatory = $true)][string]$Label,
+        [AllowEmptyCollection()][string[]]$AdditionalArguments = @(),
+        [Parameter(Mandatory = $true)][hashtable]$ExpectedProperties
+    )
+
+    $projectPath = 'tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj'
+    $propertyNames = @(
+        'Configuration',
+        'UseHexalithProjectReferences',
+        'UseNuGetDeps',
+        'HexalithEventStoreFromSource',
+        'HexalithTenantsFromSource',
+        'HexalithMemoriesFromSource',
+        'HexalithFrontComposerFromSource',
+        'HexalithFrontComposerTestingFromSource'
+    )
+    $arguments = @('msbuild', $projectPath, "-getProperty:$($propertyNames -join ',')") + $AdditionalArguments
+
+    Write-Host "BASELINE-CI category=dependency-mode project=$projectPath evaluation=$Label"
+    $rawOutput = (& dotnet @arguments | Out-String)
+    $exitCode = $LASTEXITCODE
+    $status = 'failed'
+    if ($exitCode -eq 0) {
+        try {
+            $evaluation = $rawOutput | ConvertFrom-Json
+            foreach ($propertyName in $ExpectedProperties.Keys) {
+                $actual = [string]$evaluation.Properties.$propertyName
+                $expected = [string]$ExpectedProperties[$propertyName]
+                if ($actual -cne $expected) {
+                    throw "Dependency mode evaluation '$Label' expected $propertyName='$expected' but found '$actual'."
+                }
+            }
+
+            $status = 'passed'
+        }
+        catch {
+            Write-Host "BASELINE-CI dependency-mode failure: $($_.Exception.Message)" -ForegroundColor Red
+            $exitCode = 1
+        }
+    }
+
+    $script:results += [ordered]@{
+        category = 'dependency-mode'
+        project_path = "$projectPath [$Label]"
+        status = $status
+        exit_code = $exitCode
+    }
+    Write-BaselineCiReport -Status $status -Results $script:results
+
+    if ($exitCode -ne 0) {
+        exit $exitCode
+    }
+}
+
 try {
     Push-Location $repositoryRoot
     $pushed = $true
 
     New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
     Write-BaselineCiReport -Status 'discovered' -Results $results
+
+    $sourceModeProperties = @{
+        Configuration = 'Debug'
+        UseHexalithProjectReferences = 'true'
+        UseNuGetDeps = 'false'
+        HexalithEventStoreFromSource = 'true'
+        HexalithTenantsFromSource = 'true'
+        HexalithMemoriesFromSource = 'true'
+        HexalithFrontComposerFromSource = 'true'
+        HexalithFrontComposerTestingFromSource = 'true'
+    }
+    Assert-DependencyMode -Label 'default' -ExpectedProperties $sourceModeProperties
+    Assert-DependencyMode -Label 'debug' -AdditionalArguments @('-p:Configuration=Debug') -ExpectedProperties $sourceModeProperties
+    Assert-DependencyMode -Label 'release-package' -AdditionalArguments @('-p:Configuration=Release', '-p:UseNuGetDeps=true') -ExpectedProperties @{
+        Configuration = 'Release'
+        UseHexalithProjectReferences = 'false'
+        UseNuGetDeps = 'true'
+        HexalithEventStoreFromSource = ''
+        HexalithTenantsFromSource = ''
+        HexalithMemoriesFromSource = ''
+        HexalithFrontComposerFromSource = ''
+        HexalithFrontComposerTestingFromSource = ''
+    }
 
     if (-not $SkipRestoreBuild) {
         Invoke-BaselineCommand -Category 'restore' -Arguments @('restore', 'Hexalith.Folders.slnx', '-m:1', '-p:NuGetAudit=false')
@@ -163,6 +242,11 @@ try {
 
         Invoke-BaselineCommand -Category 'unit-tests' -ProjectPath $testProject.project_path -Arguments $testArguments
     }
+
+    $packageModeProject = 'tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj'
+    Invoke-BaselineCommand -Category 'package-mode-restore' -ProjectPath $packageModeProject -Arguments @('restore', $packageModeProject, '-p:Configuration=Release', '-p:UseNuGetDeps=true', '--force', '-m:1', '-p:NuGetAudit=false')
+    Invoke-BaselineCommand -Category 'package-mode-build' -ProjectPath $packageModeProject -Arguments @('build', $packageModeProject, '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore', '-m:1')
+    Invoke-BaselineCommand -Category 'package-mode-test' -ProjectPath $packageModeProject -Arguments @('test', $packageModeProject, '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore', '--no-build')
 
     Write-BaselineCiReport -Status 'passed' -Results $results
 }

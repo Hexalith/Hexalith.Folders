@@ -6,9 +6,14 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.UI\Hexalith.Folders.UI.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
-    <ProjectReference Include="$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Testing\Hexalith.FrontComposer.Testing.csproj" Condition="'$(HexalithFrontComposerFromSource)' == 'true'" />
+    <ProjectReference Include="$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Testing\Hexalith.FrontComposer.Testing.csproj" Condition="'$(HexalithFrontComposerTestingFromSource)' == 'true'" />
     <PackageReference Include="Hexalith.FrontComposer.Testing" Condition="'$(HexalithFrontComposerFromSource)' != 'true'" />
   </ItemGroup>
+  <Target Name="ValidateFrontComposerTestingSourceAvailability"
+          BeforeTargets="CollectPackageReferences;PrepareForBuild"
+          Condition="'$(UseHexalithProjectReferences)' == 'true' and '$(HexalithFrontComposerFromSource)' == 'true' and '$(HexalithFrontComposerTestingFromSource)' != 'true'">
+    <Error Text="FrontComposer source mode found Hexalith.FrontComposer.Shell but requires references/Hexalith.FrontComposer/src/Hexalith.FrontComposer.Testing/Hexalith.FrontComposer.Testing.csproj for UI tests. Restore the complete root FrontComposer submodule checkout or set UseHexalithProjectReferences=false for whole-root package mode." />
+  </Target>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NSubstitute" />

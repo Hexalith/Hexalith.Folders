@@ -255,7 +255,7 @@ public sealed partial class ProductionObservabilityConformanceTests
             "metadata-only",
             "reviewer",
             "rerun",
-            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants",
+            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
         })
         {
             operations.ShouldContain(required, Case.Sensitive);

@@ -27,6 +27,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
         "references/Hexalith.Memories",
+        "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Tenants",
     ];
 
@@ -217,7 +218,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         documentation.ShouldContain("Story 7.15");
         documentation.ShouldContain("Story 7.16");
         documentation.ShouldContain("Story 7.17");
-        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
 
         foreach (string category in _nightlyCategories.Concat(_policyCategories))
         {
