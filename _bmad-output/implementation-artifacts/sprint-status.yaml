@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-12T07:11:18+02:00
-last_updated: '2026-07-14 (Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green)))'
+last_updated: '2026-07-14 (Implementation-readiness structural correction approved: Epics 3-6 reopened, production closure and split stories registered, Epic 10 projection ownership moved from 11.10 to 10.7, and Major-scope planning handoff recorded. Prior: 2026-07-14 (Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green)))'
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -77,7 +77,10 @@ development_status:
   epic-2-retrospective: optional
 
   # Epic 3: Provider Readiness And Repository Binding
-  epic-3: done
+  # Reopened 2026-07-14 by the approved implementation-readiness structural correction.
+  # Completed adapter work remains historical; split provider evidence and the terminal
+  # asynchronous repository-creation outcome remain active backlog.
+  epic-3: in-progress
   3-1-configure-provider-binding-and-credential-reference: done
   3-2-define-igitprovider-port-and-capability-model: done
   3-3-implement-github-provider-adapter: done
@@ -87,10 +90,16 @@ development_status:
   3-7-bind-an-existing-repository-to-a-folder: done
   3-8-define-branch-and-ref-policy: done
   3-9-inspect-tenant-and-per-provider-readiness-evidence: done
+  3-10-github-repository-provisioning-binding-and-branch-ref-behavior: backlog
+  3-11-github-file-mutation-commit-status-and-failure-behavior: backlog
+  3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior: backlog
+  3-13-forgejo-file-mutation-commit-status-and-failure-behavior: backlog
+  3-14-complete-asynchronous-repository-creation-and-binding: backlog
   epic-3-retrospective: optional
 
   # Epic 4: Repository-Backed Workspace Task Lifecycle
-  epic-4: done
+  # Reopened 2026-07-14 for production transition evidence and durable lifecycle proof.
+  epic-4: in-progress
   4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: done
   4-2-prepare-workspace-from-a-ready-repository-backed-folder: done
   4-3-acquire-task-scoped-workspace-lock: done
@@ -108,10 +117,15 @@ development_status:
   4-15-validate-lifecycle-replay-and-projection-determinism: done
   4-16-validate-lifecycle-security-boundaries: done
   4-17-seed-lifecycle-capacity-test-harness: done
+  4-18-eventstore-backed-workspace-transition-evidence-projection: backlog
+  4-19-prove-durable-workspace-prepare-and-lock-lifecycle: backlog
+  4-20-prove-durable-file-mutation-and-bounded-context-lifecycle: backlog
+  4-21-prove-real-commit-retry-conflict-and-unknown-outcome-reconciliation: backlog
   epic-4-retrospective: optional
 
   # Epic 5: Cross-Surface Workflow Parity
-  epic-5: done
+  # Reopened 2026-07-14 for independently verifiable CLI and MCP capability slices.
+  epic-5: in-progress
   5-1-ship-sdk-convenience-helpers-samples-and-quickstart: done
   5-2-implement-cli-commands-with-behavioral-parity-rules: done
   5-3-implement-mcp-tools-resources-and-failure-kinds: done
@@ -119,10 +133,15 @@ development_status:
   5-5-validate-golden-lifecycle-parity-across-rest-and-sdk: done
   5-6-validate-behavioral-parity-across-cli-and-mcp: done
   5-7-validate-mixed-surface-handoff-scenario: done
+  5-8-cli-workspace-preparation-and-lock-lifecycle: backlog
+  5-9-cli-file-context-commit-status-error-and-audit-behavior: backlog
+  5-10-mcp-workspace-preparation-and-lock-lifecycle: backlog
+  5-11-mcp-file-context-commit-status-error-and-audit-behavior: backlog
   epic-5-retrospective: done
 
   # Epic 6: Read-Only Workspace Trust Console And Audit Review
-  epic-6: done
+  # Reopened 2026-07-14 for populated production diagnostics and deployed-host evidence.
+  epic-6: in-progress
   6-1-audit-and-operation-timeline-query-endpoints: done
   6-2-scaffold-frontcomposer-hosted-read-only-operations-console: done
   6-3-render-operator-disposition-labels-as-primary-visual: done
@@ -134,6 +153,9 @@ development_status:
   6-9-implement-incident-mode-last-resort-read-path: done
   6-10-enforce-console-performance-and-perceived-wait-ux: done
   6-11-verify-no-mutation-enforcement-and-accessibility: done
+  6-12-populate-readiness-lock-dirty-state-and-failed-operation-projections: backlog
+  6-13-populate-provider-status-sync-status-and-projection-freshness-projections: backlog
+  6-14-prove-populated-deployed-host-diagnostic-and-transition-evidence-journeys: backlog
   epic-6-retrospective: done
 
   # Epic 7: MVP Release Readiness And Operational Evidence
@@ -259,6 +281,9 @@ development_status:
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
   10-5-expose-authorized-folders-query-facade-over-memories: done
   10-6-replace-fail-closed-content-materializer-with-metadata-derived: in-progress
+  10-7-eventstore-backed-search-bridge-and-deployed-server-registration: backlog
+  10-8-real-produce-index-authorize-hydrate-redact-search-round-trip: backlog
+  10-9-authorized-body-content-materialization-c9-gated: backlog
   epic-10-retrospective: done
 
   # Epic 11: Domain-Focus Platform Refactoring And Governance Closure
@@ -275,28 +300,37 @@ development_status:
   epic-11: in-progress
   11-1-establish-refactor-baseline-and-governance-pin-map: done
   11-2-land-platform-prerequisite-apis-in-shared-modules: review
-  11-3-apply-wire-preserving-repo-hygiene-and-fragile-gate-fixes: backlog
+  11-3-apply-wire-preserving-repository-hygiene: backlog
   11-4-consolidate-server-transport-envelope-and-route-helper-duplication: backlog
   11-5-consolidate-domain-provider-duplication-and-fix-provider-correctness-defects: backlog
   11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport: backlog
-  11-7-consolidate-test-helpers-into-hexalith-folders-testing: backlog
+  11-7-consolidate-deterministic-time-context-and-path-test-helpers: backlog
   11-8-adopt-commons-eventstore-primitives-in-the-folders-domain: backlog
   11-9-delete-service-defaults-and-consume-commons-service-defaults: backlog
-  11-10-align-server-and-workers-with-eventstore-memories-sdk-seams: backlog
-  11-11-harden-frontcomposer-and-fluent-ui-conformance-below-the-shell: backlog
+  11-10-adopt-eventstore-admission-and-subscription-mapping-seams: backlog
+  11-11-adopt-frontcomposer-user-context-token-oidc-and-shared-shell-helpers: backlog
   11-12-modernize-generated-client-and-shared-idempotency-ulid-helpers: backlog
-  11-13-final-cleanup-adrs-documentation-and-verification: backlog
+  11-13-delete-obsolete-local-code-and-synchronize-planning-maintenance-documents: backlog
+  11-14-adopt-memories-publication-and-search-client-seams: backlog
+  11-15-maintain-dcp-capable-cross-repository-verification-lane: backlog
+  11-16-replace-brittle-governance-and-ci-pins-with-behavioral-gates: backlog
+  11-17-consolidate-eventstore-gateway-doubles-and-rejection-conformance: backlog
+  11-18-consolidate-provider-and-repository-fakes-in-folders-testing: backlog
+  11-19-adopt-fluent-ui-tables-controls-icons-loading-and-layout-primitives: backlog
+  11-20-record-apphost-servicedefaults-query-handler-and-tenant-semantic-adrs: backlog
+  11-21-run-final-boundary-package-test-e2e-accessibility-and-governance-verification: backlog
   epic-11-retrospective: optional
 
-  # Epic 12: Durable Persistence And Git Round-Trip
+  # Epic 12: Durable Repository-Backed Round Trip
   # Created 2026-07-14 via bmad-correct-course (sprint-change-proposal-2026-07-14.md) from a 6-agent,
   # evidence-based production-readiness audit. This is THE PRODUCT epic: today every seam that touches
   # document bytes or durable state is an Unavailable*/InMemory* placeholder with no production impl, so
   # an agent can receive 202s but cannot persist/retrieve/version/search/commit a document, tasks never
   # complete, and Production cannot boot. Blocker findings HXF-CORE-001..005 + HXF-REL-001/003/004.
-  # GATING: Story 10.6 (content materializer) and Story 11.10 (read-model/SDK-seam wiring) validate only
-  # against fakes until Epic 12's durable IFolderRepository + content store + Git write path exist; both
-  # are gated on 12-1/12-2/12-3. RATIFIED 2026-07-14 (Jerome, "do recommended"): OPTION B — build this
+  # STRUCTURAL CORRECTION 2026-07-14: Epic 12 owns the durable repository, task/projection
+  # substrate, content source, real Git path, and at-least-once egress. Product projections
+  # are owned by Stories 4.18, 6.12-6.13, and 10.7; Story 11.10 no longer owns them.
+  # RATIFIED 2026-07-14 (Jerome, "do recommended"): OPTION B — build this
   # data plane; durable-IFolderRepository home = new Epic 12 (not an expansion of 11.10). Stories may now
   # be created (bmad-create-story) with acceptance criteria that assert restart-surviving, real-Git
   # round-trip behavior (NOT fake-backed). Do NOT auto-start implementation on the CI-red tree — land the
@@ -333,21 +367,25 @@ action_items:
     owner: "Paige / Winston / Amelia"
     priority: high
     status: done
+  - epic: planning
+    # Approved 2026-07-14 via sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md.
+    action: "Apply the approved Major-scope implementation-readiness structural correction across PRD, architecture, UX, epics, story authority/manifest, traceability, deferred work, and project context; then rerun implementation readiness into a non-overwriting report."
+    owner: "John / Winston / Product Owner / Amelia / Murat"
+    priority: high
+    status: open
   - epic: 10
     action: "Stand up and run the DCP-capable AppHost lane for Epic 10 live evidence: topology boot, folders-index auto-provisioning, SearchIndexEntryChanged, SearchIndexEntryRemoved, archived status filtering, and query-facade search/hydration."
     owner: "Jerome / Platform"
     priority: high
     status: open
   - epic: 10
-    # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-190839):
-    # "record an explicit release limitation" branch taken. The deployed Server facade runs on the
-    # fail-safe Unavailable bridge read model (context-search -> zero items; indexing-status ->
-    # ReadModelUnavailable); limitation recorded in architecture.md Query Facade (Story 10.5)
-    # section + epics.md Epic 10 note. The wiring itself is re-homed to Epic 11 Story 11.10 (AC added).
-    action: "Wire the Server-side EventStore-backed semantic-indexing bridge read model for the query facade and indexing-status paths, or record an explicit release limitation. RESOLVED (record-limitation branch): limitation recorded in architecture.md + epics.md; wiring re-homed to Epic 11 Story 11.10."
+    # The 2026-07-07 record-limitation branch remains valid historical evidence. The approved
+    # 2026-07-14 structural correction supersedes its ownership deferral: production wiring is
+    # now Epic 10 Story 10.7, not Workstream 11 Story 11.10.
+    action: "Implement the Server-side EventStore-backed search bridge read model and deployed registration for query-facade hydration and indexing-status paths under Story 10.7."
     owner: "Amelia / Winston"
     priority: high
-    status: done
+    status: open
   - epic: 10
     action: "Replace or extend the fail-closed content materializer so real folder mutation evidence can populate the search index under C4/C9 policy."
     owner: "Amelia / Murat"
