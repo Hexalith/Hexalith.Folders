@@ -275,6 +275,43 @@ development_status:
   11-13-final-cleanup-adrs-documentation-and-verification: backlog
   epic-11-retrospective: optional
 
+  # Epic 12: Durable Persistence And Git Round-Trip
+  # Created 2026-07-14 via bmad-correct-course (sprint-change-proposal-2026-07-14.md) from a 6-agent,
+  # evidence-based production-readiness audit. This is THE PRODUCT epic: today every seam that touches
+  # document bytes or durable state is an Unavailable*/InMemory* placeholder with no production impl, so
+  # an agent can receive 202s but cannot persist/retrieve/version/search/commit a document, tasks never
+  # complete, and Production cannot boot. Blocker findings HXF-CORE-001..005 + HXF-REL-001/003/004.
+  # GATING: Story 10.6 (content materializer) and Story 11.10 (read-model/SDK-seam wiring) validate only
+  # against fakes until Epic 12's durable IFolderRepository + content store + Git write path exist; both
+  # are gated on 12-1/12-2/12-3. OPEN DECISION carried in the planning action item below: MVP-definition
+  # Option A (declare a control-plane MVP, correct the Epic 7/8 "release-ready/accepted" claims) vs
+  # Option B (build this data plane; recommended). Epic 12 exists as backlog under BOTH options (A defers
+  # it, B prioritizes it); do not start stories until the A/B decision + durable-IFolderRepository-home
+  # decision (Epic 12 vs expand 11.10) are ratified by PM John + Architect Winston.
+  epic-12: backlog
+  12-1-eventstore-backed-folder-repository-retire-noop-and-implement-projection-replay: backlog
+  12-2-durable-projections-and-task-completion-pipeline: backlog
+  12-3-durable-workspace-file-content-store-and-content-read-source: backlog
+  12-4-real-git-commit-executor-and-provider-write-path: backlog
+  12-5-at-least-once-memories-egress-and-reconciler: backlog
+  epic-12-retrospective: optional
+
+  # Epic 13: Security And Operational Hardening
+  # Created 2026-07-14 via bmad-correct-course (sprint-change-proposal-2026-07-14.md). Owns the genuine,
+  # NON-deferred defects the audit surfaced on the surfaces that DO claim to work, that are NOT already
+  # homed in Epic 11. (Already in Epic 11 — do NOT duplicate: bearer https/loopback guard HXF-SEC-001 ->
+  # 11.6 [elevate priority]; Forgejo socket leak HXF-PERF-002 -> 11.5; probe-path alignment HXF-REL-006
+  # -> 11.9; UI sync-over-async/token-relay HXF-UI-001 -> 11.11.) Phase-0 items 13-1/13-2/13-3 are small
+  # and independent of the Epic 12 data-plane work and can start immediately after the A/B decision.
+  epic-13: backlog
+  13-1-forgejo-ssrf-egress-guard-private-and-metadata-ip-block: backlog                 # HXF-SEC-002
+  13-2-fail-safe-fallback-authorization-policy-and-sidecar-only-app-port: backlog       # HXF-SEC-003
+  13-3-credential-file-0600-permissions: backlog                                        # HXF-SEC-004
+  13-4-real-readiness-snapshot-source-and-ui-health-endpoints: backlog                  # HXF-REL-002
+  13-5-wire-alert-instruments-and-production-dapr-statestore-and-resiliency: backlog    # HXF-OBS-001 / HXF-REL-005
+  13-6-rate-limiting-timeouts-body-caps-and-converge-sensitive-value-filters: backlog   # HXF-SEC-005 / HXF-SEC-006
+  epic-13-retrospective: optional
+
 # Action items recorded from epic retrospectives. Status: open | in-progress | done.
 action_items:
   - epic: planning
@@ -441,3 +478,47 @@ action_items:
     owner: "Winston / Amelia"
     priority: medium
     status: done
+
+  # ---- 2026-07-14 correct-course production-readiness audit (sprint-change-proposal-2026-07-14.md) ----
+  # 6-agent read-only audit at HEAD 4ed58e1. Verdict: NO-GO for production LLM/agent use. Root finding:
+  # contract-complete control-plane shell over a non-functional data plane (durable persistence absent
+  # everywhere; content discarded on upload; tasks never complete; Git write path stubbed; Prod won't boot).
+  - epic: planning
+    # RATIFIED 2026-07-14 (Jerome, "do recommended"): OPTION B — build the durable data plane via new
+    # Epic 12; the durable IFolderRepository home is new Epic 12 (NOT an expansion of Story 11.10). Epic 12
+    # gating on Stories 10.6/11.10 stands. Consequence: the current MVP is honestly a CONTROL-PLANE MVP
+    # (contract + governance + gates), NOT a product MVP — Epics 7/8 close-out is annotated accordingly
+    # (below), and the product MVP is not complete until Epic 12 delivers a restart-surviving real-Git
+    # round-trip. Sub-decision STILL OPEN (low priority, code-local): FolderStreamName vs
+    # OrganizationStreamName reserved-tenant semantics (HXF-LOW-001, not exploitable) — recommendation is
+    # the strict ordinal/no-trim anti-disclosure variant; apply with test-pin lockstep whenever Epic 13
+    # touches the stream-name code.
+    action: "RATIFY the MVP definition against runtime reality: Option A (control-plane MVP) vs Option B (build the durable data plane via new Epic 12). RESOLVED (Option B): Epic 12 owns durable persistence + Git round-trip; MVP reframed as control-plane; Epic 7/8 annotated; FR traceability reconciliation carried in the claims-correction item below. Governance risk HXF-GOV-001."
+    owner: "John / Winston"
+    priority: high
+    status: done
+  - epic: planning
+    action: "Correct over-advertised claims once A/B is decided: architecture.md diverged/aspirational lines (working-copy D-8 path + WorkingCopyManager.cs/IdempotencyRecordStore.cs that do not exist; 'preparing (clone, materialize)'; ADR-0004 idempotency-TTL that has no impl); docs/sdk golden-lifecycle (passes fake-backed only) + nonexistent staging-API upload instructions + op count 47->49. HXF-INFO-002."
+    owner: "Paige / Winston"
+    priority: medium
+    status: open
+  - epic: 13
+    action: "CI IS RED ON main (HXF-OPS-001): the AGENTS.md/CLAUDE.md/README.md/tests/README.md instruction-file refactor (4c8f16a/ba433ab/fcd8606) dropped the canonical submodule-init command -> ScaffoldContractTests.SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup fails baseline-ci on every push; contract-spine.yml has no submodule-init step at all; accessibility-gates fails a Contracts.deps.json build race. NOTE: a ~60-file uncommitted working-tree fix already re-adds the init command + adds Hexalith.PolymorphicSerializations to ci.yml init (why local gates pass but CI is red) — commit it, add non-recursive root init to contract-spine.yml, serialize the deps.json provisioning race."
+    owner: "Amelia / Jerome"
+    priority: high
+    status: open
+  - epic: 12
+    action: "Deliver durable persistence + Git round-trip (Epic 12): EventStore-backed IFolderRepository retiring the ADR-0001 NoOp + /project replay (HXF-CORE-001, HXF-REL-001); durable projections + task-completion pipeline (HXF-CORE-005); real IWorkspaceFileContentStore + content read source + hash verify (HXF-CORE-002/003); real Git commit executor + provider write path + provisioning trigger (HXF-CORE-004); at-least-once Memories egress + reconciler + commit-then-append (HXF-REL-003/004). ACs must assert restart-surviving, real-Git round-trip behavior (NOT fake-backed). GATES Stories 10.6 and 11.10."
+    owner: "Amelia / Winston / Murat"
+    priority: high
+    status: open
+  - epic: 13
+    action: "Phase-0 security/ops hardening (Epic 13, mostly independent of Epic 12): Forgejo SSRF egress guard (HXF-SEC-002); fail-safe fallback authorization policy + sidecar-only app port (HXF-SEC-003); credential-file 0600 (HXF-SEC-004); real IReadinessSnapshotSource + UI health endpoints (HXF-REL-002); wire the 5 declared-only alert instruments + production Dapr statestore/resiliency components (HXF-OBS-001/HXF-REL-005); rate-limiting/timeouts/body-caps + converge the 4 IsSensitiveDiagnosticValue copies onto the superset (HXF-SEC-005/006). ELEVATE Story 11.6 (CLI/MCP plaintext-bearer guard HXF-SEC-001) priority."
+    owner: "Amelia / Murat"
+    priority: high
+    status: open
+  - epic: 12
+    action: "Verification honesty (Murat): add real lanes the suite lacks — restart-survival, real-Git commit round-trip, parallel-mutation concurrency (Task.WhenAll through /process, exactly-one-winner), property/fuzz over paths/refs/cursors, and an ENABLED Tier-3 real-infra job; label the ~25/31 prose/source-text conformance gates as documentation checks (not behavior). HXF-VER-001. Add MCP tool annotations + typed request bodies + structured output + authorized content read-back (HXF-MCP-001); provenance pins/hash/media-type + fileVersionReference->path resolver (HXF-PROV-001); untrusted-content contract language (HXF-INFO-001)."
+    owner: "Murat / Amelia"
+    priority: medium
+    status: open
