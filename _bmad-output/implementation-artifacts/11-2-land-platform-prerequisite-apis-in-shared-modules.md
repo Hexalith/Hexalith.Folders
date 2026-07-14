@@ -1,6 +1,10 @@
+---
+baseline_commit: c953461e0943415e4c2b4be258233008339486c7
+---
+
 # Story 11.2: Land platform prerequisite APIs in shared modules
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -45,37 +49,37 @@ This is the **platform-first (Phase B) prerequisite story** for Epic 11. It chan
 > **Model B semantics (ratified):** for every **CREATE/PROMOTE/MOVE/DEDUPE** row below, this story's job is to **specify** it precisely (the register + §Consuming-Side Contracts are the spec) and **open a per-repo platform story** in the owning submodule — *not* to author it in this Folders dev session. **Confirm + pin** anything already landable; record the rest as owned per-repo dependencies in the manifest. The subtask text ("create X in project Y matching shape Z") is the spec each per-repo story implements. Re-verify each register row against the actual pinned source with a fresh grep before writing the spec — code drifts between the audit and now.
 > Ordering: **CONFIRM** rows first (cheap, they shrink the remaining work), then write the **CREATE/PROMOTE/MOVE/DEDUPE** specs + open per-repo stories per module, then pin what's landable, then verify. Prefer **one `chore(deps):` bump per module** as its seams land, so a bad bump is bisectable.
 
-- [ ] **Task 0 — Ratify the two remaining open decisions (AC1, blocks the specs they touch).**
+- [x] **Task 0 — Ratify the two remaining open decisions (AC1, blocks the specs they touch).**
   - [x] ~~Execution model~~ — **DECIDED: Model B (confirm + spec + pin; implementation split into per-repo platform stories)**, ratified by `{user_name}` 2026-07-08. No in-session upstream authoring.
-  - [ ] Ratify Step-4 decision (a): the AppHost/Aspire **sanctioned-exception** direction + `Hexalith.Folders.ServiceDefaults` deletion (consumed by Story 11.9) — record intent (ADR lands in 11.13).
-  - [ ] Ratify Step-4 decision (b): `FolderStreamName` vs `OrganizationStreamName` **reserved-tenant** semantics divergence (audit §9.5) — this is a *deliberate decision, not a silent merge*; it shapes Story 11.5. Record intent (ADR lands in 11.13).
-- [ ] **Task 1 — CONFIRM the already-present seams (AC2, AC4, AC5, AC6).** Record exact type/namespace/project/SHA in the manifest for each CONFIRM row in the register. Author **no** code for these. (Memories event contracts + Commons.Publication + UniqueIdHelper + TenantAccess + Commons.ServiceDefaults + EventStore cursor/read-model/admission/mapping/fake + FrontComposer Shell primitives.)
-- [ ] **Task 2 — Memories G1 seams (AC3).** In `references/Hexalith.Memories`:
-  - [ ] Create the producer publish seam (`IIndexEventPublisher` + Dapr CloudEvents publish helper) in a Folders.Workers-reachable project (`Hexalith.Memories.Contracts` — the only Memories project Workers references — or `.Client.Rest`). Match the §Consuming-Side producer shape (composite AggregateId, `cloudevent.id/type/source` metadata, retryable classification). Optionally layer on the existing `Commons.Publication` primitives.
-  - [ ] Make `CuratedSearchIndexEventTypes` **public** and reachable from Contracts/Client (it is `internal` in `Hexalith.Memories.EventStore` today) so consumers stop re-deriving via `nameof(...)`.
-  - [ ] Create the **resilient search wrapper** in `Hexalith.Memories.Client.Rest` (timeout budget → degraded; catch→safe-degraded; in-band `Degraded`/`UnavailableAxes`; `ScoredResult.SourceUri` identity recovery) — the wrapper Folders + Tenants both clone. `MemoriesClient.SearchAsync` currently *throws*; keep it, add the wrapper alongside.
-  - [ ] Commit inside the Memories repo; bump `references/Hexalith.Memories` in Folders via `chore(deps):`.
-- [ ] **Task 3 — EventStore G6/G8/G9 seams (AC4).** In `references/Hexalith.EventStore`:
-  - [ ] G8: `ISecretStoreClient` + `Found/Missing/Denied/Unavailable` outcome model in `Hexalith.EventStore.Client` (mirror Folders' `IProviderCredentialSecretStoreClient` shape; keep the RpcException `PermissionDenied` → `Denied`, other Dapr fault → `Unavailable(retryAfter)` classification).
-  - [ ] G6: promote `DaprAppIdHandler` from `Admin.UI` into `Hexalith.EventStore.Client`; **create** `InboundBearerForwardingHandler` (does not exist anywhere today); promote JWT-hardening + `eventstore:*` claim accessors from the gateway/Admin.Server host into `Hexalith.EventStore.DomainService` (or a shared auth package). None are in a consumable library today.
-  - [ ] G9: add `Eventually` async-poll (`UntilAsync<T>(probe, isReady, timeout, interval, ct)` shape) to `Hexalith.EventStore.Testing`.
-  - [ ] Commit inside the EventStore repo; bump `references/Hexalith.EventStore` via `chore(deps):`. **Watch Blocker C:** EventStore is source-consumed at v3.43.0 while its Builds *package* pins are 3.42.0 — do not introduce a source/package API skew that reddens the DCP lane (see Dev Notes).
-- [ ] **Task 4 — Commons P6/P7/P8/P9 + G7 (AC5).** In `references/Hexalith.Commons`:
-  - [ ] Create `SensitiveValueDetector` (P7), `DeterministicHashBuilder` (P8), `AuthorizedBaseUrl` (P9), a correlation `SanitizeOrCreate` primitive (P6 — `HttpCorrelation.ResolveCorrelationId` exists but is not it), and a bearer `DelegatingHandler` with the **https/loopback guard** the Folders/Cli/Mcp copies lack.
-  - [ ] G7: introduce the canonical **cursor** paging envelope (no cursor type exists — both `PagedResult<T>` are offset-based); de-duplicate the two verbatim `PagedResult<T>` copies (`Hexalith.Commons.Paging` vs `Hexalith.Commons.Http`).
-  - [ ] Commit inside the Commons repo; **publish** the Commons package version; update the `Hexalith.Commons*` versions in `references/Hexalith.Builds/Props/Directory.Packages.props`; bump `references/Hexalith.Builds` via `chore(deps):`. (A `references/Hexalith.Commons` pin bump alone does **not** reach Folders — Commons is package-consumed.)
-- [ ] **Task 5 — FrontComposer G9 (AC6).** In `references/Hexalith.FrontComposer`:
-  - [ ] Add `LockClosed16` + `Clock16` to `FcFluentIcons` (`Hexalith.FrontComposer.Shell.Components.Icons`) matching Folders' `FoldersConsoleIcons` vector paths.
-  - [ ] Create `FcSafeCopy` (Shell) matching `SafeCopyId.razor` — read-only monospace value + JS clipboard copy, `fc-safe-copy*` classes, `data-testid` — and **preserve the 5-selector command-suppression guard** the UI E2E gate enforces.
-  - [ ] Create the RFC-7807 ProblemDetails **extension** parser (Shell); reuse `FrontComposer.Contracts.ProblemDetailsPayload` + `Commons.Http.BoundedProblemDetailsReader` as prior art.
-  - [ ] Move `HermeticTestAuthenticationHandler` (currently `private sealed` in Folders `UI/CompositionRoot.cs`) into the existing `Hexalith.FrontComposer.Testing` project, promoted public.
-  - [ ] Commit inside the FrontComposer repo; bump `references/Hexalith.FrontComposer` via `chore(deps):`.
-- [ ] **Task 6 — G2 Aspire drift reconciliation (platform-internal; optional in this story's Folders scope).** Reconcile the 5 duplicated Aspire-Dapr files across `Commons.Aspire` vs `EventStore.Aspire` into one home (recommend `Commons.Aspire`); **relocate** `RepositoryProjectPaths.cs` (exists only in EventStore.Aspire, not a dup) and reconcile the divergent extension-file names. Folders consumes these only through AppHost/Aspire, so this does not gate a Folders story — land it if scope permits, else record as an owned platform follow-up.
-- [ ] **Task 7 — G4/G5 proposal only (AC7).** Author the `Commons.Cli` / `Commons.Mcp` proposal/ADR (root-command builder, global options, output formatter, exit codes, config layering, **harmonized** credential precedence — Folders puts explicit `--token` lowest vs Memories highest; pick one). No implementation; no Folders CLI/MCP edits.
-- [ ] **Task 8 — Pin, verify, and record evidence (AC8, AC9, AC10).**
-  - [ ] After each `chore(deps):` bump: `dotnet restore Hexalith.Folders.slnx`; `dotnet build … -c Release --no-restore` (0W/0E); focused lanes + `ScaffoldContractTests`; `dotnet format whitespace/analyzers --verify-no-changes` (Folders-owned clean).
-  - [ ] Confirm no `references/**` intentional pointer drift (Story 11.1 §10) was reverted; no recursive/nested submodule init introduced; the honest-green conformance classes are untouched and green.
-  - [ ] Write the evidence manifest (§AC10) as `docs/exit-criteria/…` or `_bmad-output/implementation-artifacts/…` — per-gap disposition, upstream type/namespace/project, new pinned SHA (or Commons package version + Builds SHA), verification result, and any owned blockers.
+  - [x] Ratify Step-4 decision (a): the AppHost/Aspire **sanctioned-exception** direction + `Hexalith.Folders.ServiceDefaults` deletion (consumed by Story 11.9) — record intent (ADR lands in 11.13).
+  - [x] Ratify Step-4 decision (b): `FolderStreamName` vs `OrganizationStreamName` **reserved-tenant** semantics divergence (audit §9.5) — this is a *deliberate decision, not a silent merge*; it shapes Story 11.5. Record intent (ADR lands in 11.13).
+- [x] **Task 1 — CONFIRM the already-present seams (AC2, AC4, AC5, AC6).** Record exact type/namespace/project/SHA in the manifest for each CONFIRM row in the register. Author **no** code for these. (Memories event contracts + Commons.Publication + UniqueIdHelper + TenantAccess + Commons.ServiceDefaults + EventStore cursor/read-model/admission/mapping/fake + FrontComposer Shell primitives.)
+- [x] **Task 2 — Memories G1 seams (AC3).** In `references/Hexalith.Memories`:
+  - [x] Create the producer publish seam (`IIndexEventPublisher` + Dapr CloudEvents publish helper) in a Folders.Workers-reachable project (`Hexalith.Memories.Contracts` — the only Memories project Workers references — or `.Client.Rest`). Match the §Consuming-Side producer shape (composite AggregateId, `cloudevent.id/type/source` metadata, retryable classification). Optionally layer on the existing `Commons.Publication` primitives.
+  - [x] Make `CuratedSearchIndexEventTypes` **public** and reachable from Contracts/Client (it is `internal` in `Hexalith.Memories.EventStore` today) so consumers stop re-deriving via `nameof(...)`.
+  - [x] Create the **resilient search wrapper** in `Hexalith.Memories.Client.Rest` (timeout budget → degraded; catch→safe-degraded; in-band `Degraded`/`UnavailableAxes`; `ScoredResult.SourceUri` identity recovery) — the wrapper Folders + Tenants both clone. `MemoriesClient.SearchAsync` currently *throws*; keep it, add the wrapper alongside.
+  - [x] Commit inside the Memories repo; bump `references/Hexalith.Memories` in Folders via `chore(deps):`.
+- [x] **Task 3 — EventStore G6/G8/G9 seams (AC4).** In `references/Hexalith.EventStore`:
+  - [x] G8: `ISecretStoreClient` + `Found/Missing/Denied/Unavailable` outcome model in `Hexalith.EventStore.Client` (mirror Folders' `IProviderCredentialSecretStoreClient` shape; keep the RpcException `PermissionDenied` → `Denied`, other Dapr fault → `Unavailable(retryAfter)` classification).
+  - [x] G6: promote `DaprAppIdHandler` from `Admin.UI` into `Hexalith.EventStore.Client`; **create** `InboundBearerForwardingHandler` (does not exist anywhere today); promote JWT-hardening + `eventstore:*` claim accessors from the gateway/Admin.Server host into `Hexalith.EventStore.DomainService` (or a shared auth package). None are in a consumable library today.
+  - [x] G9: add `Eventually` async-poll (`UntilAsync<T>(probe, isReady, timeout, interval, ct)` shape) to `Hexalith.EventStore.Testing`.
+  - [x] Commit inside the EventStore repo; bump `references/Hexalith.EventStore` via `chore(deps):`. **Watch Blocker C:** EventStore is source-consumed at v3.43.0 while its Builds *package* pins are 3.42.0 — do not introduce a source/package API skew that reddens the DCP lane (see Dev Notes).
+- [x] **Task 4 — Commons P6/P7/P8/P9 + G7 (AC5).** In `references/Hexalith.Commons`:
+  - [x] Create `SensitiveValueDetector` (P7), `DeterministicHashBuilder` (P8), `AuthorizedBaseUrl` (P9), a correlation `SanitizeOrCreate` primitive (P6 — `HttpCorrelation.ResolveCorrelationId` exists but is not it), and a bearer `DelegatingHandler` with the **https/loopback guard** the Folders/Cli/Mcp copies lack.
+  - [x] G7: introduce the canonical **cursor** paging envelope (no cursor type exists — both `PagedResult<T>` are offset-based); de-duplicate the two verbatim `PagedResult<T>` copies (`Hexalith.Commons.Paging` vs `Hexalith.Commons.Http`).
+  - [x] Commit inside the Commons repo; **publish** the Commons package version; update the `Hexalith.Commons*` versions in `references/Hexalith.Builds/Props/Directory.Packages.props`; bump `references/Hexalith.Builds` via `chore(deps):`. (A `references/Hexalith.Commons` pin bump alone does **not** reach Folders — Commons is package-consumed.)
+- [x] **Task 5 — FrontComposer G9 (AC6).** In `references/Hexalith.FrontComposer`:
+  - [x] Add `LockClosed16` + `Clock16` to `FcFluentIcons` (`Hexalith.FrontComposer.Shell.Components.Icons`) matching Folders' `FoldersConsoleIcons` vector paths.
+  - [x] Create `FcSafeCopy` (Shell) matching `SafeCopyId.razor` — read-only monospace value + JS clipboard copy, `fc-safe-copy*` classes, `data-testid` — and **preserve the 5-selector command-suppression guard** the UI E2E gate enforces.
+  - [x] Create the RFC-7807 ProblemDetails **extension** parser (Shell); reuse `FrontComposer.Contracts.ProblemDetailsPayload` + `Commons.Http.BoundedProblemDetailsReader` as prior art.
+  - [x] Move `HermeticTestAuthenticationHandler` (currently `private sealed` in Folders `UI/CompositionRoot.cs`) into the existing `Hexalith.FrontComposer.Testing` project, promoted public.
+  - [x] Commit inside the FrontComposer repo; bump `references/Hexalith.FrontComposer` via `chore(deps):`.
+- [x] **Task 6 — G2 Aspire drift reconciliation (platform-internal; optional in this story's Folders scope).** Reconcile the 5 duplicated Aspire-Dapr files across `Commons.Aspire` vs `EventStore.Aspire` into one home (recommend `Commons.Aspire`); **relocate** `RepositoryProjectPaths.cs` (exists only in EventStore.Aspire, not a dup) and reconcile the divergent extension-file names. Folders consumes these only through AppHost/Aspire, so this does not gate a Folders story — land it if scope permits, else record as an owned platform follow-up.
+- [x] **Task 7 — G4/G5 proposal only (AC7).** Author the `Commons.Cli` / `Commons.Mcp` proposal/ADR (root-command builder, global options, output formatter, exit codes, config layering, **harmonized** credential precedence — Folders puts explicit `--token` lowest vs Memories highest; pick one). No implementation; no Folders CLI/MCP edits.
+- [x] **Task 8 — Pin, verify, and record evidence (AC8, AC9, AC10).**
+  - [x] After each `chore(deps):` bump: `dotnet restore Hexalith.Folders.slnx`; `dotnet build … -c Release --no-restore` (0W/0E); focused lanes + `ScaffoldContractTests`; `dotnet format whitespace/analyzers --verify-no-changes` (Folders-owned clean).
+  - [x] Confirm no `references/**` intentional pointer drift (Story 11.1 §10) was reverted; no recursive/nested submodule init introduced; the honest-green conformance classes are untouched and green.
+  - [x] Write the evidence manifest (§AC10) as `docs/exit-criteria/…` or `_bmad-output/implementation-artifacts/…` — per-gap disposition, upstream type/namespace/project, new pinned SHA (or Commons package version + Builds SHA), verification result, and any owned blockers.
 
 ## Dev Notes
 
@@ -180,12 +184,56 @@ The audit leans **B** in wording (per-gap upstream stories) but Model A is opera
 
 **RATIFIED: Model B**, by `{user_name}` on 2026-07-08. This story therefore confirms + specifies + pins-what's-landable, and opens **one per-repo platform story per gap** (in `Hexalith/Hexalith.{Memories,EventStore,Commons,FrontComposer}`) for each missing seam; it authors **no** upstream implementation in-session. The register and §Consuming-Side Contracts are the binding spec those per-repo stories implement. The two Step-4 ratifications (AppHost/Aspire+ServiceDefaults ADR direction; `FolderStreamName` reserved-tenant semantics) remain open — resolve in Task 0.
 
+## Change Log
+
+| Date | Change |
+| --- | --- |
+| 2026-07-14 | Implemented ratified Model B: confirmed 30 public API paths, specified and assigned every missing G1–G9/P6–P9 seam through 15 upstream issues, authored the Commons.Cli/Mcp proposal, recorded the no-bump pin outcome, and completed build/gate/regression evidence. Story moved to review. |
+
 ## Dev Agent Record
 
 ### Agent Model Used
 
+GPT-5 Codex
+
 ### Debug Log References
+
+- 2026-07-14: Administrator ratified Step-4 decision (a): retain AppHost/Aspire as the sanctioned local/test exception and delete `Hexalith.Folders.ServiceDefaults` in Story 11.9; the ADR remains assigned to Story 11.13.
+- 2026-07-14: Administrator ratified Step-4 decision (b): standardize on the strict ordinal/no-trim `system` reserved-tenant rule; Story 11.5 owns the code/test lockstep and Story 11.13 owns the ADR.
+- 2026-07-14: Task 1 plan/verification — resolve parent-pinned SHAs with `git ls-tree HEAD`; query each exact commit with `git grep`; record public type, namespace, project, source path, SHA, and package/pin notes in a YAML manifest; validate every recorded path with `git cat-file -e`.
+- 2026-07-14: The first broad `dotnet restore` + Release `--no-restore` build reused Debug/source-mode assets and failed with missing package namespaces. Per the repository fallback ladder, `dotnet restore Hexalith.Folders.slnx --property Configuration=Release -m:1 -p:NuGetAudit=false` followed by the serialized Release build passed with 0 warnings/0 errors.
+- 2026-07-14: Full per-project regression sweep passed 5,255 tests; four DCP-gated AppHost tests skipped as configured; the UI E2E assembly ran 63/63 with no skips.
+- 2026-07-14: Task 2 Model B plan/verification — prove the three G1 seams absent at the parent-pinned Memories SHA, specify their exact producer/search behavior, search the owning tracker for duplicates, open one owned Memories platform story, validate its live state, and avoid claiming the unrelated Story 10.6 Memories checkout as a pin.
+- 2026-07-14: Task 2 regression sweep repeated after recording the owned dependency: 5,255 passed, four configured AppHost skips, zero failures, UI E2E 63/63.
+- 2026-07-14: Task 3 Model B plan/verification — audit G6/G8/G9 at the exact EventStore pin; distinguish the newer internal `DaprServiceInvocationHandler` from the requested consumable auth surface; create one owning issue per gap; validate all live issue states and manifest ownership; preserve the current source/package graph without a speculative pin.
+- 2026-07-14: Task 3 regression sweep passed 5,255 tests, four configured AppHost skips, zero failures, and UI E2E 63/63.
+- 2026-07-14: Task 4 Model B plan/verification — audit P6/P7/P8/P9/G7 at the exact Commons pin; tie each contract to the corresponding Folders duplication; open one Commons issue per gap; require package publication plus Builds central-version delivery rather than treating the Commons source checkout as consumable.
+- 2026-07-14: Task 4 regression sweep passed 5,255 tests, four configured AppHost skips, zero failures, and UI E2E 63/63; all five Commons issues remained OPEN and the manifest ownership assertions passed.
+- 2026-07-14: Task 5 Model B plan/verification — apply the repository UX rules; audit FrontComposer G9 at the exact parent pin; distinguish the existing private EventStore ProblemDetails parser from a reusable public parser; specify all four Shell/Testing seams in one owning FrontComposer issue; preserve the five-selector no-mutation contract.
+- 2026-07-14: Task 5 regression sweep passed 5,255 tests, four configured AppHost skips, zero failures, and UI E2E 63/63; FrontComposer issue 60 remained OPEN and the manifest ownership assertion passed.
+- 2026-07-14: Task 6 Model B plan/verification — normalize and diff the six generic Aspire/Dapr source pairs at the exact Commons/EventStore pins; re-audit RepositoryProjectPaths and record that Memories now owns a narrower deliberate copy; assign canonicalization to Commons and copy-removal migrations to EventStore and Memories without changing Folders topology.
+- 2026-07-14: Task 6 regression sweep passed 5,255 tests, four configured AppHost skips, zero failures, and UI E2E 63/63; all three G2 owner issues remained OPEN and the manifest ownership assertion passed.
+- 2026-07-14: Task 7 plan/verification — audit Folders, Memories, and EventStore adapter mechanics; choose explicit invocation intent first for credential resolution; keep exit-code numerics behind named compatibility policies; write one proposal with distinct Commons.Cli and Commons.Mcp boundaries; open one Commons issue per gap.
+- 2026-07-14: Task 7 proposal/schema checks passed; Commons issues 25 and 26 remained OPEN; the regression sweep passed 5,255 tests, four configured AppHost skips, zero failures, and UI E2E 63/63.
+- 2026-07-14: Task 8 pin audit found no honest dependency bump: all confirmed seams already exist at the parent pins, while every missing seam remains absent even in the newer unpinned FrontComposer/Memories working checkouts and is owned by an OPEN upstream issue. Parent gitlinks and Builds versions remain unchanged.
+- 2026-07-14: Final serialized Release restore/build passed with 0 warnings and 0 errors. Focused contract-spine, safety-invariant, governance-completeness, and ScaffoldContractTests lanes passed; the Scaffold class ran 11/11. Scoped Folders-owned whitespace and analyzer verification passed.
+- 2026-07-14: Final manifest audit covered G1–G9 and P6–P9, resolved all 30 confirmed SHA:path entries, validated 15 owned dependency rows and 15 OPEN tracker issues, found no nested submodule markers, and confirmed `.gitmodules` plus honest-green workflow/gate sources were untouched.
+- 2026-07-14: Final full per-project Release regression passed 5,255 tests, four configured DCP AppHost skips, zero failures, and UI E2E 63/63.
 
 ### Completion Notes List
 
+- Task 1 confirmed 13 platform availability groups comprising 30 exact public API paths at the current parent-pinned SHAs. No upstream or Folders product code was authored. The manifest explicitly records that Commons.Publication and Commons.TenantAccess are packable but still lack central `PackageVersion` rows in the pinned Builds props.
+- Task 2 specified the missing Memories publisher, public event-type constants, and resilient search wrapper in [Hexalith.Memories issue 28](https://github.com/Hexalith/Hexalith.Memories/issues/28). Under ratified Model B, each checkbox records specification/tracking completion; the manifest retains the unlanded implementation and absent pin bump as an explicit owned blocker.
+- Task 3 specified and assigned EventStore G6 auth seams ([issue 283](https://github.com/Hexalith/Hexalith.EventStore/issues/283)), G8 classified secret lookup ([issue 284](https://github.com/Hexalith/Hexalith.EventStore/issues/284)), and G9 async polling ([issue 285](https://github.com/Hexalith/Hexalith.EventStore/issues/285)). No EventStore submodule content or pointer was changed; the manifest records all three as owned blockers pending upstream release.
+- Task 4 specified Commons P6 safe HTTP helpers ([issue 19](https://github.com/Hexalith/Hexalith.Commons/issues/19)), P7 sensitive-value detection ([issue 20](https://github.com/Hexalith/Hexalith.Commons/issues/20)), P8 deterministic hashing ([issue 21](https://github.com/Hexalith/Hexalith.Commons/issues/21)), P9 authorized base URLs ([issue 22](https://github.com/Hexalith/Hexalith.Commons/issues/22)), and G7 cursor/offset paging consolidation ([issue 23](https://github.com/Hexalith/Hexalith.Commons/issues/23)). Under Model B these checkboxes record exact specification and ownership; no Commons package or Builds pin is claimed before those upstream releases exist.
+- Task 5 specified the FrontComposer G9 icon, safe-copy, bounded ProblemDetails parser, and hermetic-auth surfaces in [issue 60](https://github.com/Hexalith/Hexalith.FrontComposer/issues/60). The UX instructions shaped the safe-copy contract toward Fluent UI v5 reuse while preserving Folders' compatibility hooks and five-selector no-mutation proof. No FrontComposer pointer changed before the upstream release exists.
+- Task 6 recorded optional G2 as an owned platform follow-up: Commons canonicalization in [issue 24](https://github.com/Hexalith/Hexalith.Commons/issues/24), EventStore migration/copy removal in [issue 286](https://github.com/Hexalith/Hexalith.EventStore/issues/286), and Memories project-path copy removal in [issue 29](https://github.com/Hexalith/Hexalith.Memories/issues/29). Exact-pin inspection corrected the stale register premise: Memories now also carries a narrower `RepositoryProjectPaths` copy.
+- Task 7 delivered the written [Commons.Cli / Commons.Mcp proposal](./11-2-commons-cli-mcp-proposal.md), tracked by Commons [issue 25](https://github.com/Hexalith/Hexalith.Commons/issues/25) and [issue 26](https://github.com/Hexalith/Hexalith.Commons/issues/26). It selects explicit token input over ambient sources, keeps inline plaintext config tokens disabled by default, and uses explicit compatibility policies for numeric exits. Folders Story 11.6 remains an in-repo consolidation; no CLI/MCP source changed here.
+- Task 8 completed without a `chore(deps):` commit because no missing prerequisite is landable at a released/pinned revision. The manifest explicitly records empty gitlink/Builds changes rather than presenting the unrelated ahead FrontComposer, Memories, or Tenants working checkouts as Story 11.2 pins. All acceptance evidence is ready for review; downstream Stories 11.8–11.12 remain gated by the owned upstream issues.
+
 ### File List
+
+- `_bmad-output/implementation-artifacts/11-2-land-platform-prerequisite-apis-in-shared-modules.md`
+- `_bmad-output/implementation-artifacts/11-2-platform-prerequisite-api-availability.yaml`
+- `_bmad-output/implementation-artifacts/11-2-commons-cli-mcp-proposal.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
