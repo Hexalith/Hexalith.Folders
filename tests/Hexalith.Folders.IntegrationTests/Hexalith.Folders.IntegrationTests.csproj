@@ -6,10 +6,12 @@
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <!-- Story 9.1: the Aspire topology test drives the platform EventStore composition (gateway-only
          AddHexalithEventStore + AddEventStoreDomainModule) to assert the full five-sidecar topology. -->
-    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Aspire\Hexalith.EventStore.Aspire.csproj" />
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Aspire\Hexalith.EventStore.Aspire.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.EventStore.Aspire" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
     <!-- Story 9.2: the Aspire topology test composes the platform Memories search-index helper
          (AddHexalithMemoriesSearchIndexServer) to assert the memories sidecar + components + containers. -->
-    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Aspire\Hexalith.Memories.Aspire.csproj" />
+    <ProjectReference Include="$(HexalithMemoriesRoot)\src\Hexalith.Memories.Aspire\Hexalith.Memories.Aspire.csproj" Condition="'$(HexalithMemoriesFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.Memories.Aspire" Condition="'$(HexalithMemoriesFromSource)' != 'true'" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Cli\Hexalith.Folders.Cli.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Mcp\Hexalith.Folders.Mcp.csproj" />

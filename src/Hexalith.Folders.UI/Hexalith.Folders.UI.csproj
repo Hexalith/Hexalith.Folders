@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders.Client\Hexalith.Folders.Client.csproj" />
-    <ProjectReference Include="$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Shell\Hexalith.FrontComposer.Shell.csproj" />
+    <ProjectReference Include="$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Shell\Hexalith.FrontComposer.Shell.csproj" Condition="'$(HexalithFrontComposerFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.FrontComposer.Shell" Condition="'$(HexalithFrontComposerFromSource)' != 'true'" />
   </ItemGroup>
 </Project>

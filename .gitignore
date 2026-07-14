@@ -449,3 +449,4 @@ _bmad-output/process-notes/predev-preflight-*Z.json
 .bmad-loop/runs/
 .bmad-loop/cache/
 _bmad/config.user.yaml
+.bmad-loop/policy.toml

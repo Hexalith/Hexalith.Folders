@@ -5,6 +5,24 @@
     <HexalithTenantsRoot Condition="'$(HexalithTenantsRoot)' == '' and Exists('$(MSBuildThisFileDirectory)references\Hexalith.Tenants\src\Hexalith.Tenants.Contracts')">$(MSBuildThisFileDirectory)references\Hexalith.Tenants</HexalithTenantsRoot>
     <HexalithMemoriesRoot Condition="'$(HexalithMemoriesRoot)' == '' and Exists('$(MSBuildThisFileDirectory)references\Hexalith.Memories\src\Hexalith.Memories.Contracts')">$(MSBuildThisFileDirectory)references\Hexalith.Memories</HexalithMemoriesRoot>
     <HexalithFrontComposerRoot Condition="'$(HexalithFrontComposerRoot)' == '' and Exists('$(MSBuildThisFileDirectory)references\Hexalith.FrontComposer\src\Hexalith.FrontComposer.Contracts')">$(MSBuildThisFileDirectory)references\Hexalith.FrontComposer</HexalithFrontComposerRoot>
+
+    <!-- Cross-repo Hexalith platform dependencies: Debug builds use project references to the
+         references/ submodule source; Release builds use the centrally pinned NuGet packages in
+         Directory.Packages.props. Mirrors the Hexalith.Tenants submodule convention. Force a mode
+         with -p:UseHexalithProjectReferences=true|false (propagates through the whole graph, so
+         referenced submodule projects resolve their own Hexalith deps the same way and avoid mixed
+         source/package assembly collisions). Always re-run 'dotnet restore' after switching modes. -->
+    <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(UseNuGetDeps)' == 'true'">false</UseHexalithProjectReferences>
+    <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(UseNuGetDeps)' == 'false'">true</UseHexalithProjectReferences>
+    <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(Configuration)' == 'Release'">false</UseHexalithProjectReferences>
+    <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(Configuration)' == 'Debug'">true</UseHexalithProjectReferences>
+    <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == ''">false</UseHexalithProjectReferences>
+    <UseNuGetDeps Condition="'$(UseNuGetDeps)' == '' and '$(UseHexalithProjectReferences)' == 'true'">false</UseNuGetDeps>
+    <UseNuGetDeps Condition="'$(UseNuGetDeps)' == ''">true</UseNuGetDeps>
+    <HexalithEventStoreFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Contracts\Hexalith.EventStore.Contracts.csproj')">true</HexalithEventStoreFromSource>
+    <HexalithTenantsFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithTenantsRoot)\src\Hexalith.Tenants.Contracts\Hexalith.Tenants.Contracts.csproj')">true</HexalithTenantsFromSource>
+    <HexalithMemoriesFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithMemoriesRoot)\src\Hexalith.Memories.Contracts\Hexalith.Memories.Contracts.csproj')">true</HexalithMemoriesFromSource>
+    <HexalithFrontComposerFromSource Condition="'$(UseHexalithProjectReferences)' == 'true' and Exists('$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Shell\Hexalith.FrontComposer.Shell.csproj')">true</HexalithFrontComposerFromSource>
   </PropertyGroup>
 
   <PropertyGroup>
