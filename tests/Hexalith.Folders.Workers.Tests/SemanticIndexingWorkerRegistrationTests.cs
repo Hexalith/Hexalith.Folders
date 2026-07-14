@@ -39,7 +39,8 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         });
         provider.GetRequiredService<ISemanticIndexingPort>().ShouldNotBeNull();
         provider.GetRequiredService<ISemanticIndexingPolicyEvaluator>().ShouldNotBeNull();
-        provider.GetRequiredService<ISemanticIndexingContentMaterializer>().ShouldNotBeNull();
+        provider.GetRequiredService<ISemanticIndexingContentMaterializer>()
+            .ShouldBeOfType<MetadataDerivedSemanticIndexingContentMaterializer>();
         provider.GetRequiredService<SemanticIndexingProcessManager>().ShouldNotBeNull();
         provider.GetRequiredService<FoldersSemanticIndexingEventProcessor>().ShouldNotBeNull();
         provider.GetRequiredService<DaprClient>().ShouldNotBeNull();

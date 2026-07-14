@@ -76,7 +76,7 @@ public static class FoldersWorkersModule
         services.TryAddSingleton<ISemanticIndexingBridgeWriter>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddSingleton<ISemanticIndexingPolicyEvaluator, FailClosedSemanticIndexingPolicyEvaluator>();
-        services.TryAddSingleton<ISemanticIndexingContentMaterializer, FailClosedSemanticIndexingContentMaterializer>();
+        services.TryAddSingleton<ISemanticIndexingContentMaterializer, MetadataDerivedSemanticIndexingContentMaterializer>();
         services.TryAddTransient<ISemanticIndexingPort, MemoriesSemanticIndexingPort>();
         services.TryAddTransient<SemanticIndexingProcessManager>();
         services.TryAddTransient<FoldersSemanticIndexingEventProcessor>();

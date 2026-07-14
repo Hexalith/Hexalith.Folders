@@ -65,6 +65,36 @@ public sealed class SemanticIndexingProcessManagerTests
     }
 
     [Fact]
+    public async Task ProcessFolderEventsAsyncShouldIndexWithRealMetadataDerivedMaterializer()
+    {
+        RecordingBridgeWriter bridge = new();
+        AllowingPolicyEvaluator policy = new();
+        MetadataDerivedSemanticIndexingContentMaterializer materializer = new();
+        RecordingIndexingPort port = new(new SemanticIndexingResult(
+            SemanticIndexingStatus.Accepted,
+            "memories_accepted",
+            retryable: false,
+            publishedEventId: "folders://tenant-a/published-a"));
+        SemanticIndexingProcessManager manager = new(bridge, policy, materializer, port, TimeProvider.System);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> results = await manager.ProcessFolderEventsAsync(
+            [new FolderProjectionEnvelope("tenant-a", 1, Mutation())],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        results.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Indexed);
+        bridge.RecordedResults.ShouldHaveSingleItem().ReasonCode.ShouldBe("memories_accepted");
+        SemanticIndexingRequest request = port.Requests.ShouldHaveSingleItem();
+        request.Content.CuratedAttributes[FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute].ShouldBe("tenant-a");
+        request.Content.CuratedAttributes[FoldersSemanticIndexingAttributes.OrganizationIdAttribute].ShouldBe("organization-a");
+        request.Content.CuratedAttributes[FoldersSemanticIndexingAttributes.FolderIdAttribute].ShouldBe("folder-a");
+        request.Content.CuratedAttributes[FoldersSemanticIndexingAttributes.WorkspaceIdAttribute].ShouldBe("workspace-a");
+        request.Content.CuratedAttributes[FoldersSemanticIndexingAttributes.FileVersionIdAttribute]
+            .ShouldBe(results[0].Identity.FileVersionId);
+        request.Content.CuratedAttributes[FoldersSemanticIndexingAttributes.StatusAttribute]
+            .ShouldBe(FoldersSemanticIndexingAttributes.StatusActive);
+    }
+
+    [Fact]
     public async Task ProcessFolderEventsAsyncShouldNotReadContentWhenPolicyDenies()
     {
         RecordingBridgeWriter bridge = new();

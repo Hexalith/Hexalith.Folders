@@ -5,11 +5,15 @@
   "diagnostic_policy": "metadata-only",
   "solution": "Hexalith.Folders.slnx",
   "categories": [
+    "dependency-mode",
     "restore",
     "build",
     "format",
     "lint",
-    "unit-tests"
+    "unit-tests",
+    "package-mode-restore",
+    "package-mode-build",
+    "package-mode-test"
   ],
   "unit_test_projects": [
     {
@@ -50,6 +54,24 @@
     }
   ],
   "results": [
+    {
+      "category": "dependency-mode",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj [default]",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "dependency-mode",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj [debug]",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "dependency-mode",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj [release-package]",
+      "status": "passed",
+      "exit_code": 0
+    },
     {
       "category": "format",
       "project_path": "",
@@ -113,6 +135,24 @@
     {
       "category": "unit-tests",
       "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-mode-restore",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-mode-build",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-mode-test",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
       "status": "passed",
       "exit_code": 0
     }

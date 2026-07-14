@@ -4,7 +4,7 @@ baseline_commit: 40cc5e1
 
 # Story 10.6: Replace the fail-closed content materializer with a metadata-derived materializer under C4/C9
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -80,26 +80,26 @@ Story 10.6 replaces `FailClosedSemanticIndexingContentMaterializer` with a `Meta
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 — Implement `MetadataDerivedSemanticIndexingContentMaterializer` (AC 1, 2, 3, 4, 5)
-  - [ ] Add `src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs` (`internal sealed class : ISemanticIndexingContentMaterializer`). Guard `request` non-null; `cancellationToken.ThrowIfCancellationRequested()` (mirror the fail-closed shape).
-  - [ ] Derive `ContentType` = `request.ExpectedMediaType` (present by the time materialization runs — Gate 5 requires it; still handle null defensively → `Skipped("content_descriptor_unavailable")` or a safe default consistent with the evaluator).
-  - [ ] Derive `LengthBytes` = `request.ObservedByteLength ?? request.ExpectedByteLength ?? 0`; `SizeClassification` from a small stable byte-threshold bucket; `TypeClassification` from the media-type family. Deterministic, invariant-culture.
-  - [ ] Build `CuratedText` from non-sensitive tokens only (e.g. `"{typeClassification} {request.Identity.FileVersionId}"` optionally plus org/folder id tokens + media type). No path/body/snippet/source-URI.
-  - [ ] Build `CuratedAttributes` (ordinal dict) = the five identity keys from `request.Identity` (`ManagedTenantId`/`OrganizationId`/`FolderId`/`WorkspaceId`/`FileVersionId`) via `FoldersSemanticIndexingAttributes.*Attribute` + `StatusAttribute = StatusActive` + `folders.contentDescriptor`/`folders.sizeClassification`/`folders.typeClassification`.
-  - [ ] Set `ContentBytes` = `Encoding.UTF8.GetBytes(curatedText)` (non-null, small); return via the 8-arg `SemanticIndexingContentMaterializationResult.Available(...)`.
-- [ ] Task 2 — Register + retain fallback (AC 1)
-  - [ ] Change `FoldersWorkersModule.cs:79` to `TryAddSingleton<ISemanticIndexingContentMaterializer, MetadataDerivedSemanticIndexingContentMaterializer>()`; keep `FailClosedSemanticIndexingContentMaterializer` in the tree (do not delete).
-- [ ] Task 3 — (Optional) centralize content-classification attribute keys (AC 2)
-  - [ ] Add `ContentDescriptorAttribute`/`SizeClassificationAttribute`/`TypeClassificationAttribute` constants to `FoldersSemanticIndexingAttributes` and reference them from the new materializer; optionally align the `Available` 6-arg auto-factory literals (`ISemanticIndexingContentMaterializer.cs:98-100`). Low-risk consolidation; skip only if it widens scope.
-- [ ] Task 4 — Tests (AC 2, 3, 4, 5, 7)
-  - [ ] Flip `SemanticIndexingWorkerRegistrationTests.cs:42` to `.ShouldBeOfType<MetadataDerivedSemanticIndexingContentMaterializer>()`.
-  - [ ] Add `tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs`: Available happy path; `CuratedAttributes` contains all five identity keys + `folders.status=active` + classifications; C9 corpus (no `C:/`, `/etc/`, `file://`, secret, snippet in `Text` or any attribute value); C4 `ContentType`/`LengthBytes`/classifications match declared evidence; determinism (two calls → equal `CuratedText`/`CuratedAttributes`). xUnit v3 `[Fact]`, Shouldly, `TestContext.Current.CancellationToken`; build the request via a local factory (shape at `ISemanticIndexingContentMaterializer.cs:12-23`).
-  - [ ] Add a worker/port-boundary test (extend `SemanticIndexingWorkerRegistrationTests` or a new class) driving the **real** materializer → real `MemoriesSemanticIndexingPort` → recording `DaprClient` (NSubstitute, per the file's existing `Substitute.For<DaprClient>()` idiom) and asserting the published `SearchIndexEntryChanged.Attributes` carry the facade filter keys + `folders.status=active`, `Text` leaks no raw path. Mind the `Shouldly.Case` vs `Memories.Contracts.V1.Case` alias collision (`SemanticIndexingWorkerRegistrationTests.cs:16-22`).
-  - [ ] Confirm `SemanticIndexingProcessManagerTests` + `SemanticIndexingEndpointE2ETests` still green (they inject `RecordingContentMaterializer`); no change required unless an assertion referenced the old default (none does).
-- [ ] Task 5 — Governance sync (AC 8, 9)
-  - [ ] `sprint-status.yaml`: flip the materializer action item `in-progress → done`; add the new `open` C9-gated real-content follow-up entry (owner incl. Security + PM) with a `#` provenance comment; refresh `last_updated`. Do NOT touch prose already authored in `prd.md`/`architecture.md`/`epics.md`/`11-1-*.md`.
-- [ ] Task 6 — Build + verify (AC 10, 11)
-  - [ ] `dotnet build Hexalith.Folders.slnx`; then Workers.Tests, Folders.Tests, Testing.Tests, Contracts.Tests; `dotnet format whitespace --verify-no-changes` over Folders-owned src/tests; AppHost.Tests skip clean. Record any DCP/Aspire env blocker; carry the live round-trip forward as the standing DCP blocker.
+- [x] Task 1 — Implement `MetadataDerivedSemanticIndexingContentMaterializer` (AC 1, 2, 3, 4, 5)
+  - [x] Add `src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs` (`internal sealed class : ISemanticIndexingContentMaterializer`). Guard `request` non-null; `cancellationToken.ThrowIfCancellationRequested()` (mirror the fail-closed shape).
+  - [x] Derive `ContentType` = `request.ExpectedMediaType` (present by the time materialization runs — Gate 5 requires it; still handle null defensively → `Skipped("content_descriptor_unavailable")` or a safe default consistent with the evaluator).
+  - [x] Derive `LengthBytes` = `request.ObservedByteLength ?? request.ExpectedByteLength ?? 0`; `SizeClassification` from a small stable byte-threshold bucket; `TypeClassification` from the media-type family. Deterministic, invariant-culture.
+  - [x] Build `CuratedText` from non-sensitive tokens only (e.g. `"{typeClassification} {request.Identity.FileVersionId}"` optionally plus org/folder id tokens + media type). No path/body/snippet/source-URI.
+  - [x] Build `CuratedAttributes` (ordinal dict) = the five identity keys from `request.Identity` (`ManagedTenantId`/`OrganizationId`/`FolderId`/`WorkspaceId`/`FileVersionId`) via `FoldersSemanticIndexingAttributes.*Attribute` + `StatusAttribute = StatusActive` + `folders.contentDescriptor`/`folders.sizeClassification`/`folders.typeClassification`.
+  - [x] Set `ContentBytes` = `Encoding.UTF8.GetBytes(curatedText)` (non-null, small); return via the 8-arg `SemanticIndexingContentMaterializationResult.Available(...)`.
+- [x] Task 2 — Register + retain fallback (AC 1)
+  - [x] Change `FoldersWorkersModule.cs:79` to `TryAddSingleton<ISemanticIndexingContentMaterializer, MetadataDerivedSemanticIndexingContentMaterializer>()`; keep `FailClosedSemanticIndexingContentMaterializer` in the tree (do not delete).
+- [x] Task 3 — (Optional) centralize content-classification attribute keys (AC 2)
+  - [x] Add `ContentDescriptorAttribute`/`SizeClassificationAttribute`/`TypeClassificationAttribute` constants to `FoldersSemanticIndexingAttributes` and reference them from the new materializer; optionally align the `Available` 6-arg auto-factory literals (`ISemanticIndexingContentMaterializer.cs:98-100`). Low-risk consolidation; skip only if it widens scope.
+- [x] Task 4 — Tests (AC 2, 3, 4, 5, 7)
+  - [x] Flip `SemanticIndexingWorkerRegistrationTests.cs:42` to `.ShouldBeOfType<MetadataDerivedSemanticIndexingContentMaterializer>()`.
+  - [x] Add `tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs`: Available happy path; `CuratedAttributes` contains all five identity keys + `folders.status=active` + classifications; C9 corpus (no `C:/`, `/etc/`, `file://`, secret, snippet in `Text` or any attribute value); C4 `ContentType`/`LengthBytes`/classifications match declared evidence; determinism (two calls → equal `CuratedText`/`CuratedAttributes`). xUnit v3 `[Fact]`, Shouldly, `TestContext.Current.CancellationToken`; build the request via a local factory (shape at `ISemanticIndexingContentMaterializer.cs:12-23`).
+  - [x] Add a worker/port-boundary test (extend `SemanticIndexingWorkerRegistrationTests` or a new class) driving the **real** materializer → real `MemoriesSemanticIndexingPort` → recording `DaprClient` (NSubstitute, per the file's existing `Substitute.For<DaprClient>()` idiom) and asserting the published `SearchIndexEntryChanged.Attributes` carry the facade filter keys + `folders.status=active`, `Text` leaks no raw path. Mind the `Shouldly.Case` vs `Memories.Contracts.V1.Case` alias collision (`SemanticIndexingWorkerRegistrationTests.cs:16-22`).
+  - [x] Confirm `SemanticIndexingProcessManagerTests` + `SemanticIndexingEndpointE2ETests` still green (they inject `RecordingContentMaterializer`); no change required unless an assertion referenced the old default (none does).
+- [x] Task 5 — Governance sync (AC 8, 9)
+  - [x] `sprint-status.yaml`: flip the materializer action item `in-progress → done`; add the new `open` C9-gated real-content follow-up entry (owner incl. Security + PM) with a `#` provenance comment; refresh `last_updated`. Do NOT touch prose already authored in `prd.md`/`architecture.md`/`epics.md`/`11-1-*.md`.
+- [x] Task 6 — Build + verify (AC 10, 11)
+  - [x] `dotnet build Hexalith.Folders.slnx`; then Workers.Tests, Folders.Tests, Testing.Tests, Contracts.Tests; `dotnet format whitespace --verify-no-changes` over Folders-owned src/tests; AppHost.Tests skip clean. Record any DCP/Aspire env blocker; carry the live round-trip forward as the standing DCP blocker.
 
 ## Dev Notes
 
@@ -165,8 +165,44 @@ xUnit v3 (`[Fact]` only), Shouldly (`.ShouldBe`, `.ShouldBeOfType<T>`, `.ShouldC
 
 ### Agent Model Used
 
+GPT-5 Codex
+
 ### Debug Log References
+
+- 2026-07-14 Task 1 RED: focused Workers test build failed on the intentionally missing materializer and classification keys.
+- 2026-07-14 Task 1 GREEN: new materializer tests passed 6/6; full `Hexalith.Folders.Workers.Tests` passed 70/70.
+- 2026-07-14 Task 2 RED/GREEN: registration assertion first resolved the fail-closed default (1 expected failure), then passed after the default registration swap; full Workers suite passed 70/70.
+- 2026-07-14 Task 3 RED/GREEN: tests first referenced the missing shared classification constants (5 expected compile errors); constants and both materialization factories were aligned; full Workers suite passed 70/70.
+- 2026-07-14 Task 4: added real-materializer process-manager and real-materializer-to-real-port CloudEvent evidence; full Workers suite, including endpoint E2E tests, passed 72/72.
+- 2026-07-14 Task 5 RED/GREEN: ledger check first observed `in-progress`; governance sync then verified materializer=`done`, C9 follow-up=`open`, owner includes Security + PM. Diff inventory confirms no wire-contract or planning-prose files changed.
+- 2026-07-14 Aspire baseline: AppHost 13.4.6 built 0W/0E and `folders-workers` reached Healthy; topology stopped cleanly before source builds.
+- 2026-07-14 C9 hardening RED/GREEN: an adversarial supported `text/*` media type containing drive-path and secret-shaped tokens first leaked through curated text; curated output was reduced to derived classifications plus validated identity tokens, and the focused materializer suite passed 8/8.
+- 2026-07-14 Task 6: restore/build passed 0W/0E; Workers 73/73, Folders 1377/1377, Testing 61/61, Contracts 283/283; format/analyzers and the nine-category baseline CI gate passed; AppHost opt-in suite skipped 4/4 without its environment flag.
 
 ### Completion Notes List
 
+- Task 1: implemented deterministic metadata-derived materialization with facade security-trim identity/status attributes, metadata-only curated text, original C4 evidence, and defensive fail-closed handling for a missing media type.
+- Task 2: registered the metadata-derived singleton as the default while retaining the fail-closed materializer as an explicit constructible fallback.
+- Task 3: centralized the three content-classification keys in the shared producer/facade attribute contract and removed their remaining production literals.
+- Task 4: covered metadata availability, facade-visible attributes, C9 leakage corpus, C4 evidence/classification, replay stability, cancellation/null guards, real process-manager indexing, and real Dapr-port publication.
+- Task 5: closed the delivered Epic 10 materializer action and recorded the authorized body-text implementation as an explicit C9 Security+PM sign-off dependency.
+- Task 6: verified the complete solution and canonical CI lanes; AppHost startup reached a healthy Workers resource, while the full mutation round-trip remains the existing opt-in DCP-capable-lane evidence item rather than a new implementation blocker.
+
 ### File List
+
+- `_bmad-output/gates/baseline-ci/latest.json`
+- `_bmad-output/implementation-artifacts/10-6-replace-fail-closed-content-materializer-with-metadata-derived.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs`
+- `tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs`
+- `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
+- `tests/Hexalith.Folders.Workers.Tests/SemanticIndexingWorkerRegistrationTests.cs`
+- `src/Hexalith.Folders/Projections/SemanticIndexing/FoldersSemanticIndexingAttributes.cs`
+- `src/Hexalith.Folders.Workers/SemanticIndexing/ISemanticIndexingContentMaterializer.cs`
+- `tests/Hexalith.Folders.Workers.Tests/SemanticIndexingProcessManagerTests.cs`
+
+## Change Log
+
+| Date | Change | Author |
+| --- | --- | --- |
+| 2026-07-14 | Implemented and verified metadata-derived semantic-index content materialization; retained the fail-closed fallback; synchronized Epic 10 governance. | Administrator (via dev-story) |

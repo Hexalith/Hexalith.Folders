@@ -95,9 +95,9 @@ public sealed record SemanticIndexingContentMaterializationResult
             reasonCode,
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                ["folders.contentDescriptor"] = reasonCode,
-                ["folders.sizeClassification"] = sizeClassification,
-                ["folders.typeClassification"] = typeClassification,
+                [FoldersSemanticIndexingAttributes.ContentDescriptorAttribute] = reasonCode,
+                [FoldersSemanticIndexingAttributes.SizeClassificationAttribute] = sizeClassification,
+                [FoldersSemanticIndexingAttributes.TypeClassificationAttribute] = typeClassification,
             });
 
     public static SemanticIndexingContentMaterializationResult Available(

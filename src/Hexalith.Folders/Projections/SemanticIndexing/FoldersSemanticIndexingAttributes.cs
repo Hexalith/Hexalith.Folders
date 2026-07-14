@@ -36,6 +36,15 @@ public static class FoldersSemanticIndexingAttributes
     /// <summary>Exact-match attribute carrying the opaque file-version id.</summary>
     public const string FileVersionIdAttribute = "folders.fileVersionId";
 
+    /// <summary>Attribute describing how the indexable text was materialized.</summary>
+    public const string ContentDescriptorAttribute = "folders.contentDescriptor";
+
+    /// <summary>Attribute carrying the deterministic byte-length classification.</summary>
+    public const string SizeClassificationAttribute = "folders.sizeClassification";
+
+    /// <summary>Attribute carrying the deterministic media-type family classification.</summary>
+    public const string TypeClassificationAttribute = "folders.typeClassification";
+
     /// <summary>
     /// Lifecycle status attribute: <see cref="StatusActive"/> on the live upsert, <see cref="StatusArchived"/> on
     /// the archive soft-delete re-send. The facade filters <see cref="StatusActive"/> to exclude soft-deleted units
