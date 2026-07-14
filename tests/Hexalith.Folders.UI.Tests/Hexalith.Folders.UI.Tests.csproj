@@ -6,6 +6,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.UI\Hexalith.Folders.UI.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
+    <ProjectReference Include="$(HexalithFrontComposerRoot)\src\Hexalith.FrontComposer.Testing\Hexalith.FrontComposer.Testing.csproj" Condition="'$(HexalithFrontComposerFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.FrontComposer.Testing" Condition="'$(HexalithFrontComposerFromSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

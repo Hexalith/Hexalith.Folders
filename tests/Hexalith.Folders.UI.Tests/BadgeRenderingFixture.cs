@@ -4,6 +4,7 @@ using Bunit.TestDoubles;
 using Hexalith.FrontComposer.Contracts.Storage;
 using Hexalith.FrontComposer.Shell.Extensions;
 using Hexalith.FrontComposer.Shell.State.Theme;
+using Hexalith.FrontComposer.Testing;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

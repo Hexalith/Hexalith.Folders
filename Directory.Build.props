@@ -14,6 +14,7 @@
          source/package assembly collisions). Always re-run 'dotnet restore' after switching modes. -->
     <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(UseNuGetDeps)' == 'true'">false</UseHexalithProjectReferences>
     <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(UseNuGetDeps)' == 'false'">true</UseHexalithProjectReferences>
+    <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(Configuration)' == ''">true</UseHexalithProjectReferences>
     <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(Configuration)' == 'Release'">false</UseHexalithProjectReferences>
     <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == '' and '$(Configuration)' == 'Debug'">true</UseHexalithProjectReferences>
     <UseHexalithProjectReferences Condition="'$(UseHexalithProjectReferences)' == ''">false</UseHexalithProjectReferences>
