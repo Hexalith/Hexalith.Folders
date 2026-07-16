@@ -159,7 +159,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - Performance NFRs include 1s p95 command acknowledgement, 500ms p95 status/audit summary query, and 2s p95 context queries for bounded MVP inputs. Do not claim broader provider/workspace completion timing than the harness actually measures.
 - Release evidence must be metadata-only. Audit, logs, traces, metrics, Problem Details, console responses, generated artifacts, docs examples, and test failure messages must not expose secrets, file contents, provider payloads, raw diffs, local absolute paths, or unauthorized resource existence.
 - Focused gate scripts are CI contracts. Keep the PowerShell style, report shape, and fail-closed posture used by Stories 7.4-7.9.
-- Repository configuration is authoritative over older planning text: .NET SDK `10.0.302`, central package management, xUnit v3, Shouldly, YamlDotNet, and NBomber from existing project files.
+- Repository configuration is authoritative over older planning text: .NET SDK `10.0.300`, central package management, xUnit v3, Shouldly, YamlDotNet, and NBomber from existing project files.
 
 ### Previous Story Intelligence
 
@@ -193,7 +193,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use repository-pinned .NET SDK `10.0.302` from `global.json` and central package management. Do not add inline package versions.
+- Use repository-pinned .NET SDK `10.0.300` from `global.json` and central package management. Do not add inline package versions.
 - Use xUnit v3, Shouldly, YamlDotNet, `System.Text.Json`, and existing deployment-conformance helper patterns.
 - Parse YAML/Markdown/JSON evidence semantically where practical; do not rely only on loose string contains for target numbers or governance status.
 - Calibration tests must fail closed on stale source commit, missing full commit SHA, missing hardware profile, missing measured step, partial execution, missing C2 freshness target, non-numeric C1/C5 targets, unsafe diagnostic strings, and absolute paths.

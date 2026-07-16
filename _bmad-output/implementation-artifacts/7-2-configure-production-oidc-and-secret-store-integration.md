@@ -96,7 +96,7 @@ Decomposed acceptance criteria:
 - Do not replace provider authorization with secret-store access. Secret retrieval happens only after existing layered authorization and provider binding/readiness checks have selected an authorized credential reference.
 - Do not derive secret names from tenant IDs, folder IDs, repository IDs, provider target URLs, or `ProviderBindingRef`. Use the explicit `CredentialReferenceId` captured by organization provider binding state.
 - Do not initialize nested submodules or add recursive submodule commands to CI, docs, or scripts.
-- Current package pins are authoritative: .NET SDK `10.0.302`, `Microsoft.AspNetCore.Authentication.JwtBearer` `10.0.5`, Dapr packages `1.17.9`, Aspire Hosting `13.3.5`, xUnit v3 `3.2.2`, and YamlDotNet `18.0.0`.
+- Current package pins are authoritative: .NET SDK `10.0.300`, `Microsoft.AspNetCore.Authentication.JwtBearer` `10.0.5`, Dapr packages `1.17.9`, Aspire Hosting `13.3.5`, xUnit v3 `3.2.2`, and YamlDotNet `18.0.0`.
 
 ### Current State To Preserve
 
@@ -165,7 +165,7 @@ The real implementation should validate required options at startup, use central
 - Story 7.1 completed production Dapr deny-by-default artifacts and conformance tests. Reuse `deploy/dapr/production/`, `tests/fixtures/`, `docs/operations/`, and the existing contract-spine workflow style where applicable.
 - Story 7.1 review found that control-plane configuration, sidecar binding evidence, and pub/sub scopes were easy to under-specify. Apply the same standard to secret-store scopes: prove both the component and the application binding/scope.
 - Story 7.1's live `daprd`/kind 403 gate remains intentionally deferred to Story 7.8. Do not smuggle live secret-store/provider checks into PR CI for this story.
-- Prior verification succeeded in native WSL with SDK `10.0.302` and root-level submodules initialized. In restricted sandboxes, NuGet/network, `pwsh`, or VSTest sockets may block exact commands; record those limitations without claiming success.
+- Prior verification succeeded in native WSL with SDK `10.0.300` and root-level submodules initialized. In restricted sandboxes, NuGet/network, `pwsh`, or VSTest sockets may block exact commands; record those limitations without claiming success.
 - Existing dirty worktree item `_bmad-output/story-automator/orchestration-7-20260530-075630.md` is unrelated. Do not include it in this story's File List.
 
 ### Git Intelligence Summary

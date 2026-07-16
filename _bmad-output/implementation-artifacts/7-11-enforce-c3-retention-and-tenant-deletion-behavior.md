@@ -167,7 +167,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - Architecture C3 is owned by Tech Lead with Legal + PM authority at `docs/exit-criteria/c3-retention.md`; D-7 commit TTL inherits C3.
 - Architecture D-10 says audit storage is a dedicated projection derived from event streams, rebuildable from events, and retained per C3.
 - Metadata-only is non-negotiable across events, logs, traces, metrics, projections, audit records, Problem Details, console responses, provider diagnostics, generated artifacts, docs examples, and test failure messages.
-- Repository configuration is authoritative over older planning text: .NET SDK `10.0.302`, central package management, xUnit v3, Shouldly, YamlDotNet, and PowerShell 7 gate scripts.
+- Repository configuration is authoritative over older planning text: .NET SDK `10.0.300`, central package management, xUnit v3, Shouldly, YamlDotNet, and PowerShell 7 gate scripts.
 
 ### Previous Story Intelligence
 
@@ -198,7 +198,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use repository-pinned .NET SDK `10.0.302` from `global.json` and central package management. Do not add inline package versions.
+- Use repository-pinned .NET SDK `10.0.300` from `global.json` and central package management. Do not add inline package versions.
 - Use xUnit v3, Shouldly, YamlDotNet, XML/YAML/Markdown/JSON parsing, and existing deployment-conformance helper patterns.
 - Parse C3 and runbook evidence semantically where practical; loose string contains is acceptable only for script/workflow sentinel checks already common in this repo.
 - Gate script diagnostics must be metadata-only and fail closed on unsafe values.

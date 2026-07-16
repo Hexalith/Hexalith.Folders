@@ -104,7 +104,7 @@ The AC reads "automated **and** manual checks confirm…". In this repo the veri
 - **The console wires zero command manifests by construction** — the UI references `Hexalith.Folders.Client` only and reads from projections (F-2, `architecture.md L546`; component-boundary enforcement `L1487`); it does **not** call `AddHexalithEventStore`, so no `/api/v1/commands` endpoint exists (`ops-console-wireflows.md §1.6 L200–L208`). Verification asserts this boundary; it does not change it.
 - **Read-only controls are native `<button type="button">`/`<a href>`** (e.g. `SafeCopyId`, `CorrelationCopyButton`, `StillLoadingCancel`) precisely so they pass the five-selector guard — keep that pattern when asserting keyboard reachability + accessible names.
 - **Freshness honesty + safe-denial shape are part of the surfaces under test** — do not let verification fabricate timestamps (`0001-01-01` → render `Unknown`) or turn `not_found` vs `*_denied` into an existence oracle (`ops-console-wireflows.md §3.9 L530–L534`).
-- **Build/test with the Windows SDK** (`/mnt/c/Program Files/dotnet/dotnet.exe`); the WSL SDK (`10.0.108`) fails the `global.json` `10.0.302` pin ([[dotnet-windows-sdk-wsl]]). bUnit timer determinism (for any loading-state assertions) uses the `ControllableTimeProvider` registered by `BadgeRenderingFixture` (keeps `SkeletonState` in the ≤400 ms band).
+- **Build/test with the Windows SDK** (`/mnt/c/Program Files/dotnet/dotnet.exe`); the WSL SDK (`10.0.108`) fails the `global.json` `10.0.300` pin ([[dotnet-windows-sdk-wsl]]). bUnit timer determinism (for any loading-state assertions) uses the `ControllableTimeProvider` registered by `BadgeRenderingFixture` (keeps `SkeletonState` in the ≤400 ms band).
 - **`.ConfigureAwait(false)` on every await** (CA2007 warnings-as-error, even in tests). Target `net10.0`, nullable, `LangVersion=latest`. Submodules root-level only, never `--recursive`.
 
 ### Architecture compliance
@@ -182,7 +182,7 @@ Claude Opus 4.8 (1M context) — `claude-opus-4-8[1m]`.
 
 ### Debug Log References
 
-- Baseline UI lane (Windows SDK `10.0.302`, before any change): **486 passed / 0 failed / 0 skipped**
+- Baseline UI lane (Windows SDK `10.0.300`, before any change): **486 passed / 0 failed / 0 skipped**
   (`tests/Hexalith.Folders.UI.Tests`) — matches the story baseline exactly.
 - After Task 1 (`NoMutationConsoleSweepTests`): filtered run **19 passed** (12 page renders + 4 leakage facts +
   3 file-affordance cases). One compile fix: bUnit 2.7.2 exposes no non-generic `IRenderedFragment`, so the

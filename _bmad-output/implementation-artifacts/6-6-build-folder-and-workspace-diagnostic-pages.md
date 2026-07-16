@@ -217,7 +217,7 @@ Status queries target **500ms p95** (prd.md:715); folder/workspace pages are "pr
 - **bUnit** (`tests/Hexalith.Folders.UI.Tests`): reuse `BadgeRenderingFixture` (`AddFluentUIComponents` + `AddHexalithFrontComposerQuickstart` + storage/theme/JS substitutes). For SDK-calling pages, register an NSubstitute `IClient` and an `IUserContextAccessor` (follow `ShellCompositionTests` lines ~38-44). Per page: assert single `<h1>`, page-root testid, and the 5-selector `Renders_NoMutationAffordances` guard. Total `[Theory]` over each consumed SDK enum. Force `en-US` for aria-label assertions.
 - **DI/contract**: `Console_DoesNotRegisterAnyDomainCommandManifest` and `ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection` stay green.
 - **E2E** (`tests/Hexalith.Folders.UI.E2E.Tests`): a folder-route smoke test following `ConsoleSmokeTests` (new `ConsoleRoutes` constant; assert 200-399 + page-root visible + `<h1>`).
-- **Build/test**: `/mnt/c/Program\ Files/dotnet/dotnet.exe` (WSL-native SDK fails the global.json 10.0.302 pin). Root-level submodules only — never `--recursive`.
+- **Build/test**: `/mnt/c/Program\ Files/dotnet/dotnet.exe` (WSL-native SDK fails the global.json 10.0.300 pin). Root-level submodules only — never `--recursive`.
 
 ### Build/test environment + known pre-existing reds (not regressions)
 
@@ -262,7 +262,7 @@ Claude Opus 4.8 (1M context) — `claude-opus-4-8[1m]`
 
 ### Debug Log References
 
-- Build/test via the WSL-accessible Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`); the WSL-native SDK fails the `global.json` 10.0.302 pin.
+- Build/test via the WSL-accessible Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`); the WSL-native SDK fails the `global.json` 10.0.300 pin.
 - Baseline (pre-change) `dotnet test tests/Hexalith.Folders.UI.Tests`: **117 passed, 0 failed** — the UI lane is green on baseline (the known reds live in Contracts / Testing.Tests, not this lane).
 - Final `dotnet test tests/Hexalith.Folders.UI.Tests`: **278 passed, 0 failed** (+161 new). E2E project compiles clean (Playwright/Aspire harness required to execute the smoke lane; not run here).
 - Compile fixes encountered: `FluentTextField` did not resolve under the Fluent UI v5 RC → replaced the discovery/navigation fields with plain accessible `<label>/<input>/<button type="button">` (read-only navigation, still passes the 5-selector mutation guard); `CA2007` is warnings-as-error in the UI project → added `ConfigureAwait(false)` to all SDK awaits (matching the existing `BearerTokenDelegatingHandler` convention); avoided the `Microsoft.FluentUI.AspNetCore.Components.Icons` package (off the reference graph) by hand-authoring status glyphs on `FoldersConsoleIcons` and reusing the shell's `FcFluentIcons.DocumentSearch48()`.

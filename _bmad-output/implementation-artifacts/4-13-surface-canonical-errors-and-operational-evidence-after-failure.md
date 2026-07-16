@@ -121,7 +121,7 @@ so that final state, retry eligibility, and client action are explainable.
 - Canonical Problem Details are public contract. Changing category names, codes, client actions, or retry flags requires corresponding OpenAPI, parity fixtures/oracle, tests, and generated artifacts as applicable.
 - SDK/CLI/MCP parity matters, but this story should expose canonical server/contract evidence for adapters to consume. Do not implement CLI commands, MCP tools, or SDK convenience helpers here.
 - Problem Details, rejection events, projections, logs, traces, metrics, and docs/test examples must remain metadata-only.
-- Use current repo package pins and .NET 10 SDK `10.0.302`. No dependency upgrade is required.
+- Use current repo package pins and .NET 10 SDK `10.0.300`. No dependency upgrade is required.
 
 ### Project Structure Notes
 
@@ -164,12 +164,12 @@ so that final state, retry eligibility, and client action are explainable.
 
 ### Latest Technical Context
 
-- Local repository pins .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, Dapr `1.17.7`, NSwag `14.7.1`, Octokit `14.0.0`, and repository-owned package versions. Use these pins; no dependency upgrade is required. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
+- Local repository pins .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, Dapr `1.17.7`, NSwag `14.7.1`, Octokit `14.0.0`, and repository-owned package versions. Use these pins; no dependency upgrade is required. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
 - No external web research is required for this story. The work relies on local Contract Spine schemas, existing runtime mappings, C6 rules, and provider/read-model abstractions rather than latest external library behavior.
 
 ### Testing
 
-- Prefer focused builds/tests first. Prior Story 4.12 validation used local SDK `10.0.302` via `DOTNET_ROOT=$HOME/.dotnet PATH=$HOME/.dotnet:$PATH`; VSTest may hit sandbox socket permission issues, so use xUnit v3 in-process runners when needed.
+- Prefer focused builds/tests first. Prior Story 4.12 validation used local SDK `10.0.300` via `DOTNET_ROOT=$HOME/.dotnet PATH=$HOME/.dotnet:$PATH`; VSTest may hit sandbox socket permission issues, so use xUnit v3 in-process runners when needed.
 - Minimum focused coverage: canonical mapper unit tests, server Problem Details tests, `/process` rejection tests, workspace/task/commit/provider/reconciliation evidence query tests, metadata leakage scans, `CommitStatusContractGroupTests`, and `git diff --check`.
 - Keep tests hermetic: no provider credentials, live GitHub/Forgejo calls, Dapr sidecars, Keycloak, Redis, production secrets, network calls, or nested submodule initialization.
 

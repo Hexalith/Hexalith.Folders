@@ -189,7 +189,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use the repository-pinned .NET SDK from `global.json` (`10.0.302`) and central package management. Do not add inline package versions.
+- Use the repository-pinned .NET SDK from `global.json` (`10.0.300`) and central package management. Do not add inline package versions.
 - Prefer focused verification first: load harness tests, self-check, quick smoke, new capacity gate script, and new conformance tests.
 - For the conformance test, follow the existing deployment-test helper patterns in `ContractParityCiWorkflowConformanceTests` and `SecurityRedactionCiWorkflowConformanceTests`, including metadata-only JSON validation and recursive-submodule scans.
 - If VSTest socket creation fails in the sandbox, use the xUnit v3 in-process executable under `bin/Debug/net10.0` for focused conformance/load tests and record the VSTest limitation.

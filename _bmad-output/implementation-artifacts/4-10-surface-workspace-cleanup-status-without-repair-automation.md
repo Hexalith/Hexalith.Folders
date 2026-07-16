@@ -130,7 +130,7 @@ so that working-copy state is understandable without MVP repair controls.
 
 ### Latest Technical Context
 
-- Local project context pins .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, warnings-as-errors, xUnit v3, Shouldly, and repository-owned package versions. Use repo pins rather than normalizing versions. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
+- Local project context pins .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, warnings-as-errors, xUnit v3, Shouldly, and repository-owned package versions. Use repo pins rather than normalizing versions. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
 - Official .NET docs identify .NET 10 as an LTS release, and the official .NET support policy lists .NET 10 as active with support ending November 14, 2028. No package upgrade is required for this story. [Source: `https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview`; `https://dotnet.microsoft.com/en-us/platform/support/policy`]
 
 ### Testing

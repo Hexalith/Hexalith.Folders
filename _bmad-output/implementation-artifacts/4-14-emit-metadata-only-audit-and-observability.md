@@ -160,12 +160,12 @@ so that incidents can be reconstructed without exposing file contents or secrets
 
 ### Latest Technical Context
 
-- Local pins are authoritative for this story: .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, Dapr `1.17.9`, Aspire `13.3.5`, OpenTelemetry exporter/hosting `1.15.3`, ASP.NET Core instrumentation `1.15.2`, HTTP/runtime instrumentation `1.15.1`, xUnit v3, and repository-owned package versions. [Source: `global.json`; `Directory.Packages.props`]
+- Local pins are authoritative for this story: .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, Dapr `1.17.9`, Aspire `13.3.5`, OpenTelemetry exporter/hosting `1.15.3`, ASP.NET Core instrumentation `1.15.2`, HTTP/runtime instrumentation `1.15.1`, xUnit v3, and repository-owned package versions. [Source: `global.json`; `Directory.Packages.props`]
 - No external web research is required. The story relies on pinned local package versions, existing service-defaults package references, and repository-owned Contract Spine/safety fixtures.
 
 ### Testing
 
-- Prefer focused builds/tests first. Prior stories used local SDK `10.0.302` and xUnit v3 in-process runners because VSTest may hit sandbox socket permission issues.
+- Prefer focused builds/tests first. Prior stories used local SDK `10.0.300` and xUnit v3 in-process runners because VSTest may hit sandbox socket permission issues.
 - Minimum focused coverage: sanitizer/model unit tests, server endpoint telemetry tests, `/process` accepted/rejected command telemetry tests, provider-readiness telemetry tests, safety inventory tests, metadata leakage tests across emitted JSON/log/trace/metric artifacts, and 4.13 regression tests for canonical error shapes and evidence routes.
 - Keep tests hermetic: no live GitHub/Forgejo calls, provider credentials, Dapr sidecars, Keycloak, Redis, production secrets, network calls, or nested submodule initialization.
 
@@ -195,7 +195,7 @@ GPT-5 Codex
 - 2026-05-27: Validation passed: `dotnet build src/Hexalith.Folders/Hexalith.Folders.csproj --no-restore --tlp:off -v:minimal /nr:false /m:1`; `dotnet build src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj --no-restore --tlp:off -v:minimal /nr:false /m:1`; `dotnet build src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj --no-restore --tlp:off -v:minimal`; focused xUnit v3 in-process `FolderAuditObservationTests`, `FolderAuditEndpointFilterTests`, and `SafetyInvariantGateTests`; `git diff --check`.
 - 2026-05-27: Full `dotnet build Hexalith.Folders.slnx --no-restore` remained environment-blocked by unavailable `Aspire.AppHost.Sdk/13.2.2` and restricted `api.nuget.org` access. Full server/contracts test assemblies also hit pre-existing environment constraints: Kestrel socket permission failures in tests that do not use TestServer, and parity-generator tests requiring NuGet access. Full `Hexalith.Folders.Tests` passed: 1154/1154.
 - 2026-05-27: Senior review auto-fix applied: prevented duplicate successful `/process` transport observations when `FolderDomainProcessor` already emits command-level audit evidence, preserved `/process` transport rejection observations, captured safe provider references from provider-readiness responses, and isolated observer failures from request success paths.
-- 2026-05-27: Review validation attempted in this environment. Focused `dotnet build` commands for core, server, and service-defaults were blocked before MSBuild by SDK mismatch: `global.json` requires .NET SDK `10.0.302`, installed SDK is `10.0.108`. `git diff --check` passed.
+- 2026-05-27: Review validation attempted in this environment. Focused `dotnet build` commands for core, server, and service-defaults were blocked before MSBuild by SDK mismatch: `global.json` requires .NET SDK `10.0.300`, installed SDK is `10.0.108`. `git diff --check` passed.
 
 ### Completion Notes List
 
@@ -263,9 +263,9 @@ Approved after automatic fixes. No critical issues remain.
 - Story status verified as reviewable before review (`review`).
 - Epic/story resolved as `4.14`.
 - Project context loaded from `_bmad-output/project-context.md`; story context and planning artifacts were already referenced by the story discovery block.
-- Tech stack detected from project context: .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, OpenTelemetry `1.15.x`.
+- Tech stack detected from project context: .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, OpenTelemetry `1.15.x`.
 - External doc search was not required; story notes declare local pins and repository artifacts authoritative.
 - Acceptance criteria, completed tasks, File List, source changes, tests, security, redaction, and telemetry cardinality were reviewed.
 - Review notes and Change Log updated.
 - Story status updated to `done`; sprint status synced to `done`.
-- Validation: `git diff --check` passed. Focused `dotnet build` commands were attempted but blocked by SDK mismatch (`global.json` requires `10.0.302`; installed SDK is `10.0.108`).
+- Validation: `git diff --check` passed. Focused `dotnet build` commands were attempted but blocked by SDK mismatch (`global.json` requires `10.0.300`; installed SDK is `10.0.108`).

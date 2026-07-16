@@ -75,7 +75,7 @@ Build: 0 warnings, 0 errors (`TreatWarningsAsErrors=true`).
 ### How to run
 
 ```powershell
-# Windows SDK is required (the WSL SDK fails the global.json 10.0.302 pin).
+# Windows SDK is required (the WSL SDK fails the global.json 10.0.300 pin).
 dotnet build  tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj
 dotnet test   tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj `
   --no-build --filter FullyQualifiedName~OpsConsoleWireflowNotesTests

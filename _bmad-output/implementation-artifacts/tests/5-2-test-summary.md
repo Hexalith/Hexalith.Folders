@@ -2,7 +2,7 @@
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-27 · **Engineer:** QA automation (Jerome)
 **Framework:** xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` (project's existing stack)
-**Test command:** `dotnet test tests/Hexalith.Folders.Cli.Tests` (Windows SDK 10.0.302 per `global.json`)
+**Test command:** `dotnet test tests/Hexalith.Folders.Cli.Tests` (Windows SDK 10.0.300 per `global.json`)
 **Result:** ✅ **102 passed, 0 failed, 0 skipped** (baseline was 78; **+24** new test cases)
 **Build:** `Hexalith.Folders.Cli` — 0 warnings / 0 errors (warnings-as-errors)
 

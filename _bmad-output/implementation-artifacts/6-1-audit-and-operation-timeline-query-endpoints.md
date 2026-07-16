@@ -90,7 +90,7 @@ Decomposed, testable acceptance criteria:
    - When the read-model throws an unexpected exception, the handler logs metadata-only (`ex.GetType().FullName`, **no payload, no identifier echoes**) and emits canonical `read_model_unavailable` / `503` (mirror `FolderLifecycleStatusQueryHandler:96-109`).
    - **No endpoint emits a category outside its oracle row's `error_code_set`** — the spine's `x-hexalith-canonical-error-categories` is the authoritative allow-list; assertions iterate the oracle row's `Transport.ErrorCodeSet` from `ParityOracle.Rows`.
 
-10. **Build clean and hermetic; no production-tree edits outside the four endpoint groups + their support; no `.slnx` change; no new package references; no recursive submodule init.** Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.302 pin — see Dev Notes "Build environment"): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors. Run the touched suite:
+10. **Build clean and hermetic; no production-tree edits outside the four endpoint groups + their support; no `.slnx` change; no new package references; no recursive submodule init.** Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.300 pin — see Dev Notes "Build environment"): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors. Run the touched suite:
     - `dotnet.exe test tests/Hexalith.Folders.Server.Tests` (focused: the new audit-endpoint suites + the updated `TransportParityConformanceTests`).
     - `dotnet.exe test tests/Hexalith.Folders.Tests --filter "FullyQualifiedName~Audit"` (the new query-handler unit tests).
     - `dotnet.exe test tests/Hexalith.Folders.Contracts.Tests --filter "FullyQualifiedName~AuditOpsConsole"` (existing contract-group conformance; should remain green with no edits).
@@ -307,7 +307,7 @@ Stories 5.5 and 5.7 ship the audit-family substitution slot (`RestInspectionOper
 
 ### Build environment
 
-The WSL-native `.NET` SDK is 10.0.108 (or whatever the running WSL distro has installed) and fails the `global.json` `10.0.302` pin. Build / restore / test through the Windows SDK from WSL via `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore`, `dotnet.exe build`, `dotnet.exe test`). [Source: user-memory `.NET Windows SDK in WSL`]
+The WSL-native `.NET` SDK is 10.0.108 (or whatever the running WSL distro has installed) and fails the `global.json` `10.0.300` pin. Build / restore / test through the Windows SDK from WSL via `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore`, `dotnet.exe build`, `dotnet.exe test`). [Source: user-memory `.NET Windows SDK in WSL`]
 
 ### Git intelligence
 
@@ -382,7 +382,7 @@ Centrally managed in `Directory.Packages.props` (repo config is authoritative). 
 
 **Do not** add `Newtonsoft.Json` references — the server side uses `System.Text.Json` exclusively (the generated client uses `Newtonsoft.Json` per A-9, but the server and core domain do not). **Do not** add `YamlDotNet` references — the parity oracle is read at test time only and Server.Tests does not need it. **Do not** regenerate the client, the server OpenAPI emission, or the oracle.
 
-**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.302` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore | build | test`). [Source: user-memory — `.NET Windows SDK in WSL`]
+**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.300` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore | build | test`). [Source: user-memory — `.NET Windows SDK in WSL`]
 
 ## Dev Agent Record
 

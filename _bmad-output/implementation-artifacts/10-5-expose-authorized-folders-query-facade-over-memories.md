@@ -178,7 +178,7 @@ Out of scope:
 
 ### Architecture and dependency guardrails
 
-- Repository configuration is authoritative when prose drifts: `global.json` (.NET SDK `10.0.302`, `net10.0`), `Directory.Packages.props` (central versions; Dapr, Aspire `13.4.6`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`). Never add inline `Version` attributes.
+- Repository configuration is authoritative when prose drifts: `global.json` (.NET SDK `10.0.300`, `net10.0`), `Directory.Packages.props` (central versions; Dapr, Aspire `13.4.6`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`). Never add inline `Version` attributes.
 - Dependency direction (post-amendment): Contracts → no behavior; core → Contracts only (Memories-free); **Server → core + Contracts + ServiceDefaults + EventStore + Tenants + (NEW, Option B) Memories.Client.Rest + Memories.Contracts**; Client → Contracts; CLI/MCP/UI → Client (Memories-free); Workers → Memories.Contracts. Keep core/Client/CLI/MCP/UI/Testing Memories-free.
 - C# file-scoped namespaces, nullable-safe public boundaries, `ArgumentNullException.ThrowIfNull`, ordinal comparisons + invariant formatting for identifiers, cancellation propagation, `ConfigureAwait(false)` where nearby code uses it.
 - Non-mutating reads must NOT accept `Idempotency-Key`; they require correlation behavior, authorization parity, safe-denial shape, audit metadata, and a read-consistency class. [Source: project-context.md#144]

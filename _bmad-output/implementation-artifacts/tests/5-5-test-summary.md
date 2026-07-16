@@ -7,7 +7,7 @@ Date: 2026-05-28
 
 ## Test framework
 
-xUnit v3 + Shouldly (project default). NSubstitute available but not required by this story. Build/test driven via the Windows .NET SDK from WSL (`/mnt/c/Program Files/dotnet/dotnet.exe`) per `global.json` `10.0.302` pin.
+xUnit v3 + Shouldly (project default). NSubstitute available but not required by this story. Build/test driven via the Windows .NET SDK from WSL (`/mnt/c/Program Files/dotnet/dotnet.exe`) per `global.json` `10.0.300` pin.
 
 ## Gaps discovered against Story 5.5 ACs
 
@@ -39,7 +39,7 @@ Net additions: 9 parametric rows (one per `GoldenLifecycle.Steps` entry; current
 
 ## Test run
 
-Windows .NET SDK 10.0.302 via WSL:
+Windows .NET SDK 10.0.300 via WSL:
 
 ```text
 dotnet.exe build Hexalith.Folders.slnx --nologo

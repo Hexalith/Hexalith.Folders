@@ -188,7 +188,7 @@ The content materializer is `FailClosedSemanticIndexingContentMaterializer`, whi
 
 ### Architecture & guardrails
 
-- Repo config is authoritative when prose drifts: .NET `10.0.302`, Dapr packages pinned in `Directory.Packages.props`, Aspire `13.4.6`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`. Central package management — no inline versions.
+- Repo config is authoritative when prose drifts: .NET `10.0.300`, Dapr packages pinned in `Directory.Packages.props`, Aspire `13.4.6`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`. Central package management — no inline versions.
 - File-scoped namespaces; `ArgumentNullException.ThrowIfNull` on public boundaries; ordinal comparisons + invariant formatting for ids/keys; `CancellationToken` propagation; `ConfigureAwait(false)` where nearby worker code uses it.
 - Workers own external side effects; aggregates stay deterministic/side-effect-free; expected remote outcomes are result-shaped + bridge-recorded, not thrown.
 - Metadata-only is non-negotiable across events, attributes, logs, traces, metrics, bridge records, Problem Details, docs, and **test names/failure messages**.

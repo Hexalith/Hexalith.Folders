@@ -159,7 +159,7 @@ Do not blindly copy the snippet. Validate actual Folders invocation paths before
 - The static gate should fail on broad wildcard allows (`name: /**`, `httpVerb: ["*"]`) unless the fixture contains an explicit reviewed exception with a bounded reason.
 - The policy-change guard must be robust to line ending changes and comments. Hash normalized YAML content or compare parsed semantic rule sets rather than raw text where possible.
 - Test diagnostics must be metadata-only. A failing test may name policy IDs, app IDs, operation names, and fixture case IDs; it must not print secrets, raw certificates, JWTs, provider payloads, or local absolute paths.
-- Build/test with the repository-pinned .NET SDK `10.0.302`. In WSL sessions, prior stories often required the Windows SDK path (`/mnt/c/Program Files/dotnet/dotnet.exe`) because the WSL-native SDK did not satisfy `global.json`.
+- Build/test with the repository-pinned .NET SDK `10.0.300`. In WSL sessions, prior stories often required the Windows SDK path (`/mnt/c/Program Files/dotnet/dotnet.exe`) because the WSL-native SDK did not satisfy `global.json`.
 
 ### Previous Story Intelligence
 
@@ -238,7 +238,7 @@ Codex GPT-5 (story context generation)
 - 2026-05-30T10:27:21+02:00 - Re-ran `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -namespace Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance -noLogo -noColor`; passed 4/4 tests with 0 failures.
 - 2026-05-30T10:27:21+02:00 - Ran full affected contract test assembly with `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll -noLogo -noColor`; 87 total, 6 failed. Failures were existing negative-scope/safety guard failures outside Story 7.1: CLI command negative-scope checks and audit-records safety include-root checks.
 - 2026-05-30T10:27:21+02:00 - `rg -n "git submodule update --init --recursive|--recursive" .github tests docs deploy` returned only pre-existing guard/test literals. Focused scan of Story 7.1 touched workflow, script, docs, deployment, fixture, and conformance test files returned no recursive submodule setup guidance.
-- 2026-05-30 (dev-story verification re-run, native WSL environment, SDK `10.0.302` matching `global.json`, root-level submodules initialized) - The prior sandbox blockers (NuGet signature lookup, missing `pwsh`, VSTest socket creation) were resolved in this environment, so the previously incomplete Verification task was executed:
+- 2026-05-30 (dev-story verification re-run, native WSL environment, SDK `10.0.300` matching `global.json`, root-level submodules initialized) - The prior sandbox blockers (NuGet signature lookup, missing `pwsh`, VSTest socket creation) were resolved in this environment, so the previously incomplete Verification task was executed:
   - `dotnet restore Hexalith.Folders.slnx` → exit 0 (success; no `-m:1`/`/nodeReuse:false` fallback needed).
   - `dotnet build Hexalith.Folders.slnx --no-restore` → exit 0, `Build succeeded`, 0 Warning(s), 0 Error(s).
   - `dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.DaprPolicyConformance` → exit 0, Passed: 4, Failed: 0 (the four static conformance facts: deny-by-default policy + provenance hash, mTLS evidence, allowed/denied triple coverage, local-dev-permissive guard).
@@ -256,7 +256,7 @@ Codex GPT-5 (story context generation)
 - Added follow-up review fixes for Dapr control-plane mTLS shape, sidecar `dapr.io/config` binding evidence, protected tenant-event pub/sub scopes, and fail-closed policy-document parsing.
 - Removed credential-shaped wording from the sanitized mTLS fixture comment so the focused static conformance tests pass.
 - Verification was initially partially blocked by sandbox/environment constraints: NuGet repository signature lookup was denied, `pwsh` was unavailable, and VSTest could not create local sockets. The solution passed with the single-node/no-reuse build fallback and the focused Dapr conformance tests passed through the xUnit in-process runner.
-- SUPERSEDED 2026-05-30 (dev-story verification completion): In a native WSL environment with SDK `10.0.302` (matching `global.json`) and initialized root-level submodules, the full Verification task now passes cleanly: `dotnet restore` exit 0, `dotnet build --no-restore` exit 0 with 0 warnings/0 errors, and the focused `DaprPolicyConformance` tests 4/4 passing via the normal test runner. PowerShell 7 was installed as a `dotnet` global tool and the `run-dapr-policy-conformance-gates.ps1` gate was executed (its only fallible step — the focused conformance test — was independently confirmed green). Story 7.1 is complete; live `daprd`/kind 403 conformance remains intentionally deferred to Story 7.8 as `reference_pending_story_7_8`.
+- SUPERSEDED 2026-05-30 (dev-story verification completion): In a native WSL environment with SDK `10.0.300` (matching `global.json`) and initialized root-level submodules, the full Verification task now passes cleanly: `dotnet restore` exit 0, `dotnet build --no-restore` exit 0 with 0 warnings/0 errors, and the focused `DaprPolicyConformance` tests 4/4 passing via the normal test runner. PowerShell 7 was installed as a `dotnet` global tool and the `run-dapr-policy-conformance-gates.ps1` gate was executed (its only fallible step — the focused conformance test — was independently confirmed green). Story 7.1 is complete; live `daprd`/kind 403 conformance remains intentionally deferred to Story 7.8 as `reference_pending_story_7_8`.
 
 ### File List
 
@@ -288,7 +288,7 @@ Codex GPT-5 (story context generation)
 **Method:** Adversarial multi-agent review (5 dimension reviewers — AC validation, task audit, test correctness, policy/fixture semantics, CI/scope compliance — each with per-finding adversarial verification). 18 findings raised, 12 confirmed after verification (deduped to 7 distinct issues), 6 rejected as false positives or out-of-scope nitpicks.
 
 **Independent verification performed:**
-- `dotnet build` → 0 warnings / 0 errors (SDK 10.0.302, root-level submodules populated).
+- `dotnet build` → 0 warnings / 0 errors (SDK 10.0.300, root-level submodules populated).
 - Focused `DaprPolicyConformance` suite → 5/5 passing (4 original facts + 1 new CI-wiring fact).
 - `pwsh ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild` → exit 0, report `passed`, TRX minimum-count guard satisfied (5 ≥ 4).
 - Full `Hexalith.Folders.Contracts.Tests` assembly → 82 passed, 6 failed. The 6 failures are confirmed **pre-existing** (negative-scope/safety guards from stories 1.7/1.10/1.11 about pre-existing `src/Hexalith.Folders.Cli/Commands/**` files and an `audit-records` include-root in `safety-channel-inventory.json`); story 7.1 touches none of those paths, so they are not regressions.

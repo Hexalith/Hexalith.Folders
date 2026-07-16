@@ -47,13 +47,13 @@ New test cases this run: **24** (Client.Tests +17, Sample.Tests +7).
 
 ## Test Run Results
 
-Run with the `global.json`-matching SDK (`~/.dotnet/dotnet` 10.0.302; the PATH SDK 10.0.108 does not satisfy `global.json`).
+Run with the `global.json`-matching SDK (`~/.dotnet/dotnet` 10.0.300; the PATH SDK 10.0.108 does not satisfy `global.json`).
 
 - `tests/Hexalith.Folders.Client.Tests` — **71 passed / 1 failed / 72 total**
 - `samples/Hexalith.Folders.Sample.Tests` — **10 passed / 0 failed / 10 total**
 
 ### Known pre-existing failure (NOT a Story 5.1 regression)
-`ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration` fails on a 6-line **whitespace-only** diff between the committed (`.editorconfig`-normalized) generated client and a raw NSwag regeneration. This is documented in the story Debug Log, is independent of the convenience layer (no `Generated/` inputs were touched), and cannot be resolved without editing generated code (forbidden by this story). A second generation test (`HelperGenerationTargetRegeneratesWhenContractSpineChanges`) only failed when a spawned child `dotnet` resolved the PATH SDK; it passes once the 10.0.302 SDK leads `PATH`.
+`ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration` fails on a 6-line **whitespace-only** diff between the committed (`.editorconfig`-normalized) generated client and a raw NSwag regeneration. This is documented in the story Debug Log, is independent of the convenience layer (no `Generated/` inputs were touched), and cannot be resolved without editing generated code (forbidden by this story). A second generation test (`HelperGenerationTargetRegeneratesWhenContractSpineChanges`) only failed when a spawned child `dotnet` resolved the PATH SDK; it passes once the 10.0.300 SDK leads `PATH`.
 
 ## Commands Run
 

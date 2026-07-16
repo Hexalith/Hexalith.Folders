@@ -130,7 +130,7 @@ so that repository-backed work reaches a clean committed state or an inspectable
 
 ### Latest Technical Context
 
-- Local repository pins .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, Dapr `1.17.7`, NSwag `14.7.1`, Octokit `14.0.0`, and repository-owned package versions. Use these pins; no dependency upgrade is required for this story. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
+- Local repository pins .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, Dapr `1.17.7`, NSwag `14.7.1`, Octokit `14.0.0`, and repository-owned package versions. Use these pins; no dependency upgrade is required for this story. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
 - OpenAPI commit status contracts and tests are already present. Treat them as the source for operation IDs, routes, idempotency equivalence, error categories, and metadata-only examples. [Source: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`; `tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs`]
 - No external web research is required for implementation because this story relies on local contracts, state-machine rules, and provider ports rather than a library/API upgrade.
 
@@ -161,11 +161,11 @@ GPT-5 Codex
 - 2026-05-27: Discovery loaded whole planning artifacts from `_bmad-output/planning-artifacts`; no sharded planning docs were present. Persistent facts loaded from project context files, with root `_bmad-output/project-context.md` providing the in-scope Hexalith.Folders implementation rules.
 - 2026-05-27: Validation checklist applied during drafting; critical guardrails added for unknown-outcome no-retry behavior, commit-tier idempotency, metadata-only evidence, and avoiding CLI/MCP/SDK/UI/generated-client scope creep.
 - 2026-05-27: Dev-story implementation added runtime commit command/service/events, commit executor side-effect port, REST `/commits` route, `/process` dispatch, state/projection application, and focused aggregate/service/envelope tests.
-- 2026-05-27: `dotnet build Hexalith.Folders.slnx --no-restore` could not run because the environment has .NET SDK `10.0.108` while `global.json` requires `10.0.302`; `git diff --check` passed.
-- 2026-05-27: Added focused REST commit malformed-body coverage before gateway submission and tightened service success coverage for safe executor metadata. Focused `dotnet test` commands for aggregate/service/server coverage could not start because SDK resolution still requires .NET SDK `10.0.302`; `git diff --check` passed.
-- 2026-05-27: Re-ran BMAD dev-story validation gates at 2026-05-27T12:16:56+02:00. `dotnet build Hexalith.Folders.slnx --no-restore`, focused core commit tests, focused server commit/envelope tests, `CommitStatusContractGroupTests`, and full `dotnet test Hexalith.Folders.slnx --no-restore` all stopped before execution because SDK resolution requires .NET SDK `10.0.302` and only `10.0.108` is installed. `git diff --check` passed.
-- 2026-05-27: Re-ran Story 4.12 validation gates at 2026-05-27T12:21:40+02:00. `dotnet build Hexalith.Folders.slnx --no-restore`, focused core commit tests, focused server commit/envelope tests, `CommitStatusContractGroupTests`, and full `dotnet test Hexalith.Folders.slnx --no-restore` all stopped before build/test execution because SDK resolution requires .NET SDK `10.0.302` and only `10.0.108` is installed. `git diff --check` passed.
-- 2026-05-27: Parent recovery validation at 2026-05-27T12:27:55+02:00 used `DOTNET_ROOT=$HOME/.dotnet PATH=$HOME/.dotnet:$PATH`, which exposes SDK `10.0.302`. Core/server/contract focused builds passed, commit aggregate/service tests passed (18), commit REST/process tests passed (14), commit OpenAPI contract tests passed (6), and `git diff --check` passed.
+- 2026-05-27: `dotnet build Hexalith.Folders.slnx --no-restore` could not run because the environment has .NET SDK `10.0.108` while `global.json` requires `10.0.300`; `git diff --check` passed.
+- 2026-05-27: Added focused REST commit malformed-body coverage before gateway submission and tightened service success coverage for safe executor metadata. Focused `dotnet test` commands for aggregate/service/server coverage could not start because SDK resolution still requires .NET SDK `10.0.300`; `git diff --check` passed.
+- 2026-05-27: Re-ran BMAD dev-story validation gates at 2026-05-27T12:16:56+02:00. `dotnet build Hexalith.Folders.slnx --no-restore`, focused core commit tests, focused server commit/envelope tests, `CommitStatusContractGroupTests`, and full `dotnet test Hexalith.Folders.slnx --no-restore` all stopped before execution because SDK resolution requires .NET SDK `10.0.300` and only `10.0.108` is installed. `git diff --check` passed.
+- 2026-05-27: Re-ran Story 4.12 validation gates at 2026-05-27T12:21:40+02:00. `dotnet build Hexalith.Folders.slnx --no-restore`, focused core commit tests, focused server commit/envelope tests, `CommitStatusContractGroupTests`, and full `dotnet test Hexalith.Folders.slnx --no-restore` all stopped before build/test execution because SDK resolution requires .NET SDK `10.0.300` and only `10.0.108` is installed. `git diff --check` passed.
+- 2026-05-27: Parent recovery validation at 2026-05-27T12:27:55+02:00 used `DOTNET_ROOT=$HOME/.dotnet PATH=$HOME/.dotnet:$PATH`, which exposes SDK `10.0.300`. Core/server/contract focused builds passed, commit aggregate/service tests passed (18), commit REST/process tests passed (14), commit OpenAPI contract tests passed (6), and `git diff --check` passed.
 
 ### Completion Notes List
 
@@ -173,10 +173,10 @@ GPT-5 Codex
 - Story file prepared for dev-story execution.
 - Story status set to ready-for-dev.
 - Runtime commit implementation is in progress: core command, validation, service ordering, outcome events, state application, commit executor boundary, REST route, and `/process` wiring are implemented.
-- Focused tests were added for aggregate outcome mapping, service idempotency/side-effect ordering, and REST mutation-envelope coverage; full regression gates are blocked until SDK `10.0.302` is available.
+- Focused tests were added for aggregate outcome mapping, service idempotency/side-effect ordering, and REST mutation-envelope coverage; full regression gates are blocked until SDK `10.0.300` is available.
 - Added commit REST malformed-body coverage that rejects unknown raw metadata before gateway submission and asserts the Problem Details payload does not leak sentinel content.
 - Tightened service success coverage to assert safe metadata passed to the commit executor and replay short-circuits without a second executor request.
-- Parent recovery fixed the archive accepted-response regression and projection timestamp test setup, then completed focused validation gates with the local SDK `10.0.302`; story is ready for code review.
+- Parent recovery fixed the archive accepted-response regression and projection timestamp test setup, then completed focused validation gates with the local SDK `10.0.300`; story is ready for code review.
 - Senior review fixed the missing commit capability-readiness gate so unsupported provider capability is rejected before commit executor/provider side effects, then re-ran focused build and xUnit in-process validation.
 
 ### File List
@@ -217,11 +217,11 @@ GPT-5 Codex
 ### Change Log
 
 - 2026-05-27: Created Story 4.12 context package for runtime commit behavior, commit evidence, idempotent replay/conflict handling, and unknown-outcome reconciliation guardrails.
-- 2026-05-27: Implemented runtime commit command path with metadata-only outcome events, commit executor boundary, idempotency ordering, REST and `/process` wiring, and focused tests; validation remains blocked by missing .NET SDK `10.0.302`.
-- 2026-05-27: Added remaining focused service/server/metadata-leakage assertions; `git diff --check` passes, but .NET build/test gates remain blocked by missing SDK `10.0.302`.
-- 2026-05-27: Re-attempted focused and full validation gates under BMAD dev-story; .NET gates remain blocked by missing SDK `10.0.302`, and `git diff --check` passes.
-- 2026-05-27: Re-attempted Story 4.12 validation gates; .NET build/test execution remains blocked by missing SDK `10.0.302`, and `git diff --check` passes.
-- 2026-05-27: Parent recovery completed focused validation using the local SDK `10.0.302` and moved story to review.
+- 2026-05-27: Implemented runtime commit command path with metadata-only outcome events, commit executor boundary, idempotency ordering, REST and `/process` wiring, and focused tests; validation remains blocked by missing .NET SDK `10.0.300`.
+- 2026-05-27: Added remaining focused service/server/metadata-leakage assertions; `git diff --check` passes, but .NET build/test gates remain blocked by missing SDK `10.0.300`.
+- 2026-05-27: Re-attempted focused and full validation gates under BMAD dev-story; .NET gates remain blocked by missing SDK `10.0.300`, and `git diff --check` passes.
+- 2026-05-27: Re-attempted Story 4.12 validation gates; .NET build/test execution remains blocked by missing SDK `10.0.300`, and `git diff --check` passes.
+- 2026-05-27: Parent recovery completed focused validation using the local SDK `10.0.300` and moved story to review.
 - 2026-05-27: Senior review auto-fixed missing commit provider-readiness gating, added regression coverage, passed focused builds/tests, and moved story to done.
 
 ## Senior Developer Review (AI)

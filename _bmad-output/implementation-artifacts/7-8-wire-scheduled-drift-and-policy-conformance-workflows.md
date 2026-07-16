@@ -188,7 +188,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use repository-pinned .NET SDK `10.0.302` from `global.json` and central package versions from `Directory.Packages.props`.
+- Use repository-pinned .NET SDK `10.0.300` from `global.json` and central package versions from `Directory.Packages.props`.
 - Use xUnit v3, Shouldly, and YamlDotNet patterns already present in deployment conformance tests.
 - Prefer focused verification first: new scheduled scripts, new deployment conformance tests, `ForgejoManifestAndDriftTests`, and `DaprPolicyConformanceTests`.
 - Conformance tests should parse YAML rather than relying on string-only workflow assertions where practical.

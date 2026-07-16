@@ -143,7 +143,7 @@ Out of scope:
 
 ### Architecture and dependency guardrails
 
-- Repository configuration is authoritative when planning prose drifts. Current pins are `global.json` SDK `10.0.302`, Dapr packages `1.18.4`, Aspire `13.4.6`, CommunityToolkit Aspire Dapr `13.4.0-preview.1.260602-0230`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and NSubstitute `5.3.0`. [Source: `global.json`, `Directory.Packages.props`]
+- Repository configuration is authoritative when planning prose drifts. Current pins are `global.json` SDK `10.0.300`, Dapr packages `1.18.4`, Aspire `13.4.6`, CommunityToolkit Aspire Dapr `13.4.0-preview.1.260602-0230`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and NSubstitute `5.3.0`. [Source: `global.json`, `Directory.Packages.props`]
 - Keep package versions centralized in `Directory.Packages.props`; do not add inline `Version` attributes to `.csproj` files.
 - Use root-level sibling module references only. Do not initialize nested submodules and do not add recursive submodule setup instructions.
 - Public async read/write paths must accept and propagate `CancellationToken`; library/worker code should use `ConfigureAwait(false)` where nearby code does.

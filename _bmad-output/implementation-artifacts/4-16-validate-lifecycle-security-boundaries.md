@@ -100,7 +100,7 @@ so that secret safety, path safety, encoding stability, and tenant isolation are
 
 - Story 4.15 added deterministic aggregate replay and projection rebuild tests plus `FolderLifecycleReplayFixture`. Reuse those fixtures and patterns for Story 4.16 instead of creating a separate lifecycle model.
 - Story 4.15 review fixed atomic duplicate-seed failure behavior in `InMemoryFolderRepository.Seed(...)`, narrowed freshness normalization so tenant-access `ProjectionWatermark` remains assertion-significant, and added cleanup-status determinism for committed, failed, and dirty states. Do not reintroduce over-normalization or partial-state mutation on rejected duplicate delivery.
-- Story 4.15 validation used `DOTNET_ROOT=/home/administrator/.dotnet` to reach SDK `10.0.302`; default repo-root `dotnet` may resolve only SDK `10.0.108` and fail before MSBuild. Report this exactly if it recurs.
+- Story 4.15 validation used `DOTNET_ROOT=/home/administrator/.dotnet` to reach SDK `10.0.300`; default repo-root `dotnet` may resolve only SDK `10.0.108` and fail before MSBuild. Report this exactly if it recurs.
 - Story 4.14 established `FolderAuditObservation`, `FolderAuditObservationBuilder`, `FolderAuditSanitizer`, `InMemoryFolderAuditObserver`, and low-cardinality telemetry naming. Story 4.16 should test those outputs and safe diagnostics; it should not create a second audit model.
 
 ### Existing Implementation State
@@ -175,7 +175,7 @@ so that secret safety, path safety, encoding stability, and tenant isolation are
 
 ### Latest Technical Context
 
-- Local repository pins are authoritative: .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, Dapr `1.17.x`, Aspire `13.x`, Microsoft.Extensions `10.x`, OpenTelemetry `1.15.x`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and repository-owned package versions. [Source: `global.json`; `Directory.Packages.props`; `_bmad-output/project-context.md`]
+- Local repository pins are authoritative: .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, Dapr `1.17.x`, Aspire `13.x`, Microsoft.Extensions `10.x`, OpenTelemetry `1.15.x`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and repository-owned package versions. [Source: `global.json`; `Directory.Packages.props`; `_bmad-output/project-context.md`]
 - No external web research is required for this story. Story 4.16 is hermetic lifecycle security test hardening over existing repository code, pinned fixtures, and generated-helper contracts.
 
 ### Testing

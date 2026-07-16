@@ -121,7 +121,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - Security and tenant isolation are zero-tolerance NFRs. The architecture binds S-6 sensitive-metadata classification, layered authorization, cache-key tenant-prefix lint, and sentinel redaction to CI gates and release evidence.
 - The safety channel inventory intentionally separates output surfaces such as logs, traces, span names, metric labels, metric names, counters, telemetry attributes, events, audit records, projections, provider diagnostics, console payloads, generated SDK, parity artifacts, OpenAPI examples, Problem Details examples, developer diagnostics, CI logs, and assertion messages.
 - Tenant cache-key lint must remain metadata-only. Diagnostics may name a rule/category and repository-relative path, but must not print raw cache keys or tenant data.
-- Root files are authoritative if planning artifacts drift: `global.json` pins .NET SDK `10.0.302`, `Directory.Packages.props` centralizes package versions, and `.github/workflows/ci.yml` is the current PR CI consolidation target.
+- Root files are authoritative if planning artifacts drift: `global.json` pins .NET SDK `10.0.300`, `Directory.Packages.props` centralizes package versions, and `.github/workflows/ci.yml` is the current PR CI consolidation target.
 
 ### Previous Story Intelligence
 

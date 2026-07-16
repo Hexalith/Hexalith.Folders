@@ -113,7 +113,7 @@ Decomposed, testable acceptance criteria:
 
 ### Library / framework requirements
 
-- **Target:** `net10.0`, C# `LangVersion=latest`, nullable enabled, warnings-as-errors. Build/test **only** with the **Windows SDK** `/mnt/c/Program Files/dotnet/dotnet.exe` — the WSL-native SDK fails the `global.json` 10.0.302 pin. **No external/web version research is needed:** every dependency (Blazor Server .NET 10, Fluent UI Blazor `5.0.0-rc.2`, bUnit, NSubstitute, Shouldly, JS clipboard interop) is repo-pinned and already in use; per project-context, repo config is authoritative over any drift, and this story introduces no new library.
+- **Target:** `net10.0`, C# `LangVersion=latest`, nullable enabled, warnings-as-errors. Build/test **only** with the **Windows SDK** `/mnt/c/Program Files/dotnet/dotnet.exe` — the WSL-native SDK fails the `global.json` 10.0.300 pin. **No external/web version research is needed:** every dependency (Blazor Server .NET 10, Fluent UI Blazor `5.0.0-rc.2`, bUnit, NSubstitute, Shouldly, JS clipboard interop) is repo-pinned and already in use; per project-context, repo config is authoritative over any drift, and this story introduces no new library.
 - **Reuse these shipped components (do NOT reinvent), all `Hexalith.Folders.UI.Components` unless noted:**
   - `OperatorDispositionBadge` — `[EditorRequired] OperatorDispositionLabel Disposition`, `string? ColumnHeader`, `string? AdditionalCssClass`. `data-testid="operator-disposition-badge"`.
   - `TechnicalStateMetadata` — `[EditorRequired] LifecycleState State`, `string? ColumnHeader`, `bool IncludePrefix = true` (use `false` in dense cells). `data-fc-technical-state`.
@@ -191,7 +191,7 @@ claude-opus-4-8 (1M context) — BMAD dev-story workflow
 
 ### Debug Log References
 
-- Build/test executed with the Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`) per the repo `global.json` 10.0.302 pin (the WSL-native SDK fails the pin).
+- Build/test executed with the Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`) per the repo `global.json` 10.0.300 pin (the WSL-native SDK fails the pin).
 - One compile fix during development: `IncidentStream.razor.cs` initially missed `using Hexalith.Folders.UI.Components.Models;` (the namespace of `ConsoleErrorView`, alongside `OperationTimelineEntryView`). Added it; mirrors `OperationTimeline.razor.cs`'s using set.
 - `dotnet test tests/Hexalith.Folders.UI.Tests` → **Passed: 455, Failed: 0** (baseline was 422 post-6.8; this story adds 33 tests — 32 from dev+QA, +1 from the senior-review fix). `NavigationContractTests.Console_DoesNotRegisterAnyDomainCommandManifest` is included and green.
 - `dotnet build tests/Hexalith.Folders.UI.E2E.Tests` → **Build succeeded, 0 Warning(s), 0 Error(s)** (the Playwright smoke test compiles; it is not executed here as it needs a live Aspire host + browser).

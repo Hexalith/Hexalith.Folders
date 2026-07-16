@@ -5,7 +5,7 @@
 **Feature under test:** Operations console — no-mutation enforcement + WCAG 2.2 AA + responsive verification.
 **Framework (existing, reused — no new package):** xUnit v3 `3.2.2` + bUnit `2.7.2` + AngleSharp + Shouldly +
 NSubstitute (component lane); `Microsoft.Playwright 1.60.0` (E2E lane). Build/test with the **Windows SDK**
-(`/mnt/c/Program Files/dotnet/dotnet.exe`, `global.json` pin `10.0.302`); the WSL SDK `10.0.108` fails the pin.
+(`/mnt/c/Program Files/dotnet/dotnet.exe`, `global.json` pin `10.0.300`); the WSL SDK `10.0.108` fails the pin.
 
 ## Approach
 

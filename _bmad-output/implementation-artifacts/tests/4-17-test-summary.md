@@ -93,7 +93,7 @@ git diff --no-index --check /dev/null _bmad-output/implementation-artifacts/4-16
 - Adjacent replay/projection/authorization xUnit v3 in-process run: passed, 54 total, 0 failed.
 - Contract safety/governance xUnit v3 in-process run: passed, 22 total, 0 failed.
 - Client test build: passed, 0 warnings, 0 errors.
-- Client generation full xUnit v3 in-process run: 17 total, 2 failed due environment-bound subprocess validation. One child process resolves SDK `10.0.108` from `/usr/lib/dotnet` instead of required SDK `10.0.302`; one isolated restore attempts blocked NuGet access to `https://api.nuget.org/v3/index.json`.
+- Client generation full xUnit v3 in-process run: 17 total, 2 failed due environment-bound subprocess validation. One child process resolves SDK `10.0.108` from `/usr/lib/dotnet` instead of required SDK `10.0.300`; one isolated restore attempts blocked NuGet access to `https://api.nuget.org/v3/index.json`.
 - Client generation corpus/parser subset excluding the two subprocess regeneration tests: passed, 15 total, 0 failed.
 - `git diff --check`: passed.
 - Explicit whitespace checks for untracked Story 4.16 files: passed.
