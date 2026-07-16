@@ -72,7 +72,7 @@ Note: `CLAUDE.md`'s default init list names **7** modules (omits `Hexalith.Polym
 - **`Hexalith.Folders.slnx`: 50 projects** = 19 submodule (`references/`) projects + **31 Folders-owned** (13 `src/`, 2 `samples/`, 14 `tests/`, 2 `tests/tools/`).
 - **`src/` projects (13 in `.slnx`):** `Hexalith.Folders`, `.AppHost`, `.Aspire`, `.Cli`, `.Client`, `.Client.Generation.Shared` (nested under `Client/Generation/Shared`), `.Contracts`, `.Mcp`, `.Server`, `.ServiceDefaults`, `.Testing`, `.UI`, `.Workers`.
 - **Package management:** central. Root `Directory.Packages.props` holds **0** inline `PackageVersion` entries; it imports the Builds central props (`references/Hexalith.Builds/Props/Directory.Packages.props`, **250** `PackageVersion` entries, via `$(Hexalith*BuildPackageProps)` MSBuild-property indirection) with `ManagePackageVersionsCentrally=true`. Package pins therefore live in the `Hexalith.Builds` submodule.
-- **SDK pin:** `global.json` → `10.0.301`, `rollForward: latestPatch`. Local `dotnet --version` = `10.0.301`.
+- **SDK pin:** `global.json` → `10.0.302`, `rollForward: latestPatch`. Local `dotnet --version` = `10.0.302`.
 
 **Domain-isolation root cause (re-verified at HEAD — the driver of Epic 11):** `src/Hexalith.Folders/Hexalith.Folders.csproj` references only `Hexalith.Folders.Contracts` (ProjectReference) + `Dapr.Client` + `Octokit` + four `Microsoft.Extensions.*` packages. It references **neither `Hexalith.Commons.*` nor `Hexalith.EventStore.*`** — the isolation the audit identifies as the systemic cause. Still true at `5ce25e4`.
 
@@ -101,7 +101,7 @@ Five workflows under `.github/workflows/`. **Submodule-init policy: `submodules:
 | `policy-conformance.yml` | `policy-conformance-gates` (schedule + dispatch) | `run-scheduled-policy-conformance-gates -SkipRestoreBuild -PolicyMode …` |
 | `release-packages.yml` | `release-prerequisite-gates`, `release-package-conformance`, `publish-packages` | `run-contract-parity-ci-gates`, `run-security-redaction-ci-gates`, `run-capacity-smoke-ci-gates`, `run-capacity-calibration-gates`, `run-retention-deletion-gates`, `run-safety-invariant-gates`, `run-governance-completeness-gates`, `run-nfr-traceability-gates`, `run-release-package-gates` |
 
-SDK pin flows from `global.json` (`10.0.301`).
+SDK pin flows from `global.json` (`10.0.302`).
 
 ---
 

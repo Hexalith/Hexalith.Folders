@@ -193,7 +193,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use repository-pinned .NET SDK `10.0.300` from `global.json` and central package versions from `Directory.Packages.props`.
+- Use repository-pinned .NET SDK `10.0.302` from `global.json` and central package versions from `Directory.Packages.props`.
 - Use xUnit v3, Shouldly, YamlDotNet, XML parsing, and zip inspection patterns already present in deployment and scaffold conformance tests.
 - Tests should parse YAML and XML rather than relying only on string contains where practical.
 - Release-package script tests should fail closed if the package manifest and actual generated packages disagree.

@@ -182,7 +182,7 @@ Status/diagnostics queries target **500ms p95** (prd.md:715); provider pages are
 - **bUnit** (`tests/Hexalith.Folders.UI.Tests`): reuse `BadgeRenderingFixture`; register an NSubstitute `IClient` + an `IUserContextAccessor` (follow `ShellCompositionTests` / the 6.6 page tests). Per page: single `<h1>`, page-root testid, the 5-selector `Renders_NoMutationAffordances` guard, and a fact asserting `ValidateProviderReadinessAsync`/`ConfigureProviderBindingAsync` were never called (use `Received.InOrder`/`DidNotReceive`). Total `[Theory]` over each consumed SDK enum. Force `en-US` for aria-label assertions. Cover: credential-reference redacted vs visible vs unknown; binding-state badge (incl. `unknown_provider_outcome`); capability-support matrix rows; safe-denial without existence leak; the honest-Unknown failure/retryability path when no operation context.
 - **DI/contract**: `Console_DoesNotRegisterAnyDomainCommandManifest` and `ScaffoldContractTests.ProjectReferencesFollowAllowedDependencyDirection` stay green.
 - **E2E** (`tests/Hexalith.Folders.UI.E2E.Tests`): a provider-route smoke test following `FolderRouteSmokeTests` (new `ConsoleRoutes` entries; assert 200-399 + page-root visible + `<h1>`).
-- **Build/test**: `/mnt/c/Program\ Files/dotnet/dotnet.exe` (WSL-native SDK fails the global.json 10.0.300 pin). Root-level submodules only — never `--recursive`.
+- **Build/test**: `/mnt/c/Program\ Files/dotnet/dotnet.exe` (WSL-native SDK fails the global.json 10.0.302 pin). Root-level submodules only — never `--recursive`.
 
 ### Build/test environment + known pre-existing reds (not regressions)
 
@@ -229,7 +229,7 @@ Claude Opus 4.8 (1M context) — `claude-opus-4-8[1m]`
 
 ### Debug Log References
 
-- Build/test via the WSL-accessible Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`); the WSL-native SDK fails the `global.json` 10.0.300 pin.
+- Build/test via the WSL-accessible Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`); the WSL-native SDK fails the `global.json` 10.0.302 pin.
 - **Baseline (pre-change):** `dotnet test tests/Hexalith.Folders.UI.Tests` → **298/298 passed, 0 failed** (matches the 6.6 UI-lane baseline in Dev Notes).
 - **Final (dev):** `dotnet test tests/Hexalith.Folders.UI.Tests` → **371/371 passed, 0 failed** (+73 over the 298 baseline; zero regressions). `NavigationContractTests.Console_DoesNotRegisterAnyDomainCommandManifest` green. *(The "349/349" figure first recorded here was an undercount — corrected during the Senior Developer Review; see that section.)*
 - **Final (post-review):** **372/372 passed, 0 failed** after the review auto-fixes (one bUnit test repurposed 1:1 + one freshness-honesty test added). Generated client / `Directory.Packages.props` / OpenAPI spine still untouched.

@@ -195,7 +195,7 @@ claude-opus-4-8 (1M context) - BMAD dev-story workflow
 
 ### Debug Log References
 
-- Build/test executed with the Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`) per [[dotnet-windows-sdk-wsl]]; the WSL SDK fails the `global.json` 10.0.300 pin.
+- Build/test executed with the Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`) per [[dotnet-windows-sdk-wsl]]; the WSL SDK fails the `global.json` 10.0.302 pin.
 - **Baseline anomaly (and fix):** the as-found tree (production code already present from a prior partial session) was **red — 361 passed / 94 failed / 455**. Root cause: the seven pages were already rewired to call the **`CancellationToken` overloads** of the `IClient` reads, but the existing page-test stubs still configured the **non-CT** overloads, so NSubstitute returned defaults and the data never loaded. Resolving this — updating every page-test stub/verification to the CT overload (`Arg.Any<CancellationToken>()`) — was the bulk of Task 5 and is what restored green.
 - bUnit timer determinism proven first on the component tests: `ControllableTimeProvider.Advance(...)` fires the captured one-shot callbacks, which marshal back via `InvokeAsync(StateHasChanged)`; post-advance assertions wrapped in `rendered.WaitForAssertion(...)`.
 - The neutral-cancelled page test drives the real chain: a cancel-aware primary-read stub (`await Task.Delay(Timeout.Infinite, ct).ConfigureAwait(false)`), advance the clock 2 s so `StillLoadingCancel` renders, click it (→ `_cts.Cancel()`), then assert the reload state. `.ConfigureAwait(false)` is required inside the stub lambda (CA2007 is warnings-as-error even in tests).

@@ -165,7 +165,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - **Authorization layering (S-3 / cross-cutting):** the auth/ACL decision diagram must show the contractual order — JWT validation → EventStore claim transform → tenant-access projection freshness → folder ACL → EventStore validator → Dapr deny-by-default — and the rule that authoritative tenant/principal come from authenticated context, not payload.
 - **Sentinel redaction (non-negotiable):** docs examples, gate reports, and diagram captions are output channels subject to the metadata-only invariant; they must pass the safety-invariant sentinels (`tests/fixtures/audit-leakage-corpus.json`) — no secrets, tokens, file contents, diffs, provider payloads, absolute paths, or real issuer/audience values.
 - **Verification Expectations NFR:** every NFR category needs at least one CI gate or release-validation path; the documentation/consumer-reference category is satisfied here by the new consumer-docs conformance gate + the example-compilation rails. Do not leave the "examples compile or are otherwise validated by CI" clause to a manual claim.
-- **Repository configuration is authoritative:** .NET SDK `10.0.300`, central package management (no inline `Version`), xUnit v3 + Shouldly + YamlDotNet, PowerShell 7 gate scripts. The `pattern-examples` project's target framework must equal `global.json`.
+- **Repository configuration is authoritative:** .NET SDK `10.0.302`, central package management (no inline `Version`), xUnit v3 + Shouldly + YamlDotNet, PowerShell 7 gate scripts. The `pattern-examples` project's target framework must equal `global.json`.
 
 ### Previous Story Intelligence
 
@@ -200,7 +200,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use the repo-pinned .NET SDK `10.0.300` (`global.json`) and central package management; no inline package versions. New conformance tests use xUnit v3 + Shouldly + YamlDotNet and the existing `Deployment/*ConformanceTests.cs` helper patterns (`RepositoryPath` walker from `AppContext.BaseDirectory`, semantic YAML parsing, `[GeneratedRegex]`).
+- Use the repo-pinned .NET SDK `10.0.302` (`global.json`) and central package management; no inline package versions. New conformance tests use xUnit v3 + Shouldly + YamlDotNet and the existing `Deployment/*ConformanceTests.cs` helper patterns (`RepositoryPath` walker from `AppContext.BaseDirectory`, semantic YAML parsing, `[GeneratedRegex]`).
 - `ConsumerDocsConformanceTests` must not pass vacuously: assert exact inventory equality (operation/tag set parsed from the spine; exactly 47 MCP tools + 2 resources; the failure-kind set; the exit-code table sourced from `FoldersExitCodes`/`ErrorProjection`) and include a test-count guard in the gate script. Negative controls must run through the real parser/scanner and fail on: missing doc, wrong count, stale exit-code/failure-kind row, leaked absolute path / token / non-`.invalid` issuer, and a malformed manifest entry.
 - Example validation: new compilable snippets compile via the `pattern-examples` project (governance gate), and `samples/Hexalith.Folders.Sample.Tests` runs hermetically in baseline CI. Keep sample tests free of AppHost/Dapr/Keycloak/Redis/network and credentials; live execution stays opt-in behind `FOLDERS_BASE_ADDRESS`.
 - Gate-script diagnostics are metadata-only and fail closed on unsafe values; the report goes to `_bmad-output/gates/consumer-docs/latest.json` with `utf8NoBOM` and `diagnostic_policy: 'metadata-only'`.

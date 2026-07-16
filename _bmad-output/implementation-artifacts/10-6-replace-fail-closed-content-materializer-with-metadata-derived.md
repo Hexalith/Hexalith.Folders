@@ -156,7 +156,7 @@ xUnit v3 (`[Fact]` only), Shouldly (`.ShouldBe`, `.ShouldBeOfType<T>`, `.ShouldC
 
 ### Architecture & dependency guardrails
 
-- Repository config is authoritative: .NET SDK `10.0.300`/`net10.0`, central package versions in `Directory.Packages.props` (xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Dapr `1.17.9`, Aspire `13.4.6`). No inline `Version` attributes.
+- Repository config is authoritative: .NET SDK `10.0.302`/`net10.0`, central package versions in `Directory.Packages.props` (xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, Dapr `1.17.9`, Aspire `13.4.6`). No inline `Version` attributes.
 - Dependency direction unchanged: `Hexalith.Folders.Workers` references `Hexalith.Memories.Contracts` only; the new materializer lives in Workers and touches no Memories client. Core (`Hexalith.Folders`) stays Memories-free; the shared attribute contract is in `Hexalith.Folders/Projections/SemanticIndexing/` (core), which Workers already reference.
 - File-scoped namespace, `internal sealed`, nullable-safe boundaries (`ArgumentNullException.ThrowIfNull`), ordinal dictionaries/`StringComparer.Ordinal`, `CultureInfo.InvariantCulture` formatting, `cancellationToken.ThrowIfCancellationRequested()`. One primary type per file; file name matches the type.
 - Metadata-only is non-negotiable across events/logs/traces/audit — the curated `Text`/`Attributes` are wire output and must be metadata-only.

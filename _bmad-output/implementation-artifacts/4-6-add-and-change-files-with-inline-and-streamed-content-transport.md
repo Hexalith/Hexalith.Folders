@@ -120,7 +120,7 @@ so that writes are deterministic, retry-safe, and aligned with D-9.
 
 ### Architecture Guardrails
 
-- Repository configuration is authoritative when planning artifacts drift. Current pins include .NET SDK `10.0.300`, Dapr packages `1.17.9`, Aspire `13.3.5`/related pins, NSwag.MSBuild `14.7.1`, Newtonsoft.Json `13.0.4`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, YamlDotNet `18.0.0`, and Playwright `1.60.0`. [Source: `global.json`; `Directory.Packages.props`]
+- Repository configuration is authoritative when planning artifacts drift. Current pins include .NET SDK `10.0.302`, Dapr packages `1.17.9`, Aspire `13.3.5`/related pins, NSwag.MSBuild `14.7.1`, Newtonsoft.Json `13.0.4`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, YamlDotNet `18.0.0`, and Playwright `1.60.0`. [Source: `global.json`; `Directory.Packages.props`]
 - Use .NET 10, nullable-aware C#, file-scoped namespaces, one primary public type per file, PascalCase public members, camelCase locals/parameters, central package versions, xUnit v3, and Shouldly. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`; `_bmad-output/project-context.md#Testing Rules`]
 - Aggregate handlers must stay deterministic and side-effect free. Pass timestamps from callers; never perform I/O, provider calls, Dapr calls, logging, filesystem work, service resolution, or clock reads inside aggregate transitions. [Source: `_bmad-output/project-context.md#Language-Specific Rules`]
 - Workers own external provider, Git, working-copy, reconciliation, and rate-limit side effects. Aggregates, REST handlers, CLI, MCP, and UI should not perform provider or filesystem mutations directly. [Source: `_bmad-output/project-context.md#Framework-Specific Rules`]

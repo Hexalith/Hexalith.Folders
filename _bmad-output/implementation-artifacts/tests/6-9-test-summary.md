@@ -3,7 +3,7 @@
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Role:** QA automation engineer (test generation only — no code review / story validation).
 **Story:** `_bmad-output/implementation-artifacts/6-9-implement-incident-mode-last-resort-read-path.md` (Status: review)
 **Feature under test:** F-6 incident-mode last-resort read path — `IncidentStream` page + `DegradedModeBanner` + `CorrelationCopyButton`.
-**Date:** 2026-05-29 · **SDK:** Windows `/mnt/c/Program Files/dotnet/dotnet.exe` (per `global.json` 10.0.300 pin).
+**Date:** 2026-05-29 · **SDK:** Windows `/mnt/c/Program Files/dotnet/dotnet.exe` (per `global.json` 10.0.302 pin).
 
 ## Approach
 
@@ -51,7 +51,7 @@ No separate HTTP/API test layer exists for this feature — the console reads pr
 
 ## Verification
 
-- `dotnet test tests/Hexalith.Folders.UI.Tests` → **Passed: 454, Failed: 0, Skipped: 0** (baseline 446 + 8 gap tests). Windows SDK 10.0.300.
+- `dotnet test tests/Hexalith.Folders.UI.Tests` → **Passed: 454, Failed: 0, Skipped: 0** (baseline 446 + 8 gap tests). Windows SDK 10.0.302.
 - Forbidden-touch verification empty: `src/Hexalith.Folders.Client/Generated/`, `src/Hexalith.Folders.Client/Compat/`, `Directory.Packages.props`, `*.csproj`, `*.slnx`, OpenAPI spine. No new `<PackageReference>`/`<ProjectReference>` — only existing test files extended.
 - `NavigationContractTests.Console_DoesNotRegisterAnyDomainCommandManifest` passes within the 454.
 - Pre-existing IntegrationTests/LoadTests `ScaffoldContractTests` reds are unrelated to the UI lane and were not touched (documented baseline — see `scaffold-contract-tests-baseline-reds`).

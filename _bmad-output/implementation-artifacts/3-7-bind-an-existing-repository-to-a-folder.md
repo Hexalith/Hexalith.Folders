@@ -233,8 +233,8 @@ so that pre-created repositories can participate in the canonical lifecycle with
 | Date | Change | Author |
 |---|---|---|
 | 2026-05-27 | Completed story-automator review fixes: provider binding validation now receives the safe opaque external repository ref, BindRepository rate-limit contract/parity is declared, File List was reconciled, and story moved to done. | Codex |
-| 2026-05-27 | Completed focused Story 3.7 validation with Linux SDK 10.0.300, fixed binding permission catalog coverage, TestServer endpoint execution, NSwag Net100 generation, and moved story to review. | Codex |
-| 2026-05-26 | Reattempted Story 3.7 final validation with Linux .NET available; tests remain blocked because the repo pins SDK 10.0.300 and only SDK 10.0.108 is installed, while Windows dotnet interop still fails. | Codex |
+| 2026-05-27 | Completed focused Story 3.7 validation with Linux SDK 10.0.302, fixed binding permission catalog coverage, TestServer endpoint execution, NSwag Net100 generation, and moved story to review. | Codex |
+| 2026-05-26 | Reattempted Story 3.7 final validation with Linux .NET available; tests remain blocked because the repo pins SDK 10.0.302 and only SDK 10.0.108 is installed, while Windows dotnet interop still fails. | Codex |
 | 2026-05-26 | Reran Story 3.7 validation attempts; .NET runtime remains unavailable in the current WSL environment, so the final test-run subtask remains open and story stays in-progress. | Codex |
 | 2026-05-26 | Implemented existing-repository binding aggregate, provider port, server route/domain plumbing, metadata-only projection updates, and focused tests; local validation blocked by unavailable .NET SDK runtime. | Codex |
 | 2026-05-26 | Added existing-repository binding projection replay tests, aggregate rejection/replay guards, authorization/order gate tests, provider binding failure mappings, and bind endpoint failure mapping tests. | Codex |
@@ -269,17 +269,17 @@ Codex GPT-5
 - Safety scans were rerun for recursive submodule commands and raw provider/repository sentinels; findings were existing safety-test assertions or expected negative-control test sentinels.
 - `git diff --check -- ...` completed with no whitespace errors; output contained only existing CRLF normalization warnings.
 - `rg` safety scans were run for recursive submodule commands, raw external repository identifiers, and secret/provider-payload sentinels. Findings were either existing policy/test references or the expected request DTO/test fixture fields.
-- `command -v dotnet && dotnet --info` succeeded with `/usr/bin/dotnet`, host `10.0.8`, and installed SDK `10.0.108`; repository `global.json` requires SDK `10.0.300` with `rollForward=latestPatch`.
-- `dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBinding"` failed before test discovery: compatible .NET SDK not found; requested `10.0.300`, installed `10.0.108`.
+- `command -v dotnet && dotnet --info` succeeded with `/usr/bin/dotnet`, host `10.0.8`, and installed SDK `10.0.108`; repository `global.json` requires SDK `10.0.302` with `rollForward=latestPatch`.
+- `dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBinding"` failed before test discovery: compatible .NET SDK not found; requested `10.0.302`, installed `10.0.108`.
 - `DOTNET_ROLL_FORWARD=LatestMajor dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBinding"` failed with the same SDK resolution error.
-- `dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBackedFolderEndpoint|FullyQualifiedName~FolderCommandActionTokenMapper"` failed before test discovery: compatible .NET SDK not found; requested `10.0.300`, installed `10.0.108`.
-- `dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-restore --filter "FullyQualifiedName~TenantFolderProviderContractGroupTests"` failed before test discovery: compatible .NET SDK not found; requested `10.0.300`, installed `10.0.108`.
-- `dotnet test Hexalith.Folders.slnx --no-restore` failed before test discovery: compatible .NET SDK not found; requested `10.0.300`, installed `10.0.108`.
+- `dotnet test tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-restore --filter "FullyQualifiedName~BindRepository|FullyQualifiedName~RepositoryBackedFolderEndpoint|FullyQualifiedName~FolderCommandActionTokenMapper"` failed before test discovery: compatible .NET SDK not found; requested `10.0.302`, installed `10.0.108`.
+- `dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-restore --filter "FullyQualifiedName~TenantFolderProviderContractGroupTests"` failed before test discovery: compatible .NET SDK not found; requested `10.0.302`, installed `10.0.108`.
+- `dotnet test Hexalith.Folders.slnx --no-restore` failed before test discovery: compatible .NET SDK not found; requested `10.0.302`, installed `10.0.108`.
 - `'/mnt/c/Program Files/dotnet/dotnet.exe' --list-sdks` and `cmd.exe /c dotnet --list-sdks` failed with WSL interop error: `UtilBindVsockAnyPort:307: socket failed 1`.
 - `git diff --check -- _bmad-output/implementation-artifacts/3-7-bind-an-existing-repository-to-a-folder.md _bmad-output/implementation-artifacts/sprint-status.yaml docs/contract/idempotency-and-parity-rules.md src tests` completed with exit code 0; output contained only CRLF normalization warnings.
 - `rg --fixed-strings "git submodule update --init --recursive" ...` completed; findings were existing policy documentation, negative-control diffs, sibling-module artifacts, and guard tests.
 - Raw provider/repository sentinel scan completed; findings were story requirements, docs vocabulary, sanitizer implementations, and expected redaction/leakage sentinel tests.
-- `dotnet --info` succeeded with Linux SDK `10.0.300` and host `10.0.8`; validation used `NUGET_PACKAGES=/mnt/c/Users/JeromePiquot/.nuget/packages`, disabled NuGet audit, disabled shared compilation, and built with MSBuild node reuse off.
+- `dotnet --info` succeeded with Linux SDK `10.0.302` and host `10.0.8`; validation used `NUGET_PACKAGES=/mnt/c/Users/JeromePiquot/.nuget/packages`, disabled NuGet audit, disabled shared compilation, and built with MSBuild node reuse off.
 - Targeted restores and builds passed for `Hexalith.Folders.Tests`, `Hexalith.Folders.Server.Tests`, `Hexalith.Folders.Contracts.Tests`, and `Hexalith.Folders.Client.Tests`.
 - `dotnet test` through VSTest remains blocked in this sandbox by local socket permission errors from the VSTest communication server, so validation used the xUnit v3 in-process runner directly from the built test assemblies.
 - xUnit in-process affected core tests passed: `Hexalith.Folders.Tests Total: 70, Errors: 0, Failed: 0, Skipped: 0`.
@@ -289,7 +289,7 @@ Codex GPT-5
 - xUnit in-process full OpenAPI contract namespace passed: `Hexalith.Folders.Contracts.Tests Total: 81, Errors: 0, Failed: 0, Skipped: 0`.
 - xUnit in-process client generation tests passed: `Hexalith.Folders.Client.Tests Total: 17, Errors: 0, Failed: 0, Skipped: 0`.
 - Full solution restore/build was attempted but could not complete in this offline sandbox because `src/Hexalith.Folders.AppHost` needs Linux-specific Aspire packages not present in the local cache, and some not-individually-restored projects still referenced stale Windows fallback package folders in `obj/project.assets.json`.
-- Story-automator review attempted `DOTNET_ROLL_FORWARD=LatestMajor dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~RepositoryBinding|FullyQualifiedName~GitHubProvider|FullyQualifiedName~ForgejoProvider"`; it failed before test discovery because the current environment has SDK `10.0.108` while `global.json` requires SDK `10.0.300`.
+- Story-automator review attempted `DOTNET_ROLL_FORWARD=LatestMajor dotnet test tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore --filter "FullyQualifiedName~RepositoryBinding|FullyQualifiedName~GitHubProvider|FullyQualifiedName~ForgejoProvider"`; it failed before test discovery because the current environment has SDK `10.0.108` while `global.json` requires SDK `10.0.302`.
 - Story-automator review `git diff --check -- <review-touched files>` completed with exit code 0; output contained only the existing CRLF normalization warning for `docs/contract/idempotency-and-parity-rules.md`.
 - Story-automator review safety scan found only expected redaction/leakage sentinel tests and no recursive submodule initialization commands in the review-touched source/contract files.
 
@@ -318,9 +318,9 @@ Codex GPT-5
 - Story-automator review found and fixed a provider-port gap where GitHub/Forgejo repository-binding validation received only the external repository fingerprint, which prevented actual existing-repository access/branch validation through provider seams. The internal provider request now carries the safe opaque external repository ref while events/projections continue to persist only the fingerprint.
 - Story-automator review found and fixed a Contract Spine/parity gap where `BindRepository` could map provider rate-limit failures through server gateway handling, but the OpenAPI operation and parity row did not declare `provider_rate_limited`/`429`.
 - Story-automator review added a distinct folder result code for provider rate limits so readiness/provider binding failures no longer collapse 429 semantics into generic provider unavailable behavior.
-- Story-automator review synced the generated SDK response map for `BindRepository` `429` handling to match the Contract Spine; normal regeneration could not be run in this sandbox because SDK `10.0.300` is unavailable.
+- Story-automator review synced the generated SDK response map for `BindRepository` `429` handling to match the Contract Spine; normal regeneration could not be run in this sandbox because SDK `10.0.302` is unavailable.
 - Story-automator review reconciled File List documentation for generated/client, contract, parity, and test summary artifacts discovered from git.
-- Story-automator review local execution is environment-blocked for .NET tests because this sandbox has SDK `10.0.108` and the repo pins SDK `10.0.300`.
+- Story-automator review local execution is environment-blocked for .NET tests because this sandbox has SDK `10.0.108` and the repo pins SDK `10.0.302`.
 
 ### Senior Developer Review (AI)
 
@@ -339,7 +339,7 @@ Validation:
 
 - `git diff --check -- <review-touched files>` passed with only an existing CRLF normalization warning.
 - Safety scan over review-touched files found no recursive submodule initialization command and only expected redaction/leakage sentinel strings in tests.
-- .NET tests could not be executed in this sandbox: installed SDK is `10.0.108`; `global.json` requires `10.0.300`.
+- .NET tests could not be executed in this sandbox: installed SDK is `10.0.108`; `global.json` requires `10.0.302`.
 
 ### File List
 

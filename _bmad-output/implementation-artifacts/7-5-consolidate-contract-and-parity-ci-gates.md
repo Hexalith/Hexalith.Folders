@@ -118,7 +118,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - Architecture defines SDK as the typed canonical client; CLI and MCP wrap the SDK, while REST is a parallel transport with the same behavioral spec. Story 7.5 must test both transport parity and behavioral parity, not collapse all parity to SDK-vs-REST.
 - C13 parity oracle rows include transport and behavioral columns. Tests must consume `tests/fixtures/parity-contract.yaml` and `tests/fixtures/parity-contract.schema.json`; do not restate operation inventories in script code.
 - Contract/gate scripts under `tests/tools/*.ps1` are CI contracts. Keep them hermetic, repository-local, and metadata-only.
-- Root files are authoritative if planning artifacts drift: `global.json` pins .NET SDK `10.0.300`, `Directory.Packages.props` centralizes versions, and `Directory.Build.props` sets `net10.0`, latest C#, nullable, deterministic builds, warnings-as-errors, and root-level sibling module discovery.
+- Root files are authoritative if planning artifacts drift: `global.json` pins .NET SDK `10.0.302`, `Directory.Packages.props` centralizes versions, and `Directory.Build.props` sets `net10.0`, latest C#, nullable, deterministic builds, warnings-as-errors, and root-level sibling module discovery.
 - Current package versions include `NSwag.MSBuild` `14.7.1`, `Newtonsoft.Json` `13.0.4`, `Microsoft.NET.Test.Sdk` `18.5.1`, xUnit v3 `3.2.2`, `xunit.runner.visualstudio` `3.1.5`, Shouldly `4.3.0`, YamlDotNet `18.0.0`, System.CommandLine `2.0.8`, and ModelContextProtocol `1.3.0`.
 
 ### Previous Story Intelligence

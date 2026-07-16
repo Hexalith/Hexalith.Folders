@@ -234,7 +234,7 @@ claude-opus-4-7[1m] (Opus 4.7, 1M context)
 
 ### Debug Log References
 
-- Build/test run via the Windows .NET SDK 10.0.300 (`/mnt/c/Program Files/dotnet/dotnet.exe`) because the WSL SDK is 10.0.108 and `global.json` pins 10.0.300 with `rollForward=latestPatch`.
+- Build/test run via the Windows .NET SDK 10.0.302 (`/mnt/c/Program Files/dotnet/dotnet.exe`) because the WSL SDK is 10.0.108 and `global.json` pins 10.0.302 with `rollForward=latestPatch`.
 - `dotnet build Hexalith.Folders.slnx`: **0 Warning(s), 0 Error(s)**.
 - `dotnet test tests/Hexalith.Folders.Cli.Tests`: **102 passed, 0 failed** (re-verified at review).
 - `dotnet test tests/Hexalith.Folders.Client.Tests`: 71 passed, 1 failed — the failure is the pre-existing whitespace-only `ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration` documented in Dev Notes as environmental and unrelated to this story (no Client code was touched).

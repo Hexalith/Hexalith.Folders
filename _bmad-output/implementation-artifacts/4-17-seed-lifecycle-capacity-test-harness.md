@@ -96,7 +96,7 @@ so that lifecycle scenarios capture capacity dimensions early and provide reusab
 
 - Story 4.16 completed lifecycle security boundary coverage and established that lifecycle tests must stay hermetic, metadata-only, tenant-scoped, and free of runtime endpoints, provider adapters, Dapr sidecars, Keycloak/Redis/Testcontainers, package upgrades beyond story scope, generated-client hand edits, repair automation, and nested submodule initialization.
 - Story 4.16 added direct cross-tenant lock acquisition, lock release, and commit isolation coverage after review. Story 4.17 scenarios should keep overlapping-looking identifiers possible across tenant partitions so tenant scoping remains measurable.
-- Story 4.16 validation showed the pinned SDK path may be required: use `DOTNET_ROOT=/home/administrator/.dotnet` with `/home/administrator/.dotnet/dotnet` to reach SDK `10.0.300`.
+- Story 4.16 validation showed the pinned SDK path may be required: use `DOTNET_ROOT=/home/administrator/.dotnet` with `/home/administrator/.dotnet/dotnet` to reach SDK `10.0.302`.
 - Story 4.15 added `FolderLifecycleReplayFixture` for deterministic lifecycle streams. Use it as a seed/reference pattern, but do not depend on internals from `tests/Hexalith.Folders.Tests` unless helpers are promoted to `src/Hexalith.Folders.Testing`.
 
 ### Existing Implementation State
@@ -164,7 +164,7 @@ so that lifecycle scenarios capture capacity dimensions early and provide reusab
 
 ### Latest Technical Context
 
-- Local repository pins are authoritative: .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and repository-owned package versions. [Source: `global.json`; `Directory.Packages.props`; `_bmad-output/project-context.md`]
+- Local repository pins are authoritative: .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and repository-owned package versions. [Source: `global.json`; `Directory.Packages.props`; `_bmad-output/project-context.md`]
 - NBomber is not currently referenced in this repository. NuGet lists `NBomber` latest stable as `6.4.1`, published shortly before this story was created, and shows computed `net10.0` compatibility. Use this version unless restore/package policy reveals a reason to pin differently. [Source: [NuGet NBomber 6.4.1](https://www.nuget.org/packages/NBomber/)]
 - NBomber `Scenario.Create` models a workflow run by virtual users; `Step.Run` measures individual user actions inside a scenario. Use steps for prepare, lock, mutate, and commit so each lifecycle phase has separate measurements. [Source: [NBomber Scenario docs](https://nbomber.com/docs/nbomber/scenario/); [NBomber Step docs](https://nbomber.com/docs/nbomber/step)]
 - NBomber supports `WithInit`, `WithClean`, warm-up configuration, `WithoutWarmUp`, `WithLoadSimulations`, and `WithMaxFailCount`. For this story, prefer deterministic init/cleanup, quick local load simulation, and no production thresholds. [Source: [NBomber Scenario docs](https://nbomber.com/docs/nbomber/scenario/)]

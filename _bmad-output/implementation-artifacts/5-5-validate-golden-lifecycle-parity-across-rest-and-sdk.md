@@ -86,7 +86,7 @@ Decomposed, testable acceptance criteria:
   - [x] **Audit metadata (AC #5, metadata-only):** the audit-trail/operation-timeline step asserts the response surfaces the oracle-declared `audit_metadata_keys` that the in-process projection populates, and contains **none** of the forbidden content (no secrets/tokens/raw file contents/diffs/provider payloads/absolute paths). Do not over-claim keys that only a worker-produced audit record would carry — assert the metadata-only invariant plus the keys the in-process projection emits, and note the boundary in Dev Notes.
 
 - [x] **Task 5 — Verify build + focused tests + drift sanity** (AC: #8, #10)
-  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.300` pin — see Dev Notes): `dotnet.exe restore Hexalith.Folders.slnx`; `dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors).
+  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.302` pin — see Dev Notes): `dotnet.exe restore Hexalith.Folders.slnx`; `dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors).
   - [x] Run the touched suites: `dotnet.exe test tests/Hexalith.Folders.Client.Tests`, `tests/Hexalith.Folders.Server.Tests`, `tests/Hexalith.Folders.IntegrationTests`. **Regression check (additive reader):** also run `tests/Hexalith.Folders.Cli.Tests` and `tests/Hexalith.Folders.Mcp.Tests` to confirm the extended `ParityRow`/`ParityScenarios` did not break the Story 5.4 behavioral consumers.
   - [x] **Known pre-existing failure:** `ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration` (whitespace-only) may fail regardless of this story — it is **not** a 5.5 regression (recorded in the Story 5.4 notes). Confirm it is the only pre-existing red and unrelated.
   - [x] Sanity-check the new tests bite on injected drift (temporarily flip one oracle-derived expectation — e.g. a terminal-state class or an `idempotency_key_rule` partition — confirm the assertion fails, then revert). Record the count of oracle-driven transport cases in the Dev Agent Record.
@@ -208,7 +208,7 @@ Story 5.4 created `tests/shared/Parity/ParityOracle.cs` + `ParityScenarios.cs` (
 
 Centrally managed in `Directory.Packages.props` (repo config is authoritative): **YamlDotNet** (link to the consuming test csproj where missing — same package Story 5.4 added; `YamlDotNet.RepresentationModel` for the AST read), xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0` (only if needed). The in-process host uses `Microsoft.Extensions`/ASP.NET Core `10.x` already referenced by `Hexalith.Folders.Server`. Do not add other packages; do not regenerate the client, the server OpenAPI, or the oracle.
 
-**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.300` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
+**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.302` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
 
 ## Dev Agent Record
 
@@ -218,7 +218,7 @@ Claude Opus 4.7 (1M context) — `claude-opus-4-7[1m]`.
 
 ### Debug Log References
 
-- Build (Windows SDK 10.0.300 via WSL): `dotnet.exe build Hexalith.Folders.slnx --nologo` — **0 Warning(s) / 0 Error(s)** across 41 projects.
+- Build (Windows SDK 10.0.302 via WSL): `dotnet.exe build Hexalith.Folders.slnx --nologo` — **0 Warning(s) / 0 Error(s)** across 41 projects.
 - Touched suites (passing):
   - `tests/Hexalith.Folders.Client.Tests` — 280 passed / 0 failed (includes the new `TransportParityConformanceTests` — 11 facts + theories driven from 47 oracle rows).
   - `tests/Hexalith.Folders.Server.Tests` — `TransportParityConformanceTests`: 8 passed / 0 failed. Wider suite has **1 pre-existing failure** unrelated to Story 5.5: `BranchRefPolicyEndpointTests.GetBranchRefPolicyShouldUseSafeDenialEnvelopeForTenantMismatch` — `git log 75e9782..HEAD -- src/Hexalith.Folders.Server/ tests/Hexalith.Folders.Server.Tests/BranchRefPolicyEndpointTests.cs` returns no commits, i.e. neither the test nor its production source has changed since the Story 5.4 baseline; the failure is latent at baseline.
@@ -278,7 +278,7 @@ After the QA generate-e2e pass added per-step metadata theory + task-id-echo cov
 
 The dev's `KnownRestSurfaceGap` (19 items) + `EndpointNameAliases` (3 items) + `ImplementedRestOperationCount = 28` baseline remain the canonical drift-surfacing artifacts; the gaps are documented in tests, not papered over by editing the server, oracle, or generator.
 
-**Re-run after auto-fix (Windows .NET SDK 10.0.300 via WSL):**
+**Re-run after auto-fix (Windows .NET SDK 10.0.302 via WSL):**
 
 ```text
 dotnet.exe build tests/Hexalith.Folders.Server.Tests → 0 Warning(s) / 0 Error(s)
@@ -329,7 +329,7 @@ No edits under any `Generated/`. No edits to `src/Hexalith.Folders.Server`/`src/
 
 #### Re-run after auto-fix
 
-Windows .NET SDK 10.0.300 via WSL:
+Windows .NET SDK 10.0.302 via WSL:
 
 ```text
 dotnet.exe build tests/Hexalith.Folders.Server.Tests/... → 0 Warning(s) / 0 Error(s)

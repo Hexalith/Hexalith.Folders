@@ -110,7 +110,7 @@ Decomposed acceptance criteria:
 
 ### Latest Technical Notes
 
-- Microsoft Learn confirms modern .NET SDK container publishing can create images without a Dockerfile and uses `/t:PublishContainer` or `PublishProfile=DefaultContainer`; for console applications, container support may need explicit SDK container support. Use the repository's `global.json` .NET SDK `10.0.300` as the authority for commands.
+- Microsoft Learn confirms modern .NET SDK container publishing can create images without a Dockerfile and uses `/t:PublishContainer` or `PublishProfile=DefaultContainer`; for console applications, container support may need explicit SDK container support. Use the repository's `global.json` .NET SDK `10.0.302` as the authority for commands.
 - Microsoft Learn documents `ContainerRepository` as the override for image names when the default assembly name is not the desired repository name.
 - Dapr docs confirm Kubernetes sidecar injection is driven by `dapr.io/enabled`, and Dapr app identity/config map to `dapr.io/app-id` and `dapr.io/config`. Use these exact annotations in conformance artifacts.
 
@@ -142,7 +142,7 @@ Decomposed acceptance criteria:
 - [Source: `_bmad-output/planning-artifacts/epics.md#Story-7.3`] - Story statement and BDD acceptance criteria.
 - [Source: `_bmad-output/planning-artifacts/architecture.md#Infrastructure-&-Deployment`] - Container-based production hosting, Dapr sidecars, stable app IDs, CI/CD gates, and observability/health expectations.
 - [Source: `_bmad-output/planning-artifacts/architecture.md#Deployment-structure`] - One image per service: `hexalith-folders-server`, `hexalith-folders-workers`, `hexalith-folders-ui`; each deploys with a Dapr sidecar.
-- [Source: `_bmad-output/project-context.md#Technology-Stack-&-Versions`] - .NET SDK `10.0.300`, Dapr/Aspire package pins, central package management, and no nested submodule initialization.
+- [Source: `_bmad-output/project-context.md#Technology-Stack-&-Versions`] - .NET SDK `10.0.302`, Dapr/Aspire package pins, central package management, and no nested submodule initialization.
 - [Source: `_bmad-output/project-context.md#Framework-Specific-Rules`] - Stable Dapr app IDs and read-only operations console constraints.
 - [Source: `src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj`] - Existing Server publish/container metadata.
 - [Source: `src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj`] - Workers currently lacks container repository metadata.

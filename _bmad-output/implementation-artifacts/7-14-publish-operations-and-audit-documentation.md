@@ -152,7 +152,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - **Observe-only telemetry + metadata-only (S-6, concern #11):** all signals/health are observe-only; no auto-remediation. Docs, examples, and gate reports are output channels subject to the metadata-only invariant and must pass the safety-invariant sentinels (`tests/fixtures/audit-leakage-corpus.json`).
 - **Recovery contract (concern #21 / D-8 / D-3 / Phase 9):** events/audit/idempotency authoritative; projections rebuildable; working copies disposable; PITR/multi-region deferred. Document the expectation, not automation.
 - **Verification Expectations NFR:** the documentation category for operations + audit is satisfied here by the new operations-audit-docs conformance gate; do not leave the "documented" clauses to manual claims.
-- **Repository configuration is authoritative:** .NET SDK `10.0.300`, central package management (no inline `Version`), xUnit v3 + Shouldly + YamlDotNet, PowerShell 7 gate scripts; `.editorconfig` end-of-line policy (`.cs`/`.yaml` = LF) is pinned — keep `dotnet format` clean.
+- **Repository configuration is authoritative:** .NET SDK `10.0.302`, central package management (no inline `Version`), xUnit v3 + Shouldly + YamlDotNet, PowerShell 7 gate scripts; `.editorconfig` end-of-line policy (`.cs`/`.yaml` = LF) is pinned — keep `dotnet format` clean.
 
 ### Previous Story Intelligence
 
@@ -182,7 +182,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use the repo-pinned .NET SDK `10.0.300` (`global.json`) and central package management; no inline package versions. `OperationsAuditDocsConformanceTests` uses xUnit v3 + Shouldly + YamlDotNet and the `Deployment/*ConformanceTests.cs` helper patterns (`RepositoryPath` walker from `AppContext.BaseDirectory`, semantic YAML/JSON parsing, `[GeneratedRegex]`, `AssertDocMetadataOnly`). The class must be `public sealed partial`.
+- Use the repo-pinned .NET SDK `10.0.302` (`global.json`) and central package management; no inline package versions. `OperationsAuditDocsConformanceTests` uses xUnit v3 + Shouldly + YamlDotNet and the `Deployment/*ConformanceTests.cs` helper patterns (`RepositoryPath` walker from `AppContext.BaseDirectory`, semantic YAML/JSON parsing, `[GeneratedRegex]`, `AssertDocMetadataOnly`). The class must be `public sealed partial`.
 - The conformance suite must **not pass vacuously**: assert exact inventory equality (4 audit ops; AuditRecord/Timeline field sets; 13 op-kinds + 11 results; 5 dispositions + 11 states; 2+4 redaction members; 5 alert signals; 4 retention dispositions) and include a `$runnerMethods`-equal-to-`[Fact]`-count guard in the gate script. Negative controls must run through the real scanner and fail on: missing doc, wrong count, leaked absolute path / token / non-placeholder host, malformed JSON, and a forbidden `--recursive` submodule command.
 - Keep `$runnerMethods` in `run-operations-audit-docs-gates.ps1` exactly equal to the `[Fact]` set, and keep the gate-script self-check literals (`GATE-VACUOUS`, `xunit`, `utf8NoBOM`, `Push-Location`/`Pop-Location`, the filter FQN) present.
 - Gate-script diagnostics are metadata-only and fail closed on unsafe values; the report goes to `_bmad-output/gates/operations-audit-docs/latest.json` with `utf8NoBOM` and `diagnostic_policy: 'metadata-only'`.

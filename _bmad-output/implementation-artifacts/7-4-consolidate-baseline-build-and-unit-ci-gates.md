@@ -109,7 +109,7 @@ Decomposed acceptance criteria:
 - `Hexalith.Folders.slnx` includes source projects, samples, test projects, load test projects, and tooling projects. Do not assume every solution test project is safe for a baseline unit lane.
 - `tests/Directory.Build.props` does not exist in this repository; do not rely on project-context references to that file.
 - `Directory.Build.props` sets `TargetFramework=net10.0`, nullable, implicit usings, warnings-as-errors, latest C#, deterministic build, and root-level sibling module discovery without nested submodule initialization.
-- `global.json` pins SDK `10.0.300` with `rollForward=latestPatch`.
+- `global.json` pins SDK `10.0.302` with `rollForward=latestPatch`.
 - Central package versions are in `Directory.Packages.props`; do not add inline package versions to projects while adding CI tests or tooling.
 
 ### Architecture Compliance
@@ -155,14 +155,14 @@ Decomposed acceptance criteria:
 - [Source: `_bmad-output/planning-artifacts/prd.md#MVP-Acceptance-Evidence`] - MVP acceptance requires automated quality gates and release validation evidence before production acceptance.
 - [Source: `_bmad-output/planning-artifacts/architecture.md#Build-Tooling`] - Standard .NET restore/build/test tooling and solution format.
 - [Source: `_bmad-output/planning-artifacts/architecture.md#Enforcement-Guidelines`] - CI gate categories and PR review gate expectations.
-- [Source: `_bmad-output/project-context.md#Technology-Stack-&-Versions`] - .NET SDK `10.0.300`, central package management, xUnit v3, Shouldly, and warnings-as-errors.
+- [Source: `_bmad-output/project-context.md#Technology-Stack-&-Versions`] - .NET SDK `10.0.302`, central package management, xUnit v3, Shouldly, and warnings-as-errors.
 - [Source: `_bmad-output/project-context.md#Development-Workflow-Rules`] - Root-level submodules only; no recursive submodule initialization; standard restore/build/test verification.
 - [Source: `.github/workflows/contract-spine.yml`] - Existing workflow style, action versions, branch triggers, and focused gate wiring.
 - [Source: `tests/tools/run-dapr-policy-conformance-gates.ps1`] - Focused PowerShell gate pattern with metadata-only report.
 - [Source: `tests/tools/run-container-image-gates.ps1`] - Recent metadata-only report pattern and Story 7.3 sandbox handling.
 - [Source: `Directory.Build.props`] - Warnings-as-errors, target framework, and root-level sibling module discovery.
 - [Source: `Directory.Packages.props`] - Central package versions and current test/action-related dependencies.
-- [Source: `global.json`] - SDK `10.0.300` and roll-forward policy.
+- [Source: `global.json`] - SDK `10.0.302` and roll-forward policy.
 - [Source: `.editorconfig`] - Formatting, line-ending, namespace, naming, async, and analyzer severity rules.
 - [Source: `Hexalith.Folders.slnx`] - Solution project inventory, including infrastructure-heavy test projects that need explicit baseline exclusion.
 - [Source: `_bmad-output/implementation-artifacts/7-3-build-container-images-with-stable-dapr-app-ids.md#Previous-Story-Intelligence`] - Prior Epic 7 gate patterns, sandbox limitations, and container gate scope.

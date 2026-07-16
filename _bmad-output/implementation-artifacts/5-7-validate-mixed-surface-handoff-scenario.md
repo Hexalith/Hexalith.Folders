@@ -116,7 +116,7 @@ Decomposed, testable acceptance criteria:
   - [x] Comment in the test class verbatim: "When `ListAuditTrail`/`GetAuditRecord`/`ListOperationTimeline`/`GetOperationTimelineEntry` are implemented as `/api/v1` routes (Story 5.5 REST surface gap closed), the surrogate is replaced by the audit-family operation with no test-design change — mirrors `GoldenLifecycleStep.RestInspectionOperationId` substitution."
 
 - [x] **Task 7 — Drift sanity + build + focused tests** (AC: #9, #10)
-  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.300` pin — see Dev Notes): `/mnt/c/Program\ Files/dotnet/dotnet.exe restore Hexalith.Folders.slnx`; `/mnt/c/Program\ Files/dotnet/dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors).
+  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.302` pin — see Dev Notes): `/mnt/c/Program\ Files/dotnet/dotnet.exe restore Hexalith.Folders.slnx`; `/mnt/c/Program\ Files/dotnet/dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors).
   - [x] Run the touched suite: `dotnet.exe test tests/Hexalith.Folders.IntegrationTests` (focused `--filter MixedSurfaceHandoff*`, plus a full-suite re-run to catch any IntegrationTests regression).
   - [x] **Regression check:** run `tests/Hexalith.Folders.Cli.Tests`, `tests/Hexalith.Folders.Mcp.Tests`, `tests/Hexalith.Folders.Client.Tests`, `tests/Hexalith.Folders.Server.Tests` — none of those should change behaviorally (this story is purely additive in IntegrationTests + a new shared linked source).
   - [x] **Known pre-existing reds (carry-over from Stories 5.4 / 5.5 / 5.6):** `ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration` (whitespace-only), `BranchRefPolicyEndpointTests.GetBranchRefPolicyShouldUseSafeDenialEnvelopeForTenantMismatch`, and `Hexalith.Folders.Testing.Tests.ProjectReferencesFollowAllowedDependencyDirection` (Story 5.6 retro note — needs a sibling-project policy update, **out of scope here**). Confirm they are the only pre-existing reds.
@@ -309,7 +309,7 @@ The scenario list in Task 1 ships a default composition; the dev may adjust the 
 
 Centrally managed in `Directory.Packages.props` (repo config is authoritative): xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0` (referenced by IntegrationTests since Story 5.6), `YamlDotNet 18.0.0` (since Story 5.5), `Newtonsoft.Json 13.0.4` (since Story 5.6 — required by linked MCP TestSupport's `JObject` parsing). **No new package references in this story** — every transport this story drives is already a referenced dependency. Do not regenerate the client, the server OpenAPI, or the oracle.
 
-**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.300` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
+**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.302` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
 
 ## Dev Agent Record
 

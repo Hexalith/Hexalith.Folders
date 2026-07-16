@@ -75,7 +75,7 @@ Decomposed, testable acceptance criteria:
   - [x] Keep `FailureKindProjectionTests.cs` as the independent restatement (AC #8).
 
 - [x] **Task 4 — Verify build + focused tests** (AC: #9)
-  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.300` pin — see Dev Notes): `dotnet.exe restore Hexalith.Folders.slnx`; `dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors); then `dotnet.exe test tests/Hexalith.Folders.Cli.Tests` and `dotnet.exe test tests/Hexalith.Folders.Mcp.Tests`.
+  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.302` pin — see Dev Notes): `dotnet.exe restore Hexalith.Folders.slnx`; `dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors); then `dotnet.exe test tests/Hexalith.Folders.Cli.Tests` and `dotnet.exe test tests/Hexalith.Folders.Mcp.Tests`.
   - [x] Confirm: no edits under any `Generated/`; no edits to `src/Hexalith.Folders.Cli`/`src/Hexalith.Folders.Mcp` production code, the SDK, the Contract Spine, `tests/fixtures/parity-contract.yaml`, or the generator; no inline package `Version` attributes (only `YamlDotNet` added centrally-pinned to the two test csproj); no recursive submodule commands; `.slnx` unchanged.
   - [x] Sanity-check the new tests actually fail on injected drift (e.g. temporarily flip one expected value locally to confirm the assertion bites), then revert. Record the count of oracle-driven cases (≈ one per `outcome_mapping` entry across 47 rows) in the Dev Agent Record.
 
@@ -263,7 +263,7 @@ Do **not** `Enum.Parse` against the PascalCase name — the wire/oracle contract
 
 Centrally managed in `Directory.Packages.props` (repo config is authoritative): **YamlDotNet 18.0.0** (add to the two test csproj — same package the Contracts tests use; `YamlDotNet.RepresentationModel` for the AST read), xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0` (only if needed), Newtonsoft.Json `13.0.4` (MCP JSON inspection via `JObject`). Do not add other packages; do not regenerate the client or the oracle.
 
-**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.300` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
+**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.302` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
 
 ## Dev Agent Record
 
@@ -273,7 +273,7 @@ claude-opus-4-7[1m] (Claude Opus 4.7, 1M context) — BMAD dev-story workflow
 
 ### Debug Log References
 
-- Build/test via the Windows SDK from WSL (`/mnt/c/Program Files/dotnet/dotnet.exe`, 10.0.300) — the WSL-native SDK fails the `global.json` pin, per Dev Notes.
+- Build/test via the Windows SDK from WSL (`/mnt/c/Program Files/dotnet/dotnet.exe`, 10.0.302) — the WSL-native SDK fails the `global.json` pin, per Dev Notes.
 - Full solution: `dotnet.exe restore Hexalith.Folders.slnx` + `build --no-restore` → **0 Warning(s), 0 Error(s)**.
 - Focused suites at baseline: `Hexalith.Folders.Cli.Tests` **691 passed / 0 failed**; `Hexalith.Folders.Mcp.Tests` **646 passed / 0 failed**.
 - Drift-injection sanity check (then reverted via `git checkout`): flipping `Idempotency_conflict` in `ErrorProjection` (68→69) failed **15** CLI oracle-driven cases; flipping it in `FailureKindProjection` (`idempotency_conflict`→`validation_error`) failed **15** MCP cases — confirming the oracle-driven assertions bite. Both projection files restored to baseline (verified clean in `git status`).
@@ -307,7 +307,7 @@ claude-opus-4-7[1m] (Claude Opus 4.7, 1M context) — BMAD dev-story workflow
 | --- | --- |
 | 2026-05-28 | Story created — comprehensive context engineering for oracle-driven CLI/MCP parity conformance tests (shared YamlDotNet reader linked into both test projects; post-SDK exit-code/failure-kind + pre-SDK/sourcing assertions driven by `parity-contract.yaml`; drift/coverage guards). Status → ready-for-dev. |
 | 2026-05-28 | Implemented all 4 tasks: shared `tests/shared/Parity` oracle reader + scenarios linked into both test projects (YamlDotNet added centrally-pinned); CLI + MCP `ParityOracleConformanceTests` driving post-SDK exit-code/failure-kind, pre-SDK/sourcing, correlation, and completeness/coverage/vocabulary drift guards from the 47-row / 529-entry oracle; retained independent restatements with cross-reference comments. Test-only, hermetic, no production/oracle/generated/`.slnx` change. Full build 0/0; CLI 691 pass, MCP 646 pass; drift injection confirmed assertions bite (15 CLI + 15 MCP) then reverted. Status → review. |
-| 2026-05-28 | Adversarial code review (cycle 1) — independently rebuilt and ran both suites on the Windows SDK 10.0.300: CLI **691 pass / 0 fail**, MCP **646 pass / 0 fail**, build **0 warn / 0 err**. Verified all 9 ACs against source-of-truth (oracle = 47 rows / 43 distinct categories / 529 outcome entries; enum = 47 members 0–46). Confirmed the oracle theories are non-vacuous (CLI conformance class = 589 = 529 + 47 + 13; MCP = 542 = 529 + 13). Confirmed drift-bite claim arithmetic (idempotency_conflict in 14 outcome rows + 1 deduped-map fact = 15). No production/oracle/generator/`.slnx` change; File List matches git. **No Critical/High/Medium findings; 2 Low observations (informational, not fixed).** Status → done. |
+| 2026-05-28 | Adversarial code review (cycle 1) — independently rebuilt and ran both suites on the Windows SDK 10.0.302: CLI **691 pass / 0 fail**, MCP **646 pass / 0 fail**, build **0 warn / 0 err**. Verified all 9 ACs against source-of-truth (oracle = 47 rows / 43 distinct categories / 529 outcome entries; enum = 47 members 0–46). Confirmed the oracle theories are non-vacuous (CLI conformance class = 589 = 529 + 47 + 13; MCP = 542 = 529 + 13). Confirmed drift-bite claim arithmetic (idempotency_conflict in 14 outcome rows + 1 deduped-map fact = 15). No production/oracle/generator/`.slnx` change; File List matches git. **No Critical/High/Medium findings; 2 Low observations (informational, not fixed).** Status → done. |
 
 ## Senior Developer Review (AI)
 
@@ -315,7 +315,7 @@ claude-opus-4-7[1m] (Claude Opus 4.7, 1M context) — BMAD dev-story workflow
 
 ### What was independently verified (not taken on the dev's word)
 
-- **Build:** `dotnet.exe build` of both test csproj on Windows SDK 10.0.300 → **0 warning / 0 error**.
+- **Build:** `dotnet.exe build` of both test csproj on Windows SDK 10.0.302 → **0 warning / 0 error**.
 - **Tests:** `Hexalith.Folders.Cli.Tests` **691 / 0**, `Hexalith.Folders.Mcp.Tests` **646 / 0** (matches the Dev Agent Record exactly).
 - **Theories are real, not vacuous:** the new CLI conformance class runs **589** cases (= 529 flattened `outcome_mapping` exit-code theory + 47 adapter-declaration theory + 13 facts) and the MCP class **542** (= 529 failure-kind theory + 13 facts). The flattened theories therefore genuinely iterate every one of the 529 oracle outcome entries.
 - **Source-of-truth cross-checks:** oracle = **47** rows, **43** distinct `canonical_error_category`, **529** `outcome_mapping` entries; `CanonicalErrorCategory` enum = **47** members (0–46) all carrying `[EnumMember]` (so `EnumMemberValue(Success)` cannot NRE); the 4 enum members absent from the oracle are exactly `Success`/`Client_configuration_error`/`Credential_missing`/`Range_unsatisfiable` — matching the test's accounted-for set, so the `EveryEnumMemberAbsentFromTheOracleIsExplicitlyAccountedFor` guard is correct, not coincidental.

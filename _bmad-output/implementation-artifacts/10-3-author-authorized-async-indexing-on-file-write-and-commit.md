@@ -226,7 +226,7 @@ await _daprClient.PublishEventAsync(
 
 ### Architecture and dependency guardrails
 
-- Repository configuration is authoritative when prose drifts. Current repo pins .NET SDK `10.0.300`, Dapr packages `1.18.4`, Aspire `13.4.6`, CommunityToolkit Aspire Dapr `13.4.0-preview.1.260602-0230`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and NSubstitute `5.3.0`. [Source: `global.json`; `Directory.Packages.props`]
+- Repository configuration is authoritative when prose drifts. Current repo pins .NET SDK `10.0.302`, Dapr packages `1.18.4`, Aspire `13.4.6`, CommunityToolkit Aspire Dapr `13.4.0-preview.1.260602-0230`, xUnit v3 `3.2.2`, Shouldly `4.3.0`, and NSubstitute `5.3.0`. [Source: `global.json`; `Directory.Packages.props`]
 - Keep package versions centralized in `Directory.Packages.props`; never add inline `Version` attributes.
 - Use C# file-scoped namespaces, nullable-safe public boundaries, ordinal comparisons, invariant formatting, cancellation tokens, and `ConfigureAwait(false)` where nearby worker/library code uses it.
 - Workers own external side effects. Aggregates remain deterministic and side-effect free; REST handlers remain transport/gateway boundaries.

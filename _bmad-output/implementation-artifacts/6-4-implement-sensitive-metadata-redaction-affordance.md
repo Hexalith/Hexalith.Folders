@@ -129,7 +129,7 @@ Decomposed, testable acceptance criteria:
    - **No edit to `src/Hexalith.Folders.Client/Generated/`** — verify byte-identical with `git diff --stat src/Hexalith.Folders.Client/Generated/` (must be empty).
 
 9. **Build clean and hermetic; focused tests + regression sweep green.**
-   - Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.300 pin — Memory: `dotnet-windows-sdk-wsl.md`): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors (warnings-as-errors is on).
+   - Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.302 pin — Memory: `dotnet-windows-sdk-wsl.md`): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors (warnings-as-errors is on).
    - Focused tests:
      - `dotnet.exe test tests/Hexalith.Folders.UI.Tests` — every new test (mapper + field + gallery) green; the Story 6.2/6.3 tests (shell, badge, metadata, state-label gallery, nav, user-context) remain green.
      - `dotnet.exe test tests/Hexalith.Folders.UI.E2E.Tests` — Story 6.2 home-page smoke remains green (Story 6.4 adds no new E2E; the redaction gallery is Development-only and out of production E2E scope).
@@ -204,7 +204,7 @@ Decomposed, testable acceptance criteria:
 
 ### Build environment
 
-- WSL-native .NET SDK does not satisfy `global.json` 10.0.300. Use `/mnt/c/Program\ Files/dotnet/dotnet.exe` for restore/build/test (Memory: `dotnet-windows-sdk-wsl.md`).
+- WSL-native .NET SDK does not satisfy `global.json` 10.0.302. Use `/mnt/c/Program\ Files/dotnet/dotnet.exe` for restore/build/test (Memory: `dotnet-windows-sdk-wsl.md`).
 - Settings/hook paths use `/mnt/d/...`, not `D:\...` (Memory: `wsl-windows-hook-paths.md`).
 - FrontComposer is already initialized at `Hexalith.FrontComposer/`. Per `CLAUDE.md`, only root-level submodules; **never** `git submodule update --init --recursive`. Story 6.4 adds no new submodule dependency.
 

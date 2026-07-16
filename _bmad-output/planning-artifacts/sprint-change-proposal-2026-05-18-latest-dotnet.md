@@ -11,13 +11,13 @@ change_scope: 'minor'
 
 ## 1. Issue Summary
 
-The repository already targets `net10.0`, but `global.json` pinned the SDK to `10.0.103` while the current .NET 10 LTS servicing release metadata identifies SDK `10.0.300` and runtime `10.0.8` as the latest active .NET 10 release.
+The repository already targets `net10.0`, but `global.json` pinned the SDK to `10.0.103` while the current .NET 10 LTS servicing release metadata identifies SDK `10.0.302` and runtime `10.0.8` as the latest active .NET 10 release.
 
 Local evidence:
 
 - `Directory.Build.props` already defines `<TargetFramework>net10.0</TargetFramework>`.
 - `global.json` previously pinned SDK `10.0.103`.
-- `dotnet --info` shows SDK `10.0.300` and runtime `10.0.8` installed locally.
+- `dotnet --info` shows SDK `10.0.302` and runtime `10.0.8` installed locally.
 - `dotnet package list --project Hexalith.Folders.slnx --outdated` reported only `coverlet.collector` patch drift from `10.0.0` to `10.0.1`.
 
 ## 2. Impact Analysis
@@ -50,7 +50,7 @@ OLD:
 NEW:
 
 ```json
-"version": "10.0.300"
+"version": "10.0.302"
 ```
 
 Rationale: use the latest .NET 10 SDK installed locally and reported by Microsoft release metadata.
@@ -79,6 +79,6 @@ Route to: Developer agent for direct implementation.
 
 Success criteria:
 
-- `dotnet --info` selects SDK `10.0.300` from the repository root.
+- `dotnet --info` selects SDK `10.0.302` from the repository root.
 - `dotnet restore Hexalith.Folders.slnx` succeeds.
 - `dotnet build Hexalith.Folders.slnx` succeeds or reports only pre-existing source issues unrelated to SDK selection.

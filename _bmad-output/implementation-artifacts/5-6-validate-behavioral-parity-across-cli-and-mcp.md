@@ -115,7 +115,7 @@ Decomposed, testable acceptance criteria:
   - [x] Error-category preservation: drive a representative server-error category (e.g. `folder_acl_denied`) through both adapters and assert the canonical category string appears verbatim in CLI stderr **and** in the MCP result `kind` field — neither surface localizes/translates/abbreviates the category vocabulary.
 
 - [x] **Task 7 — Verify build + focused tests + drift sanity** (AC: #10, #11)
-  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.300` pin — see Dev Notes): `dotnet.exe restore Hexalith.Folders.slnx`; `dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors).
+  - [x] Build with the WSL-accessible Windows SDK (the WSL-native SDK fails the `global.json` `10.0.302` pin — see Dev Notes): `dotnet.exe restore Hexalith.Folders.slnx`; `dotnet.exe build Hexalith.Folders.slnx --no-restore` (0 warnings / 0 errors).
   - [x] Run the touched suite: `dotnet.exe test tests/Hexalith.Folders.IntegrationTests` (with focused `--filter CrossAdapterBehavioralParity*` for the new tests, and a full-suite re-run to catch any IntegrationTests regression).
   - [x] **Regression check (adapter csproj `InternalsVisibleTo` extension):** also run `tests/Hexalith.Folders.Cli.Tests` and `tests/Hexalith.Folders.Mcp.Tests` to confirm the new `InternalsVisibleTo` line did not break the existing per-adapter conformance suites (it should not — `InternalsVisibleTo` is additive).
   - [x] **Known pre-existing failures (carry-over):** `ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration` (whitespace-only) and `BranchRefPolicyEndpointTests.GetBranchRefPolicyShouldUseSafeDenialEnvelopeForTenantMismatch` may fail regardless of this story (recorded in Story 5.4 / 5.5 notes). Confirm they are the only pre-existing reds and unrelated.
@@ -281,7 +281,7 @@ Use a small explicit `operation_id → (CLI argv, MCP tool reference)` map in th
 
 Centrally managed in `Directory.Packages.props` (repo config is authoritative): xUnit v3 `3.2.2`, Shouldly `4.3.0`, NSubstitute `5.3.0`, `YamlDotNet 18.0.0` (already referenced by IntegrationTests via Story 5.5), `Newtonsoft.Json 13.0.4` (referenced by `Hexalith.Folders.Mcp.Tests/TestSupport.cs` for `JObject` parsing — must be added to `Hexalith.Folders.IntegrationTests.csproj` if not already present, since the linked MCP test support source uses it; centrally pinned, no inline `Version`). Do not add other packages; do not regenerate the client, the server OpenAPI, or the oracle.
 
-**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.300` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
+**Build/test in this environment:** the WSL-native .NET SDK fails the `global.json` `10.0.302` pin; build and test through the Windows SDK from WSL, e.g. `/mnt/c/Program\ Files/dotnet/dotnet.exe` (`dotnet.exe restore|build|test`). [Source: user-memory — ".NET Windows SDK in WSL"]
 
 ## Dev Agent Record
 

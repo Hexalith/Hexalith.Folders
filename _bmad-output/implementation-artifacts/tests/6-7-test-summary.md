@@ -63,7 +63,7 @@ No separate HTTP/API test layer exists for this feature — the console reads pr
 
 ## Verification
 
-- `dotnet test tests/Hexalith.Folders.UI.Tests` → **371 passed, 0 failed, 0 skipped** (WSL Windows SDK `/mnt/c/Program Files/dotnet/dotnet.exe`, SDK 10.0.300).
+- `dotnet test tests/Hexalith.Folders.UI.Tests` → **371 passed, 0 failed, 0 skipped** (WSL Windows SDK `/mnt/c/Program Files/dotnet/dotnet.exe`, SDK 10.0.302).
 - `dotnet build tests/Hexalith.Folders.UI.E2E.Tests` → **build succeeded, 0 warnings, 0 errors** (warnings-as-errors). Playwright smoke tests are not executed in this lane (deferred hermetic E2E lane); they compile and follow the established backend-tolerant pattern.
 - Guards green: `NavigationContractTests.Console_DoesNotRegisterAnyDomainCommandManifest` passes within the 371; `git diff --stat src/Hexalith.Folders.Client/Generated/` is **empty**; no source, `Directory.Packages.props`, or OpenAPI-spine edits — only test files added.
 

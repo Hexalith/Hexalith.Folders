@@ -111,7 +111,7 @@ Decomposed, testable acceptance criteria:
    - `src/Hexalith.Folders.AppHost/Program.cs:33-37` already wires Keycloak realm URL + client ID env vars when Keycloak is enabled. Verify the UI **boots** both with `EnableKeycloak` unset (Keycloak on) and `EnableKeycloak=false` (Keycloak off; the `if` block at line 26 skips the env-var injection). In the `Keycloak=false` case the UI must hit the AC #3 fail-closed branch and refuse to start outside `Development`. Add an `AppHostBootSmokeTests.cs` under `tests/Hexalith.Folders.UI.Tests/` (NOT under `tests/Hexalith.Folders.IntegrationTests/` — keep this in the UI lane to avoid cross-suite flakiness) that uses `Aspire.Hosting.Testing` to attempt boot in `Development` with no Keycloak and asserts the UI sidecar reports a healthy `/` response within a 30s timeout.
 
 9. **Build clean and hermetic; no production-tree edits outside `Hexalith.Folders.UI` and its tests; no `.slnx` change; no new package references beyond bunit in the UI test project.**
-   - Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.300 pin — see Dev Notes "Build environment"): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors.
+   - Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.302 pin — see Dev Notes "Build environment"): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors.
    - Focused tests:
      - `dotnet.exe test tests/Hexalith.Folders.UI.Tests` — every test new in this story green.
      - `dotnet.exe test tests/Hexalith.Folders.UI.E2E.Tests` — the home-page smoke green; placeholder `[Skip]` tests remain skipped.
@@ -210,7 +210,7 @@ Decomposed, testable acceptance criteria:
 
 ### Build environment
 
-- The WSL-native .NET SDK does not satisfy the `global.json` 10.0.300 pin. Use the WSL-accessible Windows SDK at `/mnt/c/Program\ Files/dotnet/dotnet.exe` for restore / build / test. (Memory: `dotnet-windows-sdk-wsl.md`.)
+- The WSL-native .NET SDK does not satisfy the `global.json` 10.0.302 pin. Use the WSL-accessible Windows SDK at `/mnt/c/Program\ Files/dotnet/dotnet.exe` for restore / build / test. (Memory: `dotnet-windows-sdk-wsl.md`.)
 - For settings files / hook paths: WSL paths use `/mnt/d/...`, not `D:\...` (Memory: `wsl-windows-hook-paths.md`). This story does not touch settings/hooks; reference for future infra-adjacent work.
 - The FrontComposer submodule is initialized at `Hexalith.FrontComposer/`. Per `CLAUDE.md`, **do not** run `git submodule update --init --recursive`; only root-level submodules are valid. The UI's ProjectReference path `..\..\Hexalith.FrontComposer\src\Hexalith.FrontComposer.Shell\Hexalith.FrontComposer.Shell.csproj` resolves through the existing root-level checkout. If a dev encounters a missing FrontComposer source tree, the fix is `git submodule update --init Hexalith.FrontComposer` (root-level, non-recursive) — not `--recursive`.
 

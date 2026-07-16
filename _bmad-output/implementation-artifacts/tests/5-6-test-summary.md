@@ -7,7 +7,7 @@ Date: 2026-05-28
 
 ## Test framework
 
-xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` + Newtonsoft.Json `13.0.4` (project's existing stack; central package management). Build/test driven via the Windows .NET SDK from WSL (`/mnt/c/Program Files/dotnet/dotnet.exe`) per the `global.json` `10.0.300` pin.
+xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` + Newtonsoft.Json `13.0.4` (project's existing stack; central package management). Build/test driven via the Windows .NET SDK from WSL (`/mnt/c/Program Files/dotnet/dotnet.exe`) per the `global.json` `10.0.302` pin.
 
 ## Story state on entry
 

@@ -130,7 +130,7 @@ so that callers and operators have one trustworthy status answer.
 
 ### Latest Technical Context
 
-- Local project context pins the target SDK to .NET SDK `10.0.300`, `net10.0`, C# latest, warnings-as-errors, and central package management. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
+- Local project context pins the target SDK to .NET SDK `10.0.302`, `net10.0`, C# latest, warnings-as-errors, and central package management. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
 - Official Microsoft documentation identifies .NET 10 as an LTS release and the active official support policy lists .NET 10 as active. No library upgrade is required for this story; use the repository pins rather than normalizing package versions. [Source: `https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview`, `https://dotnet.microsoft.com/en-us/platform/support/policy`]
 
 ### Testing
@@ -169,7 +169,7 @@ GPT-5 Codex
 - 2026-05-27: External technical check used official Microsoft .NET 10 documentation and support policy only; no dependency changes are recommended.
 - 2026-05-27: Implemented workspace-status query boundary, in-memory projection, REST endpoint, DI, and focused query/endpoint tests without modifying the OpenAPI spine or generated client files.
 - 2026-05-27: Added `read_workspace_status` to folder access and effective-permission action catalogs so workspace-status authorization can complete before read-model observation.
-- 2026-05-27: `dotnet build src/Hexalith.Folders/Hexalith.Folders.csproj --no-restore --tlp:off -v:minimal` passed with 0 warnings and 0 errors using SDK `10.0.300`.
+- 2026-05-27: `dotnet build src/Hexalith.Folders/Hexalith.Folders.csproj --no-restore --tlp:off -v:minimal` passed with 0 warnings and 0 errors using SDK `10.0.302`.
 - 2026-05-27: `dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --no-restore -nr:false -p:BuildInParallel=false -maxcpucount:1 --tlp:off -v:minimal` passed with 0 warnings and 0 errors.
 - 2026-05-27: Focused core tests passed: `WorkspaceStatusQueryHandlerTests` (21), `WorkspaceLockStatusProjectionTests` (6), `FolderLifecycleStatusProjectionTests` (24), `FolderLifecycleStatusAuthorizationGateTests` (4), `FolderLifecycleStatusNoFallbackTests` (3), `LayeredFolderAuthorizationServiceTests` (23), `WorkspaceLockActionCatalogTests` (3), `WorkspaceFileContextQueryHandlerTests` (25), `FolderWorkspaceFileMutationServiceTests` (21), `FolderWorkspaceFileMutationAggregateTests` (24), `FolderLifecycleStatusMetadataLeakageTests` (11), and `EffectivePermissionsMetadataLeakageTests` (8).
 - 2026-05-27: `dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj --no-restore -nr:false -p:BuildInParallel=false -maxcpucount:1 --tlp:off -v:minimal` passed with 0 warnings and 0 errors.

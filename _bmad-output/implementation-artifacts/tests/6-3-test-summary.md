@@ -74,7 +74,7 @@ NuGet.Packaging.Core.PackagingException: Unable to find fallback package folder 
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-28 · **Engineer:** QA automation (Jerome) — tests only, no code review/story validation
 **Framework:** xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` + YamlDotNet `18.0.0` (project's existing stack; central package management)
-**Test command:** `dotnet.exe test tests/Hexalith.Folders.{Cli,Mcp}.Tests` (Windows SDK 10.0.300 per `global.json`, run from WSL)
+**Test command:** `dotnet.exe test tests/Hexalith.Folders.{Cli,Mcp}.Tests` (Windows SDK 10.0.302 per `global.json`, run from WSL)
 **Result:** ✅ CLI **691 passed**, MCP **646 passed** — 0 failed, 0 skipped. **Build:** both projects 0 warnings / 0 errors (warnings-as-errors).
 
 > **No E2E/UI lane applies.** Story 5.4 is a **test-only** conformance story: it makes the CLI and MCP test
@@ -135,7 +135,7 @@ behaviors adequately covered by representative tests.
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-27 · **Engineer:** QA automation (Jerome) — tests only, no code review/story validation
 **Framework:** xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` (project's existing stack)
-**Test command:** `dotnet test tests/Hexalith.Folders.Mcp.Tests` (Windows SDK 10.0.300 per `global.json`)
+**Test command:** `dotnet test tests/Hexalith.Folders.Mcp.Tests` (Windows SDK 10.0.302 per `global.json`)
 **Result:** ✅ **104 passed, 0 failed, 0 skipped** (baseline was 79; **+25** new test cases)
 **Build:** `Hexalith.Folders.Mcp` — 0 warnings / 0 errors (warnings-as-errors)
 
@@ -227,7 +227,7 @@ behaviorally complete; these tests close coverage holes.
 
 **Workflow:** `bmad-qa-generate-e2e-tests` · **Date:** 2026-05-27 · **Engineer:** QA automation (Jerome)
 **Framework:** xUnit v3 `3.2.2` + Shouldly `4.3.0` + NSubstitute `5.3.0` (project's existing stack)
-**Test command:** `dotnet test tests/Hexalith.Folders.Cli.Tests` (Windows SDK 10.0.300 per `global.json`)
+**Test command:** `dotnet test tests/Hexalith.Folders.Cli.Tests` (Windows SDK 10.0.302 per `global.json`)
 **Result:** ✅ **102 passed, 0 failed, 0 skipped** (baseline was 78; **+24** new test cases)
 **Build:** `Hexalith.Folders.Cli` — 0 warnings / 0 errors (warnings-as-errors)
 

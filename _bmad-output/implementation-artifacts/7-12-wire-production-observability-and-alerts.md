@@ -181,7 +181,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - **Dead-letter topic:** `deadletter.{domain}.events`. **Stale/abandoned/interrupted locks:** "deterministic, observable; never silently broken". **Provider failure taxonomy:** error code 70 `provider_failure_known`; unknown outcomes route to `unknown_provider_outcome`/`reconciliation_required`.
 - **Sentinel redaction (non-negotiable):** "Every component that emits a log, trace, metric label, event, audit record, console payload, provider diagnostic, or error response MUST run sentinel tests" against `tests/fixtures/audit-leakage-corpus.json`; CI fails on any sentinel match. Tenant isolation reaches metric labels — no per-tenant/per-folder/per-workspace high-cardinality dimensions; baggage stays empty.
 - **Verification Expectations NFR:** every NFR category needs at least one CI gate or release-validation path; the observability category is satisfied by the new conformance gate + sentinel coverage.
-- **Repository configuration is authoritative:** .NET SDK `10.0.300`, central package management, OTel `1.15.x` family-aligned (Exporter.OTLP 1.15.3, Extensions.Hosting 1.15.3, Instrumentation.AspNetCore 1.15.2, Http 1.15.1, Runtime 1.15.1), xUnit v3, Shouldly, YamlDotNet, PowerShell 7 gate scripts.
+- **Repository configuration is authoritative:** .NET SDK `10.0.302`, central package management, OTel `1.15.x` family-aligned (Exporter.OTLP 1.15.3, Extensions.Hosting 1.15.3, Instrumentation.AspNetCore 1.15.2, Http 1.15.1, Runtime 1.15.1), xUnit v3, Shouldly, YamlDotNet, PowerShell 7 gate scripts.
 
 ### Previous Story Intelligence
 
@@ -217,7 +217,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 
 ### Testing Requirements
 
-- Use repository-pinned .NET SDK `10.0.300` from `global.json` and central package management. Do not add inline package versions; keep OTel `1.15.x` family-aligned.
+- Use repository-pinned .NET SDK `10.0.302` from `global.json` and central package management. Do not add inline package versions; keep OTel `1.15.x` family-aligned.
 - Use xUnit v3, Shouldly, YamlDotNet, and existing deployment-conformance helper patterns (`RepositoryPath` walker from `AppContext.BaseDirectory`, semantic YAML parsing, `[GeneratedRegex]`).
 - Conformance tests must not pass vacuously: use exact-cardinality/inventory equality, a semantic hash over the parsed exporter/alert-rule set, sentinel constants, and a test-count guard in the gate script.
 - Telemetry-redaction tests must assert (a) new metric/trace tag names stay low-cardinality (no `folders.tenant_id`/`folders.folder_id`/`folders.workspace_id`/`folders.provider_reference`/`folders.correlation_id`/`folders.task_id`), (b) every corpus sentinel stuffed into every new field/tag does not survive sanitization, and (c) baggage stays empty.
@@ -230,7 +230,7 @@ git submodule update --init Hexalith.AI.Tools Hexalith.Commons Hexalith.EventSto
 - .NET observability is OpenTelemetry-first: traces via `System.Diagnostics.ActivitySource`, metrics via `System.Diagnostics.Metrics.Meter`, logs via `Microsoft.Extensions.Logging` bridged into OpenTelemetry. Logs are exported by adding the OpenTelemetry logging provider (`logging.AddOpenTelemetry(...).AddOtlpExporter()`) — this is the missing third signal in `Extensions.cs`.
 - ASP.NET Core health checks use `AddHealthChecks()` plus `MapHealthChecks("/health/live", ...)` / `MapHealthChecks("/health/ready", ...)` with predicate/tag filtering to split liveness from readiness; the `Microsoft.Extensions.Diagnostics.HealthChecks` family ships with the .NET 10 shared framework, but any `AspNetCore.HealthChecks.*` add-ons must be pinned centrally.
 - OTLP exporter endpoint/headers/protocol are standardized env vars (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_HEADERS`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME`) honored by `AddOtlpExporter()` — reuse the existing `OTEL_EXPORTER_OTLP_ENDPOINT` gate rather than inventing a custom config key, so production exporters stay pluggable and vendor-neutral.
-- Metric instruments should keep dimensions low-cardinality (bounded enum categories), never per-tenant/per-folder identifiers, to avoid both cardinality blowup and tenant-isolation leakage. Verify exact API/package surface against the pinned OTel `1.15.x` and .NET `10.0.300` before coding (see `latest_technical_sources`).
+- Metric instruments should keep dimensions low-cardinality (bounded enum categories), never per-tenant/per-folder identifiers, to avoid both cardinality blowup and tenant-isolation leakage. Verify exact API/package surface against the pinned OTel `1.15.x` and .NET `10.0.302` before coding (see `latest_technical_sources`).
 
 ### References
 

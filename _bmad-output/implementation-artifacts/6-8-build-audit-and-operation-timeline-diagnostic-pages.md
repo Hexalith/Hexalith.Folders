@@ -122,7 +122,7 @@ Decomposed, testable acceptance criteria:
 
 ### Library / framework requirements
 
-- **Target:** `net10.0`, C# `LangVersion=latest`, nullable enabled, warnings-as-errors. Build/test only with the **Windows SDK** `/mnt/c/Program Files/dotnet/dotnet.exe` — the WSL-native SDK fails the `global.json` 10.0.300 pin.
+- **Target:** `net10.0`, C# `LangVersion=latest`, nullable enabled, warnings-as-errors. Build/test only with the **Windows SDK** `/mnt/c/Program Files/dotnet/dotnet.exe` — the WSL-native SDK fails the `global.json` 10.0.302 pin.
 - **Reuse these shipped components (do NOT reinvent), all `Hexalith.Folders.UI.Components` unless noted:**
   - `OperatorDispositionBadge` — `[EditorRequired] OperatorDispositionLabel Disposition`, `string? ColumnHeader`, `string? AdditionalCssClass`. `data-testid="operator-disposition-badge"`.
   - `TechnicalStateMetadata` — `[EditorRequired] LifecycleState State`, `string? ColumnHeader`, `bool IncludePrefix = true` (use `false` in dense cells). `data-fc-technical-state`.
@@ -193,7 +193,7 @@ Claude Opus 4.8 (claude-opus-4-8, 1M context)
 
 ### Debug Log References
 
-- Build/test executed with the Windows SDK `/mnt/c/Program Files/dotnet/dotnet.exe` (the WSL-native SDK fails the `global.json` 10.0.300 pin), per the repo policy.
+- Build/test executed with the Windows SDK `/mnt/c/Program Files/dotnet/dotnet.exe` (the WSL-native SDK fails the `global.json` 10.0.302 pin), per the repo policy.
 - Baseline before implementation: `dotnet test tests/Hexalith.Folders.UI.Tests` → **372/372** passed (matches post-6.7 baseline).
 - Final: `dotnet test tests/Hexalith.Folders.UI.Tests` → **420/420** passed, 0 skipped (+48 new tests over the **372** post-6.7 baseline), clean build under warnings-as-errors. (Earlier interim runs mis-stated the lane as 399/399; the accurate total is 420, and a follow-up corrected four `AuditTrail`/`OperationTimeline` `Received(...)` assertions that mixed a bare `null` filter literal with `Arg` matchers — NSubstitute `AmbiguousArgumentsException` — by switching the filter assertion to `Arg.Is<string>(f => f == null)`; no production code changed.)
 - `dotnet build tests/Hexalith.Folders.UI.E2E.Tests` → Build succeeded, **0 Warning(s), 0 Error(s)** (Playwright lane is deferred; only compilation is required).

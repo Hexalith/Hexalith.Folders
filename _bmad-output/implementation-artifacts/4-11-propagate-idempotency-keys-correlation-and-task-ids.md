@@ -137,7 +137,7 @@ so that retries never duplicate events, provider writes, file changes, repositor
 
 ### Latest Technical Context
 
-- Local repository pins .NET SDK `10.0.300`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, and repository-owned package versions. Use repo pins rather than normalizing package versions. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
+- Local repository pins .NET SDK `10.0.302`, `net10.0`, C# latest, central package management, xUnit v3, Shouldly, and repository-owned package versions. Use repo pins rather than normalizing package versions. [Source: `_bmad-output/project-context.md#Technology Stack & Versions`]
 - No external dependency or framework upgrade is required for Story 4.11. The relevant work is local contract/runtime alignment, not version migration.
 
 ### Testing

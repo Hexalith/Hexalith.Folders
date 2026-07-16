@@ -127,7 +127,7 @@ Decomposed, testable acceptance criteria:
    - **No edits to `src/Hexalith.Folders.{Server,Cli,Mcp,Client,Contracts,Workers,AppHost,Aspire}` or `src/Hexalith.Folders/`.** This story is UI-only. If a build error appears claiming a Generated client type is missing (e.g. `OperatorDispositionLabel` cannot be found), the cause is a stale local build artifact; clean and rebuild — do not regenerate the SDK in this story.
 
 9. **Build clean and hermetic; no production-tree edits outside `Hexalith.Folders.UI` and its tests; no `.slnx` change.**
-   - Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.300 pin — Memory: `dotnet-windows-sdk-wsl.md`): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors.
+   - Build with the WSL-accessible Windows SDK (`/mnt/c/Program\ Files/dotnet/dotnet.exe`; the WSL-native SDK fails the `global.json` 10.0.302 pin — Memory: `dotnet-windows-sdk-wsl.md`): `dotnet.exe restore Hexalith.Folders.slnx` → `dotnet.exe build Hexalith.Folders.slnx --no-restore` → 0 warnings / 0 errors.
    - Focused tests:
      - `dotnet.exe test tests/Hexalith.Folders.UI.Tests` — every new test (mapper + badge + metadata + gallery) green. Existing 16 tests from Story 6.2 remain green.
      - `dotnet.exe test tests/Hexalith.Folders.Tests` — the new drift-sentinel test class green.
@@ -224,7 +224,7 @@ Decomposed, testable acceptance criteria:
 
 ### Build environment
 
-- WSL-native .NET SDK does not satisfy `global.json` 10.0.300. Use the WSL-accessible Windows SDK at `/mnt/c/Program\ Files/dotnet/dotnet.exe` for restore / build / test. (Memory: `dotnet-windows-sdk-wsl.md`.)
+- WSL-native .NET SDK does not satisfy `global.json` 10.0.302. Use the WSL-accessible Windows SDK at `/mnt/c/Program\ Files/dotnet/dotnet.exe` for restore / build / test. (Memory: `dotnet-windows-sdk-wsl.md`.)
 - For settings files / hook paths: WSL paths use `/mnt/d/...`, not `D:\...` (Memory: `wsl-windows-hook-paths.md`).
 - The FrontComposer submodule is already initialized at `Hexalith.FrontComposer/`. Per `CLAUDE.md`, only root-level submodules; **do not** run `git submodule update --init --recursive`. Story 6.3 does not introduce any new submodule dependency.
 
@@ -400,7 +400,7 @@ Findings fixed:
 
 Validation notes:
 - Windows SDK validation could not be rerun from this WSL session: `/mnt/c/Program Files/dotnet/dotnet.exe` failed before startup with `UtilBindVsockAnyPort:307: socket failed 1`.
-- Linux `dotnet` is installed as SDK `10.0.108`, but the repository `global.json` requests `10.0.300`, so `dotnet test` exits before running tests.
+- Linux `dotnet` is installed as SDK `10.0.108`, but the repository `global.json` requests `10.0.302`, so `dotnet test` exits before running tests.
 - Code review still validated the story ACs against the implementation, C6 architecture mapping, server state-transition mapping, FrontComposer badge contract, and changed source/test files.
 
 Focused review pass: Codex on 2026-05-28.
@@ -413,7 +413,7 @@ Findings fixed:
 Validation notes:
 - Verified with `rg` that remaining `ConfigureAwait(false)` usages in `StateLabelGalleryE2ETests.cs` are limited to `InitializeAsync`/`DisposeAsync`, not `[Fact]` methods.
 - Attempted the requested command: `/mnt/c/Program\ Files/dotnet/dotnet.exe test tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj --no-restore --filter FullyQualifiedName~StateLabelGalleryE2ETests`. WSL failed before MSBuild/test startup with `UtilBindVsockAnyPort:307: socket failed 1`.
-- Attempted the Linux SDK fallback for diagnostics only; it cannot run this repo because `global.json` requests SDK `10.0.300` while WSL has `10.0.108`.
+- Attempted the Linux SDK fallback for diagnostics only; it cannot run this repo because `global.json` requests SDK `10.0.302` while WSL has `10.0.108`.
 - Post-review orchestrator verification succeeded with the WSL-accessible Windows SDK:
   - `/mnt/c/Program\ Files/dotnet/dotnet.exe build Hexalith.Folders.slnx --no-restore` -> 0 warnings / 0 errors.
   - `/mnt/c/Program\ Files/dotnet/dotnet.exe test tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj --no-restore` -> 79 passed.
