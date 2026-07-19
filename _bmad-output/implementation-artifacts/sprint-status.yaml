@@ -335,12 +335,13 @@ development_status:
   # be created (bmad-create-story) with acceptance criteria that assert restart-surviving, real-Git
   # round-trip behavior (NOT fake-backed). Do NOT auto-start implementation on the CI-red tree — land the
   # HXF-OPS-001 CI fix first, then sequence 12-1 -> 12-2/12-3 -> 12-4 -> 12-5.
-  epic-12: backlog
+  epic-12: in-progress
   12-1-eventstore-backed-folder-repository-retire-noop-and-implement-projection-replay: backlog
   12-2-durable-projections-and-task-completion-pipeline: backlog
   12-3-durable-workspace-file-content-store-and-content-read-source: backlog
   12-4-real-git-commit-executor-and-provider-write-path: backlog
   12-5-at-least-once-memories-egress-and-reconciler: backlog
+  12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence: ready-for-dev
   epic-12-retrospective: optional
 
   # Epic 13: Security And Operational Hardening
