@@ -414,28 +414,40 @@ public sealed class ScaffoldContractTests
     public void SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup()
     {
         string root = RepositoryRoot();
-        string[] policyDocuments =
+        string[] universalPolicyDocuments =
         [
             "AGENTS.md",
             "CLAUDE.md",
+            ".github/copilot-instructions.md",
+        ];
+        string[] repositorySetupDocuments =
+        [
             "README.md",
             "tests/README.md",
         ];
 
-        foreach (string document in policyDocuments)
+        foreach (string document in universalPolicyDocuments)
         {
             string path = Path.Combine(root, document.Replace('/', Path.DirectorySeparatorChar));
             File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root or under tests/.");
 
             string content = File.ReadAllText(path);
-            AssertCanonicalInitCommandPresent(content, document);
+            ContainsCanonicalInitCommand(content).ShouldBeFalse(
+                $"{document} is a universal entry point and must not document the Folders-specific root submodule init command.");
+            ContainsRecursiveInitProhibition(content).ShouldBeTrue(
+                $"{document} must document that recursive submodule init is forbidden by default.");
+        }
 
-            // Discoverability of the prohibition itself (any of the canonical wordings).
-            bool documentsProhibition =
-                content.Contains("git submodule update --init --recursive", StringComparison.OrdinalIgnoreCase)
-                || content.Contains("do not run recursive submodule initialization", StringComparison.OrdinalIgnoreCase)
-                || content.Contains("not use recursive", StringComparison.OrdinalIgnoreCase);
-            documentsProhibition.ShouldBeTrue($"{document} must document that recursive submodule init is forbidden by default.");
+        foreach (string document in repositorySetupDocuments)
+        {
+            string path = Path.Combine(root, document.Replace('/', Path.DirectorySeparatorChar));
+            File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root or under tests/.");
+
+            string content = File.ReadAllText(path);
+            ContainsCanonicalInitCommand(content).ShouldBeTrue(
+                $"{document} must document the canonical root submodule init command listing all of: {string.Join(", ", RequiredCanonicalSubmodules)}.");
+            ContainsRecursiveInitProhibition(content).ShouldBeTrue(
+                $"{document} must document that recursive submodule init is forbidden by default.");
         }
 
         string[] violations = PolicyDocumentPaths(root)
@@ -562,18 +574,46 @@ public sealed class ScaffoldContractTests
     private static IEnumerable<XElement> DescendantsByLocalName(XContainer container, string localName) =>
         container.Descendants().Where(e => e.Name.LocalName.Equals(localName, StringComparison.OrdinalIgnoreCase));
 
-    private static void AssertCanonicalInitCommandPresent(string content, string sourceDescription)
+    private static bool ContainsCanonicalInitCommand(string content)
     {
-        bool found = content.Split('\n').Any(line =>
+        LogicalLine[] logicalLines = JoinContinuationLines(content.Split('\n'));
+        return logicalLines.Any(line =>
         {
-            if (!line.Contains("git submodule update --init", StringComparison.OrdinalIgnoreCase))
+            if (!line.Text.Contains("git submodule update --init", StringComparison.OrdinalIgnoreCase)
+                || ContainsRecursiveSubmoduleSetup(line.Text))
             {
                 return false;
             }
-            return RequiredCanonicalSubmodules.All(module => line.Contains(module, StringComparison.OrdinalIgnoreCase));
+            return RequiredCanonicalSubmodules.All(module => line.Text.Contains(module, StringComparison.OrdinalIgnoreCase));
         });
+    }
 
-        found.ShouldBeTrue($"{sourceDescription} must document the canonical root submodule init command listing all of: {string.Join(", ", RequiredCanonicalSubmodules)}.");
+    private static bool ContainsRecursiveInitProhibition(string content)
+    {
+        if (content.Contains("do not run recursive submodule initialization", StringComparison.OrdinalIgnoreCase)
+            || content.Contains("not use recursive", StringComparison.OrdinalIgnoreCase)
+            || content.Contains("never use recursive", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        LogicalLine[] logicalLines = JoinContinuationLines(content.Split('\n'));
+        for (int index = 0; index < logicalLines.Length; index++)
+        {
+            LogicalLine line = logicalLines[index];
+            if (!ContainsRecursiveSubmoduleSetup(line.Text))
+            {
+                continue;
+            }
+
+            string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
+            if (IsWarningOrNestedOptInContext(line.Text, precedingProse))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static IEnumerable<string> PolicyDocumentPaths(string root)
