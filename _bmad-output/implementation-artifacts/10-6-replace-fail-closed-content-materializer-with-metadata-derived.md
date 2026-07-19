@@ -188,6 +188,8 @@ GPT-5 Codex
 - 2026-07-14 Aspire baseline: AppHost 13.4.6 built 0W/0E and `folders-workers` reached Healthy; topology stopped cleanly before source builds.
 - 2026-07-14 C9 hardening RED/GREEN: an adversarial supported `text/*` media type containing drive-path and secret-shaped tokens first leaked through curated text; curated output was reduced to derived classifications plus validated identity tokens, and the focused materializer suite passed 8/8.
 - 2026-07-14 Task 6: restore/build passed 0W/0E; Workers 73/73, Folders 1377/1377, Testing 61/61, Contracts 283/283; format/analyzers and the nine-category baseline CI gate passed; AppHost opt-in suite skipped 4/4 without its environment flag.
+- 2026-07-15 completion-gate rerun: restore/build passed 0W/0E; AppHost opt-in suite skipped its configured 4/4, CLI passed 708/708, and Client passed 288/288. Full Contracts regression stopped at 281/283 because committed PRD reconciliation `da3d111` now declares 73 NFR bullets while `NfrTraceabilityConformanceTests` and the traceability inventory remain locked to 70 (including an NFR1 hash mismatch). This is unrelated planning drift outside Story 10.6's permitted scope, so status remains `in-progress` pending correction and a clean full-suite rerun.
+- 2026-07-15 resumed completion gate: restore/build passed 0W/0E; Workers 75/75, Folders 1377/1377, and Testing 61/61 passed; AppHost retained its configured 4/4 opt-in skips. Contracts again stopped at 281/283 on the same out-of-scope 73-versus-70 NFR inventory and NFR1 hash drift, so the Step 9 regression gate remains blocked and story status stays `in-progress`.
 
 ### Completion Notes List
 

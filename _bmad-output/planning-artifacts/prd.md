@@ -25,12 +25,38 @@ inputDocuments:
   - "_bmad-output/brainstorming/brainstorming-session-20260505-070846.md"
   - "_bmad-output/planning-artifacts/architecture.md"
   - "_bmad-output/project-context.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-06-builds-package-version-centralization.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-081620.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-090742.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-190839.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-193110.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-content-materializer.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-dcp-lane-standup.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-governance-approval-freshness.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-honest-green-gate-baseline.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-idempotency-key-canonicalization.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-memories-facade-dapr-egress.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-nfr-traceability-decoupling.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-seed-backed-read-models.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-08-rest-negative-path-coverage.md"
+  - "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-14.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14-implementation-readiness-incremental-review.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md"
+  - "_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-15.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-15.md"
+  - "_bmad-output/planning-artifacts/reconcile-july-2026-synthesis.md"
+  - "_bmad-output/planning-artifacts/reconcile-july-2026-delta-review.md"
 documentCounts:
   productBriefs: 1
   research: 3
   brainstorming: 1
   projectDocs: 0
-  projectContext: 0
+  projectContext: 1
+  changeProposals: 19
+  readinessReports: 2
+  reconciliations: 2
 classification:
   projectType: api_backend
   domain: developer infrastructure / AI workspace storage
@@ -41,11 +67,18 @@ releaseMode: phased
 title: 'Product Requirements Document — Hexalith.Folders'
 status: final
 created: '2026-05-05'
-updated: '2026-07-14'
-finalized: '2026-07-14'
+updated: '2026-07-15'
+finalized: '2026-07-15'
 completedAt: '2026-05-07'
-lastEdited: '2026-07-14'
+lastEdited: '2026-07-15'
+implementationReadiness: not-ready
+implementationReadinessAssessedAt: '2026-07-15'
+implementationReadinessSource: '_bmad-output/planning-artifacts/implementation-readiness-report-2026-07-15.md'
+productMvpDecision: durable-repository-round-trip-required
+productMvpDecisionRatifiedAt: '2026-07-14'
 editHistory:
+  - date: '2026-07-15'
+    changes: 'Reconciled 19 July sprint-change inputs—including approved, applied, pending, proposed, deferred, and no-op sources—under the approved 2026-07-15 authority and delta adjudication; recorded not-ready implementation posture; corrected UJ2, FR56, and OQ8; preserved OQ1-OQ10 and the metadata-token FR58 boundary; retained unratified July 14 audit recommendations for separate PM approval.'
   - date: '2026-07-14'
     changes: 'Reconciled validation findings with approved governance and current product boundaries; clarified contract authority, MVP surfaces, tenant administration, repository binding, incident-mode console, state vocabulary, retention, query limits, idempotency, search semantics, and open release decisions.'
   - date: '2026-05-07'
@@ -95,6 +128,10 @@ The MVP is repository-backed first. It supports creating a provider-backed folde
 
 The product has one non-negotiable content boundary: file contents, diffs, generated context payloads, provider tokens, credential values, secret material, and unauthorized resource existence must not appear in events, logs, traces, metrics, audit records, console views, provider diagnostics, or error responses.
 
+### Current Delivery Posture
+
+This PRD is final as a product contract; the implementation is not ready for product release as of the 2026-07-15 implementation-readiness assessment. Completed contract, adapter, authorization, governance, accessibility, topology, and fail-safe foundations remain valid increments, but they do not complete or release the product MVP. Release remains blocked until the durable repository-backed lifecycle is complete and every Open Release Item is closed with approved production evidence. Safe-empty, seed-only, unavailable, no-op, fake-backed, numerically mapped, structural, or documentation-only evidence may prove safety or contract shape but does not prove positive runtime capability.
+
 ## Success Criteria
 
 ### User Success
@@ -113,7 +150,7 @@ Twelve-month success means at least 80% of newly approved Hexalith agentic file-
 
 ### Technical Success
 
-The MVP must prove the complete repository workflow for both supported providers and all four contract surfaces: create or bind repository, prepare and lock, add/change/remove files, confirm the durable commit outcome, query context/status, and expose metadata-only audit.
+The MVP must prove the complete repository workflow for both supported providers and all four contract surfaces: create or bind a repository, prepare and lock, add/change/remove files, confirm the durable commit outcome, query context/status, and expose metadata-only audit.
 
 The highest-priority technical measures are zero cross-tenant access leaks and deterministic completion evidence. Cross-tenant authorization failures must be caught before any file, workspace, credential, repository, lock, commit, provider, audit, or context resource is touched or inferred.
 
@@ -179,23 +216,23 @@ The value moment is not repository creation by itself. It is the clean final sta
 
 This journey reveals requirements for provider readiness checks, repository-backed folder creation, workspace preparation, governed file operations, commit support, workspace status queries, CLI/MCP access, task/correlation metadata, and clean committed-state reporting.
 
-### UJ2: Platform Engineer Establishes Tenant Provider Readiness
+### UJ2: Tenant Administrator Establishes Provider Readiness
 
-Ravi is a platform engineer responsible for making a tenant organization ready for Git-backed agent work. Before any agent can create a workspace, he must configure the provider binding, credential reference, repository naming policy, default branch policy, and minimum provider capabilities.
+Ravi is a tenant administrator responsible for making his tenant ready for Git-backed agent work. Before an agent can create or bind a repository-backed folder, he configures the provider binding, credential reference, repository naming and default-ref policy, and minimum capability policy for that tenant.
 
-Ravi runs readiness validation and sees a clear state rather than a generic failure. If a credential reference is missing, a token lacks repository creation permission, a provider is unavailable, or a default branch policy is invalid, the system reports a stable machine-readable reason code and human-readable diagnosis. Secrets are never displayed. The readiness result tells Ravi whether the tenant is `ready`, `failed`, or blocked by configuration.
+A scoped platform engineer may validate and diagnose the resulting readiness but cannot silently change Ravi's tenant policy. If a credential reference is missing, permissions are insufficient, the provider is unavailable, or repository/default-ref policy is invalid, readiness reports a stable safe reason and remediation category without exposing secrets or hidden resources. An operator-only, wrong-tenant, stale, revoked, or otherwise unauthorized attempt fails before configuration or protected-state observation.
 
-The value moment is confidence before runtime. Ravi can correct provider setup before an agent task fails halfway through repository creation or commit.
+The value moment is controlled readiness before runtime: Ravi owns tenant policy, while the platform engineer can prove whether the configured tenant is ready without acquiring tenant-policy mutation authority.
 
-This journey reveals requirements for organization-level provider configuration, credential references, repository policy validation, provider capability checks, readiness status projection, actionable readiness reason codes, and secret-safe error handling.
+This journey reveals requirements for tenant-owned provider and credential-reference configuration, repository/default-ref and capability policy, scoped readiness validation, actionable safe diagnostics, and fail-closed authority boundaries.
 
 ### UJ3: Agent Task Is Interrupted and Leaves Inspectable State
 
 Asha, an AI agent running Nadia's tenant-scoped task, starts work against an existing Git-backed folder. She prepares the workspace, acquires a task-scoped lock, applies several file changes, and then the task is interrupted before commit.
 
-Without Hexalith.Folders, the team would be left with uncertain state: partial files, no reliable lock owner, no clear task correlation, and no trustworthy recovery signal. With Hexalith.Folders, the workspace enters an inspectable blocked, non-terminal state. It is visibly `locked`, `dirty`, and associated with the interrupted task. The changed file list is available as metadata, the last successful operation is visible, and the absence of a commit is explicit.
+Without Hexalith.Folders, the team would be left with uncertain state: partial files, no reliable lock owner, no clear task correlation, and no trustworthy recovery signal. With Hexalith.Folders, the workspace enters an inspectable blocked, non-terminal state. Its lock state is visibly `locked`, its workspace lifecycle is `dirty`, and it is associated with the interrupted task. The changed file list is available as metadata, the last successful operation is visible, and the absence of a commit is explicit.
 
-The MVP does not silently repair, discard, or commit the changes. It makes the state understandable and prevents another task from overwriting the workspace accidentally. Post-MVP repair commands may support retry commit, discard changes, rebuild cache, or release stale locks.
+The MVP does not silently repair, discard, or commit the changes. It makes the state understandable and prevents another task from overwriting the workspace accidentally. Post-MVP repair commands may support retrying the commit, discarding changes, rebuilding the cache, or releasing stale locks.
 
 This journey reveals requirements for task-scoped locks, lock ownership metadata, dirty workspace detection, interrupted task status, operation timeline, changed-path metadata, safe blocked state, and post-MVP repair workflows.
 
@@ -251,7 +288,7 @@ This journey reveals requirements for metadata-only audit events, audit projecti
 
 ### UJ9: Tenant Administrator Manages Folder Access and Lifecycle
 
-Elise, the tenant administrator from UJ6, returns to the day-to-day operation of her tenant. Her concern is no longer "can isolation be proven" but "can I run the tenant cleanly". She needs to grant folder access to users, groups, roles, and delegated service agents as her teams onboard new chatbots, retire old ones, and rotate ownership; she needs to inspect effective permissions for a folder so that an audit ask ("who can write here today?") has a concrete answer; and she needs to retire folders whose tasks are finished without erasing the audit evidence that future incident reviews depend on.
+Elise, the tenant administrator from UJ6, returns to the day-to-day operation of her tenant. Her concern is no longer “Can isolation be proven?” but “Can I run the tenant cleanly?” She needs to grant folder access to users, groups, roles, and delegated service agents as her teams onboard new chatbots, retire old ones, and rotate ownership; inspect effective permissions for a folder so that an audit question (“Who can write here today?”) has a concrete answer; and retire folders whose tasks are finished without erasing the audit evidence that future incident reviews depend on.
 
 Elise grants folder access to a new automation team and verifies through the same surface that the grant took effect — the effective-permissions view shows the grant, the actor identity, and the verb scope. Months later, when a chatbot project is retired, Elise archives the folder. The folder enters a clearly archived lifecycle state, mutating commands are denied with a stable error, but the metadata-only audit trail, lock lifecycle history, last commit reference, and operation timeline remain queryable for the duration of the tenant's retention policy. No file contents, provider tokens, or credential material are revealed by the archived view; the same denial and isolation guarantees that protect active folders also protect archived ones.
 
@@ -314,7 +351,7 @@ The workspace trust model is validated if operators can understand key states wi
 
 ### Risk Mitigation
 
-The main innovation risk is overbuilding the control plane before proving the core file workflow. If the AI-native task lifecycle model proves too heavy for the MVP, the fallback is a simpler Git-backed file API that supports repository creation, file add/change/remove operations, commit, and status query.
+The main innovation risk is overbuilding the control plane before proving the core file workflow. If evidence shows that the AI-native task lifecycle is too heavy, any reduction requires a new scope decision approved by PM and governance and cannot ship as this MVP. A revised scope must still preserve tenant isolation, readiness, locking, idempotency, failure visibility, metadata-only audit, durable provider confirmation, and required cross-surface semantics.
 
 The second risk is surface divergence. API, CLI, and MCP could drift into different semantics. Mitigation is one canonical workflow contract with CLI and MCP as adapters over the same command/query model.
 
@@ -421,10 +458,10 @@ Automatic evidence checking begins immediately after the unconfirmed result, per
 MVP reconciliation determines outcome for every external side-effect family; it does not silently repeat a mutation, discard changes, rewrite history, or take over a task:
 
 - repository creation/binding checks the provider's canonical repository identity, requested binding intent, and provider-side evidence tying a newly created repository to the originating operation. A matching repository completes a create result only when that ownership evidence matches; otherwise it may be accepted only through the separately authorized pre-created-repository binding flow. Confirmed absence/no side effect permits a fresh authorized attempt with a new key, and conflicting identity/evidence requires human escalation;
-- file mutation checks each requested operation identity and intended content-hash/policy evidence; confirmed applied/not-applied outcomes become a known dirty change set, the same task may acquire a new lock instance under the same canonical serializing identity only after fresh authorization to complete known missing operations, and commit remains denied while any operation is unknown;
+- file mutation checks each requested operation identity and its intended content-hash/policy evidence. Confirmed applied or not-applied outcomes become a known dirty change set. After fresh authorization, the same task may acquire a new lock instance under the same canonical serializing identity to complete known missing operations. Commit remains denied while any operation is unknown;
 - commit checks the authoritative remote/ref for the intended commit evidence; confirmation transitions to committed/unlocked, confirmation of no remote update transitions to dirty and permits the same task to acquire a new lock instance under the same canonical serializing identity before retry, and ambiguous or conflicting remote history remains reconciliation-required.
 
-No revoked lock instance is ever reactivated. Recovery creates a newly authorized lock instance for the originating task under the same canonical serializing identity only after the provider outcome is known; if authorization is no longer valid, the workspace remains inaccessible. No workspace may remain opaque: unknown-provider-outcome and reconciliation-required status expose the operation family, last evidence check, next scheduled check or human escalation condition, correlation identity, and safe reason without provider payloads or protected content.
+No revoked lock instance is ever reactivated. Recovery creates a newly authorized lock instance for the originating task under the same canonical serializing identity only after the provider outcome is known; if authorization is no longer valid, the workspace remains inaccessible. No workspace may remain opaque: the `unknown_provider_outcome` and `reconciliation_required` statuses expose the operation family, last evidence check, next scheduled check or human escalation condition, correlation identity, and safe reason without provider payloads or protected content.
 
 For every mutation:
 
@@ -486,7 +523,7 @@ Error details are a closed, bounded, metadata-only shape defined per error by th
 
 Non-enumerating equivalence applies until the caller is authorized for the specific tenant/provider-binding scope. After that authorization succeeds, readiness diagnostics may identify the caller's configured provider product, instance/profile, capability gap, credential-reference status, and safe remediation category. They still may not reveal an unconfigured provider identity, credential value, repository existence outside the authorized binding, or cross-tenant state.
 
-Provider and workspace failures must distinguish known failure from unknown outcome. If repository creation, file mutation, or commit status cannot be confirmed after a timeout or provider interruption, the system first exposes `unknown_provider_outcome` and performs only the bounded read-only evidence checks defined above. Exhausted or conflicting evidence then exposes `reconciliation_required`; neither state permits retry that could duplicate repositories, file changes, or commits.
+Provider and workspace failure reporting must distinguish a known failure from an unknown outcome. If repository creation, file mutation, or commit status cannot be confirmed after a timeout or provider interruption, the system first exposes `unknown_provider_outcome` and performs only the bounded read-only evidence checks defined above. Exhausted or conflicting evidence then exposes `reconciliation_required`; neither state permits retry that could duplicate repositories, file changes, or commits.
 
 ### Rate Limits, Throttling, and Idempotency
 
@@ -494,7 +531,7 @@ The MVP does not require fixed public rate-limit numbers. It applies throttling 
 
 Throttling policy must identify enforcement dimensions such as tenant, folder, workspace, provider, and command type.
 
-Provider calls use bounded retry/backoff policy, provider-specific throttling, and clear failure projection when rate limits, timeouts, permission failures, or unknown outcomes occur.
+Provider calls use a bounded retry/backoff policy, provider-specific throttling, and clear failure projection when rate limits, timeouts, permission failures, or unknown outcomes occur.
 
 ### Workspace State and Concurrency
 
@@ -506,7 +543,7 @@ Operator disposition is derived rather than treated as another lifecycle: reques
 
 Lock semantics must define owner, lease duration, renewal, expiry, release, stale lock behavior, reentrant behavior, and conflict behavior.
 
-The MVP serializing identity is managed tenant plus canonical provider/repository identity plus normalized target ref. All folder bindings, aliases, workspaces, and tasks resolving to that identity collide on one active mutation writer; genuinely different repository/ref identities may proceed independently. Governed mutations and commits require a valid, unrevoked lock and fresh authorization. Context reads of committed/ready content do not require the mutation lock but still require tenant, folder ACL, and path policy. While lifecycle is `changes_staged`, `dirty`, `unknown_provider_outcome`, or `reconciliation_required`, live body search, range reads, and file content are visible only to the freshly authorized originating/lock-owning task; other authorized actors receive metadata-only status, and the incident view never exposes content. Commit must release the lock or transition the current task to a defined task-terminal or recovery state.
+The MVP serializing identity combines the managed tenant, canonical provider/repository identity, and normalized target ref. All folder bindings, aliases, workspaces, and tasks that resolve to that identity are limited to one active mutation writer; genuinely different repository/ref identities may proceed independently. Governed mutations and commits require a valid, unrevoked lock and fresh authorization. Context reads of committed/ready content do not require the mutation lock but still require tenant, folder ACL, and path policy. While lifecycle is `changes_staged`, `dirty`, `unknown_provider_outcome`, or `reconciliation_required`, live body search, range reads, and file content are visible only to the freshly authorized originating/lock-owning task; other authorized actors receive metadata-only status, and the incident view never exposes content. Commit must release the lock or transition the current task to a defined task-terminal or recovery state.
 
 Concurrent operations must either serialize deterministically or fail with stable conflict errors. Commit without a valid lock, mutation without fresh authorization, duplicate lock acquisition, and retry after an unknown provider outcome are denied without side effects and expose the applicable lock, inaccessible, unknown-provider-outcome, or reconciliation-required state.
 
@@ -549,7 +586,7 @@ The MVP must include these quality gates:
 
 - Every current Contract Spine operation has exactly one C13 parity row; additions without a row and undeclared removals fail the gate. The current generated inventory, not a hard-coded count in this PRD, is the denominator.
 - Every protected operation family is covered by the canonical authorization matrix for tenant administrator, member, delegated agent, tenant-scoped operator, auditor, wrong-tenant, revoked, stale, and hidden-resource cases. Security/Authorization owns this matrix, and release is blocked until its linked inventory is approved.
-- 100% provider contract suite pass for each supported provider before marking that provider ready.
+- Each supported provider must achieve a 100% pass rate on the provider contract suite before being marked ready.
 - Zero event schemas, logs, traces, projections, console responses, or audit records containing file contents, provider tokens, credential material, or secrets.
 - Idempotency tests cover every mutating Contract Spine operation and prove no duplicate events, provider writes, file changes, repositories, commits, audits, or idempotency records; every non-mutating operation rejects idempotency keys.
 - Tenant isolation tests proving no cross-tenant read, write, lock, commit, provider, audit, or projection access.
@@ -660,7 +697,7 @@ Provider readiness is a gate, not a passive feature. If GitHub or Forgejo readin
 - No archived-folder restore, hard deletion, remote-repository deletion, or provider-history rewrite. Archive preserves the binding as metadata but never deletes or mutates the provider repository.
 - No file editing or file-content browsing in the operations console.
 - No raw file diffs or file-content display in the operations console.
-- No broad provider framework beyond proving GitHub and Forgejo well.
+- No broad provider framework beyond fully validating GitHub and Forgejo support.
 - No incoming provider webhook ingestion; any future webhook surface requires an approved tenant-routing design.
 - No cross-workspace body-content indexing or indexed body recall; FR58 is metadata-token recall until separate Security and PM approval. Bounded direct body search inside the currently authorized live workspace remains part of FR34–FR35.
 - No secret material storage in Hexalith.Folders; only credential references may appear where authorized.
@@ -723,8 +760,8 @@ Functional Requirements are organized by capability area. Each block traces back
 
 ### Folder Lifecycle
 
-- FR11: Authorized actors can create logical folders within a tenant.
-- FR12: Authorized actors can inspect folder lifecycle and binding status.
+- FR11: Authorized actors with fresh tenant authority can create a logical folder within that tenant and receive its tenant-scoped managed identity and initial lifecycle state; denial creates no folder or provider side effect and uses the safe authorization/lifecycle result.
+- FR12: Authorized actors can inspect folder lifecycle and binding status with freshness and availability metadata; an unauthorized, hidden, stale, or unavailable state uses the canonical non-enumerating result rather than partial binding details.
 - FR13: Authorized actors can archive a folder only when it has no active task or lock and no `changes_staged`, `dirty`, `unknown_provider_outcome`, or `reconciliation_required` workspace. Archive denies later repository, workspace, file, and commit mutations with a stable, non-enumerating lifecycle result; tenant administrators may still revoke access and administer legal-hold or retention metadata through separately authorized governance operations. The provider repository remains provider-owned and is neither deleted nor mutated by archive.
 - FR14: Archived-folder views retain each metadata-only lifecycle, audit, lock, timeline, and last-commit field for that field's C3 data-class period. When one class expires before another, the view omits the expired field and exposes its safe retention-expired marker; it never extends a shorter class to match seven-year audit retention. File content, credentials, and unauthorized existence remain hidden.
 
@@ -733,9 +770,9 @@ Functional Requirements are organized by capability area. Each block traces back
 - FR15: Tenant administrators can configure supported Git provider bindings, credential references, repository naming/default-ref policy, and required capability policy; platform engineers can validate the resulting readiness.
 - FR16: Authorized actors can validate provider readiness before repository-backed folder creation or binding.
 - FR17: The system can report provider readiness diagnostics with safe reason, retryability, remediation category, provider reference, and correlation ID.
-- FR18: Authorized actors can create a repository-backed folder when readiness checks pass.
+- FR18: Authorized actors can create a repository-backed folder when readiness checks pass and receive its canonical provider/repository binding plus inspectable folder/workspace state; failed readiness or authorization creates no repository or binding side effect and returns the canonical safe result.
 - FR19: Authorized actors can bind a pre-created provider repository when readiness, repository access, duplicate/alias detection, and branch/ref policy pass; unsupported eligibility is rejected without revealing unauthorized repository existence.
-- FR20: Authorized actors can define or select the branch/ref policy used by repository-backed folder tasks.
+- FR20: Authorized tenant administrators can define or select the branch/ref policy used by repository-backed folder tasks; an accepted policy becomes part of readiness, binding, and the canonical serializing target, while invalid or unauthorized changes are rejected without changing the active binding.
 - FR21: The system can expose provider, credential-reference, repository-binding, branch/ref, and capability metadata without exposing secrets.
 - FR22: The system can expose GitHub and Forgejo capability differences required to complete the canonical lifecycle.
 - FR23: Platform engineers can inspect provider product, instance identity, observed version/API profile, accepted credential profile, and supported/unsupported/unknown capability status for the canonical lifecycle; unknown or incompatible evidence cannot report ready.
@@ -756,16 +793,16 @@ Functional Requirements are organized by capability area. Each block traces back
 - FR32: Authorized actors can apply one or many add/change/remove mutations within a prepared, freshly authorized, locked task workspace without auto-commit; a first-class move/rename is not MVP and is represented by add plus remove under the same task and commit.
 - FR33: The system can reject file operations that violate workspace boundary, path, branch/ref, lock, tenant, provider, or folder policy.
 - FR34: Authorized actors can request policy-filtered live-workspace context through tree, metadata, glob, bounded range, and supported text-body search with at most 100 requested paths, 2,000 tree entries, 500 search/glob results, a 262,144-byte bounded range, a 1,048,576-byte aggregate response, and 2 seconds of server execution.
-- FR35: Live-workspace context queries enforce authorization and path policy before filtering or shaping; body-search results contain only authorized C9-wrapped relative identity, line/byte location, match classification, and a bounded live snippet. Supported truncation sets `isTruncated`, range/file content is never silently truncated, and unsupported excess returns the stable input/response-limit result without logging raw queries, path lists, content, or hidden existence.
+- FR35: Live-workspace context queries enforce authorization and path policy before filtering or shaping; body-search results contain only authorized C9-wrapped relative identity, line/byte location, match classification, and a bounded live snippet. Supported truncation sets `isTruncated`, range and file content are never silently truncated, and a request whose excess cannot be handled by supported truncation returns the stable input/response-limit result without logging raw queries, path lists, content, or hidden existence.
 - FR36: The operations console must remain read-only and excluded from file editing or file-content browsing capabilities.
 
 ### Commit, Evidence, and Idempotency
 
-- FR37: Authorized actors can commit a valid locked workspace only when fresh authorization holds; success requires provider-confirmed durable update of the bound remote/ref and returns the commit reference. An unconfirmed result first enters `unknown_provider_outcome`; only exhausted/conflicting automatic evidence enters `reconciliation_required`.
+- FR37: Authorized actors can commit a valid locked workspace only when fresh authorization holds; success requires provider-confirmed durable update of the bound remote/ref and returns the commit reference. An unconfirmed result first moves the workspace to `unknown_provider_outcome`; only exhausted or conflicting automatic evidence moves it to `reconciliation_required`.
 - FR38: Authorized actors can attach task, operation, correlation, actor, author, branch/ref, commit message, and changed-path metadata to file operations and commits only within the Contract Spine's closed length/character constraints and C9 classification. Suspected secrets or content-like payloads in metadata are rejected before provider, event, audit, or diagnostic emission.
 - FR39: The system exposes metadata-only task and commit evidence including provider, repository binding, tenant-sensitive branch/ref and changed-path metadata, durable result status, commit reference, timestamps, task ID, operation ID, and correlation ID under C9 classification.
 - FR40: The system reports failed, incomplete, duplicate, retried, or conflicting operations with stable status and audit evidence; `unknown_provider_outcome` instructs callers to wait/query during bounded automatic checks, while `reconciliation_required` blocks retry and instructs human escalation.
-- FR41: Every mutating Contract Spine operation supports idempotent retry while its idempotency record is unexpired within the declared retention tier: equivalent tenant-scoped intent returns the same logical result and cannot duplicate events, provider writes, files, repositories, commits, audits, or idempotency records. After expiry, the old key returns `idempotency_key_expired`, requires state refresh, and never executes automatically as new intent.
+- FR41: Every mutating Contract Spine operation supports idempotent retry while its idempotency record is unexpired within the declared retention tier: equivalent tenant-scoped intent returns the same logical result and cannot duplicate events, provider writes, files, repositories, commits, audits, or idempotency records. After expiry, the old key returns `idempotency_key_expired`, requires state refresh, and never executes automatically as a new intent.
 - FR42: While an idempotency record is unexpired, reuse of its key with different intent returns the canonical idempotency-conflict result without revealing protected prior intent; an expired key returns `idempotency_key_expired` regardless of submitted intent, and non-mutating operations reject idempotency keys.
 
 ### Error, Status, and Diagnostics Contract
@@ -777,10 +814,10 @@ Functional Requirements are organized by capability area. Each block traces back
 
 ### Cross-Surface Contract
 
-- FR47: API consumers can use the versioned REST transport for every current Contract Spine operation, with emitted schemas validated against the canonical OpenAPI 3.1 spine.
-- FR48: CLI users can perform the canonical repository-backed task lifecycle with equivalent operation identity, status, errors, and audit behavior.
-- FR49: MCP clients can perform the canonical repository-backed task lifecycle with equivalent operation identity, status, errors, and audit behavior.
-- FR50: SDK consumers can perform the canonical repository-backed task lifecycle with equivalent operation identity, status, errors, and audit behavior.
+- FR47: API consumers can use the versioned REST transport for every current Contract Spine operation, with emitted schemas validated against the canonical OpenAPI 3.1 spine and every C13-required REST cell passing the shared authorization, idempotency, lifecycle, error, and audit scenarios.
+- FR48: CLI users can perform every C13-required CLI cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
+- FR49: MCP clients can perform every C13-required MCP cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
+- FR50: SDK consumers can perform every C13-required SDK cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
 - FR51: The system can expose cross-surface equivalence for authorization behavior, error categories, operation IDs, audit records, status transitions, and provider capability behavior.
 
 ### Audit and Operations Visibility
@@ -789,7 +826,7 @@ Functional Requirements are organized by capability area. Each block traces back
 - FR53: Operators and audit reviewers can inspect metadata-only audit trails for successful, denied, failed, retried, and duplicate operations.
 - FR54: Authorized audit reviewers can reconstruct incidents from immutable C9-classified metadata covering actor, tenant, task, operation/correlation identity, provider, binding, folder, result, timestamp, lifecycle/lock state, and durable commit reference without exposing file bodies or hidden resources.
 - FR55: File contents, diffs, generated context, provider payloads/tokens, credential material, secrets, and unauthorized existence are excluded from events, logs, traces, metrics, projections, audit, diagnostics, errors, and console responses; redaction is visibly distinct from missing or unknown.
-- FR56: Normal operation timelines come from projections; during projection degradation, the authorized incident view may expose bounded redacted event evidence with a persistent warning, last checkpoint, correlation ID, and time window, but no mutation or repair path.
+- FR56: Normal operation timelines come from projections. During projection degradation, bounded redacted event evidence is available only if, before any stream lookup, event counting, checkpoint lookup, filtering, or shaping, the same actor holds incident-admin permission and fresh current tenant/folder authorization. The view remains metadata-only and read-only, shows a persistent degraded warning, last checkpoint, correlation ID, and time window, and exposes no mutation or repair path; missing-admin, wrong-tenant, revoked, stale, hidden-resource, and folder-denied attempts fail before observation and emit one safe denial audit record.
 - FR57: Platform engineers can inspect provider support evidence for GitHub and Forgejo where it affects operational readiness.
 
 ### Authorized Search Facade
@@ -820,14 +857,14 @@ Cross-workspace body-content indexing, indexed body snippets, and indexed body r
 - Workspace lifecycle uses only the canonical lowercase wire states defined in the Glossary; lock state and generic operation-execution status are separate dimensions and must be labeled as such.
 - Every accepted operation exposes operation identity, workspace lifecycle, applicable lock state, projection freshness, and a terminal or inspectable non-terminal outcome.
 - Repository-backed task lifecycle operations must leave an inspectable final or intermediate state after interruption, provider failure, commit failure, lock contention, read-model lag, or retry.
-- Unconfirmed external effects immediately enter `unknown_provider_outcome` and permit only bounded automatic read-only checks; exhausted or conflicting evidence enters `reconciliation_required`, blocks retry/mutation/takeover, and requires human escalation. These states never collapse into a generic failure.
+- When an external effect is unconfirmed, the workspace immediately enters `unknown_provider_outcome` and permits only bounded automatic read-only checks; exhausted or conflicting evidence moves the workspace to `reconciliation_required`, blocks retry, mutation, and takeover, and requires human escalation. These states never collapse into a generic failure.
 - Idempotency keys are required for every mutating Contract Spine operation; non-mutating operations reject them.
-- While the idempotency record is unexpired within its declared retention tier, a repeated call with the same key and equivalent payload must return the same logical result, and the same key with a conflicting payload must return an idempotency conflict. After expiry, either use returns `idempotency_key_expired`, requires state refresh, and never executes automatically as a new request.
+- While the idempotency record is unexpired within its declared retention tier, a repeated call with the same key and equivalent payload must return the same logical result, and the same key with a conflicting payload must return an idempotency conflict. After expiry, either form of key reuse returns `idempotency_key_expired`, requires state refresh, and never executes automatically as a new request.
 - Idempotent lifecycle operations must not create duplicate domain events, duplicate provider writes, duplicate file changes, duplicate repositories, or duplicate commits.
 - Lock acquisition is deterministic and limited to one active writer per managed tenant plus canonical provider/repository identity plus normalized target ref; aliases resolving to that identity collide.
 - Lock behavior must define conflict response, lease duration, renewal behavior, expiry behavior, cleanup after failed commit, and whether commit releases the lock.
 - Lock contention, stale locks, abandoned locks, and interrupted tasks must produce deterministic status, retry eligibility, reason code, timestamp, and correlation ID.
-- A successful committed state requires provider-confirmed durable update of the bound remote/ref. A timeout or unconfirmed remote result first enters `unknown_provider_outcome`; only exhausted or conflicting bounded evidence checks enter `reconciliation_required`, and neither state permits blind retry.
+- A successful committed state requires provider-confirmed durable update of the bound remote/ref. A timeout or unconfirmed remote result first moves the workspace to `unknown_provider_outcome`; only exhausted or conflicting bounded evidence checks move it to `reconciliation_required`, and neither state permits blind retry.
 - Failure visibility must expose state, cause category, retryability, and correlation ID without providing automated remediation in MVP.
 
 ### Performance and Query Bounds
@@ -868,10 +905,10 @@ Cross-workspace body-content indexing, indexed body snippets, and indexed body r
 
 ### Observability, Auditability, and Replay
 
-- Every successful, denied, failed, retried, duplicate, lock, file, commit, provider-readiness, and status-transition operation must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
+- Every successful, denied, failed, retried, or duplicate operation—including lock, file, commit, provider-readiness, and status-transition operations—must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
 - Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
 - Paths, commit messages, repository names, and branch names are tenant-sensitive by default under C9; authorized tenant/scoped-operator views may display them, cross-tenant/external diagnostics redact them, and a tenant confidential override stores only the stable tenant-scoped correlation token at audit/projection write time. Confidential incident reconstruction links operations through that token and operation/correlation identity; it does not promise recovery of the original cleartext. Provider payloads, file bodies, secrets, and generated context remain forbidden.
-- Operations-console views are projection-first, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata. During projection degradation, the bounded incident view may expose redacted event evidence only with incident-admin plus normal tenant/folder access, a persistent warning, last checkpoint, correlation ID, and time window.
+- Operations-console views are projection-first, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata. During projection degradation, the bounded incident view may expose redacted event evidence only to an actor with incident-admin permission and normal tenant/folder access. The view must include a persistent warning, last checkpoint, correlation ID, and time window.
 - Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
 - Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
 - The system must expose operational signals for provider readiness failures, stale projections, lock conflicts, dirty workspaces, failed commits, inaccessible workspaces, retryability, and cleanup status.
@@ -913,8 +950,8 @@ These items do not reopen the approved scope or fail-closed invariants above. OQ
 | OQ5 | Replace the fail-safe but functionally empty FR58 search/status facade with evidence for authorized non-empty metadata-token results, indexing status, stale/unauthorized hit removal, and unavailable behavior. | Search/Delivery | Blocks FR58 implementation readiness; close when coverage and tests round-trip FR58 and both C13 operations. | `docs/exit-criteria/fr58-search-evidence.md`; PM, Security, and Test approvers. |
 | OQ6 | Replace seed-only console/read-model diagnostics with projection-backed readiness, lifecycle, lock, failure, timeline, and transition evidence. | Console + Projections/Delivery | Blocks console implementation readiness; close when positive, degraded, and replay scenarios populate approved projections. | `docs/exit-criteria/console-projection-evidence.md`; PM, Operations/UX, and Test approvers. |
 | OQ7 | Align architecture and contract evidence to the managed-tenant plus canonical provider/repository plus normalized-ref lock identity, including alias collisions. | Architecture + Locking/Delivery | Blocks FR25–FR29 implementation readiness; close when lock contracts, transitions, and tests use that identity. | `docs/contract/workspace-lock-contract-groups.md` and C6 evidence; Architecture and Security approvers. |
-| OQ8 | Align architecture, Contract Spine, SDK, and C13 evidence to the all-mutations idempotency rule and read-key rejection. | Architecture + Contract/Delivery | Blocks idempotency completeness; close when every mutating operation and every read cell passes the rule. | `docs/contract/idempotency-and-parity-rules.md` plus versioned C13 snapshot; Architecture, Security, and Test approvers. |
+| OQ8 | Align architecture, Contract Spine, SDK, C13, storage/retention evidence, and tests to the all-mutations idempotency rule, read-key rejection, expired-key precedence, and minimal metadata-only consumed-key digest/tombstone evidence that keeps an expired key recognizable after replay-result expiry. | Architecture + Contract/Delivery | Blocks idempotency completeness; close when every mutating operation and read cell passes the rule and equivalent or conflicting reuse of an expired key deterministically returns `idempotency_key_expired` without re-execution or protected prior-intent disclosure. | `docs/contract/idempotency-and-parity-rules.md` plus versioned C13 snapshot and canonical consumed-key retention evidence; Architecture, Security, and Test approvers. |
 | OQ9 | Prove incident access requires both incident-admin permission and current tenant/folder authorization, with C9 redaction and denial audit. | Security + Console/Delivery | Blocks incident-view acceptance; close when positive, revoked, wrong-tenant, hidden-resource, and degraded tests pass. | `docs/exit-criteria/incident-access-evidence.md`; Security and PM approvers. |
 | OQ10 | Publish the release-calibration plan with frozen populations, exclusions, environments, scenarios, methods, evidence owners, and approval rules for SM1–SM8 and CM1–CM4. | PM + Test/Quality | Blocks use of metric results for release acceptance; close before calibration evidence is collected. | `docs/exit-criteria/release-calibration-plan.md`; PM and Test/Quality approvers. |
 
-An open item closes only when its canonical evidence exists, every accountable approver records identity and approval date, and the governance record stores approved status plus the evidence version/digest. Delivery completion or a passing test alone cannot close an item, and any later evidence change reopens approval.
+An open item closes only when its canonical evidence exists, every accountable approver records their identity and approval date, and the governance record stores the approved status and the evidence version and digest. Delivery completion or a passing test alone cannot close an item, and any later evidence change reopens approval.
