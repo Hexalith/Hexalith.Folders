@@ -220,8 +220,17 @@ so that a tenant folder can use GitHub without provider-specific leakage, duplic
 | Date | Change | Author |
 |---|---|---|
 | 2026-07-19 | Created Story 3.10 with the approved GitHub provisioning/binding/ref split, secure target-resolution boundary, duplicate/alias equivalence, unknown-outcome safety, OQ4 acceptance gate, and hermetic concrete-transport verification plan. | Codex |
+| 2026-07-19 | Implemented the GitHub create/bind transport slice, secure target resolver seam, compatibility catalog, canonical failure/reconciliation behavior, and hermetic boundary/transport/restart tests. Kept the story in progress because OQ8 expired-key authority and two pre-existing contract traceability failures prevent the completion gates from passing. | Codex |
 
 ## Dev Agent Record
+
+### Implementation Plan
+
+- Reconcile the split-story authority, Contract Spine impact, Octokit/API pins, readiness ownership, and OQ4 limits before touching runtime code.
+- Add a fail-closed, post-authorization resolver seam that converts opaque repository/policy references into a short-lived provider target without adding raw locators to public or durable models.
+- Implement organization repository creation and existing-repository reconciliation through the retained Octokit client, with canonical identity proof and no blind retry after ambiguous dispatch.
+- Implement canonical binding, exact default/selected branch, permissions, branch protection, alias/duplicate, concealment, and unsupported-ref behavior through read-only Octokit calls.
+- Extend canonical failure mapping, bounded retry evidence, restart-safe results, leakage guards, and deterministic fake-transport coverage before broader repository validation.
 
 ### Agent Model Used
 
@@ -235,6 +244,13 @@ GPT-5 Codex
 - 2026-07-19: `dotnet-inspect` verified the locally pinned Octokit 14 repository/branch APIs and the absence of high-level cancellation-token overloads. Official GitHub REST sources were checked for the current supported API profiles, creation defaults, permissions, ref behavior, and rate-limit evidence.
 - 2026-07-19: Identified the critical model mismatch: creation lacks a GitHub target, while existing repository/policy references are deliberately opaque and `ProviderTargetEvidence` forbids raw target labels. Added a post-authorization, memory-only target/policy resolver as an explicit prerequisite.
 - 2026-07-19: The provider compatibility catalog required by OQ4 is absent. Story 3.10 may implement against pinned assumptions but cannot self-approve OQ4 or claim full GitHub provider readiness.
+- 2026-07-19: Red/green implementation added the internal authorized-target resolver seam, fail-closed production registration, repository-profile handoff, explicit REST-version header transport, real Octokit create/bind calls, canonical repository identity checks, exact branch/protection validation, rate-limit distinction, bounded retry evidence, and ambiguous-mutation classification.
+- 2026-07-19: Concrete fake-transport tests cover request method/path/body/product/accept/auth/version headers, no implicit initialization, equivalent/conflicting existing repositories, canonical aliases, branch/default/protection/permission behavior, 400/401/ordinary 403/404/409/422/429/5xx responses, primary and secondary 403/429 limits, malformed responses, cancellation before dispatch, timeout/disconnect after dispatch, and sentinel exclusion.
+- 2026-07-19: Leakage review found the synthesized record `ToString()` exposed raw resolved target values. A failing sentinel test reproduced it; `ProviderRepositoryResolvedTarget.ToString()` is now opaque and the test passes.
+- 2026-07-19: Focused GitHub provider/transport tests passed 113/113; full `Hexalith.Folders.Tests` passed 1432/1432; full worker tests passed 80/80; focused provider docs/contract tests passed 20/20; `dotnet build Hexalith.Folders.slnx --no-restore` passed with 0 warnings and 0 errors; `git diff --check` passed.
+- 2026-07-19: HALT blocker — AC7 and the replay/expiry subtasks require `idempotency_key_expired` before provider access, but the current authoritative folder ledger exposes only `Missing`, `Found`, and `Unavailable`; no retention tier, expiry timestamp, or consumed-key tombstone exists. OQ8 explicitly owns that unresolved cross-contract/storage decision, so this story cannot safely invent expiry behavior.
+- 2026-07-19: HALT blocker — full `Hexalith.Folders.Contracts.Tests` ran 283 tests with 281 passing and two pre-existing traceability failures: `PrdAndEpicsNfrInventoriesAlignOneForOne` expects 70 PRD NFR bullets but finds 73, and `TraceabilityTableHasSeventyRowsMatchingPrdHashes` reports an NFR1 hash mismatch. The failing planning/traceability files are unchanged by this implementation.
+- 2026-07-19: `dotnet format Hexalith.Folders.slnx --no-restore --verify-no-changes --verbosity minimal` is not a usable clean gate on the current baseline: it reports extensive pre-existing whitespace/end-of-line/naming diagnostics across root projects and root-declared submodules. Formatting was applied only to the owned changed files; the solution build remains warning-free.
 
 ### Completion Notes List
 
@@ -243,8 +259,44 @@ GPT-5 Codex
 - Sprint status updated to mark `3-10-github-repository-provisioning-binding-and-branch-ref-behavior` as `ready-for-dev`.
 - Validation checklist applied against the authority chain, complete planning inputs, current implementation, previous story learnings, Git history, locally pinned Octokit surface, official GitHub behavior, scope boundaries, and sensitive-data/retry regression traps.
 - The story keeps GitHub provider execution in 3.10, policy configuration in 3.8, file/commit/status in 3.11, Forgejo behavior in 3.12/3.13, and terminal asynchronous completion in 3.14.
+- Implemented the concrete Story 3.10 provider slice without absorbing Story 3.3 readiness, Story 3.8 policy ownership, Story 3.11 content operations, or Story 3.14 runtime subscription/final transition.
+- Added restart/round-trip evidence proving equivalent-existing and ambiguous outcomes do not trigger a second provider mutation after process-manager reconstruction.
+- Created the compatibility catalog as pending human evidence only; production target resolution remains intentionally fail-closed until the authoritative Story 3.8 policy source exists.
+- Story completion is intentionally withheld: expired-key behavior cannot be implemented until OQ8 defines and exposes canonical retention/tombstone evidence, and the repository-wide contract regression gate is not green.
 
 ### File List
 
 - `_bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `docs/contract/provider-compatibility-catalog.md`
+- `docs/operations/provider-integration-and-testing.md`
+- `src/Hexalith.Folders.Workers/RepositoryProvisioning/RepositoryProvisioningProcessManager.cs`
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/IProviderRepositoryTargetResolver.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryBindingTargetResolutionRequest.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryCreationRequest.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryCreationTargetResolutionRequest.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryRefKind.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryResolvedTarget.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryTargetResolutionResult.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryVisibility.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/UnconfiguredProviderRepositoryTargetResolver.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubApiFailureCondition.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubApiVersionHttpClient.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubFailureMapper.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubProvider.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryBindingRequest.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryBindingResult.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryCreationRequest.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubRepositoryCreationResult.cs`
+- `src/Hexalith.Folders/Providers/GitHub/GitHubSafeTargetFingerprint.cs`
+- `src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs`
+- `src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClientFactory.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubDependencyGuardTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/RecordedGitHubHttpRequest.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingGitHubCredentialResolver.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingGitHubHttpMessageHandler.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/RecordingProviderRepositoryTargetResolver.cs`
+- `tests/Hexalith.Folders.Workers.Tests/RepositoryProvisioningProcessManagerTests.cs`

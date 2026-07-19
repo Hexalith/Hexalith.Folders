@@ -54,7 +54,8 @@ public sealed class GitHubProviderTests
     {
         RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("ghp_123456789012345678901234567890123456");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
-        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient));
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -67,8 +68,13 @@ public sealed class GitHubProviderTests
         credentialResolver.Calls.ShouldBe(1);
         credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
         credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        targetResolver.CreationCalls.ShouldBe(1);
+        targetResolver.LastCreationRequest.ShouldNotBeNull().RepositoryProfileRef.ShouldBe("repository-profile-a");
         apiClient.RepositoryCreationCalls.ShouldBe(1);
-        apiClient.LastRepositoryCreationRequest.ShouldNotBeNull().SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        GitHubRepositoryCreationRequest sent = apiClient.LastRepositoryCreationRequest.ShouldNotBeNull();
+        sent.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        sent.Target.Owner.ShouldBe("octokit-owner-sentinel");
+        sent.Target.RepositoryName.ShouldBe("octokit-repository-sentinel");
 
         string serialized = JsonSerializer.Serialize(result);
         serialized.ShouldNotContain("ghp_123456789012345678901234567890123456", Case.Sensitive);
@@ -81,7 +87,8 @@ public sealed class GitHubProviderTests
     {
         RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("ghp_123456789012345678901234567890123456");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
-        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient));
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -94,10 +101,13 @@ public sealed class GitHubProviderTests
         credentialResolver.Calls.ShouldBe(1);
         credentialResolver.LastRequest.ShouldNotBeNull().CredentialReferenceId.ShouldBe("credential-ref-a");
         credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
+        targetResolver.BindingCalls.ShouldBe(1);
+        targetResolver.LastBindingRequest.ShouldNotBeNull().ExternalRepositoryRef.ShouldBe("external-repository-a");
         apiClient.RepositoryBindingCalls.ShouldBe(1);
-        apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRef.ShouldBe("external-repository-a");
-        apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().ExternalRepositoryRefFingerprint.ShouldBe("external-ref-fingerprint-a");
-        apiClient.LastRepositoryBindingRequest.ShouldNotBeNull().SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        GitHubRepositoryBindingRequest sent = apiClient.LastRepositoryBindingRequest.ShouldNotBeNull();
+        sent.Target.Owner.ShouldBe("octokit-owner-sentinel");
+        sent.Target.RepositoryName.ShouldBe("octokit-repository-sentinel");
+        sent.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
 
         string serialized = JsonSerializer.Serialize(result);
         serialized.ShouldNotContain("ghp_123456789012345678901234567890123456", Case.Sensitive);
@@ -111,7 +121,8 @@ public sealed class GitHubProviderTests
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryCreationEquivalentExisting();
         GitHubProvider provider = new(
             RecordingGitHubCredentialResolver.Success("token"),
-            new RecordingGitHubApiClientFactory(apiClient));
+            new RecordingGitHubApiClientFactory(apiClient),
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -129,7 +140,8 @@ public sealed class GitHubProviderTests
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryBindingEquivalentExisting();
         GitHubProvider provider = new(
             RecordingGitHubCredentialResolver.Success("token"),
-            new RecordingGitHubApiClientFactory(apiClient));
+            new RecordingGitHubApiClientFactory(apiClient),
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -147,11 +159,19 @@ public sealed class GitHubProviderTests
     [InlineData("PermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient")]
     [InlineData("NotFoundOrHidden", ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing")]
     [InlineData("RepositoryConflict", ProviderFailureCategory.ProviderConflict, "github_repository_conflict")]
+    [InlineData("DefaultBranchConflict", ProviderFailureCategory.ProviderConflict, "github_default_branch_conflict")]
+    [InlineData("MissingBranchOrRef", ProviderFailureCategory.ProviderValidationFailed, "github_branch_or_ref_missing")]
+    [InlineData("UnsupportedRefOperation", ProviderFailureCategory.UnsupportedProviderCapability, "github_ref_operation_unsupported")]
+    [InlineData("ContentsPermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_contents_permission_insufficient")]
+    [InlineData("AdministrationPermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_administration_permission_insufficient")]
     [InlineData("BranchProtectionConflict", ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict")]
     [InlineData("PrimaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited")]
     [InlineData("SecondaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited")]
     [InlineData("ServerUnavailable", ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable")]
+    [InlineData("CancellationBeforeDispatch", ProviderFailureCategory.ProviderTransientFailure, "github_operation_cancelled_before_dispatch")]
+    [InlineData("TimeoutDuringObservation", ProviderFailureCategory.ProviderUnavailable, "github_evidence_temporarily_unavailable")]
     [InlineData("TimeoutDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown")]
+    [InlineData("AmbiguousMutationResponse", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_evidence_ambiguous")]
     [InlineData("MalformedResponse", ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response")]
     [InlineData("UnexpectedTransportFailure", ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown")]
     public async Task MapsGitHubRepositoryCreationFailures(
@@ -163,7 +183,8 @@ public sealed class GitHubProviderTests
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryCreationFailure(condition);
         GitHubProvider provider = new(
             RecordingGitHubCredentialResolver.Success("token"),
-            new RecordingGitHubApiClientFactory(apiClient));
+            new RecordingGitHubApiClientFactory(apiClient),
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -181,11 +202,19 @@ public sealed class GitHubProviderTests
     [InlineData("PermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient")]
     [InlineData("NotFoundOrHidden", ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing")]
     [InlineData("RepositoryConflict", ProviderFailureCategory.ProviderConflict, "github_repository_conflict")]
+    [InlineData("DefaultBranchConflict", ProviderFailureCategory.ProviderConflict, "github_default_branch_conflict")]
+    [InlineData("MissingBranchOrRef", ProviderFailureCategory.ProviderValidationFailed, "github_branch_or_ref_missing")]
+    [InlineData("UnsupportedRefOperation", ProviderFailureCategory.UnsupportedProviderCapability, "github_ref_operation_unsupported")]
+    [InlineData("ContentsPermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_contents_permission_insufficient")]
+    [InlineData("AdministrationPermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_administration_permission_insufficient")]
     [InlineData("BranchProtectionConflict", ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict")]
     [InlineData("PrimaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited")]
     [InlineData("SecondaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited")]
     [InlineData("ServerUnavailable", ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable")]
+    [InlineData("CancellationBeforeDispatch", ProviderFailureCategory.ProviderTransientFailure, "github_operation_cancelled_before_dispatch")]
+    [InlineData("TimeoutDuringObservation", ProviderFailureCategory.ProviderUnavailable, "github_evidence_temporarily_unavailable")]
     [InlineData("TimeoutDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown")]
+    [InlineData("AmbiguousMutationResponse", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_evidence_ambiguous")]
     [InlineData("MalformedResponse", ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response")]
     [InlineData("UnexpectedTransportFailure", ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown")]
     public async Task MapsGitHubRepositoryBindingFailures(
@@ -197,7 +226,8 @@ public sealed class GitHubProviderTests
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryBindingFailure(condition);
         GitHubProvider provider = new(
             RecordingGitHubCredentialResolver.Success("token"),
-            new RecordingGitHubApiClientFactory(apiClient));
+            new RecordingGitHubApiClientFactory(apiClient),
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -214,9 +244,11 @@ public sealed class GitHubProviderTests
     {
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.RepositoryCreationThrows(
             new TimeoutException("repository-secret-timeout"));
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
         GitHubProvider provider = new(
-            RecordingGitHubCredentialResolver.Success("token"),
-            new RecordingGitHubApiClientFactory(apiClient));
+            credentialResolver,
+            new RecordingGitHubApiClientFactory(apiClient),
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -226,6 +258,7 @@ public sealed class GitHubProviderTests
         result.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
         result.ReasonCode.ShouldBe("github_repository_creation_outcome_unknown");
         apiClient.RepositoryCreationCalls.ShouldBe(1);
+        credentialResolver.CredentialIsDisposed.ShouldBeTrue();
         JsonSerializer.Serialize(result).ShouldNotContain("repository-secret-timeout", Case.Sensitive);
     }
 
@@ -236,7 +269,8 @@ public sealed class GitHubProviderTests
             new TimeoutException("repository-secret-timeout"));
         GitHubProvider provider = new(
             RecordingGitHubCredentialResolver.Success("token"),
-            new RecordingGitHubApiClientFactory(apiClient));
+            new RecordingGitHubApiClientFactory(apiClient),
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -255,7 +289,10 @@ public sealed class GitHubProviderTests
         RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
         RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
-        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+        GitHubProvider provider = new(
+            credentialResolver,
+            apiClientFactory,
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
             Request(
@@ -280,7 +317,10 @@ public sealed class GitHubProviderTests
         RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
         RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
-        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+        GitHubProvider provider = new(
+            credentialResolver,
+            apiClientFactory,
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
             Request(credentialModes: []),
@@ -445,7 +485,10 @@ public sealed class GitHubProviderTests
             "provider_credential_reference_missing");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
         RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
-        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+        GitHubProvider provider = new(
+            credentialResolver,
+            apiClientFactory,
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -469,7 +512,10 @@ public sealed class GitHubProviderTests
             "provider_credential_reference_denied");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
         RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
-        GitHubProvider provider = new(credentialResolver, apiClientFactory);
+        GitHubProvider provider = new(
+            credentialResolver,
+            apiClientFactory,
+            RecordingProviderRepositoryTargetResolver.Success());
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -483,6 +529,55 @@ public sealed class GitHubProviderTests
         credentialResolver.LastRequest.ShouldNotBeNull().ProviderBindingRef.ShouldBe("binding-a");
         apiClientFactory.Calls.ShouldBe(0);
         apiClient.RepositoryBindingCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RepositoryTargetResolutionFailureShortCircuitsBeforeCredentialsAndClientCreation()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Failure(
+            ProviderFailureCategory.ProviderConfigurationMissing,
+            "github_repository_target_unavailable");
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        RecordingGitHubApiClientFactory apiClientFactory = new(apiClient);
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConfigurationMissing);
+        result.ReasonCode.ShouldBe("github_repository_target_unavailable");
+        targetResolver.CreationCalls.ShouldBe(1);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        apiClient.RepositoryCreationCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task StaleCreationEvidenceFailsBeforeTargetResolutionOrCredentialAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest() with
+            {
+                AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
+                    "stale-authorization-evidence",
+                    DateTimeOffset.Parse("2026-07-19T00:00:00+00:00"),
+                    "stale"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("authorization_evidence_stale");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
     }
 
     [Fact]
@@ -557,11 +652,19 @@ public sealed class GitHubProviderTests
     [InlineData("PermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient", false)]
     [InlineData("NotFoundOrHidden", ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing", false)]
     [InlineData("RepositoryConflict", ProviderFailureCategory.ProviderConflict, "github_repository_conflict", false)]
+    [InlineData("DefaultBranchConflict", ProviderFailureCategory.ProviderConflict, "github_default_branch_conflict", false)]
+    [InlineData("MissingBranchOrRef", ProviderFailureCategory.ProviderValidationFailed, "github_branch_or_ref_missing", false)]
+    [InlineData("UnsupportedRefOperation", ProviderFailureCategory.UnsupportedProviderCapability, "github_ref_operation_unsupported", false)]
+    [InlineData("ContentsPermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_contents_permission_insufficient", false)]
+    [InlineData("AdministrationPermissionInsufficient", ProviderFailureCategory.ProviderPermissionInsufficient, "github_administration_permission_insufficient", false)]
     [InlineData("BranchProtectionConflict", ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict", false)]
     [InlineData("PrimaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited", true)]
     [InlineData("SecondaryRateLimit", ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited", true)]
     [InlineData("ServerUnavailable", ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable", true)]
+    [InlineData("CancellationBeforeDispatch", ProviderFailureCategory.ProviderTransientFailure, "github_operation_cancelled_before_dispatch", true)]
+    [InlineData("TimeoutDuringObservation", ProviderFailureCategory.ProviderUnavailable, "github_evidence_temporarily_unavailable", true)]
     [InlineData("TimeoutDuringMutation", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown", false)]
+    [InlineData("AmbiguousMutationResponse", ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_evidence_ambiguous", false)]
     [InlineData("MalformedResponse", ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response", false)]
     [InlineData("UnexpectedTransportFailure", ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown", false)]
     public async Task MapsGitHubFailuresToCanonicalProviderResults(
@@ -700,6 +803,27 @@ public sealed class GitHubProviderTests
         serialized.ShouldNotContain(sentinel, Case.Sensitive);
     }
 
+    [Fact]
+    public void ResolvedTargetStringRepresentationShouldNotExposeRawProviderValues()
+    {
+        ProviderRepositoryResolvedTarget target = new(
+            Owner: "owner-sentinel",
+            RepositoryName: "repository-sentinel",
+            Visibility: ProviderRepositoryVisibility.Private,
+            DefaultBranch: "default-branch-sentinel",
+            SelectedRef: "selected-ref-sentinel",
+            RequireProtectedRef: true,
+            RequireContentsPermission: true,
+            RequireAdministrationPermission: true,
+            ExpectedCanonicalRepositoryId: "canonical-sentinel",
+            EquivalentExistingAuthorized: true);
+
+        string rendered = target.ToString();
+
+        rendered.ShouldBe(nameof(ProviderRepositoryResolvedTarget));
+        rendered.ShouldNotContain("sentinel", Case.Sensitive);
+    }
+
     private static async Task<string> DiscoverSafeTargetFingerprintAsync(
         GitHubProvider provider,
         ProviderCapabilityDiscoveryRequest request)
@@ -761,7 +885,8 @@ public sealed class GitHubProviderTests
                 DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
                 "fresh"),
             CorrelationId: "correlation-a",
-            IdempotencyKey: "idempotency-binding-a");
+            IdempotencyKey: "idempotency-binding-a",
+            RepositoryProfileRef: "repository-profile-a");
 
     private static ProviderRepositoryBindingRequest BindingRequest()
         => new(

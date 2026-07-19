@@ -1,7 +1,7 @@
+using System.Text.Json;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Workers.RepositoryProvisioning;
-
 using Shouldly;
 using Xunit;
 
@@ -120,6 +120,87 @@ public sealed class RepositoryProvisioningProcessManagerTests
         replay.Code.ShouldBe(RepositoryProvisioningResultCode.AlreadyProcessed);
         provider.CreateRepositoryCalls.ShouldBe(1);
         repository.EventsAppended.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task EquivalentExistingReplayAfterRestartShouldNotCallProviderAgain()
+    {
+        RecordingFolderRepository repository = RepositoryWithRequestedBinding();
+        RecordingGitProvider firstProvider = RecordingGitProvider.EquivalentExisting();
+
+        RepositoryProvisioningResult first = await CreateManager(repository, firstProvider).HandleAsync(
+            Requested(),
+            Context(),
+            TestContext.Current.CancellationToken);
+
+        RecordingGitProvider restartedProvider = RecordingGitProvider.Success();
+        RepositoryProvisioningResult replay = await CreateManager(repository, restartedProvider).HandleAsync(
+            Requested(),
+            Context(),
+            TestContext.Current.CancellationToken);
+
+        first.Code.ShouldBe(RepositoryProvisioningResultCode.Bound);
+        replay.Code.ShouldBe(RepositoryProvisioningResultCode.AlreadyProcessed);
+        firstProvider.CreateRepositoryCalls.ShouldBe(1);
+        restartedProvider.CreateRepositoryCalls.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task AmbiguousOutcomeReplayAfterRestartShouldNotCallProviderAgain()
+    {
+        RecordingFolderRepository repository = RepositoryWithRequestedBinding();
+        RecordingGitProvider firstProvider = RecordingGitProvider.Failing(
+            ProviderFailureCategory.UnknownProviderOutcome,
+            "github_mutation_evidence_ambiguous");
+
+        RepositoryProvisioningResult first = await CreateManager(repository, firstProvider).HandleAsync(
+            Requested(),
+            Context(),
+            TestContext.Current.CancellationToken);
+
+        RecordingGitProvider restartedProvider = RecordingGitProvider.Success();
+        RepositoryProvisioningResult replay = await CreateManager(repository, restartedProvider).HandleAsync(
+            Requested(),
+            Context(),
+            TestContext.Current.CancellationToken);
+
+        first.Code.ShouldBe(RepositoryProvisioningResultCode.UnknownProviderOutcome);
+        replay.Code.ShouldBe(RepositoryProvisioningResultCode.AlreadyProcessed);
+        firstProvider.CreateRepositoryCalls.ShouldBe(1);
+        restartedProvider.CreateRepositoryCalls.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData(nameof(ProviderFailureCategory.ProviderConflict), "github_repository_conflict")]
+    [InlineData(nameof(ProviderFailureCategory.UnknownProviderOutcome), "github_mutation_evidence_ambiguous")]
+    [InlineData(nameof(ProviderFailureCategory.ReconciliationRequired), "reconciliation_required")]
+    public void ProviderNeutralResultShouldRoundTripWithoutProviderOrSecretEvidence(
+        string categoryName,
+        string reasonCode)
+    {
+        ProviderFailureCategory category = Enum.Parse<ProviderFailureCategory>(categoryName);
+        ProviderRepositoryCreationResult original = ProviderRepositoryCreationResult.Failure(
+            MinimalRequest(),
+            category,
+            reasonCode,
+            TimeSpan.FromMinutes(5),
+            category == ProviderFailureCategory.UnknownProviderOutcome
+                ? "reconciliation_required_metadata_only"
+                : null);
+
+        string serialized = JsonSerializer.Serialize(original);
+        ProviderRepositoryCreationResult restored = JsonSerializer.Deserialize<ProviderRepositoryCreationResult>(serialized)
+            .ShouldNotBeNull();
+
+        restored.ShouldBe(original);
+        serialized.ShouldNotContain("token-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("owner-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("repository-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("branch-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("https://provider.invalid", Case.Sensitive);
+        serialized.ShouldNotContain("provider-body-sentinel", Case.Sensitive);
     }
 
     [Fact]
@@ -249,6 +330,9 @@ public sealed class RepositoryProvisioningProcessManagerTests
 
         public static RecordingGitProvider Success()
             => new(null);
+
+        public static RecordingGitProvider EquivalentExisting()
+            => new(ProviderRepositoryCreationResult.Success(MinimalRequest(), equivalentExisting: true, "safe-target-a"));
 
         public static RecordingGitProvider Failing(ProviderFailureCategory category, string reasonCode)
             => new(ProviderRepositoryCreationResult.Failure(

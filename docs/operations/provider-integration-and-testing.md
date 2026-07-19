@@ -93,6 +93,14 @@ mutation or an unexpected transport failure maps to `UnknownProviderOutcome`** w
 `reconciliation_required_metadata_only` remediation code — the system never silently retries a mutation whose
 outcome is unknown.
 
+The concrete Octokit path creates organization repositories without implicit initialization and validates
+existing repositories by canonical identity, exact default/selected branch, permission, and protection
+evidence. Every owned request sends REST profile `2022-11-28`; the complete pinned assumptions and release
+limits are recorded in [`provider-compatibility-catalog.md`](provider-compatibility-catalog.md). Production
+composition remains fail-closed until an authoritative tenant policy source supplies the internal target
+resolver, and live GitHub readiness is still owned by Story 3.3. These limits mean the implementation must not
+be advertised as full GitHub provider readiness.
+
 ## Forgejo integration behavior, supported versions, and drift
 
 The Forgejo adapter (`ForgejoProvider`) uses a **typed HTTP** client (`ForgejoHttpApiClient`,
@@ -135,7 +143,7 @@ dimension and never claims parity where only provider-specific evidence exists.
 | Version/capability metadata | No pinned version catalog (hosted) | Three pinned versions with swagger snapshots |
 | Rate-limit posture | Primary and secondary rate limits both retryable | Single rate-limit condition, retryable |
 | Readiness behavior | Fails closed on unavailable evidence | Fails closed; unsupported version cannot be ready |
-| Repository create/bind | Idempotent on existing equivalent | Idempotent on existing equivalent |
+| Repository create/bind | Concrete Octokit path; equivalent only by authorized canonical identity; target-policy source remains fail-closed | Adapter contract only; concrete create/bind remains separately scoped |
 | File/commit/status behavior | Mapped through `GitHubFailureMapper` | Mapped through `ForgejoFailureMapper` |
 | Unknown outcome handling | Timeout/transport map to `unknown_provider_outcome` | Timeout/cancellation/transport map to `unknown_provider_outcome` |
 | Drift evidence | Not applicable (hosted API) | Version-incompatible and schema-drift map to `reconciliation_required` |

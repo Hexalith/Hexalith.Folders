@@ -199,6 +199,7 @@ internal static class GitHubSafeTargetFingerprint
         AppendField(hash, request.OrganizationId);
         AppendField(hash, request.ProviderBindingRef);
         AppendField(hash, request.RepositoryBindingId);
+        AppendField(hash, request.RepositoryProfileRef);
         AppendField(hash, request.ProviderFamily);
         AppendField(hash, request.ProviderKey);
         AppendField(hash, GitHubProviderConstants.RestApiVersion);

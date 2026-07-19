@@ -182,6 +182,7 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProvider>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
         services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
+        services.TryAddSingleton<IProviderRepositoryTargetResolver, UnconfiguredProviderRepositoryTargetResolver>();
         services.TryAddSingleton<IProviderCapabilityResolver, DefaultProviderCapabilityResolver>();
         services.TryAddSingleton<IProviderCapabilityEvidenceStore, InMemoryProviderCapabilityEvidenceStore>();
         services.TryAddSingleton<ProviderCapabilityDiscoveryService>();
@@ -220,7 +221,8 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IForgejoCredentialResolver, DaprBackedForgejoCredentialResolver>();
         services.AddSingleton<IGitProvider>(static sp => new GitHubProvider(
             sp.GetRequiredService<IGitHubCredentialResolver>(),
-            new OctokitGitHubApiClientFactory()));
+            new OctokitGitHubApiClientFactory(),
+            sp.GetRequiredService<IProviderRepositoryTargetResolver>()));
         services.AddSingleton<IGitProvider>(static sp => new ForgejoProvider(
             sp.GetRequiredService<IForgejoCredentialResolver>(),
             new ForgejoHttpApiClientFactory()));

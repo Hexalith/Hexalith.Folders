@@ -45,6 +45,41 @@ public sealed class GitHubDependencyGuardTests
         packagesProps.ShouldContain("PackageVersion Include=\"Octokit\" Version=\"14.0.0\"", Case.Sensitive);
     }
 
+    [Fact]
+    public void CompatibilityCatalogPinsStory310AssumptionsWithoutApprovingOq4()
+    {
+        string root = FindRepositoryRoot();
+        string catalogPath = Path.Combine(root, "docs", "contract", "provider-compatibility-catalog.md");
+
+        File.Exists(catalogPath).ShouldBeTrue("Story 3.10 requires explicit, reviewable GitHub compatibility assumptions.");
+        string catalog = File.ReadAllText(catalogPath);
+
+        string[] requiredEvidence =
+        [
+            "Octokit `14.0.0`",
+            "`X-GitHub-Api-Version: 2022-11-28`",
+            "AppInstallationReference",
+            "UserDelegatedReference",
+            "`auto_init=false`",
+            "canonical repository ID",
+            "primary rate limit",
+            "secondary rate limit",
+            "unknown_provider_outcome",
+            "no blind retry",
+            "OQ4 status: pending-human-acceptance",
+            "Story 3.3",
+            "Story 3.11",
+            "Story 3.14",
+        ];
+
+        foreach (string evidence in requiredEvidence)
+        {
+            catalog.ShouldContain(evidence, Case.Sensitive);
+        }
+
+        catalog.ShouldNotContain("OQ4 status: approved", Case.Sensitive);
+    }
+
     private static string FindRepositoryRoot()
     {
         string current = AppContext.BaseDirectory;

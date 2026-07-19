@@ -6,18 +6,31 @@ public sealed class GitHubProvider : IGitProvider
 {
     private readonly IGitHubCredentialResolver _credentialResolver;
     private readonly IGitHubApiClientFactory _apiClientFactory;
+    private readonly IProviderRepositoryTargetResolver _targetResolver;
 
     public GitHubProvider()
-        : this(new UnconfiguredGitHubCredentialResolver(), new OctokitGitHubApiClientFactory())
+        : this(
+            new UnconfiguredGitHubCredentialResolver(),
+            new OctokitGitHubApiClientFactory(),
+            new UnconfiguredProviderRepositoryTargetResolver())
     {
     }
 
     internal GitHubProvider(
         IGitHubCredentialResolver credentialResolver,
         IGitHubApiClientFactory apiClientFactory)
+        : this(credentialResolver, apiClientFactory, new UnconfiguredProviderRepositoryTargetResolver())
+    {
+    }
+
+    internal GitHubProvider(
+        IGitHubCredentialResolver credentialResolver,
+        IGitHubApiClientFactory apiClientFactory,
+        IProviderRepositoryTargetResolver targetResolver)
     {
         _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
         _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
+        _targetResolver = targetResolver ?? throw new ArgumentNullException(nameof(targetResolver));
     }
 
     public string ProviderFamily => GitHubProviderConstants.ProviderFamily;
@@ -170,6 +183,50 @@ public sealed class GitHubProvider : IGitProvider
                 targetFailure ?? "unsafe_github_target_metadata");
         }
 
+        ProviderRepositoryTargetResolutionResult targetResolution;
+        try
+        {
+            targetResolution = await _targetResolver.ResolveCreationAsync(
+                new ProviderRepositoryCreationTargetResolutionRequest(
+                    request.ManagedTenantId,
+                    request.OrganizationId,
+                    request.ProviderBindingRef,
+                    request.RepositoryBindingId,
+                    request.RepositoryProfileRef,
+                    request.AuthorizationEvidence.Fingerprint,
+                    request.CorrelationId),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.ProviderUnavailable,
+                "github_repository_target_resolution_unavailable");
+        }
+
+        if (!targetResolution.IsSuccess)
+        {
+            return RepositoryFailure(
+                request,
+                targetResolution.FailureCategory,
+                targetResolution.ReasonCode,
+                targetResolution.RetryAfter);
+        }
+
+        ProviderRepositoryResolvedTarget resolvedTarget = targetResolution.Target.ShouldNotBeNullForProvider();
+        if (!resolvedTarget.TryValidate(out string? resolvedTargetFailure))
+        {
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                resolvedTargetFailure ?? "resolved_provider_target_malformed");
+        }
+
         GitHubCredentialResolutionResult credentialResult = await _credentialResolver.ResolveAsync(
             new GitHubCredentialResolutionRequest(
                 request.ManagedTenantId,
@@ -210,6 +267,7 @@ public sealed class GitHubProvider : IGitProvider
                     request.OrganizationId,
                     request.ProviderBindingRef,
                     request.RepositoryBindingId,
+                    resolvedTarget,
                     credentialMode,
                     GitHubProviderConstants.RestApiVersion,
                     safeTargetEvidence.Metadata["safe_target_fingerprint"],
@@ -276,6 +334,52 @@ public sealed class GitHubProvider : IGitProvider
                 targetFailure ?? "unsafe_github_target_metadata");
         }
 
+        ProviderRepositoryTargetResolutionResult targetResolution;
+        try
+        {
+            targetResolution = await _targetResolver.ResolveBindingAsync(
+                new ProviderRepositoryBindingTargetResolutionRequest(
+                    request.ManagedTenantId,
+                    request.OrganizationId,
+                    request.ProviderBindingRef,
+                    request.RepositoryBindingId,
+                    request.ExternalRepositoryRef,
+                    request.ExternalRepositoryRefFingerprint,
+                    request.BranchRefPolicyRef,
+                    request.AuthorizationEvidence.Fingerprint,
+                    request.CorrelationId),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderUnavailable,
+                "github_repository_target_resolution_unavailable");
+        }
+
+        if (!targetResolution.IsSuccess)
+        {
+            return RepositoryBindingFailure(
+                request,
+                targetResolution.FailureCategory,
+                targetResolution.ReasonCode,
+                targetResolution.RetryAfter);
+        }
+
+        ProviderRepositoryResolvedTarget resolvedTarget = targetResolution.Target.ShouldNotBeNullForProvider();
+        if (!resolvedTarget.TryValidate(out string? resolvedTargetFailure))
+        {
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                resolvedTargetFailure ?? "resolved_provider_target_malformed");
+        }
+
         GitHubCredentialResolutionResult credentialResult = await _credentialResolver.ResolveAsync(
             new GitHubCredentialResolutionRequest(
                 request.ManagedTenantId,
@@ -316,9 +420,7 @@ public sealed class GitHubProvider : IGitProvider
                     request.OrganizationId,
                     request.ProviderBindingRef,
                     request.RepositoryBindingId,
-                    request.ExternalRepositoryRef,
-                    request.ExternalRepositoryRefFingerprint,
-                    request.BranchRefPolicyRef,
+                    resolvedTarget,
                     credentialMode,
                     GitHubProviderConstants.RestApiVersion,
                     safeTargetEvidence.Metadata["safe_target_fingerprint"],

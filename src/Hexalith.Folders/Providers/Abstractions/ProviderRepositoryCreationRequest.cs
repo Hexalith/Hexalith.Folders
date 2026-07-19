@@ -12,4 +12,5 @@ public sealed record ProviderRepositoryCreationRequest(
     IReadOnlyList<ProviderCredentialMode> CredentialModeRequirements,
     ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence,
     string CorrelationId,
-    string IdempotencyKey);
+    string IdempotencyKey,
+    string RepositoryProfileRef = "");

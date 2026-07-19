@@ -4,13 +4,16 @@ internal sealed record GitHubRepositoryBindingResult(
     bool IsSuccess,
     bool EquivalentExisting,
     GitHubApiFailureCondition? FailureCondition,
-    TimeSpan? RetryAfter)
+    TimeSpan? RetryAfter,
+    string? CanonicalRepositoryId)
 {
-    public static GitHubRepositoryBindingResult Success(bool equivalentExisting = false)
-        => new(true, equivalentExisting, null, null);
+    public static GitHubRepositoryBindingResult Success(
+        bool equivalentExisting = false,
+        string? canonicalRepositoryId = null)
+        => new(true, equivalentExisting, null, null, canonicalRepositoryId);
 
     public static GitHubRepositoryBindingResult Failure(
         GitHubApiFailureCondition condition,
         TimeSpan? retryAfter = null)
-        => new(false, EquivalentExisting: false, condition, retryAfter);
+        => new(false, EquivalentExisting: false, condition, retryAfter, CanonicalRepositoryId: null);
 }

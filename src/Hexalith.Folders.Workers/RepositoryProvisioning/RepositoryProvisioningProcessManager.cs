@@ -75,7 +75,8 @@ public sealed class RepositoryProvisioningProcessManager
             context.CredentialModeRequirements,
             context.AuthorizationEvidence,
             requested.CorrelationId,
-            requested.IdempotencyKey);
+            requested.IdempotencyKey,
+            requested.RepositoryProfileRef);
 
         ProviderRepositoryCreationResult providerResult;
         try

@@ -7,6 +7,7 @@ internal sealed record GitHubRepositoryCreationRequest(
     string OrganizationId,
     string ProviderBindingRef,
     string RepositoryBindingId,
+    ProviderRepositoryResolvedTarget Target,
     ProviderCredentialMode CredentialMode,
     string ApiVersion,
     string SafeTargetFingerprint,

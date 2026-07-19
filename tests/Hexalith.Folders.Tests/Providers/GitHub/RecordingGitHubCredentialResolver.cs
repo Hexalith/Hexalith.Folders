@@ -9,6 +9,8 @@ internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResoluti
 
     public GitHubCredentialResolutionRequest? LastRequest { get; private set; }
 
+    public bool CredentialIsDisposed => string.IsNullOrEmpty(result.Credential?.AccessToken);
+
     public static RecordingGitHubCredentialResolver Success(string token)
         => new(GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token)));
 
