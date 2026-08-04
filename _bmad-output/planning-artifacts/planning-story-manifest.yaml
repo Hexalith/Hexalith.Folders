@@ -1,0 +1,745 @@
+manifest_version: 1
+project: Hexalith.Folders
+generated_on: '2026-08-04'
+status: validated
+authority_register:
+  product_authority: _bmad-output/planning-artifacts/prd.md
+  technical_authority: _bmad-output/planning-artifacts/architecture.md
+  pre_context_backlog_authority: _bmad-output/planning-artifacts/epics.md
+  execution_authority_after_creation: single authoritative_definition on each story row
+  lifecycle_tracking_only: _bmad-output/implementation-artifacts/sprint-status.yaml
+  precedence_rule: PRD product truth; architecture technical boundaries; ratified proposals approved inventory; exactly one definition authority per row.
+provenance:
+- _bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md
+- _bmad-output/planning-artifacts/sprint-change-proposal-2026-07-15.md
+- _bmad-output/planning-artifacts/sprint-change-proposal-2026-07-19.md
+- _bmad-output/planning-artifacts/sprint-change-proposal-2026-08-04.md
+generated_counts:
+  portfolio_epics_and_workstreams: 13
+  product_epics: 7
+  technical_enablers: 3
+  release_governance_workstreams: 2
+  security_operations_hardening_epics: 1
+  canonical_stories: 154
+  lifecycle_inventory_rows: 155
+  superseded_aliases: 1
+  stories_by_classification:
+    product: 84
+    release-governance: 24
+    security-operations-hardening: 6
+    technical-enabler: 40
+  canonical_lifecycle_statuses:
+    backlog: 47
+    done: 102
+    in-progress: 3
+    ready-for-dev: 1
+    review: 1
+  inventory_lifecycle_statuses_including_alias:
+    backlog: 47
+    done: 103
+    in-progress: 3
+    ready-for-dev: 1
+    review: 1
+  definition_authorities:
+    dedicated-story-file: 106
+    reconciled-epics-anchor: 48
+  functional_requirement_clauses: 58
+  normalized_nonfunctional_requirement_clauses: 73
+classification_register:
+  product:
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 10
+  - 12
+  technical_enabler:
+  - 1
+  - 9
+  - 11
+  release_governance:
+  - 7
+  - 8
+  security_operations_hardening:
+  - 13
+requirement_inventory:
+  functional:
+    authority: _bmad-output/planning-artifacts/prd.md
+    normalized_ids:
+    - FR1
+    - FR2
+    - FR3
+    - FR4
+    - FR5
+    - FR6
+    - FR7
+    - FR8
+    - FR9
+    - FR10
+    - FR11
+    - FR12
+    - FR13
+    - FR14
+    - FR15
+    - FR16
+    - FR17
+    - FR18
+    - FR19
+    - FR20
+    - FR21
+    - FR22
+    - FR23
+    - FR24
+    - FR25
+    - FR26
+    - FR27
+    - FR28
+    - FR29
+    - FR30
+    - FR31
+    - FR32
+    - FR33
+    - FR34
+    - FR35
+    - FR36
+    - FR37
+    - FR38
+    - FR39
+    - FR40
+    - FR41
+    - FR42
+    - FR43
+    - FR44
+    - FR45
+    - FR46
+    - FR47
+    - FR48
+    - FR49
+    - FR50
+    - FR51
+    - FR52
+    - FR53
+    - FR54
+    - FR55
+    - FR56
+    - FR57
+    - FR58
+    exact_clauses_embedded_in: _bmad-output/planning-artifacts/epics.md#Requirements-Inventory
+    semantic_traceability: _bmad-output/planning-artifacts/epics.md#FR-Coverage-Map plus story-row requirement_clauses
+    completion_owners:
+      FR1: ['1.6']
+      FR2: ['1.8']
+      FR3: ['1.6']
+      FR4: ['2.4', '3.1']
+      FR5: ['2.4']
+      FR6: ['2.5']
+      FR7: ['3.5', '3.9']
+      FR8: ['2.6']
+      FR9: ['2.6']
+      FR10: ['2.6']
+      FR11: ['2.3', '12.1']
+      FR12: ['2.7', '6.6', '6.12']
+      FR13: ['2.8']
+      FR14: ['7.11']
+      FR15: ['3.1']
+      FR16: ['3.5']
+      FR17: ['3.5']
+      FR18: ['3.6', '3.14', '12.4']
+      FR19: ['3.7', '3.10', '3.12']
+      FR20: ['3.8']
+      FR21: ['3.9']
+      FR22: ['3.2', '3.3', '3.4']
+      FR23: ['3.4', '3.9']
+      FR24: ['4.2', '4.19']
+      FR25: ['4.3', '4.19']
+      FR26: ['4.4', '4.19']
+      FR27: ['4.3', '4.19']
+      FR28: ['4.4', '6.3']
+      FR29: ['4.4', '12.6']
+      FR30: ['4.10', '7.11']
+      FR31: ['4.9', '6.6', '10.5']
+      FR32: ['4.6', '4.7', '4.20', '12.3']
+      FR33: ['4.5', '4.20']
+      FR34: ['4.8', '4.20']
+      FR35: ['4.8', '4.20']
+      FR36: ['6.11']
+      FR37: ['4.12', '4.21', '12.4']
+      FR38: ['4.6', '4.12', '4.14']
+      FR39: ['4.12', '4.14', '6.6']
+      FR40: ['4.13', '4.21']
+      FR41: ['5.9', '5.11', '12.6']
+      FR42: ['12.6']
+      FR43: ['1.6', '4.13', '5.4']
+      FR44: ['1.6', '4.13', '12.6']
+      FR45: ['4.1', '6.3']
+      FR46: ['4.13', '4.18', '6.14', '10.8']
+      FR47: ['1.6', '5.5']
+      FR48: ['5.2', '5.8', '5.9']
+      FR49: ['5.3', '5.10', '5.11']
+      FR50: ['1.12', '5.5']
+      FR51: ['1.13', '5.4', '5.5', '5.6', '5.7']
+      FR52: ['6.6', '6.7', '6.12', '6.13', '6.14']
+      FR53: ['6.1', '6.8']
+      FR54: ['6.8', '6.9', '6.14']
+      FR55: ['4.14', '6.4', '6.11']
+      FR56: ['6.9', '6.14']
+      FR57: ['3.9', '6.7', '6.13']
+      FR58: ['10.7', '10.8', '12.5']
+  nonfunctional:
+    authority: _bmad-output/planning-artifacts/prd.md
+    normalized_ids: &id001
+    - NFR1
+    - NFR2
+    - NFR3
+    - NFR4
+    - NFR5
+    - NFR6
+    - NFR7
+    - NFR8
+    - NFR9
+    - NFR10
+    - NFR11
+    - NFR12
+    - NFR13
+    - NFR14
+    - NFR15
+    - NFR16
+    - NFR17
+    - NFR18
+    - NFR19
+    - NFR20
+    - NFR21
+    - NFR22
+    - NFR23
+    - NFR24
+    - NFR25
+    - NFR26
+    - NFR27
+    - NFR28
+    - NFR29
+    - NFR30
+    - NFR31
+    - NFR32
+    - NFR33
+    - NFR34
+    - NFR35
+    - NFR36
+    - NFR37
+    - NFR38
+    - NFR39
+    - NFR40
+    - NFR41
+    - NFR42
+    - NFR43
+    - NFR44
+    - NFR45
+    - NFR46
+    - NFR47
+    - NFR48
+    - NFR49
+    - NFR50
+    - NFR51
+    - NFR52
+    - NFR53
+    - NFR54
+    - NFR55
+    - NFR56
+    - NFR57
+    - NFR58
+    - NFR59
+    - NFR60
+    - NFR61
+    - NFR62
+    - NFR63
+    - NFR64
+    - NFR65
+    - NFR66
+    - NFR67
+    - NFR68
+    - NFR69
+    - NFR70
+    - NFR71
+    - NFR72
+    - NFR73
+    exact_clauses_embedded_in: _bmad-output/planning-artifacts/epics.md#Non-Functional-Requirements
+    semantic_traceability_owner: '7.16'
+  classification_nfr_defaults:
+    product:
+    - NFR1
+    - NFR2
+    - NFR3
+    - NFR4
+    - NFR5
+    - NFR6
+    - NFR7
+    - NFR13
+    - NFR14
+    - NFR15
+    - NFR16
+    - NFR17
+    - NFR18
+    - NFR19
+    - NFR20
+    - NFR21
+    - NFR22
+    - NFR23
+    - NFR24
+    - NFR25
+    - NFR26
+    - NFR27
+    - NFR28
+    - NFR29
+    - NFR30
+    - NFR31
+    - NFR32
+    - NFR33
+    - NFR34
+    - NFR35
+    - NFR36
+    - NFR42
+    - NFR43
+    - NFR44
+    - NFR45
+    - NFR46
+    - NFR47
+    - NFR48
+    - NFR49
+    - NFR50
+    - NFR51
+    - NFR52
+    - NFR53
+    - NFR54
+    - NFR55
+    - NFR56
+    - NFR57
+    - NFR58
+    - NFR59
+    - NFR60
+    - NFR61
+    - NFR62
+    - NFR63
+    - NFR64
+    - NFR70
+    - NFR71
+    - NFR72
+    - NFR73
+    technical-enabler:
+    - NFR12
+    - NFR42
+    - NFR43
+    - NFR44
+    - NFR45
+    - NFR46
+    - NFR47
+    - NFR48
+    - NFR49
+    - NFR50
+    - NFR51
+    - NFR52
+    - NFR53
+    - NFR54
+    - NFR55
+    - NFR56
+    - NFR57
+    - NFR58
+    - NFR59
+    - NFR70
+    - NFR71
+    - NFR73
+    release-governance: *id001
+    security-operations-hardening:
+    - NFR1
+    - NFR2
+    - NFR3
+    - NFR4
+    - NFR5
+    - NFR6
+    - NFR7
+    - NFR8
+    - NFR9
+    - NFR10
+    - NFR11
+    - NFR12
+    - NFR25
+    - NFR28
+    - NFR34
+    - NFR35
+    - NFR52
+    - NFR58
+    - NFR70
+    - NFR71
+    - NFR73
+  row_resolution_rule: Resolved clauses are story requirement_clauses plus classification_nfr_defaults[classification].
+dependency_spine:
+- OQ1-OQ4
+- '12.1'
+- 12.2-and-12.3
+- 12.4-and-12.5
+- 4.18-4.21-and-6.12-6.14-and-10.7-10.8
+- OQ5-OQ9
+- OQ10
+- implementation-readiness-rerun
+projection_ownership:
+  workspace_transition_evidence:
+  - '4.18'
+  durable_workspace_lifecycle_proof:
+  - '4.19'
+  - '4.20'
+  - '4.21'
+  seven_ops_console_diagnostics:
+  - '6.12'
+  - '6.13'
+  - '6.14'
+  search_bridge_hydration_pruning_and_fr58_round_trip:
+  - '10.7'
+  - '10.8'
+  c9_gated_body_content_follow_on:
+  - '10.9'
+  durable_events_content_state_task_git_and_egress_substrate:
+  - '12.1'
+  - '12.2'
+  - '12.3'
+  - '12.4'
+  - '12.5'
+  - '12.6'
+  workstream_11_product_projections: []
+file_churn_rationale:
+  epic_12_and_product_closure: Epic 12 owns durable substrate files; Epics 4, 6, and 10 consume that substrate in separately testable product projections and journeys, providing distinct ownership and feedback gates.
+  workstream_11_and_product_epics: Workstream 11 may touch shared registration and adapter files only to adopt platform seams; explicit ownership exclusions prevent it from reabsorbing product projections.
+  split_provider_and_adapter_stories: Epics 3 and 5 split provider/surface concerns by independently verifiable behavior, failure modes, and parity evidence rather than by arbitrary file boundaries.
+production_acceptance_floor:
+  required:
+  - real-deployed-composition
+  - restart-surviving-durability-and-empty-checkpoint-replay-where-applicable
+  - tenant-isolation-negative-evidence
+  - positive-denial-conflict-failure-timeout-unknown-and-boundary-evidence
+  - honest-degraded-or-unavailable-behavior
+  - metadata-only-sensitive-data-exclusion
+  never_sufficient_alone:
+  - NoOp
+  - in-memory
+  - seed-only
+  - unavailable
+  - safe-empty
+  - fake-only
+  - mock-only
+  - source-text-only
+aliases:
+- id: 2.8b
+  canonical_story_id: '2.8'
+  counted_as_canonical_story: false
+  lifecycle_status: done
+  lifecycle_key: 2-8b-wire-folder-domain-processor
+  title: Wire FolderArchiveTenantGate as an IDomainProcessor
+  evidence_source: _bmad-output/implementation-artifacts/2-8b-wire-folder-domain-processor.md
+  disposition: superseded-alias-absorbed-by-2.8-history-preserved
+lifecycle_controls:
+  status_changes_made_by_this_reconciliation: false
+  completed_evidence_policy: preserve completed evidence; reopened epics add closure work without rewriting history
+  general_execution_hold: preserved pending reconciled active contexts
+  narrow_allowances:
+  - 12.6 may finish in-progress work
+  - 10.8 remains gated by dedicated prerequisites
+  recorded_conflicts:
+  - 3.10 sprint status in-progress versus dedicated story file ready-for-dev; no status changed
+  active_dependency_gates:
+    '3.10': held on Story 12.6/OQ8 and its recorded lifecycle-authority mismatch
+    '10.8': ready-for-dev context remains gated by backlog Stories 10.7 and 12.5 plus OQ5 evidence
+    '12.6': in-progress allowance is preserved, but product completion remains gated by Story 12.1 and OQ8 approvals
+validation_results:
+  validated_on: '2026-08-04'
+  exact_functional_clauses: pass-58-of-58
+  exact_normalized_nonfunctional_clauses: pass-73-of-73
+  canonical_story_ids_and_titles: pass-154-of-154
+  lifecycle_inventory_and_alias: pass-155-of-155
+  unique_story_definition_authority: pass-154-of-154
+  generated_counts_and_classifications: pass
+  dependency_references_and_acyclicity: pass
+  within_epic_no_forward_dependencies: pass
+  approved_cross_epic_dependency_spine: pass
+  semantic_completion_traceability: pass-58-of-58
+  story_template_completeness: pass-154-of-154
+  production_projection_ownership: pass
+  fail_safe_only_product_completion_claims: pass-none-present
+  known_nonfailing_holds:
+  - Story 3.10 lifecycle conflict remains recorded without a status change.
+  - Story 10.8 remains gated by Stories 10.7 and 12.5 plus OQ5 evidence.
+  - Story 12.6 retains its narrow in-progress allowance while Story 12.1 and OQ8 remain product-completion gates.
+story_quality_exceptions:
+  historical_batches: Stories 1.4, 4.16, 6.11, 7.17, 8.1, 8.2, and 8.5 preserve completed umbrella evidence and are not active implementation-ready definitions.
+  cross_repository_story_12_6: Story 12.6 retains its ratified ID and dedicated task breakdown across Folders and EventStore; no unapproved split ID is invented, and OQ8 plus owning-repository workflows remain explicit gates.
+open_questions:
+- id: OQ1
+  owner: Architecture + Security
+  evidence: docs/exit-criteria/c7-lock-authorization-timing.md plus governance record
+  approvers:
+  - Architecture
+  - Security
+  status: open
+  blocks:
+  - '12.1'
+  - '4.19'
+- id: OQ2
+  owner: Architecture + Security + PM
+  evidence: docs/contract/file-context-contract-groups.md
+  approvers:
+  - PM
+  - Architecture
+  - Security
+  status: open
+  blocks:
+  - '12.1'
+  - '12.3'
+  - '4.20'
+- id: OQ3
+  owner: Security/Authorization
+  evidence: docs/contract/authorization-matrix.md
+  approvers:
+  - Security
+  - PM
+  status: open
+  blocks:
+  - '12.1'
+  - '4.19'
+  - '4.20'
+  - '4.21'
+  - '6.14'
+  - '10.8'
+- id: OQ4
+  owner: Provider + Architecture
+  evidence: docs/contract/provider-compatibility-catalog.md
+  approvers:
+  - Provider
+  - Architecture
+  - PM
+  status: open
+  blocks:
+  - '12.1'
+  - '3.10'
+  - '3.11'
+  - '3.12'
+  - '3.13'
+  - '3.14'
+  - '12.4'
+- id: OQ5
+  owner: Search/Delivery
+  evidence: docs/exit-criteria/fr58-search-evidence.md
+  approvers:
+  - PM
+  - Security
+  - Test
+  status: open
+  blocks:
+  - '10.7'
+  - '10.8'
+- id: OQ6
+  owner: Console + Projections/Delivery
+  evidence: docs/exit-criteria/console-projection-evidence.md
+  approvers:
+  - PM
+  - Operations/UX
+  - Test
+  status: open
+  blocks:
+  - '4.18'
+  - '6.12'
+  - '6.13'
+  - '6.14'
+- id: OQ7
+  owner: Architecture + Locking/Delivery
+  evidence: docs/contract/workspace-lock-contract-groups.md and C6 evidence
+  approvers:
+  - Architecture
+  - Security
+  status: open
+  blocks:
+  - '4.19'
+- id: OQ8
+  owner: Architecture + Contract/Delivery
+  evidence: docs/contract/idempotency-and-parity-rules.md plus versioned C13 and retention evidence
+  approvers:
+  - Architecture
+  - Security
+  - Test
+  status: open
+  blocks:
+  - '12.6'
+  - '3.10'
+  - '3.12'
+  - '5.9'
+  - '5.11'
+- id: OQ9
+  owner: Security + Console/Delivery
+  evidence: docs/exit-criteria/incident-access-evidence.md
+  approvers:
+  - Security
+  - PM
+  status: open
+  blocks:
+  - '6.9'
+  - '6.14'
+- id: OQ10
+  owner: PM + Test/Quality
+  evidence: docs/exit-criteria/release-calibration-plan.md
+  approvers:
+  - PM
+  - Test/Quality
+  status: open
+  blocks:
+  - implementation-readiness-rerun
+stories:
+- {"id":"1.1","title":"Establish a consumer-buildable module scaffold","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-1-establish-a-consumer-buildable-module-scaffold.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.2","title":"Establish root configuration and submodule policy","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-2-establish-root-configuration-and-submodule-policy.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.3","title":"Seed minimally valid normative fixtures","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-3-seed-minimally-valid-normative-fixtures.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.4","title":"Author Phase 0.5 Pre-Spine Workshop deliverables","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-4-author-phase-0-5-pre-spine-workshop-deliverables.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"historical-batch-evidence-preserved","historical_batch":true}
+- {"id":"1.5","title":"Finalize idempotency equivalence and adapter parity rules","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-5-finalize-idempotency-equivalence-and-adapter-parity-rules.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.6","title":"Author Contract Spine foundation and shared extension vocabulary","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-6-author-contract-spine-foundation-and-shared-extension-vocabulary.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.7","title":"Author tenant, folder, provider, and repository-binding contract groups","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-7-author-tenant-folder-provider-and-repository-binding-contract-groups.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.8","title":"Author workspace and lock contract groups","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-8-author-workspace-and-lock-contract-groups.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.9","title":"Author file mutation and context query contract groups","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-9-author-file-mutation-and-context-query-contract-groups.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.10","title":"Author commit and workspace-status contract groups","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-10-author-commit-and-workspace-status-contract-groups.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.11","title":"Author audit and ops-console query contract groups","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.12","title":"Wire NSwag SDK generation with idempotency helpers","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-12-wire-nswag-sdk-generation-with-idempotency-helpers.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.13","title":"Generate the C13 parity oracle","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-13-generate-the-c13-parity-oracle.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.14","title":"Wire Contract Spine drift and generated-client CI gates","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-14-wire-contract-spine-drift-and-generated-client-ci-gates.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.15","title":"Wire safety invariant CI gates","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-15-wire-safety-invariant-ci-gates.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"1.16","title":"Wire exit-criteria and parity completeness gates","epic_id":1,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/1-16-wire-exit-criteria-and-parity-completeness-gates.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR1","FR2","FR3","FR43","FR44","FR47","FR50","FR51"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.1","title":"Stand up domain service host with Tenants integration","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-1-stand-up-domain-service-host-with-tenants-integration.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.2","title":"Implement Organization aggregate ACL baseline","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-2-implement-organization-aggregate-acl-baseline.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.3","title":"Create folders within a tenant","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-3-create-folders-within-a-tenant.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.4","title":"Grant and revoke folder access","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-4-grant-and-revoke-folder-access.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.5","title":"Inspect effective permissions","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-5-inspect-effective-permissions.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.6","title":"Enforce layered authorization with safe denials","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-6-enforce-layered-authorization-with-safe-denials.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.7","title":"Inspect folder lifecycle and binding status","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-7-inspect-folder-lifecycle-and-binding-status.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.8","title":"Archive folders with audit preservation","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-8-archive-folders-with-audit-preservation.md","aliases":["2.8b"],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"2.9","title":"React to Tenants events through Worker handlers","epic_id":2,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/2-9-react-to-tenants-events-through-worker-handlers.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR5","FR6","FR8","FR9","FR10","FR11","FR12","FR13","FR14"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"3.1","title":"Configure provider binding and credential reference","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-1-configure-provider-binding-and-credential-reference.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"3.2","title":"Define IGitProvider port and capability model","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-2-define-igitprovider-port-and-capability-model.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"3.3","title":"GitHub capability discovery and safe readiness","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-3-implement-github-provider-adapter.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure","title_aliases":["Implement GitHub provider adapter"]}
+- {"id":"3.4","title":"Forgejo capability discovery, safe readiness, and contract-drift detection","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-4-implement-forgejo-provider-adapter-and-drift-detection.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure","title_aliases":["Implement Forgejo provider adapter and drift detection"]}
+- {"id":"3.5","title":"Validate provider readiness with safe diagnostics","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-5-validate-provider-readiness-with-safe-diagnostics.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"3.6","title":"Request asynchronous creation of a repository-backed folder","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-6-create-a-new-repository-backed-folder.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure","title_aliases":["Create a new repository-backed folder"]}
+- {"id":"3.7","title":"Bind an existing repository to a folder","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-7-bind-an-existing-repository-to-a-folder.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"3.8","title":"Define branch and ref policy","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-8-define-branch-and-ref-policy.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"3.9","title":"Inspect tenant and per-provider readiness evidence","epic_id":3,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-9-inspect-tenant-and-per-provider-readiness-evidence.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"3.10","title":"GitHub repository provisioning, binding, and branch/ref behavior","epic_id":3,"classification":"product","lifecycle_status":"in-progress","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md","aliases":[],"prerequisites":["3.3","3.5","3.8","12.6"],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"open-real-production-evidence-required","status_conflict":{"dedicated_story_file_status":"ready-for-dev","sprint_status":"in-progress","resolution":"unresolved-execution-hold-no-status-change"}}
+- {"id":"3.11","title":"GitHub file mutation, commit, status, and failure behavior","epic_id":3,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-3.11","aliases":[],"prerequisites":["3.3","3.10"],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"3.12","title":"Forgejo repository provisioning, binding, and branch/ref behavior","epic_id":3,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-3.12","aliases":[],"prerequisites":["3.4","3.5","3.8","12.6"],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"3.13","title":"Forgejo file mutation, commit, status, and failure behavior","epic_id":3,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-3.13","aliases":[],"prerequisites":["3.4","3.12"],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"3.14","title":"Complete asynchronous repository creation and binding","epic_id":3,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-3.14","aliases":[],"prerequisites":["3.10","3.12","12.1","12.2","12.4"],"requirement_clauses":["FR4","FR7","FR15","FR16","FR17","FR18","FR19","FR20","FR21","FR22","FR23","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"4.1","title":"Implement Folder aggregate state machine with C6 transition matrix","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.2","title":"Prepare workspace from a ready repository-backed folder","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-2-prepare-workspace-from-a-ready-repository-backed-folder.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.3","title":"Acquire task-scoped workspace lock","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-3-acquire-task-scoped-workspace-lock.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.4","title":"Inspect lock state and release the workspace lock","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-4-inspect-lock-state-and-release-the-workspace-lock.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.5","title":"Enforce workspace path policy before file mutations","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-5-enforce-workspace-path-policy-before-file-mutations.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.6","title":"Add and change files with inline and streamed content transport","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-6-add-and-change-files-with-inline-and-streamed-content-transport.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.7","title":"Remove files with metadata-only events and provider-safe ordering","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-7-remove-files-with-metadata-only-events-and-provider-safe-ordering.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.8","title":"Query file context with policy boundaries","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-8-query-file-context-with-policy-boundaries.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.9","title":"Inspect workspace and projection currency","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-9-inspect-workspace-and-projection-currency.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.10","title":"Surface workspace cleanup status without repair automation","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-10-surface-workspace-cleanup-status-without-repair-automation.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.11","title":"Propagate idempotency keys, correlation, and task IDs","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-11-propagate-idempotency-keys-correlation-and-task-ids.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.12","title":"Commit workspace changes with unknown-outcome reconciliation","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-12-commit-workspace-changes-with-unknown-outcome-reconciliation.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.13","title":"Surface canonical errors and operational evidence after failure","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-13-surface-canonical-errors-and-operational-evidence-after-failure.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.14","title":"Emit metadata-only audit and observability","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-14-emit-metadata-only-audit-and-observability.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.15","title":"Validate lifecycle replay and projection determinism","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-15-validate-lifecycle-replay-and-projection-determinism.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.16","title":"Validate lifecycle security boundaries","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-16-validate-lifecycle-security-boundaries.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"historical-batch-evidence-preserved","historical_batch":true}
+- {"id":"4.17","title":"Seed lifecycle capacity test harness","epic_id":4,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/4-17-seed-lifecycle-capacity-test-harness.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"4.18","title":"EventStore-backed workspace transition-evidence projection","epic_id":4,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-4.18","aliases":[],"prerequisites":["12.1","12.2"],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"4.19","title":"Prove durable workspace prepare and lock lifecycle","epic_id":4,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-4.19","aliases":[],"prerequisites":["4.18","12.1","12.2","12.3"],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"4.20","title":"Prove durable file mutation and bounded-context lifecycle","epic_id":4,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-4.20","aliases":[],"prerequisites":["4.18","12.1","12.2","12.3"],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"4.21","title":"Prove real commit, retry, conflict, and unknown-outcome reconciliation","epic_id":4,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-4.21","aliases":[],"prerequisites":["4.18","4.19","4.20","12.4"],"requirement_clauses":["FR24","FR25","FR26","FR27","FR28","FR29","FR30","FR31","FR32","FR33","FR34","FR35","FR37","FR38","FR39","FR40","FR43","FR44","FR45","FR46","FR55"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"5.1","title":"Ship SDK convenience helpers, samples, and quickstart","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-1-ship-sdk-convenience-helpers-samples-and-quickstart.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"5.2","title":"CLI tenant, folder, provider-readiness, and binding commands","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-2-implement-cli-commands-with-behavioral-parity-rules.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure","title_aliases":["Implement CLI commands with behavioral-parity rules"]}
+- {"id":"5.3","title":"MCP tenant, folder, provider-readiness, and binding tools/resources","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-3-implement-mcp-tools-resources-and-failure-kinds.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure","title_aliases":["Implement MCP tools, resources, and failure kinds"]}
+- {"id":"5.4","title":"Consume parity oracle in CLI and MCP tests","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-4-consume-parity-oracle-in-cli-and-mcp-tests.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"5.5","title":"Validate golden lifecycle parity across REST and SDK","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-5-validate-golden-lifecycle-parity-across-rest-and-sdk.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"5.6","title":"Validate behavioral parity across CLI and MCP","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-6-validate-behavioral-parity-across-cli-and-mcp.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"5.7","title":"Validate mixed-surface handoff scenario","epic_id":5,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/5-7-validate-mixed-surface-handoff-scenario.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"5.8","title":"CLI workspace preparation and lock lifecycle","epic_id":5,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.8","aliases":[],"prerequisites":["4.19"],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"5.9","title":"CLI file, context, commit, status, error, and audit behavior","epic_id":5,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.9","aliases":[],"prerequisites":["4.20","4.21","12.6"],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"5.10","title":"MCP workspace preparation and lock lifecycle","epic_id":5,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.10","aliases":[],"prerequisites":["4.19"],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"5.11","title":"MCP file, context, commit, status, error, and audit behavior","epic_id":5,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-5.11","aliases":[],"prerequisites":["4.20","4.21","12.6"],"requirement_clauses":["FR41","FR42","FR43","FR44","FR47","FR48","FR49","FR50","FR51"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"6.1","title":"Audit and operation-timeline query endpoints","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-1-audit-and-operation-timeline-query-endpoints.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.2","title":"Scaffold FrontComposer-hosted read-only operations console","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-2-scaffold-frontcomposer-hosted-read-only-operations-console.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.3","title":"Render operator-disposition labels as primary visual","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-3-render-operator-disposition-labels-as-primary-visual.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.4","title":"Implement sensitive-metadata redaction affordance","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-4-implement-sensitive-metadata-redaction-affordance.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.5","title":"Author console diagnostic wireflow notes","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-5-author-console-diagnostic-wireflow-notes.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.6","title":"Build folder and workspace diagnostic pages","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-6-build-folder-and-workspace-diagnostic-pages.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.7","title":"Build provider readiness and support diagnostic pages","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-7-build-provider-readiness-and-support-diagnostic-pages.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.8","title":"Build audit and operation-timeline diagnostic pages","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-8-build-audit-and-operation-timeline-diagnostic-pages.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.9","title":"Implement incident-mode last-resort read path","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-9-implement-incident-mode-last-resort-read-path.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.10","title":"Enforce console performance and perceived-wait UX","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-10-enforce-console-performance-and-perceived-wait-ux.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"6.11","title":"Verify no-mutation enforcement and accessibility","epic_id":6,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/6-11-verify-no-mutation-enforcement-and-accessibility.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"historical-batch-evidence-preserved","historical_batch":true}
+- {"id":"6.12","title":"Populate readiness, lock, dirty-state, and failed-operation projections","epic_id":6,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-6.12","aliases":[],"prerequisites":["12.1","12.2"],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"6.13","title":"Populate provider-status, sync-status, and projection-freshness projections","epic_id":6,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-6.13","aliases":[],"prerequisites":["12.1","12.2"],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"6.14","title":"Prove populated deployed-host diagnostic and transition-evidence journeys","epic_id":6,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-6.14","aliases":[],"prerequisites":["4.18","6.12","6.13"],"requirement_clauses":["FR12","FR28","FR31","FR36","FR39","FR45","FR46","FR52","FR53","FR54","FR55","FR56","FR57"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"7.1","title":"Deploy production Dapr deny-by-default access control","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-1-deploy-production-dapr-deny-by-default-access-control.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.2","title":"Configure production OIDC and secret store integration","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-2-configure-production-oidc-and-secret-store-integration.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.3","title":"Build container images with stable Dapr app IDs","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-3-build-container-images-with-stable-dapr-app-ids.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.4","title":"Consolidate baseline build and unit CI gates","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-4-consolidate-baseline-build-and-unit-ci-gates.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.5","title":"Consolidate contract and parity CI gates","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-5-consolidate-contract-and-parity-ci-gates.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.6","title":"Consolidate security and redaction CI gates","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-6-consolidate-security-and-redaction-ci-gates.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.7","title":"Add capacity-smoke CI gate","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-7-add-capacity-smoke-ci-gate.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.8","title":"Wire scheduled drift and policy-conformance workflows","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-8-wire-scheduled-drift-and-policy-conformance-workflows.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.9","title":"Publish traceable NuGet release packages","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-9-publish-traceable-nuget-release-packages.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.10","title":"Calibrate capacity tests and pin C1/C2/C5 targets","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-10-calibrate-capacity-tests-and-pin-c1-c2-c5-targets.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.11","title":"Enforce C3 retention and tenant-deletion behavior","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-11-enforce-c3-retention-and-tenant-deletion-behavior.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.12","title":"Wire production observability and alerts","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-12-wire-production-observability-and-alerts.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.13","title":"Publish API, SDK, CLI, and MCP consumer references","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-13-publish-api-sdk-cli-and-mcp-consumer-references.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.14","title":"Publish operations and audit documentation","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-14-publish-operations-and-audit-documentation.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.15","title":"Publish provider and error documentation","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-15-publish-provider-and-error-documentation.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.16","title":"Publish NFR traceability bridge","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-16-publish-nfr-traceability-bridge.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"7.17","title":"Publish ADR set and maintenance runbooks","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-17-publish-adr-set-and-maintenance-runbooks.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"historical-batch-evidence-preserved","historical_batch":true}
+- {"id":"7.18","title":"Restore shared test-host composition baseline","epic_id":7,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/7-18-restore-test-host-composition-baseline.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR14","FR30"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"8.1","title":"Implement the 8 missing Bucket-A canonical REST server routes","epic_id":8,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/8-1-implement-bucket-a-missing-rest-server-routes.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR43","FR44","FR47","FR48","FR49","FR50","FR51","FR52","FR53","FR54","FR55","FR56"],"evidence_posture":"historical-batch-evidence-preserved","historical_batch":true}
+- {"id":"8.2","title":"Implement the 7 ops-console diagnostics REST server routes (Bucket B)","epic_id":8,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/8-2-implement-ops-console-diagnostics-rest-routes.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR43","FR44","FR47","FR48","FR49","FR50","FR51","FR52","FR53","FR54","FR55","FR56"],"evidence_posture":"historical-batch-evidence-preserved","historical_batch":true}
+- {"id":"8.3","title":"Wire-exercise cross-surface parity and gate the four-surface claim","epic_id":8,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/8-3-wire-exercise-cross-surface-parity-and-close-claim.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR43","FR44","FR47","FR48","FR49","FR50","FR51","FR52","FR53","FR54","FR55","FR56"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"8.4","title":"Stand up an automated axe/WCAG 2.2 AA CI gate for the operations console","epic_id":8,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/8-4-stand-up-axe-wcag-ci-gate.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR43","FR44","FR47","FR48","FR49","FR50","FR51","FR52","FR53","FR54","FR55","FR56"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"8.5","title":"Drive the residual test baseline honestly green","epic_id":8,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/8-5-close-c3-legal-signoff-and-residual-reds.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR43","FR44","FR47","FR48","FR49","FR50","FR51","FR52","FR53","FR54","FR55","FR56"],"evidence_posture":"historical-batch-evidence-preserved","title_aliases":["Close C3 Legal sign-off and drive the residual test baseline honestly green"],"historical_batch":true}
+- {"id":"8.6","title":"Record C3 Legal sign-off and apply the in-lockstep C3 retention cascade","epic_id":8,"classification":"release-governance","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/8-6-record-c3-legal-signoff-and-apply-cascade.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR43","FR44","FR47","FR48","FR49","FR50","FR51","FR52","FR53","FR54","FR55","FR56"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"9.1","title":"Adopt the EventStore and Tenants platform Aspire helpers","epic_id":9,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/9-1-adopt-eventstore-and-tenants-platform-aspire-helpers.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR58"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"9.2","title":"Add the Memories search-index server to the AppHost topology","epic_id":9,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/9-2-add-memories-search-index-server-to-the-apphost-topology.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR58"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"9.3","title":"Apply Folders→Memories routing config and synchronize artifacts","epic_id":9,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/9-3-apply-folders-to-memories-routing-config-and-sync-artifacts.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR58"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"10.1","title":"Define the worker-side semantic-indexing port and Memories dependency","epic_id":10,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-1-define-worker-side-semantic-indexing-port-and-memories-dependency.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"10.2","title":"Build the Folders-owned indexing bridge projection","epic_id":10,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-2-build-folders-owned-indexing-bridge-projection.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"10.3","title":"Author authorized asynchronous indexing on file-write and commit","epic_id":10,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-3-author-authorized-async-indexing-on-file-write-and-commit.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"10.4","title":"Emit SearchIndexEntryRemoved on removal/archive and prove end-to-end routing","epic_id":10,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-4-emit-search-index-entry-changed-cloudevents-from-workers.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure","title_aliases":["Emit search-index removal & archive CloudEvents (hybrid hard + soft delete) and prove the live folders-index round-trip"]}
+- {"id":"10.5","title":"Expose an authorized Folders query facade over Memories","epic_id":10,"classification":"product","lifecycle_status":"done","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-5-expose-authorized-folders-query-facade-over-memories.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"completed-component-evidence-preserved-not-production-closure"}
+- {"id":"10.6","title":"Replace the fail-closed content materializer with a metadata-derived materializer under C4/C9","epic_id":10,"classification":"product","lifecycle_status":"in-progress","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-6-replace-fail-closed-content-materializer-with-metadata-derived.md","aliases":[],"prerequisites":[],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"10.7","title":"EventStore-backed search bridge and deployed Server registration","epic_id":10,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-10.7","aliases":[],"prerequisites":["10.6","12.1","12.2","12.3"],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"10.8","title":"Real produce/index/authorize/hydrate/redact/search round trip","epic_id":10,"classification":"product","lifecycle_status":"ready-for-dev","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md","aliases":[],"prerequisites":["10.7","12.5"],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"10.9","title":"Authorized body-content materialization — C9 gated","epic_id":10,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-10.9","aliases":[],"prerequisites":["10.7","12.3","12.5"],"requirement_clauses":["FR31","FR46","FR58"],"evidence_posture":"open-real-production-evidence-required","decision_prerequisites":["C9-body-content-approval"]}
+- {"id":"11.1","title":"Establish refactor baseline and governance pin map","epic_id":11,"classification":"technical-enabler","lifecycle_status":"done","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.1","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"completed-evidence-preserved"}
+- {"id":"11.2","title":"Inventory, assign, and pin platform prerequisites","epic_id":11,"classification":"technical-enabler","lifecycle_status":"review","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/11-2-land-platform-prerequisite-apis-in-shared-modules.md","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required","title_aliases":["Land platform prerequisite APIs in shared modules"]}
+- {"id":"11.3","title":"Apply wire-preserving repository hygiene","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.3","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.4","title":"Consolidate Server transport, envelope, and route helper duplication","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.4","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.5","title":"Consolidate domain and provider helper duplication","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.5","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.6","title":"Consolidate CLI/MCP adapter core and secure bearer transport","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.6","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.7","title":"Consolidate deterministic time, context, and path test helpers","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.7","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.8","title":"Adopt Commons/EventStore primitives in the Folders domain","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.8","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.9","title":"Delete Hexalith.Folders.ServiceDefaults and consume Commons.ServiceDefaults","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.9","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.10","title":"Adopt EventStore admission and subscription-mapping seams","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.10","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.11","title":"Adopt FrontComposer user-context, token, OIDC, and shared-shell helpers","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.11","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.12","title":"Modernize the generated client and shared idempotency/ULID helpers","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.12","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.13","title":"Delete obsolete local code and synchronize planning/maintenance documents","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.13","aliases":[],"prerequisites":[],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.14","title":"Adopt Memories publication and search-client seams","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.14","aliases":[],"prerequisites":["11.2"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.15","title":"Maintain the DCP-capable cross-repository verification lane","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.15","aliases":[],"prerequisites":["11.2"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.16","title":"Replace brittle governance and CI pins with behavioral gates","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.16","aliases":[],"prerequisites":["11.3"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.17","title":"Consolidate EventStore gateway doubles and rejection conformance","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.17","aliases":[],"prerequisites":["11.7"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.18","title":"Consolidate provider and repository fakes in Folders.Testing","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.18","aliases":[],"prerequisites":["11.7"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.19","title":"Adopt Fluent UI tables, controls, icons, loading, and layout primitives","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.19","aliases":[],"prerequisites":["11.11"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.20","title":"Record AppHost, ServiceDefaults, query-handler, and tenant-semantic ADRs","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.20","aliases":[],"prerequisites":["11.9","11.13"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"11.21","title":"Run final boundary, package, test, E2E, accessibility, and governance verification","epic_id":11,"classification":"technical-enabler","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-11.21","aliases":[],"prerequisites":["11.13","11.14","11.15","11.16","11.17","11.18","11.19","11.20"],"requirement_clauses":["NFR12","NFR42","NFR43","NFR45","NFR46","NFR70","NFR71","NFR73"],"evidence_posture":"open-enabler-or-release-evidence-required"}
+- {"id":"12.1","title":"EventStore-backed folder repository, retire NoOp, and implement projection replay","epic_id":12,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-12.1","aliases":[],"prerequisites":[],"requirement_clauses":["FR11","FR18","FR24","FR29","FR32","FR37","FR41","FR42","FR44","FR58"],"evidence_posture":"open-real-production-evidence-required","decision_prerequisites":["OQ1","OQ2","OQ3","OQ4"]}
+- {"id":"12.2","title":"Durable projections and task-completion pipeline","epic_id":12,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-12.2","aliases":[],"prerequisites":["12.1"],"requirement_clauses":["FR11","FR18","FR24","FR29","FR32","FR37","FR41","FR42","FR44","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"12.3","title":"Durable workspace file-content store and content-read source","epic_id":12,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-12.3","aliases":[],"prerequisites":["12.1"],"requirement_clauses":["FR11","FR18","FR24","FR29","FR32","FR37","FR41","FR42","FR44","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"12.4","title":"Real Git commit executor and provider write path","epic_id":12,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-12.4","aliases":[],"prerequisites":["3.11","3.13","12.1","12.2","12.3"],"requirement_clauses":["FR11","FR18","FR24","FR29","FR32","FR37","FR41","FR42","FR44","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"12.5","title":"At-least-once Memories egress and reconciler","epic_id":12,"classification":"product","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-12.5","aliases":[],"prerequisites":["10.6","12.1","12.2","12.3"],"requirement_clauses":["FR11","FR18","FR24","FR29","FR32","FR37","FR41","FR42","FR44","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"12.6","title":"Implement durable all-mutations idempotency and expired-key precedence","epic_id":12,"classification":"product","lifecycle_status":"in-progress","authoritative_definition":"dedicated-story-file:_bmad-output/implementation-artifacts/12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md","aliases":[],"prerequisites":["12.1"],"requirement_clauses":["FR11","FR18","FR24","FR29","FR32","FR37","FR41","FR42","FR44","FR58"],"evidence_posture":"open-real-production-evidence-required"}
+- {"id":"13.1","title":"Forgejo SSRF egress guard for private and metadata IPs","epic_id":13,"classification":"security-operations-hardening","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-13.1","aliases":[],"prerequisites":[],"requirement_clauses":["NFR1","NFR2","NFR4","NFR5","NFR25","NFR28","NFR34","NFR35","NFR52","NFR58","NFR70","NFR71","NFR73"],"evidence_posture":"open-deployed-hardening-evidence-required"}
+- {"id":"13.2","title":"Fail-safe fallback authorization policy and sidecar-only app port","epic_id":13,"classification":"security-operations-hardening","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-13.2","aliases":[],"prerequisites":[],"requirement_clauses":["NFR1","NFR2","NFR4","NFR5","NFR25","NFR28","NFR34","NFR35","NFR52","NFR58","NFR70","NFR71","NFR73"],"evidence_posture":"open-deployed-hardening-evidence-required"}
+- {"id":"13.3","title":"Credential file 0600 permissions","epic_id":13,"classification":"security-operations-hardening","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-13.3","aliases":[],"prerequisites":[],"requirement_clauses":["NFR1","NFR2","NFR4","NFR5","NFR25","NFR28","NFR34","NFR35","NFR52","NFR58","NFR70","NFR71","NFR73"],"evidence_posture":"open-deployed-hardening-evidence-required"}
+- {"id":"13.4","title":"Real readiness snapshot source and UI health endpoints","epic_id":13,"classification":"security-operations-hardening","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-13.4","aliases":[],"prerequisites":["12.1","12.2"],"requirement_clauses":["NFR1","NFR2","NFR4","NFR5","NFR25","NFR28","NFR34","NFR35","NFR52","NFR58","NFR70","NFR71","NFR73"],"evidence_posture":"open-deployed-hardening-evidence-required"}
+- {"id":"13.5","title":"Wire alert instruments and production Dapr state store and resiliency","epic_id":13,"classification":"security-operations-hardening","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-13.5","aliases":[],"prerequisites":["12.1","12.2"],"requirement_clauses":["NFR1","NFR2","NFR4","NFR5","NFR25","NFR28","NFR34","NFR35","NFR52","NFR58","NFR70","NFR71","NFR73"],"evidence_posture":"open-deployed-hardening-evidence-required"}
+- {"id":"13.6","title":"Rate limiting, timeouts, body caps, and sensitive-value filter convergence","epic_id":13,"classification":"security-operations-hardening","lifecycle_status":"backlog","authoritative_definition":"reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-13.6","aliases":[],"prerequisites":[],"requirement_clauses":["NFR1","NFR2","NFR4","NFR5","NFR25","NFR28","NFR34","NFR35","NFR52","NFR58","NFR70","NFR71","NFR73"],"evidence_posture":"open-deployed-hardening-evidence-required"}

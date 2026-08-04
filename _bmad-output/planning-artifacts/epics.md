@@ -8,33 +8,28 @@ stepsCompleted:
 inputDocuments:
   - "_bmad-output/planning-artifacts/prd.md"
   - "_bmad-output/planning-artifacts/architecture.md"
-  - "_bmad-output/planning-artifacts/ux-design-specification.md"
-  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10.md"
-  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-story-split.md"
-  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-10-readiness-correction.md"
-  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-07-081620.md"
+  - "_bmad-output/implementation-artifacts/sprint-status.yaml"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-15.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-19.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-08-04.md"
 project_name: 'Hexalith.Folders'
 user_name: 'Jerome'
 date: '2026-05-10'
 status: 'complete'
 completedAt: '2026-05-10'
-requirementsRefreshedAt: '2026-05-11'
-epicStructureReviewedAt: '2026-05-11'
+requirementsRefreshedAt: '2026-08-04'
+requirementsAuthority: 'prd-2026-07-15-and-architecture-2026-07-19'
+ratifiedInventoryThrough: 'sprint-change-proposal-2026-08-04'
+epicStructureReviewedAt: '2026-08-04'
+epicStructureAuthority: 'approved-major-planning-authority-recovery'
 partyModeReviewedAt: '2026-05-11'
-storiesReviewedAt: '2026-05-11'
-finalValidationRefreshedAt: '2026-05-11'
+storiesReviewedAt: '2026-08-04'
+finalValidationRefreshedAt: '2026-08-04'
+authorityRecoveryCompletedAt: '2026-08-04'
 implementationReadinessPatchedAt: '2026-05-12'
-epicCount: 11
-storyCount: 115
-productEpicCount: 6
-nonProductWorkstreams:
-  - workstream-7-release-governance
-  - epic-8-release-closure
-  - epic-9-architecture-platform-runway
-  - epic-11-domain-focus-platform-refactoring
-phase2CapabilityEpics:
-  - epic-10-worker-side-semantic-indexing
-countsReviewedAt: "2026-07-07"
+generatedCountsAuthority: '_bmad-output/planning-artifacts/planning-story-manifest.yaml'
+storyAuthorityManifest: '_bmad-output/planning-artifacts/planning-story-manifest.yaml'
 domainFocusRefactoringApprovedAt: "2026-07-07"
 ---
 
@@ -52,14 +47,14 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 
 #### Capability Contract Terms
 
-- FR1: Users can distinguish logical folders, repositories, workspaces, tasks, locks, providers, context queries, audit records, and status records through consistent product terminology.
-- FR2: Users can understand the canonical task lifecycle from provider readiness through repository binding, workspace preparation, lock, file operations, commit, context query, status, audit, and cleanup visibility.
-- FR3: Users can distinguish mutating lifecycle commands from read-only readiness, status, context, audit, and diagnostic queries.
+- FR1: Public documentation, Contract Spine descriptions, generated SDK names, CLI/MCP help, and console labels use the Glossary terms consistently; documentation/schema checks fail on conflicting synonyms or state casing.
+- FR2: Each required surface documents and demonstrates the ordered canonical lifecycle from provider readiness through binding, preparation, lock, mutations, one durable commit, context/status/audit, and cleanup visibility, including failure transitions.
+- FR3: Every Contract Spine operation declares mutation or read-only classification in C13; mutations follow the all-mutations idempotency contract and reads reject idempotency keys.
 
 #### Authorization and Tenant Boundary
 
-- FR4: Tenant administrators can configure the minimum tenant and folder access controls required for repository-backed workspace tasks.
-- FR5: Tenant administrators can grant folder access to users, groups, roles, and delegated service agents.
+- FR4: Tenant administrators own tenant-level Folders configuration for provider bindings, credential references, repository naming/default-ref and capability policy, folder ACLs, and archive decisions; scoped operators may validate but not silently modify it.
+- FR5: Tenant administrators can grant and revoke folder access for users, groups, roles, and delegated service agents; the resulting verb scope is visible in effective permissions and auditable without exposing hidden principals.
 - FR6: Authorized actors can inspect effective permissions for a folder or task context.
 - FR7: Platform engineers and tenant administrators can inspect whether a tenant is ready to run repository-backed workspace tasks.
 - FR8: The system can evaluate every operation against tenant, principal, delegated actor, provider, repository, folder, workspace, and task scope.
@@ -68,181 +63,204 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 
 #### Folder Lifecycle
 
-- FR11: Authorized actors can create logical folders within a tenant.
-- FR12: Authorized actors can inspect folder lifecycle and binding status.
-- FR13: Authorized actors can archive folders when policy allows.
-- FR14: The system can preserve audit and status evidence for archived folders.
+- FR11: Authorized actors with fresh tenant authority can create a logical folder within that tenant and receive its tenant-scoped managed identity and initial lifecycle state; denial creates no folder or provider side effect and uses the safe authorization/lifecycle result.
+- FR12: Authorized actors can inspect folder lifecycle and binding status with freshness and availability metadata; an unauthorized, hidden, stale, or unavailable state uses the canonical non-enumerating result rather than partial binding details.
+- FR13: Authorized actors can archive a folder only when it has no active task or lock and no `changes_staged`, `dirty`, `unknown_provider_outcome`, or `reconciliation_required` workspace. Archive denies later repository, workspace, file, and commit mutations with a stable, non-enumerating lifecycle result; tenant administrators may still revoke access and administer legal-hold or retention metadata through separately authorized governance operations. The provider repository remains provider-owned and is neither deleted nor mutated by archive.
+- FR14: Archived-folder views retain each metadata-only lifecycle, audit, lock, timeline, and last-commit field for that field's C3 data-class period. When one class expires before another, the view omits the expired field and exposes its safe retention-expired marker; it never extends a shorter class to match seven-year audit retention. File content, credentials, and unauthorized existence remain hidden.
 
 #### Provider Readiness and Repository Binding
 
-- FR15: Platform engineers can configure supported Git provider bindings and credential references for a tenant.
+- FR15: Tenant administrators can configure supported Git provider bindings, credential references, repository naming/default-ref policy, and required capability policy; platform engineers can validate the resulting readiness.
 - FR16: Authorized actors can validate provider readiness before repository-backed folder creation or binding.
 - FR17: The system can report provider readiness diagnostics with safe reason, retryability, remediation category, provider reference, and correlation ID.
-- FR18: Authorized actors can create a repository-backed folder when readiness checks pass.
-- FR19: Authorized actors can bind a folder to an existing repository where supported.
-- FR20: Authorized actors can define or select the branch/ref policy used by repository-backed folder tasks.
+- FR18: Authorized actors can create a repository-backed folder when readiness checks pass and receive its canonical provider/repository binding plus inspectable folder/workspace state; failed readiness or authorization creates no repository or binding side effect and returns the canonical safe result.
+- FR19: Authorized actors can bind a pre-created provider repository when readiness, repository access, duplicate/alias detection, and branch/ref policy pass; unsupported eligibility is rejected without revealing unauthorized repository existence.
+- FR20: Authorized tenant administrators can define or select the branch/ref policy used by repository-backed folder tasks; an accepted policy becomes part of readiness, binding, and the canonical serializing target, while invalid or unauthorized changes are rejected without changing the active binding.
 - FR21: The system can expose provider, credential-reference, repository-binding, branch/ref, and capability metadata without exposing secrets.
 - FR22: The system can expose GitHub and Forgejo capability differences required to complete the canonical lifecycle.
-- FR23: Platform engineers can inspect whether each supported provider is ready for the canonical lifecycle, including readiness, repository binding, branch/ref handling, file operations, commit, status, and failure behavior.
+- FR23: Platform engineers can inspect provider product, instance identity, observed version/API profile, accepted credential profile, and supported/unsupported/unknown capability status for the canonical lifecycle; unknown or incompatible evidence cannot report ready.
 
 #### Workspace and Lock Lifecycle
 
-- FR24: Authorized actors can prepare a workspace when provider readiness, repository binding, branch/ref policy, and task context are valid.
-- FR25: Authorized actors can acquire a task-scoped workspace lock.
+- FR24: Authorized actors can prepare a workspace only when provider readiness, repository binding, branch/ref policy, fresh authorization, and task context are valid; failure leaves an inspectable lifecycle state and no unauthorized side effect.
+- FR25: Authorized actors can acquire a task-scoped mutation lock for the canonical tenant/provider/repository/ref identity; aliases resolving to the same identity must collide.
 - FR26: Authorized actors can inspect permitted lock state, owner, task, age, expiry, and retry eligibility metadata.
-- FR27: The system can deny competing operations when lock ownership or workspace state makes the operation unsafe.
-- FR28: The system can represent active, expired, stale, abandoned, interrupted, and released lock states through observable status transitions.
-- FR29: Authorized actors can release a workspace lock when ownership and policy allow.
-- FR30: The system can expose workspace cleanup status for completed, failed, interrupted, or abandoned task lifecycles without providing repair automation in MVP.
-- FR31: Authorized actors can inspect whether workspace, task, audit, or provider status is current, delayed, failed, or unavailable.
+- FR27: Competing mutations against the same serializing identity are deterministically denied without file, provider, repository, or commit side effects; the denial emits one metadata-only audit record, and authorized callers receive safe conflict and retry-eligibility metadata.
+- FR28: Lock state is exposed only as `unlocked`, `locked`, `expired`, `stale`, or `revoked`, separately from workspace lifecycle and operator disposition.
+- FR29: Authorized owners can release a workspace lock when policy allows; while the idempotency record is unexpired, equivalent retries preserve one logical release result, while expired keys return `idempotency_key_expired` without execution and revoked or non-owner attempts fail safely.
+- FR30: Platform-owned automatic cleanup begins only after task-terminal closure and no active task, retries safely without caller action, and deletes temporary working files at the C3 seven-day boundary. Dirty, unknown-provider-outcome, and reconciliation-required workspaces are not cleanup-eligible. Failed/inaccessible closure records final metadata-only evidence and operator disposition before starting the seven-day observation window. Authorized callers can inspect pending, retrying, completed, or failed cleanup with reason, retryability, timestamp, and correlation ID; cleanup failure escalates to operators but never deletes required audit evidence. User-triggered cleanup/repair is not MVP.
+- FR31: Authorized actors can inspect workspace lifecycle, lock state, operator disposition, projection freshness/checkpoint, retryability, and whether task, audit, provider, or index status is current, delayed, failed, stale, or unavailable.
 
 #### File Operations and Context Queries
 
-- FR32: Authorized actors can add, change, and remove files within a prepared and locked workspace.
+- FR32: Authorized actors can apply one or many add/change/remove mutations within a prepared, freshly authorized, locked task workspace without auto-commit; a first-class move/rename is not MVP and is represented by add plus remove under the same task and commit.
 - FR33: The system can reject file operations that violate workspace boundary, path, branch/ref, lock, tenant, provider, or folder policy.
-- FR34: Authorized actors can request policy-filtered task context through file tree, metadata, search, glob, and bounded range reads.
-- FR35: The system can apply policy boundaries to context queries, including permitted paths, excluded paths, binary handling, range limits, and secret-safe responses.
-- FR36: The operations console can remain read-only and excluded from file editing or file-content browsing capabilities.
+- FR34: Authorized actors can request policy-filtered live-workspace context through tree, metadata, glob, bounded range, and supported text-body search with at most 100 requested paths, 2,000 tree entries, 500 search/glob results, a 262,144-byte bounded range, a 1,048,576-byte aggregate response, and 2 seconds of server execution.
+- FR35: Live-workspace context queries enforce authorization and path policy before filtering or shaping; body-search results contain only authorized C9-wrapped relative identity, line/byte location, match classification, and a bounded live snippet. Supported truncation sets `isTruncated`, range and file content are never silently truncated, and a request whose excess cannot be handled by supported truncation returns the stable input/response-limit result without logging raw queries, path lists, content, or hidden existence.
+- FR36: The operations console must remain read-only and excluded from file editing or file-content browsing capabilities.
 
 #### Commit, Evidence, and Idempotency
 
-- FR37: Authorized actors can commit workspace changes for repository-backed folders.
-- FR38: Authorized actors can attach task, operation, correlation, actor, author, branch/ref, commit message, and changed-path metadata to file operations and commits.
-- FR39: The system can expose task and commit evidence including provider, repository binding, branch/ref, changed paths, result status, commit reference, timestamps, task ID, operation ID, and correlation ID.
-- FR40: The system can report failed, incomplete, duplicate, retried, or conflicting operations with stable status and audit evidence.
-- FR41: The system can support idempotent retries for lifecycle operations using stable task, operation, and correlation identifiers.
-- FR42: The system can reject duplicate logical operations when retry identity or operation intent conflicts.
+- FR37: Authorized actors can commit a valid locked workspace only when fresh authorization holds; success requires provider-confirmed durable update of the bound remote/ref and returns the commit reference. An unconfirmed result first moves the workspace to `unknown_provider_outcome`; only exhausted or conflicting automatic evidence moves it to `reconciliation_required`.
+- FR38: Authorized actors can attach task, operation, correlation, actor, author, branch/ref, commit message, and changed-path metadata to file operations and commits only within the Contract Spine's closed length/character constraints and C9 classification. Suspected secrets or content-like payloads in metadata are rejected before provider, event, audit, or diagnostic emission.
+- FR39: The system exposes metadata-only task and commit evidence including provider, repository binding, tenant-sensitive branch/ref and changed-path metadata, durable result status, commit reference, timestamps, task ID, operation ID, and correlation ID under C9 classification.
+- FR40: The system reports failed, incomplete, duplicate, retried, or conflicting operations with stable status and audit evidence; `unknown_provider_outcome` instructs callers to wait/query during bounded automatic checks, while `reconciliation_required` blocks retry and instructs human escalation.
+- FR41: Every mutating Contract Spine operation supports idempotent retry while its idempotency record is unexpired within the declared retention tier: equivalent tenant-scoped intent returns the same logical result and cannot duplicate events, provider writes, files, repositories, commits, audits, or idempotency records. After expiry, the old key returns `idempotency_key_expired`, requires state refresh, and never executes automatically as a new intent.
+- FR42: While an idempotency record is unexpired, reuse of its key with different intent returns the canonical idempotency-conflict result without revealing protected prior intent; an expired key returns `idempotency_key_expired` regardless of submitted intent, and non-mutating operations reject idempotency keys.
 
 #### Error, Status, and Diagnostics Contract
 
-- FR43: The system can expose a canonical error taxonomy across supported surfaces.
-- FR44: The error taxonomy can distinguish validation failure, authentication failure, tenant denial, folder policy denial, credential failure, provider unavailable, unsupported capability, repository conflict, branch/ref conflict, lock conflict, stale workspace, path policy denial, commit failure, read-model unavailable, duplicate operation, and transient infrastructure failure.
-- FR45: The system can expose canonical workspace and task states including `ready`, `locked`, `dirty`, `committed`, `failed`, and `inaccessible`.
-- FR46: The system can explain final state, retry eligibility, and operational evidence after workspace preparation, lock, file operation, commit, provider, or read-model failure.
+- FR43: Every supported surface exposes the Contract Spine error taxonomy with category, code, safe message, correlation ID, optional task ID, retryability, client action, and closed metadata-only details visibility.
+- FR44: The error taxonomy must distinguish validation failure, authentication failure, tenant denial, folder policy denial, credential failure, provider unavailable, unsupported capability, repository conflict, branch/ref conflict, lock conflict, stale workspace, path policy denial, commit failure, read-model unavailable, duplicate operation, idempotency conflict, expired idempotency key, unknown provider outcome, reconciliation required, and transient infrastructure failure. The stable expired-key result uses code `idempotency_key_expired`, is not retryable with the old key, and instructs the client to refresh state before submitting equivalent intent with a new key.
+- FR45: The system exposes the complete canonical workspace lifecycle and the separate lock-state vocabulary defined in the Glossary, without substituting generic operation status.
+- FR46: After preparation, lock, file, commit, provider, authorization, index, or read-model failure, authorized callers receive the resulting lifecycle/lock state, safe cause category, retry eligibility, client action, correlation ID, and available metadata-only evidence.
 
 #### Cross-Surface Contract
 
-- FR47: API consumers can use a versioned canonical REST contract for the complete repository-backed task lifecycle.
-- FR48: CLI users can perform the canonical repository-backed task lifecycle with equivalent operation identity, status, errors, and audit behavior.
-- FR49: MCP clients can perform the canonical repository-backed task lifecycle with equivalent operation identity, status, errors, and audit behavior.
-- FR50: SDK consumers can perform the canonical repository-backed task lifecycle with equivalent operation identity, status, errors, and audit behavior.
+- FR47: API consumers can use the versioned REST transport for every current Contract Spine operation, with emitted schemas validated against the canonical OpenAPI 3.1 spine and every C13-required REST cell passing the shared authorization, idempotency, lifecycle, error, and audit scenarios.
+- FR48: CLI users can perform every C13-required CLI cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
+- FR49: MCP clients can perform every C13-required MCP cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
+- FR50: SDK consumers can perform every C13-required SDK cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
 - FR51: The system can expose cross-surface equivalence for authorization behavior, error categories, operation IDs, audit records, status transitions, and provider capability behavior.
 
 #### Audit and Operations Visibility
 
-- FR52: Operators can inspect read-only readiness, binding, workspace, lock, dirty state, commit, failure, provider, credential-reference, and sync status.
+- FR52: Tenant-scoped operators can inspect read-only readiness, binding, workspace lifecycle, lock state, disposition, durable commit, failure, provider, credential-reference, and sync status without global cross-tenant browsing.
 - FR53: Operators and audit reviewers can inspect metadata-only audit trails for successful, denied, failed, retried, and duplicate operations.
-- FR54: Audit reviewers can reconstruct incidents from immutable metadata covering actor, tenant, task, operation ID, correlation ID, provider, repository binding, folder, path metadata, result, timestamp, status, and commit reference.
-- FR55: The system can exclude file contents, provider tokens, credential material, and secrets from events, logs, traces, projections, audit records, diagnostics, and console responses.
-- FR56: The system can expose operation timelines for folder, workspace, file, lock, commit, provider, status, and authorization events.
+- FR54: Authorized audit reviewers can reconstruct incidents from immutable C9-classified metadata covering actor, tenant, task, operation/correlation identity, provider, binding, folder, result, timestamp, lifecycle/lock state, and durable commit reference without exposing file bodies or hidden resources.
+- FR55: File contents, diffs, generated context, provider payloads/tokens, credential material, secrets, and unauthorized existence are excluded from events, logs, traces, metrics, projections, audit, diagnostics, errors, and console responses; redaction is visibly distinct from missing or unknown.
+- FR56: Normal operation timelines come from projections. During projection degradation, bounded redacted event evidence is available only if, before any stream lookup, event counting, checkpoint lookup, filtering, or shaping, the same actor holds incident-admin permission and fresh current tenant/folder authorization. The view remains metadata-only and read-only, shows a persistent degraded warning, last checkpoint, correlation ID, and time window, and exposes no mutation or repair path; missing-admin, wrong-tenant, revoked, stale, hidden-resource, and folder-denied attempts fail before observation and emit one safe denial audit record.
 - FR57: Platform engineers can inspect provider support evidence for GitHub and Forgejo where it affects operational readiness.
 
 #### Authorized Search Facade
 
-- FR58: Developers and AI agents (via API, SDK, MCP, and CLI) can search the content that Folders has indexed into the Memories search index and receive only results they are authorized to see — security-trimmed to their tenant/folder/workspace, hydrated from the authoritative Folders read, and redacted to metadata-only — without Folders ever leaking another managed tenant's content, raw paths, snippets, source URIs, or hidden-resource existence.
+- FR58: Developers and AI agents can search authorized metadata tokens derived from indexed mutation metadata and query indexing status through REST, SDK, CLI, and MCP. Before egress, every hit is security-trimmed to the current tenant/folder/workspace authority and hydrated against current Folders state; stale, archived, revoked, unauthorized, or hidden hits are dropped. Results expose only C9-classified metadata, opaque authorized identity, and indexing/status evidence—never raw paths, file bodies, snippets, source URIs, or hidden-resource existence. Index or facade unavailability is explicit and fail-safe.
 
-### NonFunctional Requirements
+### Non-Functional Requirements
 
 #### Security and Tenant Isolation
 
-- NFR1: Tenant isolation must be enforced on every command, query, event, read-model view, lock, repository binding, context query, cleanup view, provider callback, and audit record.
+- NFR1: Tenant isolation must be enforced on every command, query, event, read-model view, lock, repository binding, context query, cleanup view, asynchronous provider side effect, and audit record. No incoming webhook ingestion exists in MVP.
 - NFR2: Cross-tenant access leaks are zero-tolerance defects. No object from tenant A may be retrievable, inferable, lockable, committed, queried, audited, or visible from tenant B.
-- NFR3: Tenant isolation tests must cover API responses, errors, events, logs, metrics labels, projections, cache keys, lock keys, temporary paths, provider credentials, repository bindings, background jobs, provider callbacks, audit records, and context-query results.
+- NFR3: Tenant isolation tests must cover API responses, errors, events, logs, metrics labels, projections, cache keys, lock keys, temporary paths, provider credentials, repository bindings, asynchronous work, audit records, index results, and context-query results.
 - NFR4: File contents, diffs, prompts, provider tokens, credential material, secrets, remote URLs with embedded credentials, generated context payloads, and unauthorized resource existence must not appear in events, logs, traces, metrics, projections, diagnostics, audit records, provider payload snapshots, exception messages, command arguments, or console responses.
 - NFR5: Secrets and sensitive payloads must be redacted at source, with automated sanitizer tests and forbidden-field scanning in CI.
 - NFR6: Authorization denials must use safe error shapes that avoid unauthorized resource enumeration.
-- NFR7: Credential references must be validated and displayed only as non-secret identifiers or status indicators.
-- NFR8: Provider credentials and repository bindings must be tenant-scoped and must not be reused across tenants, even if repository URLs appear identical.
-- NFR9: Provider credentials must use the least privilege required for supported lifecycle operations and must be validated against required provider capabilities before use.
-- NFR10: Build, dependency, package, and generated SDK artifacts must be traceable to source and must not include secrets or tenant data.
+- NFR7: Every mutation and asynchronous side effect must revalidate current tenant, folder, delegated-actor, binding, and credential authority before touching a protected resource; revocation fails closed and changes any held lock to revoked/inaccessible.
+- NFR8: Paths, repository names, branch names, and commit messages are tenant-sensitive by default. Authorized tenant members and tenant-scoped operators with need-to-know may view them; cross-tenant/external diagnostics redact them. A tenant confidential override replaces cleartext at audit/projection write time with a stable tenant-scoped correlation token that preserves equality/linkage across authorized incident records but cannot reveal the original value. Redacted, hidden, unknown, missing, stale, and unavailable remain visibly distinct.
+- NFR9: Credential references must be validated and displayed only as non-secret identifiers or status indicators.
+- NFR10: Provider credentials and repository bindings must be tenant-scoped and must not be reused across tenants, even if repository URLs appear identical.
+- NFR11: Provider credentials must use the least privilege required for supported lifecycle operations and must be validated against required provider capabilities before use.
+- NFR12: Build, dependency, package, and generated SDK artifacts must be traceable to source and must not include secrets or tenant data.
 
 #### Reliability, Idempotency, and Failure Visibility
 
-- NFR11: Every lifecycle step must expose terminal and non-terminal state, including `Pending`, `InProgress`, `Succeeded`, `Failed`, and `Cancelled` where cancellation is supported.
-- NFR12: Required observable lifecycle states include `ProviderReady`, `RepositoryBound`, `WorkspacePrepared`, `Locked`, `FilesChanged`, `CommitPending`, `Committed`, `CleanupPending`, and `Cleaned`.
-- NFR13: Repository-backed task lifecycle operations must leave an inspectable final or intermediate state after interruption, provider failure, commit failure, lock contention, read-model lag, or retry.
-- NFR14: Idempotency keys are required for workspace preparation, lock acquisition, file mutation, commit, and cleanup request operations.
-- NFR15: A repeated call with the same idempotency key and equivalent payload must return the same logical result; the same key with a conflicting payload must return an idempotency conflict.
-- NFR16: Idempotent lifecycle operations must not create duplicate domain events, duplicate provider writes, duplicate file changes, duplicate repositories, or duplicate commits.
-- NFR17: Lock acquisition must be deterministic, tenant-scoped, and limited to one active write lock per tenant/repository/workspace scope.
-- NFR18: Lock behavior must define conflict response, lease duration, renewal behavior, expiry behavior, cleanup after failed commit, and whether commit releases the lock.
-- NFR19: Lock contention, stale locks, abandoned locks, and interrupted tasks must produce deterministic status, retry eligibility, reason code, timestamp, and correlation ID.
-- NFR20: Failure visibility must expose state, cause category, retryability, and correlation ID without providing automated remediation in MVP.
+- NFR13: Workspace lifecycle uses only the canonical lowercase wire states defined in the Glossary; lock state and generic operation-execution status are separate dimensions and must be labeled as such.
+- NFR14: Every accepted operation exposes operation identity, workspace lifecycle, applicable lock state, projection freshness, and a terminal or inspectable non-terminal outcome.
+- NFR15: Repository-backed task lifecycle operations must leave an inspectable final or intermediate state after interruption, provider failure, commit failure, lock contention, read-model lag, or retry.
+- NFR16: When an external effect is unconfirmed, the workspace immediately enters `unknown_provider_outcome` and permits only bounded automatic read-only checks; exhausted or conflicting evidence moves the workspace to `reconciliation_required`, blocks retry, mutation, and takeover, and requires human escalation. These states never collapse into a generic failure.
+- NFR17: Idempotency keys are required for every mutating Contract Spine operation; non-mutating operations reject them.
+- NFR18: While the idempotency record is unexpired within its declared retention tier, a repeated call with the same key and equivalent payload must return the same logical result, and the same key with a conflicting payload must return an idempotency conflict. After expiry, either form of key reuse returns `idempotency_key_expired`, requires state refresh, and never executes automatically as a new request.
+- NFR19: Idempotent lifecycle operations must not create duplicate domain events, duplicate provider writes, duplicate file changes, duplicate repositories, or duplicate commits.
+- NFR20: Lock acquisition is deterministic and limited to one active writer per managed tenant plus canonical provider/repository identity plus normalized target ref; aliases resolving to that identity collide.
+- NFR21: Lock behavior must define conflict response, lease duration, renewal behavior, expiry behavior, cleanup after failed commit, and whether commit releases the lock.
+- NFR22: Lock contention, stale locks, abandoned locks, and interrupted tasks must produce deterministic status, retry eligibility, reason code, timestamp, and correlation ID.
+- NFR23: A successful committed state requires provider-confirmed durable update of the bound remote/ref. A timeout or unconfirmed remote result first moves the workspace to `unknown_provider_outcome`; only exhausted or conflicting bounded evidence checks move it to `reconciliation_required`, and neither state permits blind retry.
+- NFR24: Failure visibility must expose state, cause category, retryability, and correlation ID without providing automated remediation in MVP.
 
 #### Performance and Query Bounds
 
-- NFR21: Command submission must acknowledge accepted lifecycle commands within 1 second p95 before asynchronous provider or workspace work continues.
-- NFR22: Status and audit summary queries must return within 500 ms p95 for bounded MVP inputs.
-- NFR23: Context queries must return within 2 seconds p95 for bounded MVP inputs.
-- NFR24: Performance targets apply to bounded MVP inputs and control-plane responses. Targets must be validated against implementation benchmarks and recalibrated before release if provider or runtime constraints make the initial target misleading.
-- NFR25: Provider and workspace operations may complete asynchronously when external Git provider latency or workspace size exceeds interactive response budgets; callers must receive operation identity and status visibility rather than blocking indefinitely.
-- NFR26: Context queries must define and enforce maximum files, maximum bytes, maximum result count, maximum query duration, timeout behavior, truncation behavior, and included/excluded result audit visibility.
-- NFR27: File tree, search, glob, metadata, and bounded range queries must protect the service from unbounded workspace scans.
-- NFR28: Large file and binary handling limits must be explicit before MVP release; unsupported files must fail with stable policy errors rather than causing unbounded processing.
-- NFR29: Provider calls must use explicit timeout budgets, retry limits, and backoff caps.
-- NFR30: Provider calls must report timeout, rate-limit, unavailable, partial-success, and unknown-outcome states rather than leaving callers waiting indefinitely.
-- NFR31: Provider rate-limit responses must preserve retry hints where available and expose retry-after or classified retryability.
+- NFR25: Command submission must acknowledge accepted lifecycle commands within 1 second p95 before asynchronous provider or workspace work continues.
+- NFR26: Status and audit summary queries must return within 500 ms p95 for bounded MVP inputs.
+- NFR27: Context queries must return within 2 seconds p95 for bounded MVP inputs.
+- NFR28: Performance targets apply to bounded MVP inputs and control-plane responses. Targets must be validated against implementation benchmarks and recalibrated before release if provider or runtime constraints make the initial target misleading.
+- NFR29: Provider and workspace operations may complete asynchronously when external Git provider latency or workspace size exceeds interactive response budgets; callers must receive operation identity and status visibility rather than blocking indefinitely.
+- NFR30: Context queries accept at most 100 requested paths; return at most 2,000 tree entries or 500 search/glob results; allow at most 262,144 bytes for one bounded range and 1,048,576 serialized bytes for the aggregate response; and stop after 2 seconds of server execution. Excess input returns the stable input-limit result without partial execution. Supported result truncation occurs only after authorization/path filtering and sets one `isTruncated` flag; file content is never silently truncated.
+- NFR31: Query-limit audit evidence includes family, configured limit, actual count/bytes, elapsed time, truncation, safe category, and correlation ID, but excludes raw query text, file content, path lists, and unauthorized existence.
+- NFR32: File tree, search, glob, metadata, and bounded range queries must protect the service from unbounded workspace scans.
+- NFR33: Large file and binary handling limits must be explicit before MVP release; unsupported files must fail with stable policy errors rather than causing unbounded processing.
+- NFR34: Provider calls must use explicit timeout budgets, retry limits, and backoff caps.
+- NFR35: Provider calls must report timeout, rate-limit, unavailable, partial-success, and unknown-outcome states rather than leaving callers waiting indefinitely.
+- NFR36: Provider rate-limit responses must preserve retry hints where available and expose retry-after or classified retryability.
 
 #### Scalability and Capacity
 
-- NFR32: The system must support multiple tenants, folders, repositories, workspaces, and concurrent agent tasks without shared mutable state causing cross-tenant or cross-task interference.
-- NFR33: Folder and workspace operations must be scoped by tenant and folder boundaries rather than relying on a single global operation bottleneck.
-- NFR34: Audit, timeline, and file-context projections must remain queryable as folder history grows.
-- NFR35: Large batches of file operations must remain traceable without making routine status, audit, or context queries unusable.
-- NFR36: MVP capacity targets must avoid assuming a single tenant, single repository, or single active workspace, while avoiding unsupported claims about massive scale before concrete load targets are defined.
+- NFR37: The MVP release calibration must support 4 concurrent tenants, 2 folders per tenant, 2 active workspaces per tenant, 2 concurrent agent tasks per tenant, and at least 1 lifecycle operation per second without cross-tenant or cross-task interference.
+- NFR38: Folder and workspace operations must be scoped by tenant and folder boundaries rather than relying on a single global operation bottleneck.
+- NFR39: Audit, timeline, and file-context projections must remain queryable as folder history grows.
+- NFR40: Large batches of file operations must remain traceable without making routine status, audit, or context queries unusable.
+- NFR41: Capacity claims beyond the approved C1/C5 release-calibration units require new evidence and are not implied by this PRD.
 
 #### Integration and Contract Compatibility
 
-- NFR37: REST, CLI, MCP, and SDK surfaces must preserve equivalent operation identity, lifecycle semantics, authorization behavior, error categories, status transitions, and audit outcomes; transport shape and UX may differ.
-- NFR38: Public contracts must be versioned. Breaking changes to lifecycle commands, queries, error categories, workspace states, provider capabilities, or audit fields require an explicit new versioned contract.
-- NFR39: The product must support at least the active contract version and define a deprecation policy before removing any public lifecycle contract.
-- NFR40: Shared or generated contract tests must validate the same golden lifecycle scenarios across REST, CLI, MCP, and SDK.
-- NFR41: Generated SDKs, MCP tool definitions, CLI command schemas, and OpenAPI contracts must be derived from or validated against the same canonical lifecycle contract.
-- NFR42: GitHub and Forgejo support must be validated through provider contract tests before either provider is marked ready.
-- NFR43: Provider contract tests must cover only MVP-dependent lifecycle behavior: readiness, repository binding, branch/ref handling, file operations, commit, status, provider errors, and failure behavior.
-- NFR44: Supported GitHub and Forgejo API versions or behavior assumptions must be pinned or recorded so provider compatibility drift is visible.
-- NFR45: Provider capability differences must be reported explicitly instead of inferred by clients from failed operations.
-- NFR46: Provider failures such as timeout, rate limit, authentication failure, authorization failure, repository missing, repository conflict, branch/ref conflict, unavailable provider, invalid path, commit rejected, and unknown outcome must map to stable product error categories.
+- NFR42: REST, CLI, MCP, and SDK surfaces must preserve equivalent operation identity, lifecycle semantics, authorization behavior, error categories, status transitions, and audit outcomes; transport shape and UX may differ.
+- NFR43: Public contracts must be versioned. Breaking changes to lifecycle commands, queries, error categories, workspace states, provider capabilities, or audit fields require an explicit new versioned contract.
+- NFR44: The product must support at least the active contract version and define a deprecation policy before removing any public lifecycle contract.
+- NFR45: Shared or generated contract tests must validate the same golden lifecycle scenarios across REST, CLI, MCP, and SDK.
+- NFR46: The OpenAPI 3.1 Contract Spine is the canonical operation/schema authority; the generated SDK is the typed canonical client; CLI and MCP wrap it; REST emitted schemas validate against the spine. Every current Contract Spine operation has exactly one C13 parity row.
+- NFR47: GitHub and Forgejo support must be validated through provider contract tests before either provider is marked ready.
+- NFR48: Provider contract tests must cover only MVP-dependent lifecycle behavior: readiness, repository binding, branch/ref handling, file operations, commit, status, provider errors, and failure behavior.
+- NFR49: Supported GitHub and Forgejo products, instance/API versions, accepted credential/authentication profiles, and behavior assumptions must be published and recorded so compatibility drift is visible; unknown compatibility cannot be marked ready.
+- NFR50: Provider capability differences must be reported explicitly instead of inferred by clients from failed operations.
+- NFR51: Provider failures such as timeout, rate limit, authentication failure, authorization failure, repository missing, repository conflict, branch/ref conflict, unavailable provider, invalid path, commit rejected, and unknown outcome must map to stable product error categories.
 
 #### Observability, Auditability, and Replay
 
-- NFR47: Every successful, denied, failed, retried, duplicate, lock, file, commit, provider-readiness, and status-transition operation must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
-- NFR48: Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
-- NFR49: Allowed audit metadata must be explicitly classified. File paths, commit messages, repository names, branch names, and provider error payloads must be treated as potentially sensitive metadata.
-- NFR50: Sensitive audit metadata such as file paths, branch names, commit messages, repository names, and provider diagnostic payloads must be classified and protected through access control, hashing, truncation, or redaction where appropriate.
-- NFR51: Operations-console views must be read-model–based, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata.
-- NFR52: Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
-- NFR53: Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
-- NFR54: The system must expose operational signals for provider readiness failures, stale projections, lock conflicts, dirty workspaces, failed commits, inaccessible workspaces, retryability, and cleanup status.
-- NFR55: Backup or recovery expectations must preserve durable events or authoritative records needed to rebuild status, audit, and timeline projections.
+- NFR52: Every successful, denied, failed, retried, or duplicate operation—including lock, file, commit, provider-readiness, and status-transition operations—must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
+- NFR53: Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
+- NFR54: Paths, commit messages, repository names, and branch names are tenant-sensitive by default under C9; authorized tenant/scoped-operator views may display them, cross-tenant/external diagnostics redact them, and a tenant confidential override stores only the stable tenant-scoped correlation token at audit/projection write time. Confidential incident reconstruction links operations through that token and operation/correlation identity; it does not promise recovery of the original cleartext. Provider payloads, file bodies, secrets, and generated context remain forbidden.
+- NFR55: Operations-console views are projection-first, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata. During projection degradation, the bounded incident view may expose redacted event evidence only to an actor with incident-admin permission and normal tenant/folder access. The view must include a persistent warning, last checkpoint, correlation ID, and time window.
+- NFR56: Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
+- NFR57: Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
+- NFR58: The system must expose operational signals for provider readiness failures, stale projections, lock conflicts, dirty workspaces, failed commits, inaccessible workspaces, retryability, and cleanup status.
+- NFR59: Backup or recovery expectations must preserve durable events or authoritative records needed to rebuild status, audit, and timeline projections.
 
 #### Data Retention and Cleanup
 
-- NFR56: Retention periods must be defined for audit metadata, workspace status, provider correlation IDs, projections, temporary working files, and cleanup records.
-- NFR57: Retention durations are policy decisions and must be defined before production release; the PRD requires explicit retention semantics but does not set final retention periods.
-- NFR58: Tenant deletion must define which records are deleted, tombstoned, retained for audit, or anonymized.
-- NFR59: Workspace cleanup visibility must state whether cleanup is automatic, best-effort, retryable, user-triggered, or status-only for MVP.
-- NFR60: Cleanup failures must be observable through status, reason code, retryability, timestamp, and correlation ID.
-- NFR61: No cleanup process may remove audit evidence required to reconstruct completed, failed, denied, retried, duplicate, or interrupted operations.
+- NFR60: C3 retention is binding: audit metadata and commit-idempotency records are retained 7 years; workspace status, provider correlation IDs, cleanup records, diagnostics/rejections, and normalized auth-claim metadata are retained 400 days; read models are retained 400 days or until rebuilt, whichever is sooner; temporary working files are deleted 7 days after task-terminal closure and no active task; folder metadata and tombstones remain for the tenant lifetime plus 400 days after the approved deletion workflow, subject to legal hold.
+- NFR61: Tenant deletion anonymizes user display aliases while preserving metadata-only audit correlation/category/timestamp/outcome evidence; task-local display labels are tombstoned, secrets/content are deleted, and retained identifiers remain bounded by C3.
+- NFR62: Workspace cleanup is platform-owned and automatic only after task-terminal closure and no active task. Failed/inaccessible closure records final metadata-only evidence and operator disposition before the C3 seven-day observation window starts. Dirty, unknown-provider-outcome, and reconciliation-required workspaces are excluded. Cleanup retries idempotently; MVP exposes pending/retrying/completed/failed status but no user-triggered cleanup or repair action.
+- NFR63: Cleanup failures must be observable through status, reason code, retryability, timestamp, and correlation ID.
+- NFR64: No cleanup process may remove audit evidence required to reconstruct completed, failed, denied, retried, duplicate, or interrupted operations.
 
 #### Operations Console Accessibility
 
-- NFR62: Read-only operations console flows must target WCAG 2.2 AA.
-- NFR63: The console must support keyboard navigation for primary diagnostic workflows.
-- NFR64: Status, failure, readiness, and lock indicators must not rely on color alone.
-- NFR65: Console screens must provide visible focus states, semantic headings, readable table structure, and sufficient contrast.
-- NFR66: Console text, controls, and tables must remain readable at common browser zoom levels used by operators.
+- NFR65: Read-only operations console flows must target WCAG 2.2 AA.
+- NFR66: The console must support keyboard navigation for primary diagnostic workflows.
+- NFR67: Status, failure, readiness, and lock indicators must not rely on color alone.
+- NFR68: Console screens must provide visible focus states, semantic headings, readable table structure, and sufficient contrast.
+- NFR69: Console text, controls, and tables must remain readable at common browser zoom levels used by operators.
 
 #### Verification Expectations
 
-- NFR67: Each NFR category must have at least one automated verification path or documented manual validation path before MVP release.
-- NFR68: Security, tenant isolation, idempotency, provider contract, read-model determinism, and cross-surface contract compatibility NFRs must have automated tests.
-- NFR69: Performance, accessibility, retention, backup/recovery, and operations-console usability NFRs must have release validation evidence before MVP acceptance.
-- NFR70: Security verification must include dependency/package scanning, generated artifact review, and least-privilege provider credential validation.
+- NFR70: Each NFR category must have at least one automated verification path or documented manual validation path before MVP release.
+- NFR71: Security, tenant isolation, idempotency, provider contract, read-model determinism, and cross-surface contract compatibility NFRs must have automated tests.
+- NFR72: Performance, accessibility, retention, backup/recovery, and operations-console usability NFRs must have release validation evidence before MVP acceptance.
+- NFR73: Security verification must include dependency/package scanning, generated artifact review, and least-privilege provider credential validation.
 
 ### Additional Requirements
 
 These come from the Architecture document and represent technical/infrastructure requirements that must be satisfied alongside FRs/NFRs.
+
+#### Current Technical Authority Overlay (2026-08-04)
+
+The following requirements are the current architecture-derived constraints for story design. They supersede older wording below wherever the two conflict.
+
+- AR-CURRENT-01: Story 1.1 uses the exact sibling Hexalith structure: Hexalith.Tenants for the module baseline and the EventStore Admin CLI/MCP/UI patterns for adapters, while explicitly excluding generic starters, local platform-boilerplate duplication, and nested-submodule initialization.
+- AR-CURRENT-02: The OpenAPI 3.1 Contract Spine is the operation/schema authority; NSwag generates the SDK, CLI and MCP wrap that SDK, REST-emitted schemas validate against the spine, and every current operation has exactly one generated C13 parity row.
+- AR-CURRENT-03: Hexalith.EventStore owns durable command admission and event persistence. Production must replace the ADR-0001 NoOp repository and `/project` 501 with an EventStore-backed `IFolderRepository`, durable replay, and a bootable deployed host.
+- AR-CURRENT-04: Operational state is classified explicitly. Locks, fencing tokens, idempotency admission/tombstones, in-flight checkpoints, and reconciliation tasks are durable and fail closed when unavailable; working copies are disposable caches, never authority.
+- AR-CURRENT-05: Epic 12 owns durable source events, authoritative file content/state, restart replay, task completion, real Git persistence, and recoverable at-least-once egress. It does not own consuming product projections.
+- AR-CURRENT-06: Epic 4 owns workspace transition evidence and durable prepare/lock/mutation/context/commit/reconciliation proof; Epic 6 owns seven populated diagnostic projections and deployed operator/incident journeys; Epic 10 owns the search bridge, deployed Server registration, current-authority hydration/redaction/pruning, and the non-empty FR58 round trip.
+- AR-CURRENT-07: Story 11.10 owns EventStore admission and subscription-mapping seam adoption only. Story 11.14 owns Memories publication/search-client seams, and Story 11.15 owns the DCP-capable cross-repository verification lane. Workstream 11 owns no product projection.
+- AR-CURRENT-08: The governing dependency sequence is OQ1–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun.
+- AR-CURRENT-09: Authorization order is JWT validation → EventStore claim transform → fresh tenant-access evidence → folder ACL → EventStore validator → Dapr deny-by-default policy. Authorization must precede any protected lookup, counting, filtering, provider call, file/content access, audit access, or search egress.
+- AR-CURRENT-10: The serializing lock identity is managed tenant plus canonical provider/repository identity plus normalized target ref. Folder/workspace/task IDs are metadata, aliases collide, and lock state is distinct from lifecycle and disposition.
+- AR-CURRENT-11: Every mutation follows the EventStore-owned durable admission contract; every read rejects an idempotency key before source execution. Live-equivalent replay, live-conflict, and expired-key precedence are distinct, and consumed-key evidence survives replay-result expiry without retaining protected prior intent.
+- AR-CURRENT-12: Unknown external effects enter `unknown_provider_outcome` first and permit at most five read-only evidence checks within 15 minutes; only exhausted or conflicting evidence enters `reconciliation_required`. Neither state permits blind retry, takeover, or cleanup.
+- AR-CURRENT-13: Memories is a derived shared search index, never Folders authority. Workers publish `SearchIndexEntryChanged`/`SearchIndexEntryRemoved`; the Server reads through Dapr service invocation; Folders authorizes before egress and hydrates/trims every candidate against current durable state.
+- AR-CURRENT-14: The operations console is a read-only, metadata-only Blazor Web App using Interactive Server through `FrontComposerShell`; incident evidence requires incident-admin plus fresh tenant/folder authorization before observation.
+- AR-CURRENT-15: Every positive production capability must prove deployed composition, restart-surviving durable population/replay where applicable, tenant isolation, positive and denial/conflict/failure/timeout-or-unknown/boundary behavior, and honest degraded/unavailable behavior. No completion claim may rely only on NoOp, in-memory, seed, unavailable, safe-empty, or fake evidence.
 
 #### Solution Scaffolding (Phase 0 — sibling-module starter pattern)
 
@@ -391,8 +409,8 @@ These come from the Architecture document and represent technical/infrastructure
 
 ### UX Design Requirements
 
-- UX-DR1: Build the MVP UI as a web/desktop-first operations console through Hexalith.FrontComposer Shell and Microsoft Fluent UI Blazor; do not introduce a separate component library or custom design system.
-- UX-DR2: Make workspace discovery the primary entry point with global search and state-first filters for tenant, folder, workspace ID, repository binding, task ID, correlation ID, provider, lifecycle state, failure category, and time window.
+- UX-DR1: Build the MVP UI as a web/desktop-first Blazor Web App using Interactive Server rendering through `FrontComposerShell` and Microsoft Fluent UI Blazor; do not introduce a separate component library or custom design system.
+- UX-DR2: Make workspace discovery the primary entry point with state-first filters for tenant, folder, workspace ID, repository binding, task ID, correlation ID, provider, lifecycle state, failure category, and time window. “Global” search is global only inside the caller's already-authorized tenant/folder scope; authorization and safe scope establishment precede candidate lookup, counting, suggestions, filtering, and empty-state classification.
 - UX-DR3: Use a resource-detail console structure where search results lead to a workspace detail page anchored by tenant scope, resource identity, authorization posture, and current trust state.
 - UX-DR4: Keep tenant, folder, repository binding, workspace, provider, task, and authorization context visible before detailed evidence in workspace, folder, provider, access, and audit views.
 - UX-DR5: Implement a Workspace Trust Summary component on every workspace detail page showing tenant, folder, workspace ID, repository binding, provider, task ID, correlation ID, current state, authorization posture, lock state, dirty state, commit reference, latest reason category, and freshness timestamp.
@@ -403,9 +421,9 @@ These come from the Architecture document and represent technical/infrastructure
 - UX-DR10: Implement a Redaction And Inaccessibility State component that distinguishes redacted, inaccessible, denied, unknown, missing, unavailable, stale, and failed data.
 - UX-DR11: Preserve the MVP read-only boundary in every UI flow: no mutation controls, repair actions, file editing, raw diff display, credential reveal, unrestricted file browsing, or unauthorized resource confirmation.
 - UX-DR12: Present folder metadata only as orientation and evidence; never make the console feel like a file manager or content browser.
-- UX-DR13: Use canonical state vocabulary consistently across search results, trust summaries, tables, timelines, detail panels, empty states, denied states, and redaction states.
+- UX-DR13: Present six independent dimensions consistently across search results, trust summaries, tables, timelines, detail panels, empty states, denied states, and redaction states: workspace lifecycle, lock state, operator disposition, folder lifecycle, projection freshness/availability, and visibility/redaction. Workspace lifecycle uses exactly `requested`, `preparing`, `ready`, `locked`, `changes_staged`, `dirty`, `committed`, `failed`, `inaccessible`, `unknown_provider_outcome`, and `reconciliation_required`; lock state uses exactly `unlocked`, `locked`, `expired`, `stale`, and `revoked`; disposition uses exactly `available`, `auto-recovering`, `degraded-but-serving`, `awaiting-human`, and `terminal-until-intervention`.
 - UX-DR14: Every status indicator must include readable text, icon or shape cue, semantic color, accessible label, and optional tooltip or detail link when meaning is not obvious; color must never be the only signal.
-- UX-DR15: Visually and semantically distinguish ready, locked, dirty, committed, failed, inaccessible, delayed, unknown, redacted, stale, missing, unavailable, denied, and archived states.
+- UX-DR15: Visually and semantically distinguish every lifecycle, lock, disposition, freshness, visibility/redaction, and folder-lifecycle value. Show `unknown_provider_outcome` as automatic reconciliation in progress with safe reason, last check, remaining check/time budget, and next check; reserve `awaiting-human` for `reconciliation_required` and expose no retry or takeover control.
 - UX-DR16: Use restrained Fluent UI-based visual foundations: neutral surfaces, high-contrast text, semantic status colors, compact typography, and an 8px spacing base suitable for dense operational work.
 - UX-DR17: Use cards only for distinct repeated items, summary blocks, and focused panels; avoid nested cards and decorative section cards.
 - UX-DR18: Structure workspace detail pages with predictable sections for overview, folder metadata, diagnosis, audit trail, provider readiness, lock/task history, and access evidence.
@@ -423,125 +441,162 @@ These come from the Architecture document and represent technical/infrastructure
 - UX-DR30: Target WCAG 2.2 AA with keyboard access for search, filters, result selection, tabs, tables, tree expansion, detail panels, and dialogs; visible focus; semantic headings and landmarks; accessible names; sufficient contrast; zoom resilience; and screen-reader meaningful redaction/denial/status labels.
 - UX-DR31: Test the UI at desktop, tablet, and mobile fallback widths, at 125%, 150%, and 200% browser zoom, and with dense identifiers and long paths in tables, timelines, metadata trees, and trust summaries.
 - UX-DR32: Validate accessibility with automated checks, keyboard-only walkthroughs for the three critical journeys, screen reader review, forced-colors/high-contrast checks where supported, color-blindness review, and focus management checks.
+- UX-DR33: Before incident evidence performs stream lookup, event counting, checkpoint lookup, filtering, or shaping, the same actor must hold incident-admin permission and fresh current tenant/folder authorization. The gate exposes only bounded C9-redacted metadata with a persistent degraded warning, checkpoint, time window, and correlation context; every denial fails before observation, emits one safe audit record, and reveals no hidden-resource existence.
 
 ### FR Coverage Map
 
 - FR1: Epic 1 — vocabulary in OpenAPI Contract Spine + `docs/contract-terms.md`
 - FR2: Epic 1 — lifecycle vocabulary via `x-hexalith-lifecycle-states` extension + diagrams
 - FR3: Epic 1 — command/query distinction in OpenAPI operation grouping + Server endpoint routing
-- FR4: Epic 2 — tenant administrator ACL configuration via `OrganizationAggregate` ACL baseline
+- FR4: Epic 2 and Epic 3 — tenant administrators own ACL/archive and provider/binding policy respectively; scoped operators validate only
 - FR5: Epic 2 — folder access grant to users, groups, roles, and delegated service agents
 - FR6: Epic 2 — effective-permissions inspection
 - FR7: Epic 3 — tenant readiness inspection (depends on provider configuration)
 - FR8: Epic 2 — layered authorization evaluation (foundation: JWT → claim transform → tenant projection → folder ACL → EventStore validators → Dapr policy)
 - FR9: Epic 2 — cross-tenant denial before any file/workspace/credential/repository/lock/commit/provider/audit access
 - FR10: Epic 2 — authorization evidence (allowed and denied) without unauthorized resource enumeration
-- FR11: Epic 2 — folder creation
-- FR12: Epic 2 — folder lifecycle and binding inspection
-- FR13: Epic 2 — folder archive
-- FR14: Epic 2 — audit and status evidence preservation for archived folders
-- FR15: Epic 3 — provider binding + credential reference configuration per tenant
+- FR11: Epic 2 and Epic 12 — authorized folder creation plus durable managed identity and replay
+- FR12: Epic 2 and Epic 6 — lifecycle/binding inspection with freshness, availability, and safe non-enumeration
+- FR13: Epic 2 — archive eligibility, provider no-touch, stable post-archive mutation denial, and separately authorized governance operations
+- FR14: Epic 2 and Workstream 7 — independently expiring C3-class fields, retention-expired markers, and retained metadata-only evidence
+- FR15: Epic 3 — tenant-administrator provider/binding/credential/default-ref/capability configuration with platform-engineer validation
 - FR16: Epic 3 — provider readiness validation before repository-backed creation/binding
 - FR17: Epic 3 — readiness diagnostics with safe reason codes, retryability, remediation category, provider reference, correlation ID
-- FR18: Epic 3 — repository-backed folder creation when readiness passes
-- FR19: Epic 3 — folder binding to existing repository
-- FR20: Epic 3 — branch/ref policy selection
+- FR18: Epic 3 and Epic 12 — asynchronous repository-backed creation with no-side-effect denial and durable completion
+- FR19: Epic 3 — pre-created repository binding with readiness, access, duplicate/alias, and branch/ref validation
+- FR20: Epic 3 — tenant-admin branch/ref policy that becomes part of readiness, binding, and the serializing target
 - FR21: Epic 3 — provider/credential-reference/binding/branch/capability metadata exposure (no secrets)
 - FR22: Epic 3 — GitHub vs Forgejo capability differences exposed explicitly
-- FR23: Epic 3 — per-provider readiness evidence for canonical lifecycle (readiness, repo binding, branch/ref, file ops, commit, status, failure behavior)
-- FR24: Epic 4 — workspace preparation
-- FR25: Epic 4 — task-scoped workspace lock acquisition
+- FR23: Epic 3 — published provider product/instance/version/API/credential/capability evidence; unknown compatibility cannot report ready
+- FR24: Epic 4 and Epic 12 — freshly authorized preparation backed by durable repository/content state
+- FR25: Epic 4 — lock acquisition on managed tenant plus canonical provider/repository plus normalized-ref identity, including alias collision
 - FR26: Epic 4 — lock state, owner, task, age, expiry, retry-eligibility metadata inspection
-- FR27: Epic 4 — competing-operation denial under unsafe lock/state
-- FR28: Epic 4 — lock state transitions (active, expired, stale, abandoned, interrupted, released)
-- FR29: Epic 4 — workspace lock release
-- FR30: Epic 4 — workspace cleanup status visibility for completed/failed/interrupted/abandoned task lifecycles
-- FR31: Epic 4 and Epic 6 — lifecycle status currency produced by the task lifecycle and surfaced for operators
-- FR32: Epic 4 — file add/change/remove (PutFileInline ≤256KB + PutFileStream multipart)
+- FR27: Epic 4 — deterministic conflict denial with no protected side effect and one safe audit record
+- FR28: Epic 4 and Epic 6 — exact `unlocked`, `locked`, `expired`, `stale`, `revoked` lock vocabulary, separate from lifecycle/disposition
+- FR29: Epic 4 and Epic 12 — authorized release with live replay, expired-key precedence, and safe revoked/non-owner denial
+- FR30: Epic 4 and Workstream 7 — automatic task-terminal-only C3 cleanup, observable retries/failures, and no user repair
+- FR31: Epic 4, Epic 6, and Epic 10 — lifecycle/lock/disposition/freshness plus task/audit/provider/index currency
+- FR32: Epic 4 and Epic 12 — atomic validated change sets over authoritative durable content without auto-commit
 - FR33: Epic 4 — file-operation policy violation rejection (workspace boundary, path, branch/ref, lock, tenant, provider, folder)
-- FR34: Epic 4 — context queries via tree, metadata, search, glob, bounded range reads
-- FR35: Epic 4 — context-query policy boundaries (paths, exclusions, binary handling, range/result limits, secret-safe responses)
+- FR34: Epic 4 — live-workspace tree/metadata/glob/range/body search under exact C4 numeric bounds
+- FR35: Epic 4 — pre-scan authorization/path policy, bounded snippets/truncation, stable limit errors, and telemetry exclusions
 - FR36: Epic 6 — read-only console scope (no file editing or content browsing in console)
-- FR37: Epic 4 — workspace commit for repository-backed folders
-- FR38: Epic 4 — task/operation/correlation/actor/author/branch/commit-message/changed-path metadata attachment
-- FR39: Epic 4 — task and commit evidence exposure (provider, binding, branch, paths, status, commit ref, timestamps, IDs)
-- FR40: Epic 4 — failed/incomplete/duplicate/retried/conflicting operation reporting with stable status and audit evidence
-- FR41: Epic 4 — idempotent lifecycle retries with stable task/operation/correlation IDs
-- FR42: Epic 4 — duplicate logical operation rejection on retry-identity or intent conflict
-- FR43: Epic 1 and Epic 4 — canonical error taxonomy defined in the Contract Spine and realized by lifecycle behavior
-- FR44: Epic 4 — full error category set (validation/auth/tenant/folder ACL/credential/provider/capability/repository/branch/lock/workspace/path/commit/read-model/duplicate/transient)
-- FR45: Epic 4 — canonical workspace/task states (`ready`, `locked`, `dirty`, `committed`, `failed`, `inaccessible`) per C6 matrix
-- FR46: Epic 4 — final-state explanation + retry eligibility + operational evidence after any lifecycle failure
+- FR37: Epic 4 and Epic 12 — fresh-authority commit with provider-confirmed durable remote/ref result and bounded reconciliation
+- FR38: Epic 4 — closed C9-classified task/operation/actor/commit metadata with secret/content-like rejection before emission
+- FR39: Epic 4 and Epic 6 — metadata-only durable task/commit evidence under current C9 policy
+- FR40: Epic 4 — stable failure/duplicate/retry/conflict evidence and distinct automatic-versus-human reconciliation posture
+- FR41: Epic 12 and Epic 5 — durable all-mutations replay/expiry substrate plus cross-surface conformance without duplicates
+- FR42: Epic 12 and Epic 5 — live conflict, expired-key precedence for either intent, and read-key rejection before execution
+- FR43: Epic 1, Epic 4, and Epic 5 — canonical closed error shape, product behavior, and surface parity
+- FR44: Epic 1, Epic 4, Epic 5, and Epic 12 — complete taxonomy including expired key, unknown outcome, and reconciliation required
+- FR45: Epic 4 and Epic 6 — all 11 lifecycle states, separate five-state lock vocabulary, and separate disposition presentation
+- FR46: Epic 4, Epic 6, and Epic 10 — safe lifecycle/lock outcome, retry/client action, and populated metadata-only evidence after failure
 - FR47: Epic 1 and Epic 5 — versioned REST contract authored first, then proven through cross-surface parity
 - FR48: Epic 5 — CLI canonical lifecycle parity
 - FR49: Epic 5 — MCP canonical lifecycle parity
 - FR50: Epic 1 and Epic 5 — SDK generated from the Contract Spine and proven through canonical lifecycle parity
 - FR51: Epic 1 and Epic 5 — cross-surface equivalence defined by the Contract Spine/parity oracle and validated across surfaces
-- FR52: Epic 6 — read-only ops console projection consumption (readiness, binding, workspace, lock, dirty, commit, failure, provider, credential-ref, sync)
+- FR52: Epic 6 — tenant-scoped populated read-only projections for readiness, binding, lifecycle, lock, disposition, durable commit, failure, provider, credential-reference, and sync
 - FR53: Epic 6 — metadata-only audit trail inspection (success/denied/failed/retried/duplicate)
-- FR54: Epic 6 — incident reconstruction from immutable audit metadata
+- FR54: Epic 6 — authorized incident reconstruction from immutable C9-classified metadata without file bodies or hidden existence
 - FR55: Epic 4 (write-side: redaction in events/projections/logs/traces/metrics) + Epic 6 (read-side: console rendering with classification + lock-icon affordance)
-- FR56: Epic 6 — operation timelines for folder, workspace, file, lock, commit, provider, status, authorization events
-- FR57: Epic 6 — provider support evidence visibility for GitHub and Forgejo
-- FR58: Epic 10 — authorized Memories search-index query facade with Folders-side tenant/folder/workspace trimming, authoritative hydration, and metadata-only redaction
+- FR56: Epic 6 — projection-first timelines plus incident-admin and fresh tenant/folder authorization before any degraded-mode observation
+- FR57: Epic 3 produces provider evidence; Epic 6 presents it within authorized operator scope
+- FR58: Epic 10 owns authorized non-empty metadata-token search/status completion; Epic 12 supplies durable source state/egress and Epic 9 supplies topology enablement
 
 ## Epic List
 
-### Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
-API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before feature work begins.
+### Enabling Workstream 1: Canonical Contract and Adapter Foundation
+API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before product work begins.
 **FRs covered:** FR1, FR2, FR3, FR43, FR47, FR50, FR51
+**Classification:** technical enabler; excluded from product-capability completion metrics.
 **Guardrails:** Epic 1 owns the canonical workspace state model, response envelope, error taxonomy, audit vocabulary, golden contract fixtures, negative/error contract cases, and schema compatibility gates that constrain Epics 2-6.
 
-### Epic 2: Tenant-Scoped Folder Access And Lifecycle
+### Product Epic 2: Tenant-Scoped Folder Access and Lifecycle
 Tenant administrators and authorized actors can create folders, manage access, inspect effective permissions, archive folders, and receive safe authorization evidence with cross-tenant isolation enforced before any resource access.
 **FRs covered:** FR4, FR5, FR6, FR8, FR9, FR10, FR11, FR12, FR13, FR14
+**Classification:** product.
 
-### Epic 3: Provider Readiness And Repository Binding
-Platform engineers and authorized actors can configure Git providers, validate readiness, create repository-backed folders, bind existing repositories, define branch/ref policy, and inspect provider capability evidence without exposing secrets.
+### Product Epic 3: Provider Readiness and Repository Binding
+Tenant administrators configure provider, credential-reference, repository/default-ref, and capability policy; authorized actors create or bind repositories; scoped platform engineers validate readiness and provider evidence without gaining tenant-policy mutation authority or exposing secrets.
 **FRs covered:** FR7, FR15, FR16, FR17, FR18, FR19, FR20, FR21, FR22, FR23, FR57
+**Classification:** product.
 **UX/evidence guardrails:** Provider readiness and repository binding stories must preserve explainable readiness states, degraded states, safe blockers, retryability, and secret-safe evidence that Epic 6 can render without inventing UI-only semantics.
 
-### Epic 4: Repository-Backed Workspace Task Lifecycle
+### Product Epic 4: Repository-Backed Workspace Task Lifecycle
 Developers and AI agents can prepare workspaces, acquire locks, mutate files safely, query bounded context, commit changes, and receive deterministic failure, status, idempotency, and redaction behavior through the canonical repository-backed task lifecycle.
 **FRs covered:** FR24, FR25, FR26, FR27, FR28, FR29, FR30, FR31, FR32, FR33, FR34, FR35, FR37, FR38, FR39, FR40, FR41, FR42, FR43, FR44, FR45, FR46, FR55
+**Classification:** product.
+**Dependency:** Positive durable completion depends on the applicable Epic 12 substrate; Epic 4 retains ownership of transition evidence and product lifecycle proof.
 **Risk guardrails:** Lifecycle stories must expose coherent user-facing status language and evidence for prepare, lock, file mutation, context query, commit, audit, lock contention, stale locks, interrupted commits, provider outage, and tenant isolation under parallel activity.
 
-### Epic 5: Cross-Surface Workflow Parity
+### Product Epic 5: Cross-Surface Workflow Parity
 API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalent operation identity, errors, idempotency, audit behavior, authorization outcomes, terminal states, and mixed-surface handoff.
 **FRs covered:** FR47, FR48, FR49, FR50, FR51
+**Classification:** product.
 **Verification guardrails:** Parity must be proven through shared conformance tests and the generated parity oracle, not surface-by-surface manual equivalence. REST, SDK, CLI, MCP, and console-facing evidence must use the same concepts, names, error categories, and audit model.
 
-### Epic 6: Read-Only Workspace Trust Console And Audit Review
+### Product Epic 6: Read-Only Workspace Trust Console and Audit Review
 Operators, tenant administrators, and audit reviewers can find a workspace, prove its tenant boundary, inspect readiness, locks, dirty state, failures, commits, provider evidence, metadata-only folder visibility, timelines, and audit records through a FrontComposer/Fluent UI read-only console without mutation or file-content exposure.
 **FRs covered:** FR31, FR36, FR45, FR46, FR52, FR53, FR54, FR55, FR56, FR57
-**UX requirements covered:** UX-DR1-UX-DR32, with UX-DR31 and UX-DR32 also release-evidenced through Workstream 7.
+**Classification:** product.
+**Dependency:** Populated production completion depends on durable Epic 12 source events; Epic 6 retains ownership of all seven diagnostic projections and deployed operator/incident journeys.
+**UX requirements covered:** UX-DR1–UX-DR33, with accessibility release evidence also owned by Workstreams 7/8.
 **Console guardrails:** The primary job is inspect, verify, and escalate. Users can search, filter, navigate, inspect, and copy safe identifiers, but the console must consume shared query/status/audit/readiness APIs only and must not expose mutation endpoints, privileged backdoors, hidden administrative bypasses, or UI-only lifecycle semantics.
 
-### Release, Platform, Governance, And Phase 2 Workstreams
+### Enabling, Release, Quality, and Hardening Workstreams
 
-The following workstreams are not counted as product MVP epics when reporting product-scope completion. They track release evidence, release acceptance closure, platform runway, Phase 2 search-index capability work, and technical refactoring/governance closure with their own readiness criteria.
+The following workstreams are excluded from product-capability completion metrics. Completed work remains truthful evidence within its bounded enabling, release, remediation, topology, refactoring, or hardening scope.
 
 ### Release Readiness Workstream 7: MVP Release Readiness And Operational Evidence
 Release stakeholders can verify that the MVP satisfies security, tenant isolation, parity, provider compatibility, Dapr policy, retention, observability, capacity, accessibility, documentation, package-traceability, and NFR traceability evidence before production acceptance.
 **FRs covered:** Cross-cutting validation for all FRs; no new product FR scope.
+**Classification:** release governance and quality closure; excluded from product-capability completion metrics.
 **Evidence guardrails:** Readiness evidence is collected continuously from Epics 1-6 and must cover REST, SDK, CLI, MCP, console, tenant isolation, audit completeness, performance baselines, accessibility, operational runbooks, and NFR traceability before MVP acceptance.
 
-### Epic 8: MVP Release Acceptance Closure
-Release stakeholders can accept the MVP once the cross-surface canonical REST contract is fully served (47/47 operations), the operations console has an automated WCAG 2.2 AA gate, C3 retention has Legal sign-off, and the solution test baseline is honestly green — closing the bounded release-acceptance conditions from the 2026-06-22 readiness review without reopening Epics 1–7.
+### Release Remediation Workstream 8: MVP Release Acceptance Closure
+Release stakeholders retain the completed REST-route, parity, accessibility, retention-approval, and honest-green remediation evidence without treating those bounded batches as acceptance of the still-open durable product MVP.
 **FRs covered:** No new product FR scope. Completes REST-surface delivery for FR2, FR5, FR6, FR11, FR15, FR26, FR28, FR39, FR46, FR52 (server routes for operations already present on SDK/CLI/MCP) plus cross-cutting release validation.
+**Classification:** release remediation and quality closure; excluded from product-capability completion metrics.
 **Created:** 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Closure epic — not a feature workstream.
 
-### Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
+### Enabling Workstream 9: AppHost and Memories Search-Index Topology
 Platform engineers can run the full Folders topology — EventStore (gateway-only), Tenants, and the Memories search-index server — composed purely through the shared platform Aspire helpers, with `hexalith-folders → folders-index` routing configured, removing the hand-rolled `FoldersAspireModule` Dapr wiring.
 **FRs covered:** No new product FR scope (infrastructure alignment + additive Memories hosting).
+**Classification:** completed FR58 topology enabler; excluded from product-capability completion metrics.
 **Created:** 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment.md`).
 
-### Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
-Developers and AI agents can have authorized file changes asynchronously indexed into Memories through a worker-side producer and a Folders-owned bridge projection, activating the Epic 9 routing and exposing an authorized, security-trimmed Folders query facade.
-**FRs covered:** FR58 — authorized Memories search-index query facade with Folders-side tenant/folder/workspace trimming, authoritative hydration, and metadata-only redaction.
-**Created:** 2026-06-22 via bmad-correct-course. Phase 2 capability track. C4 and C9 are approved policy constraints; remaining Epic 10 work is release-readiness evidence and follow-up closure tracked by sprint action items, not a future PRD addition.
+### Product Epic 10: Authorized Folders Content Search and Index Lifecycle
+Developers and AI agents can publish, remove, reconcile, authorize, query, and durably hydrate metadata-token index results through Memories while Folders remains authoritative and prevents cross-tenant or sensitive-data disclosure.
+**FRs covered:** FR58.
+**Classification:** product.
+**Dependency:** Epic 9 supplies completed topology enablement; Epic 12 supplies durable source events/state and at-least-once egress; Epic 10 owns the deployed bridge, pruning, current-authority hydration/redaction, and non-empty FR58 round trip.
+**Guardrail:** Metadata-derived indexing is an enabling increment, not FR58 completion. Story 10.9 body-content materialization remains a separately authorized C9-gated follow-on and is not required by the current metadata-token FR58 clause.
 
-## Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
+### Technical Enabling Workstream 11: Domain-Focus Platform Refactoring and Governance Closure
+Maintainers replace local platform copies with approved shared Hexalith seams, preserve wire behavior, and close boundary/governance verification without taking ownership of product projections.
+**FRs covered:** No new product FR scope; preserves conformance for the current FR/NFR inventory.
+**Classification:** technical enabler/refactoring; excluded from product-capability completion metrics.
+**Ownership:** Story 11.10 owns EventStore admission/subscription seams, Story 11.14 owns Memories publication/search-client seams, and Story 11.15 owns the DCP-capable cross-repository verification lane. Workstream 11 owns no Epic 4, 6, or 10 product projection.
+
+### Product Epic 12: Durable Repository-Backed Round Trip
+Authorized developers and AI agents can persist folder lifecycle and file content across process restart, retrieve authoritative content, complete a real Git commit, observe terminal task/projection state, and recover asynchronous indexing delivery without NoOp, unavailable, in-memory, or fake-backed substitutions.
+**FRs covered:** Durable substrate for FR2, FR11, FR18, FR24, FR29, FR32, FR37, FR39–FR46, and FR58.
+**Classification:** product.
+**Boundary:** Owns durable source events, authoritative content/state, restart replay, task completion, real Git persistence, durable all-mutations idempotency, and recoverable egress—not the consuming Epic 4/6/10 projections.
+
+### Hardening Epic 13: Security and Operational Hardening
+Security and operations stakeholders can harden the surfaces that already claim to work through SSRF defenses, fail-safe authorization, protected credential files, truthful health/readiness, production Dapr state/resiliency, bounded requests, and converged sensitive-value filtering.
+**FRs covered:** No new product FR scope; strengthens the security, reliability, observability, performance, and operational NFR evidence needed for release.
+**Classification:** security/operations hardening; release-blocking but excluded from product-capability completion metrics.
+
+### Governing Portfolio Dependency
+
+`OQ1–OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`.
+
+Stable epic numbers are retained for historical traceability, so numeric order is not execution order. No product completion claim may be supported only by NoOp, in-memory, seed, unavailable, safe-empty, or fake evidence.
+
+## Enabling Workstream 1: Bootstrap Canonical Contract For Consumers And Adapters
 
 API consumers, adapter implementers, and maintainers can rely on a scaffolded Hexalith.Folders module with one OpenAPI v1 Contract Spine driving REST, SDK, CLI, and MCP before feature work begins.
 
@@ -555,11 +610,12 @@ So that consumers and later stories have a stable, convention-compliant module b
 
 **Acceptance Criteria:**
 
-**Given** an empty Hexalith.Folders repository
+**Given** an empty Hexalith.Folders repository and the architecture finding that no generic public or `dotnet new aspire-starter` template satisfies Hexalith conventions
 **When** the scaffold is created
-**Then** `Hexalith.Folders.slnx` contains the expected src, test, and sample projects
+**Then** `Hexalith.Folders.slnx` reproduces the approved sibling-module structure: Hexalith.Tenants project/layout, central package management, `Directory.Build.props`, naming, configuration, and dependency conventions, plus the Hexalith.EventStore Admin CLI/MCP/UI reference patterns for the adapter surfaces
 **And** project references follow the architecture dependency direction and target .NET 10
-**And** `dotnet build` succeeds for the scaffold without requiring provider credentials, tenant data, or initialized nested submodules.
+**And** the scaffold explicitly excludes generic starter boilerplate, local copies of shared platform infrastructure, provider-specific implementation, production persistence/data tables, product projections, credentials, tenant data, and initialized nested submodules
+**And** `dotnet build` succeeds for the consumer-buildable scaffold without requiring any excluded runtime capability.
 
 ### Story 1.2: Establish root configuration and submodule policy
 
@@ -589,6 +645,8 @@ So that contract, parity, redaction, encoding, and load tests have stable inputs
 **And** `tests/load`, `tests/tools/parity-oracle-generator`, `docs/exit-criteria/_template.md`, and `docs/adrs/0000-template.md` exist with ownership notes linking them to later CI or release-readiness stories.
 
 ### Story 1.4: Author Phase 0.5 Pre-Spine Workshop deliverables
+
+_**Disposition:** Historical batch. Preserve its completed evidence and do not reactivate this umbrella; any new defect requires a narrow ratified follow-up._
 
 As an architect and maintainer,
 I want Contract Spine blocking decisions resolved,
@@ -764,7 +822,7 @@ So that missing release evidence, unstable idempotency encoding, stale examples,
 **Then** idempotency-encoding equivalence, pattern-example compilation, exit-criteria presence, tenant-prefixed cache-key lint, and parity completeness checks execute
 **And** missing required evidence or metadata fails the build.
 
-## Epic 2: Tenant-Scoped Folder Access And Lifecycle
+## Product Epic 2: Tenant-Scoped Folder Access And Lifecycle
 
 Tenant administrators and authorized actors can create folders, manage access, inspect effective permissions, archive folders, and receive safe authorization evidence with cross-tenant isolation enforced before any resource access.
 
@@ -870,23 +928,12 @@ So that retired work is no longer active while audit and status evidence remain 
 **Given** a folder is eligible for archive
 **When** `ArchiveFolder` is accepted
 **Then** lifecycle state becomes archived and future mutating task commands are rejected
-**And** audit and status evidence remain queryable under retention policy.
-
-### Story 2.8b: Wire FolderArchiveTenantGate as an IDomainProcessor
-
-_Added 2026-05-20 via the `bmad-code-review 2.8` round-2 BLOCKED finding. Story 2.8 could not reach `done` until this story wired the archive command into the production `/process` path — the "green tests, broken production wiring" remediation (see project-context Testing Rules; ADR 0001)._
-
-As a platform engineer,
-I want `FolderArchiveTenantGate` actually invoked by the production `/process` callback,
-So that the archive path enforces ACL, policy, freshness, decision-bound idempotency, and append-conflict reread in real production wiring — not just in unit tests.
-
-**Acceptance Criteria:**
-
-**Given** the REST → `IEventStoreGatewayClient` → `/process` → `FolderDomainProcessor` → gate → persistence path (ADR 0001, Option B)
-**When** an authenticated tenant administrator submits `POST /api/v1/folders/{folderId}/archive` with a valid envelope
-**Then** the response is `202 AcceptedCommand`, lifecycle state becomes `Archived`, and exactly one `FolderArchived` event is appended
+**And** audit and status evidence remain queryable under retention policy
+**And** the production REST → `IEventStoreGatewayClient` → `/process` → `FolderDomainProcessor` → `FolderArchiveTenantGate` → persistence path enforces ACL, policy freshness, all-mutation idempotency, and append-conflict reread
 **And** an in-process integration test that does NOT mock `IEventStoreGatewayClient` proves the happy path and every Archive Denial And State Table row end-to-end
 **And** `FolderAccessTenantGate` follows the same persistence pattern for consistency.
+
+**Superseded alias:** Story 2.8b, “Wire FolderArchiveTenantGate as an IDomainProcessor,” is absorbed into Story 2.8. Its completed production-wiring evidence and lifecycle record remain preserved; it is not a second canonical story.
 
 ### Story 2.9: React to Tenants events through Worker handlers
 
@@ -901,7 +948,7 @@ So that Folders authorization stays aligned with tenant administration.
 **Then** local tenant-access projections and folder authorization metadata are updated idempotently
 **And** only `folders.*` configuration keys are processed.
 
-## Epic 3: Provider Readiness And Repository Binding
+## Product Epic 3: Provider Readiness And Repository Binding
 
 Platform engineers and authorized actors can configure Git providers, validate readiness, create repository-backed folders, bind existing repositories, define branch/ref policy, and inspect provider capability evidence without exposing secrets.
 
@@ -932,36 +979,35 @@ So that GitHub, Forgejo, and future providers can expose differences without cha
 **And** capability-query behavior is validated without depending on future GitHub or Forgejo adapter implementation
 **And** the model is not hardcoded to exactly two providers.
 
-### Story 3.3: Implement GitHub provider adapter
+### Story 3.3: GitHub capability discovery and safe readiness
 
 As a platform engineer,
-I want a GitHub provider adapter using Octokit,
-So that tenants can create and bind GitHub repositories through the canonical provider port.
+I want GitHub capability discovery and safe readiness through the canonical provider port,
+So that support can be evaluated before any GitHub repository operation observes a protected target.
 
 **Acceptance Criteria:**
 
 **Given** a GitHub binding and credential reference exist
-**When** readiness, repository, branch/ref, file, commit, and status operations are called
-**Then** the adapter returns canonical provider results and failure categories
-**And** ambiguous provider outcomes return `unknown_provider_outcome` rather than silent retry.
+**When** readiness and capabilities are queried
+**Then** the adapter returns safe support, version, capability, retryability, and failure metadata without repository mutation
+**And** repository provisioning/binding/ref behavior is owned by Story 3.10 and file/commit/status behavior by Story 3.11.
 
-### Story 3.4: Implement Forgejo provider adapter and drift detection
+### Story 3.4: Forgejo capability discovery, safe readiness, and contract-drift detection
 
 As a platform engineer,
-I want a Forgejo provider adapter with version snapshots and schema drift detection,
-So that Forgejo support is verified against pinned API behavior.
+I want Forgejo capability discovery, safe readiness, and versioned contract-drift detection,
+So that Forgejo support is verified before protected repository behavior is attempted.
 
 **Acceptance Criteria:**
 
 **Given** supported Forgejo versions are listed
-**When** readiness, repository creation or binding, branch/ref, file, commit, status, and provider failure operations are exercised through the canonical provider port
-**Then** the Forgejo adapter returns canonical provider results and failure categories equivalent to GitHub where the product semantics match
-**And** branch/ref handling, file-operation limits, commit behavior, status mapping, and unknown provider outcomes are covered by contract tests
-**And** ambiguous or partially applied Forgejo responses return `unknown_provider_outcome` or `reconciliation_required` rather than silent retry
+**When** readiness and capability discovery run through the canonical provider port
+**Then** supported API behavior and safe failure metadata are returned without repository mutation
 **And** supported Forgejo version snapshots are pinned
 **When** contract tests and nightly drift checks run
 **Then** schema drift is classified as warning or failure according to policy
-**And** readiness cannot report ready for an unsupported or failing provider version.
+**And** readiness cannot report ready for an unsupported or failing provider version
+**And** repository/ref behavior is owned by Story 3.12 and file/commit/status behavior by Story 3.13.
 
 ### Story 3.5: Validate provider readiness with safe diagnostics
 
@@ -976,17 +1022,17 @@ So that configuration failures are caught before workspace tasks begin.
 **Then** the result includes ready/failed state, safe reason code, retryability, remediation category, provider reference, and correlation ID
 **And** secrets and credential values are not included.
 
-### Story 3.6: Create a new repository-backed folder
+### Story 3.6: Request asynchronous creation of a repository-backed folder
 
 As an authorized actor,
-I want to create a new provider repository for an existing logical folder after readiness passes,
-So that a tenant folder can become repository-backed through a controlled provisioning path.
+I want to request creation of a new provider repository for an existing logical folder after readiness passes,
+So that a durable asynchronous process can complete the binding without implying synchronous completion.
 
 **Acceptance Criteria:**
 
 **Given** a logical folder exists and provider readiness is green
 **When** `CreateRepositoryBackedFolder` is accepted
-**Then** repository provisioning is requested idempotently and folder state moves toward ready according to C6
+**Then** repository provisioning is requested idempotently and the folder remains in the correct non-terminal C6 state
 **And** repository creation failures use stable provider and repository error categories.
 
 ### Story 3.7: Bind an existing repository to a folder
@@ -1028,11 +1074,82 @@ So that I can diagnose provider setup before agents run workspace tasks.
 **Then** provider support evidence for GitHub and Forgejo is returned as safe metadata
 **And** credential material, tokens, and secret diagnostics are excluded.
 
-## Epic 4: Repository-Backed Workspace Task Lifecycle
+### Story 3.10: GitHub repository provisioning, binding, and branch/ref behavior
+
+As an authorized actor,
+I want GitHub repository provisioning, existing-repository binding, and branch/ref behavior to execute through the canonical provider port,
+So that a tenant folder can use GitHub without provider-specific leakage, duplicate bindings, or ambiguous retry behavior.
+
+**Acceptance Criteria:**
+
+**Given** a tenant administrator has configured an approved GitHub binding, opaque credential reference, repository policy, and current readiness evidence
+**When** an authorized create or bind operation executes through the real Octokit-backed provider seam
+**Then** authorization and evidence freshness are checked before credential or target resolution, exactly one eligible mutation occurs, and canonical identity plus exact branch/ref compatibility determine success, equivalent existing, or safe conflict
+**And** equivalent replay, conflicting replay, known provider failures, timeout or ambiguous post-dispatch outcomes, and cancellation boundaries return canonical results without blind mutation retry
+**And** durable handoff evidence is provider-neutral, restart-safe, metadata-only, and excludes credentials, raw repository/ref locators, URLs, response bodies, and hidden existence
+**And** completion requires real deployed composition plus positive, denial, conflict, failure, timeout/unknown, tenant-isolation, and boundary evidence; fake-only or unavailable behavior is not completion.
+
+### Story 3.11: GitHub file mutation, commit, status, and failure behavior
+
+As an authorized workspace actor,
+I want GitHub file mutation, commit, and status operations implemented through the canonical provider port,
+So that repository-backed work has provider-correct behavior without leaking GitHub-specific contracts.
+
+**Acceptance Criteria:**
+
+**Given** an authorized task owns the canonical workspace lock and its paths, ref policy, and C4 limits are valid
+**When** add, change, remove, commit, or status behavior executes against GitHub
+**Then** the concrete adapter preserves operation ordering, exact ref and commit identity, canonical status/failure mapping, cancellation boundaries, and unknown-outcome reconciliation semantics
+**And** equivalent/conflicting replay, denied and wrong-tenant access, known failure, timeout or ambiguous outcome, size/path boundary, and sensitive-data exclusion are proven without duplicate provider effects
+**And** restart-safe evidence contains only approved metadata and completion requires the real deployed GitHub composition, not fake-only, NoOp, seed, or safe-empty evidence.
+
+### Story 3.12: Forgejo repository provisioning, binding, and branch/ref behavior
+
+As an authorized actor,
+I want Forgejo repository provisioning, existing-repository binding, and branch/ref behavior to execute through the canonical provider port,
+So that supported Forgejo installations provide the same product semantics with explicit capability differences.
+
+**Acceptance Criteria:**
+
+**Given** the configured Forgejo version, tenant binding, credential reference, policy, and readiness evidence are supported and current
+**When** an authorized create or bind operation executes through the real Forgejo transport
+**Then** authorization precedes protected observation, canonical repository identity and exact ref semantics decide the result, and one eligible mutation occurs without provider DTO leakage
+**And** duplicate/alias conflict, equivalent/conflicting replay, version drift, denial, known failure, timeout/unknown outcome, and reconciliation behavior use stable provider-neutral categories
+**And** restart-safe metadata excludes credentials, endpoints, raw repository/ref values, and response bodies, and completion requires deployed positive, negative, tenant-isolation, and boundary evidence rather than fake or unavailable evidence.
+
+### Story 3.13: Forgejo file mutation, commit, status, and failure behavior
+
+As an authorized workspace actor,
+I want Forgejo file mutation, commit, and status operations implemented through the canonical provider port,
+So that repository-backed work remains deterministic across supported Forgejo versions.
+
+**Acceptance Criteria:**
+
+**Given** a supported Forgejo version and an authorized lock-owning task
+**When** add, change, remove, commit, or status behavior executes
+**Then** the adapter enforces path/ref/C4 policy, preserves ordering and canonical metadata, and maps version-specific responses to the shared success, conflict, failure, and unknown-outcome model
+**And** equivalent/conflicting replay, wrong-tenant denial, known failure, timeout/ambiguity, cancellation, file-size/type/path boundaries, and contract-drift behavior are proven without duplicate effects or secret/content leakage
+**And** completion requires real deployed Forgejo composition and restart-safe evidence; mocks, fakes, NoOp, unavailable, or safe-empty results alone cannot satisfy it.
+
+### Story 3.14: Complete asynchronous repository creation and binding
+
+As an authorized actor,
+I want a requested repository creation or binding to reach a durable terminal folder state,
+So that I can observe whether asynchronous provider work completed, failed, or requires reconciliation.
+
+**Acceptance Criteria:**
+
+**Given** Story 3.6 has emitted an authorized request and the applicable Story 3.10 or 3.12 provider behavior is available
+**When** the worker subscribes, executes, persists, restarts, retries, or reconciles the process
+**Then** the process advances through the canonical C6 lifecycle and records one terminal task/binding result with current retry eligibility and sanitized evidence
+**And** equivalent replay causes no duplicate repository or binding, conflicting replay is rejected, known failure is terminal as defined, and unknown provider outcome is checked automatically within the governed budget before `reconciliation_required`
+**And** deployed durable success, restart replay from an empty checkpoint, tenant isolation, denial, conflict, failure, timeout/unknown, and boundary evidence are required; no in-memory, NoOp, seed-only, unavailable, safe-empty, or fake-only proof counts as completion.
+
+## Product Epic 4: Repository-Backed Workspace Task Lifecycle
 
 Developers and AI agents can prepare workspaces, acquire locks, mutate files safely, query bounded context, commit changes, and receive deterministic failure, status, idempotency, and redaction behavior through the canonical repository-backed task lifecycle.
 
-_**MVP limitation (owned, 2026-07-07 via bmad-correct-course, `sprint-change-proposal-2026-07-07-seed-backed-read-models.md`):** the workspace **transition-evidence** read model (`IWorkspaceTransitionEvidenceReadModel`; C6 lifecycle, FR46 operational evidence) is a **seed-backed dev/test seam** (`InMemoryWorkspaceTransitionEvidenceReadModel`, `TryAddSingleton` default) with no production projection; in a deployed host it is empty and reads return safe `NotFoundSafe`. Authoring + wiring its EventStore-backed projection is owned by Epic 11 **Story 11.10**, alongside the Epic 6 ops-console diagnostics read model; see `architecture.md` §"Ops Console & Transition-Evidence Read Models (MVP limitation)". The lifecycle **determinism** NFR (NFR52, Story 4.15) is unaffected — it covers the projection-backed lifecycle/status/lock/cleanup/task read models and remains green._
+_**Reconciled production-closure ownership (2026-08-04):** the workspace transition-evidence seam remains safely unavailable until Story 4.18 authors and deploys its EventStore-backed projection. Stories 4.19–4.21 own the durable prepare/lock, mutation/context, commit, conflict, and reconciliation proof. Story 11.10 owns EventStore admission/subscription seam adoption only and owns no product projection. Existing seed-backed and deterministic component evidence is preserved but is not production-completion evidence._
 
 ### Story 4.1: Implement Folder aggregate state machine with C6 transition matrix
 
@@ -1058,7 +1175,8 @@ So that file work starts from a known provider and branch/ref state.
 **Given** provider readiness, repository binding, branch/ref policy, and task context are valid
 **When** `PrepareWorkspace` is accepted
 **Then** workspace preparation starts idempotently and exposes status visibility
-**And** unknown provider outcome enters reconciliation rather than silent retry.
+**And** `unknown_provider_outcome` is recorded before bounded automatic reconciliation checks begin
+**And** `reconciliation_required` is used only after the governed automatic check/time budget is exhausted, never as a synonym for the initial ambiguous result.
 
 ### Story 4.3: Acquire task-scoped workspace lock
 
@@ -1135,10 +1253,10 @@ So that task context is useful without unbounded scans, stale derived-index auth
 
 **Given** the actor has context-query permission
 **When** a context query runs
-**Then** tenant access, folder ACL, path policy, sensitivity classification, binary/large-file policy, and range/result limits are enforced before execution
+**Then** tenant access, folder ACL, path policy, sensitivity classification, binary/large-file policy, cancellation, authoritative-content-source rules, and C4 limits are enforced before execution: at most 100 requested paths, 2,000 tree entries, 500 search/glob results, 262,144 bytes per bounded range, 1,048,576 serialized aggregate bytes, and 2 seconds of server execution
 **And** denied queries produce metadata-only audit evidence
 **And** any semantic/RAG retrieval backend, including Hexalith.Memories, is invoked only after Folders authorization and policy checks pass
-**And** derived semantic indexes are never treated as authoritative for tenant access, folder ACL, file truth, workspace state, or audit truth.
+**And** tree, metadata, range, glob, and search families return their canonical result/error and truncation semantics independently, and derived semantic indexes are never authoritative for tenant access, folder ACL, file truth, workspace state, or audit truth.
 
 ### Story 4.9: Inspect workspace and projection currency
 
@@ -1233,6 +1351,8 @@ So that aggregate state and read models can be rebuilt consistently from durable
 
 ### Story 4.16: Validate lifecycle security boundaries
 
+_**Disposition:** Historical batch. Preserve its completed evidence and do not reactivate this umbrella; new durable mutation/context gaps belong to Story 4.20._
+
 As a maintainer,
 I want sentinel-redaction, path-security, encoding-equivalence, and cross-tenant isolation tests for the lifecycle,
 So that secret safety, path safety, encoding stability, and tenant isolation are checked mechanically.
@@ -1258,7 +1378,63 @@ So that lifecycle scenarios capture capacity dimensions early and provide reusab
 **Then** parameterized scenarios exist without final production thresholds
 **And** the harness records enough dimensions for tenant, folder, workspace, task, and operation concurrency calibration.
 
-## Epic 5: Cross-Surface Workflow Parity
+### Story 4.18: EventStore-backed workspace transition-evidence projection
+
+As an authorized caller,
+I want transition evidence populated from durable workspace events,
+So that lifecycle decisions can be inspected after restart without a seed-only read model.
+
+**Acceptance Criteria:**
+
+**Given** Story 12.1 supplies durable ordered source events and Story 12.2 supplies the durable projection substrate
+**When** the deployed Server registers the EventStore-backed transition-evidence projector and replays from an empty checkpoint
+**Then** C6 transitions, task/operation identity, timestamps, retry eligibility, failure/reconciliation metadata, and freshness are rebuilt deterministically and survive host restart
+**And** correct-tenant reads return populated metadata while wrong-tenant, unauthorized, stale, corrupt, and unavailable paths return safe canonical results without existence or sensitive-data leakage
+**And** real deployed population, restart replay, tenant isolation, denial, conflict, failure, timeout/unknown, and boundary evidence are required; the in-memory/seed/unavailable default is retained only as honest degraded behavior and cannot prove completion.
+
+### Story 4.19: Prove durable workspace prepare and lock lifecycle
+
+As a developer or AI agent,
+I want prepare and lock behavior proven through the durable production path,
+So that workspace ownership survives restart and prevents colliding writers.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.3 provide durable folder, task, projection, and authoritative state/content foundations
+**When** prepare, acquire, inspect, release, expiry, stale, and revocation paths execute through REST → gateway → processor → authorization gate → EventStore/projection
+**Then** the exact lock vocabulary `unlocked`, `locked`, `expired`, `stale`, `revoked` and the canonical tenant + repository + normalized-ref serialization identity are preserved across restart and empty-checkpoint replay
+**And** positive behavior plus wrong-tenant/unauthorized denial, alias collision, equivalent/conflicting replay, known failure, timeout/unknown outcome, expiry boundary, terminal status, retry eligibility, and metadata-only audit are proven without a mocked gateway
+**And** NoOp, in-memory, seed-only, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
+
+### Story 4.20: Prove durable file mutation and bounded-context lifecycle
+
+As a developer or AI agent,
+I want file mutations and bounded context queries proven against authoritative durable content,
+So that safe repository work remains correct across restart and every context-query family.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.3 provide durable events, task state, and authoritative file content and the caller has current tenant/folder authorization
+**When** add/change/remove and tree/metadata/range/glob/search behavior runs through the real deployed production path
+**Then** mutation ordering, all-mutation idempotency, lock ownership, path policy, cancellation, content authority, task/projection state, and replay survive restart without duplicate effects
+**And** C4 enforces 100 requested paths, 2,000 tree entries, 500 search/glob results, 262,144 bytes per range, 1,048,576 aggregate bytes, and 2 seconds; each query family proves canonical success, truncation, denial, limit, unavailable, and cancellation semantics independently
+**And** wrong-tenant denial, conflict, known failure, timeout/unknown, boundary, metadata-only audit, and sensitive-content exclusion are attached, and no fake, NoOp, seed, unavailable, or safe-empty evidence alone counts as completion.
+
+### Story 4.21: Prove real commit, retry, conflict, and unknown-outcome reconciliation
+
+As a developer or AI agent,
+I want commits and ambiguous outcomes proven through the real durable Git path,
+So that a task reaches one trustworthy terminal or recovery state without duplicate commits.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.4 provide durable state/content and the real Git commit/provider-write path
+**When** an authorized lock owner commits, retries an equivalent request, submits a conflicting request, encounters a known failure, or receives an ambiguous post-dispatch result
+**Then** exactly one eligible commit occurs, durable commit evidence and terminal task/projection state survive restart, and `unknown_provider_outcome` runs bounded automatic reconciliation before any `reconciliation_required` state
+**And** deployed success, denial, wrong-tenant access, replay/conflict, provider failure, timeout/unknown outcome, reconciliation-budget boundary, metadata-only audit, and sensitive-data exclusion are proven end to end
+**And** mocks, NoOp executors, in-memory state, seed records, unavailable/safe-empty paths, or fake Git evidence alone cannot support completion.
+
+## Product Epic 5: Cross-Surface Workflow Parity
 
 API, SDK, CLI, and MCP users can run the same canonical lifecycle with equivalent operation identity, errors, idempotency, audit behavior, authorization outcomes, terminal states, and mixed-surface handoff.
 
@@ -1277,30 +1453,30 @@ So that I can use the canonical lifecycle without learning internal transport de
 **Then** upload convenience, idempotency guidance, correlation/task ID handling, and a local AppHost sample are documented
 **And** helpers do not introduce lifecycle semantics absent from the Contract Spine.
 
-### Story 5.2: Implement CLI commands with behavioral-parity rules
+### Story 5.2: CLI tenant, folder, provider-readiness, and binding commands
 
 As a CLI user,
-I want commands that mirror the canonical lifecycle,
-So that terminal workflows behave like SDK and REST workflows.
+I want commands for tenant, folder, provider readiness, repository binding, and branch/ref policy workflows,
+So that command-line control-plane use behaves like SDK and REST use.
 
 **Acceptance Criteria:**
 
 **Given** the SDK client is available
-**When** CLI commands are implemented
-**Then** provider, folder, workspace, file, commit, context, and audit commands wrap SDK behavior
+**When** CLI control-plane commands are implemented
+**Then** tenant, folder, provider-readiness, repository-binding, and branch/ref-policy commands wrap SDK behavior
 **And** pre-SDK errors, idempotency-key sourcing, correlation sourcing, and exit codes follow the Adapter Parity Contract.
 
-### Story 5.3: Implement MCP tools, resources, and failure kinds
+### Story 5.3: MCP tenant, folder, provider-readiness, and binding tools/resources
 
 As an MCP client,
-I want tools and resources for the canonical lifecycle,
-So that AI tools can work with folders without direct filesystem or provider ownership.
+I want tools and resources for tenant, folder, provider readiness, repository binding, and branch/ref policy workflows,
+So that AI tools can use the control-plane slice without direct filesystem or provider ownership.
 
 **Acceptance Criteria:**
 
 **Given** the SDK client is available
-**When** MCP tools and resources are implemented
-**Then** one tool per canonical command/query is available where appropriate
+**When** MCP control-plane tools and resources are implemented
+**Then** one tool per tenant, folder, readiness, binding, or policy command/query is available where appropriate
 **And** failures map to the canonical MCP failure-kind set with correlation ID, code, retryability, and client action.
 
 ### Story 5.4: Consume parity oracle in CLI and MCP tests
@@ -1357,14 +1533,70 @@ So that real integrations can hand off work without losing state or auditability
 **Then** task ID, correlation ID, operation IDs, audit records, and terminal state remain coherent
 **And** any surface-specific drift in idempotency replay or error category fails the scenario.
 
-## Epic 6: Read-Only Workspace Trust Console And Audit Review
+### Story 5.8: CLI workspace preparation and lock lifecycle
+
+As a CLI user,
+I want to prepare a workspace and inspect, acquire, and release its task-scoped lock,
+So that scripted work uses the same durable lifecycle and lock semantics as REST and SDK.
+
+**Acceptance Criteria:**
+
+**Given** the Epic 4 durable prepare/lock path is deployed and the caller has current tenant/folder authorization
+**When** CLI prepare and lock commands run
+**Then** inputs, operation identity, exact lock states, C6 lifecycle, idempotency, canonical results/errors, exit codes, and metadata-only output match the generated parity oracle
+**And** success, denial/wrong-tenant, equivalent/conflicting replay, lock collision/expiry, failure, timeout/unknown, and input boundaries are verified against real deployed composition
+**And** fake, seed-only, unavailable, safe-empty, or in-memory behavior alone cannot prove CLI completion.
+
+### Story 5.9: CLI file, context, commit, status, error, and audit behavior
+
+As a CLI user,
+I want to mutate files, query bounded context, commit, inspect status, and review safe audit evidence,
+So that the complete CLI workflow preserves canonical behavior and security.
+
+**Acceptance Criteria:**
+
+**Given** Epic 4 and Epic 12 production paths are available
+**When** CLI file/context/commit/status/audit commands execute
+**Then** C4 bounds, lock and all-mutation idempotency rules, canonical errors, terminal/recovery states, retry eligibility, output shaping, and parity-oracle semantics are preserved without exposing content or secrets outside authorized response rules
+**And** deployed success plus denial, conflict, provider failure, timeout/unknown reconciliation, cancellation/size/path boundaries, tenant isolation, and metadata-only audit are proven
+**And** NoOp, mock-only, seed, unavailable, safe-empty, or fake evidence cannot satisfy completion.
+
+### Story 5.10: MCP workspace preparation and lock lifecycle
+
+As an MCP client,
+I want tools and resources for workspace preparation and task-scoped lock lifecycle,
+So that AI agents receive the same durable lifecycle semantics as other surfaces.
+
+**Acceptance Criteria:**
+
+**Given** the Epic 4 durable prepare/lock path is deployed and the actor is authorized
+**When** MCP preparation and lock operations run
+**Then** tool/resource schemas, operation identity, exact lock states, C6 lifecycle, idempotency, failure kind, retryability, client action, and eventual-acceptance wording match the parity oracle
+**And** success, wrong-tenant/authorization denial, equivalent/conflicting replay, collision/expiry, known failure, timeout/unknown, and schema/input boundaries are proven through deployed composition
+**And** fake, seed-only, unavailable, safe-empty, or in-memory behavior alone cannot prove completion.
+
+### Story 5.11: MCP file, context, commit, status, error, and audit behavior
+
+As an MCP client,
+I want tools and resources for file mutation, bounded context, commit, status, errors, and safe audit evidence,
+So that AI-agent workflows retain full cross-surface parity.
+
+**Acceptance Criteria:**
+
+**Given** Epic 4 and Epic 12 production paths are available
+**When** MCP file/context/commit/status/audit operations execute
+**Then** schemas, C4 bounds, lock and all-mutation idempotency rules, terminal/recovery states, failure kinds, retryability, client action, and metadata-only output match the generated parity oracle
+**And** deployed success plus denial, conflict, provider failure, timeout/unknown reconciliation, cancellation/size/path boundaries, tenant isolation, and sensitive-data exclusion are proven
+**And** NoOp, mock-only, seed, unavailable, safe-empty, or fake evidence cannot satisfy completion.
+
+## Product Epic 6: Read-Only Workspace Trust Console And Audit Review
 
 Operators, tenant administrators, and audit reviewers can find a workspace, prove its tenant boundary, inspect readiness, locks, dirty state, failures, commits, provider evidence, metadata-only folder visibility, timelines, and audit records through a FrontComposer/Fluent UI read-only console without mutation or file-content exposure.
 
 This epic implements UX-DR1 through UX-DR30 directly; UX-DR31 and UX-DR32 are verified through Story 6.11 and release-evidenced through Workstream 7.
 Epic 6 owns the console experience, while Epics 3-5 own the readiness, lifecycle, parity, status, and evidence semantics that make the console truthful. Console stories must consume those shared semantics rather than defining UI-only state names or hidden control paths.
 
-_**MVP limitation (owned, 2026-07-07 via bmad-correct-course, `sprint-change-proposal-2026-07-07-seed-backed-read-models.md`):** the deployed ops-console **diagnostics** read model (`IOpsConsoleDiagnosticsReadModel`, seven views) is a **seed-backed dev/test seam** (`InMemoryOpsConsoleDiagnosticsReadModel`, `TryAddSingleton` default) with no production projection; in a deployed host it is empty and diagnostic reads return safe `NotFoundSafe` (metadata-only, no leak). The console is read-model-based and safe, but unpopulated — a documented deferral, not a defect. Authoring + wiring the EventStore-backed diagnostics projection is owned by Epic 11 **Story 11.10**; see `architecture.md` §"Ops Console & Transition-Evidence Read Models (MVP limitation)". The same limitation and owner apply to the Epic 4 workspace transition-evidence read model._
+_**Reconciled production-closure ownership (2026-08-04):** the seven deployed diagnostic views remain safely unavailable until Stories 6.12–6.13 author and register their EventStore-backed projections and Story 6.14 proves populated deployed journeys. Story 4.18 separately owns workspace transition evidence. Workstream 11 owns platform seam adoption and verification lanes only; it owns no product projection. Existing seed-backed views are honest degraded seams, not positive completion evidence._
 
 ### Story 6.1: Audit and operation-timeline query endpoints
 
@@ -1487,8 +1719,10 @@ So that diagnosis can continue while read models recover.
 
 **Given** projections are degraded and the actor has incident permission
 **When** `/_admin/incident-stream` renders
-**Then** it shows a persistent degraded-mode banner, raw event metadata, disposition labels from Story 6.3, and correlation/time-window copy affordance
-**And** redacted values render through the shared redaction component from Story 6.4 with no relaxed policy.
+**Then** incident-admin permission and fresh tenant/folder authorization are verified before stream lookup, result counting, checkpoint access, filtering, empty-state classification, or response shaping
+**And** denial performs no protected observation, emits exactly one safe metadata-only audit record, and leaks no stream, tenant, folder, count, checkpoint, or event existence
+**And** an authorized view shows a persistent degraded-mode banner, bounded C9-redacted event metadata, disposition labels from Story 6.3, and correlation/time-window copy affordance
+**And** redacted values render through the shared redaction component from Story 6.4 with no relaxed policy or file content.
 
 ### Story 6.10: Enforce console performance and perceived-wait UX
 
@@ -1505,6 +1739,8 @@ So that the console remains useful during incidents.
 
 ### Story 6.11: Verify no-mutation enforcement and accessibility
 
+_**Disposition:** Historical batch. Preserve its completed evidence and do not reactivate this umbrella; new projection/runtime gaps belong to Stories 6.12–6.14._
+
 As a release reviewer,
 I want the console verified as read-only and WCAG 2.2 AA conformant,
 So that the MVP console satisfies its safety and accessibility promises.
@@ -1518,9 +1754,51 @@ So that the MVP console satisfies its safety and accessibility promises.
 **And** browser zoom checks at 125%, 150%, and 200% confirm text, controls, tables, and key workflows remain readable and usable
 **And** accessibility validation covers automated checks, keyboard-only walkthroughs for the three critical journeys, screen reader review for summary/folder/redaction/audit flows, forced-colors or high-contrast checks where supported, color-blindness review, focus management, semantic headings, readable tables, contrast, and non-color-only indicators against WCAG 2.2 AA expectations.
 
-## Release, Platform, Governance, And Phase 2 Workstreams
+### Story 6.12: Populate readiness, lock, dirty-state, and failed-operation projections
 
-The sections below are managed outside the six product MVP epics. They remain important for readiness and release governance, but they should not distort product-epic completion metrics.
+As a tenant-scoped operator,
+I want readiness, lock, dirty-state, and failed-operation views populated from durable events,
+So that the console reports real production state after restart.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.2 provide durable ordered events and projection infrastructure
+**When** the four EventStore-backed diagnostic projections are registered in the deployed Server and replay from an empty checkpoint
+**Then** they populate deterministic tenant/folder-scoped records, survive restart, expose freshness/availability honestly, and never derive authority from seed data
+**And** authorized populated reads plus wrong-tenant/unauthorized denial, conflict/corrupt event, failure, timeout/unavailable, empty-checkpoint, replay-boundary, and metadata-redaction evidence are attached
+**And** in-memory, seed-only, NoOp, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
+
+### Story 6.13: Populate provider-status, sync-status, and projection-freshness projections
+
+As a tenant-scoped operator,
+I want provider status, sync status, and projection freshness populated from durable evidence,
+So that the console distinguishes current, stale, degraded, and unavailable production state.
+
+**Acceptance Criteria:**
+
+**Given** durable provider, synchronization, and projection-checkpoint events are available from Epic 12 and the owning product flows
+**When** the three EventStore-backed projections register, consume, restart, and replay from an empty checkpoint
+**Then** deterministic tenant/folder records expose safe provider result, sync/reconciliation state, checkpoint/freshness, and availability metadata without credentials, raw repository identities, or content
+**And** authorized populated reads plus wrong-tenant/unauthorized denial, replay conflict/corruption, source failure, timeout/unavailable, empty-checkpoint, freshness-boundary, and redaction evidence are attached
+**And** seed-only, in-memory, NoOp, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
+
+### Story 6.14: Prove populated deployed-host diagnostic and transition-evidence journeys
+
+As a release reviewer,
+I want the deployed operations console exercised against populated diagnostic and transition-evidence records,
+So that operator, audit, and incident journeys prove production truth rather than empty-safe scaffolding.
+
+**Acceptance Criteria:**
+
+**Given** Stories 4.18, 6.12, and 6.13 are deployed with durable data and UX-DR33 dual incident authorization
+**When** readiness, lock, dirty, failure, provider, sync, freshness, transition timeline, audit, and incident journeys execute in the real host
+**Then** all seven diagnostic views and transition evidence show populated tenant-correct records after restart, render the six independent state dimensions correctly, and preserve read-only WCAG 2.2 AA behavior
+**And** success plus wrong-tenant/unauthorized denial, stale/degraded/unavailable, conflicting/corrupt evidence, timeout, empty and populated boundaries, no-mutation, redaction, and exactly-one denial-audit behavior are proven
+**And** no completion claim may rely only on seed, in-memory, fake, unavailable, safe-empty, or component-only evidence.
+
+## Release, Platform, Governance, Enabling, And Hardening Workstreams
+
+The following release and enabling sections remain outside product-completion metrics. Product Epics 10 and 12 appear later because their dependencies were ratified after the original MVP sequence; they still count as user-value product epics.
 
 ## Release Readiness Workstream 7: MVP Release Readiness And Operational Evidence
 
@@ -1742,6 +2020,8 @@ So that MVP acceptance can prove non-functional coverage rather than rely on nar
 
 ### Story 7.17: Publish ADR set and maintenance runbooks
 
+_**Disposition:** Historical batch. Preserve its completed evidence and do not reactivate this umbrella; new ADR work belongs to its ratified narrow owner._
+
 As a future maintainer or architect,
 I want ADRs and lifecycle runbooks published,
 So that design rationale and operational decisions survive handoff and release pressure.
@@ -1769,13 +2049,15 @@ So that the MVP test suite runs green at HEAD and the "conditionally release-rea
 **And** a central host-composition smoke test (`ValidateOnBuild`) guards the shared-surface DI contract against recurrence
 **And** no production code behavior changes.
 
-## Epic 8: MVP Release Acceptance Closure
+## Release Closure Workstream 8: MVP Release Acceptance Closure
 
 Release stakeholders can accept the MVP once the bounded, non-planning release-acceptance conditions from the 2026-06-22 implementation-readiness review are closed: the canonical REST contract is fully served (47/47 operations), the operations console has an automated WCAG 2.2 AA gate, C3 retention has Legal sign-off, and the solution test baseline is honestly green.
 
 _Created 2026-06-22 via bmad-correct-course (`sprint-change-proposal-2026-06-22.md`). Release-acceptance **closure** epic — not a feature workstream; no new product FR scope. Verified parity ground truth (adversarial workflow, 2026-06-22): REST 32/47, SDK 47/47, MCP 47/47, CLI 40/47 (7 diagnostics MCP-only by design); 15 operations declared by the spine and wrapped by SDK/CLI/MCP but missing a server route. Detailed as-built ACs live in the `8-*` story files under `implementation-artifacts/`. Story 8.5 was split 2026-06-23 (`sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split.md`): its dev scope (residual-reds honest-green baseline) stays in 8.5 (done). Story 8.6 recorded C3 Legal sign-off on 2026-06-24 (`Jérôme Piquot`, Louveciennes; PM Jerome 2026-06-22), applied the in-lockstep C3 retention cascade, and is done. The retention-deletion gate now reports `status=passed` and `policy_status=approved`._
 
 ### Story 8.1: Implement the 8 missing Bucket-A canonical REST server routes
+
+_**Disposition:** Immutable historical remediation batch, excluded from the active implementation-ready backlog. Preserve completed evidence and lifecycle history._
 
 As an API consumer,
 I want every canonical operation the SDK/CLI/MCP already wrap to have a working REST server route,
@@ -1789,6 +2071,8 @@ So that cross-surface parity is real and CLI/MCP calls do not hit unimplemented 
 **And** REST coverage reaches 40/47 (Bucket A closed).
 
 ### Story 8.2: Implement the 7 ops-console diagnostics REST server routes (Bucket B)
+
+_**Disposition:** Immutable historical remediation batch, excluded from the active implementation-ready backlog. Preserve completed evidence and lifecycle history._
 
 As an operator,
 I want the ops-console diagnostics operations to have working REST server routes,
@@ -1829,6 +2113,8 @@ So that the PRD accessibility release-validation path (NFR-A11Y-1..5, NFR-VER-3)
 
 ### Story 8.5: Drive the residual test baseline honestly green
 
+_**Disposition:** Historical batch. Preserve its completed evidence, including the original dedicated-story title, and do not reactivate this umbrella; new defects require narrow ratified follow-ups._
+
 _Split 2026-06-23 (bmad-correct-course, `sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split.md`): the original story's AC1 — C3 Legal sign-off — moved to **Story 8.6** and was completed after recorded Legal approval on 2026-06-24. Story 8.5 retains the residual-reds + honest-green-baseline scope and is **done**._
 
 As a release stakeholder,
@@ -1856,7 +2142,7 @@ So that the MVP rests on a fully-approved governance posture and the release-blo
 **Then** C3 flips to `approved` (`c0-c13-governance-evidence.yaml` + `c3-retention.md`; the `release_blocking_until_legal_approval` posture clears), `run-retention-deletion-gates.ps1` reports non-blocking, and the contract-spine lane stays green
 **And** the per-class retention values, tenant-deletion dispositions, `reference_pending_*` class identifiers, and runtime `RetentionClassToken` markers are unchanged (no spine/generated-client/aggregate change), closing the former MVP-release blocker.
 
-## Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
+## Technical Enabling Workstream 9: AppHost Platform Alignment And Memories Search-Index Topology
 
 Platform engineers can run the full Folders topology composed purely through the shared platform Aspire helpers — EventStore command gateway (gateway-only), Tenants, and the Memories search-index server — with `hexalith-folders → folders-index` routing configured, replacing the hand-rolled `FoldersAspireModule` Dapr wiring.
 
@@ -1901,13 +2187,13 @@ So that routing is in place (dormant until Epic 10) and the planning artifacts r
 **Then** the routing config is present and the `folders-index` tenant auto-provisions, and a Memories search-index handoff doc records that end-to-end ingestion/search is gated on the Epic 10 producer
 **And** the updated artifacts are internally consistent (app-ID lists include `memories`).
 
-## Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
+## Product Epic 10: Authorized Folders Search And Index Lifecycle
 
-Developers and AI agents can have authorized file changes asynchronously indexed into Memories via a worker-side producer and a Folders-owned bridge projection, activating the Epic 9 routing and exposing an authorized, security-trimmed Folders query facade.
+Developers and AI agents can publish, remove, reconcile, authorize, search, and hydrate Folders-indexed metadata tokens through Memories while Folders remains authoritative and prevents cross-tenant or sensitive-data disclosure.
 
-_Phase 2 capability track for PRD FR58. Epic 9 is complete; C4 and C9 are approved policy constraints. Stories 10.1-10.5 have implementation story files and are marked done in sprint status; remaining Epic 10 work is release-readiness evidence and follow-up closure captured by sprint action items, not seed-level story discovery. Architecture inputs: `architecture.md` Memories integration track. **Known release limitation:** the deployed Server query facade runs on the fail-safe `Unavailable` bridge read model (context-search returns zero items; indexing-status returns `ReadModelUnavailable`) until the Server-side EventStore-backed read model is wired under Epic 11 Story 11.10; recorded in `architecture.md` §"Query Facade (Story 10.5)"._
+_Stories 10.1–10.5 are completed component increments, not FR58 completion evidence. Story 10.6 owns metadata-derived materialization under C4/C9, Story 10.7 owns the EventStore-backed bridge and deployed Server registration, Story 10.8 owns the non-empty authorized metadata-token round trip that completes current FR58, and Story 10.9 is a separate Security + Product-authorized body-content follow-on. Safe-empty and `Unavailable` behavior remains mandatory fail-safe behavior but cannot count as product completion._
 
-_**Reopened 2026-07-07 via bmad-correct-course (`sprint-change-proposal-2026-07-07-content-materializer.md`):** Story 10.6 added to deliver the deferred Epic 10 retro action item — replace the fail-closed content materializer with a metadata-derived materializer so real folder mutation evidence populates the search index under C4/C9. Sequenced to land before Epic 11 **Story 11.10** (Server/Workers EventStore/Memories SDK alignment, which rewrites the same Workers indexing code); Story 11.1's governance pin map is annotated with this pending behavior delta._
+_Epic 10 consumes Epic 12 durable source events, content/state authority, and at-least-once egress/reconciliation. Workstream 11 may supply shared seams and the DCP-capable lane, but owns no search projection and is not a hidden product-completion dependency._
 
 **FRs covered:** FR58
 
@@ -1971,7 +2257,9 @@ So that results are security-trimmed, hydrated from Folders authority, and redac
 
 **Given** indexed content in Memories
 **When** a Folders query facade serves search-index results
-**Then** results are authorized, security-trimmed, and redacted by Folders policy before leaving the API/SDK/MCP/CLI boundary, with PRD FR58, architecture query-facade guidance, and UX FR58 backend-discovery constraints synchronized.
+**Then** current tenant/folder authorization runs before candidate lookup, result counting, suggestions, filters, empty-state classification, or response shaping
+**And** candidates are hydrated from current Folders authority, stale/removed/archived/unauthorized candidates are dropped, and remaining metadata-token results are C9-redacted before leaving API, SDK, CLI, or MCP
+**And** backend unavailability returns an honest safe result without treating safe-empty behavior as successful search completion.
 
 ### Story 10.6: Replace the fail-closed content materializer with a metadata-derived materializer under C4/C9
 
@@ -1989,11 +2277,53 @@ So that the Memories search index is actually populated on live mutations withou
 **When** the materializer builds `CuratedText`/`CuratedAttributes` from mutation metadata evidence (type/size classification, media type, folder/org identity, path-policy outcome)
 **Then** the published `Text`/`Attributes` contain no raw file path, no file body, no snippet, and no source URI, asserted against a sensitive-path corpus; and C4 size/type gates (`content_too_large`/`content_type_unsupported`) plus idempotent/replay-stable CloudEvent ids remain green.
 
-**Given** Epic 11 Story 11.1 has already pinned worker-indexing behavior (the fail-closed placeholder) as its governance baseline, Story 11.10 will rewrite the same Workers indexing code, and the live `aspire run` round-trip remains BLOCKED-PENDING the DCP-capable lane
-**When** Story 10.6 lands before Story 11.10 — with Story 11.1's pin map annotated to record this intentional delta — updating `SemanticIndexingWorkerRegistrationTests` / `SemanticIndexingProcessManagerTests` / `SemanticIndexingEndpointE2ETests` in lockstep
-**Then** Story 11.10 rebases on and preserves the new metadata-derived behavior (not the placeholder), real mutation→curated-text→index is proven at the worker/port boundary (unit + Tier-3 opt-in harness), the live end-to-end proof is carried as the same DCP blocker, and authorized real-content materialization is recorded as an explicit C9-gated follow-up (Security + PM sign-off) — not silently dropped.
+**Given** the live `aspire run` round trip remains blocked pending a DCP-capable lane
+**When** Story 10.6 is assessed
+**Then** real mutation → curated metadata text → publication is proven at the worker/port boundary, the deployed bridge and full round trip remain explicitly owned by Stories 10.7–10.8, and body-content materialization remains the separately authorized Story 10.9 rather than being silently included.
 
-## Epic 11: Domain-Focus Platform Refactoring And Governance Closure
+### Story 10.7: EventStore-backed search bridge and deployed Server registration
+
+As an authorized search consumer,
+I want the Folders search bridge populated from durable events and registered in the deployed Server,
+So that search/status uses real current authority instead of the fail-safe unavailable default.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.3 provide durable source events and authoritative file/state hydration and Story 10.6 provides C9-safe metadata-token documents
+**When** the EventStore-backed bridge projection is placed in a Server-referenceable project, registered in `AddFoldersContextSearchFacade`, restarted, and replayed from an empty checkpoint
+**Then** it durably populates version/status/removal records, replaces the deployed `UnavailableSemanticIndexingBridgeReadModel` default, preserves current-authority hydration, and exposes honest freshness/availability
+**And** authorization precedes candidate observation; wrong-tenant/unauthorized, stale, removed, archived, conflict/corrupt, timeout/unavailable, and replay-boundary cases are safely dropped or classified with metadata-only evidence
+**And** deployed populated and restart evidence is required; NoOp, in-memory, seed, fake, unavailable, or safe-empty behavior alone cannot satisfy completion.
+
+### Story 10.8: Real produce/index/authorize/hydrate/redact/search round trip
+
+As a developer or AI-agent consumer,
+I want a non-empty authorized metadata-token search and status round trip through the deployed topology,
+So that current FR58 is proven without exposing raw paths, bodies, snippets, or source URIs.
+
+**Acceptance Criteria:**
+
+**Given** Stories 10.6–10.7 and 12.1–12.5 provide durable mutation events, C9-safe metadata documents, deployed bridge state, and recoverable at-least-once Memories egress
+**When** a real authorized mutation is produced, indexed, queried, hydrated from current Folders authority, redacted, returned, then removed or archived and queried again on the DCP-capable deployed lane
+**Then** the first search/status response is non-empty and tenant-correct, each live unit appears exactly once, and the later response prunes the stale unit without raw path, body, snippet, source URI, credential, or hidden-existence leakage
+**And** authorization runs before lookup/count/filter/suggestion/empty classification, and denial, wrong-tenant, duplicate/conflict, Memories failure, timeout/unknown egress, stale candidate, removal/archive, size/result boundary, restart, and empty-checkpoint replay evidence is attached
+**And** safe-empty, unavailable, NoOp, in-memory, seed, mock, or fake-only evidence cannot support FR58 completion.
+
+### Story 10.9: Authorized body-content materialization — C9 gated
+
+As an authorized search consumer,
+I want approved file-body text materialized only under an explicit C9 policy,
+So that future body-content recall can be introduced without weakening the current metadata-only authority.
+
+**Acceptance Criteria:**
+
+**Given** named Security and Product authorities have approved the C9 body-content scope, source classes, redaction, retention, deletion, access, and egress policy
+**When** authorized current file content is materialized and published
+**Then** authorization and policy precede content access, only approved bounded text crosses the egress boundary, deletion/archive prunes it, and Folders remains authoritative for current access and content
+**And** wrong-tenant/unauthorized denial, binary/oversize/secret/path boundary, duplicate/conflict, provider/Memories failure, timeout/unknown, restart/replay, retention/deletion, and sensitive-data tests are attached to real deployed evidence
+**And** absent approvals the feature remains unavailable and is not a blocker for current metadata-token FR58; unavailable, fake, seed, safe-empty, or in-memory behavior does not prove body-content capability.
+
+## Technical Enabling Workstream 11: Domain-Focus Platform Refactoring And Governance Closure
 
 Platform maintainers can remove local copies of shared Hexalith platform capabilities from Folders, consume the appropriate Commons/EventStore/FrontComposer/Memories primitives, delete the local ServiceDefaults project, and preserve all REST/SDK/CLI/MCP/UI behavior through lockstep governance and verification gates.
 
@@ -2014,33 +2344,31 @@ So that every simplification can be verified against known behavior and pinned g
 **Then** restore/build, focused test lanes, format checks, ScaffoldContractTests, release/package inventories, route tables, workflow pins, and known DCP/AppHost blockers are recorded before edits
 **And** unrelated submodule pointer changes are not reverted or hidden.
 
-### Story 11.2: Land platform prerequisite APIs in shared modules
+### Story 11.2: Inventory, assign, and pin platform prerequisites
 
 As a platform maintainer,
-I want shared primitives created or confirmed in Commons, EventStore, FrontComposer, and Memories,
-So that Folders can delete local copies instead of moving duplication around.
+I want each required Commons, EventStore, FrontComposer, and Memories prerequisite assigned and pinned,
+So that Folders consumes released shared capabilities without claiming ownership of upstream implementation.
 
 **Acceptance Criteria:**
 
 **Given** the audit platform gaps G1-G9
-**When** upstream stories land and Folders pins the resulting submodule SHAs
-**Then** Memories exposes index-event publish/read wrappers, EventStore exposes secret-store/auth/cursor/read-model/test seams, Commons exposes secret/hash/URL/correlation helpers and ServiceDefaults consumption, and FrontComposer exposes missing UI helpers
-**And** every submodule bump uses a conventional `chore(deps):` commit message.
+**When** the prerequisite inventory is reconciled
+**Then** every capability has an owning repository, upstream issue/story reference, required release/version or SHA, availability status, consuming Folders story, and verification evidence
+**And** this story records pin evidence only; it does not implement upstream code, mutate dependency pins without separate authorization, or claim any product projection complete.
 
-### Story 11.3: Apply wire-preserving repo hygiene and fragile-gate fixes
+### Story 11.3: Apply wire-preserving repository hygiene
 
 As a maintainer,
-I want low-risk hygiene and brittle test pins corrected first,
-So that later refactors do not fail unrelated governance checks.
+I want obsolete repository litter and stale maintenance text removed without wire changes,
+So that later refactors start from a clean, reviewable baseline.
 
 **Acceptance Criteria:**
 
-**Given** tracked cache files, temporary diffs, stale E2E docs, and fragile text-based tests exist
+**Given** tracked cache files, temporary diffs, root litter, and stale maintenance text exist
 **When** hygiene fixes are applied
-**Then** tracked `.lscache` files and root litter are removed, stale READMEs are corrected, fragile auth/package/process pins are made behavioral or flexible, and Aspire version text is aligned to authoritative package pins
-**And** the governance-completeness gate enforces fresh, exact approval records generically for every approval-backed exit criterion — `GovernanceCompletenessGateTests` rejects a missing/dropped `approval` block, an unsatisfied required authority, a generic (non-named) approver, and a missing/future/stale `approved_on` under the mandatory `approval_policy.max_age_days` window — so no approval-backed criterion (C3/C4 today) can pass with a stale report or a generic "Legal-approved" phrase (delivered ahead of Story 11.3 via bmad-correct-course `sprint-change-proposal-2026-07-07-governance-approval-freshness.md`)
-**And** the honest-green gate baseline is preserved when CI changes: `ci.yml` keeps the `e2e-gates` (full 63-test `Hexalith.Folders.UI.E2E.Tests` lane) and `accessibility-gates` (axe / WCAG 2.2 AA) jobs present and blocking, `run-e2e-ci-gates.ps1` never narrows the lane (`--filter`/`-namespace`/`FullyQualifiedName` stay absent; report `scope=full-ui-e2e-lane`), the AD7 forbidden-substring set (`upload-artifact`/`secrets.`/`services:`/`dotnet publish`/`docker`/`playwright install`/`--recursive`) stays absent from `ci.yml` and the gate scripts, and the CI-workflow conformance classes — `E2eCiWorkflowConformanceTests`, `AccessibilityCiWorkflowConformanceTests`, plus the new consolidated `HonestGreenGateBaselineConformanceTests` (both gate jobs present + blocking; the five sibling conformance classes referenced) — stay green (closes the Epic 8 "preserve full UI E2E and accessibility gates … keep no-filter and forbidden-substring conformance checks intact when CI changes" action item)
-**And** no REST/OpenAPI behavior changes.
+**Then** only identified hygiene artifacts are removed or corrected, authoritative package/version text remains sourced from repository pins, and tracked evidence is preserved
+**And** REST/OpenAPI behavior, lifecycle status, CI/governance semantics, submodule pins, and product projections do not change; brittle gates are owned by Story 11.16.
 
 ### Story 11.4: Consolidate Server transport, envelope, and route helper duplication
 
@@ -2055,7 +2383,7 @@ So that route implementation remains maintainable and parity gates stay green.
 **Then** existing routes, response envelopes, ProblemDetails categories, status codes, and parity oracle expectations remain unchanged
 **And** the OpsConsole secret-filter drift is closed by one shared detector.
 
-### Story 11.5: Consolidate domain/provider duplication and fix provider correctness defects
+### Story 11.5: Consolidate domain and provider helper duplication
 
 As a domain maintainer,
 I want duplicated domain/provider helper logic centralized before platform adoption,
@@ -2066,7 +2394,7 @@ So that later package-boundary moves are smaller and safer.
 **Given** repeated payload tenant mapping, authorization mapping, provider adapter code, deterministic hashing, and stream-name checks exist
 **When** shared Folders-local helpers are introduced
 **Then** provider behavior, failure categories, metadata-only guarantees, and tests remain equivalent
-**And** Forgejo transport uses `IHttpClientFactory`, ContextSearch avoids double serialization/N+1 where applicable, and reserved-tenant semantics are decided explicitly.
+**And** provider feature/correctness work, search optimization, and reserved-tenant decisions remain with their owning product or ADR stories rather than expanding this consolidation.
 
 ### Story 11.6: Consolidate CLI/MCP adapter core and secure bearer transport
 
@@ -2081,27 +2409,18 @@ So that cross-surface parity remains consistent without copied code.
 **Then** CLI/MCP behavior remains parity-oracle equivalent
 **And** bearer-token handling rejects non-HTTPS non-loopback endpoints before token emission.
 
-### Story 11.7: Consolidate test helpers into Hexalith.Folders.Testing
+### Story 11.7: Consolidate deterministic time, context, and path test helpers
 
 As a test maintainer,
-I want duplicated fakes and fixed clocks moved into the testing library,
+I want duplicated deterministic clocks, tenant/claim contexts, and repository-path helpers moved into the testing library,
 So that later refactors change production seams once and tests stay focused.
 
 **Acceptance Criteria:**
 
-**Given** duplicated `FixedTimeProvider`, static tenant/claim context accessors, gateway clients, recording providers, repository helpers, and root walkers exist
+**Given** duplicated `FixedTimeProvider`, tenant/claim context accessors, canonical path fixtures, and repository-root walkers exist
 **When** canonical helpers are added to `Hexalith.Folders.Testing`
-**Then** test projects consume those helpers, platform fakes are adopted where available, and test counts only change when a deleted local implementation no longer needs local re-testing
-**And** the rejection-propagating in-process gateway double (`InProcessRejectionPropagatingGatewayClient`, currently linked only into `Hexalith.Folders.IntegrationTests` from `tests/shared/Parity/`) becomes the single canonical acceptance-path `IEventStoreGatewayClient` double on the shared `Hexalith.Folders.Testing` surface, and the nine copy-pasted `RecordingEventStoreGatewayClient` flattening doubles in `Hexalith.Folders.Server.Tests` are consolidated into one shared request-recording double documented as request-shape evidence only, never acceptance or parity evidence.
-
-**Given** the Epic 8 (Story 8.3) retrospective action item to guard against rejection-flattening gateway doubles, and the standing 2.8/2.8b "green tests, broken production wiring" rule in `project-context.md`
-**When** the test-double consolidation lands
-**Then** an automated conformance guard (e.g. `EventStoreGatewayDoubleConformanceTests` in `tests/Hexalith.Folders.Testing.Tests`, following the `ScaffoldContractTests` repo-root source-scan idiom) fails the build when any test source declares an `IEventStoreGatewayClient` double outside the approved allowlist — the canonical rejection-propagating double, the single shared recording double, and the named `ThrowingEventStoreGatewayClient` / `UnsupportedGatewayClient` negative-path doubles — so new ad-hoc flattening copies cannot be introduced
-**And** a positive behavioral test proves the canonical double propagates a `DomainServiceWireResult` rejection as an `EventStoreGatewayException` carrying the canonical `FolderResultCode` reason code (e.g. `FolderAclDenied`) rather than flattening it to an accepted response.
-
-**Given** test-helper consolidation renames or moves test classes/projects that the CI-workflow conformance FQN pins depend on
-**When** helpers move into `Hexalith.Folders.Testing`
-**Then** the honest-green gate baseline is not weakened: the `e2e-gates` + `accessibility-gates` jobs stay present and blocking in `ci.yml`, the full 63-test `UI.E2E.Tests` lane stays un-narrowed (no `--filter`/`-namespace`/`FullyQualifiedName`), and `E2eCiWorkflowConformanceTests` / `AccessibilityCiWorkflowConformanceTests` / `HonestGreenGateBaselineConformanceTests` stay green — any conformance-class or `UI.E2E.Tests` rename moves its FQN pins in the same commit.
+**Then** test projects consume one deterministic helper per concern, behavior and test intent remain unchanged, and moves preserve the relevant conformance references
+**And** EventStore gateway doubles are owned by Story 11.17 and provider/repository fakes by Story 11.18.
 
 ### Story 11.8: Adopt Commons/EventStore primitives in the Folders domain
 
@@ -2128,34 +2447,32 @@ So that local hosting, health probes, telemetry registration, and deployment doc
 **When** the project is removed
 **Then** Server/UI/Workers consume `Hexalith.Commons.ServiceDefaults`, Folders-specific readiness checks are moved into the owning host or deleted, probe paths are updated in code/docs/tests/deploy manifests, and all inventory gates are updated in lockstep.
 
-### Story 11.10: Align Server and Workers with EventStore/Memories SDK seams
+### Story 11.10: Adopt EventStore admission and subscription-mapping seams
 
 As a platform maintainer,
-I want Server and Workers to consume the platform domain-service and publication seams,
-So that Folders stops reimplementing request routing, subscription mapping, and Memories egress plumbing.
+I want Server and Workers to consume the platform EventStore admission and subscription-mapping seams,
+So that Folders stops reimplementing domain-service request admission and event-subscription mapping.
 
 **Acceptance Criteria:**
 
-**Given** EventStore and Memories expose the required seams
+**Given** EventStore exposes the pinned admission and subscription-mapping seams from Story 11.2
 **When** Server/Workers are refactored
-**Then** authorization moves into `IDomainServiceAdmissionStage` or equivalent, `FoldersDomainServiceRequestHandler` is deleted where safe, `MapEventStoreDomainEvents` replaces local mapping, and Memories publication/search wrappers are shared
-**And** the Server-side EventStore-backed semantic-indexing bridge read model is wired for the query facade and indexing-status paths — `EventStoreSemanticIndexingBridgeStore` is relocated from `Hexalith.Folders.Workers` into a Server-referenceable project and registered in `AddFoldersContextSearchFacade` (replacing the fail-safe `UnavailableSemanticIndexingBridgeReadModel` default), closing the Epic 10 deferral recorded in `architecture.md` §"Query Facade (Story 10.5)", and the live `folders-index` search/status round-trip is proven on the DCP-capable lane (or the residual is re-carried with evidence)
-**And** the seed-backed ops-console **diagnostics** (`IOpsConsoleDiagnosticsReadModel`, seven views) and workspace **transition-evidence** (`IWorkspaceTransitionEvidenceReadModel`) read models are given EventStore-backed projections and registered in Server (replacing the `InMemoryOpsConsoleDiagnosticsReadModel` / `InMemoryWorkspaceTransitionEvidenceReadModel` `TryAddSingleton` defaults) — these two have no projection logic today, so both authoring and wiring are in scope — closing the deferral recorded in `architecture.md` §"Ops Console & Transition-Evidence Read Models (MVP limitation)", with the live populated read proven on the DCP-capable lane (or the residual re-carried with evidence)
-**And** REST parity, console read-model-based behavior, worker semantic-indexing behavior, and the NFR52 lifecycle-determinism evidence (Story 4.15) remain unchanged.
+**Then** authorization uses `IDomainServiceAdmissionStage` or the approved equivalent, obsolete local admission routing is deleted where safe, and `MapEventStoreDomainEvents` or its pinned equivalent replaces local subscription mapping
+**And** REST parity, authorization ordering, lifecycle determinism, and worker behavior remain unchanged
+**And** this story owns no transition-evidence, diagnostic, search-bridge, publication, search-client, or other product projection; those belong to Epics 4, 6, 10, 12 and Story 11.14 as declared.
 
-### Story 11.11: Harden FrontComposer and Fluent UI conformance below the shell
+### Story 11.11: Adopt FrontComposer user-context, token, OIDC, and shared-shell helpers
 
 As a UI maintainer,
-I want the operations console to reuse Shell/Fluent primitives consistently,
-So that Epic 6 satisfies FrontComposer governance in implementation, not only layout.
+I want the operations console to reuse FrontComposer identity and shell helpers,
+So that user context, token relay, OIDC, and shell composition follow the shared platform contract.
 
 **Acceptance Criteria:**
 
-**Given** current UI pages/components contain local user context, token relay, icons, raw tables/controls, undefined `fc-*` classes, and custom loading/copy/banner components
-**When** UI conformance hardening lands
-**Then** Shell user-context/token/OIDC/test helpers are used, icons/components are upstreamed or consumed from FrontComposer, tables use FluentDataGrid, raw interactive controls are removed, accordions are used for multi-section pages, and no mutation/file-content boundary is weakened.
-
-**And** UI hardening does not shrink the accessibility or E2E coverage: `Hexalith.Folders.UI.E2E.Tests` keeps all 63 cases running in the blocking `e2e-gates` + `accessibility-gates` jobs (no `--filter` narrowing, no skipped Accessibility cases), and the axe / WCAG 2.2 AA gate plus `E2eCiWorkflowConformanceTests` / `AccessibilityCiWorkflowConformanceTests` / `HonestGreenGateBaselineConformanceTests` stay green.
+**Given** local user-context, token-relay, OIDC, test-auth, or shell helpers duplicate FrontComposer
+**When** pinned shared helpers are adopted
+**Then** tenant/folder authorization context and token boundaries remain equivalent, `FrontComposerShell` remains the Blazor Interactive Server layout, and no mutation, file-content, or secret boundary is weakened
+**And** Fluent tables, controls, icons, loading, and layout primitives remain owned by Story 11.19.
 
 ### Story 11.12: Modernize the generated client and shared idempotency/ULID helpers
 
@@ -2169,16 +2486,294 @@ So that packable client dependencies and idempotency behavior are stable.
 **When** the client is regenerated on System.Text.Json
 **Then** idempotency hash regression vectors pass, ProblemDetails parsing remains canonical, Commons helpers replace local ULID/hash logic where available, Newtonsoft leaves the packable surface, and generated files remain build-generated rather than hand-edited.
 
-### Story 11.13: Final cleanup, ADRs, documentation, and verification
+### Story 11.13: Delete obsolete local code and synchronize planning/maintenance documents
 
-As a release reviewer,
-I want the refactor closed with traceable docs and gates,
-So that downstream agents can trust the new module boundary.
+As a maintainer,
+I want obsolete local implementations deleted and affected planning/maintenance documents synchronized,
+So that the adopted module boundary has one maintained source per concern.
 
 **Acceptance Criteria:**
 
-**Given** Stories 11.1-11.12 are complete
-**When** final cleanup runs
-**Then** obsolete local code/tests are deleted or re-pointed, PRD/epics/architecture/UX/project-context are synchronized, ADRs record AppHost/Aspire exception, ServiceDefaults deletion, query-handler conformance decision, and reserved-tenant decision, and the final verification checklist from `fable_Folders_changes.md` is satisfied or explicitly blocked with evidence.
+**Given** the applicable Workstream 11 adoption stories have landed
+**When** cleanup executes
+**Then** superseded local code/tests are deleted or re-pointed and affected maintenance/planning references are synchronized without rewriting completed evidence or lifecycle history
+**And** ADR decisions remain owned by Story 11.20 and final boundary/gate verification by Story 11.21.
 
-**And** the final verification confirms the honest-green gate baseline is intact end-to-end: both `e2e-gates` (full 63-test lane) and `accessibility-gates` (axe / WCAG 2.2 AA) jobs are present and blocking in `ci.yml`, the no-filter and AD7 forbidden-substring invariants hold, and all five CI-workflow conformance classes plus `HonestGreenGateBaselineConformanceTests` are green — with any deviation explicitly blocked with evidence, never silently relaxed.
+### Story 11.14: Adopt Memories publication and search-client seams
+
+As a platform maintainer,
+I want Folders to consume pinned Memories publication and search-client seams,
+So that local egress/client plumbing can be removed without transferring product ownership.
+
+**Acceptance Criteria:**
+
+**Given** Story 11.2 records available compatible Memories seams
+**When** Workers and Server adopt them
+**Then** existing publication identity, retryability, redaction, tenant routing, and query-client behavior remain contract-compatible and obsolete local wrappers are removed
+**And** Epic 10 retains search-bridge/hydration/product ownership and Epic 12 retains durable egress/reconciliation ownership; this story cannot claim either projection or FR58 complete.
+
+### Story 11.15: Maintain the DCP-capable cross-repository verification lane
+
+As a platform verifier,
+I want one maintained DCP-capable lane across the root-declared platform repositories,
+So that durable sidecar and cross-repository behavior can be proven against compatible pins.
+
+**Acceptance Criteria:**
+
+**Given** a story declares DCP/live-sidecar evidence and its owning repositories, versions, configuration, and data components are known
+**When** the lane runs
+**Then** it records exact pins, composition, commands, results, persisted-state assertions, restart boundaries, and sanitized diagnostics without silently falling back to mocks or unavailable seams
+**And** a blocked or degraded lane is reported honestly and cannot serve as positive completion evidence for product Epics 4, 6, 10, or 12.
+
+### Story 11.16: Replace brittle governance and CI pins with behavioral gates
+
+As a release maintainer,
+I want governance and CI checks to verify behavior rather than fragile text or fixed counts,
+So that legitimate refactors do not weaken or accidentally bypass release controls.
+
+**Acceptance Criteria:**
+
+**Given** approval, route, package, E2E, accessibility, no-filter, forbidden-substring, and generated-inventory rules exist
+**When** their conformance gates are refactored
+**Then** each rejects its unsafe behavioral counterexample, consumes generated denominators where applicable, preserves fresh named approvals and blocking full-lane coverage, and does not hard-code stale story/test counts
+**And** the previous governed behavior remains green or an exact regression is reported; no gate is removed, narrowed, skipped, or made fail-open.
+
+### Story 11.17: Consolidate EventStore gateway doubles and rejection conformance
+
+As a test maintainer,
+I want one rejection-propagating acceptance-path gateway double and one clearly limited recording double,
+So that tests cannot turn rejected production behavior into false acceptance evidence.
+
+**Acceptance Criteria:**
+
+**Given** duplicate or flattening `IEventStoreGatewayClient` doubles exist
+**When** they are consolidated into `Hexalith.Folders.Testing`
+**Then** the canonical acceptance double propagates `DomainServiceWireResult` rejection as the canonical gateway exception/result, the recording double is documented as request-shape evidence only, and named negative doubles remain explicit
+**And** an automated allowlist/conformance guard rejects new ad-hoc gateway doubles and behavioral tests prove both accepted and rejected paths without claiming a double is deployed production evidence.
+
+### Story 11.18: Consolidate provider and repository fakes in Folders.Testing
+
+As a test maintainer,
+I want reusable provider and repository fakes centralized with explicit evidence limits,
+So that unit tests remain deterministic without being mistaken for production persistence or provider proof.
+
+**Acceptance Criteria:**
+
+**Given** duplicated recording providers, in-memory repositories, and provider-result fixtures exist
+**When** canonical fakes are introduced
+**Then** equivalent replay, conflict, known failure, timeout/unknown, cancellation, and sensitive-data assertions remain configurable and deterministic across test projects
+**And** each fake is named/documented as non-production evidence, production registration guards remain intact, and no product story may satisfy its real-path acceptance floor from these fakes alone.
+
+### Story 11.19: Adopt Fluent UI tables, controls, icons, loading, and layout primitives
+
+As a UI maintainer,
+I want the operations console to use shared Fluent UI and FrontComposer visual primitives,
+So that the read-only experience is accessible and consistent below the shell.
+
+**Acceptance Criteria:**
+
+**Given** local tables, controls, icons, loading/copy/banner components, or undefined shell classes duplicate shared primitives
+**When** they are replaced
+**Then** tables use `FluentDataGrid`, interactive elements use approved Fluent components, multi-section pages use accessible composition, loading/redaction/status behavior remains equivalent, and no mutation or file-content path appears
+**And** the full E2E and WCAG 2.2 AA lanes remain blocking and un-narrowed across responsive and 125/150/200-percent zoom checks.
+
+### Story 11.20: Record AppHost, ServiceDefaults, query-handler, and tenant-semantic ADRs
+
+As an architecture reviewer,
+I want the four platform-boundary decisions recorded in focused ADRs,
+So that future maintainers understand the approved exceptions and ownership choices.
+
+**Acceptance Criteria:**
+
+**Given** implementation evidence and named decision authorities exist
+**When** the ADRs are authored or amended
+**Then** AppHost/Aspire composition, ServiceDefaults deletion/adoption, query-handler conformance, and reserved-tenant semantics each record context, decision, alternatives, consequences, owner, approval, and affected contracts
+**And** an ADR does not retroactively manufacture implementation evidence, change lifecycle status, or transfer product-projection ownership from Epics 4, 6, 10, or 12.
+
+### Story 11.21: Run final boundary, package, test, E2E, accessibility, and governance verification
+
+As a release reviewer,
+I want Workstream 11 closed by one traceable verification pass,
+So that the refactored platform boundary is demonstrably equivalent and honestly governed.
+
+**Acceptance Criteria:**
+
+**Given** the applicable Workstream 11 stories and ADRs are complete
+**When** final verification runs
+**Then** project/reference boundaries, package inventories, generated contracts, focused tests, full E2E, WCAG 2.2 AA, governance approvals, workflow-conformance gates, and documentation consistency are recorded with exact commands and results
+**And** failures or unavailable external lanes remain explicit blockers, no lifecycle history is rewritten, and this enabling verification is not counted as product-capability completion.
+
+## Product Epic 12: Durable Repository-Backed Round Trip
+
+Authorized developers and AI agents can persist folder lifecycle and file content across process restart, retrieve authoritative content, complete a real Git commit, observe terminal task and projection state, and recover asynchronous indexing delivery without NoOp, unavailable, in-memory, seed-only, or fake-backed substitutions.
+
+**FRs covered:** FR1–FR3, FR9–FR14, FR18–FR21, FR24–FR46, FR58.
+
+**Prerequisite decisions:** OQ1–OQ4 where they govern timing, file policy, authorization, provider compatibility, and reconciliation. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
+
+### Story 12.1: EventStore-backed folder repository, retire NoOp, and implement projection replay
+
+As an authorized repository-backed folder user,
+I want folder and organization state persisted through EventStore and replayed into projections,
+So that accepted lifecycle operations survive process restart and Production can boot without a NoOp repository.
+
+**Acceptance Criteria:**
+
+**Given** OQ1–OQ4 prerequisites affecting the durable boundary are recorded
+**When** the real REST → EventStore gateway → processor → authorization gate → repository path accepts folder or organization behavior
+**Then** metadata-only events append durably, `IFolderRepository` and required organization state rebuild from ordered streams, `/project` consumes events rather than returning 501, the ADR-0001 `DomainResult.NoOp()` path is retired, and Production boots with a real registration
+**And** empty-checkpoint replay, host restart, append conflict/reread, equivalent/conflicting idempotency, wrong-tenant/authorization denial, corrupt/unavailable store, timeout, event-version boundary, and sensitive-data exclusion are proven
+**And** NoOp, in-memory, seed-only, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
+
+### Story 12.2: Durable projections and task-completion pipeline
+
+As an authorized task actor,
+I want lifecycle/task projections and terminal task completion persisted durably,
+So that accepted work reaches trustworthy status after restart.
+
+**Acceptance Criteria:**
+
+**Given** Story 12.1 supplies durable ordered source events
+**When** lifecycle, lock, workspace, cleanup, task, and commit-status projections consume new events or replay from an empty checkpoint
+**Then** their deterministic state, checkpoints, freshness, terminal task result, retry eligibility, and failure/recovery evidence persist across restart and duplicate delivery
+**And** tenant isolation, authorization denial, event duplication/order conflict, corrupt/unavailable state, timeout, empty stream/checkpoint, and retention boundaries produce safe canonical behavior with metadata-only evidence
+**And** transition-evidence, seven diagnostics, and search-bridge projections remain owned by Epics 4, 6, and 10; in-memory, seed, unavailable, NoOp, safe-empty, or fake-only proof cannot complete this story.
+
+### Story 12.3: Durable workspace file-content store and content-read source
+
+As an authorized workspace actor,
+I want staged and committed file content stored durably and read from one authoritative source,
+So that mutations, context queries, and commits operate on verified content after restart.
+
+**Acceptance Criteria:**
+
+**Given** Story 12.1 supplies durable folder streams and current authorization/path policy passes
+**When** bounded inline or streamed add/change/remove content is staged, retrieved, restarted, or replayed
+**Then** content and metadata persist in the approved store, server-side hashes and byte/media metadata are verified, task/lock/version identity is enforced, deleted content is unavailable, and context reads use this authority rather than a derived index
+**And** wrong-tenant/authorization denial, traversal/symlink/case boundary, binary/oversize/encoding limits, conflicting replay, corrupt/missing content, timeout/cancellation, restart, and retention/deletion evidence are attached without content in events/audit/telemetry
+**And** discarded, memory-only, seed, unavailable, safe-empty, NoOp, or fake content cannot satisfy completion.
+
+### Story 12.4: Real Git commit executor and provider write path
+
+As an authorized lock-owning task actor,
+I want staged durable changes applied and committed to the bound remote/ref,
+So that repository-backed work produces a provider-confirmed durable commit.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.3 provide durable state/content and the selected provider binding/ref policy is current
+**When** the real GitHub or Forgejo provider write path stages changes and commits
+**Then** `NotImplementedException`/fake executors are replaced, exactly one eligible provider mutation occurs, provider-confirmed commit identity is persisted, the task/projections reach the correct clean terminal state, and the provisioning process manager is wired where required
+**And** denial/wrong-tenant, lock/ref/path conflict, equivalent/conflicting replay, known provider failure, timeout/cancellation or unknown post-dispatch outcome, restart, and content/metadata boundary evidence prove no blind duplicate commit
+**And** mocks, fake Git, NoOp, in-memory, seed, unavailable, or safe-empty evidence cannot satisfy completion.
+
+### Story 12.5: At-least-once Memories egress and reconciler
+
+As an authorized search/indexing consumer,
+I want durable mutation/commit events delivered to Memories with recoverable at-least-once semantics,
+So that indexing outages never roll back file truth and missed delivery can reconcile safely.
+
+**Acceptance Criteria:**
+
+**Given** Stories 12.1–12.3 provide durable source events/content-state metadata and the Epic 9 route is configured
+**When** commit-then-append publication, duplicate delivery, outage, restart, or reconciliation occurs
+**Then** an outbox/checkpoint or equivalent durable mechanism preserves ordered egress intent, stable CloudEvent/idempotency identity prevents duplicate logical index units, failures expose retry/reconciliation status, and committed Folders truth is never rolled back
+**And** tenant routing, authorization/policy outcome, removal/archive, duplicate/conflict, Memories failure, timeout/unknown acknowledgement, poison/boundary, empty-checkpoint replay, restart, and metadata-only C9 exclusion are proven
+**And** in-memory queues, fire-and-forget, seed, NoOp, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
+
+### Story 12.6: Implement durable all-mutations idempotency and expired-key precedence
+
+As an authorized Contract Spine caller,
+I want every mutation to use durable tenant-scoped idempotency with unambiguous expiry precedence,
+So that retries cannot duplicate work and an expired key can never silently execute as new intent.
+
+**Acceptance Criteria:**
+
+**Given** Story 12.1 supplies durable Folder/Organization state and the approved EventStore admission/retention design is available
+**When** any generated Contract Spine mutation receives a new, live-equivalent, live-different, expired-equivalent, or expired-different key—or any read receives an idempotency key
+**Then** exactly one eligible intent executes; live equivalent returns the same logical result, live different returns canonical conflict, every expired case returns `idempotency_key_expired` before protected work regardless of intent, and reads return `idempotency_key_not_allowed`
+**And** durable consumed-key evidence survives result compaction, host restart, clock boundaries/rollback, concurrency races, and state drift without retaining or revealing protected prior intent
+**And** every mutation/read cell is generated from the current C13 denominator and proves authorization-before-disclosure, tenant isolation, conflict/expiry precedence, unavailable/corrupt state, timeout/crash windows, no duplicate provider/event/file/commit/audit effects, and metadata-only leakage exclusion
+**And** no in-memory, fake, seed, unavailable, NoOp, safe-empty, source-text-only, or component-only evidence can close OQ8 or this story.
+
+## Security And Operational Hardening Epic 13
+
+Release stakeholders can close ratified security and operational-truth defects on capabilities that already claim to work. Epic 13 is release-blocking hardening, excluded from product-completion metrics, and does not duplicate Workstream 11.
+
+### Story 13.1: Forgejo SSRF egress guard for private and metadata IPs
+
+As a security operator,
+I want Forgejo readiness egress blocked from private, loopback, link-local, and cloud-metadata destinations,
+So that tenant-controlled base URLs cannot turn the service into an SSRF proxy.
+
+**Acceptance Criteria:**
+
+**Given** an authorized Forgejo readiness request contains or resolves an endpoint
+**When** DNS resolution and connection establishment occur through the production HTTP transport
+**Then** scheme/host/port policy and `ConnectCallback`-level IP checks reject loopback, RFC1918/private, link-local, multicast, unspecified, rebinding, redirect, and provider-metadata destinations before credentials or HTTP bytes are sent
+**And** allowed public endpoints, denial, DNS failure, timeout, IPv4/IPv6 and redirect boundaries, tenant isolation, safe audit, and sensitive-value exclusion are proven in deployed transport tests.
+
+### Story 13.2: Fail-safe fallback authorization policy and sidecar-only app port
+
+As a security operator,
+I want fallback authorization to deny safely and the application port reachable only through the Dapr sidecar boundary,
+So that missing policy or network bypass cannot expose Folders operations.
+
+**Acceptance Criteria:**
+
+**Given** route authorization metadata is absent/malformed or a caller attempts direct app-port access
+**When** the deployed Server evaluates policy and network exposure
+**Then** fallback policy denies, only the approved sidecar path can reach the app port, and authenticated/authorized sidecar traffic retains canonical behavior
+**And** missing policy, wrong app ID, direct network, wrong tenant, timeout/sidecar failure, startup misconfiguration, and port-boundary evidence are attached with one safe denial audit and no hidden-resource leak.
+
+### Story 13.3: Credential file 0600 permissions
+
+As a security operator,
+I want credential-bearing files created with owner-only permissions,
+So that local or mounted credentials cannot be read by unrelated principals.
+
+**Acceptance Criteria:**
+
+**Given** CLI, MCP, development, test, or deployment tooling creates an approved credential file
+**When** the file is first written, replaced, restored, or checked at startup
+**Then** Unix mode is `0600` before secret content becomes observable, unsafe existing permissions fail closed or are repaired only under explicit policy, and logs/errors never expose the value
+**And** positive, denied owner/group/world access, symlink/race, replacement, non-Unix behavior, timeout/I/O failure, and secret-sentinel evidence are attached.
+
+### Story 13.4: Real readiness snapshot source and UI health endpoints
+
+As an operator,
+I want readiness and UI health to reflect real deployed dependencies,
+So that orchestration never reports healthy from a seed or placeholder source.
+
+**Acceptance Criteria:**
+
+**Given** Server, Workers, UI, EventStore, provider, Memories, state-store, and sidecar dependencies have defined readiness semantics
+**When** the production snapshot source and UI health endpoints are queried
+**Then** current dependency state, freshness, safe reason, and degraded/unavailable posture are reported without secrets, and startup/readiness gates do not substitute an in-memory or constant-success source
+**And** healthy, degraded, failed, timeout, stale, restart, wrong-tenant protected detail, and probe-boundary evidence are proven against deployed composition; fake-only or safe-success evidence cannot close the story.
+
+### Story 13.5: Wire alert instruments and production Dapr state store and resiliency
+
+As an operations engineer,
+I want declared alerts and production Dapr persistence/resiliency components actually wired,
+So that failures are observable and stateful services use governed retry/timeout behavior.
+
+**Acceptance Criteria:**
+
+**Given** five alert instruments and production `statestore`/Resiliency requirements are declared
+**When** the deployed topology starts and representative success/failure conditions execute
+**Then** each instrument emits bounded tenant-safe signals with documented thresholds/routing, the production state store is durable and correctly scoped, and resiliency policies apply only approved retries, timeouts, and circuit behavior
+**And** alert-fire/recovery, store restart, conflict, outage, timeout, retry exhaustion, tenant isolation, configuration-boundary, and sensitive-label evidence are attached without using in-memory or fake components as production proof.
+
+### Story 13.6: Rate limiting, timeouts, body caps, and sensitive-value filter convergence
+
+As a security and reliability operator,
+I want one enforced request-resource policy and one sensitive-value detector across hosts,
+So that abusive input is bounded and redaction cannot drift between surfaces.
+
+**Acceptance Criteria:**
+
+**Given** REST, worker callbacks, UI backend calls, CLI/MCP transport, logs, audit, diagnostics, and errors process untrusted input or metadata
+**When** production rate limits, operation timeouts, request/body caps, and the converged sensitive-value filter run
+**Then** excess work is rejected with stable safe results before expensive/provider/content effects, cancellation propagates within policy, and all output channels redact the same sentinel corpus
+**And** below/at/above-limit, burst/concurrency, slow-body, cancellation/timeout, wrong-tenant denial, filter false-positive/negative, encoding/normalization, and deployed-host evidence are attached without weakening C4 or canonical error semantics.

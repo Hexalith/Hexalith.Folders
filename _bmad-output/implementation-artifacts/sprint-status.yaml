@@ -41,6 +41,14 @@ project_key: NOKEY
 tracking_system: file-system
 story_location: "{project-root}/_bmad-output/implementation-artifacts"
 
+# EXECUTION CONTROL — approved 2026-08-04 via
+# sprint-change-proposal-2026-08-04.md. Until the canonical planning manifest,
+# epics, UX, statuses, and active contexts are reconciled, do not create or start
+# additional stories from the stale epics.md. Preserve the existing narrow
+# allowance: Story 12.6 may finish in-progress work; Story 10.8 remains gated by
+# its dedicated hard prerequisites. Story 3.10 is held pending status/authority
+# reconciliation. Preserve completed evidence and truthful lifecycle history.
+
 development_status:
   # Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
   epic-1: done
@@ -90,6 +98,8 @@ development_status:
   3-7-bind-an-existing-repository-to-a-folder: done
   3-8-define-branch-and-ref-policy: done
   3-9-inspect-tenant-and-per-provider-readiness-evidence: done
+  # EXECUTION HOLD: sprint status says in-progress while the dedicated story file
+  # says ready-for-dev. Resolve from evidence after the canonical manifest exists.
   3-10-github-repository-provisioning-binding-and-branch-ref-behavior: in-progress
   3-11-github-file-mutation-commit-status-and-failure-behavior: backlog
   3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior: backlog
@@ -369,9 +379,11 @@ action_items:
     priority: high
     status: done
   - epic: planning
-    # Approved 2026-07-14 via sprint-change-proposal-2026-07-14-implementation-readiness-structural-correction.md.
-    action: "Apply the approved Major-scope implementation-readiness structural correction across PRD, architecture, UX, epics, story authority/manifest, traceability, deferred work, and project context; then rerun implementation readiness into a non-overwriting report."
-    owner: "John / Winston / Product Owner / Amelia / Murat"
+    # Approved 2026-07-14 and recovered/re-approved 2026-08-04 via
+    # sprint-change-proposal-2026-08-04.md after the non-propagated correction
+    # caused a repeat NOT READY implementation-readiness result.
+    action: "Execute the approved Major planning-authority recovery: create the canonical story manifest; reconcile epics.md requirements, classifications, ratified story inventory, ownership, dependencies, acceptance floors, and generated counts; reconcile UX vocabulary, authorized search, incident authorization, and MVP component phasing; reconcile lifecycle statuses and active contexts from evidence; add planning-consistency validation; then rerun implementation readiness into a non-overwriting report. Preserve the Story 12.6/10.8 allowance and hold new story starts plus Story 3.10 until authority reconciliation completes."
+    owner: "John / Winston / Product Owner / Sally / Amelia / Murat / Security"
     priority: high
     status: open
   - epic: 10
