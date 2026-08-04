@@ -107,6 +107,18 @@ public sealed class ScaffoldContractTests
         "references/Hexalith.Tenants",
     ];
 
+    private static readonly Regex DirectedRecursiveSubmoduleProhibitionPattern = new(
+        @"\b(?:do\s+not|don't|never|avoid|must\s+not|should\s+not|forbid(?:s|den)?|prohibit(?:s|ed)?)\b[^\r\n.;]*\brecursive\b(?:\s+or\s+[A-Za-z0-9_-]+)?\s+submodules?\s+(?:initializ(?:e|ed|es|ing|ation)|updat(?:e|ed|es|ing))\b",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static readonly Regex DisplayedRecursiveCommandProhibitionPattern = new(
+        @"^(?:do\s+not|don't|never|must\s+not|should\s+not)\s+(?:run|use|execute)(?:\s+(?:this|the)\s+(?:command|setup))?(?:\s*:|\s*$)|^avoid\s+(?:running|using|executing)(?:\s+(?:this|the)\s+(?:command|setup))?(?:\s*:|\s*$)",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static readonly Regex InverseRecursiveSubmoduleProhibitionPattern = new(
+        @"^(?:do\s+not|don't|never|must\s+not|should\s+not)\s+(?:avoid|forbid(?:s|den)?|prohibit(?:s|ed)?)\b",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
     [Fact]
     public void SolutionContainsOnlyCanonicalBuildableProjects()
     {
@@ -414,6 +426,14 @@ public sealed class ScaffoldContractTests
     public void SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup()
     {
         string root = RepositoryRoot();
+        string[] declaredRootSubmodules = ReadGitmodulePaths(Path.Combine(root, ".gitmodules"));
+        declaredRootSubmodules.Length.ShouldBe(
+            RequiredCanonicalSubmodules.Length,
+            ".gitmodules must declare each canonical root submodule path exactly once.");
+        new HashSet<string>(declaredRootSubmodules, StringComparer.OrdinalIgnoreCase)
+            .SetEquals(RequiredCanonicalSubmodules)
+            .ShouldBeTrue(".gitmodules path inventory must exactly match the canonical root submodules.");
+
         string[] universalPolicyDocuments =
         [
             "AGENTS.md",
@@ -432,7 +452,7 @@ public sealed class ScaffoldContractTests
             File.Exists(path).ShouldBeTrue($"{document} should exist at the repository root or under tests/.");
 
             string content = File.ReadAllText(path);
-            ContainsCanonicalInitCommand(content).ShouldBeFalse(
+            ContainsFoldersSpecificInitCommand(content).ShouldBeFalse(
                 $"{document} is a universal entry point and must not document the Folders-specific root submodule init command.");
             ContainsRecursiveInitProhibition(content).ShouldBeTrue(
                 $"{document} must document that recursive submodule init is forbidden by default.");
@@ -483,6 +503,164 @@ public sealed class ScaffoldContractTests
                 File.Delete(tempPath);
             }
         }
+    }
+
+    [Fact]
+    public void CanonicalInitCommandSupportsBashPowerShellAndCmdContinuations()
+    {
+        foreach (char marker in new[] { '\\', '`', '^' })
+        {
+            ContainsCanonicalInitCommand(CanonicalInitCommandWithContinuation(marker))
+                .ShouldBeTrue($"Continuation marker '{marker}' should preserve the canonical command.");
+        }
+
+        string fencedCommand = $"```text\n{CanonicalInitCommand()}\n```";
+        ContainsCanonicalInitCommand(fencedCommand).ShouldBeTrue("Markdown fences must not be joined as PowerShell continuations.");
+
+        string reversedCommand = CanonicalInitCommand(RequiredCanonicalSubmodules.Reverse());
+        ContainsCanonicalInitCommand(reversedCommand).ShouldBeTrue("Canonical root operands are order-insensitive.");
+
+        string quotedCommand = CanonicalInitCommand(RequiredCanonicalSubmodules.Select(module => $"\"{module}\""));
+        ContainsCanonicalInitCommand(quotedCommand).ShouldBeTrue("Unambiguous quoted root operands should be normalized.");
+    }
+
+    [Fact]
+    public void CanonicalInitCommandRejectsUnsafeAndNonCanonicalVariants()
+    {
+        string operands = string.Join(" ", RequiredCanonicalSubmodules);
+        string canonical = CanonicalInitCommand();
+        string nestedOperands = string.Join(
+            " ",
+            RequiredCanonicalSubmodules.Select(module => module.Equals("references/Hexalith.Tenants", StringComparison.OrdinalIgnoreCase)
+                ? $"{module}/nested"
+                : module));
+        string trailingSlashOperands = string.Join(" ", RequiredCanonicalSubmodules.Select(module => $"{module}/"));
+        string[] unsafeCommands =
+        [
+            $"git submodule update --init --remote {operands}",
+            $"git submodule update --init --recursive {operands}",
+            $"git submodule update --init --recurse-submodules {operands}",
+            $"git submodule update --init submodule.recurse=true {operands}",
+            $"git -c submodule.recurse=true submodule update --init {operands}",
+            $"git submodule update --init arbitrary-operand {operands}",
+            $"{canonical} references/Hexalith.Extra",
+            $"git submodule update --init {nestedOperands}",
+            $"git submodule update --init {trailingSlashOperands}",
+            $"{canonical} # setup comment",
+            $"Run {canonical}",
+            $"{canonical}; echo done",
+            $"git submodule update --init\n{operands}",
+        ];
+
+        foreach (string command in unsafeCommands)
+        {
+            ContainsCanonicalInitCommand(command).ShouldBeFalse($"Strict canonical detection accepted: {command}");
+        }
+    }
+
+    [Fact]
+    public void FoldersSpecificInitCommandDetectionFindsCommandsWithInvalidExtras()
+    {
+        string withNinthPath = $"{CanonicalInitCommand()} references/Hexalith.Extra";
+        string trailingSlashOperands = string.Join(" ", RequiredCanonicalSubmodules.Select(module => $"{module}/"));
+        string withOptionsAndOperands =
+            $"git submodule update --remote --init arbitrary-operand {trailingSlashOperands} references/Invalid.Extra";
+        string withGitConfigOption =
+            $"git -c submodule.recurse=true submodule update --init {string.Join(" ", RequiredCanonicalSubmodules)}";
+
+        ContainsFoldersSpecificInitCommand(withNinthPath).ShouldBeTrue();
+        ContainsFoldersSpecificInitCommand(withOptionsAndOperands).ShouldBeTrue();
+        ContainsFoldersSpecificInitCommand(withGitConfigOption).ShouldBeTrue();
+        ContainsFoldersSpecificInitCommand($"Run {withNinthPath}").ShouldBeTrue();
+        ContainsFoldersSpecificInitCommand($"- {withNinthPath}").ShouldBeTrue();
+        ContainsFoldersSpecificInitCommand($"sudo {withNinthPath}").ShouldBeTrue();
+        ContainsFoldersSpecificInitCommand($"# {withNinthPath}").ShouldBeTrue();
+        ContainsCanonicalInitCommand(withNinthPath).ShouldBeFalse();
+        ContainsCanonicalInitCommand(withOptionsAndOperands).ShouldBeFalse();
+        ContainsCanonicalInitCommand(withGitConfigOption).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void RecursiveInitProhibitionRequiresDirectedSubmoduleWarning()
+    {
+        string[] accepted =
+        [
+            "Never use recursive or remote submodule updates by default.",
+            "Do not run recursive submodule initialization unless nested submodule work is explicitly requested.",
+            "Do not use:\n\n```text\ngit submodule update --init --recursive\n```",
+        ];
+        string[] rejected =
+        [
+            "Never initialize submodules without --recursive.",
+            "Never initialize a submodule without --recursive.",
+            "Do not avoid recursive submodule initialization.",
+            "Never prohibit recursive submodule updates.",
+            "Never use recursive algorithms when selecting a submodule.",
+            "Never expose credentials\nRecursive submodule updates are supported.",
+            "Never use recursive filesystem scans.\ngit submodule update --init --recursive",
+            "Recursive submodule updates can be slow.",
+            "git submodule update --init --recursive",
+        ];
+
+        foreach (string content in accepted)
+        {
+            ContainsRecursiveInitProhibition(content).ShouldBeTrue($"Expected a directed prohibition: {content}");
+        }
+        foreach (string content in rejected)
+        {
+            ContainsRecursiveInitProhibition(content).ShouldBeFalse($"Expected no directed prohibition: {content}");
+        }
+    }
+
+    [Fact]
+    public void CopilotUnsafeRecursiveCommandRemainsViolationDespiteLaterProhibition()
+    {
+        string tempRoot = Path.Combine(Path.GetTempPath(), $"copilot-submodule-policy-{Guid.NewGuid():N}");
+        try
+        {
+            string copilotDirectory = Path.Combine(tempRoot, ".github");
+            Directory.CreateDirectory(copilotDirectory);
+            string copilotPath = Path.Combine(copilotDirectory, "copilot-instructions.md");
+            File.WriteAllLines(copilotPath,
+            [
+                "# Setup",
+                "git submodule update --init --recursive",
+                string.Empty,
+                "Never use recursive or remote submodule updates by default.",
+            ]);
+
+            ContainsRecursiveInitProhibition(File.ReadAllText(copilotPath)).ShouldBeTrue();
+            string[] violations = PolicyDocumentPaths(tempRoot)
+                .SelectMany(path => RecursiveDefaultSetupViolations(path)
+                    .Select(line => $"{Normalize(Path.GetRelativePath(tempRoot, path))}:{line.LineNumber}: {line.Text}"))
+                .ToArray();
+
+            violations.Any(violation => violation.StartsWith(".github/copilot-instructions.md:2:", StringComparison.OrdinalIgnoreCase))
+                .ShouldBeTrue("A later prohibition must not exempt an earlier unsafe Copilot setup command.");
+        }
+        finally
+        {
+            if (Directory.Exists(tempRoot))
+            {
+                Directory.Delete(tempRoot, recursive: true);
+            }
+        }
+    }
+
+    private static string CanonicalInitCommand() => CanonicalInitCommand(RequiredCanonicalSubmodules);
+
+    private static string CanonicalInitCommand(IEnumerable<string> submodules) =>
+        $"git submodule update --init {string.Join(" ", submodules)}";
+
+    private static string CanonicalInitCommandWithContinuation(char marker)
+    {
+        List<string> lines = [$"git submodule update --init {marker}"];
+        for (int index = 0; index < RequiredCanonicalSubmodules.Length; index++)
+        {
+            string suffix = index == RequiredCanonicalSubmodules.Length - 1 ? string.Empty : $" {marker}";
+            lines.Add($"  {RequiredCanonicalSubmodules[index]}{suffix}");
+        }
+        return string.Join("\n", lines);
     }
 
     private static Dictionary<string, string[]> BuildProjectReferenceMap(string root) =>
@@ -574,25 +752,153 @@ public sealed class ScaffoldContractTests
     private static IEnumerable<XElement> DescendantsByLocalName(XContainer container, string localName) =>
         container.Descendants().Where(e => e.Name.LocalName.Equals(localName, StringComparison.OrdinalIgnoreCase));
 
-    private static bool ContainsCanonicalInitCommand(string content)
+    private static bool ContainsCanonicalInitCommand(string content) =>
+        JoinContinuationLines(content.Split('\n')).Any(line => IsCanonicalRootInitCommand(line.Text));
+
+    private static bool ContainsFoldersSpecificInitCommand(string content) =>
+        JoinContinuationLines(content.Split('\n')).Any(line => IsFoldersSpecificInitCommand(line.Text));
+
+    private static bool IsCanonicalRootInitCommand(string command)
     {
-        LogicalLine[] logicalLines = JoinContinuationLines(content.Split('\n'));
-        return logicalLines.Any(line =>
+        if (!TryTokenizeCommand(command, out string[] tokens)
+            || tokens.Length != RequiredCanonicalSubmodules.Length + 4
+            || !tokens[0].Equals("git", StringComparison.OrdinalIgnoreCase)
+            || !tokens[1].Equals("submodule", StringComparison.OrdinalIgnoreCase)
+            || !tokens[2].Equals("update", StringComparison.OrdinalIgnoreCase)
+            || !tokens[3].Equals("--init", StringComparison.OrdinalIgnoreCase))
         {
-            if (!line.Text.Contains("git submodule update --init", StringComparison.OrdinalIgnoreCase)
-                || ContainsRecursiveSubmoduleSetup(line.Text))
+            return false;
+        }
+
+        HashSet<string> operands = new(tokens.Skip(4), StringComparer.OrdinalIgnoreCase);
+        return operands.Count == RequiredCanonicalSubmodules.Length
+            && operands.SetEquals(RequiredCanonicalSubmodules);
+    }
+
+    private static bool IsFoldersSpecificInitCommand(string command)
+    {
+        if (!TryTokenizeCommand(command, out string[] tokens)
+            || tokens.Length < RequiredCanonicalSubmodules.Length + 4)
+        {
+            return false;
+        }
+
+        int gitIndex = Array.FindIndex(tokens, token => token.Equals("git", StringComparison.OrdinalIgnoreCase));
+        if (gitIndex < 0)
+        {
+            return false;
+        }
+
+        int submoduleUpdateIndex = -1;
+        for (int index = gitIndex + 1; index < tokens.Length - 1; index++)
+        {
+            if (tokens[index].Equals("submodule", StringComparison.OrdinalIgnoreCase)
+                && tokens[index + 1].Equals("update", StringComparison.OrdinalIgnoreCase))
             {
-                return false;
+                submoduleUpdateIndex = index;
+                break;
             }
-            return RequiredCanonicalSubmodules.All(module => line.Text.Contains(module, StringComparison.OrdinalIgnoreCase));
-        });
+        }
+        if (submoduleUpdateIndex < 0
+            || !tokens.Skip(submoduleUpdateIndex + 2)
+                .Any(token => token.Equals("--init", StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        HashSet<string> operands = tokens.Skip(submoduleUpdateIndex + 2)
+            .Select(NormalizeSubmoduleOperand)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return RequiredCanonicalSubmodules.All(operands.Contains);
+    }
+
+    private static bool TryTokenizeCommand(string command, out string[] tokens)
+    {
+        List<string> result = [];
+        int index = 0;
+        while (index < command.Length)
+        {
+            while (index < command.Length && char.IsWhiteSpace(command[index]))
+            {
+                index++;
+            }
+            if (index == command.Length)
+            {
+                break;
+            }
+
+            if (IsCommandSeparator(command[index]))
+            {
+                int separatorStart = index++;
+                if (index < command.Length && command[index] == command[separatorStart])
+                {
+                    index++;
+                }
+                result.Add(command[separatorStart..index]);
+                continue;
+            }
+
+            char quote = command[index] is '\'' or '"' ? command[index++] : '\0';
+            int tokenStart = index;
+            if (quote != '\0')
+            {
+                while (index < command.Length && command[index] != quote)
+                {
+                    index++;
+                }
+                if (index == command.Length || index == tokenStart)
+                {
+                    tokens = [];
+                    return false;
+                }
+
+                result.Add(command[tokenStart..index]);
+                index++;
+                if (index < command.Length
+                    && !char.IsWhiteSpace(command[index])
+                    && !IsCommandSeparator(command[index]))
+                {
+                    tokens = [];
+                    return false;
+                }
+                continue;
+            }
+
+            while (index < command.Length
+                && !char.IsWhiteSpace(command[index])
+                && !IsCommandSeparator(command[index]))
+            {
+                if (command[index] is '\'' or '"')
+                {
+                    tokens = [];
+                    return false;
+                }
+                index++;
+            }
+            result.Add(command[tokenStart..index]);
+        }
+
+        tokens = result.ToArray();
+        return tokens.Length > 0;
+    }
+
+    private static bool IsCommandSeparator(char value) => value is ';' or '|' or '&';
+
+    private static string NormalizeSubmoduleOperand(string operand)
+    {
+        string normalized = Normalize(operand);
+        while (normalized.StartsWith("./", StringComparison.Ordinal))
+        {
+            normalized = normalized[2..];
+        }
+        return normalized.TrimEnd('/');
     }
 
     private static bool ContainsRecursiveInitProhibition(string content)
     {
-        if (content.Contains("do not run recursive submodule initialization", StringComparison.OrdinalIgnoreCase)
-            || content.Contains("not use recursive", StringComparison.OrdinalIgnoreCase)
-            || content.Contains("never use recursive", StringComparison.OrdinalIgnoreCase))
+        bool hasDirectedProhibition = DirectedRecursiveSubmoduleProhibitionPattern.Matches(content)
+            .Any(match => !InverseRecursiveSubmoduleProhibitionPattern.IsMatch(match.Value));
+        if (hasDirectedProhibition)
         {
             return true;
         }
@@ -601,19 +907,45 @@ public sealed class ScaffoldContractTests
         for (int index = 0; index < logicalLines.Length; index++)
         {
             LogicalLine line = logicalLines[index];
-            if (!ContainsRecursiveSubmoduleSetup(line.Text))
+            if (ContainsRecursiveSubmoduleSetup(line.Text))
             {
+                string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
+                if (IsWarningOrNestedOptInContext(line.Text, precedingProse)
+                    && DisplayedRecursiveCommandProhibitionPattern.IsMatch(precedingProse.Trim()))
+                {
+                    return true;
+                }
                 continue;
-            }
-
-            string precedingProse = CollectPrecedingProseContext(logicalLines, index, maxLines: 8);
-            if (IsWarningOrNestedOptInContext(line.Text, precedingProse))
-            {
-                return true;
             }
         }
 
         return false;
+    }
+
+    private static string[] ReadGitmodulePaths(string gitmodulesPath) =>
+        File.ReadAllLines(gitmodulesPath)
+            .Select(ParseGitmodulePath)
+            .Where(path => path is not null)
+            .Select(path => path!)
+            .ToArray();
+
+    private static string? ParseGitmodulePath(string line)
+    {
+        int separatorIndex = line.IndexOf('=');
+        if (separatorIndex < 0
+            || !line[..separatorIndex].Trim().Equals("path", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        string path = line[(separatorIndex + 1)..].Trim();
+        if (path.Length >= 2
+            && path[0] is '\'' or '"'
+            && path[^1] == path[0])
+        {
+            path = path[1..^1];
+        }
+        return Normalize(path).TrimEnd('/');
     }
 
     private static IEnumerable<string> PolicyDocumentPaths(string root)
@@ -622,6 +954,8 @@ public sealed class ScaffoldContractTests
         string[] rootSetupScripts = new[] { "*.ps1", "*.sh", "*.cmd", "*.bat" }
             .SelectMany(pattern => SafeEnumerate(root, pattern, SearchOption.TopDirectoryOnly))
             .ToArray();
+        string copilotInstructions = Path.Combine(root, ".github", "copilot-instructions.md");
+        string[] copilotPolicyDocuments = File.Exists(copilotInstructions) ? [copilotInstructions] : [];
 
         string testsRoot = Path.Combine(root, "tests");
         string[] testsMarkdown = Directory.Exists(testsRoot)
@@ -640,6 +974,7 @@ public sealed class ScaffoldContractTests
 
         return rootMarkdown
             .Concat(rootSetupScripts)
+            .Concat(copilotPolicyDocuments)
             .Concat(testsMarkdown)
             .Concat(testsScripts)
             .Concat(docsDocuments)
@@ -721,7 +1056,10 @@ public sealed class ScaffoldContractTests
                 firstOriginalLine = i + 1;
             }
 
-            if (trimmedEnd.EndsWith('\\'))
+            bool isMarkdownFence = trimmedEnd.TrimStart().StartsWith("```", StringComparison.Ordinal);
+            bool hasContinuationMarker = trimmedEnd.Length > 0
+                && trimmedEnd[^1] is '\\' or '`' or '^';
+            if (!isMarkdownFence && hasContinuationMarker)
             {
                 buffer.Append(trimmedEnd[..^1]).Append(' ');
                 continue;

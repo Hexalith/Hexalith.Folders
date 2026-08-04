@@ -222,15 +222,23 @@ public sealed class ExitCriteriaDecisionArtifactTests
             string[] decisionRows = ExtractDecisionTableRows(content);
 
             decisionRows.ShouldNotBeEmpty($"{relativePath} should include decision rows.");
+            bool containsCurrentReviewDate = false;
             foreach (string row in decisionRows)
             {
                 ApprovalStates.Any(state => row.Contains(state, StringComparison.OrdinalIgnoreCase))
                     .ShouldBeTrue($"{relativePath} row must declare one of the three approval states: {row}");
                 row.ShouldContain("Architecture", Case.Insensitive, $"{relativePath} row must name provenance: {row}");
-                row.ShouldContain(reviewedDate, Case.Sensitive, $"{relativePath} row must carry the front-matter review date '{reviewedDate}': {row}");
+                Match reviewDateMatch = Regex.Match(row, @"\|\s*(\d{4}-\d{2}-\d{2})\s*\|$");
+                reviewDateMatch.Success.ShouldBeTrue($"{relativePath} row must end with an ISO review date: {row}");
+                DateOnly.TryParseExact(reviewDateMatch.Groups[1].Value, "yyyy-MM-dd", out _)
+                    .ShouldBeTrue($"{relativePath} row must end with a valid ISO review date: {row}");
+                containsCurrentReviewDate |= string.Equals(reviewDateMatch.Groups[1].Value, reviewedDate, StringComparison.Ordinal);
                 Regex.IsMatch(row, @"\bStory\s+\d+(?:\.\d+)?", RegexOptions.IgnoreCase)
                     .ShouldBeTrue($"{relativePath} row must name a consuming future story matching 'Story <N>[.<M>]': {row}");
             }
+
+            containsCurrentReviewDate.ShouldBeTrue(
+                $"{relativePath} must have at least one decision row reviewed on the document's current review date '{reviewedDate}'.");
         }
     }
 

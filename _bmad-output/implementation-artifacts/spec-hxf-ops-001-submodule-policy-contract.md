@@ -2,7 +2,7 @@
 title: 'Fix HXF-OPS-001 submodule policy contract'
 type: 'bugfix'
 created: '2026-07-19'
-status: 'in-progress'
+status: 'done'
 review_loop_iteration: 0
 baseline_commit: 'cfe830b410bce6e04308ea67c3492eca6bc8bdfd'
 context:
@@ -45,7 +45,7 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs` -- separate universal and repository document assertions, accept the universal “never use recursive” wording, include the Copilot entry point, and add an absence guard for repository-specific commands in universal files.
+- [x] `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs` -- separate universal and repository document assertions, accept the universal “never use recursive” wording, include the Copilot entry point, and add an absence guard for repository-specific commands in universal files.
 
 **Acceptance Criteria:**
 - Given the current correctly separated documentation, when the focused scaffold test runs, then it passes without changing any documentation or submodule checkout.
@@ -66,3 +66,40 @@ Treat command presence and prohibition presence as separate predicates. This ref
 - `dotnet tests/Hexalith.Folders.Testing.Tests/bin/Release/net10.0/Hexalith.Folders.Testing.Tests.dll -method 'Hexalith.Folders.Testing.Tests.ScaffoldContractTests.SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup'` -- expected: one focused test passes.
 - `dotnet tests/Hexalith.Folders.Testing.Tests/bin/Release/net10.0/Hexalith.Folders.Testing.Tests.dll -method 'Hexalith.Folders.Testing.Tests.ScaffoldContractTests.RecursiveSubmoduleViolationDetectionDoesNotTreatBroadNearbyWordingAsExemption'` -- expected: the recursive-guidance negative control passes.
 - `git diff --check` -- expected: no whitespace errors.
+
+## Suggested Review Order
+
+**Policy ownership**
+
+- Separates universal entry points from repository-specific setup documentation.
+  [`ScaffoldContractTests.cs:426`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L426)
+
+- Binds documented root dependencies to the actual `.gitmodules` inventory.
+  [`ScaffoldContractTests.cs:429`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L429)
+
+**Command recognition**
+
+- Accepts only the exact root-only initialization command as canonical.
+  [`ScaffoldContractTests.cs:761`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L761)
+
+- Detects Folders-specific commands even when unsafe extras are appended.
+  [`ScaffoldContractTests.cs:778`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L778)
+
+- Normalizes Bash, PowerShell, and CMD command continuations consistently.
+  [`ScaffoldContractTests.cs:1044`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L1044)
+
+**Recursive safety**
+
+- Requires directionally explicit recursive-submodule prohibition language.
+  [`ScaffoldContractTests.cs:897`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L897)
+
+- Extends unsafe-command scanning to synchronized Copilot instructions.
+  [`ScaffoldContractTests.cs:951`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L951)
+
+**Regression coverage**
+
+- Covers canonical commands, continuations, unsafe options, and extra operands.
+  [`ScaffoldContractTests.cs:509`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L509)
+
+- Pins directed prohibitions and Copilot unsafe-command rejection.
+  [`ScaffoldContractTests.cs:584`](../../tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs#L584)

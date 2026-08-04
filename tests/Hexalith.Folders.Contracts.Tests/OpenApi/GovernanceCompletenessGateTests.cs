@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Shouldly;
@@ -11,6 +12,8 @@ public sealed class GovernanceCompletenessGateTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "c0-c13-governance-evidence.yaml");
+    private static readonly string Oq8DesignPath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-design.md");
+    private static readonly string Oq8EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-evidence.yaml");
     private static readonly string CorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.json");
     private static readonly string CorpusSchemaPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.schema.json");
     private static readonly string CorpusConsumptionPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus-consumption.yaml");
@@ -255,6 +258,65 @@ public sealed class GovernanceCompletenessGateTests
             .Concat(unsatisfied).Concat(staleDiagnostics).Concat(reviewExpired))
         {
             AssertMetadataOnly(diagnostic.ToString());
+        }
+    }
+
+    [Fact]
+    public void Oq8DesignPackageBindsApprovedDecisionsAndExactDigest()
+    {
+        File.Exists(Oq8DesignPath).ShouldBeTrue("OQ8 requires a canonical design decision document.");
+        File.Exists(Oq8EvidencePath).ShouldBeTrue("OQ8 requires a versioned governance evidence manifest.");
+
+        string design = File.ReadAllText(Oq8DesignPath);
+        string[] requiredDesignStatements =
+        [
+            "managed tenant plus HMAC-SHA-256 key digest",
+            "reserved -> pending -> terminal",
+            "recoverable",
+            "unknown_provider_outcome",
+            "now >= expiresAt",
+            "mutation replay result: PT24H",
+            "commit replay result: P7Y",
+            "managed-tenant lifetime plus 400 days",
+            "HTTP 409",
+            "CLI exit 76",
+            "MCP kind `idempotency_key_expired`",
+            "refresh_state_then_submit_with_new_key",
+            "authorization and canonical validation before admission",
+            "deterministic post-admission failures consume the key",
+            "EventStore-owned admission actor",
+        ];
+
+        foreach (string statement in requiredDesignStatements)
+        {
+            design.ShouldContain(statement, Case.Sensitive);
+        }
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq8DesignPath)));
+        YamlMappingNode evidence = LoadYamlMapping(Oq8EvidencePath);
+        RequiredScalar(evidence, "schema_version").ShouldBe("1.0.0");
+        RequiredScalar(evidence, "evidence_id").ShouldBe("OQ8");
+        RequiredScalar(evidence, "status").ShouldBe("design-approved");
+        RequiredScalar(evidence, "design_version").ShouldBe("1.0.0");
+        RequiredScalar(evidence, "design_path").ShouldBe("docs/exit-criteria/oq8-idempotency-design.md");
+        RequiredScalar(evidence, "design_sha256").ShouldBe(actualDigest);
+
+        YamlMappingNode approval = RequiredMapping(evidence, "approval");
+        RequiredSequence(approval, "required_authorities")
+            .Children.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["Architecture", "Security", "Test"], ignoreOrder: true);
+
+        YamlMappingNode[] records = RequiredSequence(approval, "records")
+            .Children.Cast<YamlMappingNode>().ToArray();
+        records.Length.ShouldBe(3);
+
+        foreach (string authority in new[] { "Architecture", "Security", "Test" })
+        {
+            YamlMappingNode record = records.Single(row => RequiredScalar(row, "authority") == authority);
+            RequiredScalar(record, "approver").ShouldBe("Administrator");
+            RequiredScalar(record, "approved_on").ShouldBe("2026-07-19");
+            RequiredScalar(record, "evidence_version").ShouldBe("1.0.0");
+            RequiredScalar(record, "evidence_sha256").ShouldBe(actualDigest);
         }
     }
 

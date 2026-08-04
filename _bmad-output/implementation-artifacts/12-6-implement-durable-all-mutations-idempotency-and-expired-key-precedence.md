@@ -5,7 +5,7 @@ eventstore_baseline_commit: 539dca2b277f37b2ee6babe8c486f002a8ec3991
 
 # Story 12.6: Implement durable all-mutations idempotency and expired-key precedence
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -28,18 +28,18 @@ so that retries, conflicts, restarts, concurrent replicas, and expired-key reuse
 
 ## Tasks / Subtasks
 
-- [ ] Complete the OQ8 architecture and governance entry gate before production implementation. (AC: 1, 5, 7, 9, 10)
-  - [ ] Update Architecture concern #3, concern #21, A-9, D-7, and the process pattern from the stale subset/TTL wording to every mutation, all reads, tenant-scoped key partitioning, authorization-aware replay, explicit expired precedence, and separate replay-result versus consumed-key retention.
-  - [ ] Update `docs/adrs/0004-per-command-canonical-idempotency.md` with the approved EventStore-owned state machine and trusted descriptor boundary; retain the Contract Spine as equivalence authority.
-  - [ ] Add a distinct consumed-key evidence class to `docs/exit-criteria/c3-retention.md`, including exact lifetime, cleanup trigger, tenant deletion, legal hold, anonymization/deletion disposition, digest/key rotation, collision response, and observable evidence. Do not infer this duration from the 24-hour or seven-year replay-result tiers.
-  - [ ] Freeze the exact expiry boundary, clock authority, deterministic-failure consumption policy, replay-result storage/rehydration rule, HTTP status, CLI exit code, MCP kind, and safe Problem Details mapping for `idempotency_key_expired`.
-  - [ ] Record dated Architecture, Security, and Test decisions with artifact version and digest. If any required owner declines or leaves a value unresolved, stop before code and keep OQ8 open.
+- [x] Complete the OQ8 architecture and governance entry gate before production implementation. (AC: 1, 5, 7, 9, 10)
+  - [x] Update Architecture concern #3, concern #21, A-9, D-7, and the process pattern from the stale subset/TTL wording to every mutation, all reads, tenant-scoped key partitioning, authorization-aware replay, explicit expired precedence, and separate replay-result versus consumed-key retention.
+  - [x] Update `docs/adrs/0004-per-command-canonical-idempotency.md` with the approved EventStore-owned state machine and trusted descriptor boundary; retain the Contract Spine as equivalence authority.
+  - [x] Add a distinct consumed-key evidence class to `docs/exit-criteria/c3-retention.md`, including exact lifetime, cleanup trigger, tenant deletion, legal hold, anonymization/deletion disposition, digest/key rotation, collision response, and observable evidence. Do not infer this duration from the 24-hour or seven-year replay-result tiers.
+  - [x] Freeze the exact expiry boundary, clock authority, deterministic-failure consumption policy, replay-result storage/rehydration rule, HTTP status, CLI exit code, MCP kind, and safe Problem Details mapping for `idempotency_key_expired`.
+  - [x] Record dated Architecture, Security, and Test decisions with artifact version and digest. If any required owner declines or leaves a value unresolved, stop before code and keep OQ8 open.
 
 - [ ] Deliver the EventStore platform prerequisite in its owning repository and consume a released/pinned version. (AC: 2, 4-7, 9, 10)
-  - [ ] Create or approve the upstream Hexalith.EventStore work item for tenant-scoped atomic idempotency admission, canonical intent conflict detection, fixed retention-tier selection, current-authorization-aware replay, explicit expired denial, and durable minimal tombstones.
-  - [ ] Replace the current expiry path that removes `idempotency:{messageId}` and then falls through to command execution. `Expired` must be terminal for the old key and must atomically compact or resolve to durable consumed-key evidence.
+  - [x] Create or approve the upstream Hexalith.EventStore work item for tenant-scoped atomic idempotency admission, canonical intent conflict detection, fixed retention-tier selection, current-authorization-aware replay, explicit expired denial, and durable minimal tombstones.
+  - [x] Replace the current expiry path that removes `idempotency:{messageId}` and then falls through to command execution. `Expired` must be terminal for the old key and must atomically compact or resolve to durable consumed-key evidence.
   - [ ] Extend the platform identity/admission contract so a trusted domain adapter supplies the canonical intent descriptor and fixed tier before the actor decision. Public `SubmitCommandRequest.Extensions` values are untrusted and cannot select a digest, scope, or retention duration without server-side validation.
-  - [ ] Ensure a live same-key/different-intent request conflicts even when message ID and command type match, and ensure the same tenant key cannot be reused silently against another aggregate/target.
+  - [x] Ensure a live same-key/different-intent request conflicts even when message ID and command type match, and ensure the same tenant key cannot be reused silently against another aggregate/target.
   - [ ] Preserve pipeline resume and recoverable/unknown-outcome semantics without blind provider/domain re-execution; define versioned migration for legacy raw-key/full-result records and fail closed on corruption or unknown versions.
   - [ ] Remove raw idempotency keys from persisted tombstones and diagnostic logs. Use the Security-approved digest/partition design and redaction rules.
   - [ ] Implement EventStore unit, actor, gateway, and live-sidecar tests for exact duplicate, intent conflict, expiry, compaction, restart, multi-replica/concurrent admission, unavailable state, migration, and persisted state-store end state.
@@ -226,6 +226,11 @@ GPT-5 Codex
 - 2026-07-19: Three read-only analysis agents independently audited product requirements/placement, current Folders/EventStore code and platform gaps, and prior-story/test evidence. No agent edited files.
 - 2026-07-19: Validation added hard gates for the unapproved consumed-key lifetime and error projections, EventStore owning-repository work, Story 12.1 plus durable Organization persistence, authorization-before-disclosure, generated 14-mutation/35-read completeness, real restart/concurrency/state-store evidence, and OQ8 approval metadata.
 - 2026-07-19: Dev-story execution halted at the Task 0 entry gate before production code. OQ8 still lacks the required dated Architecture, Security, and Test approvals and an independently approved consumed-key lifetime; Story 12.1 remains backlog; the pinned EventStore history after `539dca2b` contains no durable idempotency-admission capability. The mandatory HXF-OPS-001 baseline check also remains red: `dotnet tests/Hexalith.Folders.Testing.Tests/bin/Release/net10.0/Hexalith.Folders.Testing.Tests.dll -method 'Hexalith.Folders.Testing.Tests.ScaffoldContractTests.SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup'` failed because `AGENTS.md` lacks the canonical root-submodule initialization command. No production code, dependency, or submodule content was changed.
+- 2026-07-19: Administrator explicitly approved continuation, EventStore submodule implementation, and recording Administrator as Architecture, Security, and Test approver. OQ8 design version 1.0.0 was frozen in `oq8-idempotency-design.md`; SHA-256 `1a55b0302e91233e12db91e6e245f0a22d6bf13fcf6cdf5ee0cbe5759f08dcd8` is bound to all three dated approval records in `oq8-idempotency-evidence.yaml`.
+- 2026-07-19: Task 0 RED/GREEN evidence: new digest-bound OQ8 governance test failed while the design artifact was absent, then passed after the architecture, ADR, C3 consumed-key class, design, and evidence manifest were synchronized. Governance 14/14, retention 8/8, ADR 10/10, exit-criteria 8/8, and Testing 66/66 passed. The prior HXF-OPS-001 focused scaffold test now passes. Broad Contracts verification is 282/284 with two pre-existing failures in untouched PRD/NFR traceability inventory (`PrdAndEpicsNfrInventoriesAlignOneForOne`, `TraceabilityTableHasSeventyRowsMatchingPrdHashes`); Task 0 introduced no failure in its changed artifacts.
+- 2026-07-19: EventStore Task 2 source candidate added trusted canonical descriptors and fixed tier registration, HMAC-protected tenant/key admission, durable fenced actor states, terminal expired precedence, minimal result/intent compaction, gateway conflict/expired mappings, and handler ordering. The approved upstream work item records this as unreleased source and keeps rotation promotion, unsafe legacy migration, multi-host evidence, governed cleanup, review/release, and pin consumption as blocking gates.
+- 2026-07-19: EventStore verification: full Server tests passed 2781 with 25 repository-declared skips (2806 total); Client passed 680/680; focused contract descriptor round-trip passed 3/3; admission/handler edge coverage passed; and live Dapr/Redis coverage passed 2/2, including eight concurrent admissions, persisted-state inspection, and application-plus-sidecar restart replay. EventStore Contracts remained 744/747 with three pre-existing nested-submodule/build-governance failures; nested submodules were not initialized per repository policy.
+- 2026-07-19: HALT at the incomplete EventStore prerequisite. OQ8 freezes actor identity as tenant + digest-key version + protected key digest and also requires atomic retiring-version promotion; the current actor-owned state transaction cannot atomically move authority across the old and new actor partitions without an additional approved locator/redirect protocol. Legacy idempotency records are aggregate-scoped and expose no tenant/key inventory, so same-aggregate migration cannot safely detect historical same-key use against another target. Trusted-caller enforcement, raw-key separation from the legacy MessageId/advisory path, exact logical-result replay, cleanup operations, multiple-host evidence, review/release, and root pin consumption also remain open. Continuing requires an approved OQ8 design amendment or governed platform migration/index protocol; Folders work remains sequenced behind Story 12.1 and the released prerequisite.
 
 ### Completion Notes List
 
@@ -233,12 +238,75 @@ GPT-5 Codex
 - Story 12.6 registered as the dedicated OQ8 implementation authority without expanding Story 3.10.
 - Story is ready to begin Task 0; production code remains gated by named architecture, retention, platform, and governance decisions.
 - Story 3.10 remains in progress and blocked on this substrate.
+- OQ8 Task 0 is approved and complete: tenant/key partitioning, trusted intent, state/fencing, exact inclusive expiry, fixed replay tiers, independent consumed-key lifetime, digest rotation/collision response, and cross-surface expired mapping are frozen without unresolved production values.
+- EventStore now has an owning-repository source candidate and approved work item for the platform seam; exact expiry no longer deletes the legacy record or falls through, and trusted admission denies replay/conflict/expiry before aggregate or advisory work.
+- The EventStore prerequisite is intentionally not marked complete: trusted-adapter enforcement, raw-key separation from command diagnostics/advisory stores, crash-safe digest rotation promotion, cross-aggregate legacy migration, full logical-result rehydration/recovery, multi-host production-equivalent evidence, governed cleanup, release review, and released/root-pinned consumption remain open.
+- Folders integration remains sequenced behind the unreleased EventStore prerequisite and Story 12.1 durable Folder plus Organization persistence; no Folders runtime or generated-surface implementation was started out of order.
 
 ### File List
 
 - `_bmad-output/implementation-artifacts/12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/planning-artifacts/architecture.md`
+- `docs/adrs/0004-per-command-canonical-idempotency.md`
+- `docs/exit-criteria/c3-retention.md`
+- `docs/exit-criteria/oq8-idempotency-design.md`
+- `docs/exit-criteria/oq8-idempotency-evidence.yaml`
+- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs`
+- `tests/Hexalith.Folders.Testing.Tests/ExitCriteriaDecisionArtifactTests.cs`
+- `references/Hexalith.EventStore/docs/superpowers/specs/2026-07-19-durable-idempotency-admission.md`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Commands/CanonicalIdempotencyDescriptor.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Commands/IdempotencyReplayRetentionTier.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Commands/SubmitCommandRequest.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Contracts/Problems/GatewayProblemDetailsExtensions.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/AggregateActor.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IIdempotencyAdmissionActor.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionActor.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionCompletionRequest.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionDecision.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionRecord.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionRecoveryRequest.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionRequest.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionResult.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionState.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyAdmissionTransitionRequest.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyChecker.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/IdempotencyCheckOutcome.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IIdempotencyAdmissionCoordinator.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionCoordinator.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IdempotencyAdmissionSession.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IdempotencyConflictException.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IdempotencyKeyExpiredException.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IdempotencyKeyProtector.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Commands/IdempotencyProtectedIdentity.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/IdempotencyAdmissionOperationOptions.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/IdempotencyAdmissionOptions.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/ServiceCollectionExtensions.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Configuration/ValidateIdempotencyAdmissionOptions.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Pipeline/Commands/SubmitCommand.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Pipeline/SubmitCommandHandler.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/Controllers/CommandsController.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/ErrorHandling/IdempotencyConflictExceptionHandler.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/ErrorHandling/IdempotencyKeyExpiredExceptionHandler.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/ErrorHandling/ProblemTypeUris.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/Extensions/ServiceCollectionExtensions.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/Models/SubmitCommandRequest.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/OpenApi/ErrorReferenceEndpoints.cs`
+- `references/Hexalith.EventStore/src/Hexalith.EventStore/Validation/SubmitCommandRequestValidator.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/Gateway/EventStoreGatewayClientTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/Commands/SubmitCommandRequestTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Actors/IdempotencyAdmissionLiveSidecarTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Fixtures/DaprTestContainerFixture.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Actors/AggregateActorIdempotencyTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Actors/AggregateActorTestHelper.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Actors/IdempotencyAdmissionActorTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Actors/IdempotencyCheckerTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Commands/CommandIdentityConflictTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandHandlerIdempotencyAdmissionTests.cs`
+- `references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/Pipeline/SubmitCommandRequestValidatorTests.cs`
 
 ### Change Log
 
 - 2026-07-19: Created Story 12.6 for EventStore-owned durable all-mutations admission, canonical intent conflicts, consumed-key tombstones, expired-key precedence, generated C13 completeness, cross-surface parity, production evidence, and OQ8 approval closure.
+- 2026-07-19: Completed and approved Task 0 design/governance entry gate with a versioned, SHA-256-bound OQ8 decision package and executable conformance checks.
+- 2026-07-19: Added the approved but unreleased EventStore durable-admission source candidate, exact expired-key terminal handling, protected conflict/replay/compaction mechanics, public expired mapping, and real Redis restart evidence; documented remaining release gates and kept Task 2/story open.

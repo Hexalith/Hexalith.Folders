@@ -1,0 +1,45 @@
+schema_version: '1.0.0'
+evidence_id: OQ8
+title: Durable all-mutations idempotency and expired-key precedence
+status: design-approved
+release_gate_status: in-progress
+design_version: '1.0.0'
+design_path: docs/exit-criteria/oq8-idempotency-design.md
+design_sha256: 1a55b0302e91233e12db91e6e245f0a22d6bf13fcf6cdf5ee0cbe5759f08dcd8
+approved_on: '2026-07-19'
+canonical_sources:
+  - _bmad-output/planning-artifacts/architecture.md
+  - docs/adrs/0004-per-command-canonical-idempotency.md
+  - docs/exit-criteria/c3-retention.md
+  - docs/contract/idempotency-and-parity-rules.md
+  - src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+  - tests/fixtures/parity-contract.yaml
+approval:
+  required_authorities:
+    - Architecture
+    - Security
+    - Test
+  records:
+    - authority: Architecture
+      approver: Administrator
+      approved_on: '2026-07-19'
+      evidence_version: '1.0.0'
+      evidence_sha256: 1a55b0302e91233e12db91e6e245f0a22d6bf13fcf6cdf5ee0cbe5759f08dcd8
+    - authority: Security
+      approver: Administrator
+      approved_on: '2026-07-19'
+      evidence_version: '1.0.0'
+      evidence_sha256: 1a55b0302e91233e12db91e6e245f0a22d6bf13fcf6cdf5ee0cbe5759f08dcd8
+    - authority: Test
+      approver: Administrator
+      approved_on: '2026-07-19'
+      evidence_version: '1.0.0'
+      evidence_sha256: 1a55b0302e91233e12db91e6e245f0a22d6bf13fcf6cdf5ee0cbe5759f08dcd8
+implementation_evidence:
+  eventstore_platform: pending
+  folders_runtime: pending
+  contract_spine_and_generated_sdk: pending
+  c13_generated_matrix: pending
+  production_restart_and_concurrency: pending
+  persisted_state_and_leakage: pending
+reopen_policy: Any change to the design document changes its digest and reopens Architecture, Security, and Test approval.
