@@ -174,7 +174,7 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
     }
 
     [Fact]
-    public async Task MaterializeAsyncShouldSkipWhenMediaTypeIsUnavailable()
+    public async Task MaterializeAsyncShouldReportUnavailableWhenMediaTypeIsMissing()
     {
         MetadataDerivedSemanticIndexingContentMaterializer materializer = new();
 

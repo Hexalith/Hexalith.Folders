@@ -412,6 +412,20 @@ action_items:
     priority: high
     status: open
   - epic: 10
+    # 2026-08-05 recorded via bmad-build review of Story 10.6. This drift is NOT a Story 10.6
+    # defect and 10.6 is explicitly forbidden from touching planning prose, but it is the SOLE
+    # remaining reason 10.6 cannot satisfy AC11 and close. It has now silently re-blocked the
+    # story across four sessions (2026-07-15 twice, 2026-08-04, 2026-08-05), each time reproducing
+    # the identical two failures, so it is promoted out of 10.6's debug log into an owned item.
+    # Reproduce: dotnet test tests/Hexalith.Folders.Contracts.Tests -> 282/284, failing
+    # NfrTraceabilityConformanceTests.PrdAndEpicsNfrInventoriesAlignOneForOne and
+    # .TraceabilityTableHasSeventyRowsMatchingPrdHashes. Introduced by PRD reconciliation da3d111.
+    # Needs a PM call on what the 3 added NFR bullets are before the table/hashes can be relocked.
+    action: "Reconcile the PRD/NFR traceability drift: prd.md now declares 73 NFR bullets while NfrTraceabilityConformanceTests and the traceability inventory stay locked to 70, plus an NFR1 hash mismatch. Unblocks Story 10.6 AC11 (Contracts.Tests 282/284 -> green)."
+    owner: "John / Murat"
+    priority: high
+    status: open
+  - epic: 10
     # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-memories-facade-dapr-egress):
     # "route through the Dapr sidecar invoke" branch taken (make the enforcement real, not weaken the claim).
     # The Server facade composes Memories:BaseAddress as the sidecar service-invocation endpoint

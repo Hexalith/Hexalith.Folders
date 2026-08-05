@@ -192,6 +192,7 @@ GPT-5 Codex
 - 2026-07-15 completion-gate rerun: restore/build passed 0W/0E; AppHost opt-in suite skipped its configured 4/4, CLI passed 708/708, and Client passed 288/288. Full Contracts regression stopped at 281/283 because committed PRD reconciliation `da3d111` now declares 73 NFR bullets while `NfrTraceabilityConformanceTests` and the traceability inventory remain locked to 70 (including an NFR1 hash mismatch). This is unrelated planning drift outside Story 10.6's permitted scope, so status remains `in-progress` pending correction and a clean full-suite rerun.
 - 2026-07-15 resumed completion gate: restore/build passed 0W/0E; Workers 75/75, Folders 1377/1377, and Testing 61/61 passed; AppHost retained its configured 4/4 opt-in skips. Contracts again stopped at 281/283 on the same out-of-scope 73-versus-70 NFR inventory and NFR1 hash drift, so the Step 9 regression gate remains blocked and story status stays `in-progress`.
 - 2026-08-04 completion-gate audit: serialized restore with NuGet audit disabled passed after the exact broad restore stalled on package-feed calls; the full solution build passed 0W/0E, Workers 80/80, Folders 1432/1432, Testing 66/66, focused contract-spine/parity/Dapr-policy 32/32, and Server transport parity 10/10. Formatting was clean and AppHost retained its configured 4/4 opt-in skips. Full Contracts passed 282/284 and reproduced only the same out-of-scope 73-versus-70 NFR inventory and NFR1 hash drift, so the story remains `in-progress` pending correction and a clean full-suite rerun.
+- 2026-08-05 independent re-verification: source and File List unchanged since 2026-07-14 (`git status` clean at HEAD); re-audited the shared build host, which was heavily contended by ~120-140 concurrent `dotnet`/MSBuild processes from unrelated sessions, causing default-node-reuse restores/builds to hang indefinitely in `futex_wait_queue` with near-zero CPU (reproduced on both a solution-wide and a single-project restore). `MSBUILDDISABLENODEREUSE=1` unblocked every invocation. With that flag: `dotnet restore Hexalith.Folders.slnx --disable-parallel -p:NuGetAudit=false` completed clean; `dotnet build Hexalith.Folders.slnx --no-restore -p:NuGetAudit=false` produced 0 errors / 1 transient MSB3026 file-copy retry (self-resolved on retry, not a defect). Narrowed lanes: Workers.Tests 80/80, Folders.Tests 1432/1432, Testing.Tests 66/66 — all green and unchanged from the prior audit. `dotnet format Hexalith.Folders.slnx whitespace --verify-no-changes --no-restore --include src tests` (scoped to Folders-owned paths, excluding `references/*` submodule content) reported zero violations. AppHost.Tests reproduced its configured 4/4 opt-in skips (`HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION` unset). Full Contracts.Tests reproduced the identical 282/284 result: the only two failures are `NfrTraceabilityConformanceTests.PrdAndEpicsNfrInventoriesAlignOneForOne` (prd.md declares 73 NFR bullets vs. the traceability table's 70) and `.TraceabilityTableHasSeventyRowsMatchingPrdHashes` (NFR1 hash drift) — the same out-of-scope PRD/NFR-inventory drift recorded on 2026-07-15 and 2026-08-04, still unresolved and still outside Story 10.6's scope to fix. Conclusion: Story 10.6's own implementation, tests, and governance sync are complete and independently reproduced green; status stays `in-progress` solely pending the separate out-of-scope NFR-traceability correction and a clean full-suite rerun, exactly as previously recorded.
 
 ### Completion Notes List
 
@@ -201,6 +202,7 @@ GPT-5 Codex
 - Task 4: covered metadata availability, facade-visible attributes, C9 leakage corpus, C4 evidence/classification, replay stability, cancellation/null guards, real process-manager indexing, and real Dapr-port publication.
 - Task 5: closed the delivered Epic 10 materializer action and recorded the authorized body-text implementation as an explicit C9 Security+PM sign-off dependency.
 - Task 6: verified the complete solution and canonical CI lanes; AppHost startup reached a healthy Workers resource, while the full mutation round-trip remains the existing opt-in DCP-capable-lane evidence item rather than a new implementation blocker.
+- Design fork (Dev Notes "The attribute-emission gap"): the **RECOMMENDED** fork was taken — the materializer owns the identity + status curated attributes, and `MemoriesSemanticIndexingPort` was deliberately left unmodified so the port stays out of scope per Out-of-scope item 3. All curated-attribute construction therefore lives in one testable place, and the port continues to publish `CuratedText`/`CuratedAttributes` verbatim. The "port owns identity attributes" alternative was not used.
 
 ### File List
 
@@ -220,3 +222,57 @@ GPT-5 Codex
 | Date | Change | Author |
 | --- | --- | --- |
 | 2026-07-14 | Implemented and verified metadata-derived semantic-index content materialization; retained the fail-closed fallback; synchronized Epic 10 governance. | Administrator (via dev-story) |
+| 2026-08-05 | Independently re-verified against the spec (no code changes needed — implementation already matched every AC): full restore/build 0E, Workers 80/80, Folders 1432/1432, Testing 66/66, scoped format clean, AppHost 4/4 opt-in skips; Contracts 282/284 reproduced the same out-of-scope NFR-inventory drift. Status remains `in-progress` pending that unrelated correction. | Administrator (via agent audit) |
+| 2026-08-05 | bmad-build review round (3 parallel review layers over the story-scoped diff). Two patches applied: renamed the misleading `MaterializeAsyncShouldSkipWhenMediaTypeIsUnavailable` test to `MaterializeAsyncShouldReportUnavailableWhenMediaTypeIsMissing` (it asserts `Unavailable`, which the process manager maps to bridge `Failed`, not `Skipped`), and recorded the design-fork choice the Dev Notes required. One defer logged to `deferred-work.md` (archive re-send interaction with the new complete attribute set is asserted in prose but untested; archive egress is out of scope #3). Reviewer claims about parameterized media types and negative byte lengths were traced to source and rejected as unreachable — upstream Gate 5 applies the identical allow-list to the same value, and `LengthBytes` never reaches the wire. Workers re-verified 80/80. The blocking PRD/NFR-traceability drift was promoted from this story's debug log into an owned `sprint-status.yaml` action item. | Administrator (via bmad-build review) |
+
+## Suggested Review Order
+
+**The content producer (design intent)**
+
+- Entry point: the whole story is this one method — metadata-only curated text + attributes.
+  [`MetadataDerivedSemanticIndexingContentMaterializer.cs:32`](../../src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs#L32)
+
+- The load-bearing set: five identity keys + `folders.status=active` or the facade cannot see the doc.
+  [`MetadataDerivedSemanticIndexingContentMaterializer.cs:35`](../../src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs#L35)
+
+- C4 evidence echoed, never re-enforced: declared media type and original size pass through.
+  [`MetadataDerivedSemanticIndexingContentMaterializer.cs:28`](../../src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs#L28)
+
+- Classifier mirrors the upstream allow-list exactly, so unsupported types never reach here.
+  [`MetadataDerivedSemanticIndexingContentMaterializer.cs:59`](../../src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs#L59)
+
+- Fails closed on a missing media type rather than inventing a descriptor.
+  [`MetadataDerivedSemanticIndexingContentMaterializer.cs:21`](../../src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs#L21)
+
+**Registration swap**
+
+- One-line default swap; fail-closed type stays constructible as an explicit fallback.
+  [`FoldersWorkersModule.cs:79`](../../src/Hexalith.Folders.Workers/FoldersWorkersModule.cs#L79)
+
+**Shared producer/consumer attribute contract**
+
+- Three classification keys promoted to constants, killing producer/consumer string drift.
+  [`FoldersSemanticIndexingAttributes.cs:40`](../../src/Hexalith.Folders/Projections/SemanticIndexing/FoldersSemanticIndexingAttributes.cs#L40)
+
+- Pre-existing 6-arg factory now references the same constants; values unchanged.
+  [`ISemanticIndexingContentMaterializer.cs:98`](../../src/Hexalith.Folders.Workers/SemanticIndexing/ISemanticIndexingContentMaterializer.cs#L98)
+
+**Tests — the anti-silent-break proof**
+
+- Highest-value test: real materializer → real port → recording Dapr, asserts facade discoverability.
+  [`MetadataDerivedSemanticIndexingContentMaterializerTests.cs:222`](../../tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs#L222)
+
+- Real materializer driven through the real process manager, not a fake.
+  [`SemanticIndexingProcessManagerTests.cs:68`](../../tests/Hexalith.Folders.Workers.Tests/SemanticIndexingProcessManagerTests.cs#L68)
+
+- C9 corpus: no raw path, secret, snippet, or source URI in text or any attribute.
+  [`MetadataDerivedSemanticIndexingContentMaterializerTests.cs:121`](../../tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs#L121)
+
+- Replay stability: byte-identical, ordinal-ordered output across calls.
+  [`MetadataDerivedSemanticIndexingContentMaterializerTests.cs:157`](../../tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs#L157)
+
+- Inclusive 64-KiB boundary and every supported application media-type branch.
+  [`MetadataDerivedSemanticIndexingContentMaterializerTests.cs:71`](../../tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs#L71)
+
+- Registration assertion flipped to the new concrete type.
+  [`SemanticIndexingWorkerRegistrationTests.cs:43`](../../tests/Hexalith.Folders.Workers.Tests/SemanticIndexingWorkerRegistrationTests.cs#L43)
