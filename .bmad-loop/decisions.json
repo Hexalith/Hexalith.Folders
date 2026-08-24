@@ -25,5 +25,14 @@
     "key": "1",
     "label": "Separate dimensions",
     "resolution": ""
+  },
+  "DW-56": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add a sanitized principalSources field through the contract workflow and regenerate clients.",
+    "key": "1",
+    "label": "Add sanitized sources",
+    "resolution": ""
   }
 }

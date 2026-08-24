@@ -404,6 +404,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-5-inspect-
 location: src/Hexalith.Folders/Authorization/EffectivePermissionsQueryResult.cs
 reason: AC #9 principal-source classes are not surfaced in the response [`src/Hexalith.Folders/Authorization/EffectivePermissionsQueryResult.cs`] — deferred, requires Contract Spine extension via the contract workflow. `EffectivePermissionEvidenceSource` is computed internally; OpenAPI `EffectivePermissions` schema is `additionalProperties: false`. Project rule "Do Not Touch" forbids changing the Contract Spine outside a dedicated contract-workflow story.
 status: open
+decision: 2026-08-25 Add sanitized sources — Add a sanitized principalSources field through the contract workflow and regenerate clients.
 
 ### DW-57: AC #5/#6 action-token granularity is collapsed to `FolderPermissionLevel`
 
