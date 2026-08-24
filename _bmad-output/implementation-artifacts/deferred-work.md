@@ -279,6 +279,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-
 location: src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs:45-70
 reason: `FolderAuthorizationDenialMapper` emits non-canonical categories (`not_found_to_caller`, `policy_denied`, `policy_evidence_unavailable`) [`src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs:45-70`] — deferred, pre-existing from Story 2.6 and shared by other endpoints; fixing requires a coordinated category-vocabulary update across operations and SDK callers.
 status: open
+decision: 2026-08-25 Promote existing tokens — Add the deployed tokens to the canonical vocabulary, oracle, documentation, and contract checks without changing the wire.
 
 ### DW-40: `FolderLifecycleStatus.lifecycleState` schema conflates lifecycle and binding tokens
 

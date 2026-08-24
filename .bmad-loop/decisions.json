@@ -7,5 +7,14 @@
     "key": "1",
     "label": "Add archive reason",
     "resolution": ""
+  },
+  "DW-39": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add the deployed tokens to the canonical vocabulary, oracle, documentation, and contract checks without changing the wire.",
+    "key": "1",
+    "label": "Promote existing tokens",
+    "resolution": ""
   }
 }
