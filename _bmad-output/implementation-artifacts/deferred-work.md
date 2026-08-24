@@ -1895,6 +1895,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-2-implemen
 location: src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs
 reason: `OrganizationAclTenantGate` has no DI/composition root wiring yet [`src/Hexalith.Folders/Aggregates/Organization/OrganizationAclTenantGate.cs`] — the gate is unreachable from any handler/controller/actor in the diff. Spec scope is "domain only"; production wiring belongs to a later Epic 2 worker/handler story. Tracking note so a downstream story does not bypass the gate.
 status: open
+decision: 2026-08-25 Wire in Story 12.1 — Add the gate to the real organization command path with DI registration and no-touch tenant-denial integration evidence.
 
 ### DW-260: Validator silently overwrites identical-tuple operations via `unique[$"{intent}|{tupleKey}"] = operation`
 

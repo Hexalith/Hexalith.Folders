@@ -8,6 +8,15 @@
     "label": "Keep open",
     "resolution": ""
   },
+  "DW-259": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add the gate to the real organization command path with DI registration and no-touch tenant-denial integration evidence.",
+    "key": "1",
+    "label": "Wire in Story 12.1",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
