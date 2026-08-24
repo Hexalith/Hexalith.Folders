@@ -587,6 +587,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generat
 location: tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch
 reason: `--initialize-baseline` silently overwrites without `--force`/backup [`tests/tools/parity-oracle-generator/Program.cs --initialize-baseline branch`] — UX concern, not correctness. Failing-CI path of least resistance is to nuke the baseline; mitigated socially by sprint review.
 status: open
+decision: 2026-08-25 Require force — Add --force-baseline-overwrite or an atomic backup requirement, reject an existing target without it, and cover both paths with focused CLI tests.
 
 ### DW-82: `AuditKey` regex does not check duplicate-after-normalization
 

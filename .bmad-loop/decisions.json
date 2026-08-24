@@ -61,5 +61,14 @@
     "key": "1",
     "label": "Preserve drift status",
     "resolution": ""
+  },
+  "DW-81": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add --force-baseline-overwrite or an atomic backup requirement, reject an existing target without it, and cover both paths with focused CLI tests.",
+    "key": "1",
+    "label": "Require force",
+    "resolution": ""
   }
 }
