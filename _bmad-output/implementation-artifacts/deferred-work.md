@@ -863,7 +863,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups follow-up (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: PrincipalMismatchSafeDenialProblem
 reason: W3: `PrincipalMismatchSafeDenialProblem` example uses HTTP 404 + `category: not_found`. Other tenant/principal-related safe-denial paths in the corpus map to `tenant_access_denied`. Speculative drift without a fuller cross-corpus check. Revisit alongside the audience-equivalence rework that defines canonical category mappings for principal-mismatch scenarios. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: PrincipalMismatchSafeDenialProblem`)
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Accept not_found as the intentional existence-hiding principal-mismatch response.
+decision: 2026-08-25 Keep safe 404 — Accept not_found as the intentional existence-hiding principal-mismatch response.
 
 ### DW-120: Historical Story 1.11 resolution summary
 
