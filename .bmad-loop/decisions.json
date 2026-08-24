@@ -1,0 +1,11 @@
+{
+  "DW-38": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add optional archiveReasonCode through the contract workflow and regenerate every consumer.",
+    "key": "1",
+    "label": "Add archive reason",
+    "resolution": ""
+  }
+}

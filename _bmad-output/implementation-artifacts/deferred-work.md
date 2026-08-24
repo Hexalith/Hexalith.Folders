@@ -271,6 +271,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7165-7185
 reason: AC10 "archive reason category" surfacing on `FolderLifecycleStatus` — the `FolderLifecycleStatus` schema [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7165-7185`] is `additionalProperties: false` and has no reason field. Adding the field requires a Contract Spine update via the contract-workflow story path per the Do-Not-Touch rule.
 status: open
+decision: 2026-08-25 Add archive reason — Add optional archiveReasonCode through the contract workflow and regenerate every consumer.
 
 ### DW-39: `FolderAuthorizationDenialMapper` emits non-canonical categories
 
