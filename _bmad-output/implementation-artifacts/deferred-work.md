@@ -1872,6 +1872,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story-2.1 (2
 location: src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs:111
 reason: `RemovedConfigurationKeys` set has no size cap or rate limit [`src/Hexalith.Folders/Projections/TenantAccess/FolderTenantAccessHandler.cs:111`] — no AC bounds it; revisit when the durable projection store choice (Story 2.x / 7.x) lands and retention strategy is decided.
 status: open
+decision: 2026-08-25 Keep open
 
 ### DW-257: Hard-coded `localhost:6379` Redis with no `AddRedis()` resource in AppHost
 
