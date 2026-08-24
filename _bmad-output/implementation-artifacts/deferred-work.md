@@ -461,7 +461,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-3-create-folders-within-a-tenant (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:64-79
 reason: `InvalidFolderMetadata` collapses length / control-char / forbidden-term failures into a single code [`src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:64-79`] — deferred, pre-existing coarse-grained pattern (Story 2.2 makes the same trade-off); splitting requires expanding the public code surface and updating consumer error-handling.
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Document the stable, non-revealing coarse code as deliberate.
+decision: 2026-08-25 Keep coarse code — Document the stable, non-revealing coarse code as deliberate.
 
 ### DW-65: `IdempotentReplay` outcome is returned via `FolderResult.Rejected(...)` even though it is a successful equivalence; `FolderResult` has no `IsAccepted` helper
 
