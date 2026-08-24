@@ -16,5 +16,14 @@
     "key": "1",
     "label": "Promote existing tokens",
     "resolution": ""
+  },
+  "DW-40": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add versioned lifecycle and binding fields with compatibility mapping for the existing combined field.",
+    "key": "1",
+    "label": "Separate dimensions",
+    "resolution": ""
   }
 }

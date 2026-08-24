@@ -287,6 +287,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7076-7089
 reason: `FolderLifecycleStatus.lifecycleState` schema conflates lifecycle and binding tokens [`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7076-7089`] — deferred, Contract Spine design; the implementation conforms to the spec as written. Adjusting requires a contract-workflow story.
 status: open
+decision: 2026-08-25 Separate dimensions — Add versioned lifecycle and binding fields with compatibility mapping for the existing combined field.
 
 ### DW-41: Wire the lifecycle-status read model in production
 
