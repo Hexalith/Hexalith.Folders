@@ -896,7 +896,9 @@ resolution: Closed by the Story 1.11 continuation in the OpenAPI contract, contr
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups (2026-05-14)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: DiagnosticBase, 7 example payloads, AuditOpsConsoleContractGroupTests
 reason: P-Schema-3: `DiagnosticBase.audience` is a required body field that lets callers A/B-test their credentials and observe a `consumer` → `authorized_operator` flip. Decision D9 chose "remove audience from body". Deferred because the change touches the base schema, every diagnostic subclass example, and the audience-checking tests. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: DiagnosticBase, 7 example payloads, AuditOpsConsoleContractGroupTests`)
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Supersede historical D9 and accept the current explicit audience discriminator as the implemented v1 contract.
+decision: 2026-08-25 Retain audience — Supersede historical D9 and accept the current explicit audience discriminator as the implemented v1 contract.
 
 ### DW-124: P-Schema-4: `DiagnosticBase.fieldClassifications` is optional with no `minItems`, allowing operator responses to omit the array entirely
 
