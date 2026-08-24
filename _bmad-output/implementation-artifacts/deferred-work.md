@@ -2048,6 +2048,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of story-10.5 (
 location: limit:0
 reason: SDK `ContextIndexSearchRequest.Limit` is generated as a non-nullable `int` (NSwag), so an SDK caller who omits `limit` serializes `limit:0`, which the server's `<= 0` guard rejects — contradicting the OpenAPI "defaults to the maximum when omitted". **Pre-existing systemic NSwag pattern**, identical to `FileSearchRequest.Limit`/`WorkspaceFileContextQueryHandler`; 10.5 faithfully mirrors the convention. Spine-wide fix: emit nullable `int?` for optional non-required numerics (preferred, keeps `minimum:1`), or relax the server guard to treat absent-or-zero as default — applied uniformly across the spine, not in 10.5.
 status: open
+decision: 2026-08-25 Generate nullable limits — Make non-required numeric request properties nullable spine-wide, regenerate clients, and preserve minimum validation for supplied values.
 
 ### DW-281: `GetFolderIndexingStatus`'s generated `parity-contract.yaml` row lists `adapter_expectations: [cli, mcp, rest, sdk]` while the op's `transportParity` is `[rest, sdk, mcp]` and the CLI deliberately…
 

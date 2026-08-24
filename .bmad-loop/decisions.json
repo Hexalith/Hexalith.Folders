@@ -17,6 +17,15 @@
     "label": "Wire in Story 12.1",
     "resolution": ""
   },
+  "DW-280": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Make non-required numeric request properties nullable spine-wide, regenerate clients, and preserve minimum validation for supplied values.",
+    "key": "1",
+    "label": "Generate nullable limits",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
