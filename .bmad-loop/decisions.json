@@ -34,5 +34,14 @@
     "key": "1",
     "label": "Add sanitized sources",
     "resolution": ""
+  },
+  "DW-57": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add an additive granular action-grants field while preserving existing coarse levels, then regenerate clients.",
+    "key": "1",
+    "label": "Add action grants",
+    "resolution": ""
   }
 }

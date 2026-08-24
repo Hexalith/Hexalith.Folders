@@ -412,6 +412,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-5-inspect-
 location: src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs
 reason: AC #5/#6 action-token granularity is collapsed to `FolderPermissionLevel` (`read/write/administer`) [`src/Hexalith.Folders/Authorization/EffectivePermissionsActionCatalog.cs`] — deferred, same Contract Spine constraint as above. Per-action revoke precedence is still computed correctly inside `Compute` (revokes win over grants per `(principal, action)` tuple); the response shape does not expose the per-action distinction. Granular exposure requires a contract-workflow story.
 status: open
+decision: 2026-08-25 Add action grants — Add an additive granular action-grants field while preserving existing coarse levels, then regenerate clients.
 
 ### DW-58: `InMemoryEffectivePermissionsReadModel` key scope is `(managedTenantId, folderId)` only
 
