@@ -25,10 +25,10 @@ $runnerMethods = @(
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocExists',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocNamesItsSourceAuthorities',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.PrdAndEpicsNfrInventoriesAlignOneForOne',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.TraceabilityTableHasSeventyRowsMatchingPrdHashes',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.TraceabilityTableHasSeventyThreeRowsMatchingPrdHashes',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.TraceabilityTableRowsCarryCategoryStatusAndConcreteEvidence',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ReferencePendingRowsAreOwnedAndSurfaceKnownGaps',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NineCategoryRollupCoversAllSeventyNfrs',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NineCategoryRollupCoversAllSeventyThreeNfrs',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.BddRequiredEvidenceClassesArePresent',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocStaysMetadataOnlyWithOperatorBoilerplate',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.GovernanceEvidenceReferencePendingCriteriaStaySurfaced',
@@ -69,16 +69,20 @@ function Write-NfrTraceabilityReport {
     # gate can reject an unowned gap. These mirror the reference-pending rows in
     # docs/exit-criteria/nfr-traceability.md and the conformance test asserts the two stay in sync.
     $releaseBlockingGaps = @(
-        [ordered]@{ nfr = 'NFR18'; criterion = 'C7'; owner = 'Architecture'; consuming_story = '4-3'; gap = 'lock-revalidation-budget-and-mid-task-revocation-evidence' },
-        [ordered]@{ nfr = 'NFR26'; criterion = 'C4'; owner = 'PM'; consuming_story = '4-8'; gap = 'pm-approval-of-context-query-input-bounds' },
-        [ordered]@{ nfr = 'NFR28'; criterion = 'C4'; owner = 'PM'; consuming_story = '4-8'; gap = 'pm-approval-of-large-file-and-payload-limits' },
-        [ordered]@{ nfr = 'NFR44'; criterion = 'C12'; owner = 'Provider Readiness'; consuming_story = '7-8'; gap = 'live-provider-drift-requires-credentials-absent-in-ci' },
-        [ordered]@{ nfr = 'NFR54'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'live-alert-delivery-tooling-deferred' },
-        [ordered]@{ nfr = 'NFR55'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'backup-restore-tooling-and-recovery-drill-evidence-deferred' },
-        [ordered]@{ nfr = 'NFR57'; criterion = 'C3'; owner = 'Legal + PM'; consuming_story = '7-11'; gap = 'legal-pm-approval-of-retention-durations' }
-        # NFR62/63/65/66 (operations-console accessibility) were release-blocking manual gaps; Story 8.4 wired the
+        [ordered]@{ nfr = 'NFR7'; criterion = 'C7'; owner = 'Architecture'; consuming_story = '4-3'; gap = 'authorization-revalidation-budget-and-mid-task-revocation-evidence' },
+        [ordered]@{ nfr = 'NFR8'; criterion = 'C9'; owner = 'Security / Projections'; consuming_story = '6-12'; gap = 'tenant-confidential-write-time-correlation-token-projection-evidence' },
+        [ordered]@{ nfr = 'NFR21'; criterion = 'C7'; owner = 'Architecture'; consuming_story = '4-3'; gap = 'lock-renewal-and-authorization-revalidation-evidence' },
+        [ordered]@{ nfr = 'NFR23'; criterion = ''; owner = 'Provider / Delivery'; consuming_story = '12-4'; gap = 'provider-confirmed-durable-commit-evidence' },
+        [ordered]@{ nfr = 'NFR30'; criterion = 'C4'; owner = 'Contracts / Delivery'; consuming_story = '4-8'; gap = 'downstream-context-query-bound-enforcement-evidence' },
+        [ordered]@{ nfr = 'NFR33'; criterion = 'C4'; owner = 'Contracts / Delivery'; consuming_story = '4-8'; gap = 'downstream-large-file-and-payload-limit-evidence' },
+        [ordered]@{ nfr = 'NFR49'; criterion = 'C12'; owner = 'Provider Readiness'; consuming_story = '7-8'; gap = 'live-provider-drift-requires-credentials-absent-in-ci' },
+        [ordered]@{ nfr = 'NFR54'; criterion = 'C9'; owner = 'Security / Projections'; consuming_story = '6-12'; gap = 'confidential-write-time-correlation-token-projection-evidence' },
+        [ordered]@{ nfr = 'NFR58'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'live-alert-delivery-tooling-deferred' },
+        [ordered]@{ nfr = 'NFR59'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'backup-restore-tooling-and-recovery-drill-evidence-deferred' },
+        [ordered]@{ nfr = 'NFR60'; criterion = 'C3'; owner = 'Tech Lead / Delivery'; consuming_story = '7-11'; gap = 'downstream-retention-implementation-and-conformance-evidence' }
+        # NFR65/66/68/69 (operations-console accessibility) were release-blocking manual gaps; Story 8.4 wired the
         # automated axe / WCAG 2.2 AA CI gate (accessibility-gates), so they move out of release-blocking gaps —
-        # NFR63/65/66 to covered, NFR62 to release-validation (manual screen-reader review remains). Removing them
+        # NFR66/68/69 to covered, NFR65 to release-validation (manual screen-reader review remains). Removing them
         # here keeps the report's release_blocking_gaps in sync with the docs/exit-criteria/nfr-traceability.md
         # reference-pending rows, which the conformance test cross-checks.
     )
@@ -91,7 +95,7 @@ function Write-NfrTraceabilityReport {
         report_path = '_bmad-output/gates/nfr-traceability/latest.json'
         source_commit = Get-SourceCommit
         test_project = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        nfr_total = 70
+        nfr_total = 73
         category_total = 9
         canonical_inputs = @(
             '_bmad-output/planning-artifacts/prd.md',

@@ -1,11 +1,11 @@
 ---
 baseline_commit: 40cc5e1
-status: in-progress
+status: done
 ---
 
 # Story 10.6: Replace the fail-closed content materializer with a metadata-derived materializer under C4/C9
 
-Status: in-progress
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -193,6 +193,7 @@ GPT-5 Codex
 - 2026-07-15 resumed completion gate: restore/build passed 0W/0E; Workers 75/75, Folders 1377/1377, and Testing 61/61 passed; AppHost retained its configured 4/4 opt-in skips. Contracts again stopped at 281/283 on the same out-of-scope 73-versus-70 NFR inventory and NFR1 hash drift, so the Step 9 regression gate remains blocked and story status stays `in-progress`.
 - 2026-08-04 completion-gate audit: serialized restore with NuGet audit disabled passed after the exact broad restore stalled on package-feed calls; the full solution build passed 0W/0E, Workers 80/80, Folders 1432/1432, Testing 66/66, focused contract-spine/parity/Dapr-policy 32/32, and Server transport parity 10/10. Formatting was clean and AppHost retained its configured 4/4 opt-in skips. Full Contracts passed 282/284 and reproduced only the same out-of-scope 73-versus-70 NFR inventory and NFR1 hash drift, so the story remains `in-progress` pending correction and a clean full-suite rerun.
 - 2026-08-05 independent re-verification: source and File List unchanged since 2026-07-14 (`git status` clean at HEAD); re-audited the shared build host, which was heavily contended by ~120-140 concurrent `dotnet`/MSBuild processes from unrelated sessions, causing default-node-reuse restores/builds to hang indefinitely in `futex_wait_queue` with near-zero CPU (reproduced on both a solution-wide and a single-project restore). `MSBUILDDISABLENODEREUSE=1` unblocked every invocation. With that flag: `dotnet restore Hexalith.Folders.slnx --disable-parallel -p:NuGetAudit=false` completed clean; `dotnet build Hexalith.Folders.slnx --no-restore -p:NuGetAudit=false` produced 0 errors / 1 transient MSB3026 file-copy retry (self-resolved on retry, not a defect). Narrowed lanes: Workers.Tests 80/80, Folders.Tests 1432/1432, Testing.Tests 66/66 — all green and unchanged from the prior audit. `dotnet format Hexalith.Folders.slnx whitespace --verify-no-changes --no-restore --include src tests` (scoped to Folders-owned paths, excluding `references/*` submodule content) reported zero violations. AppHost.Tests reproduced its configured 4/4 opt-in skips (`HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION` unset). Full Contracts.Tests reproduced the identical 282/284 result: the only two failures are `NfrTraceabilityConformanceTests.PrdAndEpicsNfrInventoriesAlignOneForOne` (prd.md declares 73 NFR bullets vs. the traceability table's 70) and `.TraceabilityTableHasSeventyRowsMatchingPrdHashes` (NFR1 hash drift) — the same out-of-scope PRD/NFR-inventory drift recorded on 2026-07-15 and 2026-08-04, still unresolved and still outside Story 10.6's scope to fix. Conclusion: Story 10.6's own implementation, tests, and governance sync are complete and independently reproduced green; status stays `in-progress` solely pending the separate out-of-scope NFR-traceability correction and a clean full-suite rerun, exactly as previously recorded.
+- 2026-08-24 closure gate: the separately owned planning correction reconciled PRD/epics/traceability to 73 exact NFR rows, updated NFR1 to derived hash `1d924a03811d`, retained exact-cardinality and negative conformance controls, and surfaced the new clauses' owners. The focused NFR gate passed 16/16 and the complete Contracts.Tests project passed 284/284. No Story 10.6 runtime or wire artifact changed; AC11 is satisfied and status moves to `done`.
 
 ### Completion Notes List
 
@@ -207,8 +208,12 @@ GPT-5 Codex
 ### File List
 
 - `_bmad-output/gates/baseline-ci/latest.json`
+- `_bmad-output/gates/nfr-traceability/latest.json`
 - `_bmad-output/implementation-artifacts/10-6-replace-fail-closed-content-materializer-with-metadata-derived.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/planning-artifacts/planning-story-manifest.yaml`
+- `_bmad-output/planning-artifacts/sprint-change-proposal-2026-08-24.md`
+- `docs/exit-criteria/nfr-traceability.md`
 - `src/Hexalith.Folders.Workers/SemanticIndexing/MetadataDerivedSemanticIndexingContentMaterializer.cs`
 - `tests/Hexalith.Folders.Workers.Tests/MetadataDerivedSemanticIndexingContentMaterializerTests.cs`
 - `src/Hexalith.Folders.Workers/FoldersWorkersModule.cs`
@@ -216,6 +221,8 @@ GPT-5 Codex
 - `src/Hexalith.Folders/Projections/SemanticIndexing/FoldersSemanticIndexingAttributes.cs`
 - `src/Hexalith.Folders.Workers/SemanticIndexing/ISemanticIndexingContentMaterializer.cs`
 - `tests/Hexalith.Folders.Workers.Tests/SemanticIndexingProcessManagerTests.cs`
+- `tests/Hexalith.Folders.Contracts.Tests/Deployment/NfrTraceabilityConformanceTests.cs`
+- `tests/tools/run-nfr-traceability-gates.ps1`
 
 ## Change Log
 
@@ -224,6 +231,7 @@ GPT-5 Codex
 | 2026-07-14 | Implemented and verified metadata-derived semantic-index content materialization; retained the fail-closed fallback; synchronized Epic 10 governance. | Administrator (via dev-story) |
 | 2026-08-05 | Independently re-verified against the spec (no code changes needed — implementation already matched every AC): full restore/build 0E, Workers 80/80, Folders 1432/1432, Testing 66/66, scoped format clean, AppHost 4/4 opt-in skips; Contracts 282/284 reproduced the same out-of-scope NFR-inventory drift. Status remains `in-progress` pending that unrelated correction. | Administrator (via agent audit) |
 | 2026-08-05 | bmad-build review round (3 parallel review layers over the story-scoped diff). Two patches applied: renamed the misleading `MaterializeAsyncShouldSkipWhenMediaTypeIsUnavailable` test to `MaterializeAsyncShouldReportUnavailableWhenMediaTypeIsMissing` (it asserts `Unavailable`, which the process manager maps to bridge `Failed`, not `Skipped`), and recorded the design-fork choice the Dev Notes required. One defer logged to `deferred-work.md` (archive re-send interaction with the new complete attribute set is asserted in prose but untested; archive egress is out of scope #3). Reviewer claims about parameterized media types and negative byte lengths were traced to source and rejected as unreachable — upstream Gate 5 applies the identical allow-list to the same value, and `LengthBytes` never reaches the wire. Workers re-verified 80/80. The blocking PRD/NFR-traceability drift was promoted from this story's debug log into an owned `sprint-status.yaml` action item. | Administrator (via bmad-build review) |
+| 2026-08-24 | Reconciled the separately owned 73-row planning/NFR traceability bridge, passed the focused gate 16/16 and complete Contracts.Tests 284/284, and closed AC11 without changing Story 10.6 implementation or wire behavior. | Administrator (via bmad-correct-course) |
 
 ## Suggested Review Order
 

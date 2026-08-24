@@ -14,13 +14,15 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 /// <summary>
 /// Static conformance gate for the Story 7.16 NFR traceability bridge. Every inventory is re-derived from the
 /// authoritative source — the PRD <c>## Non-Functional Requirements</c> bullets, the <c>epics.md</c> numbered
-/// <c>NFR1</c>..<c>NFR70</c> list, the <c>C0-C13</c> governance evidence, the cited gate / exit-criteria /
+/// <c>NFR1</c>..<c>NFR73</c> list, the <c>C0-C13</c> governance evidence, the cited gate / exit-criteria /
 /// release-validation artifacts, and the release-package wiring — and asserted equal to the published
 /// <c>docs/exit-criteria/nfr-traceability.md</c> table with exact cardinality, so the bridge cannot silently
 /// drift. All assertions route through the same parsers and scanners the negative controls exercise.
 /// </summary>
 public sealed partial class NfrTraceabilityConformanceTests
 {
+    private const int NfrTotal = 73;
+
     private const string PrdPath = "_bmad-output/planning-artifacts/prd.md";
     private const string EpicsPath = "_bmad-output/planning-artifacts/epics.md";
     private const string GovernancePath = "docs/exit-criteria/c0-c13-governance-evidence.yaml";
@@ -52,15 +54,15 @@ public sealed partial class NfrTraceabilityConformanceTests
 
     private static readonly (int Lo, int Hi, string Name)[] Categories =
     [
-        (1, 10, "Security & Tenant Isolation"),
-        (11, 20, "Reliability, Idempotency & Failure Visibility"),
-        (21, 31, "Performance & Query Bounds"),
-        (32, 36, "Scalability & Capacity"),
-        (37, 46, "Integration & Contract Compatibility"),
-        (47, 55, "Observability, Auditability & Replay"),
-        (56, 61, "Data Retention & Cleanup"),
-        (62, 66, "Operations-Console Accessibility"),
-        (67, 70, "Verification Expectations"),
+        (1, 12, "Security & Tenant Isolation"),
+        (13, 24, "Reliability, Idempotency & Failure Visibility"),
+        (25, 36, "Performance & Query Bounds"),
+        (37, 41, "Scalability & Capacity"),
+        (42, 51, "Integration & Contract Compatibility"),
+        (52, 59, "Observability, Auditability & Replay"),
+        (60, 64, "Data Retention & Cleanup"),
+        (65, 69, "Operations-Console Accessibility"),
+        (70, 73, "Verification Expectations"),
     ];
 
     private static readonly string[] BddEvidenceClasses =
@@ -129,30 +131,30 @@ public sealed partial class NfrTraceabilityConformanceTests
     public void PrdAndEpicsNfrInventoriesAlignOneForOne()
     {
         List<string> prd = ParsePrdNfrBullets();
-        prd.Count.ShouldBe(70, "the PRD Non-Functional Requirements section must declare exactly 70 bullets.");
+        prd.Count.ShouldBe(NfrTotal, "the PRD Non-Functional Requirements section must declare exactly 73 bullets.");
 
         Dictionary<int, string> epics = ParseEpicsNfrInventory();
-        epics.Keys.OrderBy(static n => n).ShouldBe(Enumerable.Range(1, 70), "epics.md must declare NFR1..NFR70.");
+        epics.Keys.OrderBy(static n => n).ShouldBe(Enumerable.Range(1, NfrTotal), "epics.md must declare NFR1..NFR73.");
 
-        for (int n = 1; n <= 70; n++)
+        for (int n = 1; n <= NfrTotal; n++)
         {
             epics[n].ShouldBe(prd[n - 1], $"PRD bullet {n} and epics.md NFR{n} must be identical (one-for-one).");
         }
     }
 
     [Fact]
-    public void TraceabilityTableHasSeventyRowsMatchingPrdHashes()
+    public void TraceabilityTableHasSeventyThreeRowsMatchingPrdHashes()
     {
         List<TraceRow> rows = ParseTraceRows();
-        rows.Count.ShouldBe(70, "the traceability table must contain exactly 70 NFR rows.");
+        rows.Count.ShouldBe(NfrTotal, "the traceability table must contain exactly 73 NFR rows.");
 
-        AssertRowIdsAreNfr1To70(rows.Select(static r => r.Id).ToList());
+        AssertRowIdsAreNfr1To73(rows.Select(static r => r.Id).ToList());
 
         List<string> prd = ParsePrdNfrBullets();
-        for (int n = 1; n <= 70; n++)
+        for (int n = 1; n <= NfrTotal; n++)
         {
             TraceRow row = rows[n - 1];
-            row.Id.ShouldBe($"NFR{n}", "rows must be ordered NFR1..NFR70.");
+            row.Id.ShouldBe($"NFR{n}", "rows must be ordered NFR1..NFR73.");
             TwelveHexHash().IsMatch(row.Hash).ShouldBeTrue($"NFR{n} hash must be 12 lowercase hex chars.");
             row.Hash.ShouldBe(StableHash(prd[n - 1]), $"NFR{n} PRD bullet hash must equal the derived hash from prd.md.");
         }
@@ -164,7 +166,7 @@ public sealed partial class NfrTraceabilityConformanceTests
         List<TraceRow> rows = ParseTraceRows();
         HashSet<string> knownCriteria = ParseGovernanceCriteria().Keys.ToHashSet(StringComparer.Ordinal);
 
-        for (int n = 1; n <= 70; n++)
+        for (int n = 1; n <= NfrTotal; n++)
         {
             TraceRow row = rows[n - 1];
             row.Category.ShouldBe(CategoryForIndex(n), $"NFR{n} must be in its PRD/architecture category.");
@@ -211,7 +213,7 @@ public sealed partial class NfrTraceabilityConformanceTests
     }
 
     [Fact]
-    public void NineCategoryRollupCoversAllSeventyNfrs()
+    public void NineCategoryRollupCoversAllSeventyThreeNfrs()
     {
         List<string[]> rollup = ParsePipeRows(ExtractMarkerBlock(ReadText(DocPath), CategoryMarker))
             .Where(static cells => cells.Length == 4 && cells[0] != "Category" && !IsSeparator(cells))
@@ -236,7 +238,7 @@ public sealed partial class NfrTraceabilityConformanceTests
                 .ShouldBeTrue($"category '{cells[0]}' must cite at least one existing evidence path.");
         }
 
-        total.ShouldBe(70, "the nine category counts must sum to the full 70-NFR inventory.");
+        total.ShouldBe(NfrTotal, "the nine category counts must sum to the full 73-NFR inventory.");
     }
 
     [Fact]
@@ -442,7 +444,7 @@ public sealed partial class NfrTraceabilityConformanceTests
         RequiredString(root, "gate").ShouldBe("nfr-traceability");
         RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
         RequiredString(root, "report_path").ShouldBe(ReportPath);
-        root.GetProperty("nfr_total").GetInt32().ShouldBe(70);
+        root.GetProperty("nfr_total").GetInt32().ShouldBe(NfrTotal);
         root.GetProperty("category_total").GetInt32().ShouldBe(9);
         AssertMetadataOnlyJson(root);
 
@@ -499,11 +501,11 @@ public sealed partial class NfrTraceabilityConformanceTests
         Should.Throw<ShouldAssertException>(() => tamperedHashRow.Hash.ShouldBe(StableHash(prd[0])));
 
         // 3. A missing NFR row and a duplicate row must each fail the inventory check, through the real checker.
-        List<string> ids = Enumerable.Range(1, 70).Select(static n => $"NFR{n}").ToList();
+        List<string> ids = Enumerable.Range(1, NfrTotal).Select(static n => $"NFR{n}").ToList();
         List<string> missingRow = ids.Where(static id => id != "NFR42").ToList();
-        Should.Throw<ShouldAssertException>(() => AssertRowIdsAreNfr1To70(missingRow));
+        Should.Throw<ShouldAssertException>(() => AssertRowIdsAreNfr1To73(missingRow));
         List<string> duplicateRow = new(ids) { "NFR1" };
-        Should.Throw<ShouldAssertException>(() => AssertRowIdsAreNfr1To70(duplicateRow));
+        Should.Throw<ShouldAssertException>(() => AssertRowIdsAreNfr1To73(duplicateRow));
 
         // 4. An unmapped row (no concrete evidence) must fail the same concrete-evidence checker.
         TraceRow unmapped = new("NFR1", "Security & Tenant Isolation", "deadbeefdead", "covered",
@@ -566,9 +568,9 @@ public sealed partial class NfrTraceabilityConformanceTests
     private static Dictionary<int, string> ParseEpicsNfrInventory()
     {
         string doc = ReadText(EpicsPath);
-        int start = doc.IndexOf("### NonFunctional Requirements", StringComparison.Ordinal);
-        start.ShouldBeGreaterThanOrEqualTo(0, "epics.md must declare a NonFunctional Requirements section.");
-        string rest = doc[(start + "### NonFunctional Requirements".Length)..];
+        int start = doc.IndexOf("### Non-Functional Requirements", StringComparison.Ordinal);
+        start.ShouldBeGreaterThanOrEqualTo(0, "epics.md must declare a Non-Functional Requirements section.");
+        string rest = doc[(start + "### Non-Functional Requirements".Length)..];
         Match next = NextLevelThreeHeader().Match(rest);
         string block = next.Success ? rest[..next.Index] : rest;
 
@@ -671,12 +673,12 @@ public sealed partial class NfrTraceabilityConformanceTests
             .ShouldBeTrue($"{row.Id} reference-pending row must carry release-blocking semantics.");
     }
 
-    private static void AssertRowIdsAreNfr1To70(List<string> ids)
+    private static void AssertRowIdsAreNfr1To73(List<string> ids)
     {
-        ids.Count.ShouldBe(70, "the table must declare exactly 70 NFR rows.");
-        ids.Distinct(StringComparer.Ordinal).Count().ShouldBe(70, "no NFR row may be duplicated.");
+        ids.Count.ShouldBe(NfrTotal, "the table must declare exactly 73 NFR rows.");
+        ids.Distinct(StringComparer.Ordinal).Count().ShouldBe(NfrTotal, "no NFR row may be duplicated.");
         ids.OrderBy(static id => int.Parse(id[3..], System.Globalization.CultureInfo.InvariantCulture))
-            .ShouldBe(Enumerable.Range(1, 70).Select(static n => $"NFR{n}"), "rows must cover NFR1..NFR70.");
+            .ShouldBe(Enumerable.Range(1, NfrTotal).Select(static n => $"NFR{n}"), "rows must cover NFR1..NFR73.");
     }
 
     private static void AssertDocExists(string relativePath)

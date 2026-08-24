@@ -36,6 +36,7 @@
 
 generated: 2026-05-12T07:11:18+02:00
 last_updated: '2026-07-19 (Story 12.6 implementation started -> in-progress. Prior: 2026-07-19 (Story 3.10 implementation started -> in-progress. Prior: 2026-07-19 (Story 3.10 contexted via bmad-create-story -> ready-for-dev; authoritative GitHub provisioning/binding/ref split, post-authorization opaque-target resolution, duplicate/alias equivalence, no-blind-retry unknown outcomes, OQ4 release gate, and hermetic Octokit transport evidence pinned. Prior: 2026-07-15 (Story 10.8 contexted via bmad-create-story -> ready-for-dev; metadata-only FR58 authority, hard prerequisite gates, no-seed DCP proof, authorization/hydration/redaction/replay/parity/OQ5 evidence pinned. Prior: 2026-07-14 (Implementation-readiness structural correction approved: Epics 3-6 reopened, production closure and split stories registered, Epic 10 projection ownership moved from 11.10 to 10.7, and Major-scope planning handoff recorded. Prior: 2026-07-14 (Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green))))))'
+closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -290,7 +291,7 @@ development_status:
   # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
   10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
   10-5-expose-authorized-folders-query-facade-over-memories: done
-  10-6-replace-fail-closed-content-materializer-with-metadata-derived: in-progress
+  10-6-replace-fail-closed-content-materializer-with-metadata-derived: done
   10-7-eventstore-backed-search-bridge-and-deployed-server-registration: backlog
   10-8-real-produce-index-authorize-hydrate-redact-search-round-trip: ready-for-dev
   10-9-authorized-body-content-materialization-c9-gated: backlog
@@ -417,14 +418,14 @@ action_items:
     # remaining reason 10.6 cannot satisfy AC11 and close. It has now silently re-blocked the
     # story across four sessions (2026-07-15 twice, 2026-08-04, 2026-08-05), each time reproducing
     # the identical two failures, so it is promoted out of 10.6's debug log into an owned item.
-    # Reproduce: dotnet test tests/Hexalith.Folders.Contracts.Tests -> 282/284, failing
-    # NfrTraceabilityConformanceTests.PrdAndEpicsNfrInventoriesAlignOneForOne and
-    # .TraceabilityTableHasSeventyRowsMatchingPrdHashes. Introduced by PRD reconciliation da3d111.
-    # Needs a PM call on what the 3 added NFR bullets are before the table/hashes can be relocked.
-    action: "Reconcile the PRD/NFR traceability drift: prd.md now declares 73 NFR bullets while NfrTraceabilityConformanceTests and the traceability inventory stay locked to 70, plus an NFR1 hash mismatch. Unblocks Story 10.6 AC11 (Contracts.Tests 282/284 -> green)."
+    # Resolved 2026-08-24 by sprint-change-proposal-2026-08-24.md. The net +3 was five independently
+    # owned requirements minus two consolidations, not three tail bullets. PRD and epics remain unchanged
+    # at 73; the Story 7.16 table/tests/gate/report now relock all 73 current hashes and owned evidence gaps.
+    # Verification: focused NFR gate 16/16; complete Contracts.Tests 284/284.
+    action: "Reconciled the PRD/NFR traceability bridge to the authoritative 73-row PRD/epics inventory, including current hashes, category ranges, ownership, and exact-cardinality conformance. Story 10.6 AC11 is green."
     owner: "John / Murat"
     priority: high
-    status: open
+    status: done
   - epic: 10
     # Resolved 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-memories-facade-dapr-egress):
     # "route through the Dapr sidecar invoke" branch taken (make the enforcement real, not weaken the claim).

@@ -4,9 +4,9 @@
   "exit_code": 0,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
-  "source_commit": "08cc1ff5fd98df771099cbf52420a49d3ab24eb5",
+  "source_commit": "154215c60438a5dae14f660609f7f181c818091f",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-  "nfr_total": 70,
+  "nfr_total": 73,
   "category_total": 9,
   "canonical_inputs": [
     "_bmad-output/planning-artifacts/prd.md",
@@ -31,28 +31,49 @@
   ],
   "release_blocking_gaps": [
     {
-      "nfr": "NFR18",
+      "nfr": "NFR7",
       "criterion": "C7",
       "owner": "Architecture",
       "consuming_story": "4-3",
-      "gap": "lock-revalidation-budget-and-mid-task-revocation-evidence"
+      "gap": "authorization-revalidation-budget-and-mid-task-revocation-evidence"
     },
     {
-      "nfr": "NFR26",
+      "nfr": "NFR8",
+      "criterion": "C9",
+      "owner": "Security / Projections",
+      "consuming_story": "6-12",
+      "gap": "tenant-confidential-write-time-correlation-token-projection-evidence"
+    },
+    {
+      "nfr": "NFR21",
+      "criterion": "C7",
+      "owner": "Architecture",
+      "consuming_story": "4-3",
+      "gap": "lock-renewal-and-authorization-revalidation-evidence"
+    },
+    {
+      "nfr": "NFR23",
+      "criterion": "",
+      "owner": "Provider / Delivery",
+      "consuming_story": "12-4",
+      "gap": "provider-confirmed-durable-commit-evidence"
+    },
+    {
+      "nfr": "NFR30",
       "criterion": "C4",
-      "owner": "PM",
+      "owner": "Contracts / Delivery",
       "consuming_story": "4-8",
-      "gap": "pm-approval-of-context-query-input-bounds"
+      "gap": "downstream-context-query-bound-enforcement-evidence"
     },
     {
-      "nfr": "NFR28",
+      "nfr": "NFR33",
       "criterion": "C4",
-      "owner": "PM",
+      "owner": "Contracts / Delivery",
       "consuming_story": "4-8",
-      "gap": "pm-approval-of-large-file-and-payload-limits"
+      "gap": "downstream-large-file-and-payload-limit-evidence"
     },
     {
-      "nfr": "NFR44",
+      "nfr": "NFR49",
       "criterion": "C12",
       "owner": "Provider Readiness",
       "consuming_story": "7-8",
@@ -60,24 +81,31 @@
     },
     {
       "nfr": "NFR54",
+      "criterion": "C9",
+      "owner": "Security / Projections",
+      "consuming_story": "6-12",
+      "gap": "confidential-write-time-correlation-token-projection-evidence"
+    },
+    {
+      "nfr": "NFR58",
       "criterion": "",
       "owner": "Operations Runbook (Story 7.17)",
       "consuming_story": "7-17",
       "gap": "live-alert-delivery-tooling-deferred"
     },
     {
-      "nfr": "NFR55",
+      "nfr": "NFR59",
       "criterion": "",
       "owner": "Operations Runbook (Story 7.17)",
       "consuming_story": "7-17",
       "gap": "backup-restore-tooling-and-recovery-drill-evidence-deferred"
     },
     {
-      "nfr": "NFR57",
+      "nfr": "NFR60",
       "criterion": "C3",
-      "owner": "Legal + PM",
+      "owner": "Tech Lead / Delivery",
       "consuming_story": "7-11",
-      "gap": "legal-pm-approval-of-retention-durations"
+      "gap": "downstream-retention-implementation-and-conformance-evidence"
     }
   ]
 }
