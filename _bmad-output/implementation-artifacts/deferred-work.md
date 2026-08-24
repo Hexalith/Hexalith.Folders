@@ -182,7 +182,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: FolderArchiveAclEvidence
 reason: `FolderArchiveAclEvidence` is an unsigned value object — defense relies on trustworthy upstream `Allowed(...)` callers. Deferred — architectural concern, addresses with evidence-signing or capability-token redesign beyond Story 2.8.
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Document the trust boundary and treat evidence as an internal value inside the trusted server process.
+decision: 2026-08-25 Accept in-process boundary — Document the trust boundary and treat evidence as an internal value inside the trusted server process.
 
 ### DW-27: `FolderState` six adjacent same-typed nullable-string parameters (silent-swap risk on positional construction)
 
