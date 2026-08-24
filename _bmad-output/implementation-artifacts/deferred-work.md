@@ -394,7 +394,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:107-119
 reason: Lifecycle 200 response does not echo `taskId` body field even when `X-Hexalith-Task-Id` is read [`src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:107-119`] — deferred, requires contract update to declare `taskId` in `FolderLifecycleStatus`.
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Document the response header as the canonical transport-level task correlation.
+decision: 2026-08-25 Keep response header — Document the response header as the canonical transport-level task correlation.
 
 ### DW-56: AC #9 principal-source classes are not surfaced in the response
 
