@@ -615,7 +615,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle round 3 (2026-05-17)"), 2026-08-24
 location: tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass
 reason: `read_consistency_class` enum mixes underscore (`not_applicable`) and hyphen (`eventually-consistent`) forms [`tests/tools/parity-oracle-generator/Program.cs ReadConsistencyClass`, `tests/fixtures/parity-contract.schema.json`] — intentional schema choice that survived prior reviews; harmonize during a future schema-cleanup sweep.
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Accept not_applicable as the established exceptional sentinel and retain the existing wire vocabulary.
+decision: 2026-08-25 Keep vocabulary — Accept not_applicable as the established exceptional sentinel and retain the existing wire vocabulary.
 
 ### DW-86: `ReadConsistencyClass` extra-keys / scalar-form produces opaque "value not in enum" rather than `prerequisite_drift:`
 
