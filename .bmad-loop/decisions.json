@@ -79,5 +79,14 @@
     "key": "1",
     "label": "Emit both",
     "resolution": ""
+  },
+  "DW-94": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Move drift validation into the file-mutation helper entry point and throw a direct, actionable InvalidOperationException.",
+    "key": "1",
+    "label": "Validate on call",
+    "resolution": ""
   }
 }

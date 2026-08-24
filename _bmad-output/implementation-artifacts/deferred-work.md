@@ -683,6 +683,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-ns
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317
 reason: Static constructor failure mode is opaque (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:303-317`). Trade-off: fail-fast at type init vs. fail-on-first-call.
 status: open
+decision: 2026-08-25 Validate on call — Move drift validation into the file-mutation helper entry point and throw a direct, actionable InvalidOperationException.
 
 ### DW-95: `YamlNodeExtensions` mixed-visibility surface — public loader, internal extensions (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:158-167`).
 
