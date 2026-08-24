@@ -75,7 +75,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 4 (2026-05-20)"), 2026-08-24
 location: FolderCommandRejected
 reason: **(Round-3 echo)** `FolderCommandRejected` projection/event-routing boundary between `IFolderEvent` (projection-bound) and `IRejectionEvent` (gateway-bound) is implicit. Deferred — design-level documentation work; introduce an explicit marker if a future projection consumes `IRejectionEvent`.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/FolderCommandRejected.cs:9-18 documents the rejection's wire/log/audit role and implements only IRejectionEvent; src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs:5-8 restricts projection payloads to IFolderEvent.
 
 ### DW-12: Add gateway 5xx Theory cases for 503/505/507/599 in `ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable`
 
@@ -159,7 +160,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: FolderCommandRejected
 reason: `FolderCommandRejected` is a new `IRejectionEvent` type; the projection/event-routing boundary between `IFolderEvent` (projection-bound) and `IRejectionEvent` (gateway-bound) is implicit. Deferred — document the contract or introduce an explicit marker if a future projection consumes `IRejectionEvent`.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/FolderCommandRejected.cs:9-18 and src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs:5-8 establish an explicit rejection-versus-domain-event boundary, resolving the projection ambiguity.
 
 ### DW-24: Validator-version fingerprint skew — cross-deploy `IsSafeEvidenceIdentifier` changes can invalidate prior idempotency replay
 
@@ -201,7 +203,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: ArchiveFolder.PayloadTenantId
 reason: `ArchiveFolder.PayloadTenantId` with malformed segment matching the authoritative tenant — narrow edge case. Deferred — revisit if payload-tenant smuggling becomes a verified threat.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:62-70 validates and rejects reserved or invalid authoritative tenants before archive handling, including when a malformed payload tenant equals the authority.
 
 ### DW-30: `ArchiveFolderClientConformanceTests` parameter-order assertion is brittle to NSwag generator changes
 
@@ -229,7 +232,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: n/a
 reason: `FolderArchiveTenantGate(TimeProvider)` constructor never exercised by tests or production callers. Deferred — moot until the gate is wired.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:45-46 registers TimeProvider.System and FolderArchiveTenantGate; tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs:734-735,769-770 injects a fixed TimeProvider through the host and exercises the two-argument primary constructor.
 
 ### DW-34: No `CancellationToken` propagation through `FolderArchiveTenantGate.Handle` or `IFolderRepository` methods. Deferred — moot until the gate is wired; add async port at the same time.
 
@@ -320,7 +324,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:117-132
 reason: `FolderLifecycleProjectionState.Unknown` is handled by the switch's `_` arm, never matched by name [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:117-132`] — deferred, cosmetic.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:154-156 explicitly returns FolderLifecycleProjectionState.Unknown for the relevant state.
 
 ### DW-47: Test files use `ConfigureAwait(true)` while production handler uses `ConfigureAwait(false)` [`tests/Hexalith.Folders.Tests/Queries/Folders/*.cs`] — deferred, style inconsistency.
 
@@ -334,7 +339,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:43
 reason: `ActorSafeIdentifier: "actor_present"` magic string [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:43`] — deferred, extract to a named constant.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:16,56-61 extracts and uses ActorPresentIdentifier.
 
 ### DW-49: `AllowedOutcome` and `DeniedSafeOutcome` string constants in handler instead of an enum
 
@@ -523,7 +529,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:404
 reason: Removal of `--no-build` from generator-invoking tests adds an incremental MSBuild check per test [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:404`]. Accepted trade-off for the `obj/` lock race; `[Collection("ParityOracleGenerator")]` keeps it serial.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit 2ff62a7; tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:406 invokes dotnet run with --no-restore and --no-build.
 
 ### DW-76: Workflow lacks `concurrency:`, `timeout-minutes:`, and `workflow_dispatch:`
 
@@ -551,7 +558,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-14-wire-contract-spine-drift-and-generated-client-ci-gates (2026-05-17)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs:286-298
 reason: Per-file allow-list pattern in negative-scope test [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs:286-298`]. Allows only `contract-spine.yml`; Stories 1.15/1.16 will add more entries one at a time. Consider an expected-set assertion when 1.15 lands.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/TenantFolderProviderContractGroupTests.cs:353-366 asserts the complete expected set of five workflows.
 
 ### DW-80: `SafeCommentText` insufficient leak guard for diagnostic stream
 
@@ -628,7 +636,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generate-the-c13-parity-oracle (2026-05-17)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:283-290
 reason: Test-helper `LoadOperationIds` only recognizes lowercase canonical HTTP verbs (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:283-290`). Divergence from generator's case-insensitivity would underestimate inventory; harmless until contract authors use uppercase verbs.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:457-459 verifies that generated HTTP verbs are lowercased.
 
 ### DW-91: Control-character / BOM / surrogate handling asymmetric between `Escape` (value path) and `RejectControlCharacters` (operation-id + field-path)
 
@@ -677,7 +686,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:148-154
 reason: Empty-parameter-name corner case slips through `EnsureParameter` (`src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:148-154`). Fail-closed-at-compile is acceptable for impossible-from-current-spine input.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit b117e56; src/Hexalith.Folders.Client/Generation/Program.cs:198-213 rejects empty or mismatched normalized parameter names.
 
 ### DW-98: `NormalizeName` acronym handling produces non-obvious fail-closed diagnostics
 
@@ -698,7 +708,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:241-256
 reason: `Process.WaitForExit(10_000)` after `Kill(entireProcessTree)` return value ignored; Windows handle-release race on `Directory.Delete` (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:241-256`). Resolves together with the Round-3 deferred tempdir-cleanup race.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit b117e56; tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:308-331 terminates and drains the spawned process.
 
 ### DW-101: `LocateRepositoryRoot` fallback if `AppContext.BaseDirectory` is also empty (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:475-485`). Single-file-publish edge case.
 
@@ -775,7 +786,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:46
 reason: Generation subproject offline-build reliance (`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:46`) — `dotnet run --project Generation\Hexalith.Folders.Client.Generation.csproj` requires successful restore on every host build; fresh checkout without NuGet cache fails. Belongs to Story 1.14 (CI gates).
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit 1efdb19; .github/workflows/contract-spine.yml:31-39 restores before running build and contract gates.
 
 ### DW-112: Typed `ProblemDetails` companion folder placement
 
@@ -796,14 +808,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:398-400
 reason: Defensive validation for zero-document YAML (`src/Hexalith.Folders.Client/Generation/Program.cs:398-400`) — spine always has at least one document; `yaml.Documents[0]` is safe in practice.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit b117e56; src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs:14-25 rejects YAML streams containing zero documents.
 
 ### DW-115: Defensive validation for bare-filename `outputPath`
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 2 (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:27
 reason: Defensive validation for bare-filename `outputPath` (`src/Hexalith.Folders.Client/Generation/Program.cs:27`) — MSBuild target always provides absolute path; only triggers under direct CLI invocation with a bare filename.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Client/Generation/Program.cs:38 safely falls back to '.' when Path.GetDirectoryName(outputPath) is null.
 
 ### DW-116: Multi-level nested-path NRE risk (`src/Hexalith.Folders.Client/Generation/Program.cs:130`) — `Root?.A.B.C` is null-safe only on the first hop; revisit if spine adds 3+ level equivalence paths.
 
@@ -838,7 +852,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups (2026-05-14)"), 2026-08-24
 location: n/a
 reason: Resolved 2026-05-15 by Story 1.11 continuation: P-Schema-1 through P-Schema-9, P-Test-1, P-Test-3, P-Sweep-1, and D5 are closed in the OpenAPI contract, contract notes, and focused contract tests. Historical entries remain below for traceability.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit 8d339b8; tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs:548-650 covers the audit and operations-console contract group.
 
 ### DW-121: P-Schema-1: `DiagnosticBase` + `allOf` + `additionalProperties: false` JSON Schema gotcha
 
@@ -938,7 +953,8 @@ resolution: Closed by the Story 1.11 continuation in the OpenAPI contract, contr
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups (2026-05-14)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs:AuditOpsConsoleQueries_OmitIdempotencyAndDeclareReadConsistencySafeDenial
 reason: P-Test-2: `audit_access_denied` requirement is enforced only on `AuditOperationIds`, not on ops-console diagnostic operations that also declare it in canonical-error-categories. Per-op canonical-category audit needed before broadening. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs:AuditOpsConsoleQueries_OmitIdempotencyAndDeclareReadConsistencySafeDenial`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs:117-130 verifies the current operations-console category arrays, which intentionally omit audit_access_denied.
 
 ### DW-134: P-Test-3: Examples for `AuditTrailPage` / `OperationTimelinePage` cover only the single-result case
 
@@ -968,7 +984,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups (2026-05-14)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs
 reason: D2: `tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs` was edited outside the spec's `Allowed Files And Forbidden Work` list (the helper sits under `tests/Hexalith.Folders.Testing.Tests/`, not `tests/Hexalith.Folders.Contracts.Tests/` or `tests/tools/`). The edit is logically required for Story 1.11 to own the ops-console path family, so record as an explicit scope expansion in the story's Change Log rather than reverting. (`tests/Hexalith.Folders.Testing.Tests/Helpers/SpineContractAssertions.cs`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: _bmad-output/implementation-artifacts/1-11-author-audit-and-ops-console-query-contract-groups.md:394 records and accepts the SpineContractAssertions scope expansion.
 
 ### DW-138: D3: Synthetic example timestamps use today's wall-clock date
 
@@ -1025,7 +1042,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-10-author-commit-and-workspace-status-contract-groups (2026-05-14)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OperatorDispositionLabel
 reason: W5: Wire `OperatorDispositionLabel` (defined at yaml:5329) into the relevant status schemas as part of Story 6.3 — operations console rendering. AC6 names disposition labels but Story 1.10 has no consumer of them yet; deferring keeps the contract surface free of unused fields until 6.3 defines the actual rendering requirements. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OperatorDispositionLabel`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:9634-9635 and :9773-9786 defines the disposition values; src/Hexalith.Folders.UI/Services/DispositionLabelMapper.cs:21-60 maps them for the UI.
 
 ### DW-146: W1: No `412 Precondition Failed` response for `ChangeFile` concurrency control
 
@@ -1102,7 +1120,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:386-391
 reason: `GetOptionalScalar` uses `ShouldBeOfType<YamlScalarNode>()` and throws an opaque Shouldly error on a malformed mapping/sequence value. Defer until the validator is rewritten with structured diagnostics. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:386-391`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:502-506 now tests value is YamlScalarNode and returns null for non-scalars instead of throwing a Shouldly type assertion.
 
 ### DW-157: Synthetic IDs use `opaque_01HZY...` ULID-shaped values; these are correctly synthetic but visually indistinguishable from production ULIDs in logs/issue trackers
 
@@ -1144,21 +1163,24 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-7-author-tenant-folder-provider-and-repository-binding-contract-groups (2026-05-13)"), 2026-08-24
 location: CanonicalErrorCategory
 reason: `CanonicalErrorCategory` retains `provider_failure_known` without any operation referencing it. Pre-existing enum value from Story 1.5/1.6 foundation; downstream stories may consume it. Deferred — revisit when the next consumer is introduced or when the bounded vocabulary is finalised.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:2130 and :6062-6063 reference and exemplify provider_failure_known; it is no longer an unused category.
 
 ### DW-163: `PaginationMetadata` `pageCursor` is not bound to `filter` shape
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-7-author-tenant-folder-provider-and-repository-binding-contract-groups (2026-05-13)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:PaginationMetadata, MetadataFilter
 reason: `PaginationMetadata` `pageCursor` is not bound to `filter` shape — a cursor issued for one `filter` value can be reused with a different filter, leaking partial result counts across permission-visibility classes (timing oracle on hidden ACL entries). Pagination component is shared from Story 1.6; belongs to a cross-cutting pagination hardening story, not Story 1.7. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:PaginationMetadata, MetadataFilter`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/AuditEndpoints.cs:334-362 rejects every supplied filter with filter_not_yet_supported, so no filter-bound cursor can currently be issued or replayed under a different filter.
 
 ### DW-164: `previous-spine.yaml` not proven syntactically valid by a YAML library
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-3-seed-minimally-valid-normative-fixtures (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:ParseTopLevelYamlScalarMap
 reason: `previous-spine.yaml` not proven syntactically valid by a YAML library — `ParseTopLevelYamlScalarMap` checks top-level key presence only; a malformed YAML block (tab indent, duplicate key) would not be caught. Fix requires confirming a YAML library is centrally available; defer to whichever story first adds one. (`tests/Hexalith.Folders.Testing.Tests/FixtureContractTests.cs:ParseTopLevelYamlScalarMap`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:306-316 loads previous-spine.yaml through the YamlDotNet-backed LoadYamlMapping path.
 
 ### DW-165: `openapi` guard prefix too narrow — `ShouldNotContainKey("openapi")` catches only the exact key; `openapi_version` or `openapi:` nested under another key would bypass it
 
@@ -1256,7 +1278,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
 location: docs/exit-criteria/c6-transition-matrix-mapping.md
 reason: C6 transition-matrix mapping artifact maps every state to a single Story 4.1 consumer. If 4.1 splits, all rows will need re-pointing. Already captured in the artifact's `open questions` section. Defer to story 4.1 entry. (`docs/exit-criteria/c6-transition-matrix-mapping.md`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: _bmad-output/implementation-artifacts/sprint-status.yaml:114 records Story 4.1 done, while src/Hexalith.Folders/Aggregates/Folder/FolderStateTransitions.cs:1 contains the implemented C6 transition spine; the attribution is now accurate.
 
 ### DW-179: Error subtypes (`SafeAuthorizationDenial`, `ValidationFailure`, `IdempotencyConflict`, `ReconciliationRequired`) `allOf` `ProblemDetails` with no own discriminating properties…
 
@@ -1270,28 +1293,32 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary (2026-05-12)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:423-444
 reason: `OperatorDispositionLabel` and `SensitiveMetadataTier` schemas defined but never referenced in this story (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:423-444`). Foundation vocabulary; downstream operation groups must `$ref` them when they emit operator-disposition or sensitivity-tagged data.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:7469-7471 and :8006 reference SensitiveMetadataTier, while :9635 and :9786 reference OperatorDispositionLabel; neither component is orphaned.
 
 ### DW-181: `paths: {}` empty Paths Object may produce warnings under Spectral, openapi-typescript, or NSwag
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary (2026-05-12)"), 2026-08-24
 location: n/a
 reason: `paths: {}` empty Paths Object may produce warnings under Spectral, openapi-typescript, or NSwag. Owned by story 1.12 (NSwag SDK generation) and story 1.14 (drift gate); validate when those stories land.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:35-58 contains real paths, and tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineFoundationTests.cs:31-39 asserts the paths map is non-empty.
 
 ### DW-182: CLI exit code → CanonicalErrorCategory mapping table is not declared
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary (2026-05-12)"), 2026-08-24
 location: CliExitCode
 reason: CLI exit code → CanonicalErrorCategory mapping table is not declared. The 14-value `CliExitCode` enum exists but distinct categories like `response_limit_exceeded`, `query_timeout`, `redacted`, `client_configuration_error` have no exit-code assignment. Owned by story 1.13 (parity oracle).
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs:24-85 verifies canonical category-to-exit-code projection, with the public mapping also documented in docs/sdk/cli-reference.md:174.
 
 ### DW-183: No test asserts mutating-completeness fails when `idempotency_key_rule` or equivalence fields are missing (AC4's forward-looking statement). Owned by story 1.13/1.14 contract-completeness gate.
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary (2026-05-12)"), 2026-08-24
 location: n/a
 reason: No test asserts mutating-completeness fails when `idempotency_key_rule` or equivalence fields are missing (AC4's forward-looking statement). Owned by story 1.13/1.14 contract-completeness gate.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:167-178 covers missing mutation metadata; tests/tools/parity-oracle-generator/Program.cs:206-230 rejects both missing mutating metadata and metadata on non-mutating operations.
 
 ### DW-184: `oidc.local.invalid` may hang on corporate DNS sinkholes that override RFC 2606. Affects only consumers that pre-fetch metadata at codegen time. Environmental edge case outside MVP scope.
 
@@ -1305,7 +1332,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-contract-spine-foundation-and-shared-extension-vocabulary (2026-05-12)"), 2026-08-24
 location: docs/contract/contract-spine-foundation.md:13
 reason: `Idempotency-Key` parameter is declared `required: true` globally as a reusable component. Downstream authors must explicitly not `$ref` it on query operations. Foundation note in `docs/contract/contract-spine-foundation.md:13` already states this; deferred to per-operation author discipline + future contract-completeness gate.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/tools/parity-oracle-generator/Program.cs:206-230 enforces that mutating operations declare idempotency metadata and non-mutating operations do not, mechanizing the query discipline.
 
 ### DW-186: Simultaneous-cancellation TOCTOU in `Eventually.UntilAsync`: when both `timeoutSource.Token` and the caller's `cancellationToken` fire in the same quantum, the `when` filter evaluates `false` and…
 
@@ -1340,7 +1368,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold patch-set (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
 reason: `RecursiveSubmoduleViolationDetectionDoesNotTreatBroadNearbyWordingAsExemption` test outcome is correct, but the `proseLinesSeen == 1` early-break prevents line 2 from ever being evaluated — the test does not mechanically verify the claimed "broad wording is rejected" path. (`tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`)
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:482-497 constructs the unsafe command directly and asserts the violation; the faulty early-break search is gone.
 
 ### DW-191: A probe's own `OperationCanceledException` (from an unrelated internal token) may be misattributed as a timeout when `timeoutSource.IsCancellationRequested` is simultaneously true
 
@@ -1396,14 +1425,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold (2026-05-11)"), 2026-08-24
 location: src/Hexalith.Folders.*/*.csproj
 reason: `<InternalsVisibleTo>` entries in `src/Hexalith.Folders.*/*.csproj` point to test assemblies (`Hexalith.Folders.*.Tests`) that didn't exist in commit `eb52d15`; they exist at HEAD as later commits added them. No action needed unless a test project is later removed.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj:6 and the other InternalsVisibleTo declarations all map to existing test projects represented by tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:184-202.
 
 ### DW-199: `Directory.Build.props:23-26` declares MSBuild properties `HexalithEventStoreRoot` and `HexalithTenantsRoot` that nothing currently consumes
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold (2026-05-11)"), 2026-08-24
 location: Directory.Build.props:23-26
 reason: `Directory.Build.props:23-26` declares MSBuild properties `HexalithEventStoreRoot` and `HexalithTenantsRoot` that nothing currently consumes. Likely placeholders for future-story consumption (e.g., per-project file lists, NuGet feed switching). Revisit when a downstream story imports them.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Directory.Build.props:23-27 derives the shared *FromSource switches, and consumer projects such as src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj use the corresponding source roots and conditions.
 
 ### DW-200: Predev preflight gate `result: "fail"` recorded in `predev-preflight-2026-05-10T200403Z.json` and latest pointer due to a dirty working tree (sprint-status + story 1-6 staged)
 
@@ -1417,49 +1448,56 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold (2026-05-11)"), 2026-08-24
 location: .gitmodules
 reason: `.gitmodules` declares 5 root submodules including `Hexalith.Memories`, but `Directory.Build.props` only detects `Hexalith.EventStore` and `Hexalith.Tenants`. Add a `HexalithMemoriesRoot` detector when a downstream story first references Memories.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Directory.Build.props:4-7 detects EventStore, Tenants, Memories, and FrontComposer roots; :25 specifically derives HexalithMemoriesFromSource from the detected Memories project.
 
 ### DW-202: No `Directory.Build.targets` adapted from `Hexalith.Tenants`. Acceptable deviation today; revisit when stories require SourceLink wiring or pack-time MSBuild logic.
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold (2026-05-11)"), 2026-08-24
 location: Directory.Build.targets
 reason: No `Directory.Build.targets` adapted from `Hexalith.Tenants`. Acceptable deviation today; revisit when stories require SourceLink wiring or pack-time MSBuild logic.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Directory.Build.targets:1-43 now supplies the root container/build targets that the deferred entry reported missing.
 
 ### DW-203: Do not promote Hexalith.Memories semantic indexing or RAG retrieval into MVP unless the PRD is explicitly updated
 
 origin: migrated from legacy ledger ("Deferred from: correct-course Memories and FrontComposer research alignment (2026-05-11)"), 2026-08-24
 location: n/a
 reason: Do not promote Hexalith.Memories semantic indexing or RAG retrieval into MVP unless the PRD is explicitly updated. Current approved course correction keeps Memories as an architecture-guided extension path.
-status: open
+status: done 2026-08-24
+resolution: already resolved: _bmad-output/planning-artifacts/prd.md:656-672 authorizes metadata-token recall and indexing status in MVP, while :687-702 explicitly excludes indexed body recall; FR58 at :832-836 matches that boundary.
 
 ### DW-204: Add a worker-owned Memories semantic-indexing integration story
 
 origin: migrated from legacy ledger ("Deferred from: correct-course Memories and FrontComposer research alignment (2026-05-11)"), 2026-08-24
 location: n/a
 reason: When a downstream story first implements Memories integration, add a dedicated story or story split for worker-owned semantic indexing:; worker-side `IFolderSemanticIndexingClient` port,; optional `Hexalith.Memories.Client.Rest` / `Hexalith.Memories.Contracts` dependency only from `Hexalith.Folders.Workers`,; Folders-owned indexing bridge projection for `file version -> Memories workflow/memory unit/status`,; stable source URI/idempotency metadata,; explicit skipped/too-large/binary/excluded statuses,; authorized RAG query facade that applies tenant access, folder ACL, path policy, sensitivity classification, and C4 limits before calling Memories.
-status: open
+status: done 2026-08-24
+resolution: already resolved: _bmad-output/implementation-artifacts/sprint-status.yaml:270 onward marks Stories 10.1-10.6 done, and src/Hexalith.Folders.Workers/SemanticIndexing contains the delivered worker implementation.
 
 ### DW-205: If Memories packages or project references are introduced, update root dependency detection with `HexalithMemoriesRoot` and keep submodule initialization root-level only.
 
 origin: migrated from legacy ledger ("Deferred from: correct-course Memories and FrontComposer research alignment (2026-05-11)"), 2026-08-24
 location: HexalithMemoriesRoot
 reason: If Memories packages or project references are introduced, update root dependency detection with `HexalithMemoriesRoot` and keep submodule initialization root-level only.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Directory.Build.props:6 and :25 define HexalithMemoriesRoot and HexalithMemoriesFromSource; src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj:21 and integration tests consume them.
 
 ### DW-206: Operations-console stories may display semantic-indexing status only as metadata/projection state; they must not expose indexed content, snippets, raw Memories payloads, file browsing, or RAG…
 
 origin: migrated from legacy ledger ("Deferred from: correct-course Memories and FrontComposer research alignment (2026-05-11)"), 2026-08-24
 location: n/a
 reason: Operations-console stories may display semantic-indexing status only as metadata/projection state; they must not expose indexed content, snippets, raw Memories payloads, file browsing, or RAG response assembly in MVP.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:2978-2979 and :8571-8572, together with _bmad-output/planning-artifacts/prd.md:698-702, codify the no-content/no-snippet indexing boundary implemented by the UI projection.
 
 ### DW-207: F1: C4 limits inclusive/exclusive ambiguity — `docs/contract/idempotency-and-parity-rules.md` cites byte limits in the Non-Mutating Read Consistency section (e.g., 1048576, 262144) without…
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)"), 2026-08-24
 location: docs/contract/idempotency-and-parity-rules.md
 reason: F1: C4 limits inclusive/exclusive ambiguity — `docs/contract/idempotency-and-parity-rules.md` cites byte limits in the Non-Mutating Read Consistency section (e.g., 1048576, 262144) without specifying whether boundaries are inclusive. C4 input-limits artifact (Story 1.4) is the authority for precise boundary behavior; revisit if consumers diverge.
-status: open
+status: done 2026-08-24
+resolution: already resolved: docs/exit-criteria/c4-input-limits.md:19-21 explicitly states result-count, range-byte, and response-budget limit inclusivity.
 
 ### DW-208: F2: Verification Coverage AC mapping unenforced — rows in `docs/contract/idempotency-and-parity-rules.md` "Verification Coverage" cite ACs by number but the mapping is doc-only; renaming a test or…
 
@@ -1473,7 +1511,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-5-finalize-idempotency-equivalence-and-adapter-parity-rules (2026-05-13)"), 2026-08-24
 location: tests/fixtures/idempotency-encoding-corpus.json
 reason: F3: `equivalence_classification` strings not enum-typed — long compound classification strings (~50-90 chars) in `tests/fixtures/idempotency-encoding-corpus.json` are used as identifiers without schema enum constraint; one typo silently breaks future hash-helper consumers. Tied to D7 (whether to add corpus schema); revisit when Story 1.12 helpers begin consuming the values.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/fixtures/idempotency-encoding-corpus.schema.json:41-121 requires equivalence_classification and constrains it with an enum; governance tests consume that typed field.
 
 ### DW-210: F4: `File.ReadAllText` BOM/encoding handling — `tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs` reads files without explicit encoding; a UTF-8-BOM commit could shift `IndexOf`…
 
@@ -1515,14 +1554,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651
 reason: `HelperGenerationTargetRegeneratesWhenContractSpineChanges` test name vs assertion strength [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1625-1651`] — hash-difference check is sufficient evidence of regeneration; comment-only YAML mutation is acceptable.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:287-337 invokes the MSBuild generator against a mutated spine and asserts that the generated file changes.
 
 ### DW-216: `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — the shim is harmless and the NSwag duplicate-emission cause is known.
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36
 reason: `ChangedPathEvidence2` shim documentation [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:34-36`] — the shim is harmless and the NSwag duplicate-emission cause is known.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Client/Compat/ChangedPathEvidenceShim.cs:3-16 isolates and documents the compatibility shim, including cause and removal conditions; generator commentary points to the dedicated shim.
 
 ### DW-217: MSBuild `<None Remove>` / `<None Include>` order-dependence in client csproj
 
@@ -1620,7 +1661,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1640-1653
 reason: Tempdir cleanup catches that swallow `IOException`/`UnauthorizedAccessException` [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1640-1653`] — overlaps with the WaitForExit-orphan patch shipped in the same round; resolving the orphan process also resolves the cleanup races.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:308-331 kills and drains a timed-out generator process before temporary-directory cleanup, eliminating the recorded orphan-process cleanup race.
 
 ### DW-231: YamlDotNet duplicate-keys detection [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `LoadYamlMapping`]
 
@@ -1676,7 +1718,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
 location: .github/workflows/contract-spine.yml
 reason: Workflow doc claim `checkout with submodules: false` not visibly enforced in this diff [`.github/workflows/contract-spine.yml`, `docs/contract/safety-invariant-ci-gates.md`] — existing checkout step not modified by this story; verify when 1.14 ownership consolidates.
-status: open
+status: done 2026-08-24
+resolution: already resolved: .github/workflows/contract-spine.yml:20-24 explicitly configures actions/checkout with submodules: false.
 
 ### DW-239: `safe-provenance` classification global allowlist behavior
 
@@ -1732,7 +1775,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates (2026-05-18, Round 4)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `AssertRepositoryRelativePath` does not reject UNC paths (`//server/share/...`) or extended-length prefixes (`\?\D:\...`) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `AssertRepositoryRelativePath`] — no current callers can produce these path shapes; tighten when a new include_root source is introduced.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:655-663 rejects fully-qualified paths, leading slashes, and every backslash; those checks reject UNC and extended-length prefixes.
 
 ### DW-247: `SerializeYaml` constructs `StringWriter` without `CultureInfo.InvariantCulture`
 
@@ -1781,21 +1825,24 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.1 (2026-05-18)"), 2026-08-24
 location: src/Hexalith.Folders.AppHost/DaprComponents/accesscontrol.yaml
 reason: `accesscontrol.yaml` ships `defaultAction: allow` for every Dapr app with no environment guard [`src/Hexalith.Folders.AppHost/DaprComponents/accesscontrol.yaml`] — local-dev scaffold; production deny-by-default access control belongs to Story 7.1.
-status: open
+status: done 2026-08-24
+resolution: already resolved: deploy/dapr/production/accesscontrol.yaml:11-18 defines production access control with defaultAction: deny and per-caller deny defaults.
 
 ### DW-254: JWT audience hard-coded to `hexalith-eventstore` across all four services, `SigningKey=""`, `RequireHttpsMetadata=false`
 
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.1 (2026-05-18)"), 2026-08-24
 location: src/Hexalith.Folders.AppHost/Program.cs:51-53
 reason: JWT audience hard-coded to `hexalith-eventstore` across all four services, `SigningKey=""`, `RequireHttpsMetadata=false` [`src/Hexalith.Folders.AppHost/Program.cs:51-53`] — local-dev AppHost composition; production OIDC + secret-store wiring belongs to Story 7.2. Audience-per-app-id correctness must be revisited there.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/Authentication/FoldersAuthenticationServiceCollectionExtensions.cs:94-106 validates issuer/audience and :128-138 rejects blank audience or non-HTTPS metadata outside Development/Test; production secret-store deployment assets are present.
 
 ### DW-255: `Workers/Program.cs` is an empty host with no `IHostedService`, no Tenants subscription, no work
 
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.1 (2026-05-18)"), 2026-08-24
 location: src/Hexalith.Folders.Workers/Program.cs
 reason: `Workers/Program.cs` is an empty host with no `IHostedService`, no Tenants subscription, no work [`src/Hexalith.Folders.Workers/Program.cs`] — workers do nothing in Story 2.1; Story 2.9 ("react to Tenants events through worker handlers") owns the subscription pipeline.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Workers/Program.cs:5-17 now adds service defaults and tenant event workers, enables CloudEvents, and maps subscription, worker, and health endpoints.
 
 ### DW-256: `RemovedConfigurationKeys` set has no size cap or rate limit
 
@@ -1809,7 +1856,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.1 (2026-05-18)"), 2026-08-24
 location: src/Hexalith.Folders.Aspire/FoldersAspireModule.cs
 reason: Hard-coded `localhost:6379` Redis with no `AddRedis()` resource in AppHost [`src/Hexalith.Folders.Aspire/FoldersAspireModule.cs`] — distributed deployment wiring belongs to Story 7.x; local dev still works because Dapr's Redis state-store default matches.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Aspire/FoldersAspireModule.cs no longer hard-codes localhost:6379; src/Hexalith.Folders.AppHost/Program.cs:51-60 supplies the shared EventStore topology resources.
 
 ### DW-258: `OrganizationAclMetadataLeakageTests` scans only the happy-path single-Grant result; multi-op `Initialize` results, rejection paths (including the pre-allow tenant-denied path that echoes raw…
 
@@ -1844,7 +1892,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-2-implement-organization-aggregate-acl-baseline (2026-05-18)"), 2026-08-24
 location: src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs:53
 reason: `OrganizationStreamName.IsValidSegment` uses `ToLowerInvariant` for canonical-casing check [`src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs:53`] — correct for ASCII inputs, but an explicit ASCII whitelist would be safer against Unicode lookalikes (Turkish dotted i, fullwidth letters). Subsumed by the segment-charset patch if the team picks the whitelist fix there.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs:54-60 now validates canonical segments with the explicit ASCII regex ^[a-z0-9._-]+$.
 
 ### DW-263: `OrganizationAclAction.IsSupported` lets ZWSP-suffixed actions past `IsNullOrWhiteSpace` and `value.Trim()` equality, then rejects at the `HashSet` lookup
 
@@ -1886,14 +1935,16 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story-2.6 (2026-05-19)"), 2026-08-24
 location: _bmad-output/process-notes/predev-preflight-2026-05-19T120131Z.json
 reason: Preflight result `fail` in `_bmad-output/process-notes/predev-preflight-2026-05-19T120131Z.json` (36 dirty paths) — captured pre-commit state of story 2.6's own files; clean post-commit at `ed657e5`. Re-run preflight before flipping story 2.6 to `done`.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit ed657e5 records the clean post-commit state that the historical preflight note said was required before Story 2.6 closure.
 
 ### DW-269: Restore the systemic test-host composition baseline
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: test hosts using AddFoldersServer/MapFoldersServerEndpoints
 reason: **SYSTEMIC TEST-HOST RED — NOW OWNED BY STORY 7.18 (NOT a 2-8b defect):** Test hosts calling `AddFoldersServer()`+`MapFoldersServerEndpoints()` without `AddServiceDefaults()` fail DI validation because `FoldersAuthSchemeValidator` needs `IAuthenticationSchemeProvider` and `MapDefaultEndpoints` needs `HealthCheckService`. **Re-measured 2026-05-31 (xUnit v3 in-process runner): `Server.Tests` Total 433, Failed 339, Passed 94, Skipped 0** (single auth/health DI-validation cause, fail-closed at `WebApplicationBuilder.Build()`); plus IntegrationTests 11 (Epic 5 Golden/MixedSurface) and Folders.Tests 2 (Epic 3 provider-boundary guards), documented 2026-05-31. Introduced by later stories (`6e816ce` auth validator + ServiceDefaults health checks). Mechanical fix: add `AddAuthentication()`+`AddHealthChecks()` (or a shared helper) to each affected host — same fix applied to 2-8b's own host. **CORRECTION:** this is a *distinct, ~50× larger* blocker than the "4–6 epic-1 CLI negative-scope reds in `Contracts.Tests`" that the Epic 7 retro named as the historical-reds item — different root cause (test-host composition gap vs CLI-now-exists). Resolution owned by **Story 7.18** (`7-18-restore-test-host-composition-baseline.md`), which reopens Epic 7. See `planning-artifacts/sprint-change-proposal-2026-05-31-test-host-composition-baseline.md`.
-status: open
+status: done 2026-08-24
+resolution: already resolved: _bmad-output/implementation-artifacts/sprint-status.yaml:173-174 records Story 7.18 done with the restored Server.Tests composition baseline at 434 passed, 0 failed, 0 skipped.
 
 ### DW-270: P1: `InMemoryFolderRepository.EventsAppended`/`ResetAppendCounters` are not lock-guarded for reads
 
@@ -1942,7 +1993,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: TryGetIdempotencyFingerprint
 reason: W6: TOCTOU window between `TryGetIdempotencyFingerprint` and `AppendIfFingerprintAbsent` in both gates — optimistic concurrency design; by-design for the current in-memory repository. Deferred until an EventStore-backed repository provides transaction-level idempotency.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs:121-139 uses atomic AppendIfFingerprintAbsent outcome handling, closing the recorded check-then-append correctness window.
 
 ### DW-277: W7: `FolderArchiveTenantGate` calls `BindArchiveDecisionFingerprint` before `EvaluatePolicy`; `validation.IdempotencyFingerprint!` null-forgiving dereference would NRE if a custom validator…
 
@@ -1963,7 +2015,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story-10.5 (2026-06-24)"), 2026-08-24
 location: ContextSearchQueryHandler.cs:211-212
 reason: `hasMore`/`nextCursor` in `ContextSearchQueryHandler.cs:211-212` are derived from the index's raw `TotalCount` (before the Folders-side security trim + hydration), so a page whose remaining matches are all foreign/stale rows still reports `hasMore=true` and emits a cursor that yields an empty next page. New code, but UX-only and acceptable under the no-cross-tenant-existence-disclosure rule (an aggregate boolean over the caller's own tenant scope). Optional fix: emit a cursor only when the source returned a full pre-trim page (`Hits.Count == limit`).
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders/Queries/ContextSearch/ContextSearchQueryHandler.cs:217-221 emits a continuation cursor only when the post-filter item count reaches the requested limit.
 
 ### DW-280: SDK `ContextIndexSearchRequest.Limit` is generated as a non-nullable `int` (NSwag), so an SDK caller who omits `limit` serializes `limit:0`, which the server's `<= 0` guard rejects
 
@@ -1991,7 +2044,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of story-10.5 (2026-06-24)"), 2026-08-24
 location: src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:91; deploy/dapr/production/accesscontrol.yaml
 reason: **(#5, decision: accept as documented)** The production `folders → memories GET /api/search` Dapr invoke allow-rule does not bind the facade's actual egress, because `AddMemoriesClient` is a direct base-address `HttpClient` (`Memories:BaseAddress` + bearer token), not a Dapr service-invoke client. Accepted by Jerome (2026-06-24) as already documented in `architecture.md#134`: the allow-rule + its conformance negative-controls are operative only if `Memories:BaseAddress` is configured as the sidecar invoke route; otherwise API-token control governs that egress. Revisit (pin `Memories__BaseAddress` to the sidecar route + add a conformance assertion) if/when the facade egress is moved onto the Dapr sidecar.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:98-113 defaults Memories egress to the Dapr service-invocation route, with direct absolute URLs retained only as an explicit override.
 
 ### DW-284: Live Server facade still depends on the unavailable bridge read model
 
@@ -2005,7 +2059,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 10-5-expose-authorized-folders-query-facade-over-memories (2026-06-26)"), 2026-08-24
 location: src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:91
 reason: Dapr invoke allow-rule is conditional because the facade uses a direct Memories base-address client (`src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:91`, `deploy/dapr/production/accesscontrol.yaml`) — accepted in the story's 2026-06-24 review resolutions and documented in architecture; revisit when egress is pinned to sidecar invocation.
-status: open
+status: done 2026-08-24
+resolution: already resolved: src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:98-113 now constructs the default Memories endpoint through /v1.0/invoke/memories/method/, binding it to Dapr access control.
 
 ### DW-286: Generated `ContextIndexSearchRequest.Limit` is non-nullable despite optional OpenAPI semantics
 
@@ -2019,7 +2074,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 10-5-expose-authorized-folders-query-facade-over-memories (2026-06-26)"), 2026-08-24
 location: _bmad-output/implementation-artifacts/10-5-expose-authorized-folders-query-facade-over-memories.md
 reason: Required test lane still has the pre-existing `.slnx` inventory red (`_bmad-output/implementation-artifacts/10-5-expose-authorized-folders-query-facade-over-memories.md`) — pre-existing and documented in the story completion notes; do not treat as caused by the 10.5 facade chunk.
-status: open
+status: done 2026-08-24
+resolution: already resolved: Commit 9631820 updated solution inventory expectations; the current Hexalith.Folders.slnx project set and ScaffoldContractTests expected set both contain 50 projects.
 
 ### DW-288: Harden the canonical submodule command contract to parse and compare the exact nonrecursive command token set.
 
@@ -2027,7 +2083,8 @@ origin: migrated from legacy ledger ("Deferred from: code review of 10-5-expose-
 location: tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs
 source_spec: _bmad-output/implementation-artifacts/spec-run-tests-and-fix-failures.md
 reason: The pre-existing substring-based assertion in `ScaffoldContractTests.AssertCanonicalInitCommandPresent` can accept comments, recursive commands, or extra nested paths that merely contain the required substrings.
-status: open
+status: done 2026-08-24
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/ScaffoldContractTests.cs:528-558 verifies unsafe recursive/comment variants are rejected, backed by the canonical token parser at :755 onward.
 
 ### DW-289: Reject contradictory explicit Hexalith dependency-mode switches during MSBuild evaluation.
 
