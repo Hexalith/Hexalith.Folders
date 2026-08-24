@@ -484,6 +484,42 @@ public sealed class ForgejoProvider : IGitProvider
             : ForgejoFailureMapper.ToProviderFailure(result, request);
     }
 
+    public Task<ProviderFileChangeSetResult> StageFileChangesAsync(
+        ProviderFileChangeSetRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(ProviderFileChangeSetResult.Failure(
+            request,
+            ProviderFailureCategory.UnsupportedProviderCapability,
+            "forgejo_file_mutation_unsupported"));
+    }
+
+    public Task<ProviderCommitResult> CommitAsync(
+        ProviderCommitRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(ProviderCommitResult.Failure(
+            request,
+            ProviderFailureCategory.UnsupportedProviderCapability,
+            "forgejo_commit_unsupported"));
+    }
+
+    public Task<ProviderMutationStatusResult> GetMutationStatusAsync(
+        ProviderMutationStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(ProviderMutationStatusResult.Unavailable(
+            request,
+            ProviderFailureCategory.UnsupportedProviderCapability,
+            "forgejo_status_unsupported"));
+    }
+
     private static ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
     {
         try

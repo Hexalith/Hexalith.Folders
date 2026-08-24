@@ -1,3 +1,6 @@
+using Hexalith.Folders;
+using Hexalith.Folders.Providers.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
@@ -5,6 +8,25 @@ namespace Hexalith.Folders.Tests.Providers.GitHub;
 
 public sealed class GitHubDependencyGuardTests
 {
+    [Fact]
+    public void ProviderReadinessCompositionResolvesGitHubAndForgejoExactlyOnce()
+    {
+        ServiceCollection services = new();
+
+        services.AddFoldersProviderReadiness();
+        services.AddFoldersProviderReadiness();
+
+        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateOnBuild = true,
+            ValidateScopes = true,
+        });
+        IGitProvider[] providers = provider.GetServices<IGitProvider>().ToArray();
+
+        providers.Select(static item => item.ProviderFamily).Order(StringComparer.Ordinal)
+            .ShouldBe(["forgejo", "github"]);
+    }
+
     [Fact]
     public void OctokitReferencesStayInsideGitHubProviderBoundary()
     {
@@ -70,6 +92,11 @@ public sealed class GitHubDependencyGuardTests
             "Story 3.3",
             "Story 3.11",
             "Story 3.14",
+            "Git Data blobs and trees APIs",
+            "never uses the Contents API",
+            "force=false",
+            "five checks within 15 minutes",
+            "confirmed, not-applied, conflicting, and unavailable",
         ];
 
         foreach (string evidence in requiredEvidence)

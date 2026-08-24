@@ -14,6 +14,8 @@ internal enum GitHubApiFailureCondition
     ContentsPermissionInsufficient,
     AdministrationPermissionInsufficient,
     BranchProtectionConflict,
+    RefMoved,
+    RefUpdateConflict,
     PrimaryRateLimit,
     SecondaryRateLimit,
     ServerUnavailable,

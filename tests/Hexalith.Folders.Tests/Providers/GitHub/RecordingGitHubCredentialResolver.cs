@@ -3,7 +3,9 @@ using Hexalith.Folders.Providers.GitHub;
 
 namespace Hexalith.Folders.Tests.Providers.GitHub;
 
-internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResolutionResult result) : IGitHubCredentialResolver
+internal sealed class RecordingGitHubCredentialResolver(
+    GitHubCredentialResolutionResult result,
+    Exception? exception = null) : IGitHubCredentialResolver
 {
     public int Calls { get; private set; }
 
@@ -13,6 +15,16 @@ internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResoluti
 
     public static RecordingGitHubCredentialResolver Success(string token)
         => new(GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token)));
+
+    public static RecordingGitHubCredentialResolver Success(
+        string token,
+        Func<ValueTask> disposeAction)
+        => new(GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token, disposeAction)));
+
+    public static RecordingGitHubCredentialResolver Throws(Exception failure)
+        => new(GitHubCredentialResolutionResult.Failure(
+            ProviderFailureCategory.ProviderUnavailable,
+            "unused"), failure);
 
     public static RecordingGitHubCredentialResolver Failure(
         ProviderFailureCategory category,
@@ -27,6 +39,11 @@ internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResoluti
         cancellationToken.ThrowIfCancellationRequested();
         Calls++;
         LastRequest = request;
+        if (exception is not null)
+        {
+            throw exception;
+        }
+
         return ValueTask.FromResult(result);
     }
 }

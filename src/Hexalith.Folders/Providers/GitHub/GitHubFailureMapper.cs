@@ -167,4 +167,34 @@ internal static class GitHubFailureMapper
                 ? "reconciliation_required_metadata_only"
                 : $"{mapped.Category.ToCategoryCode()}_remediation");
     }
+
+    public static (ProviderFailureCategory Category, string ReasonCode) MapCondition(
+        GitHubApiFailureCondition? condition)
+        => condition switch
+        {
+            GitHubApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "github_validation_failed"),
+            GitHubApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "github_authentication_required"),
+            GitHubApiFailureCondition.PermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient"),
+            GitHubApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing"),
+            GitHubApiFailureCondition.ExistingEquivalent => (ProviderFailureCategory.None, "existing_equivalent"),
+            GitHubApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "github_repository_conflict"),
+            GitHubApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "github_default_branch_conflict"),
+            GitHubApiFailureCondition.MissingBranchOrRef => (ProviderFailureCategory.ProviderValidationFailed, "github_branch_or_ref_missing"),
+            GitHubApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "github_ref_operation_unsupported"),
+            GitHubApiFailureCondition.ContentsPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_contents_permission_insufficient"),
+            GitHubApiFailureCondition.AdministrationPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_administration_permission_insufficient"),
+            GitHubApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict"),
+            GitHubApiFailureCondition.RefMoved => (ProviderFailureCategory.ProviderConflict, "github_ref_moved"),
+            GitHubApiFailureCondition.RefUpdateConflict => (ProviderFailureCategory.ProviderConflict, "github_ref_update_conflict"),
+            GitHubApiFailureCondition.PrimaryRateLimit => (ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited"),
+            GitHubApiFailureCondition.SecondaryRateLimit => (ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited"),
+            GitHubApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable"),
+            GitHubApiFailureCondition.CancellationBeforeDispatch => (ProviderFailureCategory.ProviderTransientFailure, "github_operation_cancelled_before_dispatch"),
+            GitHubApiFailureCondition.TimeoutDuringObservation => (ProviderFailureCategory.ProviderUnavailable, "github_evidence_temporarily_unavailable"),
+            GitHubApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown"),
+            GitHubApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_evidence_ambiguous"),
+            GitHubApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response"),
+            GitHubApiFailureCondition.UnexpectedTransportFailure => (ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown"),
+            _ => (ProviderFailureCategory.UnknownProviderOutcome, "github_unmapped_outcome"),
+        };
 }

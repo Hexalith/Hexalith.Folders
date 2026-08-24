@@ -2,24 +2,31 @@ namespace Hexalith.Folders.Providers.GitHub;
 
 internal sealed class GitHubCredentialLease : IAsyncDisposable
 {
-    internal GitHubCredentialLease(string accessToken)
+    private readonly Func<ValueTask>? _disposeAction;
+
+    internal GitHubCredentialLease(string accessToken, Func<ValueTask>? disposeAction = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(accessToken);
         AccessToken = accessToken;
+        _disposeAction = disposeAction;
     }
 
     internal string AccessToken { get; private set; }
 
-    public static GitHubCredentialLease CreateForTesting(string accessToken)
+    public static GitHubCredentialLease CreateForTesting(
+        string accessToken,
+        Func<ValueTask>? disposeAction = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(accessToken);
-        return new(accessToken);
+        return new(accessToken, disposeAction);
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         AccessToken = string.Empty;
-        return ValueTask.CompletedTask;
+        if (_disposeAction is not null)
+        {
+            await _disposeAction().ConfigureAwait(false);
+        }
     }
 }
-
