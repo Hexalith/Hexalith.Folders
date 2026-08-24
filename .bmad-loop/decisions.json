@@ -43,5 +43,14 @@
     "key": "1",
     "label": "Add action grants",
     "resolution": ""
+  },
+  "DW-65": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add an IsAccepted property or semantic factory and migrate internals while preserving result codes.",
+    "key": "1",
+    "label": "Add acceptance semantics",
+    "resolution": ""
   }
 }
