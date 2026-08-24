@@ -507,6 +507,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-16-wire-ex
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115
 reason: `FindRepositoryRoot` throws `InvalidOperationException("GOVERNANCE-PREREQUISITE-DRIFT: ...")` — exception terminology hints at a categorized exit but the throw is uncaught and surfaces as a Shouldly/xUnit crash [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs:1099-1115`] — deferred, will be resolved by the decision on `prerequisite_drift` script semantics.
 status: open
+decision: 2026-08-25 Preserve drift status — Emit structured prerequisite_drift report and exit semantics with focused runner tests.
 
 ### DW-71: Encoding/BOM handling in `File.ReadAllText` calls inside `SafetyInvariantGateTests`
 

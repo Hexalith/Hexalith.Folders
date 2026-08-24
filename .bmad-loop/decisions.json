@@ -52,5 +52,14 @@
     "key": "1",
     "label": "Add acceptance semantics",
     "resolution": ""
+  },
+  "DW-70": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Emit structured prerequisite_drift report and exit semantics with focused runner tests.",
+    "key": "1",
+    "label": "Preserve drift status",
+    "resolution": ""
   }
 }
