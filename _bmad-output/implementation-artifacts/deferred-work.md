@@ -632,6 +632,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-13-generat
 location: tests/tools/parity-oracle-generator/Program.cs:2996-2999, 3310-3311, 3379-3381
 reason: Provenance hash is YAML-comment + normalized-text — not authenticated file digest (`tests/tools/parity-oracle-generator/Program.cs:2996-2999, 3310-3311, 3379-3381`). Downstream YAML parsers strip the comment; `SHA256(NormalizeLineEndings(text))` doesn't match on-disk file digest with BOM/line-ending differences. Re-evaluate when downstream consumers need verifiable provenance.
 status: open
+decision: 2026-08-25 Emit both — Retain normalized semantic hashes and add separately named raw-byte SHA-256 fields with focused BOM and line-ending tests.
 
 ### DW-88: Generator does not resolve OpenAPI `$ref` for operation request/response schemas
 

@@ -70,5 +70,14 @@
     "key": "1",
     "label": "Require force",
     "resolution": ""
+  },
+  "DW-87": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Retain normalized semantic hashes and add separately named raw-byte SHA-256 fields with focused BOM and line-ending tests.",
+    "key": "1",
+    "label": "Emit both",
+    "resolution": ""
   }
 }
