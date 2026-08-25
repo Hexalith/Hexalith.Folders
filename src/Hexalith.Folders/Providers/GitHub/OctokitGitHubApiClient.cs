@@ -904,6 +904,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 : GitHubApiFailureCondition.ServerUnavailable, null),
         };
 
+    // Octokit 14.0.0 surfaces an unparseable response body as Octokit.SerializationException
+    // from its bundled SimpleJson deserializer, whose type name contains no "Json". Matching
+    // the type explicitly keeps a malformed body classified as MalformedResponse instead of
+    // falling through to UnexpectedTransportFailure, which would read as retryable noise.
     private static bool IsMalformedJsonException(Exception exception)
-        => exception.GetType().Name.Contains("Json", StringComparison.Ordinal);
+        => exception is System.Runtime.Serialization.SerializationException
+            || exception.GetType().Name.Contains("Json", StringComparison.Ordinal);
 }

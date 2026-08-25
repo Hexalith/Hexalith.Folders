@@ -1,6 +1,7 @@
 using Hexalith.Folders;
 using Hexalith.Folders.Providers.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
 
@@ -13,6 +14,9 @@ public sealed class GitHubDependencyGuardTests
     {
         ServiceCollection services = new();
 
+        // AddFoldersObservability has resolved ILogger<FolderTelemetryEmitter> from the host
+        // since Story 4.14; ValidateOnBuild needs logging present in this bare container.
+        services.AddLogging();
         services.AddFoldersProviderReadiness();
         services.AddFoldersProviderReadiness();
 

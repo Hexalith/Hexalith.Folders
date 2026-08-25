@@ -1279,7 +1279,9 @@ public sealed class OctokitGitHubApiClientTests
     private const string BlobOneSha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     private const string BlobTwoSha = "cccccccccccccccccccccccccccccccccccccccc";
     private const string StagedTreeSha = "2222222222222222222222222222222222222222";
-    private const string CommitSha = "3333333333333333333333333333333333333333";
+    // Must contain hex letters: the non-canonical-SHA scenarios uppercase this constant, and a
+    // digits-only value would make ToUpperInvariant() a no-op and silently pass a canonical SHA.
+    private const string CommitSha = "33333333333333333333333333333333333333cc";
 
     private static string SafeErrorJson()
         => "{ \"message\": \"Request could not be completed.\" }";
