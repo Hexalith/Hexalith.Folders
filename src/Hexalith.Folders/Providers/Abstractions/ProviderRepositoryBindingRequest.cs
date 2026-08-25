@@ -15,4 +15,5 @@ public sealed record ProviderRepositoryBindingRequest(
     IReadOnlyList<ProviderCredentialMode> CredentialModeRequirements,
     ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence,
     string CorrelationId,
-    string IdempotencyKey);
+    string IdempotencyKey,
+    ProviderIdempotencyAdmission IdempotencyAdmission);

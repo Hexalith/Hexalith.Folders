@@ -13,4 +13,5 @@ public sealed record ProviderRepositoryCreationRequest(
     ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence,
     string CorrelationId,
     string IdempotencyKey,
+    ProviderIdempotencyAdmission IdempotencyAdmission,
     string RepositoryProfileRef = "");

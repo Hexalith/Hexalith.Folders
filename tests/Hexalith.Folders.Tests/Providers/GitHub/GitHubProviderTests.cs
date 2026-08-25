@@ -1585,7 +1585,347 @@ public sealed class GitHubProviderTests
             CredentialModeRequirements = credentialModes ?? [ProviderCredentialMode.AppInstallationReference],
         };
 
-    private static ProviderRepositoryCreationRequest CreationRequest()
+    [Theory]
+    [InlineData(ProviderIdempotencyDisposition.Conflict, "idempotency_conflict")]
+    [InlineData(ProviderIdempotencyDisposition.Expired, "idempotency_key_expired")]
+    public async Task RejectsRepositoryCreationAdmissionBeforeAnyProviderAccess(
+        ProviderIdempotencyDisposition disposition,
+        string expectedReasonCode)
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(disposition),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConflict);
+        result.ReasonCode.ShouldBe(expectedReasonCode);
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("intent-repository-creation-a", Case.Sensitive);
+        serialized.ShouldNotContain(PriorOutcomeFingerprint, Case.Sensitive);
+    }
+
+    [Theory]
+    [InlineData(ProviderIdempotencyDisposition.Conflict, "idempotency_conflict")]
+    [InlineData(ProviderIdempotencyDisposition.Expired, "idempotency_key_expired")]
+    public async Task RejectsRepositoryBindingAdmissionBeforeAnyProviderAccess(
+        ProviderIdempotencyDisposition disposition,
+        string expectedReasonCode)
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(disposition),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConflict);
+        result.ReasonCode.ShouldBe(expectedReasonCode);
+        targetResolver.BindingCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("intent-repository-binding-a", Case.Sensitive);
+        serialized.ShouldNotContain(PriorOutcomeFingerprint, Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task ReplaysEquivalentRepositoryCreationWithoutProviderAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(ProviderIdempotencyDisposition.EquivalentReplay, PriorOutcomeFingerprint),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeTrue();
+        result.ReasonCode.ShouldBe("existing_equivalent");
+        result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain(PriorOutcomeFingerprint, Case.Sensitive);
+        serialized.ShouldNotContain("https://", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task ReplaysEquivalentRepositoryBindingWithoutProviderAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(ProviderIdempotencyDisposition.EquivalentReplay, PriorOutcomeFingerprint),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeTrue();
+        result.ReasonCode.ShouldBe("existing_equivalent");
+        result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+        targetResolver.BindingCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain(PriorOutcomeFingerprint, Case.Sensitive);
+        serialized.ShouldNotContain("https://", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task RejectsRepositoryCreationReplayWithMalformedPriorOutcomeEvidence()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(ProviderIdempotencyDisposition.EquivalentReplay, "   "),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_replay_evidence_malformed");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RejectsRepositoryBindingReplayWithMalformedPriorOutcomeEvidence()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(ProviderIdempotencyDisposition.EquivalentReplay, "   "),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_replay_evidence_malformed");
+        targetResolver.BindingCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task DeniesStaleAuthorizationEvidenceBeforeEvaluatingRepositoryCreationAdmission()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(ProviderIdempotencyDisposition.Expired) with
+            {
+                AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
+                    "stale-authorization-evidence",
+                    DateTimeOffset.Parse("2026-07-19T00:00:00+00:00"),
+                    "stale"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("authorization_evidence_stale");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task DeniesStaleAuthorizationEvidenceBeforeEvaluatingRepositoryBindingAdmission()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(ProviderIdempotencyDisposition.Expired) with
+            {
+                AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
+                    "stale-authorization-evidence",
+                    DateTimeOffset.Parse("2026-07-19T00:00:00+00:00"),
+                    "stale"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("authorization_evidence_stale");
+        targetResolver.BindingCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task AdmitsFreshRepositoryCreationIntentThroughToTheProvider()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(ProviderIdempotencyDisposition.Fresh),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeFalse();
+        targetResolver.CreationCalls.ShouldBe(1);
+        credentialResolver.Calls.ShouldBe(1);
+        apiClient.RepositoryCreationCalls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task AdmitsFreshRepositoryBindingIntentThroughToTheProvider()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(ProviderIdempotencyDisposition.Fresh),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        targetResolver.BindingCalls.ShouldBe(1);
+        credentialResolver.Calls.ShouldBe(1);
+        apiClient.RepositoryBindingCalls.ShouldBe(1);
+    }
+
+    private const string PriorOutcomeFingerprint =
+        "1111111111111111111111111111111111111111111111111111111111111111";
+
+    [Fact]
+    public async Task RejectsMalformedRepositoryCreationAdmissionBeforeAnyProviderAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest() with { IdempotencyAdmission = null! },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_mutation_intent_malformed");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RejectsMalformedRepositoryBindingAdmissionBeforeAnyProviderAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest() with { IdempotencyAdmission = null! },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_mutation_intent_malformed");
+        targetResolver.BindingCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RejectsUndefinedRepositoryCreationDispositionInsteadOfTreatingItAsExpired()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest((ProviderIdempotencyDisposition)42),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_mutation_intent_malformed");
+        result.ReasonCode.ShouldNotBe("idempotency_key_expired");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RejectsBlankRepositoryCreationIntentFingerprintBeforeAnyProviderAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.Fresh,
+                    "   "),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("github_mutation_intent_malformed");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task FreshRepositoryCreationCarryingPriorEvidenceStillExecutesInsteadOfReplaying()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+        GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(ProviderIdempotencyDisposition.Fresh, PriorOutcomeFingerprint),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeFalse();
+        targetResolver.CreationCalls.ShouldBe(1);
+        apiClient.RepositoryCreationCalls.ShouldBe(1);
+    }
+    private static ProviderRepositoryCreationRequest CreationRequest(
+        ProviderIdempotencyDisposition disposition = ProviderIdempotencyDisposition.Fresh,
+        string? priorSafeOutcomeFingerprint = null)
         => new(
             ManagedTenantId: "tenant-a",
             OrganizationId: "organization-a",
@@ -1609,9 +1949,15 @@ public sealed class GitHubProviderTests
                 "fresh"),
             CorrelationId: "correlation-a",
             IdempotencyKey: "idempotency-binding-a",
+            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+                disposition,
+                "intent-repository-creation-a",
+                priorSafeOutcomeFingerprint),
             RepositoryProfileRef: "repository-profile-a");
 
-    private static ProviderRepositoryBindingRequest BindingRequest()
+    private static ProviderRepositoryBindingRequest BindingRequest(
+        ProviderIdempotencyDisposition disposition = ProviderIdempotencyDisposition.Fresh,
+        string? priorSafeOutcomeFingerprint = null)
         => new(
             ManagedTenantId: "tenant-a",
             OrganizationId: "organization-a",
@@ -1637,7 +1983,11 @@ public sealed class GitHubProviderTests
                 DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
                 "fresh"),
             CorrelationId: "correlation-a",
-            IdempotencyKey: "idempotency-binding-a");
+            IdempotencyKey: "idempotency-binding-a",
+            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+                disposition,
+                "intent-repository-binding-a",
+                priorSafeOutcomeFingerprint));
 
     private static ProviderFileChangeSetRequest ChangeSetRequest(
         ProviderIdempotencyDisposition disposition = ProviderIdempotencyDisposition.Fresh)

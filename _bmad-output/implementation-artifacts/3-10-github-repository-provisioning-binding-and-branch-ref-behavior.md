@@ -43,44 +43,44 @@ so that a tenant folder can use GitHub without provider-specific leakage, duplic
 ## Tasks / Subtasks
 
 - [ ] Reconcile Story 3.10 authority, compatibility assumptions, and public-contract impact before implementation. (AC: 12, 13)
-  - [ ] Record that the 2026-07-14 structural correction as amended by 2026-07-15 is the source for this split story; do not infer completion from historical Story 3.3.
+  - [x] Record that the 2026-07-14 structural correction as amended by 2026-07-15 is the source for this split story; do not infer completion from historical Story 3.3.
   - [ ] Confirm the narrowed Story 3.3 production readiness path is operational before claiming Story 3.10 real-path acceptance. `OctokitGitHubApiClient.GetReadinessAsync` is also currently a stub, but must be fixed under Story 3.3 or an explicitly approved scope change rather than silently absorbed here.
-  - [ ] Confirm the current Contract Spine can carry the provider-neutral creation/binding outcomes. If a public gap is proven, update the OpenAPI source, generation inputs/outputs, C13 inventory, parity/previous-spine fixtures, docs, examples, and tests as one change; do not hand-edit generated SDK files.
-  - [ ] Create or update `docs/contract/provider-compatibility-catalog.md` only as evidence for human OQ4 acceptance. Pin the supported GitHub product/API profile, credential modes, permissions, creation defaults, branch/ref/protection capabilities, rate-limit behavior, alias rules, and reconciliation policy without declaring OQ4 approved.
-  - [ ] Keep Octokit at the centrally pinned `14.0.0` and explicitly send `X-GitHub-Api-Version: 2022-11-28`; do not opportunistically adopt the newer REST profile.
+  - [x] Confirm the current Contract Spine can carry the provider-neutral creation/binding outcomes. If a public gap is proven, update the OpenAPI source, generation inputs/outputs, C13 inventory, parity/previous-spine fixtures, docs, examples, and tests as one change; do not hand-edit generated SDK files.
+  - [x] Create or update `docs/contract/provider-compatibility-catalog.md` only as evidence for human OQ4 acceptance. Pin the supported GitHub product/API profile, credential modes, permissions, creation defaults, branch/ref/protection capabilities, rate-limit behavior, alias rules, and reconciliation policy without declaring OQ4 approved.
+  - [x] Keep Octokit at the centrally pinned `14.0.0` and explicitly send `X-GitHub-Api-Version: 2022-11-28`; do not opportunistically adopt the newer REST profile.
 
-- [ ] Add the minimum authorized target and policy-resolution seam. (AC: 1, 2, 11)
-  - [ ] Introduce one-public-type-per-file provider-neutral request/result models and a focused resolver interface for creation targets, binding targets, and resolved branch/ref policy. Resolve opaque references only after the existing authorization/evidence gates succeed.
-  - [ ] Extend `ProviderRepositoryCreationRequest`, `ProviderRepositoryBindingRequest`, or an adjacent internal model only enough to convey resolved authorized intent to the provider without making raw GitHub locators public or durable.
-  - [ ] Keep raw organization, repository, endpoint, default-branch, selected-ref, and protection values in a short-lived in-memory object; never add them to `ProviderTargetEvidence`, safe fingerprints, aggregate events, read models, process state, telemetry, audit, exception messages, or public results.
-  - [ ] Preserve credential lease disposal and ensure target resolution, credential resolution, client construction, and provider access all remain after authentication/tenant/action authorization and current evidence validation.
+- [x] Add the minimum authorized target and policy-resolution seam. (AC: 1, 2, 11)
+  - [x] Introduce one-public-type-per-file provider-neutral request/result models and a focused resolver interface for creation targets, binding targets, and resolved branch/ref policy. Resolve opaque references only after the existing authorization/evidence gates succeed.
+  - [x] Extend `ProviderRepositoryCreationRequest`, `ProviderRepositoryBindingRequest`, or an adjacent internal model only enough to convey resolved authorized intent to the provider without making raw GitHub locators public or durable.
+  - [x] Keep raw organization, repository, endpoint, default-branch, selected-ref, and protection values in a short-lived in-memory object; never add them to `ProviderTargetEvidence`, safe fingerprints, aggregate events, read models, process state, telemetry, audit, exception messages, or public results.
+  - [x] Preserve credential lease disposal and ensure target resolution, credential resolution, client construction, and provider access all remain after authentication/tenant/action authorization and current evidence validation.
 
-- [ ] Implement real GitHub repository creation through the existing provider seam. (AC: 3, 7, 8, 9, 10, 12)
-  - [ ] Retain the supplied `GitHubClient` in `OctokitGitHubApiClient`; construct the exact organization/name/visibility request from the resolved target and approved policy, with no implicit initialization side effects unless OQ4 explicitly approves them.
-  - [ ] Extend `GitHubRepositoryCreationRequest`/`Result` and `IGitHubApiClient` only as needed to express provider-internal target intent, canonical identity, equivalent-existing evidence, known failure, retry evidence, and unknown outcome without raw provider DTO leakage.
-  - [ ] Reconcile `already exists` with a read-only canonical-identity check. Return equivalent existing only with operation/binding-intent proof; otherwise return a safe repository conflict.
-  - [ ] Distinguish cancellation before dispatch from timeout/cancellation/disconnect after possible dispatch. Do not wrap a non-cancellable high-level Octokit call as though upstream cancellation were guaranteed, and never blindly retry ambiguous creation.
-  - [ ] Preserve the provider-neutral result categories consumed by `RepositoryProvisioningProcessManager`; do not wire its missing runtime trigger or final aggregate transition in this story.
+- [x] Implement real GitHub repository creation through the existing provider seam. (AC: 3, 7, 8, 9, 10, 12)
+  - [x] Retain the supplied `GitHubClient` in `OctokitGitHubApiClient`; construct the exact organization/name/visibility request from the resolved target and approved policy, with no implicit initialization side effects unless OQ4 explicitly approves them.
+  - [x] Extend `GitHubRepositoryCreationRequest`/`Result` and `IGitHubApiClient` only as needed to express provider-internal target intent, canonical identity, equivalent-existing evidence, known failure, retry evidence, and unknown outcome without raw provider DTO leakage.
+  - [x] Reconcile `already exists` with a read-only canonical-identity check. Return equivalent existing only with operation/binding-intent proof; otherwise return a safe repository conflict.
+  - [x] Distinguish cancellation before dispatch from timeout/cancellation/disconnect after possible dispatch. Do not wrap a non-cancellable high-level Octokit call as though upstream cancellation were guaranteed, and never blindly retry ambiguous creation.
+  - [x] Preserve the provider-neutral result categories consumed by `RepositoryProvisioningProcessManager`; do not wire its missing runtime trigger or final aggregate transition in this story.
 
-- [ ] Implement real GitHub binding, canonical identity, alias, and branch/ref validation. (AC: 4, 5, 6, 8, 11, 12)
-  - [ ] Use repository lookup to obtain canonical immutable identity and safe permission/default-branch evidence. Treat redirects, renames, case variants, and aliases by canonical identity rather than input spelling.
-  - [ ] Validate the exact selected branch/ref and default-ref policy. Keep branch existence/contents-read capability separate from branch-protection/administration-read capability, and never use matching-prefix results as proof of an exact ref.
-  - [ ] Return only provider-neutral binding validity, canonical safe fingerprint, capability/policy status, and safe remediation/retry metadata. Conceal missing/private/inaccessible targets consistently.
-  - [ ] Preserve Story 3.8 as the policy-configuration owner and Story 3.7 as the product binding-workflow owner; do not add an alternate GitHub-specific product port or endpoint.
+- [x] Implement real GitHub binding, canonical identity, alias, and branch/ref validation. (AC: 4, 5, 6, 8, 11, 12)
+  - [x] Use repository lookup to obtain canonical immutable identity and safe permission/default-branch evidence. Treat redirects, renames, case variants, and aliases by canonical identity rather than input spelling.
+  - [x] Validate the exact selected branch/ref and default-ref policy. Keep branch existence/contents-read capability separate from branch-protection/administration-read capability, and never use matching-prefix results as proof of an exact ref.
+  - [x] Return only provider-neutral binding validity, canonical safe fingerprint, capability/policy status, and safe remediation/retry metadata. Conceal missing/private/inaccessible targets consistently.
+  - [x] Preserve Story 3.8 as the policy-configuration owner and Story 3.7 as the product binding-workflow owner; do not add an alternate GitHub-specific product port or endpoint.
 
-- [ ] Complete canonical failure, replay, reconciliation, and restart-safe evidence behavior. (AC: 7-11)
-  - [ ] Extend `GitHubFailureMapper`/condition models for the exact concrete-client evidence required to distinguish validation/conflict, credentials, permissions, concealment, branch policy, primary rate limit, secondary rate limit, unavailable, and unknown outcome while retaining existing canonical categories.
-  - [ ] Preserve bounded retry-after metadata for proven retryable failures. A retry recommendation is never authorization to retry an ambiguous mutation.
-  - [ ] Ensure replay/conflict/expiry checks occur before target, credential, client, or provider observation and do not reveal prior intent.
-  - [ ] Ensure provider-neutral operation/reconciliation evidence can survive serialization/restart and contains no Octokit type, credential, raw target, or response payload; leave durable orchestration and terminal status transitions to Story 3.14.
-  - [ ] Audit all success/failure/result `ToString`, exception, logging, metric, trace, and diagnostic paths with sentinel values for owner, repository, branch/ref, URL, token, and provider body leakage.
+- [x] Complete canonical failure, replay, reconciliation, and restart-safe evidence behavior. (AC: 7-11)
+  - [x] Extend `GitHubFailureMapper`/condition models for the exact concrete-client evidence required to distinguish validation/conflict, credentials, permissions, concealment, branch policy, primary rate limit, secondary rate limit, unavailable, and unknown outcome while retaining existing canonical categories.
+  - [x] Preserve bounded retry-after metadata for proven retryable failures. A retry recommendation is never authorization to retry an ambiguous mutation.
+  - [x] Ensure replay/conflict/expiry checks occur before target, credential, client, or provider observation and do not reveal prior intent.
+  - [x] Ensure provider-neutral operation/reconciliation evidence can survive serialization/restart and contains no Octokit type, credential, raw target, or response payload; leave durable orchestration and terminal status transitions to Story 3.14.
+  - [x] Audit all success/failure/result `ToString`, exception, logging, metric, trace, and diagnostic paths with sentinel values for owner, repository, branch/ref, URL, token, and provider body leakage.
 
-- [ ] Add focused hermetic tests around both the boundary and the concrete Octokit transport. (AC: 1-14)
-  - [ ] Extend `GitHubProviderTests` for authorization/evidence/target/credential ordering, denied zero-touch behavior, target-resolution failure, credential disposal, canonical result mapping, idempotency, alias/duplicate behavior, safe evidence, and unknown-outcome no-retry behavior.
-  - [ ] Add `OctokitGitHubApiClientTests` using a fake Octokit `IConnection`, HTTP transport, or equivalent deterministic seam to prove request method/path/body, product/accept/auth/API-version headers, organization/name construction, success parsing, canonical identity, exact branch/ref/protection behavior, and no real network access.
-  - [ ] Cover 400, 401, ordinary 403, primary-limit 403/429, secondary-limit 403/429, 404 concealment, 409/422, 5xx, malformed response, cancellation before dispatch, timeout/disconnect after dispatch, equivalent-existing reconciliation, conflicting-existing, and sensitive sentinels.
-  - [ ] Add restart/round-trip tests for provider-neutral operation/reconciliation evidence and prove no second mutation occurs after equivalent replay or ambiguous outcome.
-  - [ ] Run the narrow GitHub provider/core/worker/contract tests first, then the relevant solution gates. Keep default PR validation offline; document any optional live drift evidence separately.
+- [x] Add focused hermetic tests around both the boundary and the concrete Octokit transport. (AC: 1-14)
+  - [x] Extend `GitHubProviderTests` for authorization/evidence/target/credential ordering, denied zero-touch behavior, target-resolution failure, credential disposal, canonical result mapping, idempotency, alias/duplicate behavior, safe evidence, and unknown-outcome no-retry behavior.
+  - [x] Add `OctokitGitHubApiClientTests` using a fake Octokit `IConnection`, HTTP transport, or equivalent deterministic seam to prove request method/path/body, product/accept/auth/API-version headers, organization/name construction, success parsing, canonical identity, exact branch/ref/protection behavior, and no real network access.
+  - [x] Cover 400, 401, ordinary 403, primary-limit 403/429, secondary-limit 403/429, 404 concealment, 409/422, 5xx, malformed response, cancellation before dispatch, timeout/disconnect after dispatch, equivalent-existing reconciliation, conflicting-existing, and sensitive sentinels.
+  - [x] Add restart/round-trip tests for provider-neutral operation/reconciliation evidence and prove no second mutation occurs after equivalent replay or ambiguous outcome.
+  - [x] Run the narrow GitHub provider/core/worker/contract tests first, then the relevant solution gates. Keep default PR validation offline; document any optional live drift evidence separately.
 
 ## Dev Notes
 
@@ -156,7 +156,16 @@ so that a tenant folder can use GitHub without provider-specific leakage, duplic
 - `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` only if a resolver registration is needed
 - `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs`
 - `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs` (new)
-- `tests/Hexalith.Folders.Workers.Tests/RepositoryProvisioningProcessManagerTests.cs` only for provider-neutral handoff/restart evidence, not runtime trigger wiring
+- `tests/Hexalith.Folders.Workers.Tests/RepositoryProvisioningProcessManagerTests.cs`
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderRepositoryBindingRequest.cs`
+- `src/Hexalith.Folders.Workers/RepositoryProvisioning/RepositoryProvisioningContext.cs`
+- `src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs`
+- `tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderTests.cs`
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs`
+- `_bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md`
+- `src/Hexalith.Folders.Testing/Providers/RecordingProviderCapabilityResolver.cs`
+- `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBindingGateTests.cs`
+- `_bmad-output/implementation-artifacts/deferred-work.md` only for provider-neutral handoff/restart evidence, not runtime trigger wiring
 - `docs/contract/provider-compatibility-catalog.md` (currently absent; human acceptance remains required)
 - `docs/operations/provider-integration-and-testing.md` to replace any live-support claim that is not backed by the completed production path
 - Contract Spine/generated/parity/inventory artifacts only if Task 0 proves a public contract gap.
@@ -221,6 +230,7 @@ so that a tenant folder can use GitHub without provider-specific leakage, duplic
 |---|---|---|
 | 2026-07-19 | Created Story 3.10 with the approved GitHub provisioning/binding/ref split, secure target-resolution boundary, duplicate/alias equivalence, unknown-outcome safety, OQ4 acceptance gate, and hermetic concrete-transport verification plan. | Codex |
 | 2026-07-19 | Implemented the GitHub create/bind transport slice, secure target resolver seam, compatibility catalog, canonical failure/reconciliation behavior, and hermetic boundary/transport/restart tests. Kept the story in progress because OQ8 expired-key authority and two pre-existing contract traceability failures prevent the completion gates from passing. | Codex |
+| 2026-08-25 | Closed AC7 by adopting the Story 3.11 caller-supplied `ProviderIdempotencyAdmission` seam for repository creation and binding: replay, conflict, and expiry are now rejected before target, credential, client, or GitHub access. Repaired the pre-existing `CS8122` that made `Hexalith.Folders.Tests` unbuildable. Both prior HALT blockers are resolved — the contract gate is green at 284/284. | Claude Opus 5 |
 
 ## Dev Agent Record
 
@@ -257,6 +267,12 @@ GPT-5 Codex
 - 2026-07-20: HALT blocker reconfirmed by the full contract assembly: 284 tests ran, 281 passed, and 3 failed. The two prior NFR traceability failures remain (`PrdAndEpicsNfrInventoriesAlignOneForOne`, `TraceabilityTableHasSeventyRowsMatchingPrdHashes`), and `GovernanceCompletenessGateTests.Oq8DesignPackageBindsApprovedDecisionsAndExactDigest` now fails because the canonical OQ8 design decision document does not exist. AC7 expiry/no-provider-touch and the story completion gates cannot be marked complete until Story 12.6 supplies the approved durable admission path and evidence.
 - 2026-07-20: Concurrent user-owned OQ8 work appeared after the broad gate ran. The new design document resolves the previously undefined design parameters, but the focused governance test still fails because `docs/exit-criteria/oq8-idempotency-evidence.yaml` is absent. The current EventStore implementation also still removes an expired idempotency record in `IdempotencyChecker.ClassifyAsync`, and `AggregateActor` does not terminate on `IdempotencyCheckOutcome.Expired`, so old-key reuse can still continue toward execution. The implementation/evidence blocker therefore remains even though the design decision is now present.
 
+- 2026-08-25: Resume audit at `4fd2526`. The baseline was RED for a reason unrelated to the recorded blockers: `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs:623` carried a `CS8122` (an `is` pattern inside a `ShouldNotContain` expression tree, introduced with the Story 3.11 landing at `a69dd84`), so the entire `Hexalith.Folders.Tests` project failed to compile and no Folders test had run since. Repaired with `!= null`.
+- 2026-08-25: The OQ8 blocker is dissolved without Folders owning durable storage. Story 3.11 landed `ProviderIdempotencyAdmission` (`Fresh` / `EquivalentReplay` / `Conflict` / `Expired`) and `GitHubProvider.Mutations.ReplayOrReject`, a caller-supplied admission the adapter merely enforces. Story 3.10 now mirrors it: `ProviderRepositoryCreationRequest` and `ProviderRepositoryBindingRequest` carry the admission, and `GitHubProvider` gates on it after the safe-target fingerprint and strictly before `_targetResolver`, `_credentialResolver`, `_apiClientFactory`, and every GitHub call. Producing the durable decision remains Story 12.6 / EventStore work.
+- 2026-08-25: `RepositoryProvisioningContext` gained an optional `IdempotencyAdmission` so Story 12.6 can inject the durable decision; absent one, the process manager forwards `Fresh` with `requested.IdempotencyFingerprint`, preserving today's ledger-based dedup exactly. `RepositoryBindingService` supplies `Fresh` with `validation.IdempotencyFingerprint`.
+- 2026-08-25: The second recorded HALT blocker is also gone. `Hexalith.Folders.Contracts.Tests` is now 284/284 green — the `PrdAndEpicsNfrInventoriesAlignOneForOne` and `TraceabilityTableHasSeventyRowsMatchingPrdHashes` rows were repaired upstream at `57ec786`, and the OQ8 governance digest gate was satisfied by Story 12.6 Task 0.
+- 2026-08-25: Verification. `dotnet build Hexalith.Folders.slnx` 0 errors / 0 warnings. `Hexalith.Folders.Tests` 1526 passed, 4 failed; `Hexalith.Folders.Workers.Tests` 81/81; `Hexalith.Folders.Contracts.Tests` 284/284; `GitHubProviderTests` 134/134 including all 12 new admission tests; `git diff --check` clean.
+- 2026-08-25: The 4 red rows are pre-existing Story 3.11 defects that the compile break had been masking, not regressions. Proven by attribution run: reverting every Story 3.10 change and keeping only the one-line `CS8122` repair reproduces exactly the same 4 failures (1514 passed / 4 failed), and the Story 3.10 work adds 12 tests with zero failures. They are `GitHubDependencyGuardTests.ProviderReadinessCompositionResolvesGitHubAndForgejoExactlyOnce`, `OctokitGitHubApiClientTests.MutationStatusTransportFailuresUseOneReadAndNoMutation(malformed)`, `OctokitGitHubApiClientTests.ExplicitCommitRejectsMalformedCreatedCommitBeforeRefMovement(uppercase-sha)`, and `OctokitGitHubApiClientTests.MutationStatusRejectsEqualOrNonCanonicalExpectedShasWithoutObservation`. They belong to the Story 3.11 slice, whose spec frontmatter reads `in-review` while `sprint-status.yaml:105` still reads `backlog` — that inconsistency needs a human decision. Tracked as DW-298.
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created.
@@ -269,6 +285,15 @@ GPT-5 Codex
 - Created the compatibility catalog as pending human evidence only; production target resolution remains intentionally fail-closed until the authoritative Story 3.8 policy source exists.
 - Story completion is intentionally withheld: expired-key behavior cannot be implemented until OQ8 defines and exposes canonical retention/tombstone evidence, and the repository-wide contract regression gate is not green.
 - The 2026-07-20 resume revalidated the implemented provider slice successfully but made no runtime changes: OQ8 remains an explicit upstream governance/platform blocker, and the broad contract gate remains red outside this story's authorized scope.
+- AC7 is closed at the provider boundary: an expired key returns `idempotency_key_expired`, a conflicting key returns `idempotency_conflict`, and an equivalent replay returns the prior safe outcome — each with zero target, credential, client, and provider calls, proven by recorder call counts rather than result mapping alone.
+- Denial still precedes admission: stale authorization evidence returns `authorization_evidence_stale` even when the admission says `Expired`.
+- Folders did NOT take ownership of durable idempotency storage, retention, or tombstones. The admission is carried in, exactly as Story 3.11 does. Story 12.6 and the EventStore prerequisite still own producing it.
+- Still open and NOT claimed by this story: `OctokitGitHubApiClient.GetReadinessAsync` remains a deliberate Story 3.3 stub, OQ4 acceptance of `docs/contract/provider-compatibility-catalog.md` remains a human gate, and live deployed GitHub evidence remains outstanding for full provider-ready status.
+- Four Story 3.11 test failures are now visible in `Hexalith.Folders.Tests` for the first time. They are not regressions and are outside this story's authority; recorded as DW-298 rather than left untracked.
+- Reviewed 2026-08-25 by three independent review layers (blind, edge-case, verification-gap). All three independently found the same defect: the new gate mirrored the Story 3.11 switch but not the malformed-admission boundary checks that precede it. Fixed by adding `IsAdmissionWellFormed` / `IsReplayEvidenceWellFormed` to both `ValidateBoundary` overloads, reusing the existing `github_mutation_intent_malformed` and `github_replay_evidence_malformed` reason codes instead of the invented `idempotency_replay_evidence_missing`.
+- Review also closed a real verification gap: `RepositoryBindingService` is the only production caller that can reach the new gate today, and nothing asserted the admission it forwards, so a wrong disposition there would have disabled GitHub binding with the suite still green. `RecordingProviderCapabilityResolver` now captures the forwarded request and `FolderRepositoryBindingGateTests` asserts its disposition and intent fingerprint.
+- Recorded deviation: on an equivalent replay the result carries the deterministically recomputed safe target fingerprint, not the admission's `PriorSafeOutcomeFingerprint`, and `PriorReconciliationReference` is dropped. `ProviderRepositoryCreationResult` / `ProviderRepositoryBindingResult` have no field for either, unlike their Story 3.11 counterparts. Widening those records was out of scope; the replay evidence is still validated before it is trusted.
+- Six review findings were deferred rather than fixed here: DW-294 (Forgejo ignores the admission), DW-295 (worker seam fails open, no intent-fingerprint check), DW-296 (idempotency conflict maps to repository conflict at the API boundary), DW-297 (replay indistinguishable in the event stream), DW-298 (the four unmasked Story 3.11 reds), DW-299 (four near-identical gates can drift).
 
 ### File List
 

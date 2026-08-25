@@ -337,6 +337,12 @@ public sealed class FolderRepositoryBindingGateTests
         bindingReader.Calls.ShouldBe(1);
         resolver.Calls.ShouldBe(1);
         resolver.ProviderCalls.ShouldBe(1);
+
+        // The admission this service forwards is load-bearing: the GitHub provider short-circuits
+        // on it before any target, credential, or client access.
+        ProviderRepositoryBindingRequest forwarded = resolver.LastBindingRequest.ShouldNotBeNull();
+        forwarded.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Fresh);
+        forwarded.IdempotencyAdmission.IntentFingerprint.ShouldBe(BindingFingerprint());
     }
 
     private static RepositoryBindingService Service(

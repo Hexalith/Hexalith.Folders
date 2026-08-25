@@ -2147,3 +2147,51 @@ location: src/Hexalith.Folders.Workers/SemanticIndexing/MemoriesSemanticIndexing
 source_spec: _bmad-output/implementation-artifacts/10-6-replace-fail-closed-content-materializer-with-metadata-derived.md
 reason: The story's Dev Notes assert that emitting all five identity keys means `BuildArchivedAttributes` (`src/Hexalith.Folders.Workers/SemanticIndexing/MemoriesSemanticIndexingPort.cs:201-215`) clones the preserved `IndexedAttributes` and only flips `folders.status` to `archived`, rather than taking its identity-reconstruction fallback. That claim is prose only — no test in this story drives a real metadata-derived upsert followed by an archive re-send. The archive egress is out of scope #3 for Story 10.6, so the interaction is surfaced here rather than fixed.
 status: open
+
+### DW-294: Forgejo silently ignores the now-required provider idempotency admission.
+
+origin: code review of spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs
+source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: Story 3.10 added `ProviderIdempotencyAdmission` to `ProviderRepositoryCreationRequest` and `ProviderRepositoryBindingRequest`, and `GitHubProvider` now gates on it. `ForgejoProvider` accepts the member and enforces nothing (`grep IdempotencyAdmission src/Hexalith.Folders/Providers/Forgejo/` returns no hits), so once a caller emits a real disposition a replayed or expired intent would execute live against Forgejo. This is not a regression — Forgejo enforced no idempotency before either — and Story 3.12 owns the Forgejo slice. No test pins the deliberate no-op today.
+status: open
+
+### DW-295: The repository provisioning admission seam fails open and is never checked against the requesting intent.
+
+origin: code review of spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders.Workers/RepositoryProvisioning/RepositoryProvisioningProcessManager.cs:79-84
+source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: `RepositoryProvisioningContext.IdempotencyAdmission` is optional and defaults to `Fresh`, so a future construction site that forgets to populate it degrades the new gate to "execute as new work" with no test failing. Separately, `ContextMatchesRequested` validates tenant, organization, and binding ref but never checks that `context.IdempotencyAdmission.IntentFingerprint` equals `requested.IdempotencyFingerprint`, so once Story 12.6 supplies real admissions a mismatched one would be honoured. Both become live hazards only when 12.6 wires the durable producer; the optional default is deliberate for now because the folder ledger still owns dedup.
+status: open
+
+### DW-296: Idempotency conflict and expiry from the provider map to a repository conflict at the API boundary.
+
+origin: code review of spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs (MapProvider)
+source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: `RepositoryBindingService.MapProvider` folds `ProviderFailureCategory.ProviderConflict` into `FolderResultCode.RepositoryConflict`, so a real `idempotency_conflict` / `idempotency_key_expired` from the new gate would surface as a repository conflict even though `FolderResultCode.IdempotencyConflict` and the canonical `idempotency_conflict` string already exist. Likewise `ProviderValidationFailed` falls into the default arm and reports `ProviderReadinessFailed`. Unreachable today because the only production caller hard-codes `Fresh`; must be resolved with Story 12.6.
+status: open
+
+### DW-297: An equivalent-replay bind is indistinguishable from a fresh bind in the event stream.
+
+origin: code review of spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders.Workers/RepositoryProvisioning/RepositoryProvisioningProcessManager.cs (MapProviderResult); src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs (BuildOutcomeEvents)
+source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: Both outcome mappers branch on `IsSuccess` only and discard `EquivalentExisting`, so an `existing_equivalent` replay appends a plain `RepositoryBound`. Nothing durable records that no provider work happened, which weakens later reconciliation and audit evidence. Pre-existing shape, but Story 3.10 makes replay reachable through the provider gate.
+status: open
+
+### DW-298: Four Story 3.11 test failures were unmasked by the Story 3.10 compile repair and have no owner.
+
+origin: code review of spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubDependencyGuardTests.cs; tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs
+source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.cs:623` carried a `CS8122` that made the whole test project unbuildable, so no Folders test had run since Story 3.11 landed at `a69dd84`. Repairing it exposed four genuine pre-existing failures: `GitHubDependencyGuardTests.ProviderReadinessCompositionResolvesGitHubAndForgejoExactlyOnce` (unresolvable `ILogger<FolderTelemetryEmitter>`), `OctokitGitHubApiClientTests.MutationStatusTransportFailuresUseOneReadAndNoMutation(malformed)`, `OctokitGitHubApiClientTests.ExplicitCommitRejectsMalformedCreatedCommitBeforeRefMovement(uppercase-sha)`, and `OctokitGitHubApiClientTests.MutationStatusRejectsEqualOrNonCanonicalExpectedShasWithoutObservation`. Attribution proven: reverting every Story 3.10 change and keeping only the one-line repair reproduces the same four failures. They belong to the Story 3.11 slice, whose spec reads `in-review` while `sprint-status.yaml:105` still reads `backlog`.
+status: open
+
+### DW-299: Four near-identical ReplayOrReject gates can drift apart.
+
+origin: code review of spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders/Providers/GitHub/GitHubProvider.cs; src/Hexalith.Folders/Providers/GitHub/GitHubProvider.Mutations.cs
+source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: There are now four admission gates differing only in result type — two for creation/binding and two for change-set/commit. They already drifted once: the Story 3.10 pair initially shipped without the malformed-admission boundary checks its Story 3.11 sibling performs (fixed in review). A single helper returning `(ProviderFailureCategory, string)?`, the shape `ValidateBoundary` in `Mutations.cs` already uses, would make divergence impossible. Refactoring the Story 3.11 gates is outside Story 3.10's authority.
+status: open

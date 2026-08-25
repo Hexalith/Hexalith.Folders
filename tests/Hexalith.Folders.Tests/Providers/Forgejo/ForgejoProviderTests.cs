@@ -805,7 +805,10 @@ public sealed class ForgejoProviderTests
                 DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
                 "fresh"),
             CorrelationId: "correlation-a",
-            IdempotencyKey: "idempotency-binding-a");
+            IdempotencyKey: "idempotency-binding-a",
+            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+                ProviderIdempotencyDisposition.Fresh,
+                "intent-forgejo-a"));
 
     private static ProviderRepositoryBindingRequest BindingRequest()
         => new(
@@ -826,7 +829,10 @@ public sealed class ForgejoProviderTests
                 DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
                 "fresh"),
             CorrelationId: "correlation-a",
-            IdempotencyKey: "idempotency-binding-a");
+            IdempotencyKey: "idempotency-binding-a",
+            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+                ProviderIdempotencyDisposition.Fresh,
+                "intent-forgejo-a"));
 
     private sealed class RecordingForgejoCredentialResolver : IForgejoCredentialResolver
     {

@@ -199,6 +199,14 @@ public sealed partial class GitHubProvider : IGitProvider
                 targetFailure ?? "unsafe_github_target_metadata");
         }
 
+        ProviderRepositoryCreationResult? admissionResult = ReplayOrReject(
+            request,
+            safeTargetEvidence.Metadata["safe_target_fingerprint"]);
+        if (admissionResult is not null)
+        {
+            return admissionResult;
+        }
+
         ProviderRepositoryTargetResolutionResult targetResolution;
         try
         {
@@ -348,6 +356,14 @@ public sealed partial class GitHubProvider : IGitProvider
                 request,
                 ProviderFailureCategory.ProviderValidationFailed,
                 targetFailure ?? "unsafe_github_target_metadata");
+        }
+
+        ProviderRepositoryBindingResult? admissionResult = ReplayOrReject(
+            request,
+            safeTargetEvidence.Metadata["safe_target_fingerprint"]);
+        if (admissionResult is not null)
+        {
+            return admissionResult;
         }
 
         ProviderRepositoryTargetResolutionResult targetResolution;
@@ -501,6 +517,67 @@ public sealed partial class GitHubProvider : IGitProvider
         return null;
     }
 
+    /// <summary>
+    /// Mirrors the Story 3.11 mutation boundary: a malformed admission must become a canonical,
+    /// metadata-only validation failure rather than dereferencing into an unmapped exception.
+    /// </summary>
+    private static bool IsAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
+        => admission is not null
+            && Enum.IsDefined(admission.Disposition)
+            && IsSafeOpaqueValue(admission.IntentFingerprint);
+
+    /// <summary>
+    /// Replay evidence must be a safe fingerprint before a prior outcome can be trusted.
+    /// </summary>
+    private static bool IsReplayEvidenceWellFormed(ProviderIdempotencyAdmission admission)
+        => admission.Disposition != ProviderIdempotencyDisposition.EquivalentReplay
+            || (IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && (admission.PriorReconciliationReference is null
+                    || IsSafeFingerprint(admission.PriorReconciliationReference)));
+    /// <summary>
+    /// Enforces the caller-supplied durable idempotency admission before any target, credential,
+    /// client, or GitHub access. Story 3.10 AC7; mirrors the Story 3.11 mutation gate.
+    /// </summary>
+    private static ProviderRepositoryCreationResult? ReplayOrReject(
+        ProviderRepositoryCreationRequest request,
+        string safeTargetFingerprint)
+        => request.IdempotencyAdmission.Disposition switch
+        {
+            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.EquivalentReplay =>
+                ProviderRepositoryCreationResult.Success(request, equivalentExisting: true, safeTargetFingerprint),
+            ProviderIdempotencyDisposition.Conflict => ProviderRepositoryCreationResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderConflict,
+                "idempotency_conflict"),
+            _ => ProviderRepositoryCreationResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderConflict,
+                "idempotency_key_expired"),
+        };
+
+    /// <summary>
+    /// Enforces the caller-supplied durable idempotency admission for existing-repository binding
+    /// before any target, credential, client, or GitHub access.
+    /// </summary>
+    private static ProviderRepositoryBindingResult? ReplayOrReject(
+        ProviderRepositoryBindingRequest request,
+        string safeTargetFingerprint)
+        => request.IdempotencyAdmission.Disposition switch
+        {
+            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.EquivalentReplay =>
+                ProviderRepositoryBindingResult.Success(request, equivalentExisting: true, safeTargetFingerprint),
+            ProviderIdempotencyDisposition.Conflict => ProviderRepositoryBindingResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderConflict,
+                "idempotency_conflict"),
+            _ => ProviderRepositoryBindingResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderConflict,
+                "idempotency_key_expired"),
+        };
+
     private static ProviderRepositoryCreationResult? ValidateBoundary(ProviderRepositoryCreationRequest request)
     {
         try
@@ -526,6 +603,15 @@ public sealed partial class GitHubProvider : IGitProvider
         if (request.TargetEvidence.IsStale)
         {
             return RepositoryFailure(request, ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale");
+        }
+        if (!IsAdmissionWellFormed(request.IdempotencyAdmission))
+        {
+            return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_mutation_intent_malformed");
+        }
+
+        if (!IsReplayEvidenceWellFormed(request.IdempotencyAdmission))
+        {
+            return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_replay_evidence_malformed");
         }
 
         return null;
@@ -556,6 +642,15 @@ public sealed partial class GitHubProvider : IGitProvider
         if (request.TargetEvidence.IsStale)
         {
             return RepositoryBindingFailure(request, ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale");
+        }
+        if (!IsAdmissionWellFormed(request.IdempotencyAdmission))
+        {
+            return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_mutation_intent_malformed");
+        }
+
+        if (!IsReplayEvidenceWellFormed(request.IdempotencyAdmission))
+        {
+            return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_replay_evidence_malformed");
         }
 
         return null;

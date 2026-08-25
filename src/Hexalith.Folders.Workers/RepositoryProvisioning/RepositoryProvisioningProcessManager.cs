@@ -76,6 +76,12 @@ public sealed class RepositoryProvisioningProcessManager
             context.AuthorizationEvidence,
             requested.CorrelationId,
             requested.IdempotencyKey,
+            // Story 12.6 supplies the durable admission through the context. Until then the
+            // folder ledger's AppendIfFingerprintAbsent remains the dedup authority, so Fresh
+            // preserves today's behaviour exactly rather than inventing expiry here.
+            context.IdempotencyAdmission ?? new ProviderIdempotencyAdmission(
+                ProviderIdempotencyDisposition.Fresh,
+                requested.IdempotencyFingerprint),
             requested.RepositoryProfileRef);
 
         ProviderRepositoryCreationResult providerResult;

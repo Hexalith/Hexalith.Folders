@@ -10,6 +10,12 @@ public sealed class RecordingProviderCapabilityResolver(IGitProvider provider) :
 
     public int ProviderCalls { get; private set; }
 
+    /// <summary>Gets the last binding request forwarded to the provider.</summary>
+    public ProviderRepositoryBindingRequest? LastBindingRequest { get; private set; }
+
+    /// <summary>Gets the last creation request forwarded to the provider.</summary>
+    public ProviderRepositoryCreationRequest? LastCreationRequest { get; private set; }
+
     public Task<IGitProvider?> ResolveAsync(
         string providerFamily,
         string providerKey,
@@ -39,6 +45,7 @@ public sealed class RecordingProviderCapabilityResolver(IGitProvider provider) :
             CancellationToken cancellationToken = default)
         {
             owner.ProviderCalls++;
+            owner.LastCreationRequest = request;
             return await inner.CreateRepositoryAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
@@ -47,6 +54,7 @@ public sealed class RecordingProviderCapabilityResolver(IGitProvider provider) :
             CancellationToken cancellationToken = default)
         {
             owner.ProviderCalls++;
+            owner.LastBindingRequest = request;
             return await inner.ValidateRepositoryBindingAsync(request, cancellationToken).ConfigureAwait(false);
         }
 

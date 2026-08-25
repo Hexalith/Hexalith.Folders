@@ -620,7 +620,9 @@ public sealed class OctokitGitHubApiClientTests
 
         result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
         handler.Requests.Count.ShouldBe(2);
-        handler.Requests.ShouldNotContain(static request => request.Method is not null && request.Method != HttpMethod.Get);
+        // `!= null` rather than `is not null`: Shouldly binds an expression tree here and
+        // pattern syntax inside one is CS8122.
+        handler.Requests.ShouldNotContain(static request => request.Method != null && request.Method != HttpMethod.Get);
     }
 
     [Theory]

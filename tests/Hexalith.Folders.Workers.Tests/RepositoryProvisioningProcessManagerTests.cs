@@ -35,6 +35,8 @@ public sealed class RepositoryProvisioningProcessManagerTests
         sent.AuthorizationEvidence.Fingerprint.ShouldBe("authz-a");
         sent.CorrelationId.ShouldBe("correlation-a");
         sent.IdempotencyKey.ShouldBe("idempotency-a");
+        sent.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Fresh);
+        sent.IdempotencyAdmission.IntentFingerprint.ShouldBe("fingerprint-a");
         repository.EventsAppended.ShouldBe(1);
         RepositoryBound bound = repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<RepositoryBound>();
         bound.RepositoryBindingId.ShouldBe("binding-a");
@@ -258,6 +260,24 @@ public sealed class RepositoryProvisioningProcessManagerTests
         return repository;
     }
 
+    [Fact]
+    public async Task RequestedEventShouldForwardTheCallerSuppliedIdempotencyAdmission()
+    {
+        RecordingFolderRepository repository = RepositoryWithRequestedBinding();
+        RecordingGitProvider provider = RecordingGitProvider.Success();
+        RepositoryProvisioningProcessManager manager = CreateManager(repository, provider);
+        ProviderIdempotencyAdmission admission = new(
+            ProviderIdempotencyDisposition.Expired,
+            "durable-intent-a");
+
+        await manager.HandleAsync(
+            Requested(),
+            Context() with { IdempotencyAdmission = admission },
+            TestContext.Current.CancellationToken);
+
+        provider.LastRequest.ShouldNotBeNull().IdempotencyAdmission.ShouldBe(admission);
+    }
+
     private static RepositoryBindingRequested Requested()
         => new(
             ManagedTenantId: "tenant-a",
@@ -468,5 +488,8 @@ public sealed class RepositoryProvisioningProcessManagerTests
             CredentialModeRequirements: [ProviderCredentialMode.AppInstallationReference],
             AuthorizationEvidence: new ProviderAuthorizationEvidenceSnapshot("authz-a", Now, "fresh"),
             CorrelationId: "correlation-a",
-            IdempotencyKey: "idempotency-a");
+            IdempotencyKey: "idempotency-a",
+            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+                ProviderIdempotencyDisposition.Fresh,
+                "intent-a"));
 }

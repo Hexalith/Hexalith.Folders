@@ -11,4 +11,5 @@ public sealed record RepositoryProvisioningContext(
     string ProviderKey,
     ProviderTargetEvidence TargetEvidence,
     IReadOnlyList<ProviderCredentialMode> CredentialModeRequirements,
-    ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence);
+    ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence,
+    ProviderIdempotencyAdmission? IdempotencyAdmission = null);

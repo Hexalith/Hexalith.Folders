@@ -187,7 +187,12 @@ public sealed class RepositoryBindingService(
                     _timeProvider.GetUtcNow(),
                     "fresh"),
                 command.CorrelationId,
-                command.IdempotencyKey),
+                command.IdempotencyKey,
+                // Fresh until Story 12.6 exposes the durable admission decision; the ledger
+                // check above still owns replay/conflict for this path.
+                new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.Fresh,
+                    validation.IdempotencyFingerprint!)),
             cancellationToken).ConfigureAwait(false);
 
         IReadOnlyList<IFolderEvent> events = BuildOutcomeEvents(
