@@ -1036,14 +1036,16 @@ resolution: Closed by the Story 1.11 continuation in the OpenAPI contract, contr
 origin: migrated from legacy ledger ("Deferred from: code review of 1-10-author-commit-and-workspace-status-contract-groups (2026-05-14)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:1694
 reason: W1: Negative-test cases for duplicate `operationId`, missing required `x-hexalith-*` metadata, mutating-without-idempotency, and read-without-read-consistency are not exercised. AC12 minimum-matrix gap; better owned by Story 1.14 (Contract Spine CI gates). (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:1694`)
-status: open
+status: done 2026-08-25
+resolution: already resolved: tests/tools/parity-oracle-generator/Program.cs:162,208; tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs:167; and GovernanceCompletenessGateTests.cs:538 now reject duplicate operation IDs and missing mutation/read metadata with negative controls.
 
 ### DW-142: W2: No assertion that `hexalith.folders.v1.yaml` parses as a valid OpenAPI 3.1 document
 
 origin: migrated from legacy ledger ("Deferred from: code review of 1-10-author-commit-and-workspace-status-contract-groups (2026-05-14)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:LoadYamlMapping
 reason: W2: No assertion that `hexalith.folders.v1.yaml` parses as a valid OpenAPI 3.1 document — the test currently only loads the file via `YamlStream`. Pre-existing across all contract-group tests; better owned by Story 1.6 foundation tests. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/CommitStatusContractGroupTests.cs:LoadYamlMapping`)
-status: open
+status: done 2026-08-25
+resolution: already resolved: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:17,34 and .github/workflows/contract-spine.yml:31 restore NSwag and parse, generate, and build the OpenAPI document in the required CI path.
 
 ### DW-143: W3: `CommitWorkspace` does not declare a 429 response even though `provider_rate_limited` is in the canonical-error-category set
 
@@ -1548,7 +1550,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70
 reason: PathTooLongException nuance in `VerifyCurrentDetailed` catch filter [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:70`] — current catch list is sufficient for the inputs the helper receives.
-status: open
+status: done 2026-08-25
+resolution: already resolved: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:61 catches IOException, which already includes PathTooLongException.
 
 ### DW-212: Duplicate switch logic in `Resolve*OperationKindWireValue` / `Resolve*OperationId`
 
@@ -1620,7 +1623,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392
 reason: `LockWorkspaceRequest` missing `repository_binding_id` vs `PrepareWorkspaceRequest` includes it [`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:374-392`] — pending spine verification; owned by Stories 1.7-1.11 if it is a spine bug.
-status: open
+status: done 2026-08-25
+resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:1490 defines LockWorkspace idempotency without repository_binding_id, and generated helper lines 428-440 match that canonical contract.
 
 ### DW-222: `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — Round 2 P28 was marked done with this approach; functionally deterministic.
 
