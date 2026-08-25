@@ -35,6 +35,15 @@
     "label": "Generate nullable limits",
     "resolution": ""
   },
+  "DW-292": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Assign a durable projection owner before Story 10.8 and implement EventStore-backed population, replay, Server registration, restart, tenant-isolation, and failure evidence.",
+    "key": "1",
+    "label": "Create prerequisite story",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

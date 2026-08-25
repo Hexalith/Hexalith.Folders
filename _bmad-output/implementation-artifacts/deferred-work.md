@@ -2148,6 +2148,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 10-6-replace
 location: src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:247
 reason: **Production effective-permissions read model is never populated, so the indexing policy gate denies delivered mutations.** `AddFoldersLayeredAuthorization` registers a fresh `InMemoryEffectivePermissionsReadModel` (`src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:247`), while production has no caller of its `Save` method. `FailClosedSemanticIndexingPolicyEvaluator` therefore receives `NotFoundSafe` from the permission provider and returns `folder_acl_denied` before invoking the content materializer. This is pre-existing authorization-projection/data-plane work, not introduced by Story 10.6.
 status: open
+decision: 2026-08-25 Create prerequisite story — Assign a durable projection owner before Story 10.8 and implement EventStore-backed population, replay, Server registration, restart, tenant-isolation, and failure evidence.
 
 ### DW-293: No test verifies that the new complete upsert attribute set keeps the archive soft-delete re-send off its legacy identity-reconstruction branch.
 
