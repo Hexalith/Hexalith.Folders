@@ -2,24 +2,30 @@ using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.GitHub;
 
-public sealed class GitHubProvider : IGitProvider
+public sealed partial class GitHubProvider : IGitProvider
 {
     private readonly IGitHubCredentialResolver _credentialResolver;
     private readonly IGitHubApiClientFactory _apiClientFactory;
     private readonly IProviderRepositoryTargetResolver _targetResolver;
+    private readonly IProviderOperationSourceResolver _operationSourceResolver;
 
     public GitHubProvider()
         : this(
             new UnconfiguredGitHubCredentialResolver(),
             new OctokitGitHubApiClientFactory(),
-            new UnconfiguredProviderRepositoryTargetResolver())
+            new UnconfiguredProviderRepositoryTargetResolver(),
+            new UnconfiguredProviderOperationSourceResolver())
     {
     }
 
     internal GitHubProvider(
         IGitHubCredentialResolver credentialResolver,
         IGitHubApiClientFactory apiClientFactory)
-        : this(credentialResolver, apiClientFactory, new UnconfiguredProviderRepositoryTargetResolver())
+        : this(
+            credentialResolver,
+            apiClientFactory,
+            new UnconfiguredProviderRepositoryTargetResolver(),
+            new UnconfiguredProviderOperationSourceResolver())
     {
     }
 
@@ -27,10 +33,24 @@ public sealed class GitHubProvider : IGitProvider
         IGitHubCredentialResolver credentialResolver,
         IGitHubApiClientFactory apiClientFactory,
         IProviderRepositoryTargetResolver targetResolver)
+        : this(
+            credentialResolver,
+            apiClientFactory,
+            targetResolver,
+            new UnconfiguredProviderOperationSourceResolver())
+    {
+    }
+
+    internal GitHubProvider(
+        IGitHubCredentialResolver credentialResolver,
+        IGitHubApiClientFactory apiClientFactory,
+        IProviderRepositoryTargetResolver targetResolver,
+        IProviderOperationSourceResolver operationSourceResolver)
     {
         _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
         _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
         _targetResolver = targetResolver ?? throw new ArgumentNullException(nameof(targetResolver));
+        _operationSourceResolver = operationSourceResolver ?? throw new ArgumentNullException(nameof(operationSourceResolver));
     }
 
     public string ProviderFamily => GitHubProviderConstants.ProviderFamily;

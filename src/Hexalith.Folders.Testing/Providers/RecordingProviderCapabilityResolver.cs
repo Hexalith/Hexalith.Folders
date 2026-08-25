@@ -16,6 +16,15 @@ public sealed class RecordingProviderCapabilityResolver(IGitProvider provider) :
     /// <summary>Gets the last creation request forwarded to the provider.</summary>
     public ProviderRepositoryCreationRequest? LastCreationRequest { get; private set; }
 
+    /// <summary>Gets the last file-mutation request forwarded to the provider.</summary>
+    public ProviderFileMutationRequest? LastFileMutationRequest { get; private set; }
+
+    /// <summary>Gets the last commit request forwarded to the provider.</summary>
+    public ProviderCommitRequest? LastCommitRequest { get; private set; }
+
+    /// <summary>Gets the last status request forwarded to the provider.</summary>
+    public ProviderOperationStatusRequest? LastStatusRequest { get; private set; }
+
     public Task<IGitProvider?> ResolveAsync(
         string providerFamily,
         string providerKey,
@@ -56,6 +65,33 @@ public sealed class RecordingProviderCapabilityResolver(IGitProvider provider) :
             owner.ProviderCalls++;
             owner.LastBindingRequest = request;
             return await inner.ValidateRepositoryBindingAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<ProviderFileMutationResult> StageFileChangesAsync(
+            ProviderFileMutationRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            owner.ProviderCalls++;
+            owner.LastFileMutationRequest = request;
+            return await inner.StageFileChangesAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<ProviderCommitResult> CommitAsync(
+            ProviderCommitRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            owner.ProviderCalls++;
+            owner.LastCommitRequest = request;
+            return await inner.CommitAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<ProviderOperationStatusResult> GetOperationStatusAsync(
+            ProviderOperationStatusRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            owner.ProviderCalls++;
+            owner.LastStatusRequest = request;
+            return await inner.GetOperationStatusAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         public ProviderCapabilityComparisonResult CompareCapabilityProfiles(

@@ -5,20 +5,23 @@ namespace Hexalith.Folders.Providers.GitHub;
 internal static class GitHubCredentialModeValidator
 {
     public static bool TryGetSupportedMode(
-        IReadOnlyList<ProviderCredentialMode> credentialModes,
+        IReadOnlyList<ProviderCredentialMode>? credentialModes,
         out ProviderCredentialMode mode,
         out string? failureReason)
     {
-        ArgumentNullException.ThrowIfNull(credentialModes);
+        mode = ProviderCredentialMode.None;
+        failureReason = null;
+        if (credentialModes is null)
+        {
+            failureReason = "missing_github_credential_mode";
+            return false;
+        }
 
         ProviderCredentialMode[] distinctModes = credentialModes
             .Where(static x => x != ProviderCredentialMode.None)
             .Distinct()
             .Order()
             .ToArray();
-
-        mode = ProviderCredentialMode.None;
-        failureReason = null;
 
         if (distinctModes.Length == 0)
         {
@@ -42,4 +45,3 @@ internal static class GitHubCredentialModeValidator
         return false;
     }
 }
-

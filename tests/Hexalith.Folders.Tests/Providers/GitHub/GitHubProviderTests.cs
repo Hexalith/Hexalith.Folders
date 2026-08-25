@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Providers.GitHub;
 
-public sealed class GitHubProviderTests
+public sealed partial class GitHubProviderTests
 {
     [Fact]
     public async Task DiscoversGitHubCapabilityProfileThroughInternalApiSeam()

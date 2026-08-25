@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Providers.GitHub;
 
-public sealed class OctokitGitHubApiClientTests
+public sealed partial class OctokitGitHubApiClientTests
 {
     [Fact]
     public async Task CreateRepositorySendsPinnedHermeticRequestAndReturnsCanonicalIdentity()
@@ -422,7 +422,9 @@ public sealed class OctokitGitHubApiClientTests
 
     private static async ValueTask<IGitHubApiClient> CreateClientAsync(RecordingGitHubHttpMessageHandler handler)
     {
-        OctokitGitHubApiClientFactory factory = new(() => new HttpClientAdapter(() => handler));
+        OctokitGitHubApiClientFactory factory = new(
+            () => new HttpClientAdapter(() => handler),
+            () => handler);
         GitHubCredentialLease credential = GitHubCredentialLease.CreateForTesting("token-sentinel");
         try
         {

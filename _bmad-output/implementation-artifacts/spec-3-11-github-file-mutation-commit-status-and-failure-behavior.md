@@ -2,8 +2,8 @@
 title: 'Story 3.11: GitHub file mutation, commit, status, and failure behavior'
 type: 'feature'
 created: '2026-08-24'
-status: ready-for-dev
-baseline_revision: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
+status: in-review
+baseline_revision: '67247f5a34df9887af1505fa0cff9fec3f3b4276'
 baseline_commit: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 review_loop_iteration: 0
 followup_review_recommended: false
@@ -62,11 +62,11 @@ deferred: []
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/Hexalith.Folders/Providers/Abstractions/*.cs` -- define metadata-safe request/result/status/reconciliation shapes and extend `IGitProvider`; preserve the existing capability and failure contracts.
-- [ ] `src/Hexalith.Folders/Providers/GitHub/*.cs` -- implement authorized private resolution, ordered Git Data staging, explicit commit/non-force ref update, exact status checks, safe mapping, and cancellation/ambiguity rules with Octokit 14.0.0 and REST profile `2022-11-28`.
-- [ ] `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` plus provider fakes -- wire the real GitHub/Octokit provider registration and fail-closed downstream resolver, and keep unsupported non-GitHub behavior compile-safe without enabling the later production executor path.
-- [ ] `tests/Hexalith.Folders.Tests/Providers/GitHub/*.cs` -- cover the I/O matrix, production provider registration, authorization-before-observation, exact methods/paths/headers/order/ref identity, replay/no-second-dispatch, 400/401/403/404/409/422/429/5xx, primary/secondary limits, moved head, cancellation boundaries, ambiguous responses, bounded per-call status observations, and serialized sentinel exclusion.
-- [ ] `docs/contract/provider-compatibility-catalog.md` -- document the implemented profile and leave Provider/Architecture/PM approval visibly pending.
+- [x] `src/Hexalith.Folders/Providers/Abstractions/*.cs` -- define metadata-safe request/result/status/reconciliation shapes and extend `IGitProvider`; preserve the existing capability and failure contracts.
+- [x] `src/Hexalith.Folders/Providers/GitHub/*.cs` -- implement authorized private resolution, ordered Git Data staging, explicit commit/non-force ref update, exact status checks, safe mapping, and cancellation/ambiguity rules with Octokit 14.0.0 and REST profile `2022-11-28`.
+- [x] `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` plus provider fakes -- wire the real GitHub/Octokit provider registration and fail-closed downstream resolver, and keep unsupported non-GitHub behavior compile-safe without enabling the later production executor path.
+- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/*.cs` -- cover the I/O matrix, production provider registration, authorization-before-observation, exact methods/paths/headers/order/ref identity, replay/no-second-dispatch, 400/401/403/404/409/422/429/5xx, primary/secondary limits, moved head, cancellation boundaries, ambiguous responses, bounded per-call status observations, and serialized sentinel exclusion.
+- [x] `docs/contract/provider-compatibility-catalog.md` -- document the implemented profile and leave Provider/Architecture/PM approval visibly pending.
 
 **Acceptance Criteria:**
 - Given current authorized provider evidence and an exact resolved GitHub target, when the canonical provider stages and commits a validated ordered change set, then no file operation auto-commits and success is returned only after one non-force ref update is confirmed at the intended commit.
@@ -103,4 +103,3 @@ GitHub Contents API is intentionally excluded because each write creates a commi
 - `./tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests -noLogo -noColor -class Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests -class Hexalith.Folders.Tests.Providers.GitHub.OctokitGitHubApiClientTests -class Hexalith.Folders.Tests.Providers.GitHub.GitHubDependencyGuardTests` -- expected: focused adapter suite passes.
 - `dotnet build Hexalith.Folders.slnx --no-restore -m:1` -- expected: solution build passes.
 - `git diff --check` -- expected: no whitespace errors; `sprint-status.yaml` remains untouched.
-

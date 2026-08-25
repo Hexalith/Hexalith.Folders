@@ -14,7 +14,10 @@ internal static class GitHubFailureMapper
             ["permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["hidden_or_missing"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
+            ["ref_head_conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["missing_branch_or_ref"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
+            ["path_policy_invalid"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
+            ["content_policy_invalid"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
             ["unsupported_ref_operation"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
             ["contents_permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["administration_permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
@@ -24,6 +27,30 @@ internal static class GitHubFailureMapper
             ["ambiguous_mutation_response"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["timeout_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["unexpected_transport"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+        };
+
+    public static (ProviderFailureCategory Category, string ReasonCode) ToProviderOperationFailure(
+        GitHubApiFailureCondition condition)
+        => condition switch
+        {
+            GitHubApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "github_validation_failed"),
+            GitHubApiFailureCondition.PathPolicyViolation => (ProviderFailureCategory.ProviderValidationFailed, "github_path_policy_invalid"),
+            GitHubApiFailureCondition.ContentPolicyViolation => (ProviderFailureCategory.ProviderValidationFailed, "github_content_policy_invalid"),
+            GitHubApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "github_authentication_required"),
+            GitHubApiFailureCondition.PermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_permission_insufficient"),
+            GitHubApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "github_resource_hidden_or_missing"),
+            GitHubApiFailureCondition.RefHeadConflict => (ProviderFailureCategory.ProviderConflict, "github_ref_head_conflict"),
+            GitHubApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "github_branch_protection_conflict"),
+            GitHubApiFailureCondition.PrimaryRateLimit => (ProviderFailureCategory.ProviderRateLimited, "github_primary_rate_limited"),
+            GitHubApiFailureCondition.SecondaryRateLimit => (ProviderFailureCategory.ProviderRateLimited, "github_secondary_rate_limited"),
+            GitHubApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "github_server_unavailable"),
+            GitHubApiFailureCondition.CancellationBeforeDispatch => (ProviderFailureCategory.ProviderTransientFailure, "github_operation_cancelled_before_dispatch"),
+            GitHubApiFailureCondition.TimeoutDuringObservation => (ProviderFailureCategory.ProviderUnavailable, "github_evidence_temporarily_unavailable"),
+            GitHubApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "github_malformed_response"),
+            GitHubApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_outcome_unknown"),
+            GitHubApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "github_mutation_evidence_ambiguous"),
+            GitHubApiFailureCondition.UnexpectedTransportFailure => (ProviderFailureCategory.UnknownProviderOutcome, "github_transport_outcome_unknown"),
+            _ => (ProviderFailureCategory.UnknownProviderOutcome, "github_unmapped_outcome"),
         };
 
     public static ProviderCapabilityDiscoveryResult ToProviderFailure(

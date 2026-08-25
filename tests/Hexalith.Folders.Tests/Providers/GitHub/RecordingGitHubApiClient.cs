@@ -1,3 +1,4 @@
+using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.GitHub;
 
 namespace Hexalith.Folders.Tests.Providers.GitHub;
@@ -7,19 +8,39 @@ internal sealed class RecordingGitHubApiClient(
     GitHubRepositoryCreationResult? repositoryCreationResult = null,
     Exception? repositoryCreationException = null,
     GitHubRepositoryBindingResult? repositoryBindingResult = null,
-    Exception? repositoryBindingException = null) : IGitHubApiClient
+    Exception? repositoryBindingException = null,
+    GitHubFileMutationResult? fileMutationResult = null,
+    Exception? fileMutationException = null,
+    GitHubCommitResult? commitResult = null,
+    Exception? commitException = null,
+    GitHubOperationStatusResult? statusResult = null,
+    Exception? statusException = null) : IGitHubApiClient
 {
+    private const string ObjectId = "1111111111111111111111111111111111111111";
+
     public int ReadinessCalls { get; private set; }
 
     public int RepositoryCreationCalls { get; private set; }
 
     public int RepositoryBindingCalls { get; private set; }
 
+    public int FileMutationCalls { get; private set; }
+
+    public int CommitCalls { get; private set; }
+
+    public int StatusCalls { get; private set; }
+
     public GitHubReadinessRequest? LastRequest { get; private set; }
 
     public GitHubRepositoryCreationRequest? LastRepositoryCreationRequest { get; private set; }
 
     public GitHubRepositoryBindingRequest? LastRepositoryBindingRequest { get; private set; }
+
+    public GitHubFileMutationRequest? LastFileMutationRequest { get; private set; }
+
+    public GitHubCommitRequest? LastCommitRequest { get; private set; }
+
+    public GitHubOperationStatusRequest? LastStatusRequest { get; private set; }
 
     public static RecordingGitHubApiClient Success()
         => new(SuccessReadiness());
@@ -80,6 +101,31 @@ internal sealed class RecordingGitHubApiClient(
     public static RecordingGitHubApiClient RepositoryBindingThrows(Exception exception)
         => new(SuccessReadiness(), repositoryBindingException: exception);
 
+    public static RecordingGitHubApiClient FileMutationFailure(GitHubApiFailureCondition condition)
+        => new(SuccessReadiness(), fileMutationResult: GitHubFileMutationResult.Failure(condition));
+
+    public static RecordingGitHubApiClient FileMutationThrows(Exception exception)
+        => new(SuccessReadiness(), fileMutationException: exception);
+
+    public static RecordingGitHubApiClient MalformedOperationSuccesses()
+        => new(
+            SuccessReadiness(),
+            fileMutationResult: new GitHubFileMutationResult(true, default, null, "not-a-sha"),
+            commitResult: new GitHubCommitResult(true, default, null, "not-a-sha", "not-a-sha"),
+            statusResult: new GitHubOperationStatusResult(true, (ProviderOperationStatusKind)999, default, null, "not-a-sha"));
+
+    public static RecordingGitHubApiClient CommitFailure(GitHubApiFailureCondition condition)
+        => new(SuccessReadiness(), commitResult: GitHubCommitResult.Failure(condition));
+
+    public static RecordingGitHubApiClient CommitThrows(Exception exception)
+        => new(SuccessReadiness(), commitException: exception);
+
+    public static RecordingGitHubApiClient Status(ProviderOperationStatusKind status, string observedSha = ObjectId)
+        => new(SuccessReadiness(), statusResult: GitHubOperationStatusResult.Observed(status, observedSha));
+
+    public static RecordingGitHubApiClient StatusFailure(GitHubApiFailureCondition condition)
+        => new(SuccessReadiness(), statusResult: GitHubOperationStatusResult.Failure(condition));
+
     public Task<GitHubReadinessResult> GetReadinessAsync(
         GitHubReadinessRequest request,
         CancellationToken cancellationToken = default)
@@ -118,5 +164,51 @@ internal sealed class RecordingGitHubApiClient(
         }
 
         return Task.FromResult(repositoryBindingResult ?? GitHubRepositoryBindingResult.Success());
+    }
+
+    public Task<GitHubFileMutationResult> StageFileChangesAsync(
+        GitHubFileMutationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        FileMutationCalls++;
+        LastFileMutationRequest = request;
+        if (fileMutationException is not null)
+        {
+            throw fileMutationException;
+        }
+
+        return Task.FromResult(fileMutationResult ?? GitHubFileMutationResult.Success(ObjectId));
+    }
+
+    public Task<GitHubCommitResult> CommitAsync(
+        GitHubCommitRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        CommitCalls++;
+        LastCommitRequest = request;
+        if (commitException is not null)
+        {
+            throw commitException;
+        }
+
+        return Task.FromResult(commitResult ?? GitHubCommitResult.Success(ObjectId));
+    }
+
+    public Task<GitHubOperationStatusResult> GetOperationStatusAsync(
+        GitHubOperationStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        StatusCalls++;
+        LastStatusRequest = request;
+        if (statusException is not null)
+        {
+            throw statusException;
+        }
+
+        return Task.FromResult(statusResult
+            ?? GitHubOperationStatusResult.Observed(ProviderOperationStatusKind.Confirmed, ObjectId));
     }
 }

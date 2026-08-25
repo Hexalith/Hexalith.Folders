@@ -179,10 +179,46 @@ public static class FoldersServiceCollectionExtensions
         services.AddFoldersObservability();
         services.TryAddSingleton<IGitHubCredentialResolver, UnconfiguredGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, UnconfiguredForgejoCredentialResolver>();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProvider>());
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
+        services.TryAddSingleton<IGitHubApiClientFactory, OctokitGitHubApiClientFactory>();
         services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
         services.TryAddSingleton<IProviderRepositoryTargetResolver, UnconfiguredProviderRepositoryTargetResolver>();
+        services.TryAddSingleton<IProviderOperationSourceResolver, UnconfiguredProviderOperationSourceResolver>();
+        GitHubProvider? preRegisteredInstance = services
+            .Where(static descriptor => descriptor.ServiceType == typeof(IGitProvider))
+            .Select(static descriptor => descriptor.ImplementationInstance)
+            .OfType<GitHubProvider>()
+            .FirstOrDefault();
+        foreach (ServiceDescriptor descriptor in services
+            .Where(static descriptor => descriptor.ServiceType == typeof(IGitProvider)
+                && (descriptor.ImplementationType == typeof(GitHubProvider)
+                    || descriptor.ImplementationInstance is GitHubProvider))
+            .ToArray())
+        {
+            services.Remove(descriptor);
+        }
+
+        if (!services.Any(static descriptor => descriptor.ServiceType == typeof(GitHubProvider)))
+        {
+            if (preRegisteredInstance is not null)
+            {
+                services.AddSingleton(preRegisteredInstance);
+            }
+            else
+            {
+                services.AddSingleton(static sp => new GitHubProvider(
+                    sp.GetRequiredService<IGitHubCredentialResolver>(),
+                    sp.GetRequiredService<IGitHubApiClientFactory>(),
+                    sp.GetRequiredService<IProviderRepositoryTargetResolver>(),
+                    sp.GetRequiredService<IProviderOperationSourceResolver>()));
+            }
+        }
+
+        if (!HasCanonicalGitHubProviderRegistration(services))
+        {
+            services.AddSingleton<IGitProvider>(ResolveGitHubProvider);
+        }
+
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
         services.TryAddSingleton<IProviderCapabilityResolver, DefaultProviderCapabilityResolver>();
         services.TryAddSingleton<IProviderCapabilityEvidenceStore, InMemoryProviderCapabilityEvidenceStore>();
         services.TryAddSingleton<ProviderCapabilityDiscoveryService>();
@@ -214,21 +250,33 @@ public static class FoldersServiceCollectionExtensions
         services.RemoveAll<IGitHubCredentialResolver>();
         services.RemoveAll<IForgejoCredentialResolver>();
         services.RemoveAll<IGitProvider>();
+        services.RemoveAll<GitHubProvider>();
 
         services.TryAddSingleton<IProviderCredentialSecretStoreClient, DaprProviderCredentialSecretStoreClient>();
         services.TryAddSingleton<IProviderCredentialReferenceResolver, DaprProviderCredentialReferenceResolver>();
         services.TryAddSingleton<IGitHubCredentialResolver, DaprBackedGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, DaprBackedForgejoCredentialResolver>();
-        services.AddSingleton<IGitProvider>(static sp => new GitHubProvider(
+        services.AddSingleton(static sp => new GitHubProvider(
             sp.GetRequiredService<IGitHubCredentialResolver>(),
-            new OctokitGitHubApiClientFactory(),
-            sp.GetRequiredService<IProviderRepositoryTargetResolver>()));
+            sp.GetRequiredService<IGitHubApiClientFactory>(),
+            sp.GetRequiredService<IProviderRepositoryTargetResolver>(),
+            sp.GetRequiredService<IProviderOperationSourceResolver>()));
+        services.AddSingleton<IGitProvider>(ResolveGitHubProvider);
         services.AddSingleton<IGitProvider>(static sp => new ForgejoProvider(
             sp.GetRequiredService<IForgejoCredentialResolver>(),
             new ForgejoHttpApiClientFactory()));
 
         return services;
     }
+
+    private static bool HasCanonicalGitHubProviderRegistration(IServiceCollection services)
+        => services.Any(static descriptor => descriptor.ServiceType == typeof(IGitProvider)
+            && (descriptor.ImplementationType == typeof(GitHubProvider)
+                || descriptor.ImplementationInstance is GitHubProvider
+                || descriptor.ImplementationFactory?.Method == ((Func<IServiceProvider, IGitProvider>)ResolveGitHubProvider).Method));
+
+    private static IGitProvider ResolveGitHubProvider(IServiceProvider serviceProvider)
+        => serviceProvider.GetRequiredService<GitHubProvider>();
 
     public static IServiceCollection AddFoldersObservability(this IServiceCollection services)
     {

@@ -46,7 +46,7 @@ public sealed class GitHubDependencyGuardTests
     }
 
     [Fact]
-    public void CompatibilityCatalogPinsStory310AssumptionsWithoutApprovingOq4()
+    public void CompatibilityCatalogPinsGitHubProviderAssumptionsWithoutApprovingOq4()
     {
         string root = FindRepositoryRoot();
         string catalogPath = Path.Combine(root, "docs", "contract", "provider-compatibility-catalog.md");
@@ -70,6 +70,12 @@ public sealed class GitHubDependencyGuardTests
             "Story 3.3",
             "Story 3.11",
             "Story 3.14",
+            "`git/blobs`",
+            "`git/trees`",
+            "`force=false`",
+            "five read-only checks",
+            "15-minute window",
+            "provider_file_mutation_source_unconfigured",
         ];
 
         foreach (string evidence in requiredEvidence)
