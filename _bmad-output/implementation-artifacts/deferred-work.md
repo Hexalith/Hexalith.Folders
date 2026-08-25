@@ -1996,7 +1996,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: IDomainProcessor.ProcessAsync
 reason: W1: `CancellationToken` cannot propagate into `IDomainProcessor.ProcessAsync` — interface has no CT parameter; `FolderDomainProcessor` passes `CancellationToken.None` to all evidence providers. ADR 0001 explicitly accepts this; evidence providers are deterministic in-memory operations. Deferred — revisit when EventStore framework's `IDomainProcessor` gains a CT parameter.
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Keep cancellation at surrounding request and provider paths because evidence calls at this seam are bounded and deterministic.
+decision: 2026-08-25 Retain ADR tradeoff — Keep cancellation at surrounding request and provider paths because evidence calls at this seam are bounded and deterministic.
 
 ### DW-273: W3: `FolderAccessTenantGate.HasCompetingClientTenant` does not guard whitespace-only keys in `ClientControlledTenantIds`
 
