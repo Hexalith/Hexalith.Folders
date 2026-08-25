@@ -43,6 +43,18 @@ internal sealed class RecordingGitHubCredentialResolver : IGitHubCredentialResol
         return new(() => result);
     }
 
+    public static RecordingGitHubCredentialResolver FromResult(GitHubCredentialResolutionResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        return new(() => result);
+    }
+
+    public static RecordingGitHubCredentialResolver Throws(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+        return new(() => throw exception);
+    }
+
     public ValueTask<GitHubCredentialResolutionResult> ResolveAsync(
         GitHubCredentialResolutionRequest request,
         CancellationToken cancellationToken = default)

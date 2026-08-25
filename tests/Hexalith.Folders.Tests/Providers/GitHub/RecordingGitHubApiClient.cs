@@ -16,7 +16,7 @@ internal sealed class RecordingGitHubApiClient(
     GitHubOperationStatusResult? statusResult = null,
     Exception? statusException = null) : IGitHubApiClient
 {
-    private const string ObjectId = "1111111111111111111111111111111111111111";
+    private const string ObjectId = "3333333333333333333333333333333333333333";
 
     public int ReadinessCalls { get; private set; }
 
@@ -120,8 +120,17 @@ internal sealed class RecordingGitHubApiClient(
     public static RecordingGitHubApiClient CommitThrows(Exception exception)
         => new(SuccessReadiness(), commitException: exception);
 
-    public static RecordingGitHubApiClient Status(ProviderOperationStatusKind status, string observedSha = ObjectId)
-        => new(SuccessReadiness(), statusResult: GitHubOperationStatusResult.Observed(status, observedSha));
+    public static RecordingGitHubApiClient Status(ProviderOperationStatusKind status, string? observedSha = null)
+        => new(
+            SuccessReadiness(),
+            statusResult: GitHubOperationStatusResult.Observed(
+                status,
+                observedSha ?? status switch
+                {
+                    ProviderOperationStatusKind.Confirmed => RecordingProviderOperationSourceResolver.CommitSha,
+                    ProviderOperationStatusKind.NotApplied => RecordingProviderOperationSourceResolver.HeadSha,
+                    _ => RecordingProviderOperationSourceResolver.TreeSha,
+                }));
 
     public static RecordingGitHubApiClient StatusFailure(GitHubApiFailureCondition condition)
         => new(SuccessReadiness(), statusResult: GitHubOperationStatusResult.Failure(condition));

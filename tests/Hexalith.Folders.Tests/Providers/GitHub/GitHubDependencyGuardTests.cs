@@ -67,7 +67,7 @@ public sealed class GitHubDependencyGuardTests
             "secondary rate limit",
             "unknown_provider_outcome",
             "no blind retry",
-            "OQ4 status: pending-human-acceptance",
+            "OQ4 status: pending-operator-approval",
             "Story 3.3",
             "Story 3.11",
             "Story 3.14",
@@ -84,22 +84,20 @@ public sealed class GitHubDependencyGuardTests
             catalog.ShouldContain(evidence, Case.Sensitive);
         }
 
-        // A single exact phrase is satisfied by any rewording ("OQ4: approved", "OQ4 status - approved"),
-        // which would let the catalog self-approve OQ4 while this gate stayed green. Assert the claim,
-        // not one spelling of it: any OQ4/approval co-occurrence must be negated or pending.
-        Regex approvalWord = new(
-            @"\b(approved|approval|accepted|acceptance)\b",
-            RegexOptions.IgnoreCase,
-            TimeSpan.FromSeconds(1));
-        Regex qualifier = new(
-            @"\b(not|no|pending|never|cannot|requires|required|awaiting|outstanding|must)\b",
+        catalog.Split('\n').Count(static line => string.Equals(
+            line.TrimEnd('\r'),
+            "- OQ4 status: pending-operator-approval",
+            StringComparison.Ordinal)).ShouldBe(1);
+
+        Regex approvalClaim = new(
+            @"\b(approved|accepted)\b",
             RegexOptions.IgnoreCase,
             TimeSpan.FromSeconds(1));
         foreach (string line in catalog.Split('\n'))
         {
-            if (line.Contains("OQ4", StringComparison.OrdinalIgnoreCase) && approvalWord.IsMatch(line))
+            if (line.Contains("OQ4", StringComparison.OrdinalIgnoreCase))
             {
-                qualifier.IsMatch(line).ShouldBeTrue($"OQ4 approval claim is unqualified: '{line.Trim()}'");
+                approvalClaim.IsMatch(line).ShouldBeFalse($"OQ4 approval claim is forbidden: '{line.Trim()}'");
             }
         }
     }

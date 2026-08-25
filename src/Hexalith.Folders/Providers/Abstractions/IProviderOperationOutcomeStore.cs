@@ -14,7 +14,7 @@ internal interface IProviderOperationOutcomeStore
         ProviderOperationOutcomeRecord record,
         CancellationToken cancellationToken = default);
 
-    ValueTask FinalizeNoDispatchAsync(
+    ValueTask<bool?> FinalizeNoDispatchAsync(
         ProviderOperationOutcomeRecord record,
         CancellationToken cancellationToken = default);
 }

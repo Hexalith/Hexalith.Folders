@@ -8,6 +8,7 @@ internal sealed class RecordingProviderOperationOutcomeStore : IProviderOperatio
     private readonly Queue<ProviderOperationReservationResult> _reservations;
     private readonly bool _validationResult;
     private readonly bool? _recordResult;
+    private readonly bool? _finalizeResult;
     private readonly bool _throwOnRecord;
     private readonly object _sync = new();
 
@@ -15,12 +16,21 @@ internal sealed class RecordingProviderOperationOutcomeStore : IProviderOperatio
         IEnumerable<ProviderOperationReservationResult> reservations,
         bool validationResult,
         bool? recordResult,
-        bool throwOnRecord)
+        bool throwOnRecord,
+        bool? finalizeResult)
     {
-        _reservations = new Queue<ProviderOperationReservationResult>(reservations);
+        ArgumentNullException.ThrowIfNull(reservations);
+        ProviderOperationReservationResult[] reservationArray = reservations.ToArray();
+        if (reservationArray.Length == 0)
+        {
+            throw new ArgumentException("At least one scripted reservation is required.", nameof(reservations));
+        }
+
+        _reservations = new Queue<ProviderOperationReservationResult>(reservationArray);
         _validationResult = validationResult;
         _recordResult = recordResult;
         _throwOnRecord = throwOnRecord;
+        _finalizeResult = finalizeResult;
     }
 
     public int ReserveCalls { get; private set; }
@@ -34,15 +44,17 @@ internal sealed class RecordingProviderOperationOutcomeStore : IProviderOperatio
     public static RecordingProviderOperationOutcomeStore Acquired(
         bool validationResult = true,
         bool? recordResult = true,
-        bool throwOnRecord = false)
+        bool throwOnRecord = false,
+        bool? finalizeResult = true)
         => new(
             [new ProviderOperationReservationResult(ProviderOperationReservationDisposition.Acquired, OperationReference, 1)],
             validationResult,
             recordResult,
-            throwOnRecord);
+            throwOnRecord,
+            finalizeResult);
 
     public static RecordingProviderOperationOutcomeStore WithReservations(params ProviderOperationReservationResult[] reservations)
-        => new(reservations, validationResult: true, recordResult: true, throwOnRecord: false);
+        => new(reservations, validationResult: true, recordResult: true, throwOnRecord: false, finalizeResult: true);
 
     public ValueTask<ProviderOperationReservationResult> ReserveAsync(
         ProviderOperationReservationRequest request,
@@ -87,7 +99,7 @@ internal sealed class RecordingProviderOperationOutcomeStore : IProviderOperatio
         return ValueTask.FromResult(_recordResult);
     }
 
-    public ValueTask FinalizeNoDispatchAsync(
+    public ValueTask<bool?> FinalizeNoDispatchAsync(
         ProviderOperationOutcomeRecord record,
         CancellationToken cancellationToken = default)
     {
@@ -98,6 +110,6 @@ internal sealed class RecordingProviderOperationOutcomeStore : IProviderOperatio
             Records.Add(record);
         }
 
-        return ValueTask.CompletedTask;
+        return ValueTask.FromResult(_finalizeResult);
     }
 }

@@ -714,6 +714,56 @@ public sealed partial class OctokitGitHubApiClientTests
         handler.Requests.Select(static request => request.Method.Method).ShouldBe(["GET", "POST", "GET", "PATCH", "GET"]);
     }
 
+    [Fact]
+    public async Task RealTransportReservationInvalidationStopsBeforeTheFirstWrite()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler stagingHandler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            _ => JsonResponse(HttpStatusCode.OK, BaseTreeJson()),
+        }));
+        IGitHubApiClient stagingClient = await CreateClientAsync(stagingHandler);
+        GitHubFileMutationResult staging = await stagingClient.StageFileChangesAsync(
+            FileMutationTransportRequest() with { ValidateReservationAsync = static _ => ValueTask.FromResult(false) },
+            TestContext.Current.CancellationToken);
+
+        staging.FailureCondition.ShouldBe(GitHubApiFailureCondition.ReservationInvalidated);
+        stagingHandler.Requests.ShouldAllBe(static request => request.Method == HttpMethod.Get);
+
+        RecordingGitHubHttpMessageHandler commitHandler = new((_, _) => Task.FromResult(
+            JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha))));
+        IGitHubApiClient commitClient = await CreateClientAsync(commitHandler);
+        GitHubCommitResult commit = await commitClient.CommitAsync(
+            CommitTransportRequest() with { ValidateReservationAsync = static _ => ValueTask.FromResult(false) },
+            TestContext.Current.CancellationToken);
+
+        commit.FailureCondition.ShouldBe(GitHubApiFailureCondition.ReservationInvalidated);
+        commitHandler.Requests.ShouldAllBe(static request => request.Method == HttpMethod.Get);
+    }
+
+    [Fact]
+    public async Task RealTransportCreatedCommitRecordingRejectionPreventsRefUpdate()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.Created, BlobJson(CommitSha)),
+            _ => JsonResponse(HttpStatusCode.OK, CommitJson(CommitSha, TreeSha)),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubCommitResult result = await client.CommitAsync(
+            CommitTransportRequest() with { RecordCreatedCommitAsync = static _ => ValueTask.FromResult(false) },
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.OutcomeRecordingFailed);
+        result.CreatedCommitSha.ShouldBe(CommitSha);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Patch);
+    }
+
     [Theory]
     [InlineData(CommitSha, ProviderOperationStatusKind.Confirmed)]
     [InlineData(HeadSha, ProviderOperationStatusKind.NotApplied)]
@@ -759,7 +809,7 @@ public sealed partial class OctokitGitHubApiClientTests
         result.IsSuccess.ShouldBeFalse();
         result.FailureCondition.ShouldBe((GitHubApiFailureCondition)expectedCondition);
         result.FailureCondition.ShouldNotBe(GitHubApiFailureCondition.TimeoutDuringMutation);
-        handler.Requests.Count.ShouldBe(1);
+        handler.Requests.Count.ShouldBe(statusCode == HttpStatusCode.NotFound ? 2 : 1);
     }
 
     [Fact]
@@ -795,6 +845,408 @@ public sealed partial class OctokitGitHubApiClientTests
         result.Status.ShouldBe(ProviderOperationStatusKind.Conflicting);
         result.ObservedObjectType.ShouldBe("tag");
         handler.Requests.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task RecursiveTruncationIsHandledBeforeTheFallbackEntryCap()
+    {
+        const string docsTreeSha = "6666666666666666666666666666666666666666";
+        (string Path, string Mode, string Type, string ObjectSha)[] recursiveEntries = Enumerable.Range(0, 257)
+            .Select(static index => ($"unrelated-{index}", "100644", "blob", BlobSha))
+            .ToArray();
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true, recursiveEntries)),
+            4 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: false, ("docs", "040000", "tree", docsTreeSha))),
+            5 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(docsTreeSha, truncated: false, ("two.txt", "100644", "blob", BlobSha))),
+            6 => JsonResponse(HttpStatusCode.Created, BlobJson(BlobSha)),
+            7 => JsonResponse(HttpStatusCode.Created, TreeJson(TreeSha)),
+            _ => JsonResponse(HttpStatusCode.OK, ResultingTreeJson(TreeSha, ("docs/one.txt", BlobSha))),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.FailureCondition.ToString());
+        handler.Requests.Count.ShouldBe(8);
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.TooManyRequests, (int)GitHubApiFailureCondition.PrimaryRateLimit)]
+    [InlineData(HttpStatusCode.InternalServerError, (int)GitHubApiFailureCondition.ServerUnavailable)]
+    public async Task PreWriteFallbackResponseFailuresPreserveTheirObservationCondition(
+        HttpStatusCode statusCode,
+        int expectedCondition)
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true)),
+            _ => JsonResponse(statusCode, SafeErrorJson()),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe((GitHubApiFailureCondition)expectedCondition);
+        result.FailureCondition.ShouldNotBe(GitHubApiFailureCondition.ContentPolicyViolation);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
+    }
+
+    [Fact]
+    public async Task PreWriteFallbackDisconnectAndCallerCancellationRemainNoDispatchObservations()
+    {
+        int disconnectCalls = 0;
+        RecordingGitHubHttpMessageHandler disconnectHandler = new((_, _) => ++disconnectCalls switch
+        {
+            1 => Task.FromResult(JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha))),
+            2 => Task.FromResult(JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha))),
+            3 => Task.FromResult(JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true))),
+            _ => throw new HttpRequestException("provider-body-sentinel"),
+        });
+        IGitHubApiClient disconnectClient = await CreateClientAsync(disconnectHandler);
+        GitHubFileMutationResult disconnected = await disconnectClient.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        disconnected.FailureCondition.ShouldBe(GitHubApiFailureCondition.TimeoutDuringObservation);
+
+        using CancellationTokenSource callerCancellation = new();
+        int cancellationCalls = 0;
+        RecordingGitHubHttpMessageHandler cancellationHandler = new((_, _) => Task.FromResult(++cancellationCalls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => CancelCallerAndReturn(
+                callerCancellation,
+                JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true))),
+            _ => throw new InvalidOperationException("No fallback request should be dispatched with a cancelled caller."),
+        }));
+        IGitHubApiClient cancellationClient = await CreateClientAsync(cancellationHandler);
+        GitHubFileMutationResult cancelled = await cancellationClient.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            callerCancellation.Token);
+
+        cancelled.FailureCondition.ShouldBe(GitHubApiFailureCondition.CancellationBeforeDispatch);
+        cancellationHandler.Requests.ShouldAllBe(static request => request.Method == HttpMethod.Get);
+    }
+
+    [Fact]
+    public async Task InternalFallbackDeadlineIsDistinctFromCallerCancellation()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new(async (_, cancellationToken) =>
+        {
+            calls++;
+            if (calls == 1)
+            {
+                return JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha));
+            }
+
+            if (calls == 2)
+            {
+                return JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha));
+            }
+
+            if (calls == 3)
+            {
+                return JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true));
+            }
+
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken).ConfigureAwait(false);
+            throw new InvalidOperationException("unreachable");
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.TimeoutDuringObservation);
+        result.FailureCondition.ShouldNotBe(GitHubApiFailureCondition.CancellationBeforeDispatch);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
+    }
+
+    [Fact]
+    public async Task PostWriteFallbackRateLimitRemainsAmbiguous()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, BaseTreeJson()),
+            4 => JsonResponse(HttpStatusCode.Created, BlobJson(BlobSha)),
+            5 => JsonResponse(HttpStatusCode.Created, TreeJson(TreeSha)),
+            6 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(TreeSha, truncated: true)),
+            _ => JsonResponse(HttpStatusCode.TooManyRequests, SafeErrorJson()),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        result.RetryAfter.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FallbackResponsesOverTwoHundredFiftySixEntriesAreResponseLimited()
+    {
+        (string Path, string Mode, string Type, string ObjectSha)[] entries = Enumerable.Range(0, 257)
+            .Select(static index => ($"entry-{index}", "100644", "blob", BlobSha))
+            .ToArray();
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true)),
+            _ => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: false, entries)),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ResponseLimitExceeded);
+        handler.Requests.Count.ShouldBe(4);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
+    }
+
+    [Theory]
+    [InlineData("docs/nested", "040000")]
+    [InlineData("docs", "100644")]
+    public async Task MalformedFallbackAncestorEvidenceFailsAsObservationEvidence(string localPath, string mode)
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true)),
+            _ => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: false, (localPath, mode, "tree", TreeSha))),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
+    }
+
+    [Theory]
+    [InlineData("100644", "blob")]
+    [InlineData("120000", "blob")]
+    [InlineData("160000", "commit")]
+    public async Task ExistingNonTreeTouchedAncestorIsRejectedBeforeAnyWrite(string mode, string type)
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            _ => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(
+                BaseTreeSha,
+                truncated: false,
+                ("docs", mode, type, TreeSha),
+                ("docs/two.txt", "100644", "blob", BlobSha))),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ContentPolicyViolation);
+        handler.Requests.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task ResponseLimitAfterAWriteIsAmbiguousRatherThanRetryableKnownFailure()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, BaseTreeJson()),
+            4 => JsonResponse(HttpStatusCode.Created, BlobJson(BlobSha)),
+            _ => JsonResponse(HttpStatusCode.Created, new string(' ', (1024 * 1024) + 1)),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        result.RetryAfter.ShouldBeNull();
+        handler.Requests.Count(static request => request.Method == HttpMethod.Post).ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task CallerCancellationAfterTheFinalGateCannotTurnADispatchedWriteIntoNoDispatch()
+    {
+        using CancellationTokenSource callerCancellation = new();
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+            3 => JsonResponse(HttpStatusCode.OK, BaseTreeJson()),
+            4 => CancelCallerAndReturn(callerCancellation, JsonResponse(HttpStatusCode.Created, BlobJson(BlobSha))),
+            _ => throw new InvalidOperationException("No later request is expected."),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationTransportRequest(),
+            callerCancellation.Token);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.TimeoutDuringMutation);
+        result.FailureCondition.ShouldNotBe(GitHubApiFailureCondition.CancellationBeforeDispatch);
+        handler.Requests.Count(static request => request.Method == HttpMethod.Post).ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task ExactRefNotFoundIsDisambiguatedByOneBoundedRepositoryVisibilityProbe()
+    {
+        int visibleCalls = 0;
+        RecordingGitHubHttpMessageHandler visibleHandler = new((_, _) => Task.FromResult(++visibleCalls == 1
+            ? JsonResponse(HttpStatusCode.NotFound, SafeErrorJson())
+            : JsonResponse(HttpStatusCode.OK, "{}")));
+        IGitHubApiClient visibleClient = await CreateClientAsync(visibleHandler);
+
+        GitHubOperationStatusResult deleted = await visibleClient.GetOperationStatusAsync(
+            StatusTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        deleted.IsSuccess.ShouldBeTrue();
+        deleted.Status.ShouldBe(ProviderOperationStatusKind.Conflicting);
+        visibleHandler.Requests.Select(static request => request.RequestUri.AbsolutePath)
+            .ShouldBe(
+            [
+                "/repos/octokit-owner-sentinel/octokit-repository-sentinel/git/refs/heads%2Fmain",
+                "/repos/octokit-owner-sentinel/octokit-repository-sentinel",
+            ]);
+
+        RecordingGitHubHttpMessageHandler concealedHandler = new((_, _) => Task.FromResult(
+            JsonResponse(HttpStatusCode.NotFound, SafeErrorJson())));
+        IGitHubApiClient concealedClient = await CreateClientAsync(concealedHandler);
+        GitHubOperationStatusResult concealed = await concealedClient.GetOperationStatusAsync(
+            StatusTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        concealed.IsSuccess.ShouldBeFalse();
+        concealed.FailureCondition.ShouldBe(GitHubApiFailureCondition.NotFoundOrHidden);
+        concealedHandler.Requests.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task RawRateLimitResetIsCaseInsensitiveBoundedAndRangeSafe()
+    {
+        foreach ((string reset, bool expectedRetry) in new[]
+        {
+            (DateTimeOffset.UtcNow.AddMinutes(2).ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture), true),
+            (long.MaxValue.ToString(System.Globalization.CultureInfo.InvariantCulture), false),
+        })
+        {
+            RecordingGitHubHttpMessageHandler handler = new((_, _) =>
+            {
+                HttpResponseMessage response = JsonResponse(HttpStatusCode.TooManyRequests, SafeErrorJson());
+                response.Headers.TryAddWithoutValidation("x-ratelimit-reset", reset);
+                return Task.FromResult(response);
+            });
+            IGitHubApiClient client = await CreateClientAsync(handler);
+
+            GitHubOperationStatusResult result = await client.GetOperationStatusAsync(
+                StatusTransportRequest(),
+                TestContext.Current.CancellationToken);
+
+            (result.RetryAfter is not null).ShouldBe(expectedRetry);
+            if (result.RetryAfter is { } retryAfter)
+            {
+                retryAfter.ShouldBeLessThanOrEqualTo(TimeSpan.FromHours(24));
+            }
+        }
+    }
+
+    [Fact]
+    public async Task StatusRejectsAnIntendedCommitEqualToExpectedHeadBeforeTransport()
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => throw new InvalidOperationException("not expected"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubOperationStatusResult result = await client.GetOperationStatusAsync(
+            StatusTransportRequest() with { IntendedCommitSha = HeadSha },
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task CommitMessageMismatchIsAmbiguousAndPreventsRefMovement()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            2 => JsonResponse(HttpStatusCode.Created, CommitJson(CommitSha, TreeSha)),
+            _ => JsonResponse(
+                HttpStatusCode.OK,
+                CommitJson(CommitSha, TreeSha).Replace("safe commit message", "changed commit message", StringComparison.Ordinal)),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubCommitResult result = await client.CommitAsync(
+            CommitTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Patch);
+    }
+
+    [Fact]
+    public async Task CommitRejectsACreatedIdentityEqualToTheExpectedHead()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls switch
+        {
+            1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+            _ => JsonResponse(HttpStatusCode.Created, CommitJson(HeadSha, TreeSha)),
+        }));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubCommitResult result = await client.CommitAsync(
+            CommitTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        result.CreatedCommitSha.ShouldBeNull();
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Patch);
+    }
+
+    private static HttpResponseMessage CancelCallerAndReturn(
+        CancellationTokenSource cancellationTokenSource,
+        HttpResponseMessage response)
+    {
+        cancellationTokenSource.Cancel();
+        return response;
     }
 
     private static GitHubFileMutationRequest FileMutationTransportRequest()

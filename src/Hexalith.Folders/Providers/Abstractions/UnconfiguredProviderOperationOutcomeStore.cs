@@ -34,12 +34,12 @@ internal sealed class UnconfiguredProviderOperationOutcomeStore : IProviderOpera
         return ValueTask.FromResult<bool?>(false);
     }
 
-    public ValueTask FinalizeNoDispatchAsync(
+    public ValueTask<bool?> FinalizeNoDispatchAsync(
         ProviderOperationOutcomeRecord record,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(record);
         cancellationToken.ThrowIfCancellationRequested();
-        return ValueTask.CompletedTask;
+        return ValueTask.FromResult<bool?>(false);
     }
 }

@@ -1,3 +1,5 @@
+using Hexalith.Folders.Providers.GitHub;
+
 namespace Hexalith.Folders.Providers.Abstractions;
 
 public sealed class DefaultProviderCapabilityResolver(IEnumerable<IGitProvider> providers) : IProviderCapabilityResolver
@@ -11,9 +13,13 @@ public sealed class DefaultProviderCapabilityResolver(IEnumerable<IGitProvider> 
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        IGitProvider? provider = _providers.FirstOrDefault(p =>
-            string.Equals(p.ProviderFamily, providerFamily, StringComparison.Ordinal)
-            && string.Equals(p.ProviderKey, providerKey, StringComparison.Ordinal));
+        bool canonicalGitHubIdentity = string.Equals(providerFamily, GitHubProviderConstants.ProviderFamily, StringComparison.Ordinal)
+            && string.Equals(providerKey, GitHubProviderConstants.ProviderKey, StringComparison.Ordinal);
+        IGitProvider? provider = canonicalGitHubIdentity
+            ? _providers.LastOrDefault(static provider => provider is GitHubProvider)
+            : _providers.FirstOrDefault(p =>
+                string.Equals(p.ProviderFamily, providerFamily, StringComparison.Ordinal)
+                && string.Equals(p.ProviderKey, providerKey, StringComparison.Ordinal));
 
         return Task.FromResult(provider);
     }

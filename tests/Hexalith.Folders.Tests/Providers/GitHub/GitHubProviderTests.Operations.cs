@@ -22,9 +22,10 @@ public sealed partial class GitHubProviderTests
     public async Task StagesOrderedChangesThroughAuthorizedGitHubBoundaryWithoutMovingRef()
     {
         RecordingProviderOperationSourceResolver sourceResolver = RecordingProviderOperationSourceResolver.Success();
-        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.SuccessPerCall("token-sentinel");
         RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
-        GitHubProvider provider = OperationProvider(sourceResolver, credentialResolver, apiClient);
+        RecordingProviderOperationOutcomeStore outcomeStore = RecordingProviderOperationOutcomeStore.Acquired();
+        GitHubProvider provider = OperationProvider(sourceResolver, credentialResolver, apiClient, outcomeStore);
 
         ProviderFileMutationResult result = await provider.StageFileChangesAsync(
             FileMutationRequest(),
@@ -41,6 +42,7 @@ public sealed partial class GitHubProviderTests
         apiClient.LastFileMutationRequest!.Changes.Select(static change => change.Sequence).ShouldBe([0, 1]);
         apiClient.LastFileMutationRequest.Changes.Select(static change => change.Kind)
             .ShouldBe([ProviderFileChangeKind.Add, ProviderFileChangeKind.Remove]);
+        outcomeStore.Records.Select(static record => record.Kind).ShouldBe([ProviderOperationOutcomeKind.StagedTree]);
     }
 
     [Fact]
@@ -235,7 +237,7 @@ public sealed partial class GitHubProviderTests
         RecordingGitHubApiClient api = RecordingGitHubApiClient.MalformedOperationSuccesses();
         GitHubProvider provider = OperationProvider(
             RecordingProviderOperationSourceResolver.Success(),
-            RecordingGitHubCredentialResolver.Success("token-sentinel"),
+            RecordingGitHubCredentialResolver.SuccessPerCall("token-sentinel"),
             api);
 
         ProviderFileMutationResult mutation = await provider.StageFileChangesAsync(FileMutationRequest(), TestContext.Current.CancellationToken);
@@ -496,7 +498,7 @@ public sealed partial class GitHubProviderTests
             new ProviderOperationReservationResult(
                 ProviderOperationReservationDisposition.ReplayKnownFailure,
                 RecordingProviderOperationOutcomeStore.OperationReference,
-                Generation: 4,
+                Generation: 0,
                 SafeOutcomeFingerprint: SafeFingerprint,
                 FailureCategory: ProviderFailureCategory.ProviderRateLimited,
                 ReasonCode: "github_primary_rate_limited",
@@ -798,6 +800,319 @@ public sealed partial class GitHubProviderTests
         resolvedGitHub.ShouldBeSameAs(github);
     }
 
+    [Fact]
+    public async Task ClosedAdmissionStatesRejectContradictoryReplayCompanionsBeforeSourceAccess()
+    {
+        ProviderIdempotencyAdmission[] malformedAdmissions =
+        [
+            new(ProviderIdempotencyDisposition.Fresh, "safe-intent-reference", PriorOperationReference: "operation-a"),
+            new(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                "safe-intent-reference",
+                SafeFingerprint,
+                PriorOperationReference: RecordingProviderOperationOutcomeStore.OperationReference,
+                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Success,
+                PriorReasonCode: "success"),
+            new(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                "safe-intent-reference",
+                SafeFingerprint,
+                PriorReconciliationReference: "reconciliation-a",
+                PriorOperationReference: RecordingProviderOperationOutcomeStore.OperationReference,
+                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Unknown),
+            new(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                "safe-intent-reference",
+                SafeFingerprint,
+                PriorOperationReference: RecordingProviderOperationOutcomeStore.OperationReference,
+                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.KnownFailure,
+                PriorFailureCategory: ProviderFailureCategory.UnknownProviderOutcome,
+                PriorReasonCode: "github_mutation_outcome_unknown",
+                PriorRemediationCode: "unknown_provider_outcome_remediation"),
+            new(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                "safe-intent-reference",
+                SafeFingerprint,
+                PriorReconciliationReference: "reconciliation-a",
+                PriorOperationReference: RecordingProviderOperationOutcomeStore.OperationReference,
+                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.KnownFailure,
+                PriorFailureCategory: ProviderFailureCategory.ProviderConflict,
+                PriorReasonCode: "github_ref_head_conflict",
+                PriorRemediationCode: "provider_conflict_remediation"),
+        ];
+
+        foreach (ProviderIdempotencyAdmission admission in malformedAdmissions)
+        {
+            RecordingProviderOperationSourceResolver sourceResolver = RecordingProviderOperationSourceResolver.Success();
+            ProviderFileMutationResult result = await OperationProvider(
+                sourceResolver,
+                RecordingGitHubCredentialResolver.Success("token-sentinel"),
+                RecordingGitHubApiClient.Success()).StageFileChangesAsync(
+                    FileMutationRequest() with { IdempotencyAdmission = admission },
+                    TestContext.Current.CancellationToken);
+
+            result.IsSuccess.ShouldBeFalse();
+            sourceResolver.FileMutationCalls.ShouldBe(0);
+        }
+    }
+
+    [Fact]
+    public async Task ClosedReservationStatesRejectContradictoryCompanionsBeforeCredentialAccess()
+    {
+        ProviderOperationReservationResult[] malformedReservations =
+        [
+            new(ProviderOperationReservationDisposition.Acquired, RecordingProviderOperationOutcomeStore.OperationReference, 1, SafeOutcomeFingerprint: SafeFingerprint),
+            new(ProviderOperationReservationDisposition.Pending, RecordingProviderOperationOutcomeStore.OperationReference, 1, FailureCategory: ProviderFailureCategory.ProviderUnavailable),
+            new(ProviderOperationReservationDisposition.ReplaySuccess, RecordingProviderOperationOutcomeStore.OperationReference, 1, SafeOutcomeFingerprint: SafeFingerprint),
+            new(ProviderOperationReservationDisposition.ReplayUnknown, RecordingProviderOperationOutcomeStore.OperationReference, 0, SafeOutcomeFingerprint: SafeFingerprint, ReconciliationReference: "reconciliation-a"),
+            new(
+                ProviderOperationReservationDisposition.ReplayKnownFailure,
+                RecordingProviderOperationOutcomeStore.OperationReference,
+                0,
+                SafeOutcomeFingerprint: SafeFingerprint,
+                FailureCategory: ProviderFailureCategory.UnknownProviderOutcome,
+                ReasonCode: "github_mutation_outcome_unknown",
+                RemediationCode: "unknown_provider_outcome_remediation"),
+        ];
+
+        foreach (ProviderOperationReservationResult reservation in malformedReservations)
+        {
+            RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+            ProviderCommitResult result = await OperationProvider(
+                RecordingProviderOperationSourceResolver.Success(),
+                credentialResolver,
+                RecordingGitHubApiClient.Success(),
+                RecordingProviderOperationOutcomeStore.WithReservations(reservation)).CommitAsync(
+                    CommitRequest(),
+                    TestContext.Current.CancellationToken);
+
+            result.IsSuccess.ShouldBeFalse();
+            result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+            credentialResolver.Calls.ShouldBe(0);
+        }
+    }
+
+    [Fact]
+    public async Task MalformedCredentialResultsFinalizeReservationsDisposeLeasesAndNeverDispatch()
+    {
+        GitHubCredentialLease malformedLease = GitHubCredentialLease.CreateForTesting("token-sentinel");
+        GitHubCredentialResolutionResult[] malformedResults =
+        [
+            new(true, null, ProviderFailureCategory.None, "success", null),
+            new(false, null, (ProviderFailureCategory)999, "github_credential_resolution_unavailable", null),
+            new(false, malformedLease, ProviderFailureCategory.ProviderUnavailable, "github_credential_resolution_unavailable", null),
+        ];
+
+        foreach (GitHubCredentialResolutionResult malformed in malformedResults)
+        {
+            RecordingProviderOperationOutcomeStore outcomeStore = RecordingProviderOperationOutcomeStore.Acquired();
+            RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+            ProviderCommitResult result = await OperationProvider(
+                RecordingProviderOperationSourceResolver.Success(),
+                RecordingGitHubCredentialResolver.FromResult(malformed),
+                apiClient,
+                outcomeStore).CommitAsync(CommitRequest(), TestContext.Current.CancellationToken);
+
+            result.IsSuccess.ShouldBeFalse();
+            result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+            outcomeStore.FinalizeCalls.ShouldBe(1);
+            apiClient.CommitCalls.ShouldBe(0);
+        }
+
+        malformedLease.AccessToken.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ProductionCredentialFailureReasonsArePreservedAndAcknowledgedWithoutDispatch()
+    {
+        (ProviderFailureCategory Category, string Reason)[] failures =
+        [
+            (ProviderFailureCategory.ProviderConfigurationMissing, "provider_credential_reference_missing"),
+            (ProviderFailureCategory.ProviderPermissionInsufficient, "provider_credential_reference_denied"),
+            (ProviderFailureCategory.ProviderValidationFailed, "provider_credential_secret_malformed"),
+            (ProviderFailureCategory.ProviderUnavailable, "provider_credential_store_unavailable"),
+        ];
+
+        foreach ((ProviderFailureCategory category, string reason) in failures)
+        {
+            RecordingProviderOperationOutcomeStore outcomeStore = RecordingProviderOperationOutcomeStore.Acquired();
+            RecordingGitHubApiClient apiClient = RecordingGitHubApiClient.Success();
+            ProviderFileMutationResult result = await OperationProvider(
+                RecordingProviderOperationSourceResolver.Success(),
+                RecordingGitHubCredentialResolver.Failure(category, reason),
+                apiClient,
+                outcomeStore).StageFileChangesAsync(FileMutationRequest(), TestContext.Current.CancellationToken);
+
+            result.FailureCategory.ShouldBe(category);
+            result.ReasonCode.ShouldBe(reason);
+            outcomeStore.FinalizeCalls.ShouldBe(1);
+            apiClient.FileMutationCalls.ShouldBe(0);
+        }
+    }
+
+    [Fact]
+    public async Task RejectedNoDispatchAndKnownFailureRecordsDoNotReturnUnrecordedTerminalResults()
+    {
+        RecordingProviderOperationOutcomeStore rejectedFinalization = RecordingProviderOperationOutcomeStore.Acquired(finalizeResult: false);
+        ProviderFileMutationResult noDispatch = await OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            RecordingGitHubCredentialResolver.Failure(ProviderFailureCategory.ProviderUnavailable, "provider_credential_store_unavailable"),
+            RecordingGitHubApiClient.Success(),
+            rejectedFinalization).StageFileChangesAsync(FileMutationRequest(), TestContext.Current.CancellationToken);
+
+        noDispatch.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+        noDispatch.ReasonCode.ShouldBe("github_outcome_recording_failed");
+
+        RecordingProviderOperationOutcomeStore rejectedKnownFailure = RecordingProviderOperationOutcomeStore.Acquired(recordResult: false);
+        ProviderFileMutationResult knownFailure = await OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            RecordingGitHubCredentialResolver.Success("token-sentinel"),
+            RecordingGitHubApiClient.FileMutationFailure(GitHubApiFailureCondition.ContentPolicyViolation),
+            rejectedKnownFailure).StageFileChangesAsync(FileMutationRequest(), TestContext.Current.CancellationToken);
+
+        knownFailure.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        rejectedKnownFailure.Records.Select(static record => record.Kind)
+            .ShouldBe([ProviderOperationOutcomeKind.KnownTerminalFailure, ProviderOperationOutcomeKind.Unknown]);
+    }
+
+    [Fact]
+    public async Task FailedStagingRecordFallsBackToUnknownAndCreatedCommitRecordPinsExactEvidence()
+    {
+        RecordingProviderOperationOutcomeStore rejectedStaging = RecordingProviderOperationOutcomeStore.Acquired(recordResult: false);
+        ProviderFileMutationResult staged = await OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            RecordingGitHubCredentialResolver.Success("token-sentinel"),
+            RecordingGitHubApiClient.Success(),
+            rejectedStaging).StageFileChangesAsync(FileMutationRequest(), TestContext.Current.CancellationToken);
+
+        staged.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        rejectedStaging.Records.Select(static record => record.Kind)
+            .ShouldBe([ProviderOperationOutcomeKind.StagedTree, ProviderOperationOutcomeKind.Unknown]);
+
+        RecordingProviderOperationOutcomeStore commitStore = RecordingProviderOperationOutcomeStore.Acquired();
+        ProviderCommitRequest request = CommitRequest();
+        ProviderCommitResolvedSource source = RecordingProviderOperationSourceResolver.CommitSource();
+        ProviderCommitResult committed = await OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            RecordingGitHubCredentialResolver.Success("token-sentinel"),
+            RecordingGitHubApiClient.Success(),
+            commitStore).CommitAsync(request, TestContext.Current.CancellationToken);
+
+        committed.IsSuccess.ShouldBeTrue(committed.ReasonCode);
+        commitStore.Records.Select(static record => record.Kind)
+            .ShouldBe([ProviderOperationOutcomeKind.CreatedCommit, ProviderOperationOutcomeKind.RefUpdateConfirmed]);
+        ProviderOperationOutcomeRecord created = commitStore.Records.Single(static record => record.Kind == ProviderOperationOutcomeKind.CreatedCommit);
+        GitHubSafeTargetFingerprint.TryCreate(
+            request,
+            ProviderCredentialMode.AppInstallationReference,
+            out ProviderTargetEvidence? safeTargetEvidence,
+            out _).ShouldBeTrue();
+        string expected = GitHubProviderSafeOperationEvidence.Create(
+            "hxf-github:v1:created-commit",
+            request.AuthorizationEvidence.Fingerprint,
+            RecordingProviderOperationOutcomeStore.OperationReference,
+            safeTargetEvidence!.Metadata["safe_target_fingerprint"],
+            request.IdempotencyAdmission.IntentFingerprint,
+            source.TreeSha,
+            source.Target.ExpectedHeadSha,
+            source.CommitMessage,
+            RecordingProviderOperationSourceResolver.CommitSha);
+        created.SafeOutcomeFingerprint.ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task InvalidTransportCompanionFieldsAndEqualStatusHeadsFailClosed()
+    {
+        const string objectId = RecordingProviderOperationSourceResolver.HeadSha;
+        RecordingGitHubApiClient malformed = new(
+            GitHubReadinessResult.Success(
+                new GitHubPermissionEvidence(true, true, true, true, true, true, true),
+                new GitHubRateLimitEvidence("bounded", true, TimeSpan.FromSeconds(1))),
+            fileMutationResult: new GitHubFileMutationResult(true, GitHubApiFailureCondition.ValidationFailure, null, objectId),
+            commitResult: new GitHubCommitResult(true, GitHubApiFailureCondition.None, null, objectId, RecordingProviderOperationSourceResolver.CommitSha),
+            statusResult: GitHubOperationStatusResult.Observed(
+                ProviderOperationStatusKind.Confirmed,
+                RecordingProviderOperationSourceResolver.CommitSha,
+                "refs/heads/other"));
+        GitHubProvider provider = OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            RecordingGitHubCredentialResolver.SuccessPerCall("token-sentinel"),
+            malformed);
+
+        (await provider.StageFileChangesAsync(FileMutationRequest(), TestContext.Current.CancellationToken))
+            .FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        (await provider.CommitAsync(CommitRequest(), TestContext.Current.CancellationToken))
+            .FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        (await provider.GetOperationStatusAsync(StatusRequest(), TestContext.Current.CancellationToken))
+            .FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+
+        ProviderOperationStatusResolvedSource equalHeads = new(
+            RecordingProviderOperationSourceResolver.Target(),
+            RecordingProviderOperationSourceResolver.HeadSha);
+        RecordingProviderOperationSourceResolver equalSourceResolver = RecordingProviderOperationSourceResolver.WithStatusSource(equalHeads);
+        ProviderOperationStatusRequest equalRequest = BindStatusRequest(StatusRequest(), equalHeads);
+        RecordingGitHubCredentialResolver credentials = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        ProviderOperationStatusResult equalResult = await OperationProvider(
+            equalSourceResolver,
+            credentials,
+            RecordingGitHubApiClient.Success()).GetOperationStatusAsync(equalRequest, TestContext.Current.CancellationToken);
+
+        equalResult.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        credentials.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task CredentialResolverCancellationFinalizesMutationAndMalformedStatusLeaseIsDisposed()
+    {
+        RecordingProviderOperationOutcomeStore outcomeStore = RecordingProviderOperationOutcomeStore.Acquired();
+        ProviderCommitResult cancelled = await OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            RecordingGitHubCredentialResolver.Throws(new OperationCanceledException()),
+            RecordingGitHubApiClient.Success(),
+            outcomeStore).CommitAsync(CommitRequest(), TestContext.Current.CancellationToken);
+
+        cancelled.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+        outcomeStore.FinalizeCalls.ShouldBe(1);
+
+        GitHubCredentialLease disposedLease = GitHubCredentialLease.CreateForTesting("token-sentinel");
+        await disposedLease.DisposeAsync();
+        RecordingGitHubCredentialResolver malformedCredentials = RecordingGitHubCredentialResolver.FromResult(
+            GitHubCredentialResolutionResult.Success(disposedLease));
+        ProviderOperationStatusResult malformedStatus = await OperationProvider(
+            RecordingProviderOperationSourceResolver.Success(),
+            malformedCredentials,
+            RecordingGitHubApiClient.Success()).GetOperationStatusAsync(
+                StatusRequest(),
+                TestContext.Current.CancellationToken);
+
+        malformedStatus.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+        malformedCredentials.CredentialIsDisposed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task CanonicalGitHubSelectionDoesNotChangeFirstMatchForDuplicateNonGitHubProviders()
+    {
+        FakeGitProvider first = FakeGitProvider.CustomFamily();
+        FakeGitProvider second = FakeGitProvider.CustomFamily();
+        ServiceCollection services = new();
+        services.AddSingleton<IGitProvider>(first);
+        services.AddSingleton<IGitProvider>(second);
+        services.AddFoldersProviderReadiness();
+        using ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+        IProviderCapabilityResolver resolver = serviceProvider.GetRequiredService<IProviderCapabilityResolver>();
+        IGitProvider? resolved = await resolver.ResolveAsync(
+            first.ProviderFamily,
+            first.ProviderKey,
+            TestContext.Current.CancellationToken);
+
+        resolved.ShouldBeSameAs(first);
+    }
+
+    [Fact]
+    public void EmptyScriptedOutcomeStoreSequenceIsRejectedAtConstruction()
+        => Should.Throw<ArgumentException>(() => RecordingProviderOperationOutcomeStore.WithReservations());
+
     private static GitHubProvider CreatePreRegisteredGitHubProvider(IServiceProvider serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(serviceProvider);
@@ -996,6 +1311,23 @@ public sealed partial class GitHubProviderTests
             SafeExpectedHeadFingerprint = GitHubOperationSourceBindings.ExpectedHead(request, source.Target.ExpectedHeadSha),
             SafeIntendedCommitFingerprint = GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha),
             SafeCheckWindowFingerprint = GitHubOperationSourceBindings.CheckWindow(request),
+        };
+    }
+
+    private static ProviderOperationStatusRequest BindStatusRequest(
+        ProviderOperationStatusRequest request,
+        ProviderOperationStatusResolvedSource source)
+    {
+        ProviderOperationStatusRequest bound = request with
+        {
+            SafeResolvedTargetFingerprint = GitHubOperationSourceBindings.ResolvedTarget(request, source.Target),
+            SafeFullRefFingerprint = GitHubOperationSourceBindings.FullRef(request, source.Target.FullRef),
+            SafeExpectedHeadFingerprint = GitHubOperationSourceBindings.ExpectedHead(request, source.Target.ExpectedHeadSha),
+            SafeIntendedCommitFingerprint = GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha),
+        };
+        return bound with
+        {
+            SafeCheckWindowFingerprint = GitHubOperationSourceBindings.CheckWindow(bound),
         };
     }
 

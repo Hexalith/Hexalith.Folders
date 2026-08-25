@@ -50,6 +50,16 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
             ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(StatusSource()));
     }
 
+    public static RecordingProviderOperationSourceResolver WithStatusSource(ProviderOperationStatusResolvedSource source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        return new(
+            ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>.Success(
+                new ProviderFileMutationResolvedSource(Target(), FileChanges())),
+            ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(CommitSource()),
+            ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(source));
+    }
+
     public static RecordingProviderOperationSourceResolver Failure(
         ProviderFailureCategory category = ProviderFailureCategory.ProviderConfigurationMissing)
         => new(

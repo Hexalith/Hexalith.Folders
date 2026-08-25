@@ -23,6 +23,7 @@ public sealed partial class GitHubProvider
         "github_commit_source_unavailable",
         "github_content_policy_invalid",
         "github_credential_resolution_unavailable",
+        "github_credential_resolver_unconfigured",
         "github_evidence_temporarily_unavailable",
         "github_file_mutation_outcome_unknown",
         "github_file_mutation_ref_policy_denied",
@@ -59,6 +60,10 @@ public sealed partial class GitHubProvider
         "idempotency_key_expired",
         "idempotency_key_not_allowed",
         "provider_commit_source_unconfigured",
+        "provider_credential_reference_denied",
+        "provider_credential_reference_missing",
+        "provider_credential_secret_malformed",
+        "provider_credential_store_unavailable",
         "provider_file_mutation_source_unconfigured",
         "provider_operation_outcome_store_unconfigured",
         "provider_operation_status_source_unconfigured",
@@ -84,6 +89,17 @@ public sealed partial class GitHubProvider
         "unknown_provider_outcome_remediation",
         "unsupported_provider_capability_remediation",
     };
+    private static readonly IReadOnlyDictionary<string, ProviderFailureCategory> AllowedCredentialFailures =
+        new Dictionary<string, ProviderFailureCategory>(StringComparer.Ordinal)
+        {
+            ["github_credential_resolution_unavailable"] = ProviderFailureCategory.ProviderUnavailable,
+            ["github_credential_resolver_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
+            ["github_operation_cancelled_before_dispatch"] = ProviderFailureCategory.ProviderTransientFailure,
+            ["provider_credential_reference_denied"] = ProviderFailureCategory.ProviderPermissionInsufficient,
+            ["provider_credential_reference_missing"] = ProviderFailureCategory.ProviderConfigurationMissing,
+            ["provider_credential_secret_malformed"] = ProviderFailureCategory.ProviderValidationFailed,
+            ["provider_credential_store_unavailable"] = ProviderFailureCategory.ProviderUnavailable,
+        };
 
     public async Task<ProviderFileMutationResult> StageFileChangesAsync(
         ProviderFileMutationRequest request,
@@ -153,10 +169,25 @@ public sealed partial class GitHubProvider
             request.CorrelationId,
             credentialMode,
             cancellationToken).ConfigureAwait(false);
+        if (!IsCredentialResultWellFormed(credentialResult))
+        {
+            await DisposeCredentialSafelyAsync(credentialResult.Credential).ConfigureAwait(false);
+            bool finalized = await FinalizeNoDispatchAsync(
+                operationReference,
+                generation,
+                ProviderFailureCategory.ProviderUnavailable,
+                "github_credential_resolution_unavailable").ConfigureAwait(false);
+            return finalized
+                ? FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_credential_resolution_unavailable", operationReference: operationReference)
+                : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
+        }
+
         if (!credentialResult.IsSuccess)
         {
-            await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode).ConfigureAwait(false);
-            return FileMutationFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), credentialResult.RetryAfter, operationReference);
+            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode).ConfigureAwait(false);
+            return finalized
+                ? FileMutationFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), credentialResult.RetryAfter, operationReference)
+                : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
         }
 
         GitHubCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
@@ -164,8 +195,10 @@ public sealed partial class GitHubProvider
         if (client is null)
         {
             await credential.DisposeAsync().ConfigureAwait(false);
-            await FinalizeNoDispatchAsync(operationReference, generation, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable").ConfigureAwait(false);
-            return FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable", operationReference: operationReference);
+            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable").ConfigureAwait(false);
+            return finalized
+                ? FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable", operationReference: operationReference)
+                : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
         }
 
         GitHubFileMutationResult? result;
@@ -193,13 +226,21 @@ public sealed partial class GitHubProvider
             return FileMutationUnknown(request, safeTargetFingerprint, operationReference, "github_file_mutation_outcome_unknown");
         }
 
+        if (!IsFileMutationResultWellFormed(result))
+        {
+            await RecordUnknownAsync(operationReference, generation, "github_mutation_evidence_ambiguous").ConfigureAwait(false);
+            return FileMutationUnknown(request, safeTargetFingerprint, operationReference, "github_mutation_evidence_ambiguous");
+        }
+
         if (!result.IsSuccess)
         {
             (ProviderFailureCategory Category, string ReasonCode) mapped = GitHubFailureMapper.ToProviderOperationFailure(result.FailureCondition);
             if (result.FailureCondition is GitHubApiFailureCondition.CancellationBeforeDispatch or GitHubApiFailureCondition.ReservationInvalidated)
             {
-                await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode).ConfigureAwait(false);
-                return FileMutationFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference);
+                bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode).ConfigureAwait(false);
+                return finalized
+                    ? FileMutationFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference)
+                    : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
             }
 
             if (mapped.Category == ProviderFailureCategory.UnknownProviderOutcome)
@@ -216,7 +257,13 @@ public sealed partial class GitHubProvider
                 request.IdempotencyAdmission.IntentFingerprint,
                 mapped.Category,
                 mapped.ReasonCode);
-            await RecordKnownFailureAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, safeFailureFingerprint, result.RetryAfter).ConfigureAwait(false);
+            bool knownFailureRecorded = await RecordKnownFailureAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, safeFailureFingerprint, result.RetryAfter).ConfigureAwait(false);
+            if (!knownFailureRecorded)
+            {
+                await RecordUnknownAsync(operationReference, generation, "github_outcome_recording_failed").ConfigureAwait(false);
+                return FileMutationUnknown(request, safeTargetFingerprint, operationReference, "github_outcome_recording_failed");
+            }
+
             return FileMutationFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference, safeTargetFingerprint: safeTargetFingerprint, safeOutcomeFingerprint: safeFailureFingerprint);
         }
 
@@ -243,6 +290,7 @@ public sealed partial class GitHubProvider
             "success")).ConfigureAwait(false);
         if (!recorded)
         {
+            await RecordUnknownAsync(operationReference, generation, "github_outcome_recording_failed").ConfigureAwait(false);
             return FileMutationUnknown(request, safeTargetFingerprint, operationReference, "github_outcome_recording_failed");
         }
 
@@ -330,10 +378,25 @@ public sealed partial class GitHubProvider
             request.CorrelationId,
             credentialMode,
             cancellationToken).ConfigureAwait(false);
+        if (!IsCredentialResultWellFormed(credentialResult))
+        {
+            await DisposeCredentialSafelyAsync(credentialResult.Credential).ConfigureAwait(false);
+            bool finalized = await FinalizeNoDispatchAsync(
+                operationReference,
+                generation,
+                ProviderFailureCategory.ProviderUnavailable,
+                "github_credential_resolution_unavailable").ConfigureAwait(false);
+            return finalized
+                ? CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_credential_resolution_unavailable", operationReference: operationReference)
+                : CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
+        }
+
         if (!credentialResult.IsSuccess)
         {
-            await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode).ConfigureAwait(false);
-            return CommitFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), credentialResult.RetryAfter, operationReference);
+            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode).ConfigureAwait(false);
+            return finalized
+                ? CommitFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), credentialResult.RetryAfter, operationReference)
+                : CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
         }
 
         GitHubCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
@@ -341,8 +404,10 @@ public sealed partial class GitHubProvider
         if (client is null)
         {
             await credential.DisposeAsync().ConfigureAwait(false);
-            await FinalizeNoDispatchAsync(operationReference, generation, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable").ConfigureAwait(false);
-            return CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable", operationReference: operationReference);
+            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable").ConfigureAwait(false);
+            return finalized
+                ? CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_client_creation_unavailable", operationReference: operationReference)
+                : CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
         }
 
         GitHubCommitResult? result;
@@ -354,7 +419,11 @@ public sealed partial class GitHubProvider
                     source.TreeSha,
                     source.CommitMessage,
                     token => ValidateReservationAsync(operationReference, generation, request.IdempotencyAdmission.IntentFingerprint, token),
-                    commitSha => RecordCreatedCommitAsync(operationReference, generation, commitSha)),
+                    commitSha => RecordCreatedCommitAsync(
+                        operationReference,
+                        generation,
+                        commitSha,
+                        CreateCreatedCommitFingerprint(request, source, safeTargetFingerprint, operationReference, commitSha))),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)
@@ -372,18 +441,26 @@ public sealed partial class GitHubProvider
             return CommitUnknown(request, safeTargetFingerprint, operationReference, "github_commit_outcome_unknown");
         }
 
+        if (!IsCommitResultWellFormed(result, source))
+        {
+            await RecordUnknownAsync(operationReference, generation, "github_mutation_evidence_ambiguous").ConfigureAwait(false);
+            return CommitUnknown(request, safeTargetFingerprint, operationReference, "github_mutation_evidence_ambiguous");
+        }
+
         if (!result.IsSuccess)
         {
             (ProviderFailureCategory Category, string ReasonCode) mapped = GitHubFailureMapper.ToProviderOperationFailure(result.FailureCondition);
             if (result.FailureCondition is GitHubApiFailureCondition.CancellationBeforeDispatch or GitHubApiFailureCondition.ReservationInvalidated)
             {
-                await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode).ConfigureAwait(false);
-                return CommitFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference);
+                bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode).ConfigureAwait(false);
+                return finalized
+                    ? CommitFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference)
+                    : CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
             }
 
             if (mapped.Category == ProviderFailureCategory.UnknownProviderOutcome)
             {
-                await RecordUnknownAsync(operationReference, generation, mapped.ReasonCode).ConfigureAwait(false);
+                await RecordUnknownAsync(operationReference, generation, mapped.ReasonCode, result.CreatedCommitSha).ConfigureAwait(false);
                 return CommitUnknown(request, safeTargetFingerprint, operationReference, mapped.ReasonCode);
             }
 
@@ -395,7 +472,13 @@ public sealed partial class GitHubProvider
                 request.IdempotencyAdmission.IntentFingerprint,
                 mapped.Category,
                 mapped.ReasonCode);
-            await RecordKnownFailureAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, safeFailureFingerprint, result.RetryAfter, result.CreatedCommitSha).ConfigureAwait(false);
+            bool knownFailureRecorded = await RecordKnownFailureAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, safeFailureFingerprint, result.RetryAfter, result.CreatedCommitSha).ConfigureAwait(false);
+            if (!knownFailureRecorded)
+            {
+                await RecordUnknownAsync(operationReference, generation, "github_outcome_recording_failed").ConfigureAwait(false);
+                return CommitUnknown(request, safeTargetFingerprint, operationReference, "github_outcome_recording_failed");
+            }
+
             return CommitFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference, safeTargetFingerprint: safeTargetFingerprint, safeOutcomeFingerprint: safeFailureFingerprint);
         }
 
@@ -422,6 +505,7 @@ public sealed partial class GitHubProvider
             "success")).ConfigureAwait(false);
         if (!recorded)
         {
+            await RecordUnknownAsync(operationReference, generation, "github_outcome_recording_failed").ConfigureAwait(false);
             return CommitUnknown(request, safeTargetFingerprint, operationReference, "github_outcome_recording_failed");
         }
 
@@ -488,6 +572,12 @@ public sealed partial class GitHubProvider
             request.CorrelationId,
             credentialMode,
             cancellationToken).ConfigureAwait(false);
+        if (!IsCredentialResultWellFormed(credentialResult))
+        {
+            await DisposeCredentialSafelyAsync(credentialResult.Credential).ConfigureAwait(false);
+            return StatusFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_status_evidence_unavailable");
+        }
+
         if (!credentialResult.IsSuccess)
         {
             return StatusFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_status_evidence_unavailable"), credentialResult.RetryAfter);
@@ -518,19 +608,12 @@ public sealed partial class GitHubProvider
         }
 
         bool exhausted = request.CheckNumber == 5 || _timeProvider.GetUtcNow() - request.ReconciliationStartedAt >= ReconciliationWindow;
-        if (result is null || !result.IsSuccess)
+        if (result is null || !IsStatusResultWellFormed(result, source) || !result.IsSuccess)
         {
             TimeSpan? retryAfter = result?.RetryAfter;
             return exhausted
                 ? StatusFailure(request, ProviderFailureCategory.ReconciliationRequired, "github_reconciliation_checks_exhausted")
                 : StatusUnavailable(request, retryAfter);
-        }
-
-        if (!Enum.IsDefined(result.Status) || result.Status == ProviderOperationStatusKind.Unavailable)
-        {
-            return exhausted
-                ? StatusFailure(request, ProviderFailureCategory.ReconciliationRequired, "github_reconciliation_checks_exhausted")
-                : StatusUnavailable(request, result.RetryAfter);
         }
 
         string safeObservedFingerprint = GitHubProviderSafeOperationEvidence.Create(
@@ -653,13 +736,17 @@ public sealed partial class GitHubProvider
         }
     }
 
-    private async ValueTask<bool> RecordCreatedCommitAsync(string operationReference, long generation, string commitSha)
+    private async ValueTask<bool> RecordCreatedCommitAsync(
+        string operationReference,
+        long generation,
+        string commitSha,
+        string safeOutcomeFingerprint)
         => await RecordAsync(new ProviderOperationOutcomeRecord(
             operationReference,
             generation,
             ProviderOperationOutcomeKind.CreatedCommit,
             commitSha,
-            SafeOutcomeFingerprint: null,
+            safeOutcomeFingerprint,
             ProviderFailureCategory.None,
             "success")).ConfigureAwait(false);
 
@@ -676,7 +763,7 @@ public sealed partial class GitHubProvider
         }
     }
 
-    private async Task RecordKnownFailureAsync(
+    private async Task<bool> RecordKnownFailureAsync(
         string operationReference,
         long generation,
         ProviderFailureCategory category,
@@ -684,7 +771,7 @@ public sealed partial class GitHubProvider
         string safeOutcomeFingerprint,
         TimeSpan? retryAfter,
         string? privateObjectId = null)
-        => _ = await RecordAsync(new ProviderOperationOutcomeRecord(
+        => await RecordAsync(new ProviderOperationOutcomeRecord(
             operationReference,
             generation,
             ProviderOperationOutcomeKind.KnownTerminalFailure,
@@ -696,12 +783,16 @@ public sealed partial class GitHubProvider
             category.IsRetryableByDefault(),
             SafeRetryAfter(retryAfter))).ConfigureAwait(false);
 
-    private async Task RecordUnknownAsync(string operationReference, long generation, string reasonCode)
-        => _ = await RecordAsync(new ProviderOperationOutcomeRecord(
+    private async Task<bool> RecordUnknownAsync(
+        string operationReference,
+        long generation,
+        string reasonCode,
+        string? privateObjectId = null)
+        => await RecordAsync(new ProviderOperationOutcomeRecord(
             operationReference,
             generation,
             ProviderOperationOutcomeKind.Unknown,
-            PrivateObjectId: null,
+            PrivateObjectId: ProviderGitOperationResolvedTarget.IsGitObjectId(privateObjectId) ? privateObjectId : null,
             SafeOutcomeFingerprint: null,
             ProviderFailureCategory.UnknownProviderOutcome,
             SafeReason(reasonCode, "github_mutation_outcome_unknown"),
@@ -710,12 +801,12 @@ public sealed partial class GitHubProvider
             RetryAfter: null,
             ReconciliationReference: operationReference)).ConfigureAwait(false);
 
-    private async Task FinalizeNoDispatchAsync(string operationReference, long generation, ProviderFailureCategory category, string reasonCode)
+    private async Task<bool> FinalizeNoDispatchAsync(string operationReference, long generation, ProviderFailureCategory category, string reasonCode)
     {
         try
         {
             using CancellationTokenSource timeout = new(OutcomeRecordingTimeout);
-            await _operationOutcomeStore.FinalizeNoDispatchAsync(new ProviderOperationOutcomeRecord(
+            return await _operationOutcomeStore.FinalizeNoDispatchAsync(new ProviderOperationOutcomeRecord(
                 operationReference,
                 generation,
                 ProviderOperationOutcomeKind.NoDispatch,
@@ -724,7 +815,44 @@ public sealed partial class GitHubProvider
                 category,
                 SafeReason(reasonCode, category.ToCategoryCode()),
                 SafeRemediation(null, category),
-                category.IsRetryableByDefault()), timeout.Token).ConfigureAwait(false);
+                category.IsRetryableByDefault()), timeout.Token).ConfigureAwait(false) == true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    private static bool IsCredentialResultWellFormed(GitHubCredentialResolutionResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        bool hasUsableCredential = result.Credential is { AccessToken.Length: > 0 };
+        if (result.IsSuccess)
+        {
+            return hasUsableCredential
+                && result.FailureCategory == ProviderFailureCategory.None
+                && string.Equals(result.ReasonCode, "success", StringComparison.Ordinal)
+                && result.RetryAfter is null;
+        }
+
+        return result.Credential is null
+            && Enum.IsDefined(result.FailureCategory)
+            && result.FailureCategory is not ProviderFailureCategory.None and not ProviderFailureCategory.UnknownProviderOutcome
+            && AllowedCredentialFailures.TryGetValue(result.ReasonCode, out ProviderFailureCategory expectedCategory)
+            && result.FailureCategory == expectedCategory
+            && (result.RetryAfter is null || SafeRetryAfter(result.RetryAfter) == result.RetryAfter);
+    }
+
+    private static async ValueTask DisposeCredentialSafelyAsync(GitHubCredentialLease? credential)
+    {
+        if (credential is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await credential.DisposeAsync().ConfigureAwait(false);
         }
         catch (Exception)
         {
@@ -751,6 +879,12 @@ public sealed partial class GitHubProvider
                 credentialMode,
                 authorizationFingerprint,
                 correlationId), cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubCredentialResolutionResult.Failure(
+                ProviderFailureCategory.ProviderTransientFailure,
+                "github_operation_cancelled_before_dispatch");
         }
         catch (Exception)
         {
@@ -1014,10 +1148,7 @@ public sealed partial class GitHubProvider
                 || HasAncestorConflict(paths, resolved.Path)
                 || resolved.Content.Length > request.FilePolicyEvidence.MaximumFileBytes
                 || resolved.Content.Length > MaximumFileBytes
-                || (resolved.Kind == ProviderFileChangeKind.Remove && !resolved.Content.IsEmpty)
-                || !GitHubProviderSafeOperationEvidence.FixedTimeEquals(declared.SafePathFingerprint, GitHubOperationSourceBindings.Path(request, declared, resolved.Path))
-                || (resolved.Kind is ProviderFileChangeKind.Add or ProviderFileChangeKind.Change
-                    && !GitHubProviderSafeOperationEvidence.FixedTimeEquals(declared.SafeContentFingerprint, GitHubOperationSourceBindings.Content(request, declared, resolved.Content))))
+                || (resolved.Kind == ProviderFileChangeKind.Remove && !resolved.Content.IsEmpty))
             {
                 return false;
             }
@@ -1028,6 +1159,22 @@ public sealed partial class GitHubProvider
             }
 
             aggregateBytes += resolved.Content.Length;
+        }
+
+        for (int index = 0; index < source.Changes.Count; index++)
+        {
+            ProviderResolvedFileChange resolved = source.Changes[index];
+            ProviderOrderedFileChange declared = request.Changes[index];
+            if (!GitHubProviderSafeOperationEvidence.FixedTimeEquals(
+                    declared.SafePathFingerprint,
+                    GitHubOperationSourceBindings.Path(request, declared, resolved.Path))
+                || (resolved.Kind is ProviderFileChangeKind.Add or ProviderFileChangeKind.Change
+                    && !GitHubProviderSafeOperationEvidence.FixedTimeEquals(
+                        declared.SafeContentFingerprint,
+                        GitHubOperationSourceBindings.Content(request, declared, resolved.Content))))
+            {
+                return false;
+            }
         }
 
         return GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeChangeSetFingerprint, GitHubOperationSourceBindings.ChangeSet(request, source.Changes));
@@ -1054,11 +1201,126 @@ public sealed partial class GitHubProvider
         return source.Target is not null
             && source.Target.TryValidate(out _)
             && ProviderGitOperationResolvedTarget.IsGitObjectId(source.IntendedCommitSha)
+            && !string.Equals(source.IntendedCommitSha, source.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase)
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeResolvedTargetFingerprint, GitHubOperationSourceBindings.ResolvedTarget(request, source.Target))
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeFullRefFingerprint, GitHubOperationSourceBindings.FullRef(request, source.Target.FullRef))
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeExpectedHeadFingerprint, GitHubOperationSourceBindings.ExpectedHead(request, source.Target.ExpectedHeadSha))
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeIntendedCommitFingerprint, GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha));
     }
+
+    private static bool IsFileMutationResultWellFormed(GitHubFileMutationResult result)
+        => result.IsSuccess
+            ? result.FailureCondition == GitHubApiFailureCondition.None
+                && result.RetryAfter is null
+                && ProviderGitOperationResolvedTarget.IsGitObjectId(result.TreeSha)
+            : Enum.IsDefined(result.FailureCondition)
+                && result.FailureCondition != GitHubApiFailureCondition.None
+                && result.TreeSha is null
+                && (result.RetryAfter is null || SafeRetryAfter(result.RetryAfter) == result.RetryAfter);
+
+    private static bool IsCommitResultWellFormed(
+        GitHubCommitResult result,
+        ProviderCommitResolvedSource source)
+    {
+        if (result.IsSuccess)
+        {
+            return result.FailureCondition == GitHubApiFailureCondition.None
+                && result.RetryAfter is null
+                && ProviderGitOperationResolvedTarget.IsGitObjectId(result.CommitSha)
+                && !string.Equals(result.CommitSha, source.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(result.CommitSha, result.CreatedCommitSha, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (!Enum.IsDefined(result.FailureCondition)
+            || result.FailureCondition == GitHubApiFailureCondition.None
+            || result.CommitSha is not null
+            || (result.RetryAfter is not null && SafeRetryAfter(result.RetryAfter) != result.RetryAfter))
+        {
+            return false;
+        }
+
+        if (result.CreatedCommitSha is null)
+        {
+            return true;
+        }
+
+        return ProviderGitOperationResolvedTarget.IsGitObjectId(result.CreatedCommitSha)
+            && result.FailureCondition is GitHubApiFailureCondition.AuthenticationRequired
+                or GitHubApiFailureCondition.PermissionInsufficient
+                or GitHubApiFailureCondition.NotFoundOrHidden
+                or GitHubApiFailureCondition.BranchProtectionConflict
+                or GitHubApiFailureCondition.OutcomeRecordingFailed
+                or GitHubApiFailureCondition.TimeoutDuringMutation
+                or GitHubApiFailureCondition.AmbiguousMutationResponse
+                or GitHubApiFailureCondition.UnexpectedTransportFailure;
+    }
+
+    private static bool IsStatusResultWellFormed(
+        GitHubOperationStatusResult result,
+        ProviderOperationStatusResolvedSource source)
+    {
+        if (!result.IsSuccess)
+        {
+            return result.Status == ProviderOperationStatusKind.Unavailable
+                && Enum.IsDefined(result.FailureCondition)
+                && result.FailureCondition != GitHubApiFailureCondition.None
+                && result.ObservedSha is null
+                && result.ObservedFullRef is null
+                && result.ObservedObjectType is null
+                && (result.RetryAfter is null || SafeRetryAfter(result.RetryAfter) == result.RetryAfter);
+        }
+
+        if (result.FailureCondition != GitHubApiFailureCondition.None
+            || result.RetryAfter is not null
+            || !Enum.IsDefined(result.Status)
+            || result.Status == ProviderOperationStatusKind.Unavailable)
+        {
+            return false;
+        }
+
+        if (result.Status == ProviderOperationStatusKind.Confirmed)
+        {
+            return string.Equals(result.ObservedFullRef, source.Target.FullRef, StringComparison.Ordinal)
+                && string.Equals(result.ObservedObjectType, "commit", StringComparison.Ordinal)
+                && string.Equals(result.ObservedSha, source.IntendedCommitSha, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (result.Status == ProviderOperationStatusKind.NotApplied)
+        {
+            return string.Equals(result.ObservedFullRef, source.Target.FullRef, StringComparison.Ordinal)
+                && string.Equals(result.ObservedObjectType, "commit", StringComparison.Ordinal)
+                && string.Equals(result.ObservedSha, source.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return result.Status == ProviderOperationStatusKind.Conflicting
+            && IsSafeStatusEvidence(result.ObservedFullRef, result.ObservedObjectType, result.ObservedSha)
+            && !(string.Equals(result.ObservedFullRef, source.Target.FullRef, StringComparison.Ordinal)
+                && string.Equals(result.ObservedObjectType, "commit", StringComparison.Ordinal)
+                && (string.Equals(result.ObservedSha, source.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(result.ObservedSha, source.IntendedCommitSha, StringComparison.OrdinalIgnoreCase)));
+    }
+
+    private static bool IsSafeStatusEvidence(string? fullRef, string? objectType, string? sha)
+        => (fullRef is null || fullRef is { Length: > 0 and <= 4096 } && !fullRef.Any(char.IsControl))
+            && (objectType is null || objectType is { Length: > 0 and <= 32 } && objectType.All(static character => char.IsAsciiLetter(character) || character == '-'))
+            && (sha is null || ProviderGitOperationResolvedTarget.IsGitObjectId(sha));
+
+    private static string CreateCreatedCommitFingerprint(
+        ProviderCommitRequest request,
+        ProviderCommitResolvedSource source,
+        string safeTargetFingerprint,
+        string operationReference,
+        string commitSha)
+        => GitHubProviderSafeOperationEvidence.Create(
+            "hxf-github:v1:created-commit",
+            request.AuthorizationEvidence.Fingerprint,
+            operationReference,
+            safeTargetFingerprint,
+            request.IdempotencyAdmission.IntentFingerprint,
+            source.TreeSha,
+            source.Target.ExpectedHeadSha,
+            source.CommitMessage,
+            commitSha);
 
     private static ProviderFileMutationResult? ReplayOrReject(ProviderFileMutationRequest request, string safeTargetFingerprint)
         => request.IdempotencyAdmission.Disposition switch
@@ -1096,14 +1358,19 @@ public sealed partial class GitHubProvider
 
     private static ProviderFileMutationResult? MapReservation(ProviderFileMutationRequest request, string safeTargetFingerprint, ProviderOperationReservationResult? reservation)
     {
-        if (reservation is null || reservation.Disposition == ProviderOperationReservationDisposition.Unavailable)
+        if (reservation is null)
         {
-            return FileMutationFailure(request, ProviderFailureCategory.ProviderConfigurationMissing, SafeReason(reservation?.ReasonCode, "github_operation_outcome_store_unavailable"));
+            return FileMutationFailure(request, ProviderFailureCategory.ProviderConfigurationMissing, "github_operation_outcome_store_unavailable");
         }
 
         if (!IsReservationWellFormed(reservation))
         {
             return FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_operation_outcome_store_unavailable");
+        }
+
+        if (reservation.Disposition == ProviderOperationReservationDisposition.Unavailable)
+        {
+            return FileMutationFailure(request, reservation.FailureCategory, SafeReason(reservation.ReasonCode, "github_operation_outcome_store_unavailable"));
         }
 
         if (reservation.Disposition == ProviderOperationReservationDisposition.Acquired
@@ -1126,14 +1393,19 @@ public sealed partial class GitHubProvider
 
     private static ProviderCommitResult? MapReservation(ProviderCommitRequest request, string safeTargetFingerprint, ProviderOperationReservationResult? reservation)
     {
-        if (reservation is null || reservation.Disposition == ProviderOperationReservationDisposition.Unavailable)
+        if (reservation is null)
         {
-            return CommitFailure(request, ProviderFailureCategory.ProviderConfigurationMissing, SafeReason(reservation?.ReasonCode, "github_operation_outcome_store_unavailable"));
+            return CommitFailure(request, ProviderFailureCategory.ProviderConfigurationMissing, "github_operation_outcome_store_unavailable");
         }
 
         if (!IsReservationWellFormed(reservation))
         {
             return CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_operation_outcome_store_unavailable");
+        }
+
+        if (reservation.Disposition == ProviderOperationReservationDisposition.Unavailable)
+        {
+            return CommitFailure(request, reservation.FailureCategory, SafeReason(reservation.ReasonCode, "github_operation_outcome_store_unavailable"));
         }
 
         if (reservation.Disposition == ProviderOperationReservationDisposition.Acquired
@@ -1190,7 +1462,7 @@ public sealed partial class GitHubProvider
 
         if (admission.Disposition != ProviderIdempotencyDisposition.EquivalentReplay)
         {
-            return true;
+            return HasNoPriorOutcomeFields(admission);
         }
 
         if (admission.PriorOutcomeDisposition is null
@@ -1202,17 +1474,44 @@ public sealed partial class GitHubProvider
 
         return admission.PriorOutcomeDisposition switch
         {
-            ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint) && admission.PriorReconciliationReference is null,
-            ProviderPriorOutcomeDisposition.Unknown => IsSafeOpaqueReference(admission.PriorReconciliationReference),
+            ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && admission.PriorReconciliationReference is null
+                && admission.PriorFailureCategory == ProviderFailureCategory.None
+                && admission.PriorReasonCode is null
+                && admission.PriorRemediationCode is null
+                && !admission.PriorRetryable
+                && admission.PriorRetryAfter is null,
+            ProviderPriorOutcomeDisposition.Unknown => admission.PriorSafeOutcomeFingerprint is null
+                && IsSafeOpaqueReference(admission.PriorReconciliationReference)
+                && admission.PriorFailureCategory == ProviderFailureCategory.None
+                && admission.PriorReasonCode is null
+                && admission.PriorRemediationCode is null
+                && !admission.PriorRetryable
+                && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.KnownFailure => admission.PriorFailureCategory != ProviderFailureCategory.None
+                && admission.PriorFailureCategory != ProviderFailureCategory.UnknownProviderOutcome
                 && Enum.IsDefined(admission.PriorFailureCategory)
                 && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && admission.PriorReconciliationReference is null
                 && AllowedOperationReasonCodes.Contains(admission.PriorReasonCode ?? string.Empty)
-                && (admission.PriorRemediationCode is null || AllowedOperationRemediationCodes.Contains(admission.PriorRemediationCode))
+                && admission.PriorRemediationCode is not null
+                && AllowedOperationRemediationCodes.Contains(admission.PriorRemediationCode)
+                && (admission.PriorRetryable || admission.PriorRetryAfter is null)
                 && (admission.PriorRetryAfter is null || SafeRetryAfter(admission.PriorRetryAfter) == admission.PriorRetryAfter),
             _ => false,
         };
     }
+
+    private static bool HasNoPriorOutcomeFields(ProviderIdempotencyAdmission admission)
+        => admission.PriorSafeOutcomeFingerprint is null
+            && admission.PriorReconciliationReference is null
+            && admission.PriorOperationReference is null
+            && admission.PriorOutcomeDisposition is null
+            && admission.PriorFailureCategory == ProviderFailureCategory.None
+            && admission.PriorReasonCode is null
+            && admission.PriorRemediationCode is null
+            && !admission.PriorRetryable
+            && admission.PriorRetryAfter is null;
 
     private static bool IsReservationWellFormed(ProviderOperationReservationResult reservation)
     {
@@ -1225,24 +1524,74 @@ public sealed partial class GitHubProvider
         return reservation.Disposition switch
         {
             ProviderOperationReservationDisposition.Acquired or ProviderOperationReservationDisposition.Pending
-                => hasOperationIdentity && reservation.Generation > 0,
+                => hasOperationIdentity
+                    && reservation.Generation > 0
+                    && HasNoReservationOutcomeFields(reservation),
             ProviderOperationReservationDisposition.ReplaySuccess
-                => hasOperationIdentity && IsSafeFingerprint(reservation.SafeOutcomeFingerprint),
+                => hasOperationIdentity
+                    && reservation.Generation == 0
+                    && IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
+                    && reservation.ReconciliationReference is null
+                    && reservation.FailureCategory == ProviderFailureCategory.None
+                    && reservation.ReasonCode is null
+                    && reservation.RemediationCode is null
+                    && !reservation.Retryable
+                    && reservation.RetryAfter is null,
             ProviderOperationReservationDisposition.ReplayUnknown
-                => hasOperationIdentity && IsSafeOpaqueReference(reservation.ReconciliationReference),
+                => hasOperationIdentity
+                    && reservation.Generation == 0
+                    && reservation.SafeOutcomeFingerprint is null
+                    && IsSafeOpaqueReference(reservation.ReconciliationReference)
+                    && reservation.FailureCategory == ProviderFailureCategory.None
+                    && reservation.ReasonCode is null
+                    && reservation.RemediationCode is null
+                    && !reservation.Retryable
+                    && reservation.RetryAfter is null,
             ProviderOperationReservationDisposition.ReplayKnownFailure
                 => hasOperationIdentity
+                    && reservation.Generation == 0
                     && reservation.FailureCategory != ProviderFailureCategory.None
+                    && reservation.FailureCategory != ProviderFailureCategory.UnknownProviderOutcome
                     && Enum.IsDefined(reservation.FailureCategory)
                     && IsSafeFingerprint(reservation.SafeOutcomeFingerprint)
+                    && reservation.ReconciliationReference is null
                     && AllowedOperationReasonCodes.Contains(reservation.ReasonCode ?? string.Empty)
-                    && (reservation.RemediationCode is null || AllowedOperationRemediationCodes.Contains(reservation.RemediationCode))
+                    && reservation.RemediationCode is not null
+                    && AllowedOperationRemediationCodes.Contains(reservation.RemediationCode)
+                    && (reservation.Retryable || reservation.RetryAfter is null)
                     && (reservation.RetryAfter is null || SafeRetryAfter(reservation.RetryAfter) == reservation.RetryAfter),
             ProviderOperationReservationDisposition.Conflict
-                => reservation.OperationReference is null || hasOperationIdentity,
+                => reservation.OperationReference is null
+                    && reservation.Generation == 0
+                    && reservation.SafeOutcomeFingerprint is null
+                    && reservation.ReconciliationReference is null
+                    && reservation.FailureCategory == ProviderFailureCategory.ProviderConflict
+                    && string.Equals(reservation.ReasonCode, "idempotency_conflict", StringComparison.Ordinal)
+                    && reservation.RemediationCode is null
+                    && !reservation.Retryable
+                    && reservation.RetryAfter is null,
+            ProviderOperationReservationDisposition.Unavailable
+                => reservation.OperationReference is null
+                    && reservation.Generation == 0
+                    && reservation.SafeOutcomeFingerprint is null
+                    && reservation.ReconciliationReference is null
+                    && reservation.FailureCategory is ProviderFailureCategory.ProviderConfigurationMissing or ProviderFailureCategory.ProviderUnavailable
+                    && AllowedOperationReasonCodes.Contains(reservation.ReasonCode ?? string.Empty)
+                    && reservation.RemediationCode is null
+                    && !reservation.Retryable
+                    && reservation.RetryAfter is null,
             _ => false,
         };
     }
+
+    private static bool HasNoReservationOutcomeFields(ProviderOperationReservationResult reservation)
+        => reservation.SafeOutcomeFingerprint is null
+            && reservation.ReconciliationReference is null
+            && reservation.FailureCategory == ProviderFailureCategory.None
+            && reservation.ReasonCode is null
+            && reservation.RemediationCode is null
+            && !reservation.Retryable
+            && reservation.RetryAfter is null;
 
     private static bool IsFresh(string? freshnessClass)
         => string.Equals(freshnessClass, "fresh", StringComparison.OrdinalIgnoreCase);

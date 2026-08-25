@@ -2,6 +2,7 @@ namespace Hexalith.Folders.Providers.GitHub;
 
 internal enum GitHubApiFailureCondition
 {
+    None,
     ValidationFailure,
     AuthenticationRequired,
     PermissionInsufficient,
