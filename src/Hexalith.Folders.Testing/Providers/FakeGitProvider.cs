@@ -216,42 +216,6 @@ public sealed class FakeGitProvider : IGitProvider
         return Task.FromResult(ProviderRepositoryBindingResult.Success(request, equivalentExisting: false, safeTargetFingerprint));
     }
 
-    public Task<ProviderFileChangeSetResult> StageFileChangesAsync(
-        ProviderFileChangeSetRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        cancellationToken.ThrowIfCancellationRequested();
-        return Task.FromResult(ProviderFileChangeSetResult.Failure(
-            request,
-            ProviderFailureCategory.UnsupportedProviderCapability,
-            "fake_provider_file_mutation_unsupported"));
-    }
-
-    public Task<ProviderCommitResult> CommitAsync(
-        ProviderCommitRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        cancellationToken.ThrowIfCancellationRequested();
-        return Task.FromResult(ProviderCommitResult.Failure(
-            request,
-            ProviderFailureCategory.UnsupportedProviderCapability,
-            "fake_provider_commit_unsupported"));
-    }
-
-    public Task<ProviderMutationStatusResult> GetMutationStatusAsync(
-        ProviderMutationStatusRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        cancellationToken.ThrowIfCancellationRequested();
-        return Task.FromResult(ProviderMutationStatusResult.Unavailable(
-            request,
-            ProviderFailureCategory.UnsupportedProviderCapability,
-            "fake_provider_status_unsupported"));
-    }
-
     public ProviderCapabilityComparisonResult CompareCapabilityProfiles(
         ProviderCapabilityProfile current,
         ProviderCapabilityProfile candidate)

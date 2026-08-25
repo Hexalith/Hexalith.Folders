@@ -179,11 +179,10 @@ public static class FoldersServiceCollectionExtensions
         services.AddFoldersObservability();
         services.TryAddSingleton<IGitHubCredentialResolver, UnconfiguredGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, UnconfiguredForgejoCredentialResolver>();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProviderServiceRegistration>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, GitHubProvider>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
         services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
         services.TryAddSingleton<IProviderRepositoryTargetResolver, UnconfiguredProviderRepositoryTargetResolver>();
-        services.TryAddSingleton<IProviderGitOperationResolver, UnconfiguredProviderGitOperationResolver>();
         services.TryAddSingleton<IProviderCapabilityResolver, DefaultProviderCapabilityResolver>();
         services.TryAddSingleton<IProviderCapabilityEvidenceStore, InMemoryProviderCapabilityEvidenceStore>();
         services.TryAddSingleton<ProviderCapabilityDiscoveryService>();
@@ -220,7 +219,10 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IProviderCredentialReferenceResolver, DaprProviderCredentialReferenceResolver>();
         services.TryAddSingleton<IGitHubCredentialResolver, DaprBackedGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, DaprBackedForgejoCredentialResolver>();
-        services.AddSingleton<IGitProvider, GitHubProviderServiceRegistration>();
+        services.AddSingleton<IGitProvider>(static sp => new GitHubProvider(
+            sp.GetRequiredService<IGitHubCredentialResolver>(),
+            new OctokitGitHubApiClientFactory(),
+            sp.GetRequiredService<IProviderRepositoryTargetResolver>()));
         services.AddSingleton<IGitProvider>(static sp => new ForgejoProvider(
             sp.GetRequiredService<IForgejoCredentialResolver>(),
             new ForgejoHttpApiClientFactory()));

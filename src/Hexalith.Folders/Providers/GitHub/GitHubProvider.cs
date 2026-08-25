@@ -2,30 +2,24 @@ using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.GitHub;
 
-public sealed partial class GitHubProvider : IGitProvider
+public sealed class GitHubProvider : IGitProvider
 {
     private readonly IGitHubCredentialResolver _credentialResolver;
     private readonly IGitHubApiClientFactory _apiClientFactory;
     private readonly IProviderRepositoryTargetResolver _targetResolver;
-    private readonly IProviderGitOperationResolver _gitOperationResolver;
 
     public GitHubProvider()
         : this(
             new UnconfiguredGitHubCredentialResolver(),
             new OctokitGitHubApiClientFactory(),
-            new UnconfiguredProviderRepositoryTargetResolver(),
-            new UnconfiguredProviderGitOperationResolver())
+            new UnconfiguredProviderRepositoryTargetResolver())
     {
     }
 
     internal GitHubProvider(
         IGitHubCredentialResolver credentialResolver,
         IGitHubApiClientFactory apiClientFactory)
-        : this(
-            credentialResolver,
-            apiClientFactory,
-            new UnconfiguredProviderRepositoryTargetResolver(),
-            new UnconfiguredProviderGitOperationResolver())
+        : this(credentialResolver, apiClientFactory, new UnconfiguredProviderRepositoryTargetResolver())
     {
     }
 
@@ -33,20 +27,10 @@ public sealed partial class GitHubProvider : IGitProvider
         IGitHubCredentialResolver credentialResolver,
         IGitHubApiClientFactory apiClientFactory,
         IProviderRepositoryTargetResolver targetResolver)
-        : this(credentialResolver, apiClientFactory, targetResolver, new UnconfiguredProviderGitOperationResolver())
-    {
-    }
-
-    internal GitHubProvider(
-        IGitHubCredentialResolver credentialResolver,
-        IGitHubApiClientFactory apiClientFactory,
-        IProviderRepositoryTargetResolver targetResolver,
-        IProviderGitOperationResolver gitOperationResolver)
     {
         _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
         _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
         _targetResolver = targetResolver ?? throw new ArgumentNullException(nameof(targetResolver));
-        _gitOperationResolver = gitOperationResolver ?? throw new ArgumentNullException(nameof(gitOperationResolver));
     }
 
     public string ProviderFamily => GitHubProviderConstants.ProviderFamily;
@@ -534,6 +518,23 @@ public sealed partial class GitHubProvider : IGitProvider
             || (IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
                 && (admission.PriorReconciliationReference is null
                     || IsSafeFingerprint(admission.PriorReconciliationReference)));
+
+    /// <summary>
+    /// Determines whether an opaque admission value is safe to process at the provider boundary.
+    /// </summary>
+    private static bool IsSafeOpaqueValue(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+            && value.Length <= 512
+            && !value.Contains("://", StringComparison.Ordinal)
+            && !value.Any(char.IsControl);
+
+    /// <summary>
+    /// Determines whether a value is a canonical lowercase SHA-256 fingerprint.
+    /// </summary>
+    private static bool IsSafeFingerprint(string? value)
+        => value is { Length: 64 }
+            && value.All(static character => char.IsAsciiDigit(character) || character is >= 'a' and <= 'f');
+
     /// <summary>
     /// Enforces the caller-supplied durable idempotency admission before any target, credential,
     /// client, or GitHub access. Story 3.10 AC7; mirrors the Story 3.11 mutation gate.

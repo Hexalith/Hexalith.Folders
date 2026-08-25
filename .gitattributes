@@ -16,3 +16,7 @@ tests/fixtures/previous-spine.yaml text eol=lf
 # contract_spine_sha256 / parity_schema_sha256 provenance is reproducible.
 src/Hexalith.Folders.Contracts/openapi/*.yaml text eol=lf
 src/Hexalith.Folders.Contracts/openapi/**/*.yaml text eol=lf
+
+# Unified-diff context lines intentionally contain one leading space. Disable
+# whitespace diagnostics for the preserved intent-gap review artifact only.
+_bmad-output/implementation-artifacts/review-3-11-intent-gap.patch -whitespace

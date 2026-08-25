@@ -2,7 +2,7 @@
 title: 'Story 3.11: GitHub file mutation, commit, status, and failure behavior'
 type: 'feature'
 created: '2026-08-24'
-status: 'in-review'
+status: 'blocked'
 baseline_revision: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 baseline_commit: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 review_loop_iteration: 0
@@ -75,6 +75,15 @@ deferred: []
 
 ## Review Triage Log
 
+### 2026-08-25 — Review pass
+- intent_gap: 1: (high 1, medium 0, low 0)
+- bad_spec: 10: (high 9, medium 1, low 0)
+- patch: 15: (high 7, medium 7, low 1)
+- defer: 6: (high 4, medium 2, low 0)
+- reject: 5: (high 0, medium 2, low 3)
+- addressed_findings:
+  - none
+
 ## Design Notes
 
 GitHub Contents API is intentionally excluded because each write creates a commit. Use Git Data semantics so the adapter can prepare one ordered tree and preserve the product's explicit single-commit boundary; durable ownership of content and staged Git object references remains outside this story.
@@ -87,3 +96,22 @@ GitHub Contents API is intentionally excluded because each write creates a commi
 - `./tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests -noLogo -noColor -class Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests -class Hexalith.Folders.Tests.Providers.GitHub.OctokitGitHubApiClientTests -class Hexalith.Folders.Tests.Providers.GitHub.GitHubDependencyGuardTests` -- expected: focused adapter suite passes.
 - `dotnet build Hexalith.Folders.slnx --no-restore -m:1` -- expected: solution build passes.
 - `git diff --check` -- expected: no whitespace errors; `sprint-status.yaml` remains untouched.
+
+## Auto Run Result
+
+Status: blocked
+
+Blocking condition: intent gap
+
+Summary: Review found two defensible but incompatible completion surfaces. The epic story requires an authorized workspace task to reach the real deployed GitHub composition, while the captured intent contract limits this story to the canonical provider/Octokit seam and explicitly leaves the deployed workspace executor fail-closed for later stories. The narrower implementation was preserved as `_bmad-output/implementation-artifacts/review-3-11-intent-gap.patch` and its Story 3.11 code, test, and compatibility-catalog changes were reverted. Later Story 3.10 work, orchestrator bookkeeping, and `sprint-status.yaml` were preserved.
+
+Unresolved questions:
+
+- Must Story 3.11 complete the deployed workspace-task path, including durable target/content resolution, canonical lock enforcement, server/worker composition, and an integration test through that outer surface, or is the provider/Octokit seam the intended acceptance surface?
+- If the deployed path belongs to Story 3.11, should it take ownership of the durable resolver and lifecycle work that the current intent contract assigns to Stories 12.3 and 12.4, or must the epic/story authority be revised first?
+
+Saved patch: `_bmad-output/implementation-artifacts/review-3-11-intent-gap.patch`
+
+Verification: Review used the complete `02ef9f87e61dd2057ed9a3760ca2a32f86888f5d..19f40f2e31f6849faae90a055498108a08ca99e7` version-controlled diff with no untracked implementation files. After the selective rollback, `Hexalith.Folders.csproj` and `Hexalith.Folders.Testing.csproj` built in Release with zero warnings/errors; `Hexalith.Folders.Tests.csproj` built with `BuildProjectReferences=false`; and the focused GitHub provider, dependency-guard, and Octokit classes passed 133/133 tests. The broader test-project build with project references remained blocked by pre-existing FrontComposer UI component/namespace resolution errors.
+
+Residual risk: The story cannot be re-derived safely until one completion surface is authoritative. The preserved patch also contains lower-order implementation and verification findings that must be reconsidered after that decision.
