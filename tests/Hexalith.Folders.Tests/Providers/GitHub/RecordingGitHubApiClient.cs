@@ -112,7 +112,7 @@ internal sealed class RecordingGitHubApiClient(
             SuccessReadiness(),
             fileMutationResult: new GitHubFileMutationResult(true, default, null, "not-a-sha"),
             commitResult: new GitHubCommitResult(true, default, null, "not-a-sha", "not-a-sha"),
-            statusResult: new GitHubOperationStatusResult(true, (ProviderOperationStatusKind)999, default, null, "not-a-sha"));
+            statusResult: new GitHubOperationStatusResult(true, (ProviderOperationStatusKind)999, default, null, "not-a-sha", "refs/heads/main", "commit"));
 
     public static RecordingGitHubApiClient CommitFailure(GitHubApiFailureCondition condition)
         => new(SuccessReadiness(), commitResult: GitHubCommitResult.Failure(condition));
@@ -166,7 +166,7 @@ internal sealed class RecordingGitHubApiClient(
         return Task.FromResult(repositoryBindingResult ?? GitHubRepositoryBindingResult.Success());
     }
 
-    public Task<GitHubFileMutationResult> StageFileChangesAsync(
+    public async Task<GitHubFileMutationResult> StageFileChangesAsync(
         GitHubFileMutationRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -178,10 +178,15 @@ internal sealed class RecordingGitHubApiClient(
             throw fileMutationException;
         }
 
-        return Task.FromResult(fileMutationResult ?? GitHubFileMutationResult.Success(ObjectId));
+        if (!await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
+        {
+            return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ReservationInvalidated);
+        }
+
+        return fileMutationResult ?? GitHubFileMutationResult.Success(ObjectId);
     }
 
-    public Task<GitHubCommitResult> CommitAsync(
+    public async Task<GitHubCommitResult> CommitAsync(
         GitHubCommitRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -193,7 +198,20 @@ internal sealed class RecordingGitHubApiClient(
             throw commitException;
         }
 
-        return Task.FromResult(commitResult ?? GitHubCommitResult.Success(ObjectId));
+        if (!await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
+        {
+            return GitHubCommitResult.Failure(GitHubApiFailureCondition.ReservationInvalidated);
+        }
+
+        GitHubCommitResult effectiveResult = commitResult ?? GitHubCommitResult.Success(ObjectId);
+        string? createdCommitSha = effectiveResult.CreatedCommitSha;
+        if (ProviderGitOperationResolvedTarget.IsGitObjectId(createdCommitSha)
+            && !await request.RecordCreatedCommitAsync(createdCommitSha!).ConfigureAwait(false))
+        {
+            return GitHubCommitResult.Failure(GitHubApiFailureCondition.OutcomeRecordingFailed, createdCommitSha: createdCommitSha);
+        }
+
+        return effectiveResult;
     }
 
     public Task<GitHubOperationStatusResult> GetOperationStatusAsync(

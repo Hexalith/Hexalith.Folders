@@ -3,22 +3,39 @@ using Hexalith.Folders.Providers.GitHub;
 
 namespace Hexalith.Folders.Tests.Providers.GitHub;
 
-internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResolutionResult result) : IGitHubCredentialResolver
+internal sealed class RecordingGitHubCredentialResolver : IGitHubCredentialResolver
 {
+    private readonly Func<GitHubCredentialResolutionResult> _resultFactory;
+    private GitHubCredentialResolutionResult? _lastResult;
+
+    private RecordingGitHubCredentialResolver(Func<GitHubCredentialResolutionResult> resultFactory)
+    {
+        _resultFactory = resultFactory ?? throw new ArgumentNullException(nameof(resultFactory));
+    }
+
     public int Calls { get; private set; }
 
     public GitHubCredentialResolutionRequest? LastRequest { get; private set; }
 
-    public bool CredentialIsDisposed => string.IsNullOrEmpty(result.Credential?.AccessToken);
+    public bool CredentialIsDisposed => string.IsNullOrEmpty(_lastResult?.Credential?.AccessToken);
 
     public static RecordingGitHubCredentialResolver Success(string token)
-        => new(GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token)));
+    {
+        GitHubCredentialResolutionResult result = GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token));
+        return new(() => result);
+    }
+
+    public static RecordingGitHubCredentialResolver SuccessPerCall(string token)
+        => new(() => GitHubCredentialResolutionResult.Success(GitHubCredentialLease.CreateForTesting(token)));
 
     public static RecordingGitHubCredentialResolver Failure(
         ProviderFailureCategory category,
         string reasonCode,
         TimeSpan? retryAfter = null)
-        => new(GitHubCredentialResolutionResult.Failure(category, reasonCode, retryAfter));
+    {
+        GitHubCredentialResolutionResult result = GitHubCredentialResolutionResult.Failure(category, reasonCode, retryAfter);
+        return new(() => result);
+    }
 
     public ValueTask<GitHubCredentialResolutionResult> ResolveAsync(
         GitHubCredentialResolutionRequest request,
@@ -27,6 +44,7 @@ internal sealed class RecordingGitHubCredentialResolver(GitHubCredentialResoluti
         cancellationToken.ThrowIfCancellationRequested();
         Calls++;
         LastRequest = request;
-        return ValueTask.FromResult(result);
+        _lastResult = _resultFactory();
+        return ValueTask.FromResult(_lastResult);
     }
 }

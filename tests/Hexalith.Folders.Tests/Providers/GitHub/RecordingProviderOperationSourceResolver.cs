@@ -35,24 +35,19 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
             ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>.Success(
                 new ProviderFileMutationResolvedSource(
                     target,
-                    [
-                        new ProviderResolvedFileChange(
-                            0,
-                            ProviderFileChangeKind.Add,
-                            "docs/one.txt",
-                            "one"u8.ToArray(),
-                            ProviderFileContentType.RegularFile),
-                        new ProviderResolvedFileChange(
-                            1,
-                            ProviderFileChangeKind.Remove,
-                            "docs/two.txt",
-                            ReadOnlyMemory<byte>.Empty,
-                            ProviderFileContentType.RegularFile),
-                    ])),
-            ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(
-                new ProviderCommitResolvedSource(target, TreeSha, "safe commit message")),
-            ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(
-                new ProviderOperationStatusResolvedSource(target, CommitSha)));
+                    FileChanges())),
+            ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(CommitSource()),
+            ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(StatusSource()));
+    }
+
+    public static RecordingProviderOperationSourceResolver WithFileChanges(IReadOnlyList<ProviderResolvedFileChange> changes)
+    {
+        ArgumentNullException.ThrowIfNull(changes);
+        return new(
+            ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>.Success(
+                new ProviderFileMutationResolvedSource(Target(), changes)),
+            ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(CommitSource()),
+            ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(StatusSource()));
     }
 
     public static RecordingProviderOperationSourceResolver Failure(
@@ -104,7 +99,30 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
         return ValueTask.FromResult(_statusResult!);
     }
 
-    private static ProviderGitOperationResolvedTarget Target()
+    internal static ProviderResolvedFileChange[] FileChanges()
+        =>
+        [
+            new ProviderResolvedFileChange(
+                0,
+                ProviderFileChangeKind.Add,
+                "docs/one.txt",
+                "one"u8.ToArray(),
+                ProviderFileContentType.RegularFile),
+            new ProviderResolvedFileChange(
+                1,
+                ProviderFileChangeKind.Remove,
+                "docs/two.txt",
+                ReadOnlyMemory<byte>.Empty,
+                ProviderFileContentType.RegularFile),
+        ];
+
+    internal static ProviderCommitResolvedSource CommitSource()
+        => new(Target(), TreeSha, "safe commit message");
+
+    internal static ProviderOperationStatusResolvedSource StatusSource()
+        => new(Target(), CommitSha);
+
+    internal static ProviderGitOperationResolvedTarget Target()
         => new(
             "octokit-owner-sentinel",
             "octokit-repository-sentinel",

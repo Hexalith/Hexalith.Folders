@@ -189,6 +189,7 @@ internal static class GitHubSafeTargetFingerprint
                 request.LockEvidence.Fingerprint,
                 request.RefPolicyEvidence.Fingerprint,
                 request.FilePolicyEvidence.Fingerprint,
+                request.SafeResolvedTargetFingerprint,
                 request.SafeChangeSetFingerprint,
                 request.IdempotencyKey,
                 request.IdempotencyAdmission.IntentFingerprint,
@@ -218,7 +219,10 @@ internal static class GitHubSafeTargetFingerprint
                 request.AuthorizationEvidence.Fingerprint,
                 request.LockEvidence.Fingerprint,
                 request.RefPolicyEvidence.Fingerprint,
+                request.SafeResolvedTargetFingerprint,
                 request.SafeStagedChangeSetFingerprint,
+                request.SafeCommitMessageFingerprint,
+                request.SafeExpectedHeadFingerprint,
                 request.IdempotencyKey,
                 request.IdempotencyAdmission.IntentFingerprint,
             ],
@@ -248,9 +252,11 @@ internal static class GitHubSafeTargetFingerprint
                 request.LockEvidence.Fingerprint,
                 request.RefPolicyEvidence.Fingerprint,
                 request.OperationReference,
+                request.SafeResolvedTargetFingerprint,
+                request.SafeFullRefFingerprint,
                 request.SafeExpectedHeadFingerprint,
                 request.SafeIntendedCommitFingerprint,
-                request.CheckNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                request.SafeCheckWindowFingerprint,
             ],
             out safeTargetEvidence,
             out failureReason);
@@ -296,7 +302,9 @@ internal static class GitHubSafeTargetFingerprint
             fields.Add(pair.Value);
         }
 
-        string safeTargetFingerprint = GitHubProviderSafeOperationEvidence.Create([.. fields]);
+        string safeTargetFingerprint = GitHubProviderSafeOperationEvidence.Create(
+            "hxf-github:v1:operation-target",
+            [.. fields]);
         safeTargetEvidence = new ProviderTargetEvidence(
             "github",
             "github-rest",

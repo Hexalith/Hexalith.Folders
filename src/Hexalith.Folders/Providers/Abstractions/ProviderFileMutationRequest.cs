@@ -18,6 +18,7 @@ namespace Hexalith.Folders.Providers.Abstractions;
 /// <param name="LockEvidence">The canonical lock evidence.</param>
 /// <param name="RefPolicyEvidence">The ref-policy evidence.</param>
 /// <param name="FilePolicyEvidence">The file-policy evidence.</param>
+/// <param name="SafeResolvedTargetFingerprint">The binding for the private repository, full ref, and expected head.</param>
 /// <param name="ChangeSetReference">The opaque ordered change-set reference.</param>
 /// <param name="SafeChangeSetFingerprint">The safe ordered change-set fingerprint.</param>
 /// <param name="Changes">The ordered opaque changes.</param>
@@ -40,6 +41,7 @@ public sealed record ProviderFileMutationRequest(
     ProviderOperationLockEvidence LockEvidence,
     ProviderRefPolicyEvidence RefPolicyEvidence,
     ProviderFilePolicyEvidence FilePolicyEvidence,
+    string SafeResolvedTargetFingerprint,
     string ChangeSetReference,
     string SafeChangeSetFingerprint,
     IReadOnlyList<ProviderOrderedFileChange> Changes,

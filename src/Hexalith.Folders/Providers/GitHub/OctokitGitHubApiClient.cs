@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,6 +11,14 @@ namespace Hexalith.Folders.Providers.GitHub;
 
 internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 {
+    private const int MaximumChangeCount = 100;
+    private const int MaximumFileBytes = 1024 * 1024;
+    private const long MaximumAggregateContentBytes = 10L * 1024 * 1024;
+    private const int MaximumTreeRequests = 64;
+    private const int MaximumTreeEntries = 256;
+    private const int MaximumTreeDepth = 32;
+    private const int MaximumTreeResponseBytes = 7 * 1024 * 1024;
+    private static readonly TimeSpan MaximumTreeElapsed = TimeSpan.FromSeconds(5);
     private readonly GitHubClient _client;
     private readonly Func<HttpMessageHandler> _operationHandlerFactory;
     private readonly string _accessToken;
@@ -271,13 +281,18 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         }
 
         bool mutationDispatched = false;
-        using HttpClient httpClient = CreateOperationHttpClient();
+        if (!TryCreateOperationHttpClient(out HttpClient? operationHttpClient))
+        {
+            return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ServerUnavailable);
+        }
+
+        using HttpClient httpClient = operationHttpClient;
         try
         {
             using HttpResponseMessage refResponse = await SendAsync(
                 httpClient,
                 HttpMethod.Get,
-                OperationUri(request.Target, $"git/refs/{request.Target.RefName}"),
+                RefUri(request.Target),
                 body: null,
                 cancellationToken).ConfigureAwait(false);
             if (!refResponse.IsSuccessStatusCode)
@@ -302,7 +317,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             using HttpResponseMessage commitResponse = await SendAsync(
                 httpClient,
                 HttpMethod.Get,
-                OperationUri(request.Target, $"git/commits/{request.Target.ExpectedHeadSha}"),
+                GitObjectUri(request.Target, "commits", request.Target.ExpectedHeadSha),
                 body: null,
                 cancellationToken).ConfigureAwait(false);
             if (!commitResponse.IsSuccessStatusCode)
@@ -319,6 +334,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 request.Target.ExpectedHeadSha,
                 expectedTreeSha: null,
                 expectedParentSha: null,
+                expectedMessage: null,
                 out _,
                 out string? baseTreeSha))
             {
@@ -328,7 +344,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             using HttpResponseMessage baseTreeResponse = await SendAsync(
                 httpClient,
                 HttpMethod.Get,
-                OperationUri(request.Target, $"git/trees/{baseTreeSha}?recursive=1"),
+                TreeUri(request.Target, baseTreeSha!, recursive: true),
                 body: null,
                 cancellationToken).ConfigureAwait(false);
             if (!baseTreeResponse.IsSuccessStatusCode)
@@ -339,15 +355,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                     GitHubApiFailureCondition.ContentPolicyViolation), RetryAfter(baseTreeResponse));
             }
 
-            using JsonDocument? baseTreeDocument = await ReadJsonDocumentAsync(baseTreeResponse, cancellationToken).ConfigureAwait(false);
-            if (!TryReadBaseTree(
-                baseTreeDocument,
+            using JsonDocument? baseTreeDocument = await ReadJsonDocumentAsync(baseTreeResponse, cancellationToken, MaximumTreeResponseBytes).ConfigureAwait(false);
+            Dictionary<string, GitHubTreeEntry>? baseEntries = await ReadTouchedTreeEntriesAsync(
+                httpClient,
+                request.Target,
                 baseTreeSha!,
-                out HashSet<string>? existingPaths,
-                out HashSet<string>? existingBlobPaths)
-                || !ValidatePathExistence(request.Changes, existingPaths, existingBlobPaths))
+                baseTreeDocument,
+                request.Changes.Select(static change => change.Path).ToArray(),
+                cancellationToken).ConfigureAwait(false);
+            if (baseEntries is null || !ValidatePathExistence(request.Changes, baseEntries))
             {
                 return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ContentPolicyViolation);
+            }
+
+            if (!await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
+            {
+                return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ReservationInvalidated);
             }
 
             List<Dictionary<string, object?>> treeEntries = new(request.Changes.Count);
@@ -432,7 +455,34 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
             using JsonDocument? treeDocument = await ReadJsonDocumentAsync(treeResponse, cancellationToken).ConfigureAwait(false);
             string? treeSha = TryReadString(treeDocument, "sha");
-            return ProviderGitOperationResolvedTarget.IsGitObjectId(treeSha)
+            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(treeSha))
+            {
+                return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
+            }
+
+            using HttpResponseMessage resultingTreeResponse = await SendAsync(
+                httpClient,
+                HttpMethod.Get,
+                TreeUri(request.Target, treeSha!, recursive: true),
+                body: null,
+                cancellationToken).ConfigureAwait(false);
+            if (!resultingTreeResponse.IsSuccessStatusCode)
+            {
+                return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
+            }
+
+            using JsonDocument? resultingTreeDocument = await ReadJsonDocumentAsync(
+                resultingTreeResponse,
+                cancellationToken,
+                MaximumTreeResponseBytes).ConfigureAwait(false);
+            Dictionary<string, GitHubTreeEntry>? resultingEntries = await ReadTouchedTreeEntriesAsync(
+                httpClient,
+                request.Target,
+                treeSha!,
+                resultingTreeDocument,
+                request.Changes.Select(static change => change.Path).ToArray(),
+                cancellationToken).ConfigureAwait(false);
+            return resultingEntries is not null && ValidateResultingTree(request.Changes, treeEntries, resultingEntries)
                 ? GitHubFileMutationResult.Success(treeSha!)
                 : GitHubFileMutationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
         }
@@ -465,13 +515,18 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         bool mutationDispatched = false;
         bool refUpdateDispatched = false;
         string? createdCommitSha = null;
-        using HttpClient httpClient = CreateOperationHttpClient();
+        if (!TryCreateOperationHttpClient(out HttpClient? operationHttpClient))
+        {
+            return GitHubCommitResult.Failure(GitHubApiFailureCondition.ServerUnavailable);
+        }
+
+        using HttpClient httpClient = operationHttpClient;
         try
         {
             using HttpResponseMessage refResponse = await SendAsync(
                 httpClient,
                 HttpMethod.Get,
-                OperationUri(request.Target, $"git/refs/{request.Target.RefName}"),
+                RefUri(request.Target),
                 body: null,
                 cancellationToken).ConfigureAwait(false);
             if (!refResponse.IsSuccessStatusCode)
@@ -498,6 +553,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 return GitHubCommitResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
             }
 
+            if (!await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
+            {
+                return GitHubCommitResult.Failure(GitHubApiFailureCondition.ReservationInvalidated);
+            }
+
             Dictionary<string, object?> commitBody = new(StringComparer.Ordinal)
             {
                 ["message"] = request.CommitMessage,
@@ -521,18 +581,40 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
             using JsonDocument? commitDocument = await ReadJsonDocumentAsync(commitResponse, cancellationToken).ConfigureAwait(false);
             createdCommitSha = TryReadString(commitDocument, "sha");
-            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(createdCommitSha)
-                || !TryReadCommitIdentity(
-                    commitDocument,
-                    expectedCommitSha: null,
-                    request.TreeSha,
-                    request.Target.ExpectedHeadSha,
-                    out _,
-                    out _))
+            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(createdCommitSha))
             {
                 return GitHubCommitResult.Failure(
                     GitHubApiFailureCondition.AmbiguousMutationResponse,
                     createdCommitSha: ProviderGitOperationResolvedTarget.IsGitObjectId(createdCommitSha) ? createdCommitSha : null);
+            }
+
+            using HttpResponseMessage commitReadBackResponse = await SendAsync(
+                httpClient,
+                HttpMethod.Get,
+                GitObjectUri(request.Target, "commits", createdCommitSha!),
+                body: null,
+                cancellationToken).ConfigureAwait(false);
+            if (!commitReadBackResponse.IsSuccessStatusCode)
+            {
+                return GitHubCommitResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse, createdCommitSha: createdCommitSha);
+            }
+
+            using JsonDocument? commitReadBackDocument = await ReadJsonDocumentAsync(commitReadBackResponse, cancellationToken).ConfigureAwait(false);
+            if (!TryReadCommitIdentity(
+                commitReadBackDocument,
+                createdCommitSha,
+                request.TreeSha,
+                request.Target.ExpectedHeadSha,
+                request.CommitMessage,
+                out _,
+                out _))
+            {
+                return GitHubCommitResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse, createdCommitSha: createdCommitSha);
+            }
+
+            if (!await request.RecordCreatedCommitAsync(createdCommitSha!).ConfigureAwait(false))
+            {
+                return GitHubCommitResult.Failure(GitHubApiFailureCondition.OutcomeRecordingFailed, createdCommitSha: createdCommitSha);
             }
 
             if (cancellationToken.IsCancellationRequested)
@@ -549,7 +631,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             using HttpResponseMessage updateResponse = await SendAsync(
                 httpClient,
                 HttpMethod.Patch,
-                OperationUri(request.Target, $"git/refs/{request.Target.RefName}"),
+                RefUri(request.Target),
                 updateBody,
                 cancellationToken).ConfigureAwait(false);
             if (!updateResponse.IsSuccessStatusCode)
@@ -561,8 +643,19 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 return GitHubCommitResult.Failure(condition, RetryAfter(updateResponse), createdCommitSha);
             }
 
-            using JsonDocument? updateDocument = await ReadJsonDocumentAsync(updateResponse, cancellationToken).ConfigureAwait(false);
-            return TryReadReference(updateDocument, request.Target, out string? updatedSha)
+            using HttpResponseMessage confirmationResponse = await SendAsync(
+                httpClient,
+                HttpMethod.Get,
+                RefUri(request.Target),
+                body: null,
+                cancellationToken).ConfigureAwait(false);
+            if (!confirmationResponse.IsSuccessStatusCode)
+            {
+                return GitHubCommitResult.Failure(GitHubApiFailureCondition.TimeoutDuringMutation, createdCommitSha: createdCommitSha);
+            }
+
+            using JsonDocument? confirmationDocument = await ReadJsonDocumentAsync(confirmationResponse, cancellationToken).ConfigureAwait(false);
+            return TryReadReference(confirmationDocument, request.Target, out string? updatedSha)
                 && string.Equals(updatedSha, createdCommitSha, StringComparison.OrdinalIgnoreCase)
                     ? GitHubCommitResult.Success(createdCommitSha!)
                     : GitHubCommitResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse, createdCommitSha: createdCommitSha);
@@ -593,13 +686,18 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubOperationStatusResult.Failure(GitHubApiFailureCondition.ValidationFailure);
         }
 
-        using HttpClient httpClient = CreateOperationHttpClient();
+        if (!TryCreateOperationHttpClient(out HttpClient? operationHttpClient))
+        {
+            return GitHubOperationStatusResult.Failure(GitHubApiFailureCondition.ServerUnavailable);
+        }
+
+        using HttpClient httpClient = operationHttpClient;
         try
         {
             using HttpResponseMessage response = await SendAsync(
                 httpClient,
                 HttpMethod.Get,
-                OperationUri(request.Target, $"git/refs/{request.Target.RefName}"),
+                RefUri(request.Target),
                 body: null,
                 cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
@@ -611,9 +709,16 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             }
 
             using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
-            if (!TryReadReference(document, request.Target, out string? observedSha))
+            if (!TryReadReferenceEvidence(document, out string? observedFullRef, out string? observedObjectType, out string? observedSha))
             {
                 return GitHubOperationStatusResult.Failure(GitHubApiFailureCondition.MalformedResponse);
+            }
+
+            if (!string.Equals(observedFullRef, request.Target.FullRef, StringComparison.Ordinal)
+                || !string.Equals(observedObjectType, "commit", StringComparison.Ordinal)
+                || !ProviderGitOperationResolvedTarget.IsGitObjectId(observedSha))
+            {
+                return GitHubOperationStatusResult.Conflicting(observedSha, observedFullRef, observedObjectType);
             }
 
             ProviderOperationStatusKind status = string.Equals(
@@ -627,7 +732,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                         StringComparison.OrdinalIgnoreCase)
                             ? ProviderOperationStatusKind.NotApplied
                             : ProviderOperationStatusKind.Conflicting;
-            return GitHubOperationStatusResult.Observed(status, observedSha!);
+            return GitHubOperationStatusResult.Observed(status, observedSha!, observedFullRef!, observedObjectType!);
         }
         catch (Exception exception)
         {
@@ -736,12 +841,39 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         return client;
     }
 
+    private bool TryCreateOperationHttpClient([NotNullWhen(true)] out HttpClient? client)
+    {
+        try
+        {
+            client = CreateOperationHttpClient();
+            return true;
+        }
+        catch (Exception)
+        {
+            client = null;
+            return false;
+        }
+    }
+
     private static Uri OperationUri(ProviderGitOperationResolvedTarget target, string suffix)
     {
         string owner = Uri.EscapeDataString(target.Owner);
         string repository = Uri.EscapeDataString(target.RepositoryName);
         return new Uri($"https://api.github.com/repos/{owner}/{repository}/{suffix}", UriKind.Absolute);
     }
+
+    private static Uri RefUri(ProviderGitOperationResolvedTarget target)
+        => OperationUri(target, $"git/refs/{Uri.EscapeDataString(target.RefName)}");
+
+    private static Uri GitObjectUri(ProviderGitOperationResolvedTarget target, string objectKind, string objectId)
+        => OperationUri(target, $"git/{objectKind}/{Uri.EscapeDataString(objectId)}");
+
+    private static Uri TreeUri(ProviderGitOperationResolvedTarget target, string treeSha, bool recursive)
+        => OperationUri(
+            target,
+            recursive
+                ? $"git/trees/{Uri.EscapeDataString(treeSha)}?recursive=1"
+                : $"git/trees/{Uri.EscapeDataString(treeSha)}");
 
     private static async Task<HttpResponseMessage> SendAsync(
         HttpClient client,
@@ -762,12 +894,12 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
     private static async Task<JsonDocument?> ReadJsonDocumentAsync(
         HttpResponseMessage response,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        int maximumResponseBytes = 1024 * 1024)
     {
-        const int maximumResponseBytes = 1024 * 1024;
-        if (response.Content.Headers.ContentLength is > maximumResponseBytes)
+        if (response.Content.Headers.ContentLength is { } contentLength && contentLength > maximumResponseBytes)
         {
-            return null;
+            throw new GitHubResponseLimitExceededException();
         }
 
         try
@@ -787,7 +919,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 total += read;
                 if (total > maximumResponseBytes)
                 {
-                    return null;
+                    throw new GitHubResponseLimitExceededException();
                 }
 
                 buffer.Write(chunk, 0, read);
@@ -813,6 +945,9 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             || refElement.ValueKind != JsonValueKind.String
             || !string.Equals(refElement.GetString(), $"refs/{target.RefName}", StringComparison.Ordinal)
             || !document.RootElement.TryGetProperty("object", out JsonElement objectElement)
+            || !objectElement.TryGetProperty("type", out JsonElement typeElement)
+            || typeElement.ValueKind != JsonValueKind.String
+            || !string.Equals(typeElement.GetString(), "commit", StringComparison.Ordinal)
             || !objectElement.TryGetProperty("sha", out JsonElement shaElement)
             || shaElement.ValueKind != JsonValueKind.String)
         {
@@ -823,11 +958,41 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         return ProviderGitOperationResolvedTarget.IsGitObjectId(sha);
     }
 
+    private static bool TryReadReferenceEvidence(
+        JsonDocument? document,
+        out string? fullRef,
+        out string? objectType,
+        out string? sha)
+    {
+        fullRef = null;
+        objectType = null;
+        sha = null;
+        if (document is null
+            || !document.RootElement.TryGetProperty("ref", out JsonElement refElement)
+            || refElement.ValueKind != JsonValueKind.String
+            || !document.RootElement.TryGetProperty("object", out JsonElement objectElement)
+            || !objectElement.TryGetProperty("type", out JsonElement typeElement)
+            || typeElement.ValueKind != JsonValueKind.String
+            || !objectElement.TryGetProperty("sha", out JsonElement shaElement)
+            || shaElement.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        fullRef = refElement.GetString();
+        objectType = typeElement.GetString();
+        sha = shaElement.GetString();
+        return !string.IsNullOrWhiteSpace(fullRef)
+            && !string.IsNullOrWhiteSpace(objectType)
+            && !string.IsNullOrWhiteSpace(sha);
+    }
+
     private static bool TryReadCommitIdentity(
         JsonDocument? document,
         string? expectedCommitSha,
         string? expectedTreeSha,
         string? expectedParentSha,
+        string? expectedMessage,
         out string? commitSha,
         out string? treeSha)
     {
@@ -854,16 +1019,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
         if (expectedParentSha is null)
         {
-            return true;
+            return expectedMessage is null || HasExpectedMessage(document, expectedMessage);
         }
 
-        return document.RootElement.TryGetProperty("parents", out JsonElement parents)
+        return (expectedMessage is null || HasExpectedMessage(document, expectedMessage))
+            && document.RootElement.TryGetProperty("parents", out JsonElement parents)
             && parents.ValueKind == JsonValueKind.Array
             && parents.GetArrayLength() == 1
             && parents[0].TryGetProperty("sha", out JsonElement parentSha)
             && parentSha.ValueKind == JsonValueKind.String
             && string.Equals(parentSha.GetString(), expectedParentSha, StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool HasExpectedMessage(JsonDocument document, string expectedMessage)
+        => document.RootElement.TryGetProperty("message", out JsonElement message)
+            && message.ValueKind == JsonValueKind.String
+            && string.Equals(message.GetString(), expectedMessage, StringComparison.Ordinal);
 
     private static string? TryReadString(JsonDocument? document, string propertyName)
         => document is not null
@@ -872,57 +1043,200 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                 ? element.GetString()
                 : null;
 
-    private static bool TryReadBaseTree(
+    private static async Task<Dictionary<string, GitHubTreeEntry>?> ReadTouchedTreeEntriesAsync(
+        HttpClient httpClient,
+        ProviderGitOperationResolvedTarget target,
+        string expectedTreeSha,
+        JsonDocument? recursiveDocument,
+        IReadOnlyList<string> touchedPaths,
+        CancellationToken cancellationToken)
+    {
+        if (!TryReadTree(recursiveDocument, expectedTreeSha, MaximumTreeEntries, out Dictionary<string, GitHubTreeEntry>? entries, out bool truncated))
+        {
+            return null;
+        }
+
+        if (!truncated)
+        {
+            return entries;
+        }
+
+        Dictionary<string, GitHubTreeEntry> result = new(StringComparer.Ordinal);
+        Queue<(string Prefix, string TreeSha, int Depth)> pending = new();
+        pending.Enqueue((string.Empty, expectedTreeSha, 0));
+        int requests = 0;
+        Stopwatch elapsed = Stopwatch.StartNew();
+        using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(MaximumTreeElapsed);
+        try
+        {
+            while (pending.Count > 0)
+            {
+                if (++requests > MaximumTreeRequests || elapsed.Elapsed > MaximumTreeElapsed)
+                {
+                    return null;
+                }
+
+                (string prefix, string treeSha, int depth) = pending.Dequeue();
+                if (depth > MaximumTreeDepth)
+                {
+                    return null;
+                }
+
+                using HttpResponseMessage response = await SendAsync(
+                    httpClient,
+                    HttpMethod.Get,
+                    TreeUri(target, treeSha, recursive: false),
+                    body: null,
+                    timeout.Token).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                using JsonDocument? document = await ReadJsonDocumentAsync(
+                    response,
+                    timeout.Token,
+                    MaximumTreeResponseBytes).ConfigureAwait(false);
+                if (!TryReadTree(document, treeSha, MaximumTreeEntries, out Dictionary<string, GitHubTreeEntry>? localEntries, out bool localTruncated)
+                    || localTruncated)
+                {
+                    return null;
+                }
+
+                foreach (GitHubTreeEntry localEntry in localEntries.Values)
+                {
+                    string fullPath = prefix.Length == 0 ? localEntry.Path : $"{prefix}/{localEntry.Path}";
+                    GitHubTreeEntry fullEntry = localEntry with { Path = fullPath };
+                    if (!result.TryAdd(fullPath, fullEntry))
+                    {
+                        return null;
+                    }
+
+                    if (string.Equals(localEntry.Type, "tree", StringComparison.Ordinal)
+                        && touchedPaths.Any(path => path.StartsWith(fullPath + "/", StringComparison.Ordinal)))
+                    {
+                        pending.Enqueue((fullPath, localEntry.Sha, depth + 1));
+                    }
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return null;
+        }
+
+        return result;
+    }
+
+    private static bool TryReadTree(
         JsonDocument? document,
         string expectedTreeSha,
-        out HashSet<string> paths,
-        out HashSet<string> blobPaths)
+        int maximumEntries,
+        out Dictionary<string, GitHubTreeEntry> entries,
+        out bool truncated)
     {
-        paths = new HashSet<string>(StringComparer.Ordinal);
-        blobPaths = new HashSet<string>(StringComparer.Ordinal);
+        entries = new Dictionary<string, GitHubTreeEntry>(StringComparer.Ordinal);
+        truncated = false;
         if (document is null
             || !string.Equals(TryReadString(document, "sha"), expectedTreeSha, StringComparison.OrdinalIgnoreCase)
-            || (document.RootElement.TryGetProperty("truncated", out JsonElement truncated)
-                && (truncated.ValueKind is not (JsonValueKind.True or JsonValueKind.False) || truncated.GetBoolean()))
+            || !document.RootElement.TryGetProperty("truncated", out JsonElement truncatedElement)
+            || truncatedElement.ValueKind is not (JsonValueKind.True or JsonValueKind.False)
             || !document.RootElement.TryGetProperty("tree", out JsonElement tree)
-            || tree.ValueKind != JsonValueKind.Array)
+            || tree.ValueKind != JsonValueKind.Array
+            || tree.GetArrayLength() > maximumEntries)
         {
             return false;
         }
 
+        truncated = truncatedElement.GetBoolean();
         foreach (JsonElement entry in tree.EnumerateArray())
         {
-            if (entry.TryGetProperty("path", out JsonElement pathElement)
-                && pathElement.ValueKind == JsonValueKind.String)
+            if (!TryReadTreeEntry(entry, out GitHubTreeEntry? parsed)
+                || parsed is null
+                || !entries.TryAdd(parsed.Path, parsed))
             {
-                string? path = pathElement.GetString();
-                if (path is null || !paths.Add(path))
-                {
-                    return false;
-                }
-
-                if (entry.TryGetProperty("type", out JsonElement typeElement)
-                    && typeElement.ValueKind == JsonValueKind.String
-                    && string.Equals(typeElement.GetString(), "blob", StringComparison.Ordinal))
-                {
-                    blobPaths.Add(path);
-                }
+                return false;
             }
         }
 
         return true;
     }
 
+    private static bool TryReadTreeEntry(JsonElement entry, out GitHubTreeEntry? parsed)
+    {
+        parsed = null;
+        if (!entry.TryGetProperty("path", out JsonElement pathElement)
+            || pathElement.ValueKind != JsonValueKind.String
+            || !entry.TryGetProperty("mode", out JsonElement modeElement)
+            || modeElement.ValueKind != JsonValueKind.String
+            || !entry.TryGetProperty("type", out JsonElement typeElement)
+            || typeElement.ValueKind != JsonValueKind.String
+            || !entry.TryGetProperty("sha", out JsonElement shaElement)
+            || shaElement.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        string? path = pathElement.GetString();
+        string? mode = modeElement.GetString();
+        string? type = typeElement.GetString();
+        string? sha = shaElement.GetString();
+        if (!IsSafeGitPath(path)
+            || mode is not { Length: > 0 and <= 8 }
+            || type is not ("blob" or "tree" or "commit")
+            || !ProviderGitOperationResolvedTarget.IsGitObjectId(sha))
+        {
+            return false;
+        }
+
+        parsed = new GitHubTreeEntry(path!, mode, type, sha!);
+        return true;
+    }
+
     private static bool ValidatePathExistence(
         IReadOnlyList<ProviderResolvedFileChange> changes,
-        HashSet<string> existingPaths,
-        HashSet<string> existingBlobPaths)
+        IReadOnlyDictionary<string, GitHubTreeEntry> existingEntries)
         => changes.All(change => change.Kind switch
         {
-            ProviderFileChangeKind.Add => !existingPaths.Contains(change.Path),
-            ProviderFileChangeKind.Change or ProviderFileChangeKind.Remove => existingBlobPaths.Contains(change.Path),
+            ProviderFileChangeKind.Add => !existingEntries.ContainsKey(change.Path),
+            ProviderFileChangeKind.Change or ProviderFileChangeKind.Remove => existingEntries.TryGetValue(change.Path, out GitHubTreeEntry? entry)
+                && string.Equals(entry.Type, "blob", StringComparison.Ordinal)
+                && string.Equals(entry.Mode, "100644", StringComparison.Ordinal),
             _ => false,
         });
+
+    private static bool ValidateResultingTree(
+        IReadOnlyList<ProviderResolvedFileChange> changes,
+        IReadOnlyList<Dictionary<string, object?>> intendedEntries,
+        IReadOnlyDictionary<string, GitHubTreeEntry> resultingEntries)
+    {
+        for (int index = 0; index < changes.Count; index++)
+        {
+            ProviderResolvedFileChange change = changes[index];
+            if (change.Kind == ProviderFileChangeKind.Remove)
+            {
+                if (resultingEntries.ContainsKey(change.Path))
+                {
+                    return false;
+                }
+
+                continue;
+            }
+
+            string? expectedBlobSha = intendedEntries[index]["sha"] as string;
+            if (!ProviderGitOperationResolvedTarget.IsGitObjectId(expectedBlobSha)
+                || !resultingEntries.TryGetValue(change.Path, out GitHubTreeEntry? entry)
+                || !string.Equals(entry.Type, "blob", StringComparison.Ordinal)
+                || !string.Equals(entry.Mode, "100644", StringComparison.Ordinal)
+                || !string.Equals(entry.Sha, expectedBlobSha, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     private static GitHubApiFailureCondition MapRawResponse(
         HttpResponseMessage response,
@@ -933,14 +1247,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             HttpStatusCode.BadRequest or HttpStatusCode.Conflict or HttpStatusCode.UnprocessableEntity => validationCondition,
             HttpStatusCode.Unauthorized => GitHubApiFailureCondition.AuthenticationRequired,
             HttpStatusCode.Forbidden => IsSecondaryRateLimit(response)
-                ? GitHubApiFailureCondition.SecondaryRateLimit
+                ? mutationDispatched
+                    ? GitHubApiFailureCondition.TimeoutDuringMutation
+                    : GitHubApiFailureCondition.SecondaryRateLimit
                 : HasExhaustedPrimaryQuota(response)
-                    ? GitHubApiFailureCondition.PrimaryRateLimit
+                    ? mutationDispatched
+                        ? GitHubApiFailureCondition.TimeoutDuringMutation
+                        : GitHubApiFailureCondition.PrimaryRateLimit
                     : GitHubApiFailureCondition.PermissionInsufficient,
             HttpStatusCode.NotFound => GitHubApiFailureCondition.NotFoundOrHidden,
             HttpStatusCode.TooManyRequests => IsSecondaryRateLimit(response)
-                ? GitHubApiFailureCondition.SecondaryRateLimit
-                : GitHubApiFailureCondition.PrimaryRateLimit,
+                ? mutationDispatched
+                    ? GitHubApiFailureCondition.TimeoutDuringMutation
+                    : GitHubApiFailureCondition.SecondaryRateLimit
+                : mutationDispatched
+                    ? GitHubApiFailureCondition.TimeoutDuringMutation
+                    : GitHubApiFailureCondition.PrimaryRateLimit,
             >= HttpStatusCode.InternalServerError => mutationDispatched
                 ? GitHubApiFailureCondition.TimeoutDuringMutation
                 : GitHubApiFailureCondition.ServerUnavailable,
@@ -951,17 +1273,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
     private static GitHubFileMutationResult MapFileMutationFailure(Exception exception, bool mutationDispatched)
     {
+        if (exception is GitHubResponseLimitExceededException)
+        {
+            return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ResponseLimitExceeded);
+        }
+
         if (exception is RateLimitExceededException primaryRateLimit)
         {
             return GitHubFileMutationResult.Failure(
-                GitHubApiFailureCondition.PrimaryRateLimit,
+                mutationDispatched ? GitHubApiFailureCondition.TimeoutDuringMutation : GitHubApiFailureCondition.PrimaryRateLimit,
                 BoundedRetryAfter(primaryRateLimit.GetRetryAfterTimeSpan()));
         }
 
         if (exception is SecondaryRateLimitExceededException secondaryRateLimit)
         {
             return GitHubFileMutationResult.Failure(
-                GitHubApiFailureCondition.SecondaryRateLimit,
+                mutationDispatched ? GitHubApiFailureCondition.TimeoutDuringMutation : GitHubApiFailureCondition.SecondaryRateLimit,
                 RetryAfter(secondaryRateLimit.HttpResponse));
         }
 
@@ -982,17 +1309,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         bool mutationDispatched,
         bool refUpdateDispatched)
     {
+        if (exception is GitHubResponseLimitExceededException)
+        {
+            return GitHubCommitResult.Failure(GitHubApiFailureCondition.ResponseLimitExceeded);
+        }
+
         if (exception is RateLimitExceededException primaryRateLimit)
         {
             return GitHubCommitResult.Failure(
-                GitHubApiFailureCondition.PrimaryRateLimit,
+                mutationDispatched ? GitHubApiFailureCondition.TimeoutDuringMutation : GitHubApiFailureCondition.PrimaryRateLimit,
                 BoundedRetryAfter(primaryRateLimit.GetRetryAfterTimeSpan()));
         }
 
         if (exception is SecondaryRateLimitExceededException secondaryRateLimit)
         {
             return GitHubCommitResult.Failure(
-                GitHubApiFailureCondition.SecondaryRateLimit,
+                mutationDispatched ? GitHubApiFailureCondition.TimeoutDuringMutation : GitHubApiFailureCondition.SecondaryRateLimit,
                 RetryAfter(secondaryRateLimit.HttpResponse));
         }
 
@@ -1012,6 +1344,11 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
     private static GitHubOperationStatusResult MapStatusObservationFailure(Exception exception)
     {
+        if (exception is GitHubResponseLimitExceededException)
+        {
+            return GitHubOperationStatusResult.Failure(GitHubApiFailureCondition.ResponseLimitExceeded);
+        }
+
         if (exception is RateLimitExceededException primaryRateLimit)
         {
             return GitHubOperationStatusResult.Failure(
@@ -1045,16 +1382,24 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             HttpStatusCode.BadRequest => GitHubApiFailureCondition.ValidationFailure,
             HttpStatusCode.Unauthorized => GitHubApiFailureCondition.AuthenticationRequired,
             HttpStatusCode.Forbidden => IsSecondaryRateLimit(exception.HttpResponse)
-                ? GitHubApiFailureCondition.SecondaryRateLimit
+                ? mutationDispatched
+                    ? GitHubApiFailureCondition.TimeoutDuringMutation
+                    : GitHubApiFailureCondition.SecondaryRateLimit
                 : exception.HttpResponse.Headers.TryGetValue("X-RateLimit-Remaining", out string? remaining)
                     && string.Equals(remaining, "0", StringComparison.Ordinal)
-                        ? GitHubApiFailureCondition.PrimaryRateLimit
+                        ? mutationDispatched
+                            ? GitHubApiFailureCondition.TimeoutDuringMutation
+                            : GitHubApiFailureCondition.PrimaryRateLimit
                         : GitHubApiFailureCondition.PermissionInsufficient,
             HttpStatusCode.NotFound => GitHubApiFailureCondition.NotFoundOrHidden,
             HttpStatusCode.Conflict or HttpStatusCode.UnprocessableEntity => conflictCondition,
             HttpStatusCode.TooManyRequests => IsSecondaryRateLimit(exception.HttpResponse)
-                ? GitHubApiFailureCondition.SecondaryRateLimit
-                : GitHubApiFailureCondition.PrimaryRateLimit,
+                ? mutationDispatched
+                    ? GitHubApiFailureCondition.TimeoutDuringMutation
+                    : GitHubApiFailureCondition.SecondaryRateLimit
+                : mutationDispatched
+                    ? GitHubApiFailureCondition.TimeoutDuringMutation
+                    : GitHubApiFailureCondition.PrimaryRateLimit,
             >= HttpStatusCode.OK and < HttpStatusCode.MultipleChoices => mutationDispatched
                 ? GitHubApiFailureCondition.AmbiguousMutationResponse
                 : GitHubApiFailureCondition.MalformedResponse,
@@ -1105,16 +1450,22 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         out GitHubApiFailureCondition failureCondition)
     {
         failureCondition = GitHubApiFailureCondition.ContentPolicyViolation;
-        if (changes is null || changes.Count == 0)
+        if (changes is null || changes.Count is < 1 or > MaximumChangeCount)
         {
             return false;
         }
 
         HashSet<string> paths = new(StringComparer.Ordinal);
+        long aggregateBytes = 0;
         for (int index = 0; index < changes.Count; index++)
         {
             ProviderResolvedFileChange change = changes[index];
-            if (change is null || !IsSafeGitPath(change.Path) || !paths.Add(change.Path))
+            if (change is null
+                || !IsSafeGitPath(change.Path)
+                || !paths.Add(change.Path)
+                || paths.Any(path => !string.Equals(path, change.Path, StringComparison.Ordinal)
+                    && (path.StartsWith(change.Path + "/", StringComparison.Ordinal)
+                        || change.Path.StartsWith(path + "/", StringComparison.Ordinal))))
             {
                 failureCondition = GitHubApiFailureCondition.PathPolicyViolation;
                 return false;
@@ -1123,10 +1474,18 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             if (change.Sequence != index
                 || !Enum.IsDefined(change.Kind)
                 || change.ContentType != ProviderFileContentType.RegularFile
+                || change.Content.Length > MaximumFileBytes
                 || (change.Kind == ProviderFileChangeKind.Remove && !change.Content.IsEmpty))
             {
                 return false;
             }
+
+            if (aggregateBytes > MaximumAggregateContentBytes - change.Content.Length)
+            {
+                return false;
+            }
+
+            aggregateBytes += change.Content.Length;
         }
 
         return true;

@@ -18,8 +18,11 @@ namespace Hexalith.Folders.Providers.Abstractions;
 /// <param name="LockEvidence">The canonical lock evidence.</param>
 /// <param name="RefPolicyEvidence">The ref-policy evidence.</param>
 /// <param name="OperationReference">The opaque operation reference.</param>
+/// <param name="SafeResolvedTargetFingerprint">The binding for the private repository target.</param>
+/// <param name="SafeFullRefFingerprint">The binding for the exact full ref.</param>
 /// <param name="SafeExpectedHeadFingerprint">The safe pre-operation head fingerprint.</param>
 /// <param name="SafeIntendedCommitFingerprint">The safe intended commit fingerprint.</param>
+/// <param name="SafeCheckWindowFingerprint">The operation-bound check number and window binding.</param>
 /// <param name="CheckNumber">The authoritative one-based reconciliation check number.</param>
 /// <param name="ReconciliationStartedAt">When the durable reconciliation window started.</param>
 /// <param name="RequestedAt">The authoritative time for this check.</param>
@@ -41,8 +44,11 @@ public sealed record ProviderOperationStatusRequest(
     ProviderOperationLockEvidence LockEvidence,
     ProviderRefPolicyEvidence RefPolicyEvidence,
     string OperationReference,
+    string SafeResolvedTargetFingerprint,
+    string SafeFullRefFingerprint,
     string SafeExpectedHeadFingerprint,
     string SafeIntendedCommitFingerprint,
+    string SafeCheckWindowFingerprint,
     int CheckNumber,
     DateTimeOffset ReconciliationStartedAt,
     DateTimeOffset RequestedAt,

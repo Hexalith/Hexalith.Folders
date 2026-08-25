@@ -6,6 +6,8 @@ internal sealed record ProviderGitOperationResolvedTarget(
     string RefName,
     string ExpectedHeadSha)
 {
+    public string FullRef => $"refs/{RefName}";
+
     public override string ToString() => nameof(ProviderGitOperationResolvedTarget);
 
     public bool TryValidate(out string? failureReason)

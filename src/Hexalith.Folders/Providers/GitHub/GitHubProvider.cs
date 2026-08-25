@@ -8,13 +8,17 @@ public sealed partial class GitHubProvider : IGitProvider
     private readonly IGitHubApiClientFactory _apiClientFactory;
     private readonly IProviderRepositoryTargetResolver _targetResolver;
     private readonly IProviderOperationSourceResolver _operationSourceResolver;
+    private readonly IProviderOperationOutcomeStore _operationOutcomeStore;
+    private readonly TimeProvider _timeProvider;
 
     public GitHubProvider()
         : this(
             new UnconfiguredGitHubCredentialResolver(),
             new OctokitGitHubApiClientFactory(),
             new UnconfiguredProviderRepositoryTargetResolver(),
-            new UnconfiguredProviderOperationSourceResolver())
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
+            TimeProvider.System)
     {
     }
 
@@ -25,7 +29,9 @@ public sealed partial class GitHubProvider : IGitProvider
             credentialResolver,
             apiClientFactory,
             new UnconfiguredProviderRepositoryTargetResolver(),
-            new UnconfiguredProviderOperationSourceResolver())
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
+            TimeProvider.System)
     {
     }
 
@@ -37,7 +43,9 @@ public sealed partial class GitHubProvider : IGitProvider
             credentialResolver,
             apiClientFactory,
             targetResolver,
-            new UnconfiguredProviderOperationSourceResolver())
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
+            TimeProvider.System)
     {
     }
 
@@ -45,12 +53,16 @@ public sealed partial class GitHubProvider : IGitProvider
         IGitHubCredentialResolver credentialResolver,
         IGitHubApiClientFactory apiClientFactory,
         IProviderRepositoryTargetResolver targetResolver,
-        IProviderOperationSourceResolver operationSourceResolver)
+        IProviderOperationSourceResolver operationSourceResolver,
+        IProviderOperationOutcomeStore? operationOutcomeStore = null,
+        TimeProvider? timeProvider = null)
     {
         _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
         _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
         _targetResolver = targetResolver ?? throw new ArgumentNullException(nameof(targetResolver));
         _operationSourceResolver = operationSourceResolver ?? throw new ArgumentNullException(nameof(operationSourceResolver));
+        _operationOutcomeStore = operationOutcomeStore ?? new UnconfiguredProviderOperationOutcomeStore();
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public string ProviderFamily => GitHubProviderConstants.ProviderFamily;

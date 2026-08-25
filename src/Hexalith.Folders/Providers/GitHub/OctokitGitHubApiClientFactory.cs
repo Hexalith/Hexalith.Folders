@@ -5,13 +5,18 @@ namespace Hexalith.Folders.Providers.GitHub;
 
 internal sealed class OctokitGitHubApiClientFactory : IGitHubApiClientFactory
 {
+    private static readonly SocketsHttpHandler SharedHandler = new()
+    {
+        PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+        PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+    };
     private readonly Func<IHttpClient> _httpClientFactory;
     private readonly Func<HttpMessageHandler> _operationHandlerFactory;
 
     public OctokitGitHubApiClientFactory()
         : this(
-            static () => new HttpClientAdapter(static () => new HttpClientHandler()),
-            static () => new HttpClientHandler())
+            static () => new HttpClientAdapter(static () => new PooledGitHubHttpMessageHandler(SharedHandler)),
+            static () => new PooledGitHubHttpMessageHandler(SharedHandler))
     {
     }
 

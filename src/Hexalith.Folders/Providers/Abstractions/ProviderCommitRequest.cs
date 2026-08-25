@@ -17,9 +17,12 @@ namespace Hexalith.Folders.Providers.Abstractions;
 /// <param name="AuthorizationEvidence">The current authorization evidence.</param>
 /// <param name="LockEvidence">The canonical lock evidence.</param>
 /// <param name="RefPolicyEvidence">The ref-policy evidence.</param>
+/// <param name="SafeResolvedTargetFingerprint">The binding for the private repository, full ref, and expected head.</param>
 /// <param name="StagedChangeSetReference">The opaque staged change-set reference.</param>
 /// <param name="SafeStagedChangeSetFingerprint">The safe staged change-set fingerprint.</param>
 /// <param name="CommitMessageReference">The opaque commit-message reference.</param>
+/// <param name="SafeCommitMessageFingerprint">The binding for the private commit message.</param>
+/// <param name="SafeExpectedHeadFingerprint">The binding for the expected parent commit.</param>
 /// <param name="CorrelationId">The correlation identifier.</param>
 /// <param name="IdempotencyKey">The durable idempotency key.</param>
 /// <param name="IdempotencyAdmission">The durable admission decision.</param>
@@ -38,9 +41,12 @@ public sealed record ProviderCommitRequest(
     ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence,
     ProviderOperationLockEvidence LockEvidence,
     ProviderRefPolicyEvidence RefPolicyEvidence,
+    string SafeResolvedTargetFingerprint,
     string StagedChangeSetReference,
     string SafeStagedChangeSetFingerprint,
     string CommitMessageReference,
+    string SafeCommitMessageFingerprint,
+    string SafeExpectedHeadFingerprint,
     string CorrelationId,
     string IdempotencyKey,
     ProviderIdempotencyAdmission IdempotencyAdmission)
