@@ -71,16 +71,15 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.CancellationBeforeDispatch);
         }
 
+        if (!TryMapVisibility(request.Target.Visibility, out RepositoryVisibility visibility))
+        {
+            return GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.ValidationFailure);
+        }
+
         NewRepository repository = new(request.Target.RepositoryName)
         {
             AutoInit = false,
-            Visibility = request.Target.Visibility switch
-            {
-                ProviderRepositoryVisibility.Private => RepositoryVisibility.Private,
-                ProviderRepositoryVisibility.Internal => RepositoryVisibility.Internal,
-                ProviderRepositoryVisibility.Public => RepositoryVisibility.Public,
-                _ => throw new ArgumentOutOfRangeException(nameof(request), "The resolved repository visibility is invalid."),
-            },
+            Visibility = visibility,
         };
 
         try
@@ -92,7 +91,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         }
         catch (RepositoryExistsException)
         {
-            return await ReconcileExistingRepositoryAsync(request).ConfigureAwait(false);
+            return await ReconcileExistingRepositoryAsync(request, cancellationToken).ConfigureAwait(false);
         }
         catch (RateLimitExceededException exception)
         {
@@ -185,6 +184,12 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.DefaultBranchConflict);
         }
 
+        // A repository whose visibility differs from the approved policy is not the intended target.
+        if (!IsVisibilityCompatible(request.Target.Visibility, repository))
+        {
+            return GitHubRepositoryBindingResult.Failure(GitHubApiFailureCondition.RepositoryConflict);
+        }
+
         RepositoryPermissions? permissions = repository.Permissions;
         if (request.Target.RequireContentsPermission && (permissions is null || !permissions.Pull))
         {
@@ -232,6 +237,20 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
                     request.Target.Owner,
                     request.Target.RepositoryName,
                     request.Target.SelectedRef).ConfigureAwait(false);
+            }
+            catch (RateLimitExceededException exception)
+            {
+                // RateLimitExceededException derives from ForbiddenException, so it must be caught
+                // first or a transient limit is reported as a permanent permission failure.
+                return GitHubRepositoryBindingResult.Failure(
+                    GitHubApiFailureCondition.PrimaryRateLimit,
+                    BoundedRetryAfter(exception.GetRetryAfterTimeSpan()));
+            }
+            catch (SecondaryRateLimitExceededException exception)
+            {
+                return GitHubRepositoryBindingResult.Failure(
+                    GitHubApiFailureCondition.SecondaryRateLimit,
+                    RetryAfter(exception.HttpResponse));
             }
             catch (AuthorizationException)
             {
@@ -741,8 +760,16 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
     }
 
     private async Task<GitHubRepositoryCreationResult> ReconcileExistingRepositoryAsync(
-        GitHubRepositoryCreationRequest request)
+        GitHubRepositoryCreationRequest request,
+        CancellationToken cancellationToken)
     {
+        // The create attempt was already dispatched, so a cancelled reconciliation leaves an
+        // unproven mutation. Report it as such rather than as a conflict.
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return GitHubRepositoryCreationResult.Failure(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        }
+
         try
         {
             Repository existing = await _client.Repository.Get(
@@ -1566,9 +1593,28 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             RetryAfter(response));
 
     private static bool IsSecondaryRateLimit(IResponse response)
-        => response.Headers.ContainsKey("Retry-After")
-            && (!response.Headers.TryGetValue("X-RateLimit-Remaining", out string? remaining)
+        => TryGetHeader(response, "Retry-After", out _)
+            && (!TryGetHeader(response, "X-RateLimit-Remaining", out string? remaining)
                 || !string.Equals(remaining, "0", StringComparison.Ordinal));
+
+    /// <summary>
+    /// Reads a response header without assuming its casing. HTTP/2 lowercases header names and
+    /// Octokit surfaces them through an ordinal dictionary, so an exact-case lookup silently misses.
+    /// </summary>
+    private static bool TryGetHeader(IResponse response, string name, out string? value)
+    {
+        foreach (KeyValuePair<string, string> header in response.Headers)
+        {
+            if (string.Equals(header.Key, name, StringComparison.OrdinalIgnoreCase))
+            {
+                value = header.Value;
+                return true;
+            }
+        }
+
+        value = null;
+        return false;
+    }
 
     private static bool IsSecondaryRateLimit(HttpResponseMessage response)
         => response.Headers.TryGetValues("X-RateLimit-Remaining", out IEnumerable<string>? remaining)
@@ -1585,10 +1631,29 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
 
     private static TimeSpan? RetryAfter(IResponse response)
     {
-        if (response.Headers.TryGetValue("Retry-After", out string? value)
-            && int.TryParse(value, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int seconds))
+        if (TryGetHeader(response, "Retry-After", out string? value) && value is not null)
         {
-            return BoundedRetryAfter(TimeSpan.FromSeconds(seconds));
+            if (int.TryParse(value, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int seconds))
+            {
+                return BoundedRetryAfter(TimeSpan.FromSeconds(seconds));
+            }
+
+            // Retry-After may carry an HTTP-date instead of delta-seconds.
+            if (DateTimeOffset.TryParse(
+                value,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal,
+                out DateTimeOffset retryAt))
+            {
+                return BoundedRetryAfter(retryAt - DateTimeOffset.UtcNow);
+            }
+        }
+
+        // A primary limit signals its backoff through X-RateLimit-Reset (epoch seconds), not Retry-After.
+        if (TryGetHeader(response, "X-RateLimit-Reset", out string? reset)
+            && long.TryParse(reset, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out long resetEpochSeconds))
+        {
+            return BoundedRetryAfter(DateTimeOffset.FromUnixTimeSeconds(resetEpochSeconds) - DateTimeOffset.UtcNow);
         }
 
         return null;
@@ -1632,6 +1697,39 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             : retryAfter > TimeSpan.FromHours(24)
                 ? TimeSpan.FromHours(24)
                 : retryAfter;
+
+    private static bool TryMapVisibility(ProviderRepositoryVisibility visibility, out RepositoryVisibility mapped)
+    {
+        switch (visibility)
+        {
+            case ProviderRepositoryVisibility.Private:
+                mapped = RepositoryVisibility.Private;
+                return true;
+            case ProviderRepositoryVisibility.Internal:
+                mapped = RepositoryVisibility.Internal;
+                return true;
+            case ProviderRepositoryVisibility.Public:
+                mapped = RepositoryVisibility.Public;
+                return true;
+            default:
+                mapped = RepositoryVisibility.Private;
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Compares the observed repository visibility against the approved policy. Octokit exposes
+    /// <c>Visibility</c> only on newer payloads, so <c>Private</c> is the authoritative fallback.
+    /// </summary>
+    private static bool IsVisibilityCompatible(ProviderRepositoryVisibility expected, Repository repository)
+        => repository.Visibility is { } observed
+            ? TryMapVisibility(expected, out RepositoryVisibility mapped) && observed == mapped
+            : expected switch
+            {
+                ProviderRepositoryVisibility.Private => repository.Private,
+                ProviderRepositoryVisibility.Public => !repository.Private,
+                _ => true,
+            };
 
     private static bool TryCanonicalRepositoryId(Repository repository, out string? canonicalRepositoryId)
     {

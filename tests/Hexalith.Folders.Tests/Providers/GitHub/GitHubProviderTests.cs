@@ -934,12 +934,19 @@ public sealed partial class GitHubProviderTests
         result.EquivalentExisting.ShouldBeTrue();
         result.ReasonCode.ShouldBe("existing_equivalent");
         result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+
+        // The replay carries the prior evidence forward rather than discarding it. Both values are
+        // metadata-only: a SHA-256 digest and an opaque operation reference.
+        result.PriorSafeOutcomeFingerprint.ShouldBe(PriorOutcomeFingerprint);
+        result.PriorOperationReference.ShouldBe(PriorOperationReference);
         targetResolver.CreationCalls.ShouldBe(0);
         credentialResolver.Calls.ShouldBe(0);
         apiClientFactory.Calls.ShouldBe(0);
 
         string serialized = JsonSerializer.Serialize(result);
-        serialized.ShouldNotContain(PriorOutcomeFingerprint, Case.Sensitive);
+        serialized.ShouldNotContain("octokit-owner-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("octokit-repository-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("token-sentinel", Case.Sensitive);
         serialized.ShouldNotContain("https://", Case.Sensitive);
     }
 
@@ -959,12 +966,19 @@ public sealed partial class GitHubProviderTests
         result.EquivalentExisting.ShouldBeTrue();
         result.ReasonCode.ShouldBe("existing_equivalent");
         result.SafeTargetFingerprint.ShouldNotBeNullOrWhiteSpace();
+
+        // The replay carries the prior evidence forward rather than discarding it. Both values are
+        // metadata-only: a SHA-256 digest and an opaque operation reference.
+        result.PriorSafeOutcomeFingerprint.ShouldBe(PriorOutcomeFingerprint);
+        result.PriorOperationReference.ShouldBe(PriorOperationReference);
         targetResolver.BindingCalls.ShouldBe(0);
         credentialResolver.Calls.ShouldBe(0);
         apiClientFactory.Calls.ShouldBe(0);
 
         string serialized = JsonSerializer.Serialize(result);
-        serialized.ShouldNotContain(PriorOutcomeFingerprint, Case.Sensitive);
+        serialized.ShouldNotContain("octokit-owner-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("octokit-repository-sentinel", Case.Sensitive);
+        serialized.ShouldNotContain("token-sentinel", Case.Sensitive);
         serialized.ShouldNotContain("https://", Case.Sensitive);
     }
 
@@ -1098,6 +1112,223 @@ public sealed partial class GitHubProviderTests
     private const string PriorOutcomeFingerprint =
         "1111111111111111111111111111111111111111111111111111111111111111";
 
+    private const string PriorOperationReference = "01JBQ8Z4R7WYVX2K5N9M3T6P0A";
+
+    private const string PriorReconciliationReference = "01JBQ8Z4R7WYVX2K5N9M3T6P0B";
+
+    /// <summary>
+    /// Builds an admission that satisfies the provider's replay-evidence rules. A replay must carry a
+    /// defined prior disposition and a safe prior operation reference, exactly as the Story 3.11 gate
+    /// requires, so one durable producer can feed every gate on this provider.
+    /// </summary>
+    private static ProviderIdempotencyAdmission Admission(
+        ProviderIdempotencyDisposition disposition,
+        string intentFingerprint,
+        string? priorSafeOutcomeFingerprint,
+        ProviderPriorOutcomeDisposition? priorOutcomeDisposition,
+        ProviderFailureCategory priorFailureCategory,
+        string? priorReasonCode,
+        bool priorRetryable)
+    {
+        if (disposition != ProviderIdempotencyDisposition.EquivalentReplay)
+        {
+            return new(disposition, intentFingerprint, priorSafeOutcomeFingerprint);
+        }
+
+        ProviderPriorOutcomeDisposition prior = priorOutcomeDisposition ?? ProviderPriorOutcomeDisposition.Success;
+        return new(
+            disposition,
+            intentFingerprint,
+            priorSafeOutcomeFingerprint,
+            prior == ProviderPriorOutcomeDisposition.Unknown ? PriorReconciliationReference : null,
+            PriorOperationReference,
+            prior,
+            priorFailureCategory,
+            priorReasonCode,
+            PriorRetryable: priorRetryable);
+    }
+
+    [Fact]
+    public async Task ReplayOfAnAmbiguousRepositoryCreationStaysUnknownAndRequiresReconciliation()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                PriorOutcomeFingerprint,
+                ProviderPriorOutcomeDisposition.Unknown),
+            TestContext.Current.CancellationToken);
+
+        // A prior mutation that was never proven must not be replayed as a created repository.
+        result.IsSuccess.ShouldBeFalse();
+        result.EquivalentExisting.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        result.ReasonCode.ShouldBe("github_repository_creation_outcome_unknown");
+        result.SafeRemediationCode.ShouldBe("reconciliation_required_metadata_only");
+        result.Retryable.ShouldBeFalse();
+        result.PriorReconciliationReference.ShouldBe(PriorReconciliationReference);
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ReplayOfAKnownRepositoryCreationFailureReturnsThePriorCategory()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                PriorOutcomeFingerprint,
+                ProviderPriorOutcomeDisposition.KnownFailure,
+                ProviderFailureCategory.ProviderPermissionInsufficient,
+                "github_permission_insufficient"),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderPermissionInsufficient);
+        result.ReasonCode.ShouldBe("github_permission_insufficient");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task ReplayOfAnAmbiguousRepositoryBindingStaysUnknownAndRequiresReconciliation()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest(
+                ProviderIdempotencyDisposition.EquivalentReplay,
+                PriorOutcomeFingerprint,
+                ProviderPriorOutcomeDisposition.Unknown),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.UnknownProviderOutcome);
+        result.ReasonCode.ShouldBe("github_repository_binding_outcome_unknown");
+        result.SafeRemediationCode.ShouldBe("reconciliation_required_metadata_only");
+        targetResolver.BindingCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task RejectsReplayEvidenceThatOmitsThePriorOperationReference()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.EquivalentReplay,
+                    "intent-repository-creation-a",
+                    PriorOutcomeFingerprint,
+                    PriorOperationReference: null,
+                    PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Success),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("github_replay_evidence_malformed");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task DeniesReservedTenantBeforeAnyTargetCredentialOrProviderAccess()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest() with { ManagedTenantId = "system" },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task AThrowingTargetResolverIsMappedAndNeverReachesCredentialsOrTheProvider()
+    {
+        ThrowingProviderRepositoryTargetResolver targetResolver = new();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldBe("github_repository_target_resolution_unavailable");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+        JsonSerializer.Serialize(result).ShouldNotContain("acme", Case.Insensitive);
+    }
+
+    [Fact]
+    public async Task AResolverThatReportsSuccessWithNoTargetIsMappedInsteadOfThrowing()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.SuccessWithoutTarget();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("resolved_provider_target_malformed");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task AnUntrustedResolverReasonCodeNeverReachesThePublicResult()
+    {
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Failure(
+            ProviderFailureCategory.ProviderConfigurationMissing,
+            "owner_acme_repo_secret_not_found");
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.ReasonCode.ShouldNotContain("acme", Case.Insensitive);
+        result.ReasonCode.ShouldNotContain("secret", Case.Insensitive);
+        JsonSerializer.Serialize(result).ShouldNotContain("acme", Case.Insensitive);
+    }
+
     [Fact]
     public async Task RejectsMalformedRepositoryCreationAdmissionBeforeAnyProviderAccess()
     {
@@ -1202,7 +1433,11 @@ public sealed partial class GitHubProviderTests
     }
     private static ProviderRepositoryCreationRequest CreationRequest(
         ProviderIdempotencyDisposition disposition = ProviderIdempotencyDisposition.Fresh,
-        string? priorSafeOutcomeFingerprint = null)
+        string? priorSafeOutcomeFingerprint = null,
+        ProviderPriorOutcomeDisposition? priorOutcomeDisposition = null,
+        ProviderFailureCategory priorFailureCategory = ProviderFailureCategory.None,
+        string? priorReasonCode = null,
+        bool priorRetryable = false)
         => new(
             ManagedTenantId: "tenant-a",
             OrganizationId: "organization-a",
@@ -1226,15 +1461,23 @@ public sealed partial class GitHubProviderTests
                 "fresh"),
             CorrelationId: "correlation-a",
             IdempotencyKey: "idempotency-binding-a",
-            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+            IdempotencyAdmission: Admission(
                 disposition,
                 "intent-repository-creation-a",
-                priorSafeOutcomeFingerprint),
+                priorSafeOutcomeFingerprint,
+                priorOutcomeDisposition,
+                priorFailureCategory,
+                priorReasonCode,
+                priorRetryable),
             RepositoryProfileRef: "repository-profile-a");
 
     private static ProviderRepositoryBindingRequest BindingRequest(
         ProviderIdempotencyDisposition disposition = ProviderIdempotencyDisposition.Fresh,
-        string? priorSafeOutcomeFingerprint = null)
+        string? priorSafeOutcomeFingerprint = null,
+        ProviderPriorOutcomeDisposition? priorOutcomeDisposition = null,
+        ProviderFailureCategory priorFailureCategory = ProviderFailureCategory.None,
+        string? priorReasonCode = null,
+        bool priorRetryable = false)
         => new(
             ManagedTenantId: "tenant-a",
             OrganizationId: "organization-a",
@@ -1261,8 +1504,12 @@ public sealed partial class GitHubProviderTests
                 "fresh"),
             CorrelationId: "correlation-a",
             IdempotencyKey: "idempotency-binding-a",
-            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+            IdempotencyAdmission: Admission(
                 disposition,
                 "intent-repository-binding-a",
-                priorSafeOutcomeFingerprint));
+                priorSafeOutcomeFingerprint,
+                priorOutcomeDisposition,
+                priorFailureCategory,
+                priorReasonCode,
+                priorRetryable));
 }

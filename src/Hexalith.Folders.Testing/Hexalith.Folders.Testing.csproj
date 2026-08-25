@@ -6,14 +6,20 @@
     <InternalsVisibleTo Include="Hexalith.Folders.Testing.Tests" />
   </ItemGroup>
   <ItemGroup>
-    <!-- SetTargetFramework pins the referenced projects to the single net10.0 TFF during
-         release packing. Direct (non-solution) `dotnet pack` of this package referenced the
-         projects without an explicit framework and intermittently failed framework negotiation
-         under parallel builds; pinning the TFF (combined with `-m:1` in the release gate) makes
-         packing deterministic. Both references are single-target net10.0, so this is a no-op for
-         normal builds. Do not remove without re-validating tests/tools/run-release-package-gates.ps1. -->
-    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" SetTargetFramework="TargetFramework=net10.0" />
-    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" SetTargetFramework="TargetFramework=net10.0" />
+    <!-- Do NOT reintroduce SetTargetFramework here. Story 7.9 added it to stabilize direct
+         `dotnet pack` framework negotiation, on the assumption that it was "a no-op for normal
+         builds". It is not: SetTargetFramework sets a global property, which makes MSBuild treat
+         the referenced project as a SECOND project instance distinct from the plain reference
+         used elsewhere in the graph. Both instances then write the same
+         bin/Debug/net10.0/*.deps.json concurrently, and any build reaching these projects by
+         both paths (UI.E2E.Tests -> Testing here, and -> UI -> Client -> Contracts) fails with
+         "GenerateDepsFile ... deps.json ... being used by another process" (HXF-OPS-001; red on
+         e2e-gates and accessibility-gates every push through 2026-08-25).
+         The release-package gate no longer needs the pin: tests/tools/run-release-package-gates.ps1
+         already passes -m:1 to restore, build, and pack (lines 317, 318, 338), so there is no
+         parallel framework negotiation left for it to guard against. -->
+    <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
+    <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

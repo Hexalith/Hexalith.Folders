@@ -93,10 +93,13 @@ public sealed class RepositoryProvisioningProcessManager
         }
         catch (OperationCanceledException)
         {
+            // An IGitProvider maps post-dispatch ambiguity to a result itself, so a cancellation that
+            // escapes the port did not reach dispatch and performed no mutation. Reporting it as an
+            // unknown outcome would manufacture a reconciliation requirement AC9 does not call for.
             providerResult = ProviderRepositoryCreationResult.Failure(
                 providerRequest,
-                ProviderFailureCategory.UnknownProviderOutcome,
-                ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode());
+                ProviderFailureCategory.ProviderTransientFailure,
+                "github_operation_cancelled_before_dispatch");
         }
         catch (Exception)
         {

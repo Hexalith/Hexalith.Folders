@@ -17,6 +17,12 @@ internal sealed class RecordingProviderRepositoryTargetResolver(
         ProviderRepositoryResolvedTarget? target = null)
         => new(ProviderRepositoryTargetResolutionResult.Success(target ?? DefaultTarget()));
 
+    /// <summary>
+    /// A resolver that reports success but hands back no target. A broken seam, not a provider outcome.
+    /// </summary>
+    public static RecordingProviderRepositoryTargetResolver SuccessWithoutTarget()
+        => new(new ProviderRepositoryTargetResolutionResult(true, null, ProviderFailureCategory.None, "success", null));
+
     public static RecordingProviderRepositoryTargetResolver Failure(
         ProviderFailureCategory category,
         string reasonCode)

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Shouldly;
 using Xunit;
 
@@ -83,7 +84,24 @@ public sealed class GitHubDependencyGuardTests
             catalog.ShouldContain(evidence, Case.Sensitive);
         }
 
-        catalog.ShouldNotContain("OQ4 status: approved", Case.Sensitive);
+        // A single exact phrase is satisfied by any rewording ("OQ4: approved", "OQ4 status - approved"),
+        // which would let the catalog self-approve OQ4 while this gate stayed green. Assert the claim,
+        // not one spelling of it: any OQ4/approval co-occurrence must be negated or pending.
+        Regex approvalWord = new(
+            @"\b(approved|approval|accepted|acceptance)\b",
+            RegexOptions.IgnoreCase,
+            TimeSpan.FromSeconds(1));
+        Regex qualifier = new(
+            @"\b(not|no|pending|never|cannot|requires|required|awaiting|outstanding|must)\b",
+            RegexOptions.IgnoreCase,
+            TimeSpan.FromSeconds(1));
+        foreach (string line in catalog.Split('\n'))
+        {
+            if (line.Contains("OQ4", StringComparison.OrdinalIgnoreCase) && approvalWord.IsMatch(line))
+            {
+                qualifier.IsMatch(line).ShouldBeTrue($"OQ4 approval claim is unqualified: '{line.Trim()}'");
+            }
+        }
     }
 
     private static string FindRepositoryRoot()

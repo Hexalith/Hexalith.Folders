@@ -2172,6 +2172,7 @@ origin: code review of spec-3-10-github-repository-provisioning-binding-and-bran
 location: src/Hexalith.Folders.Workers/RepositoryProvisioning/RepositoryProvisioningProcessManager.cs:79-84
 source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: `RepositoryProvisioningContext.IdempotencyAdmission` is optional and defaults to `Fresh`, so a future construction site that forgets to populate it degrades the new gate to "execute as new work" with no test failing. Separately, `ContextMatchesRequested` validates tenant, organization, and binding ref but never checks that `context.IdempotencyAdmission.IntentFingerprint` equals `requested.IdempotencyFingerprint`, so once Story 12.6 supplies real admissions a mismatched one would be honoured. Both become live hazards only when 12.6 wires the durable producer; the optional default is deliberate for now because the folder ledger still owns dedup.
+amended (2026-08-25, code review of story 3.10): the worker is only half the gap. `RepositoryBindingService` (`src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs:190-195`) hard-codes `ProviderIdempotencyDisposition.Fresh` with **no injection seam at all** — not an optional context field that could be populated, but a literal. It is the only production caller that reaches the binding gate today. Consequence: `idempotency_key_expired`, the behaviour that HALTed Story 3.10 twice, is unreachable on every production path, so AC7 is proven by boundary unit tests only. Story 12.6 must add the seam here as well as populate the worker's context.
 status: open
 
 ### DW-296: Idempotency conflict and expiry from the provider map to a repository conflict at the API boundary.
@@ -2214,4 +2215,48 @@ origin: code review of spec-3-10-github-repository-provisioning-binding-and-bran
 location: src/Hexalith.Folders/Providers/GitHub/GitHubProvider.cs; src/Hexalith.Folders/Providers/GitHub/GitHubProvider.Mutations.cs
 source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: There are now four admission gates differing only in result type — two for creation/binding and two for change-set/commit. They already drifted once: the Story 3.10 pair initially shipped without the malformed-admission boundary checks its Story 3.11 sibling performs (fixed in review). A single helper returning `(ProviderFailureCategory, string)?`, the shape `ValidateBoundary` in `Mutations.cs` already uses, would make divergence impossible. Refactoring the Story 3.11 gates is outside Story 3.10's authority.
+amended (2026-08-25, code review of story 3.10): the drift was not merely a risk — it had already produced a contradiction. Story 3.10 validated `PriorReconciliationReference` with `IsSafeFingerprint` (exactly 64 lowercase hex) while Story 3.11 validated the same field with `IsSafeOpaqueReference` (<=128 chars, `-_.:` allowed, ULID-shaped), so one durable admission from Story 12.6 could not have satisfied both gates. In the other direction the Story 3.10 gate was the weaker one: it required neither `PriorOutcomeDisposition` nor `PriorOperationReference`, and never allow-listed the prior reason or remediation codes.
+resolution (2026-08-25): closed on the Story 3.10 side. `IsReplayEvidenceWellFormed` in `GitHubProvider.cs` now applies the same per-disposition rules as `IsOperationAdmissionWellFormed`, and both call the shared `IsSafeOpaqueReference` / `IsSafeFingerprint` / `SafeRetryAfter` / `AllowedOperationRemediationCodes` members of the same partial class. Reason codes are checked against the Story 3.11 allow-list first, with a repository-scoped set for the create/bind additions. The remaining item is the structural one: four gates still exist and a single shared helper would make future divergence impossible. That refactor still needs Story 3.11's authority.
+status: open
+
+## Deferred from: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+
+### DW-300: `IsMalformedJsonException` cites a nonexistent Octokit type, keeps a name-substring heuristic, and ships untested.
+
+origin: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs:907
+source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: Follow-up to DW-298's production fix. Three residual problems. (1) The explanatory comment asserts that "Octokit 14.0.0 surfaces an unparseable response body as `Octokit.SerializationException`", but that type does not exist in the pinned package — verified against `~/.nuget/packages/octokit/14.0.0/lib/netstandard2.0/`, whose `Octokit.xml` contains zero occurrences of `SerializationException` while the DLL string heap carries the BCL `System.Runtime.Serialization.SerializationException`. The code is correct; the load-bearing rationale a future maintainer would trust points at a type that isn't there. (2) The guard remains half a type-name substring test (`Name.Contains("Json")`), which will also swallow unrelated `System.Text.Json` exceptions thrown by our own code and report a programming error as a provider malformed-response. (3) Commit `19f40f2` changed production classification with no test exercising the new `SerializationException` branch. This is the Story 3.11 failure matrix, which Story 3.10's Dev Notes place under "Do Not Touch".
+status: open
+
+### DW-301: `AddLogging()` in the dependency guard test masks a real composition gap.
+
+origin: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubDependencyGuardTests.cs
+source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: DW-298 diagnosed `ProviderReadinessCompositionResolvesGitHubAndForgejoExactlyOnce` as a test defect and fixed it by adding `services.AddLogging()` to the bare `ValidateOnBuild` container. That is a defensible reading, but it converts a genuine signal — `AddFoldersProviderReadiness()` is not self-contained, because `AddFoldersObservability` registers `FolderTelemetryEmitter(IEnumerable<IFolderAuditObserver>, ILogger<FolderTelemetryEmitter>)` — into a green test by mutating the test rather than the extension. Nothing now asserts what the composition root must supply, and any host calling the extension without logging registered still fails at resolution. Either the extension should call `AddLogging()` itself, or a test should pin the prerequisite explicitly.
+status: open
+
+### DW-302: An archived or disabled GitHub repository binds successfully.
+
+origin: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs:160-200
+source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: `ValidateRepositoryBindingAsync` checks access, canonical identity, permission posture, default branch, selected ref, and protection posture, but never inspects `Repository.Archived` or the disabled flag. A binding to an archived repository validates cleanly and then fails on every subsequent write. AC4 enumerates the checks it requires and does not name archival, so this is a gap in the acceptance criteria rather than a deviation from it — it needs a product decision before it becomes a required check.
+status: open
+
+### DW-303: No bounded per-request deadline on the GitHub transport.
+
+origin: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClientFactory.cs
+source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: `GitHubApiVersionHttpClient.SetRequestTimeout` delegates to the inner client, but the factory never calls it, so no story-owned deadline is established and Octokit's default applies. Combined with Octokit 14's high-level repository/branch methods accepting no `CancellationToken`, a hung GitHub response blocks the calling worker for that default. The `TimeoutDuringMutation` / `TimeoutDuringObservation` conditions were added specifically to model timeouts, so the taxonomy is ready but the bound is not chosen. Picking the value is a policy decision, not a mechanical fix.
+status: open
+
+### DW-304: Sibling digits-only SHA constants carry the `ToUpperInvariant()` vacuity hazard DW-298 fixed once.
+
+origin: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
+location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs
+source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+reason: DW-298 changed `OctokitGitHubApiClientTests.CommitSha` from digits-only to `"...cc"` because the non-canonical-SHA scenarios uppercase it, and `ToUpperInvariant()` on a digits-only string is a no-op that silently vacates the assertion. The sibling constants `StagedTreeSha = "2222..."` and `PriorOutcomeFingerprint = "1111..."` are still digits-only, and no helper or assertion (e.g. `value.ToUpperInvariant().ShouldNotBe(value)`) prevents a future test from reintroducing the same vacuity. Story 3.11's slice.
 status: open

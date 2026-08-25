@@ -37,6 +37,10 @@ public sealed class RepositoryProvisioningProcessManagerTests
         sent.IdempotencyKey.ShouldBe("idempotency-a");
         sent.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Fresh);
         sent.IdempotencyAdmission.IntentFingerprint.ShouldBe("fingerprint-a");
+
+        // The profile ref selects owner, name, and visibility at the resolver. It has a default of
+        // "", so dropping the argument here would compile and leave the suite green.
+        sent.RepositoryProfileRef.ShouldBe("profile-a");
         repository.EventsAppended.ShouldBe(1);
         RepositoryBound bound = repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<RepositoryBound>();
         bound.RepositoryBindingId.ShouldBe("binding-a");

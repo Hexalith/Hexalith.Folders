@@ -110,7 +110,7 @@ internal static class GitHubFailureMapper
             string safeTargetFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? value)
                 ? value
                 : string.Empty;
-            return ProviderRepositoryCreationResult.Success(request, equivalentExisting: true, safeTargetFingerprint);
+            return ProviderRepositoryCreationResult.Success(request, equivalentExisting: true, safeTargetFingerprint, result.CanonicalRepositoryId);
         }
 
         (ProviderFailureCategory Category, string ReasonCode) mapped = result.FailureCondition switch
@@ -160,7 +160,7 @@ internal static class GitHubFailureMapper
             string safeTargetFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? value)
                 ? value
                 : string.Empty;
-            return ProviderRepositoryBindingResult.Success(request, equivalentExisting: true, safeTargetFingerprint);
+            return ProviderRepositoryBindingResult.Success(request, equivalentExisting: true, safeTargetFingerprint, result.CanonicalRepositoryId);
         }
 
         (ProviderFailureCategory Category, string ReasonCode) mapped = result.FailureCondition switch

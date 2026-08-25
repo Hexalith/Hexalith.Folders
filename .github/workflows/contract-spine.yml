@@ -23,6 +23,9 @@ jobs:
           fetch-depth: 1
           submodules: false
 
+      - name: Initialize root-level build submodules
+        run: git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:

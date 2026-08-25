@@ -12,12 +12,19 @@ public sealed record ProviderRepositoryBindingResult(
     string RepositoryBindingId,
     string ProviderBindingRef,
     string CorrelationId,
-    string? SafeTargetFingerprint)
+    string? SafeTargetFingerprint,
+    string? CanonicalRepositoryId = null,
+    string? PriorSafeOutcomeFingerprint = null,
+    string? PriorOperationReference = null,
+    string? PriorReconciliationReference = null)
 {
     public static ProviderRepositoryBindingResult Success(
         ProviderRepositoryBindingRequest request,
         bool equivalentExisting,
-        string safeTargetFingerprint)
+        string safeTargetFingerprint,
+        string? canonicalRepositoryId = null,
+        string? priorSafeOutcomeFingerprint = null,
+        string? priorOperationReference = null)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -33,7 +40,10 @@ public sealed record ProviderRepositoryBindingResult(
             request.RepositoryBindingId,
             request.ProviderBindingRef,
             request.CorrelationId,
-            safeTargetFingerprint);
+            safeTargetFingerprint,
+            canonicalRepositoryId,
+            priorSafeOutcomeFingerprint,
+            priorOperationReference);
     }
 
     public static ProviderRepositoryBindingResult Failure(
@@ -41,7 +51,12 @@ public sealed record ProviderRepositoryBindingResult(
         ProviderFailureCategory category,
         string reasonCode,
         TimeSpan? retryAfter = null,
-        string? safeRemediationCode = null)
+        string? safeRemediationCode = null,
+        bool? retryable = null,
+        string? safeTargetFingerprint = null,
+        string? priorSafeOutcomeFingerprint = null,
+        string? priorOperationReference = null,
+        string? priorReconciliationReference = null)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -53,11 +68,15 @@ public sealed record ProviderRepositoryBindingResult(
             categoryCode,
             string.IsNullOrWhiteSpace(reasonCode) ? categoryCode : reasonCode,
             string.IsNullOrWhiteSpace(safeRemediationCode) ? $"{categoryCode}_remediation" : safeRemediationCode,
-            category.IsRetryableByDefault(),
+            retryable ?? category.IsRetryableByDefault(),
             retryAfter,
             request.RepositoryBindingId,
             request.ProviderBindingRef,
             request.CorrelationId,
-            SafeTargetFingerprint: null);
+            safeTargetFingerprint,
+            CanonicalRepositoryId: null,
+            priorSafeOutcomeFingerprint,
+            priorOperationReference,
+            priorReconciliationReference);
     }
 }

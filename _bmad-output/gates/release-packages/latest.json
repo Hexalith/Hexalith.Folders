@@ -1,8 +1,8 @@
 {
   "gate": "release-packages",
-  "status": "passed",
+  "status": "failed",
   "mode": "DryRun",
-  "exit_code": 0,
+  "exit_code": 1,
   "report_path": "_bmad-output/gates/release-packages/latest.json",
   "diagnostic_policy": "metadata-only",
   "categories": [
@@ -18,9 +18,9 @@
     "metadata-only-report",
     "publish"
   ],
-  "package_version": "0.0.0-local.1",
+  "package_version": "0.1.0-retro-validation",
   "release_tag": "",
-  "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+  "source_revision_id": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
   "contract_version": "0.0.0-scaffold",
   "contract_metadata_path": "src/Hexalith.Folders.Contracts/FoldersContractMetadata.cs",
   "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
@@ -31,8 +31,11 @@
     "_bmad-output/gates/contract-parity-ci/latest.json",
     "_bmad-output/gates/security-redaction-ci/latest.json",
     "_bmad-output/gates/capacity-smoke-ci/latest.json",
+    "_bmad-output/gates/capacity-calibration/latest.json",
+    "_bmad-output/gates/retention-deletion/latest.json",
     "_bmad-output/gates/safety-invariants/latest.json",
-    "_bmad-output/gates/governance-completeness/latest.json"
+    "_bmad-output/gates/governance-completeness/latest.json",
+    "_bmad-output/gates/nfr-traceability/latest.json"
   ],
   "pushed_package_ids": [
     "Hexalith.Folders.Contracts",
@@ -46,10 +49,10 @@
       "package_id": "Hexalith.Folders.Contracts",
       "role": "contracts",
       "project_path": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
-      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Contracts.0.0.0-local.1.nupkg",
-      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Contracts.0.0.0-local.1.snupkg",
-      "version": "0.0.0-local.1",
-      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Contracts.0.1.0-retro-validation.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Contracts.0.1.0-retro-validation.snupkg",
+      "version": "0.1.0-retro-validation",
+      "source_revision_id": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
       "contract_version": "0.0.0-scaffold",
       "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
       "publish_mode": "push"
@@ -58,10 +61,10 @@
       "package_id": "Hexalith.Folders",
       "role": "core",
       "project_path": "src/Hexalith.Folders/Hexalith.Folders.csproj",
-      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.0.0.0-local.1.nupkg",
-      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.0.0.0-local.1.snupkg",
-      "version": "0.0.0-local.1",
-      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.0.1.0-retro-validation.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.0.1.0-retro-validation.snupkg",
+      "version": "0.1.0-retro-validation",
+      "source_revision_id": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
       "contract_version": "0.0.0-scaffold",
       "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
       "publish_mode": "push"
@@ -70,10 +73,10 @@
       "package_id": "Hexalith.Folders.Client",
       "role": "client",
       "project_path": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
-      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Client.0.0.0-local.1.nupkg",
-      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Client.0.0.0-local.1.snupkg",
-      "version": "0.0.0-local.1",
-      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Client.0.1.0-retro-validation.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Client.0.1.0-retro-validation.snupkg",
+      "version": "0.1.0-retro-validation",
+      "source_revision_id": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
       "contract_version": "0.0.0-scaffold",
       "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
       "publish_mode": "push"
@@ -82,10 +85,10 @@
       "package_id": "Hexalith.Folders.Aspire",
       "role": "aspire",
       "project_path": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
-      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Aspire.0.0.0-local.1.nupkg",
-      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Aspire.0.0.0-local.1.snupkg",
-      "version": "0.0.0-local.1",
-      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Aspire.0.1.0-retro-validation.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Aspire.0.1.0-retro-validation.snupkg",
+      "version": "0.1.0-retro-validation",
+      "source_revision_id": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
       "contract_version": "0.0.0-scaffold",
       "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
       "publish_mode": "push"
@@ -94,10 +97,10 @@
       "package_id": "Hexalith.Folders.Testing",
       "role": "testing",
       "project_path": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj",
-      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Testing.0.0.0-local.1.nupkg",
-      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Testing.0.0.0-local.1.snupkg",
-      "version": "0.0.0-local.1",
-      "source_revision_id": "7f29f8072befea6ea091dc9f2711681c47dfc71e",
+      "package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Testing.0.1.0-retro-validation.nupkg",
+      "symbol_package_path": "_bmad-output/gates/release-packages/packages/Hexalith.Folders.Testing.0.1.0-retro-validation.snupkg",
+      "version": "0.1.0-retro-validation",
+      "source_revision_id": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
       "contract_version": "0.0.0-scaffold",
       "openapi_spine_path": "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
       "publish_mode": "push"
@@ -121,7 +124,7 @@
     },
     {
       "category": "restore-build",
-      "status": "passed",
+      "status": "skipped-same-run-prerequisite",
       "exit_code": 0
     },
     {
@@ -146,19 +149,9 @@
     },
     {
       "category": "release-evidence",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "metadata-only-report",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "publish",
-      "status": "skipped-dry-run",
-      "exit_code": 0
+      "status": "failed",
+      "exit_code": 1
     }
   ],
-  "elapsed_ms": 13538
+  "elapsed_ms": 7827
 }

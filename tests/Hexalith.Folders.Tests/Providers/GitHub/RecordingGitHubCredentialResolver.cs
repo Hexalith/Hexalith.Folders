@@ -17,7 +17,13 @@ internal sealed class RecordingGitHubCredentialResolver : IGitHubCredentialResol
 
     public GitHubCredentialResolutionRequest? LastRequest { get; private set; }
 
-    public bool CredentialIsDisposed => string.IsNullOrEmpty(_lastResult?.Credential?.AccessToken);
+    /// <summary>
+    /// True only when a lease was actually handed out and then cleared. Testing the token for
+    /// emptiness alone would also report "disposed" for a failure-shaped resolver that never issued
+    /// a lease, so the assertion could pass without any disposal happening.
+    /// </summary>
+    public bool CredentialIsDisposed
+        => _lastResult?.Credential is { } credential && string.IsNullOrEmpty(credential.AccessToken);
 
     public static RecordingGitHubCredentialResolver Success(string token)
     {

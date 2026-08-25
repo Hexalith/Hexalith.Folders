@@ -37,7 +37,121 @@ public sealed partial class OctokitGitHubApiClientTests
         body.RootElement.GetProperty("auto_init").GetBoolean().ShouldBeFalse();
         body.RootElement.TryGetProperty("license_template", out _).ShouldBeFalse();
         body.RootElement.TryGetProperty("gitignore_template", out _).ShouldBeFalse();
+
+        // The resolved target asked for a private repository. Nothing else in the suite reads this
+        // field, so without it a swapped mapping would ship a public repository undetected.
+        ReadVisibility(body).ShouldBe("private");
     }
+
+    // ProviderRepositoryVisibility is internal, so the theory travels by name.
+    [Theory]
+    [InlineData("Private", "private")]
+    [InlineData("Internal", "internal")]
+    [InlineData("Public", "public")]
+    public async Task CreateRepositorySendsTheResolvedVisibility(string visibilityName, string expected)
+    {
+        ProviderRepositoryVisibility visibility = Enum.Parse<ProviderRepositoryVisibility>(visibilityName);
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.Created, RepositoryJson(101));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            CreationRequest() with { Target = CreationRequest().Target with { Visibility = visibility } },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue();
+        using JsonDocument body = JsonDocument.Parse(handler.Requests.ShouldHaveSingleItem().Body.ShouldNotBeNull());
+        ReadVisibility(body).ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task CreateRepositoryRejectsAnUndefinedVisibilityWithoutDispatchingAMutation()
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.Created, RepositoryJson(101));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            CreationRequest() with
+            {
+                Target = CreationRequest().Target with { Visibility = (ProviderRepositoryVisibility)97 },
+            },
+            TestContext.Current.CancellationToken);
+
+        // Mapped, not thrown: every other path in this client returns a mapped result.
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task CreateRepositoryRejectsAnExistingRepositoryWhoseCanonicalIdentityDiffers()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(++calls == 1
+            ? JsonResponse(HttpStatusCode.UnprocessableEntity, RepositoryExistsJson())
+            : JsonResponse(HttpStatusCode.OK, RepositoryJson(102))));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+        GitHubRepositoryCreationRequest request = CreationRequest() with
+        {
+            Target = CreationRequest().Target with
+            {
+                ExpectedCanonicalRepositoryId = "101",
+                EquivalentExistingAuthorized = true,
+            },
+        };
+
+        GitHubRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            request,
+            TestContext.Current.CancellationToken);
+
+        // An owner/name that now denotes a different repository is a conflict, never a replay.
+        result.IsSuccess.ShouldBeFalse();
+        result.EquivalentExisting.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.RepositoryConflict);
+        handler.Requests.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task ValidateBindingRejectsARepositoryWhoseCanonicalIdentityDiffers()
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.OK, RepositoryJson(102));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest() with
+            {
+                Target = BindingRequest().Target with
+                {
+                    ExpectedCanonicalRepositoryId = "101",
+                    EquivalentExistingAuthorized = true,
+                },
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.RepositoryConflict);
+    }
+
+    [Fact]
+    public async Task ValidateBindingRejectsARepositoryWhoseVisibilityDiffersFromPolicy()
+    {
+        RecordingGitHubHttpMessageHandler handler = SuccessHandler(HttpStatusCode.OK, RepositoryJson(101, isPrivate: false));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        // The target declares Private; a public repository is not the intended target.
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.RepositoryConflict);
+    }
+
+    private static string? ReadVisibility(JsonDocument body)
+        => body.RootElement.TryGetProperty("visibility", out JsonElement visibility)
+            ? visibility.GetString()
+            : body.RootElement.TryGetProperty("private", out JsonElement isPrivate)
+                ? isPrivate.GetBoolean() ? "private" : "public"
+                : null;
 
     [Fact]
     public async Task CreateRepositoryReconcilesEquivalentExistingByCanonicalIdentity()
@@ -503,14 +617,15 @@ public sealed partial class OctokitGitHubApiClientTests
         long id,
         string defaultBranch = "main",
         bool pull = true,
-        bool admin = true)
+        bool admin = true,
+        bool isPrivate = true)
         => $$"""
         {
           "id": {{id}},
           "node_id": "repository-node-sentinel",
           "name": "octokit-repository-sentinel",
           "full_name": "octokit-owner-sentinel/octokit-repository-sentinel",
-          "private": true,
+          "private": {{isPrivate.ToString().ToLowerInvariant()}},
           "owner": { "login": "octokit-owner-sentinel", "id": 7, "type": "Organization" },
           "html_url": "https://example.invalid/repository-sentinel",
           "url": "https://api.example.invalid/repos/owner/repository",
