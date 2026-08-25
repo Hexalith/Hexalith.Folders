@@ -1075,7 +1075,9 @@ resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.fo
 origin: migrated from legacy ledger ("Deferred from: code review of 1-9-author-file-mutation-and-context-query-contract-groups (2026-05-13)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: ChangeFile
 reason: W1: No `412 Precondition Failed` response for `ChangeFile` concurrency control — concurrency model and optimistic-concurrency headers (`If-Match`/`If-None-Match`) belong to Epic 4 runtime; Story 1.9 contract group declares only idempotency-conflict (409), not stale-content versioning. Revisit when Epic 4 implements ChangeFile semantics on prepared workspaces. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: ChangeFile`)
-status: open
+status: done 2026-08-25
+resolution: closed by human decision: Locking plus idempotency remain canonical; no independent content-version precondition is supported.
+decision: 2026-08-25 Keep lock model — Locking plus idempotency remain canonical; no independent content-version precondition is supported.
 
 ### DW-147: P5: `FileSearchRequest.queryText` and `FileGlobRequest.globPattern` carry audit-exclusion semantics in prose only; schema-level `x-hexalith-audit-visibility` (or…
 
