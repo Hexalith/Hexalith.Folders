@@ -1,4 +1,13 @@
 {
+  "DW-143": {
+    "answered_at": "2026-08-25",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add a shared ProviderRateLimited response to CommitWorkspace and regenerate or update SDK parity, adapter mappings, and tests.",
+    "key": "add-429",
+    "label": "Add explicit 429",
+    "resolution": ""
+  },
   "DW-256": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

@@ -1053,6 +1053,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-10-author-
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: CommitWorkspace responses
 reason: W3: `CommitWorkspace` does not declare a 429 response even though `provider_rate_limited` is in the canonical-error-category set. Cross-cutting consistency across all mutating operations; not unique to this story. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: CommitWorkspace responses`)
 status: open
+decision: 2026-08-25 Add explicit 429 — Add a shared ProviderRateLimited response to CommitWorkspace and regenerate or update SDK parity, adapter mappings, and tests.
 
 ### DW-144: W4: `OpaqueIdentifier` does not reject the new namespace prefixes `branchref_`, `digest_`, `provref_`, `authorref_`
 
