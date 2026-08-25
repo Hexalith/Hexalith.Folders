@@ -2,7 +2,7 @@
 title: 'Story 3.11: GitHub file mutation, commit, status, and failure behavior'
 type: 'feature'
 created: '2026-08-24'
-status: 'blocked'
+status: ready-for-dev
 baseline_revision: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 baseline_commit: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 review_loop_iteration: 0
@@ -23,9 +23,11 @@ deferred: []
 
 **Approach:** Add provider-neutral ordered-change-set, explicit-commit, and read-only outcome/status operations to the capability-discoverable provider boundary, then implement the GitHub-private Octokit behavior with exact ref/commit evidence, stable failure mapping, and metadata-safe reconciliation results. Keep durable content/target resolution and worker/process-manager composition fail-closed for Stories 12.3/12.4.
 
+**Acceptance Surface:** For Story 3.11, "real deployed GitHub composition" means that production service registration resolves the canonical `IGitProvider` to the concrete GitHub provider backed by Octokit for mutation, commit, and status behavior. Completion requires provider-component production-composition evidence plus hermetic evidence through the real adapter and transport; it does not require a successful outer workspace-task dispatch. The adapter validates and consumes caller-supplied authoritative authorization, lock, ref-policy, idempotency, target, content, and reconciliation-budget evidence but does not produce or persist those decisions. Stories 12.3, 12.4, 4.20, and 4.21 retain ownership of durable target/content resolution, lock and idempotency persistence, executor/process-manager composition, reconciliation scheduling, terminal task/projection state, and end-to-end deployed workspace proof.
+
 ## Boundaries & Constraints
 
-**Always:** Authorize and validate fresh tenant, folder, delegated-task, binding, ref-policy, and canonical lock evidence before target, credential, content, or provider observation; resolve opaque references only into short-lived GitHub-private values; preserve caller mutation order; never move the branch while staging files; allow at most one non-force ref update for an explicit commit; return only provider-neutral safe fingerprints, canonical outcome categories, retry posture, and opaque reconciliation identity. Treat cancellation before dispatch as no effect, possible post-dispatch ambiguity as `unknown_provider_outcome`, and status as read-only/unavailable rather than an unknown mutation. Keep all events, results, exceptions, diagnostics, and test failures free of tokens, raw owner/repository/ref/path/content/message values, diffs, URLs, and provider bodies.
+**Always:** Authorize and validate fresh tenant, folder, delegated-task, binding, ref-policy, and canonical lock evidence before target, credential, content, or provider observation; resolve opaque references only into short-lived GitHub-private values; preserve caller mutation order; never move the branch while staging files; allow at most one non-force ref update for an explicit commit; return only provider-neutral safe fingerprints, canonical outcome categories, retry posture, and opaque reconciliation identity. Treat cancellation before dispatch as no effect, possible post-dispatch ambiguity as `unknown_provider_outcome`, and status as read-only/unavailable rather than an unknown mutation. Perform one read-only status observation per authorized provider call and validate the caller-supplied authoritative check number and time-window evidence; durable scheduling and persistence of the five-check/15-minute reconciliation lifecycle remain downstream. Keep all events, results, exceptions, diagnostics, and test failures free of tokens, raw owner/repository/ref/path/content/message values, diffs, URLs, and provider bodies.
 
 **Block If:** A proven public Contract Spine gap requires new externally observable semantics not settled by the current authority, or implementation would require inventing the durable content/target store, worker lifecycle, or canonical lock decision owned by another story. OQ4 approval and credential-gated live evidence are operator follow-up actions, not blocking conditions for the agent-completable adapter slice.
 
@@ -38,8 +40,9 @@ deferred: []
 | Ordered staging | Authorized exact target/ref plus validated add/change/remove set | Blobs/tree are prepared in requested order without ref movement or implicit commit | Policy/SHA/ref mismatch is a known canonical failure |
 | Explicit commit | Known staged set and unchanged expected head | One commit is created and one non-force ref update is confirmed; canonical safe commit evidence is returned | Moved head/protection conflict does not overwrite |
 | Equivalent replay | Same live idempotent provider intent | Same logical safe result; no duplicate blob/tree/commit/ref/audit effect | Different intent conflicts before provider access; expired key never executes |
-| Ambiguous dispatch | Timeout, disconnect, cancellation, or malformed success after mutation may have applied | `unknown_provider_outcome` with opaque reconciliation evidence; no second mutation | At most five later read-only checks within 15 minutes; conflicting/exhausted evidence becomes `reconciliation_required` |
+| Ambiguous dispatch | Timeout, disconnect, cancellation, or malformed success after mutation may have applied | `unknown_provider_outcome` with opaque reconciliation evidence; no second mutation; one later read-only observation per authorized status call | Downstream durable orchestration may request at most five checks within 15 minutes; conflicting/exhausted evidence becomes `reconciliation_required` |
 | Status read | Exact authorized operation/ref/commit evidence | Provider-neutral confirmed/not-applied/conflicting/unavailable status without mutation | Reject an idempotency key before source access; conceal hidden/not-found targets |
+| Production composition | Production provider registration with the downstream durable operation resolver absent | The canonical provider port resolves exactly one concrete GitHub/Octokit adapter; mutation, commit, and status fail closed before credential or provider access when their authoritative source is unavailable | Real provider registration plus hermetic adapter/transport behavior completes this story's composition surface; it is not successful outer workspace execution evidence |
 
 </intent-contract>
 
@@ -50,7 +53,7 @@ deferred: []
 - `src/Hexalith.Folders/Providers/GitHub/GitHubProvider.cs:154` -- reuse boundary ordering: validate evidence, resolve target, acquire/dispose credential, invoke the private client, sanitize result.
 - `src/Hexalith.Folders/Providers/GitHub/IGitHubApiClient.cs:3`, `OctokitGitHubApiClient.cs:7` -- add GitHub-private Git Data staging, commit/ref update, and status/reconciliation behavior; leave `GetReadinessAsync` to Story 3.3.
 - `src/Hexalith.Folders/Providers/GitHub/GitHubSafeTargetFingerprint.cs:10`, `GitHubApiFailureCondition.cs:3`, `GitHubFailureMapper.cs:7` -- extend safe evidence and operation-specific known/unknown mapping without raw exception/provider data.
-- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:174` -- register any new fail-closed resolver and construct GitHub consistently in default and Dapr credential compositions; do not wire workspace executors.
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs:174` -- register the concrete GitHub/Octokit provider consistently in default and Dapr credential compositions, prove it resolves exactly once through the canonical port, and keep its downstream operation resolver fail-closed; do not wire workspace executors.
 - `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:62` -- read-only boundary evidence: unavailable content/delete/commit implementations remain until later durable stories.
 - `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs:12`, `OctokitGitHubApiClientTests.cs:12`, `GitHubDependencyGuardTests.cs:6` -- extend boundary ordering, exact wire behavior, failure matrix, no-retry, and leakage proof through the recording transport.
 - `src/Hexalith.Folders.Testing/Providers/FakeGitProvider.cs:5` and local test provider fakes -- keep all `IGitProvider` implementations compiling with explicit unsupported defaults outside GitHub.
@@ -59,19 +62,23 @@ deferred: []
 ## Tasks & Acceptance
 
 **Execution:**
-- [x] `src/Hexalith.Folders/Providers/Abstractions/*.cs` -- define metadata-safe request/result/status/reconciliation shapes and extend `IGitProvider`; preserve the existing capability and failure contracts.
-- [x] `src/Hexalith.Folders/Providers/GitHub/*.cs` -- implement authorized private resolution, ordered Git Data staging, explicit commit/non-force ref update, exact status checks, safe mapping, and cancellation/ambiguity rules with Octokit 14.0.0 and REST profile `2022-11-28`.
-- [x] `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` plus provider fakes -- wire fail-closed dependencies and compile-safe unsupported non-GitHub behavior without enabling the later production executor path.
-- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/*.cs` -- cover the I/O matrix, authorization-before-observation, exact methods/paths/headers/order/ref identity, replay/no-second-dispatch, 400/401/403/404/409/422/429/5xx, primary/secondary limits, moved head, cancellation boundaries, ambiguous responses, bounded status checks, and serialized sentinel exclusion.
-- [x] `docs/contract/provider-compatibility-catalog.md` -- document the implemented profile and leave Provider/Architecture/PM approval visibly pending.
+- [ ] `src/Hexalith.Folders/Providers/Abstractions/*.cs` -- define metadata-safe request/result/status/reconciliation shapes and extend `IGitProvider`; preserve the existing capability and failure contracts.
+- [ ] `src/Hexalith.Folders/Providers/GitHub/*.cs` -- implement authorized private resolution, ordered Git Data staging, explicit commit/non-force ref update, exact status checks, safe mapping, and cancellation/ambiguity rules with Octokit 14.0.0 and REST profile `2022-11-28`.
+- [ ] `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs` plus provider fakes -- wire the real GitHub/Octokit provider registration and fail-closed downstream resolver, and keep unsupported non-GitHub behavior compile-safe without enabling the later production executor path.
+- [ ] `tests/Hexalith.Folders.Tests/Providers/GitHub/*.cs` -- cover the I/O matrix, production provider registration, authorization-before-observation, exact methods/paths/headers/order/ref identity, replay/no-second-dispatch, 400/401/403/404/409/422/429/5xx, primary/secondary limits, moved head, cancellation boundaries, ambiguous responses, bounded per-call status observations, and serialized sentinel exclusion.
+- [ ] `docs/contract/provider-compatibility-catalog.md` -- document the implemented profile and leave Provider/Architecture/PM approval visibly pending.
 
 **Acceptance Criteria:**
 - Given current authorized provider evidence and an exact resolved GitHub target, when the canonical provider stages and commits a validated ordered change set, then no file operation auto-commits and success is returned only after one non-force ref update is confirmed at the intended commit.
 - Given denial, stale/revoked evidence, wrong tenant, conflicting/expired intent, invalid lock/ref/path/type/size policy, or an unknown mutation, when any provider operation is requested, then it performs no forbidden credential/target/provider observation or second mutation and returns the stable provider-neutral safe outcome.
 - Given a known GitHub response or an ambiguous post-dispatch result, when mapping and status reconciliation run, then known failures remain distinct, unknown outcomes permit only bounded read-only evidence checks, and every result survives serialization without sensitive material.
-- Given Story 3.11 focused tests and dependency guards run offline, when they inspect both the canonical provider boundary and concrete Octokit transport, then all required success/failure/replay/order/ref/header/leakage cases pass without credentials or network access.
+- Given production provider services are registered, when the canonical provider port is resolved, then exactly one concrete GitHub/Octokit adapter is selected and an absent downstream operation source fails closed before credential or provider access without masquerading as successful outer workspace execution.
+- Given Story 3.11 focused tests and dependency guards run offline, when they inspect the production provider registration, canonical provider boundary, and concrete Octokit transport, then all required success/failure/replay/order/ref/header/leakage cases pass without credentials or network access.
 
 ## Spec Change Log
+
+- 2026-08-25: Human resolution selected layered ownership. Story 3.11 owns the production-registered provider/Octokit mutation, commit, and status seam; Stories 12.3, 12.4, 4.20, and 4.21 retain durable orchestration and end-to-end workspace ownership.
+- 2026-08-25: Reset the execution checklist because the attempted implementation was reverted. The saved intent-gap patch remains evidence only and must not be restored; re-drive this story from scratch.
 
 ## Review Triage Log
 
@@ -97,21 +104,3 @@ GitHub Contents API is intentionally excluded because each write creates a commi
 - `dotnet build Hexalith.Folders.slnx --no-restore -m:1` -- expected: solution build passes.
 - `git diff --check` -- expected: no whitespace errors; `sprint-status.yaml` remains untouched.
 
-## Auto Run Result
-
-Status: blocked
-
-Blocking condition: intent gap
-
-Summary: Review found two defensible but incompatible completion surfaces. The epic story requires an authorized workspace task to reach the real deployed GitHub composition, while the captured intent contract limits this story to the canonical provider/Octokit seam and explicitly leaves the deployed workspace executor fail-closed for later stories. The narrower implementation was preserved as `_bmad-output/implementation-artifacts/review-3-11-intent-gap.patch` and its Story 3.11 code, test, and compatibility-catalog changes were reverted. Later Story 3.10 work, orchestrator bookkeeping, and `sprint-status.yaml` were preserved.
-
-Unresolved questions:
-
-- Must Story 3.11 complete the deployed workspace-task path, including durable target/content resolution, canonical lock enforcement, server/worker composition, and an integration test through that outer surface, or is the provider/Octokit seam the intended acceptance surface?
-- If the deployed path belongs to Story 3.11, should it take ownership of the durable resolver and lifecycle work that the current intent contract assigns to Stories 12.3 and 12.4, or must the epic/story authority be revised first?
-
-Saved patch: `_bmad-output/implementation-artifacts/review-3-11-intent-gap.patch`
-
-Verification: Review used the complete `02ef9f87e61dd2057ed9a3760ca2a32f86888f5d..19f40f2e31f6849faae90a055498108a08ca99e7` version-controlled diff with no untracked implementation files. After the selective rollback, `Hexalith.Folders.csproj` and `Hexalith.Folders.Testing.csproj` built in Release with zero warnings/errors; `Hexalith.Folders.Tests.csproj` built with `BuildProjectReferences=false`; and the focused GitHub provider, dependency-guard, and Octokit classes passed 133/133 tests. The broader test-project build with project references remained blocked by pre-existing FrontComposer UI component/namespace resolution errors.
-
-Residual risk: The story cannot be re-derived safely until one completion surface is authoritative. The preserved patch also contains lower-order implementation and verification findings that must be reconsidered after that decision.
