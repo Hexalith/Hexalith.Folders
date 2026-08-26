@@ -3,7 +3,7 @@ title: 'Story 3.12: Forgejo repository provisioning, binding, and branch/ref beh
 type: 'feature'
 created: '2026-08-26'
 status: 'in-progress'
-baseline_revision: '485fcf38181a1ea8f2b643940a8751b433e66f6f'
+baseline_revision: 'c7aac4c9cb3b43546a6749eeacfd71073c379157'
 baseline_commit: '84243a4b1853471cd146dad062393fb70c170b73'
 review_loop_iteration: 2
 followup_review_recommended: false
