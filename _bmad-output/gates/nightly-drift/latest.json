@@ -27,29 +27,22 @@
   },
   "provider_versions": [
     {
-      "provider_version": "15.0.2",
-      "version_family": "15.0",
-      "support_class": "latest-stable-lts",
-      "snapshot_path": "tests/contracts/forgejo/15.0.2/swagger.v1.json",
+      "provider_version": "16.0.3",
+      "version_family": "16.0",
+      "support_class": "latest-stable",
+      "snapshot_path": "tests/contracts/forgejo/16.0.3/swagger.v1.json",
       "compatibility_posture": "supported"
     },
     {
-      "provider_version": "14.0.5",
-      "version_family": "14.0",
-      "support_class": "n-1-discontinued-reference",
-      "snapshot_path": "tests/contracts/forgejo/14.0.5/swagger.v1.json",
-      "compatibility_posture": "additive-compatible"
-    },
-    {
-      "provider_version": "11.0.14",
-      "version_family": "11.0",
-      "support_class": "older-lts",
-      "snapshot_path": "tests/contracts/forgejo/11.0.14/swagger.v1.json",
+      "provider_version": "15.0.7",
+      "version_family": "15.0",
+      "support_class": "long-term-support",
+      "snapshot_path": "tests/contracts/forgejo/15.0.7/swagger.v1.json",
       "compatibility_posture": "supported"
     }
   ],
   "sanitized_report_schema": "forgejo-drift-report-v1",
-  "elapsed_ms": 2278,
+  "elapsed_ms": 2829,
   "results": [
     {
       "category": "forgejo-manifest-integrity",

@@ -10,4 +10,6 @@ internal sealed record ForgejoSupportedVersionEntry(
     string Owner,
     string Reviewer,
     string DatedSource,
+    string SourceArtifactSha256,
+    string SnapshotSha256,
     string IntegrityHash);

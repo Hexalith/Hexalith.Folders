@@ -1,30 +1,22 @@
 {
   "schemaVersion": "forgejo-drift-report-v1",
-  "generatedAtUtc": "2026-05-30T17:38:21.8531152+00:00",
+  "generatedAtUtc": "2026-08-26T09:51:27.0072208+00:00",
   "provider": "forgejo",
   "fixtureSet": "tests/contracts/forgejo",
   "versions": [
     {
-      "providerVersion": "15.0.2",
-      "supportClass": "latest-stable-lts",
-      "snapshotPath": "tests/contracts/forgejo/15.0.2/swagger.v1.json",
-      "snapshotVersion": "15.0.2",
+      "providerVersion": "16.0.3",
+      "supportClass": "latest-stable",
+      "snapshotPath": "tests/contracts/forgejo/16.0.3/swagger.v1.json",
+      "snapshotVersion": "16.0.3",
       "fixtureSet": "pinned-openapi-v1",
       "driftClassification": "supported"
     },
     {
-      "providerVersion": "14.0.5",
-      "supportClass": "n-1-discontinued-reference",
-      "snapshotPath": "tests/contracts/forgejo/14.0.5/swagger.v1.json",
-      "snapshotVersion": "14.0.5",
-      "fixtureSet": "pinned-openapi-v1",
-      "driftClassification": "additive-compatible"
-    },
-    {
-      "providerVersion": "11.0.14",
-      "supportClass": "older-lts",
-      "snapshotPath": "tests/contracts/forgejo/11.0.14/swagger.v1.json",
-      "snapshotVersion": "11.0.14",
+      "providerVersion": "15.0.7",
+      "supportClass": "long-term-support",
+      "snapshotPath": "tests/contracts/forgejo/15.0.7/swagger.v1.json",
+      "snapshotVersion": "15.0.7",
       "fixtureSet": "pinned-openapi-v1",
       "driftClassification": "supported"
     }
@@ -32,7 +24,7 @@
   "classificationFixtures": 9,
   "redactionScan": {
     "status": "passed",
-    "filesScanned": 6
+    "filesScanned": 8
   },
   "artifactRetention": {
     "status": "sanitized-metadata-only",

@@ -1,11 +1,13 @@
+using Dapr.Client;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Observability;
+using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Providers.Credentials;
 using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Providers.GitHub;
-using Hexalith.Folders.Observability;
-using Hexalith.Folders.Projections.TenantAccess;
-using Hexalith.Folders.Providers.Credentials;
 using Hexalith.Folders.Queries.Audit;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
@@ -13,10 +15,6 @@ using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.OpsConsole;
 using Hexalith.Folders.Queries.ProviderReadiness;
-using Hexalith.Folders.Projections.SemanticIndexing;
-
-using Dapr.Client;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -180,12 +178,24 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<IGitHubCredentialResolver, UnconfiguredGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, UnconfiguredForgejoCredentialResolver>();
         services.TryAddSingleton<IGitHubApiClientFactory, OctokitGitHubApiClientFactory>();
+        services.AddHttpClient(ForgejoHttpApiClientFactory.HttpClientName, static client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(30);
+        }).ConfigurePrimaryHttpMessageHandler(static () => new SocketsHttpHandler
+        {
+            AllowAutoRedirect = false,
+            UseCookies = false,
+            PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+            PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+        });
+        services.TryAddSingleton<IForgejoApiClientFactory>(static sp => new ForgejoHttpApiClientFactory(
+            sp.GetRequiredService<IHttpClientFactory>()));
         services.TryAddSingleton<IProviderCapabilityAuthorizer, ProviderReadinessCapabilityAuthorizer>();
         services.TryAddSingleton<IProviderRepositoryTargetResolver, UnconfiguredProviderRepositoryTargetResolver>();
         services.TryAddSingleton<IProviderOperationSourceResolver, UnconfiguredProviderOperationSourceResolver>();
         services.TryAddSingleton<IProviderOperationOutcomeStore, UnconfiguredProviderOperationOutcomeStore>();
         services.TryAddSingleton(TimeProvider.System);
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IGitProvider, ForgejoProvider>());
+        NormalizeForgejoProviderRegistration(services, preserveInstance: true);
         NormalizeGitHubProviderRegistration(services, preserveInstance: true);
         services.TryAddSingleton<IProviderCapabilityResolver, DefaultProviderCapabilityResolver>();
         services.TryAddSingleton<IProviderCapabilityEvidenceStore, InMemoryProviderCapabilityEvidenceStore>();
@@ -217,12 +227,14 @@ public static class FoldersServiceCollectionExtensions
         services.RemoveAll<IProviderCredentialSecretStoreClient>();
         services.RemoveAll<IGitHubCredentialResolver>();
         services.RemoveAll<IForgejoCredentialResolver>();
+        RemoveForgejoProviderRegistrations(services);
         RemoveGitHubProviderRegistrations(services);
 
         services.TryAddSingleton<IProviderCredentialSecretStoreClient, DaprProviderCredentialSecretStoreClient>();
         services.TryAddSingleton<IProviderCredentialReferenceResolver, DaprProviderCredentialReferenceResolver>();
         services.TryAddSingleton<IGitHubCredentialResolver, DaprBackedGitHubCredentialResolver>();
         services.TryAddSingleton<IForgejoCredentialResolver, DaprBackedForgejoCredentialResolver>();
+        NormalizeForgejoProviderRegistration(services, preserveInstance: false);
         NormalizeGitHubProviderRegistration(services, preserveInstance: false);
 
         return services;
@@ -275,6 +287,51 @@ public static class FoldersServiceCollectionExtensions
 
     private static IGitProvider ResolveGitHubProvider(IServiceProvider serviceProvider)
         => serviceProvider.GetRequiredService<GitHubProvider>();
+
+    private static void NormalizeForgejoProviderRegistration(IServiceCollection services, bool preserveInstance)
+    {
+        ForgejoProvider? preRegisteredInstance = preserveInstance
+            ? services
+                .Where(IsForgejoProviderDescriptor)
+                .Select(static descriptor => descriptor.ImplementationInstance)
+                .OfType<ForgejoProvider>()
+                .FirstOrDefault()
+            : null;
+        RemoveForgejoProviderRegistrations(services);
+
+        if (preRegisteredInstance is not null)
+        {
+            services.AddSingleton(preRegisteredInstance);
+        }
+        else
+        {
+            services.AddSingleton(static sp => new ForgejoProvider(
+                sp.GetRequiredService<IForgejoCredentialResolver>(),
+                sp.GetRequiredService<IForgejoApiClientFactory>(),
+                sp.GetRequiredService<IProviderRepositoryTargetResolver>()));
+        }
+
+        services.AddSingleton<IGitProvider>(ResolveForgejoProvider);
+    }
+
+    private static void RemoveForgejoProviderRegistrations(IServiceCollection services)
+    {
+        foreach (ServiceDescriptor descriptor in services.Where(IsForgejoProviderDescriptor).ToArray())
+        {
+            services.Remove(descriptor);
+        }
+    }
+
+    private static bool IsForgejoProviderDescriptor(ServiceDescriptor descriptor)
+        => descriptor.ServiceType == typeof(ForgejoProvider)
+            || descriptor.ServiceType == typeof(IGitProvider)
+            && (descriptor.ImplementationType == typeof(ForgejoProvider)
+                || descriptor.ImplementationInstance is ForgejoProvider
+                || descriptor.ImplementationFactory?.Method == ((Func<IServiceProvider, IGitProvider>)ResolveForgejoProvider).Method
+                || descriptor.ImplementationFactory?.Method.ReturnType == typeof(ForgejoProvider));
+
+    private static IGitProvider ResolveForgejoProvider(IServiceProvider serviceProvider)
+        => serviceProvider.GetRequiredService<ForgejoProvider>();
 
     public static IServiceCollection AddFoldersObservability(this IServiceCollection services)
     {

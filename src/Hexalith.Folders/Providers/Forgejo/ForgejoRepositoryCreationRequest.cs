@@ -7,6 +7,7 @@ internal sealed record ForgejoRepositoryCreationRequest(
     string OrganizationId,
     string ProviderBindingRef,
     string RepositoryBindingId,
+    ProviderRepositoryResolvedTarget Target,
     ProviderCredentialMode CredentialMode,
     string ApiSurfaceVersion,
     string SupportedSnapshotVersion,

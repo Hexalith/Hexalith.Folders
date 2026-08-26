@@ -41,7 +41,7 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
         result.Status.ShouldBe("degraded");
         result.Evidence.ShouldNotBeNull().FileOperations.ShouldBe("temporarily_unavailable");
         result.CapabilityProfileRef.ShouldNotBeNullOrWhiteSpace();
-        apiClient.LastRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("15.0.2");
+        apiClient.LastRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("16.0.3");
         apiClient.LastRequest.ShouldNotBeNull().CredentialMode.ShouldBe(ProviderCredentialMode.UserDelegatedReference);
         ProviderCapabilityDiscoveryRequest storedAttempt = capabilityEvidence.Attempts.ShouldHaveSingleItem();
         storedAttempt.CredentialModeRequirements.ShouldBe([ProviderCredentialMode.UserDelegatedReference]);
@@ -95,7 +95,7 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
                 new Dictionary<string, string>(StringComparer.Ordinal)
                 {
                     ["authorized_base_url"] = "https://forgejo.example.test",
-                    ["snapshot_version"] = "15.0.2",
+                    ["snapshot_version"] = "16.0.3",
                     ["safe_target_fingerprint"] = "safe-target-a",
                     ["operation_scope"] = ProviderOperationCatalog.RepositoryCreation,
                 }),
@@ -194,8 +194,8 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
         public static RecordingForgejoApiClient Success()
             => new(ForgejoReadinessResult.Success(
                 new ForgejoVersionEvidence(
-                    "15.0.2",
-                    "15.0.2",
+                    "16.0.3",
+                    "16.0.3",
                     "forgejo-rest-v1",
                     "supported",
                     "supported"),

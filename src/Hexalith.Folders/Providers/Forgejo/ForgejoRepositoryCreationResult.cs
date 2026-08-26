@@ -4,13 +4,16 @@ internal sealed record ForgejoRepositoryCreationResult(
     bool IsSuccess,
     bool EquivalentExisting,
     ForgejoApiFailureCondition? FailureCondition,
-    TimeSpan? RetryAfter)
+    TimeSpan? RetryAfter,
+    string? CanonicalRepositoryId)
 {
-    public static ForgejoRepositoryCreationResult Success(bool equivalentExisting = false)
-        => new(true, equivalentExisting, null, null);
+    public static ForgejoRepositoryCreationResult Success(
+        bool equivalentExisting = false,
+        string? canonicalRepositoryId = null)
+        => new(true, equivalentExisting, null, null, canonicalRepositoryId);
 
     public static ForgejoRepositoryCreationResult Failure(
         ForgejoApiFailureCondition condition,
         TimeSpan? retryAfter = null)
-        => new(false, EquivalentExisting: false, condition, retryAfter);
+        => new(false, EquivalentExisting: false, condition, retryAfter, CanonicalRepositoryId: null);
 }

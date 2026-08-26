@@ -60,7 +60,7 @@ internal static class ForgejoSafeTargetFingerprint
         Dictionary<string, string> metadata = new(StringComparer.Ordinal)
         {
             ["safe_target_fingerprint"] = safeTargetFingerprint,
-            ["target_fingerprint_version"] = "forgejo-target-v1",
+            ["target_fingerprint_version"] = "forgejo-target-v2",
             ["operation_scope"] = request.TargetEvidence.Metadata.TryGetValue("operation_scope", out string? scope) && IsSafeMetadataValue(scope)
                 ? scope
                 : "readiness",
@@ -72,7 +72,7 @@ internal static class ForgejoSafeTargetFingerprint
             "forgejo",
             snapshotVersion,
             ForgejoProviderConstants.ApiSurfaceVersion,
-            "forgejo-target-evidence-v1",
+            "forgejo-target-evidence-v2",
             request.TargetEvidence.IsStale,
             request.TargetEvidence.ObservedAt,
             metadata);
@@ -115,7 +115,7 @@ internal static class ForgejoSafeTargetFingerprint
         Dictionary<string, string> metadata = new(StringComparer.Ordinal)
         {
             ["safe_target_fingerprint"] = safeTargetFingerprint,
-            ["target_fingerprint_version"] = "forgejo-target-v1",
+            ["target_fingerprint_version"] = "forgejo-target-v2",
             ["operation_scope"] = request.TargetEvidence.Metadata.TryGetValue("operation_scope", out string? scope) && IsSafeMetadataValue(scope)
                 ? scope
                 : "repository_creation",
@@ -127,7 +127,7 @@ internal static class ForgejoSafeTargetFingerprint
             "forgejo",
             snapshotVersion,
             ForgejoProviderConstants.ApiSurfaceVersion,
-            "forgejo-target-evidence-v1",
+            "forgejo-target-evidence-v2",
             request.TargetEvidence.IsStale,
             request.TargetEvidence.ObservedAt,
             metadata);
@@ -170,7 +170,7 @@ internal static class ForgejoSafeTargetFingerprint
         Dictionary<string, string> metadata = new(StringComparer.Ordinal)
         {
             ["safe_target_fingerprint"] = safeTargetFingerprint,
-            ["target_fingerprint_version"] = "forgejo-target-v1",
+            ["target_fingerprint_version"] = "forgejo-target-v2",
             ["operation_scope"] = request.TargetEvidence.Metadata.TryGetValue("operation_scope", out string? scope) && IsSafeMetadataValue(scope)
                 ? scope
                 : "existing_repository_binding",
@@ -182,7 +182,7 @@ internal static class ForgejoSafeTargetFingerprint
             "forgejo",
             snapshotVersion,
             ForgejoProviderConstants.ApiSurfaceVersion,
-            "forgejo-target-evidence-v1",
+            "forgejo-target-evidence-v2",
             request.TargetEvidence.IsStale,
             request.TargetEvidence.ObservedAt,
             metadata);
@@ -248,6 +248,7 @@ internal static class ForgejoSafeTargetFingerprint
         AppendField(hash, request.OrganizationId);
         AppendField(hash, request.ProviderBindingRef);
         AppendField(hash, request.RepositoryBindingId);
+        AppendField(hash, request.RepositoryProfileRef);
         AppendField(hash, request.ProviderFamily);
         AppendField(hash, request.ProviderKey);
         AppendField(hash, ForgejoProviderConstants.ApiSurfaceVersion);
@@ -307,7 +308,7 @@ internal static class ForgejoSafeTargetFingerprint
     }
 
     private static string CanonicalOrigin(Uri uri)
-        => $"{uri.Scheme.ToLowerInvariant()}://{uri.IdnHost.ToLowerInvariant()}:{uri.Port}";
+        => $"{uri.Scheme.ToLowerInvariant()}://{uri.IdnHost.ToLowerInvariant()}:{uri.Port}{uri.AbsolutePath}";
 
     private static bool IsSafeMetadataValue(string? value)
         => !string.IsNullOrWhiteSpace(value)

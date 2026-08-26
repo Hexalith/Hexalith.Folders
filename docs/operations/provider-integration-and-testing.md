@@ -109,16 +109,25 @@ The Forgejo adapter (`ForgejoProvider`) uses a **typed HTTP** client (`ForgejoHt
 `ForgejoReadinessMapper` and `ForgejoFailureMapper` map `ForgejoApiFailureCondition` outcomes into the same
 stable `ProviderFailureCategory` vocabulary.
 
-Forgejo support is pinned to **exactly three versions** in `ForgejoSupportedVersionCatalog`, each backed by a
+Forgejo support is pinned to **exactly two versions** in `ForgejoSupportedVersionCatalog`, each backed by a
 checked-in `swagger.v1.json` snapshot under `tests/contracts/forgejo/<version>/`.
 
 <!-- forgejo-supported-versions -->
 
 | Version | Family | Support class | Snapshot |
 |---|---|---|---|
-| `15.0.2` | 15.0 | latest-stable-lts | `tests/contracts/forgejo/15.0.2/swagger.v1.json` |
-| `14.0.5` | 14.0 | n-1-discontinued-reference | `tests/contracts/forgejo/14.0.5/swagger.v1.json` |
-| `11.0.14` | 11.0 | older-lts | `tests/contracts/forgejo/11.0.14/swagger.v1.json` |
+| `16.0.3` | 16.0 | latest-stable | `tests/contracts/forgejo/16.0.3/swagger.v1.json` |
+| `15.0.7` | 15.0 | long-term-support | `tests/contracts/forgejo/15.0.7/swagger.v1.json` |
+
+The retired `15.0.2`, `14.0.5`, and `11.0.14` subsets remain checked in as historical drift evidence but are not accepted runtime profiles.
+
+The concrete Forgejo path creates one organization repository with `auto_init=false`, returns the canonical
+numeric repository identity, and validates existing bindings through exact repository, default/selected
+branch, permission, and protection evidence. A create conflict permits one read-only identity observation but
+never a second mutation. Durable conflict, expiry, malformed evidence, and exact terminal replay stop before
+target resolution, credential lookup, client construction, or HTTP access. Production composition injects the
+configured credential resolver, managed HTTP factory, and target resolver through one Forgejo singleton; the
+default target resolver intentionally fails closed until an authoritative policy source is composed.
 
 Forgejo classifies drift explicitly: `ForgejoApiFailureCondition.VersionIncompatible` and
 `SchemaDriftBreaking` both map to `ReconciliationRequired`, and a cross-origin redirect maps to
@@ -126,6 +135,51 @@ Forgejo classifies drift explicitly: `ForgejoApiFailureCondition.VersionIncompat
 validation fails closed rather than guessing. Forgejo additionally distinguishes a missing repository and a
 missing branch/path (both `ProviderValidationFailed`) and an unsupported capability
 (`UnsupportedProviderCapability`), distinctions the GitHub mapper does not draw.
+
+### Opt-in Forgejo deployment evidence
+
+The live Forgejo lane is operator-triggered and must never be added to PR or scheduled CI. It requires a
+disposable, explicitly approved HTTPS installation running `16.0.3` or `15.0.7`, an organization in which the
+positive credential may create private repositories, and a separate private repository whose default branch
+is protected. Use least-privilege positive, denied, and tenant-isolation credentials. The runner deliberately
+creates one private evidence repository and performs one separate, controlled conflicting create; destroy the
+disposable installation after archiving the report rather than teaching the provider adapter an out-of-scope
+delete operation.
+
+Supply these values through the invoking process environment; never place their values in a command line,
+shell history, repository file, or archived report:
+
+| Environment reference | Purpose |
+|---|---|
+| `HEXALITH_FORGEJO_EVIDENCE_APPROVAL=approved-isolated` | Confirms the target is disposable and approved for mutation |
+| `HEXALITH_FORGEJO_EVIDENCE_BASE_URL` | HTTPS installation root without user info, query, or fragment |
+| `HEXALITH_FORGEJO_EVIDENCE_TOKEN` | Positive least-privilege credential material |
+| `HEXALITH_FORGEJO_EVIDENCE_DENIED_TOKEN` | Credential expected to receive 401, 403, or concealed 404 |
+| `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_TOKEN` | Distinct different-tenant credential that can observe only its positive-control repository |
+| `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_OWNER` | Owner of the isolation credential's positive-control repository |
+| `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_REPOSITORY` | Repository visible to the isolation credential but separate from the binding target |
+| `HEXALITH_FORGEJO_EVIDENCE_OWNER` | Approved organization for the controlled create |
+| `HEXALITH_FORGEJO_EVIDENCE_BIND_REPOSITORY` | Pre-provisioned repository used for exact binding/ref observations |
+| `HEXALITH_FORGEJO_EVIDENCE_BIND_REPOSITORY_ID` | Approved canonical numeric identity of that repository |
+| `HEXALITH_FORGEJO_EVIDENCE_BIND_BRANCH` | Exact protected default/selected branch |
+| `HEXALITH_FORGEJO_EVIDENCE_BIND_VISIBILITY` | Exact `public`, `private`, or `internal` policy |
+| `HEXALITH_FORGEJO_EVIDENCE_EXPECTED_VERSION` | Exact supported version expected from `/api/v1/version` |
+
+Run from the repository root:
+
+```text
+pwsh ./tests/tools/run-forgejo-provider-evidence-gates.ps1
+```
+
+The runner first executes the hermetic durable-admission, concrete transport, version-drift, and composition
+suites, then uses a separate deployment-contract probe for the controlled live
+version/create/identity/conflict/bind/ref/denial/isolation observations. The isolation lane first proves its
+credential can read a separate positive-control repository. It
+rejects redirects, responses larger than 256 KiB, malformed JSON, an unsupported version, and any mismatch in
+canonical identity or exact branch policy. It writes only scenario names, pass/fail dispositions, evidence
+classes, supported versions, and elapsed time to
+`_bmad-output/gates/forgejo-provider-evidence/latest.json`; credentials, hosts, owner/repository/ref labels,
+provider bodies, URLs, and exception details are never retained.
 
 ## GitHub versus Forgejo capability differences
 
@@ -139,11 +193,11 @@ dimension and never claims parity where only provider-specific evidence exists.
 | Supported operations | Octokit-backed catalog evidence | Typed-HTTP catalog evidence |
 | Branch/ref behavior | Branch-protection conflict via Octokit | Branch/path and protection distinctions via typed HTTP |
 | File limits | Reported as capability `Limits` metadata | Reported as capability `Limits` metadata |
-| Credential mode | App-installation / user-delegated / service-account references | App-installation / user-delegated / service-account references |
-| Version/capability metadata | No pinned version catalog (hosted) | Three pinned versions with swagger snapshots |
+| Credential mode | App-installation / user-delegated / service-account references | User-delegated / service-account references |
+| Version/capability metadata | No pinned version catalog (hosted) | Two pinned versions with reviewed Swagger operation subsets |
 | Rate-limit posture | Primary and secondary rate limits both retryable | Single rate-limit condition, retryable |
 | Readiness behavior | Fails closed on unavailable evidence | Fails closed; unsupported version cannot be ready |
-| Repository create/bind | Concrete Octokit path; equivalent only by authorized canonical identity; target-policy source remains fail-closed | Adapter contract only; concrete create/bind remains separately scoped |
+| Repository create/bind | Concrete Octokit path; equivalent only by authorized canonical identity; target-policy source remains fail-closed | Concrete typed-HTTP path; one create mutation, canonical identity, exact bind/ref policy; target-policy source remains fail-closed |
 | File/commit/status behavior | Mapped through `GitHubFailureMapper` | Mapped through `ForgejoFailureMapper` |
 | Unknown outcome handling | Timeout/transport map to `unknown_provider_outcome` | Timeout/cancellation/transport map to `unknown_provider_outcome` |
 | Drift evidence | Not applicable (hosted API) | Version-incompatible and schema-drift map to `reconciliation_required` |

@@ -10,12 +10,18 @@ internal static class ForgejoFailureMapper
             ["success"] = ProviderFailureCategory.None.ToCategoryCode(),
             ["existing_equivalent"] = ProviderFailureCategory.None.ToCategoryCode(),
             ["validation"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
+            ["cancellation_before_dispatch"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["observation_cancelled"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
             ["authentication"] = ProviderFailureCategory.ProviderAuthenticationRequired.ToCategoryCode(),
             ["permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
+            ["contents_permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
+            ["administration_permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["hidden_or_missing"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["missing_repository"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
             ["missing_branch_or_path"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
             ["conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
+            ["default_branch_conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
+            ["unsupported_ref"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
             ["redirect_cross_origin"] = ProviderFailureCategory.ProviderReadinessFailed.ToCategoryCode(),
             ["rate_limited"] = ProviderFailureCategory.ProviderRateLimited.ToCategoryCode(),
             ["unavailable"] = ProviderFailureCategory.ProviderUnavailable.ToCategoryCode(),
@@ -25,6 +31,7 @@ internal static class ForgejoFailureMapper
             ["schema_drift_breaking"] = ProviderFailureCategory.ReconciliationRequired.ToCategoryCode(),
             ["timeout_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["cancellation_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["ambiguous_mutation_response"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["unexpected_transport"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
         };
 
@@ -38,19 +45,26 @@ internal static class ForgejoFailureMapper
         (ProviderFailureCategory Category, string ReasonCode) mapped = readiness.FailureCondition switch
         {
             ForgejoApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_validation_failed"),
+            ForgejoApiFailureCondition.CancellationBeforeDispatch => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_cancellation_before_dispatch"),
+            ForgejoApiFailureCondition.ObservationCancelled => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_observation_cancelled"),
             ForgejoApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "forgejo_authentication_required"),
             ForgejoApiFailureCondition.PermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_permission_insufficient"),
+            ForgejoApiFailureCondition.ContentsPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_contents_permission_insufficient"),
+            ForgejoApiFailureCondition.AdministrationPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_administration_permission_insufficient"),
             ForgejoApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_resource_hidden_or_missing"),
             ForgejoApiFailureCondition.MissingRepository => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_repository_missing"),
             ForgejoApiFailureCondition.MissingBranchOrPath => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_branch_or_path_missing"),
             ForgejoApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_conflict"),
             ForgejoApiFailureCondition.ExistingEquivalent => (ProviderFailureCategory.None, "forgejo_existing_equivalent"),
+            ForgejoApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_default_branch_conflict"),
             ForgejoApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ref_operation_unsupported"),
             ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
             ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),
             ForgejoApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable"),
             ForgejoApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.CancellationDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_cancellation_outcome_unknown"),
+            ForgejoApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_malformed_response"),
             ForgejoApiFailureCondition.UnsupportedCapability => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_capability_unsupported"),
             ForgejoApiFailureCondition.VersionIncompatible => (ProviderFailureCategory.ReconciliationRequired, "forgejo_version_incompatible"),
@@ -71,34 +85,43 @@ internal static class ForgejoFailureMapper
 
     public static ProviderRepositoryCreationResult ToProviderFailure(
         ForgejoRepositoryCreationResult result,
-        ProviderRepositoryCreationRequest request)
+        ProviderRepositoryCreationRequest request,
+        string safeTargetFingerprint)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(request);
 
         if (result.FailureCondition == ForgejoApiFailureCondition.ExistingEquivalent)
         {
-            string safeTargetFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? value)
-                ? value
-                : string.Empty;
-            return ProviderRepositoryCreationResult.Success(request, equivalentExisting: true, safeTargetFingerprint);
+            return ProviderRepositoryCreationResult.Success(
+                request,
+                equivalentExisting: true,
+                safeTargetFingerprint,
+                result.CanonicalRepositoryId);
         }
 
         (ProviderFailureCategory Category, string ReasonCode) mapped = result.FailureCondition switch
         {
             ForgejoApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_validation_failed"),
+            ForgejoApiFailureCondition.CancellationBeforeDispatch => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_cancellation_before_dispatch"),
+            ForgejoApiFailureCondition.ObservationCancelled => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_observation_cancelled"),
             ForgejoApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "forgejo_authentication_required"),
             ForgejoApiFailureCondition.PermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_permission_insufficient"),
+            ForgejoApiFailureCondition.ContentsPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_contents_permission_insufficient"),
+            ForgejoApiFailureCondition.AdministrationPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_administration_permission_insufficient"),
             ForgejoApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_resource_hidden_or_missing"),
             ForgejoApiFailureCondition.MissingRepository => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_repository_missing"),
             ForgejoApiFailureCondition.MissingBranchOrPath => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_branch_or_path_missing"),
             ForgejoApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_conflict"),
+            ForgejoApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_default_branch_conflict"),
             ForgejoApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ref_operation_unsupported"),
             ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
             ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),
             ForgejoApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable"),
             ForgejoApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.CancellationDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_cancellation_outcome_unknown"),
+            ForgejoApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_malformed_response"),
             ForgejoApiFailureCondition.UnsupportedCapability => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_capability_unsupported"),
             ForgejoApiFailureCondition.VersionIncompatible => (ProviderFailureCategory.ReconciliationRequired, "forgejo_version_incompatible"),
@@ -114,39 +137,49 @@ internal static class ForgejoFailureMapper
             result.RetryAfter,
             safeRemediationCode: mapped.Category == ProviderFailureCategory.UnknownProviderOutcome
                 ? "reconciliation_required_metadata_only"
-                : $"{mapped.Category.ToCategoryCode()}_remediation");
+                : $"{mapped.Category.ToCategoryCode()}_remediation",
+            safeTargetFingerprint: safeTargetFingerprint);
     }
 
     public static ProviderRepositoryBindingResult ToProviderFailure(
         ForgejoRepositoryBindingResult result,
-        ProviderRepositoryBindingRequest request)
+        ProviderRepositoryBindingRequest request,
+        string safeTargetFingerprint)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(request);
 
         if (result.FailureCondition == ForgejoApiFailureCondition.ExistingEquivalent)
         {
-            string safeTargetFingerprint = request.TargetEvidence.Metadata.TryGetValue("safe_target_fingerprint", out string? value)
-                ? value
-                : string.Empty;
-            return ProviderRepositoryBindingResult.Success(request, equivalentExisting: true, safeTargetFingerprint);
+            return ProviderRepositoryBindingResult.Success(
+                request,
+                equivalentExisting: true,
+                safeTargetFingerprint,
+                result.CanonicalRepositoryId);
         }
 
         (ProviderFailureCategory Category, string ReasonCode) mapped = result.FailureCondition switch
         {
             ForgejoApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_validation_failed"),
+            ForgejoApiFailureCondition.CancellationBeforeDispatch => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_cancellation_before_dispatch"),
+            ForgejoApiFailureCondition.ObservationCancelled => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_observation_cancelled"),
             ForgejoApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "forgejo_authentication_required"),
             ForgejoApiFailureCondition.PermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_permission_insufficient"),
+            ForgejoApiFailureCondition.ContentsPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_contents_permission_insufficient"),
+            ForgejoApiFailureCondition.AdministrationPermissionInsufficient => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_administration_permission_insufficient"),
             ForgejoApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_resource_hidden_or_missing"),
             ForgejoApiFailureCondition.MissingRepository => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_repository_missing"),
             ForgejoApiFailureCondition.MissingBranchOrPath => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_branch_or_path_missing"),
             ForgejoApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_conflict"),
+            ForgejoApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_default_branch_conflict"),
             ForgejoApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ref_operation_unsupported"),
             ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
             ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),
             ForgejoApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable"),
             ForgejoApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.CancellationDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_cancellation_outcome_unknown"),
+            ForgejoApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_malformed_response"),
             ForgejoApiFailureCondition.UnsupportedCapability => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_capability_unsupported"),
             ForgejoApiFailureCondition.VersionIncompatible => (ProviderFailureCategory.ReconciliationRequired, "forgejo_version_incompatible"),
@@ -162,6 +195,7 @@ internal static class ForgejoFailureMapper
             result.RetryAfter,
             safeRemediationCode: mapped.Category == ProviderFailureCategory.UnknownProviderOutcome
                 ? "reconciliation_required_metadata_only"
-                : $"{mapped.Category.ToCategoryCode()}_remediation");
+                : $"{mapped.Category.ToCategoryCode()}_remediation",
+            safeTargetFingerprint: safeTargetFingerprint);
     }
 }

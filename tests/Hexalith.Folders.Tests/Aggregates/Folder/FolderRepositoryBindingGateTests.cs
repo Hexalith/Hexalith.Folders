@@ -345,6 +345,26 @@ public sealed class FolderRepositoryBindingGateTests
         forwarded.IdempotencyAdmission.IntentFingerprint.ShouldBe(BindingFingerprint());
     }
 
+    [Fact]
+    public async Task ForgejoBindingWithoutVersionMetadataForwardsUnknownEvidenceInsteadOfGuessingSupportedVersion()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        RecordingRepositoryBindingReadinessValidator readiness = new(ReadinessReady());
+        RecordingProviderBindingReader bindingReader = new(Binding() with { ProviderKind = "forgejo" });
+        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.ForgejoLike());
+        RepositoryBindingService service = Service(repository, readiness, bindingReader, resolver);
+
+        FolderResult result = await service.BindAsync(
+            Request(),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        ProviderRepositoryBindingRequest forwarded = resolver.LastBindingRequest.ShouldNotBeNull();
+        forwarded.ProviderFamily.ShouldBe("forgejo");
+        forwarded.TargetEvidence.ProductVersion.ShouldBe("provider_binding_v1");
+        forwarded.TargetEvidence.ProductVersion.ShouldNotBe("15.0.7");
+    }
+
     private static RepositoryBindingService Service(
         IFolderRepository repository,
         IRepositoryBindingReadinessValidator readiness,

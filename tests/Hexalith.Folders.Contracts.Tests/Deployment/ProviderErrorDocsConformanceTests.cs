@@ -132,8 +132,8 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void ProviderDocForgejoSupportedVersionsEqualCatalogAndPinDrift()
     {
         HashSet<string> versions = ParseForgejoSupportedVersions();
-        AssertSetEquals(versions, ["15.0.2", "14.0.5", "11.0.14"],
-            "ForgejoSupportedVersionCatalog must pin exactly the three supported versions.");
+        AssertSetEquals(versions, ["16.0.3", "15.0.7"],
+            "ForgejoSupportedVersionCatalog must pin exactly the two supported versions.");
 
         HashSet<string> docVersions = FirstColumnBacktickTokens(ProviderDocPath, "<!-- forgejo-supported-versions -->");
         AssertSetEquals(docVersions, versions, "provider doc Forgejo versions must equal the catalog exactly.");
@@ -141,7 +141,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
         string provider = ReadText(ProviderDocPath);
         foreach (string required in new[]
         {
-            "tests/contracts/forgejo/15.0.2/swagger.v1.json",
+            "tests/contracts/forgejo/16.0.3/swagger.v1.json",
             "SchemaDriftBreaking",
             "VersionIncompatible",
             "cannot report ready",

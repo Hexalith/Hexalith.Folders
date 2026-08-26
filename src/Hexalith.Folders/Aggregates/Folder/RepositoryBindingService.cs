@@ -336,7 +336,7 @@ public sealed class RepositoryBindingService(
             TryGetSafeMetadata(binding, "provider_product_version")
                 ?? TryGetSafeMetadata(binding, "product_version")
                 ?? TryGetSafeMetadata(binding, "snapshot_version")
-                ?? (string.Equals(binding.ProviderKind, "forgejo", StringComparison.Ordinal) ? "15.0.2" : "provider_binding_v1"),
+                ?? "provider_binding_v1",
             "provider_api_metadata_only",
             "provider_binding_v1",
             !string.Equals(binding.ConfiguredStatus, "configured", StringComparison.Ordinal),

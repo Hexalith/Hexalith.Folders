@@ -45,14 +45,10 @@ $categories = @(
 
 $requiredSnapshotPaths = @(
     '/version',
-    '/user',
     '/orgs/{org}/repos',
     '/repos/{owner}/{repo}',
-    '/repos/{owner}/{repo}/branches',
     '/repos/{owner}/{repo}/branches/{branch}',
-    '/repos/{owner}/{repo}/contents/{filepath}',
-    '/repos/{owner}/{repo}/git/commits/{sha}',
-    '/repos/{owner}/{repo}/statuses/{sha}'
+    '/repos/{owner}/{repo}/branch_protections/{name}'
 )
 
 $requiredInputs = @(
@@ -165,7 +161,9 @@ function Get-ManifestIntegrityHash {
         $Entry.expectedApiCompatibilityPosture,
         $Entry.owner,
         $Entry.reviewer,
-        $Entry.datedSource
+        $Entry.datedSource,
+        $Entry.sourceArtifactSha256,
+        $Entry.snapshotSha256
     ) -join '|'
 
     $bytes = [Text.Encoding]::UTF8.GetBytes($payload)
@@ -178,7 +176,7 @@ function Assert-ManifestIntegrity {
         [Parameter(Mandatory = $true)]$Manifest
     )
 
-    if ($Manifest.schemaVersion -ne 'forgejo-supported-versions-v1') {
+    if ($Manifest.schemaVersion -ne 'forgejo-supported-versions-v2') {
         Fail-Gate -Category 'forgejo-manifest-integrity' -Reason 'manifest-schema-version-drift'
     }
 
@@ -188,7 +186,7 @@ function Assert-ManifestIntegrity {
     }
 
     foreach ($entry in $Manifest.entries) {
-        foreach ($field in @('version', 'versionFamily', 'supportClass', 'sourceUrl', 'snapshotPath', 'expectedApiCompatibilityPosture', 'owner', 'reviewer', 'datedSource', 'integrityHash')) {
+        foreach ($field in @('version', 'versionFamily', 'supportClass', 'sourceUrl', 'snapshotPath', 'expectedApiCompatibilityPosture', 'owner', 'reviewer', 'datedSource', 'sourceArtifactSha256', 'snapshotSha256', 'integrityHash')) {
             if ([string]::IsNullOrWhiteSpace([string]$entry.$field)) {
                 Fail-Gate -Category 'forgejo-manifest-integrity' -Reason "missing-manifest-field field=$field"
             }
@@ -215,9 +213,19 @@ function Assert-SnapshotCoverage {
             Fail-Gate -Category 'forgejo-snapshot-coverage' -Reason "missing-snapshot version=$($entry.version)"
         }
 
+        $snapshotHash = 'sha256:' + (Get-FileHash -Algorithm SHA256 -Path $snapshotPath).Hash.ToLowerInvariant()
+        if ($entry.snapshotSha256 -ne $snapshotHash) {
+            Fail-Gate -Category 'forgejo-snapshot-coverage' -Reason "snapshot-hash-drift version=$($entry.version)"
+        }
+
         $snapshot = Get-Content -Raw -Path $snapshotPath | ConvertFrom-Json
         if ($snapshot.swagger -ne '2.0') {
             Fail-Gate -Category 'forgejo-snapshot-coverage' -Reason "snapshot-schema-drift version=$($entry.version)"
+        }
+
+        if ($snapshot.'x-hexalith-review'.source -ne $entry.sourceUrl -or
+            ('sha256:' + $snapshot.'x-hexalith-review'.sourceArtifactSha256) -ne $entry.sourceArtifactSha256) {
+            Fail-Gate -Category 'forgejo-snapshot-coverage' -Reason "snapshot-source-evidence-drift version=$($entry.version)"
         }
 
         foreach ($path in $requiredSnapshotPaths) {

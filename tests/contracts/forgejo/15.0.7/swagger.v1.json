@@ -1,0 +1,137 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Forgejo API reviewed operation subset",
+    "version": "15.0.7"
+  },
+  "basePath": "/api/v1",
+  "x-hexalith-review": {
+    "source": "https://code.forgejo.org/forgejo/forgejo/raw/tag/v15.0.7/templates/swagger/v1_json.tmpl",
+    "sourceArtifactSha256": "718e520e48dcdcb6796b11ecfd6b524f2d762edd8debfbba912846a06578a5d2",
+    "reviewedAt": "2026-08-26",
+    "scope": "repository-create-bind-branch-protection"
+  },
+  "paths": {
+    "/version": {
+      "get": {
+        "operationId": "getVersion",
+        "responses": {
+          "200": { "schema": { "type": "object", "properties": { "version": { "type": "string" } } } }
+        }
+      }
+    },
+    "/orgs/{org}/repos": {
+      "post": {
+        "operationId": "createOrgRepo",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          { "name": "org", "in": "path", "required": true, "type": "string" },
+          { "name": "body", "in": "body", "schema": { "$ref": "#/definitions/CreateRepoOption" } }
+        ],
+        "responses": {
+          "201": { "$ref": "#/responses/Repository" },
+          "400": { "$ref": "#/responses/error" },
+          "403": { "$ref": "#/responses/forbidden" },
+          "404": { "$ref": "#/responses/notFound" }
+        }
+      }
+    },
+    "/repos/{owner}/{repo}": {
+      "get": {
+        "operationId": "repoGet",
+        "produces": ["application/json"],
+        "parameters": [
+          { "name": "owner", "in": "path", "required": true, "type": "string" },
+          { "name": "repo", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "$ref": "#/responses/Repository" },
+          "404": { "$ref": "#/responses/notFound" }
+        }
+      }
+    },
+    "/repos/{owner}/{repo}/branches/{branch}": {
+      "get": {
+        "operationId": "repoGetBranch",
+        "produces": ["application/json"],
+        "parameters": [
+          { "name": "owner", "in": "path", "required": true, "type": "string" },
+          { "name": "repo", "in": "path", "required": true, "type": "string" },
+          { "name": "branch", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "$ref": "#/responses/Branch" },
+          "404": { "$ref": "#/responses/notFound" }
+        }
+      }
+    },
+    "/repos/{owner}/{repo}/branch_protections/{name}": {
+      "get": {
+        "operationId": "repoGetBranchProtection",
+        "produces": ["application/json"],
+        "parameters": [
+          { "name": "owner", "in": "path", "required": true, "type": "string" },
+          { "name": "repo", "in": "path", "required": true, "type": "string" },
+          { "name": "name", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "$ref": "#/responses/BranchProtection" },
+          "404": { "$ref": "#/responses/notFound" }
+        }
+      }
+    }
+  },
+  "responses": {
+    "Repository": { "schema": { "$ref": "#/definitions/Repository" } },
+    "Branch": { "schema": { "$ref": "#/definitions/Branch" } },
+    "BranchProtection": { "schema": { "$ref": "#/definitions/BranchProtection" } },
+    "error": { "description": "error" },
+    "forbidden": { "description": "forbidden" },
+    "notFound": { "description": "not found" }
+  },
+  "definitions": {
+    "CreateRepoOption": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "auto_init": { "type": "boolean" },
+        "name": { "type": "string" },
+        "private": { "type": "boolean" }
+      }
+    },
+    "Repository": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "format": "int64" },
+        "name": { "type": "string" },
+        "private": { "type": "boolean" },
+        "internal": { "type": "boolean" },
+        "default_branch": { "type": "string" },
+        "permissions": { "$ref": "#/definitions/Permission" }
+      }
+    },
+    "Permission": {
+      "type": "object",
+      "properties": {
+        "admin": { "type": "boolean" },
+        "pull": { "type": "boolean" },
+        "push": { "type": "boolean" }
+      }
+    },
+    "Branch": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "protected": { "type": "boolean" },
+        "effective_branch_protection_name": { "type": "string" }
+      }
+    },
+    "BranchProtection": {
+      "type": "object",
+      "properties": {
+        "rule_name": { "type": "string" }
+      }
+    }
+  }
+}
