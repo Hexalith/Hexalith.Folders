@@ -2,17 +2,20 @@
 title: 'Story 3.11: GitHub file mutation, commit, status, and failure behavior'
 type: 'feature'
 created: '2026-08-24'
-status: in-progress
-baseline_revision: '5b4855713a58a806ad5724876fd44a1aeaa7e758'
+status: awaiting-operator
+baseline_revision: '6bc000c06a1427ea2cfaedb3a405b4939571aa6b'
 baseline_commit: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 review_loop_iteration: 5
-followup_review_recommended: false
+followup_review_recommended: true
 context:
   - '_bmad-output/project-context.md'
   - '_bmad-output/implementation-artifacts/epic-3-context.md'
 warnings:
   - oversized
 deferred: []
+operator_actions:
+  - 'Approve or reject the pending OQ4 GitHub compatibility profile documented in docs/contract/provider-compatibility-catalog.md.'
+  - 'Run the credential-gated live GitHub mutation, commit, and status evidence suite against an approved tenant/provider configuration and archive the metadata-only results.'
 ---
 
 <intent-contract>
@@ -228,6 +231,28 @@ deferred: []
   - `[medium]` `[bad_spec]` Strengthened OQ4 governance to reject approval claims regardless of unrelated pending qualifiers.
   - `[high]` `[bad_spec]` Required empty scripted recorder sequences to fail at construction rather than after mutating test evidence.
 
+### 2026-08-26 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 14: (high 6, medium 7, low 1)
+- defer: 0
+- reject: 2: (high 0, medium 2, low 0)
+- addressed_findings:
+  - `[high]` `[patch]` Snapshotted caller-owned mutation requests before the first await so hostile changes cannot replace already-validated intent.
+  - `[high]` `[patch]` Guarded resolved-source collection counts, indexers, and content copies so mutable or throwing resolvers fail closed.
+  - `[high]` `[patch]` Guarded raw transport change snapshots so hostile collection behavior cannot escape the provider boundary.
+  - `[medium]` `[patch]` Separated canonical caller-path policy from safe provider-tree parsing so untouched decomposed Unicode entries do not reject valid work.
+  - `[high]` `[patch]` Required NFC-safe opaque operation evidence to prevent normalized fingerprints from binding distinct ordinal identifiers.
+  - `[high]` `[patch]` Normalized reserved-tenant comparison so whitespace-padded `system` cannot reach provider operations.
+  - `[high]` `[patch]` Removed retry delays from non-retryable no-dispatch records and kept returned and persisted retry posture coherent.
+  - `[medium]` `[patch]` Sanitized source reason and retry evidence against the resulting safe failure category.
+  - `[medium]` `[patch]` Classified exhausted tree-request budgets as response limits while preserving elapsed deadlines as observation timeouts.
+  - `[medium]` `[patch]` Aligned verification diff checks with the captured `baseline_revision`.
+  - `[medium]` `[patch]` Added independent resolved-target identity-substitution evidence for mutation, commit, and status bindings.
+  - `[medium]` `[patch]` Added null credential-result coverage for commit and status alongside mutation.
+  - `[low]` `[patch]` Documented the internal canonical-Unicode helper required by repository member-documentation rules.
+  - `[medium]` `[patch]` Added mutation no-dispatch persistence coverage for bounded credential retry evidence.
+
 ## Design Notes
 
 GitHub Contents API is intentionally excluded because each write creates a commit. Use Git Data semantics so the adapter can prepare one ordered tree and preserve the product's explicit single-commit boundary; durable ownership of content and staged Git object references remains outside this story.
@@ -267,5 +292,88 @@ Credential and replay inputs are hostile boundary data. An `IsSuccess` credentia
 - `./tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests -noLogo -noColor` -- expected: the complete owning test project passes.
 - `dotnet restore Hexalith.Folders.slnx -m:1 -p:Configuration=Release -p:UseHexalithProjectReferences=false -p:NuGetAudit=false` -- expected: every solution project has Release assets.
 - `dotnet build Hexalith.Folders.slnx -c Release --no-restore -m:1 -p:UseHexalithProjectReferences=false -p:MinVerVersionOverride=1.0.0` -- expected: solution build passes with zero warnings and errors.
-- `git diff --check 5b4855713a58a806ad5724876fd44a1aeaa7e758` -- expected: no whitespace errors in the complete reviewed change.
-- `git diff --exit-code 5b4855713a58a806ad5724876fd44a1aeaa7e758 -- _bmad-output/implementation-artifacts/sprint-status.yaml` -- expected: no story-authored change to the orchestrator-owned file; never write or revert it.
+- `git diff --check 6bc000c06a1427ea2cfaedb3a405b4939571aa6b` -- expected: no whitespace errors in the complete reviewed change.
+- `git diff --exit-code 6bc000c06a1427ea2cfaedb3a405b4939571aa6b -- _bmad-output/implementation-artifacts/sprint-status.yaml` -- expected: no story-authored change to the orchestrator-owned file; never write or revert it.
+
+## Suggested Review Order
+
+**Provider-neutral operation boundary**
+
+- Start with the canonical mutation, commit, and status contract.
+  [`IGitProvider.cs:21`](../../src/Hexalith.Folders/Providers/Abstractions/IGitProvider.cs#L21)
+
+- Follow authorization, reservation, replay, and metadata-safe result orchestration.
+  [`GitHubProvider.Operations.cs:104`](../../src/Hexalith.Folders/Providers/GitHub/GitHubProvider.Operations.cs#L104)
+
+- Review immutable source capture before any asynchronous provider work.
+  [`GitHubProvider.Operations.cs:1138`](../../src/Hexalith.Folders/Providers/GitHub/GitHubProvider.Operations.cs#L1138)
+
+- Inspect the persistence-neutral operation reservation and outcome seam.
+  [`IProviderOperationOutcomeStore.cs:3`](../../src/Hexalith.Folders/Providers/Abstractions/IProviderOperationOutcomeStore.cs#L3)
+
+**Canonical evidence and execution**
+
+- Verify every resolved target binds credential, tenant, task, and repository identity.
+  [`GitHubOperationSourceBindings.cs:7`](../../src/Hexalith.Folders/Providers/GitHub/GitHubOperationSourceBindings.cs#L7)
+
+- Trace ordered Git Data staging and resulting-tree verification.
+  [`OctokitGitHubApiClient.cs:283`](../../src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs#L283)
+
+- Trace explicit commit creation, pre-update recording, and non-force confirmation.
+  [`OctokitGitHubApiClient.cs:520`](../../src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs#L520)
+
+- Inspect bounded large-tree fallback and touched-ancestor validation.
+  [`OctokitGitHubApiClient.cs:1143`](../../src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs#L1143)
+
+**Production composition and evidence**
+
+- Confirm canonical GitHub selection while preserving custom provider registrations.
+  [`FoldersServiceCollectionExtensions.cs:174`](../../src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs#L174)
+
+- Review provider-level authorization, replay, failure, and status coverage.
+  [`GitHubProviderTests.Operations.cs:22`](../../tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.Operations.cs#L22)
+
+- Review transport ordering, ambiguity, and resource-boundary coverage.
+  [`OctokitGitHubApiClientTests.Operations.cs:895`](../../tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Operations.cs#L895)
+
+- Finish with the OQ4-pending compatibility and failure profile.
+  [`provider-compatibility-catalog.md:24`](../../docs/contract/provider-compatibility-catalog.md#L24)
+
+## Auto Run Result
+
+Status: awaiting-operator
+
+### Summary
+
+Completed the agent-executable Story 3.11 hardening delta and committed it as `be36435fa7ff4de5e8283c18bc7e7d8abd1b6427`. GitHub mutation, commit, and read-only status behavior now fail closed across hostile mutable inputs, canonical evidence, credential-resolution anomalies, outcome recording, retry metadata, and bounded tree traversal while preserving the provider-neutral and metadata-only contract.
+
+### Files Changed
+
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderGitOperationResolvedTarget.cs` — validates canonical Unicode in resolved GitHub target evidence.
+- `src/Hexalith.Folders/Providers/Abstractions/ProviderOperationSourceResolutionResult.cs` — aligns safe categories, reasons, and retry posture.
+- `src/Hexalith.Folders/Providers/GitHub/GitHubOperationSourceBindings.cs` — binds credential identity into resolved-target evidence.
+- `src/Hexalith.Folders/Providers/GitHub/GitHubProvider.cs` — hardens opaque evidence and reserved-tenant handling.
+- `src/Hexalith.Folders/Providers/GitHub/GitHubProvider.Operations.cs` — snapshots hostile inputs and preserves coherent no-dispatch/outcome behavior.
+- `src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs` — separates input and response path validation and enforces bounded traversal classifications.
+- `tests/Hexalith.Folders.Tests/Providers/GitHub/` — adds provider, transport, identity-binding, hostile-collection, retry, and credential regression coverage.
+- `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior.md` — records the review, verification, and operator handoff.
+
+### Review Findings
+
+- Patches applied: 14 total (high 6, medium 7, low 1).
+- Items deferred: 0.
+- Items rejected: 2 medium findings that did not represent a current Story 3.11 defect.
+- Follow-up review recommendation: `true`; high-severity patches were applied and the weighted score is `3 × 7 + 1 × 1 = 22`.
+
+### Verification
+
+- Focused GitHub adapter suite: 299 passed, 0 failed, 0 skipped.
+- Complete `Hexalith.Folders.Tests` project: 1,635 passed, 0 failed, 0 skipped.
+- Release solution build: succeeded with 0 warnings and 0 errors.
+- Whitespace check against `6bc000c06a1427ea2cfaedb3a405b4939571aa6b`: passed.
+- Orchestrator-owned `sprint-status.yaml` diff check: passed; the file was not written or reverted.
+
+### Residual Risks
+
+- OQ4 approval and credential-gated live GitHub evidence require operator action outside the repository.
+- Durable target/content resolution, workspace execution, reconciliation scheduling, and end-to-end task completion remain intentionally owned by later stories.
