@@ -5,13 +5,13 @@ namespace Hexalith.Folders.Providers.GitHub;
 internal static class GitHubOperationSourceBindings
 {
     public static string ResolvedTarget(ProviderFileMutationRequest request, ProviderGitOperationResolvedTarget target)
-        => Target("hxf-github:v1:mutation-target", request.AuthorizationEvidence.Fingerprint, request.CorrelationId, request.ManagedTenantId, request.OrganizationId, request.FolderId, request.DelegatedTaskId, request.ProviderBindingRef, request.RepositoryBindingId, target);
+        => Target("hxf-github:v1:mutation-target", request.AuthorizationEvidence.Fingerprint, request.CorrelationId, request.ManagedTenantId, request.OrganizationId, request.FolderId, request.DelegatedTaskId, request.ProviderBindingRef, request.CredentialReferenceId, request.RepositoryBindingId, target);
 
     public static string ResolvedTarget(ProviderCommitRequest request, ProviderGitOperationResolvedTarget target)
-        => Target("hxf-github:v1:commit-target", request.AuthorizationEvidence.Fingerprint, request.CorrelationId, request.ManagedTenantId, request.OrganizationId, request.FolderId, request.DelegatedTaskId, request.ProviderBindingRef, request.RepositoryBindingId, target);
+        => Target("hxf-github:v1:commit-target", request.AuthorizationEvidence.Fingerprint, request.CorrelationId, request.ManagedTenantId, request.OrganizationId, request.FolderId, request.DelegatedTaskId, request.ProviderBindingRef, request.CredentialReferenceId, request.RepositoryBindingId, target);
 
     public static string ResolvedTarget(ProviderOperationStatusRequest request, ProviderGitOperationResolvedTarget target)
-        => Target("hxf-github:v1:status-target", request.AuthorizationEvidence.Fingerprint, request.OperationReference, request.ManagedTenantId, request.OrganizationId, request.FolderId, request.DelegatedTaskId, request.ProviderBindingRef, request.RepositoryBindingId, target);
+        => Target("hxf-github:v1:status-target", request.AuthorizationEvidence.Fingerprint, request.OperationReference, request.ManagedTenantId, request.OrganizationId, request.FolderId, request.DelegatedTaskId, request.ProviderBindingRef, request.CredentialReferenceId, request.RepositoryBindingId, target);
 
     public static string Path(ProviderFileMutationRequest request, ProviderOrderedFileChange declared, string path)
         => GitHubProviderSafeOperationEvidence.Compute("hxf-github:v1:path", writer =>
@@ -115,6 +115,7 @@ internal static class GitHubOperationSourceBindings
         string folderId,
         string delegatedTaskId,
         string providerBindingRef,
+        string credentialReferenceId,
         string repositoryBindingId,
         ProviderGitOperationResolvedTarget target)
         => GitHubProviderSafeOperationEvidence.Create(
@@ -126,6 +127,7 @@ internal static class GitHubOperationSourceBindings
             folderId,
             delegatedTaskId,
             providerBindingRef,
+            credentialReferenceId,
             repositoryBindingId,
             target.Owner,
             target.RepositoryName,

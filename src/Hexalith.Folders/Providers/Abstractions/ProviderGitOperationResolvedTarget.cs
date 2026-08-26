@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Hexalith.Folders.Providers.Abstractions;
 
 internal sealed record ProviderGitOperationResolvedTarget(
@@ -61,6 +63,29 @@ internal sealed record ProviderGitOperationResolvedTarget(
     private static bool IsBoundedValue(string? value, int maximumLength)
         => !string.IsNullOrWhiteSpace(value)
             && value.Length <= maximumLength
+            && IsCanonicalUnicode(value)
             && !value.Contains("://", StringComparison.Ordinal)
             && !value.Any(char.IsControl);
+
+    /// <summary>
+    /// Determines whether the supplied value is well-formed Unicode in normalization form C.
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <returns><see langword="true"/> when the value is non-null, well formed, and NFC-normalized.</returns>
+    internal static bool IsCanonicalUnicode(string? value)
+    {
+        if (value is null)
+        {
+            return false;
+        }
+
+        try
+        {
+            return value.IsNormalized(NormalizationForm.FormC);
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
 }

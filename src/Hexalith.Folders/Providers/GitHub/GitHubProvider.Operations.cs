@@ -111,6 +111,13 @@ public sealed partial class GitHubProvider
             return FileMutationFailure(request, ProviderFailureCategory.ProviderTransientFailure, "github_operation_cancelled_before_dispatch");
         }
 
+        if (!TrySnapshotDeclaredRequest(request, out ProviderFileMutationRequest requestSnapshot))
+        {
+            return FileMutationFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_change_set_malformed");
+        }
+
+        request = requestSnapshot;
+
         (ProviderFailureCategory Category, string ReasonCode)? boundaryFailure = ValidateBoundary(request);
         if (boundaryFailure is { } failure)
         {
@@ -140,7 +147,11 @@ public sealed partial class GitHubProvider
             return SourceFailure(request, sourceResolution, "github_file_mutation_source_unavailable");
         }
 
-        ProviderFileMutationResolvedSource source = sourceResolution.Source;
+        if (!TrySnapshotResolvedSource(request, sourceResolution.Source, out ProviderFileMutationResolvedSource source))
+        {
+            return FileMutationFailure(request, ProviderFailureCategory.ProviderValidationFailed, "github_file_mutation_source_malformed");
+        }
+
         if (!TryValidateResolvedSource(request, source, out string? sourceFailure))
         {
             return FileMutationFailure(request, ProviderFailureCategory.ProviderValidationFailed, sourceFailure ?? "github_file_mutation_source_malformed");
@@ -160,7 +171,7 @@ public sealed partial class GitHubProvider
 
         string operationReference = reservation!.OperationReference!;
         long generation = reservation.Generation;
-        GitHubCredentialResolutionResult credentialResult = await ResolveCredentialSafelyAsync(
+        GitHubCredentialResolutionResult? credentialResult = await ResolveCredentialSafelyAsync(
             request.ManagedTenantId,
             request.OrganizationId,
             request.ProviderBindingRef,
@@ -169,9 +180,9 @@ public sealed partial class GitHubProvider
             request.CorrelationId,
             credentialMode,
             cancellationToken).ConfigureAwait(false);
-        if (!IsCredentialResultWellFormed(credentialResult))
+        if (credentialResult is null || !IsCredentialResultWellFormed(credentialResult))
         {
-            await DisposeCredentialSafelyAsync(credentialResult.Credential).ConfigureAwait(false);
+            await DisposeCredentialSafelyAsync(credentialResult?.Credential).ConfigureAwait(false);
             bool finalized = await FinalizeNoDispatchAsync(
                 operationReference,
                 generation,
@@ -184,9 +195,10 @@ public sealed partial class GitHubProvider
 
         if (!credentialResult.IsSuccess)
         {
-            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode).ConfigureAwait(false);
+            TimeSpan? retryAfter = SafeRetryAfter(credentialResult.FailureCategory, credentialResult.RetryAfter);
+            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode, retryAfter).ConfigureAwait(false);
             return finalized
-                ? FileMutationFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), credentialResult.RetryAfter, operationReference)
+                ? FileMutationFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), retryAfter, operationReference)
                 : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
         }
 
@@ -237,7 +249,7 @@ public sealed partial class GitHubProvider
             (ProviderFailureCategory Category, string ReasonCode) mapped = GitHubFailureMapper.ToProviderOperationFailure(result.FailureCondition);
             if (result.FailureCondition is GitHubApiFailureCondition.CancellationBeforeDispatch or GitHubApiFailureCondition.ReservationInvalidated)
             {
-                bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode).ConfigureAwait(false);
+                bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, result.RetryAfter).ConfigureAwait(false);
                 return finalized
                     ? FileMutationFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference)
                     : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
@@ -369,7 +381,7 @@ public sealed partial class GitHubProvider
 
         string operationReference = reservation!.OperationReference!;
         long generation = reservation.Generation;
-        GitHubCredentialResolutionResult credentialResult = await ResolveCredentialSafelyAsync(
+        GitHubCredentialResolutionResult? credentialResult = await ResolveCredentialSafelyAsync(
             request.ManagedTenantId,
             request.OrganizationId,
             request.ProviderBindingRef,
@@ -378,9 +390,9 @@ public sealed partial class GitHubProvider
             request.CorrelationId,
             credentialMode,
             cancellationToken).ConfigureAwait(false);
-        if (!IsCredentialResultWellFormed(credentialResult))
+        if (credentialResult is null || !IsCredentialResultWellFormed(credentialResult))
         {
-            await DisposeCredentialSafelyAsync(credentialResult.Credential).ConfigureAwait(false);
+            await DisposeCredentialSafelyAsync(credentialResult?.Credential).ConfigureAwait(false);
             bool finalized = await FinalizeNoDispatchAsync(
                 operationReference,
                 generation,
@@ -393,9 +405,10 @@ public sealed partial class GitHubProvider
 
         if (!credentialResult.IsSuccess)
         {
-            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode).ConfigureAwait(false);
+            TimeSpan? retryAfter = SafeRetryAfter(credentialResult.FailureCategory, credentialResult.RetryAfter);
+            bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, credentialResult.FailureCategory, credentialResult.ReasonCode, retryAfter).ConfigureAwait(false);
             return finalized
-                ? CommitFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), credentialResult.RetryAfter, operationReference)
+                ? CommitFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_credential_resolution_unavailable"), retryAfter, operationReference)
                 : CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
         }
 
@@ -452,7 +465,7 @@ public sealed partial class GitHubProvider
             (ProviderFailureCategory Category, string ReasonCode) mapped = GitHubFailureMapper.ToProviderOperationFailure(result.FailureCondition);
             if (result.FailureCondition is GitHubApiFailureCondition.CancellationBeforeDispatch or GitHubApiFailureCondition.ReservationInvalidated)
             {
-                bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode).ConfigureAwait(false);
+                bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, result.RetryAfter).ConfigureAwait(false);
                 return finalized
                     ? CommitFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference)
                     : CommitFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_outcome_recording_failed", operationReference: operationReference);
@@ -563,7 +576,7 @@ public sealed partial class GitHubProvider
             return StatusFailure(request, ProviderFailureCategory.ProviderValidationFailed, sourceFailure ?? "github_operation_status_source_malformed");
         }
 
-        GitHubCredentialResolutionResult credentialResult = await ResolveCredentialSafelyAsync(
+        GitHubCredentialResolutionResult? credentialResult = await ResolveCredentialSafelyAsync(
             request.ManagedTenantId,
             request.OrganizationId,
             request.ProviderBindingRef,
@@ -572,15 +585,19 @@ public sealed partial class GitHubProvider
             request.CorrelationId,
             credentialMode,
             cancellationToken).ConfigureAwait(false);
-        if (!IsCredentialResultWellFormed(credentialResult))
+        if (credentialResult is null || !IsCredentialResultWellFormed(credentialResult))
         {
-            await DisposeCredentialSafelyAsync(credentialResult.Credential).ConfigureAwait(false);
+            await DisposeCredentialSafelyAsync(credentialResult?.Credential).ConfigureAwait(false);
             return StatusFailure(request, ProviderFailureCategory.ProviderUnavailable, "github_status_evidence_unavailable");
         }
 
         if (!credentialResult.IsSuccess)
         {
-            return StatusFailure(request, credentialResult.FailureCategory, SafeReason(credentialResult.ReasonCode, "github_status_evidence_unavailable"), credentialResult.RetryAfter);
+            return StatusFailure(
+                request,
+                credentialResult.FailureCategory,
+                SafeReason(credentialResult.ReasonCode, "github_status_evidence_unavailable"),
+                SafeRetryAfter(credentialResult.FailureCategory, credentialResult.RetryAfter));
         }
 
         GitHubCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
@@ -801,10 +818,20 @@ public sealed partial class GitHubProvider
             RetryAfter: null,
             ReconciliationReference: operationReference)).ConfigureAwait(false);
 
-    private async Task<bool> FinalizeNoDispatchAsync(string operationReference, long generation, ProviderFailureCategory category, string reasonCode)
+    private async Task<bool> FinalizeNoDispatchAsync(
+        string operationReference,
+        long generation,
+        ProviderFailureCategory category,
+        string reasonCode,
+        TimeSpan? retryAfter = null)
     {
         try
         {
+            ProviderFailureCategory safeCategory = Enum.IsDefined(category)
+                && category is not ProviderFailureCategory.None and not ProviderFailureCategory.UnknownProviderOutcome
+                    ? category
+                    : ProviderFailureCategory.ProviderUnavailable;
+            TimeSpan? safeRetryAfter = SafeRetryAfter(safeCategory, retryAfter);
             using CancellationTokenSource timeout = new(OutcomeRecordingTimeout);
             return await _operationOutcomeStore.FinalizeNoDispatchAsync(new ProviderOperationOutcomeRecord(
                 operationReference,
@@ -812,10 +839,11 @@ public sealed partial class GitHubProvider
                 ProviderOperationOutcomeKind.NoDispatch,
                 PrivateObjectId: null,
                 SafeOutcomeFingerprint: null,
-                category,
-                SafeReason(reasonCode, category.ToCategoryCode()),
-                SafeRemediation(null, category),
-                category.IsRetryableByDefault()), timeout.Token).ConfigureAwait(false) == true;
+                safeCategory,
+                SafeReason(reasonCode, safeCategory.ToCategoryCode()),
+                SafeRemediation(null, safeCategory),
+                safeCategory.IsRetryableByDefault(),
+                safeRetryAfter), timeout.Token).ConfigureAwait(false) == true;
         }
         catch (Exception)
         {
@@ -823,9 +851,13 @@ public sealed partial class GitHubProvider
         }
     }
 
-    private static bool IsCredentialResultWellFormed(GitHubCredentialResolutionResult result)
+    private static bool IsCredentialResultWellFormed(GitHubCredentialResolutionResult? result)
     {
-        ArgumentNullException.ThrowIfNull(result);
+        if (result is null)
+        {
+            return false;
+        }
+
         bool hasUsableCredential = result.Credential is { AccessToken.Length: > 0 };
         if (result.IsSuccess)
         {
@@ -859,7 +891,7 @@ public sealed partial class GitHubProvider
         }
     }
 
-    private async Task<GitHubCredentialResolutionResult> ResolveCredentialSafelyAsync(
+    private async Task<GitHubCredentialResolutionResult?> ResolveCredentialSafelyAsync(
         string managedTenantId,
         string organizationId,
         string providerBindingRef,
@@ -1079,6 +1111,7 @@ public sealed partial class GitHubProvider
         }
 
         if (!IsSafeOpaqueValue(managedTenantId)
+            || IsReservedTenant(managedTenantId)
             || !IsSafeOpaqueValue(organizationId)
             || !IsSafeOpaqueValue(folderId)
             || !IsSafeOpaqueValue(delegatedTaskId)
@@ -1118,6 +1151,90 @@ public sealed partial class GitHubProvider
         }
 
         return null;
+    }
+
+    private static bool TrySnapshotResolvedSource(
+        ProviderFileMutationRequest request,
+        ProviderFileMutationResolvedSource source,
+        out ProviderFileMutationResolvedSource snapshot)
+    {
+        snapshot = null!;
+        try
+        {
+            ProviderGitOperationResolvedTarget? target = source.Target;
+            IReadOnlyList<ProviderResolvedFileChange>? sourceChanges = source.Changes;
+            int sourceCount = sourceChanges?.Count ?? 0;
+            int requestCount = request.Changes.Count;
+            if (target is null
+                || sourceChanges is null
+                || sourceCount != requestCount
+                || sourceCount is < 1 or > MaximumChangeCount)
+            {
+                return false;
+            }
+
+            ProviderResolvedFileChange[] changes = new ProviderResolvedFileChange[sourceCount];
+            long aggregateBytes = 0;
+            for (int index = 0; index < sourceCount; index++)
+            {
+                ProviderResolvedFileChange? change = sourceChanges[index];
+                ReadOnlyMemory<byte> content = change?.Content ?? default;
+                if (change is null
+                    || content.Length > request.FilePolicyEvidence.MaximumFileBytes
+                    || content.Length > MaximumFileBytes
+                    || aggregateBytes > MaximumAggregateContentBytes - content.Length)
+                {
+                    return false;
+                }
+
+                aggregateBytes += content.Length;
+                changes[index] = change with { Content = content.ToArray() };
+            }
+
+            snapshot = new ProviderFileMutationResolvedSource(target, Array.AsReadOnly(changes));
+            return true;
+        }
+        catch (Exception)
+        {
+            snapshot = null!;
+            return false;
+        }
+    }
+
+    private static bool TrySnapshotDeclaredRequest(
+        ProviderFileMutationRequest request,
+        out ProviderFileMutationRequest snapshot)
+    {
+        snapshot = request;
+        try
+        {
+            IReadOnlyList<ProviderOrderedFileChange>? declaredChanges = request.Changes;
+            int count = declaredChanges?.Count ?? 0;
+            if (declaredChanges is null || count is < 1 or > MaximumChangeCount)
+            {
+                return false;
+            }
+
+            ProviderOrderedFileChange[] changes = new ProviderOrderedFileChange[count];
+            for (int index = 0; index < count; index++)
+            {
+                ProviderOrderedFileChange? change = declaredChanges[index];
+                if (change is null)
+                {
+                    return false;
+                }
+
+                changes[index] = change with { };
+            }
+
+            snapshot = request with { Changes = Array.AsReadOnly(changes) };
+            return true;
+        }
+        catch (Exception)
+        {
+            snapshot = request;
+            return false;
+        }
     }
 
     private static bool TryValidateResolvedSource(ProviderFileMutationRequest request, ProviderFileMutationResolvedSource source, out string? failureReason)
@@ -1188,6 +1305,7 @@ public sealed partial class GitHubProvider
             && ProviderGitOperationResolvedTarget.IsGitObjectId(source.TreeSha)
             && !string.IsNullOrWhiteSpace(source.CommitMessage)
             && source.CommitMessage.Length <= 65536
+            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(source.CommitMessage)
             && !source.CommitMessage.Contains('\0', StringComparison.Ordinal)
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeResolvedTargetFingerprint, GitHubOperationSourceBindings.ResolvedTarget(request, source.Target))
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeStagedChangeSetFingerprint, GitHubOperationSourceBindings.StagedTree(request, source.TreeSha))
@@ -1608,6 +1726,7 @@ public sealed partial class GitHubProvider
     private static bool IsSafeGitPath(string? path)
         => !string.IsNullOrWhiteSpace(path)
             && path.Length <= 4096
+            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(path)
             && path[0] != '/'
             && !path.EndsWith("/", StringComparison.Ordinal)
             && !path.Contains("\\", StringComparison.Ordinal)
@@ -1621,7 +1740,11 @@ public sealed partial class GitHubProvider
 
     private static bool IsSafeOpaqueReference(string? value)
         => value is { Length: > 0 and <= 128 }
+            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(value)
             && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '-' or '_' or '.' or ':');
+
+    private static TimeSpan? SafeRetryAfter(ProviderFailureCategory category, TimeSpan? retryAfter)
+        => category.IsRetryableByDefault() ? SafeRetryAfter(retryAfter) : null;
 
     private static bool IsCanonicalUlid(string? value)
         => value is { Length: 26 }

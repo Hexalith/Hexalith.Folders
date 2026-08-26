@@ -646,6 +646,7 @@ public sealed partial class GitHubProvider : IGitProvider
     private static bool IsSafeOpaqueValue(string? value)
         => !string.IsNullOrWhiteSpace(value)
             && value.Length <= 512
+            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(value)
             && !value.Contains("://", StringComparison.Ordinal)
             && !value.Any(char.IsControl);
 
@@ -654,7 +655,7 @@ public sealed partial class GitHubProvider : IGitProvider
     /// provider mutation either.
     /// </summary>
     private static bool IsReservedTenant(string? managedTenantId)
-        => string.Equals(managedTenantId, "system", StringComparison.OrdinalIgnoreCase);
+        => string.Equals(managedTenantId?.Trim(), "system", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Reduces an observed provider repository identity to a bounded, metadata-only token. GitHub

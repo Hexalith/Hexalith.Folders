@@ -11,15 +11,18 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
     private readonly ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>? _fileMutationResult;
     private readonly ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>? _commitResult;
     private readonly ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>? _statusResult;
+    private readonly Action? _beforeFileMutationResult;
 
     private RecordingProviderOperationSourceResolver(
         ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>? fileMutationResult,
         ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>? commitResult,
-        ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>? statusResult)
+        ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>? statusResult,
+        Action? beforeFileMutationResult = null)
     {
         _fileMutationResult = fileMutationResult;
         _commitResult = commitResult;
         _statusResult = statusResult;
+        _beforeFileMutationResult = beforeFileMutationResult;
     }
 
     public int FileMutationCalls { get; private set; }
@@ -50,6 +53,20 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
             ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(StatusSource()));
     }
 
+    public static RecordingProviderOperationSourceResolver WithFileChangesAndCallback(
+        IReadOnlyList<ProviderResolvedFileChange> changes,
+        Action beforeResult)
+    {
+        ArgumentNullException.ThrowIfNull(changes);
+        ArgumentNullException.ThrowIfNull(beforeResult);
+        return new(
+            ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>.Success(
+                new ProviderFileMutationResolvedSource(Target(), changes)),
+            ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(CommitSource()),
+            ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(StatusSource()),
+            beforeResult);
+    }
+
     public static RecordingProviderOperationSourceResolver WithStatusSource(ProviderOperationStatusResolvedSource source)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -58,6 +75,16 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
                 new ProviderFileMutationResolvedSource(Target(), FileChanges())),
             ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(CommitSource()),
             ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(source));
+    }
+
+    public static RecordingProviderOperationSourceResolver WithCommitSource(ProviderCommitResolvedSource source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        return new(
+            ProviderOperationSourceResolutionResult<ProviderFileMutationResolvedSource>.Success(
+                new ProviderFileMutationResolvedSource(Target(), FileChanges())),
+            ProviderOperationSourceResolutionResult<ProviderCommitResolvedSource>.Success(source),
+            ProviderOperationSourceResolutionResult<ProviderOperationStatusResolvedSource>.Success(StatusSource()));
     }
 
     public static RecordingProviderOperationSourceResolver Failure(
@@ -72,6 +99,21 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
             new(false, null, ProviderFailureCategory.None, "token-sentinel://unsafe", TimeSpan.FromDays(30)),
             new(false, null, ProviderFailureCategory.None, "token-sentinel://unsafe", TimeSpan.FromDays(30)),
             new(false, null, ProviderFailureCategory.None, "token-sentinel://unsafe", TimeSpan.FromDays(30)));
+
+    public static RecordingProviderOperationSourceResolver UnknownFailure()
+        => new(
+            new(false, null, ProviderFailureCategory.UnknownProviderOutcome, "operation_source_unavailable", null),
+            new(false, null, ProviderFailureCategory.UnknownProviderOutcome, "operation_source_unavailable", null),
+            new(false, null, ProviderFailureCategory.UnknownProviderOutcome, "operation_source_unavailable", null));
+
+    public static RecordingProviderOperationSourceResolver MismatchedFailure(
+        ProviderFailureCategory category,
+        string reasonCode,
+        TimeSpan? retryAfter)
+        => new(
+            new(false, null, category, reasonCode, retryAfter),
+            new(false, null, category, reasonCode, retryAfter),
+            new(false, null, category, reasonCode, retryAfter));
 
     public static RecordingProviderOperationSourceResolver NullResults()
         => new(null, null, null);
@@ -88,6 +130,7 @@ internal sealed class RecordingProviderOperationSourceResolver : IProviderOperat
     {
         cancellationToken.ThrowIfCancellationRequested();
         FileMutationCalls++;
+        _beforeFileMutationResult?.Invoke();
         return ValueTask.FromResult(_fileMutationResult!);
     }
 

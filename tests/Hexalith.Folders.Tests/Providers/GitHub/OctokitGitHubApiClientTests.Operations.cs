@@ -419,6 +419,7 @@ public sealed partial class OctokitGitHubApiClientTests
                 ("tools/run.sh", "100755", "blob", "6666666666666666666666666666666666666666"),
                 ("latest", "120000", "blob", "7777777777777777777777777777777777777777"),
                 ("vendor/module", "160000", "commit", "8888888888888888888888888888888888888888"),
+                ("cafe\u0301.txt", "100644", "blob", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
                 ("nested", "040000", "tree", "9999999999999999999999999999999999999999"))),
             4 => JsonResponse(HttpStatusCode.Created, BlobJson(BlobSha)),
             5 => JsonResponse(HttpStatusCode.Created, TreeJson(TreeSha)),
@@ -509,6 +510,106 @@ public sealed partial class OctokitGitHubApiClientTests
                 TestContext.Current.CancellationToken);
 
             result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ContentPolicyViolation);
+        }
+
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task StageSnapshotsMutableCallerChangesAndContentBeforeTheFirstAwait()
+    {
+        byte[] content = "one"u8.ToArray();
+        List<ProviderResolvedFileChange> changes = FileMutationTransportRequest().Changes.ToList();
+        changes[0] = changes[0] with { Content = content };
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) =>
+        {
+            calls++;
+            if (calls == 1)
+            {
+                content[0] = (byte)'X';
+                changes[0] = changes[0] with { Path = "docs/substituted.txt" };
+            }
+
+            return Task.FromResult(calls switch
+            {
+                1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+                2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+                3 => JsonResponse(HttpStatusCode.OK, BaseTreeJson()),
+                4 => JsonResponse(HttpStatusCode.Created, BlobJson(BlobSha)),
+                5 => JsonResponse(HttpStatusCode.Created, TreeJson(TreeSha)),
+                _ => JsonResponse(HttpStatusCode.OK, ResultingTreeJson(TreeSha, ("docs/one.txt", BlobSha))),
+            });
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            new GitHubFileMutationRequest(TransportTarget(), changes, static _ => ValueTask.FromResult(true)),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.FailureCondition.ToString());
+        using JsonDocument blob = JsonDocument.Parse(handler.Requests[3].Body!);
+        blob.RootElement.GetProperty("content").GetString().ShouldBe(Convert.ToBase64String("one"u8));
+        using JsonDocument tree = JsonDocument.Parse(handler.Requests[4].Body!);
+        tree.RootElement.GetProperty("tree")[0].GetProperty("path").GetString().ShouldBe("docs/one.txt");
+    }
+
+    [Fact]
+    public async Task StageMapsAHostileCallerCollectionToValidationWithoutAnyRequest()
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => throw new InvalidOperationException("not expected"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            new GitHubFileMutationRequest(
+                TransportTarget(),
+                new ThrowingReadOnlyList<ProviderResolvedFileChange>(),
+                static _ => ValueTask.FromResult(true)),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task RawOperationBoundariesRejectNonCanonicalAndInvalidUnicodeBeforeHttpAccess()
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => throw new InvalidOperationException("not expected"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+        ProviderGitOperationResolvedTarget baselineTarget = TransportTarget();
+        ProviderGitOperationResolvedTarget[] invalidTargets =
+        [
+            baselineTarget with { Owner = "cafe\u0301" },
+            baselineTarget with { RepositoryName = "cafe\u0301" },
+            baselineTarget with { RefName = "heads/cafe\u0301" },
+            baselineTarget with { Owner = "owner\uD800" },
+        ];
+
+        foreach (ProviderGitOperationResolvedTarget target in invalidTargets)
+        {
+            GitHubOperationStatusResult status = await client.GetOperationStatusAsync(
+                new GitHubOperationStatusRequest(target, CommitSha),
+                TestContext.Current.CancellationToken);
+            status.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
+        }
+
+        foreach (string path in new[] { "docs/cafe\u0301.txt", "docs/invalid\uD800.txt" })
+        {
+            GitHubFileMutationResult mutation = await client.StageFileChangesAsync(
+                new GitHubFileMutationRequest(
+                    baselineTarget,
+                    [new ProviderResolvedFileChange(0, ProviderFileChangeKind.Add, path, "one"u8.ToArray(), ProviderFileContentType.RegularFile)],
+                    static _ => ValueTask.FromResult(true)),
+                TestContext.Current.CancellationToken);
+            mutation.FailureCondition.ShouldBe(GitHubApiFailureCondition.PathPolicyViolation);
+        }
+
+        foreach (string message in new[] { "cafe\u0301", "invalid\uD800" })
+        {
+            GitHubCommitResult commit = await client.CommitAsync(
+                CommitTransportRequest() with { CommitMessage = message },
+                TestContext.Current.CancellationToken);
+            commit.FailureCondition.ShouldBe(GitHubApiFailureCondition.ValidationFailure);
         }
 
         handler.Requests.ShouldBeEmpty();
@@ -1022,6 +1123,96 @@ public sealed partial class OctokitGitHubApiClientTests
 
         result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ResponseLimitExceeded);
         handler.Requests.Count.ShouldBe(4);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
+    }
+
+    [Fact]
+    public async Task FallbackTraversalStopsBeforeRequestSixtyFiveWithoutAnyWrite()
+    {
+        string[] treeShas = Enumerable.Range(1, 64)
+            .Select(static index => index.ToString("x40", System.Globalization.CultureInfo.InvariantCulture))
+            .ToArray();
+        (string Path, string Mode, string Type, string ObjectSha)[] rootEntries = treeShas
+            .Select(static (sha, index) => ($"dir-{index:D2}", "040000", "tree", sha))
+            .ToArray();
+        ProviderResolvedFileChange[] changes = treeShas
+            .Select(static (_, index) => new ProviderResolvedFileChange(
+                index,
+                ProviderFileChangeKind.Add,
+                $"dir-{index:D2}/file.txt",
+                "x"u8.ToArray(),
+                ProviderFileContentType.RegularFile))
+            .ToArray();
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((request, _) =>
+        {
+            calls++;
+            if (calls == 1)
+            {
+                return Task.FromResult(JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)));
+            }
+
+            if (calls == 2)
+            {
+                return Task.FromResult(JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)));
+            }
+
+            if (calls == 3)
+            {
+                return Task.FromResult(JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true)));
+            }
+
+            if (calls == 4)
+            {
+                return Task.FromResult(JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: false, rootEntries)));
+            }
+
+            string requestedTreeSha = Uri.UnescapeDataString(request.RequestUri!.AbsolutePath.Split('/').Last());
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, TreeEntriesJson(requestedTreeSha, truncated: false)));
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            new GitHubFileMutationRequest(TransportTarget(), changes, static _ => ValueTask.FromResult(true)),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ResponseLimitExceeded);
+        handler.Requests.Count.ShouldBe(67);
+        handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
+    }
+
+    [Fact]
+    public async Task FallbackTraversalRejectsDepthThirtyThreeWithoutAnyWrite()
+    {
+        string[] segments = Enumerable.Range(0, 34).Select(static index => $"d{index:D2}").ToArray();
+        string touchedPath = string.Join('/', segments) + "/file.txt";
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) =>
+        {
+            calls++;
+            return Task.FromResult(calls switch
+            {
+                1 => JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha)),
+                2 => JsonResponse(HttpStatusCode.OK, CommitJson(HeadSha, BaseTreeSha)),
+                3 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: true)),
+                4 => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(BaseTreeSha, truncated: false, (segments[0], "040000", "tree", TreeSha))),
+                _ => JsonResponse(HttpStatusCode.OK, TreeEntriesJson(
+                    TreeSha,
+                    truncated: false,
+                    (segments[calls - 4], "040000", "tree", TreeSha))),
+            });
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubFileMutationResult result = await client.StageFileChangesAsync(
+            new GitHubFileMutationRequest(
+                TransportTarget(),
+                [new ProviderResolvedFileChange(0, ProviderFileChangeKind.Add, touchedPath, "x"u8.ToArray(), ProviderFileContentType.RegularFile)],
+                static _ => ValueTask.FromResult(true)),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.ResponseLimitExceeded);
+        handler.Requests.Count.ShouldBe(36);
         handler.Requests.ShouldNotContain(static request => request.Method == HttpMethod.Post);
     }
 

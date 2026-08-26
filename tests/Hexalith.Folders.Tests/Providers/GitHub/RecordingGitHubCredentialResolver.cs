@@ -49,6 +49,12 @@ internal sealed class RecordingGitHubCredentialResolver : IGitHubCredentialResol
         return new(() => result);
     }
 
+    public static RecordingGitHubCredentialResolver FromFactory(Func<GitHubCredentialResolutionResult> resultFactory)
+        => new(resultFactory);
+
+    public static RecordingGitHubCredentialResolver NullResult()
+        => new(static () => null!);
+
     public static RecordingGitHubCredentialResolver Throws(Exception exception)
     {
         ArgumentNullException.ThrowIfNull(exception);
@@ -63,6 +69,6 @@ internal sealed class RecordingGitHubCredentialResolver : IGitHubCredentialResol
         Calls++;
         LastRequest = request;
         _lastResult = _resultFactory();
-        return ValueTask.FromResult(_lastResult);
+        return ValueTask.FromResult(_lastResult!);
     }
 }

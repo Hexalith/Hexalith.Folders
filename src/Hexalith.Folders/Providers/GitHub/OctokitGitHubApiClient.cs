@@ -295,10 +295,15 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             return GitHubFileMutationResult.Failure(GitHubApiFailureCondition.ValidationFailure);
         }
 
-        if (!TryValidateFileChanges(request.Changes, out GitHubApiFailureCondition validationFailure))
+        if (!TrySnapshotFileChanges(
+            request.Changes,
+            out IReadOnlyList<ProviderResolvedFileChange> snapshot,
+            out GitHubApiFailureCondition validationFailure))
         {
             return GitHubFileMutationResult.Failure(validationFailure);
         }
+
+        request = request with { Changes = snapshot };
 
         bool mutationDispatched = false;
         if (!TryCreateOperationHttpClient(out HttpClient? operationHttpClient))
@@ -527,6 +532,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
             || !ProviderGitOperationResolvedTarget.IsGitObjectId(request.TreeSha)
             || string.IsNullOrWhiteSpace(request.CommitMessage)
             || request.CommitMessage.Length > 65536
+            || !ProviderGitOperationResolvedTarget.IsCanonicalUnicode(request.CommitMessage)
             || request.CommitMessage.Contains('\0', StringComparison.Ordinal))
         {
             return GitHubCommitResult.Failure(GitHubApiFailureCondition.ValidationFailure);
@@ -1163,7 +1169,12 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         {
             while (pending.Count > 0)
             {
-                if (++requests > MaximumTreeRequests || elapsed.Elapsed > MaximumTreeElapsed)
+                if (++requests > MaximumTreeRequests)
+                {
+                    throw new GitHubTreeObservationException(GitHubApiFailureCondition.ResponseLimitExceeded);
+                }
+
+                if (elapsed.Elapsed > MaximumTreeElapsed)
                 {
                     throw new GitHubTreeObservationException(GitHubApiFailureCondition.TimeoutDuringObservation);
                 }
@@ -1313,7 +1324,7 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         string? mode = modeElement.GetString();
         string? type = typeElement.GetString();
         string? sha = shaElement.GetString();
-        if (!IsSafeGitPath(path)
+        if (!IsSafeProviderTreePath(path)
             || mode is not { Length: > 0 and <= 8 }
             || type is not ("blob" or "tree" or "commit")
             || !ProviderGitOperationResolvedTarget.IsGitObjectId(sha))
@@ -1621,60 +1632,100 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         return ProviderGitOperationResolvedTarget.IsGitObjectId(sha);
     }
 
-    private static bool TryValidateFileChanges(
+    private static bool TrySnapshotFileChanges(
         IReadOnlyList<ProviderResolvedFileChange>? changes,
+        out IReadOnlyList<ProviderResolvedFileChange> snapshot,
         out GitHubApiFailureCondition failureCondition)
     {
+        snapshot = Array.Empty<ProviderResolvedFileChange>();
         failureCondition = GitHubApiFailureCondition.ContentPolicyViolation;
-        if (changes is null || changes.Count is < 1 or > MaximumChangeCount)
+        try
         {
+            int count = changes?.Count ?? 0;
+            if (changes is null || count is < 1 or > MaximumChangeCount)
+            {
+                return false;
+            }
+
+            ProviderResolvedFileChange[] captured = new ProviderResolvedFileChange[count];
+            HashSet<string> paths = new(StringComparer.Ordinal);
+            long aggregateBytes = 0;
+            for (int index = 0; index < count; index++)
+            {
+                ProviderResolvedFileChange? change = changes[index];
+                if (change is null
+                    || !IsSafeGitPath(change.Path)
+                    || !paths.Add(change.Path)
+                    || paths.Any(path => !string.Equals(path, change.Path, StringComparison.Ordinal)
+                        && (path.StartsWith(change.Path + "/", StringComparison.Ordinal)
+                            || change.Path.StartsWith(path + "/", StringComparison.Ordinal))))
+                {
+                    failureCondition = GitHubApiFailureCondition.PathPolicyViolation;
+                    return false;
+                }
+
+                ReadOnlyMemory<byte> content = change.Content;
+                if (change.Sequence != index
+                    || !Enum.IsDefined(change.Kind)
+                    || change.ContentType != ProviderFileContentType.RegularFile
+                    || content.Length > MaximumFileBytes
+                    || (change.Kind == ProviderFileChangeKind.Remove && !content.IsEmpty))
+                {
+                    return false;
+                }
+
+                if (aggregateBytes > MaximumAggregateContentBytes - content.Length)
+                {
+                    return false;
+                }
+
+                aggregateBytes += content.Length;
+                captured[index] = change with { Content = content.ToArray() };
+            }
+
+            snapshot = Array.AsReadOnly(captured);
+            return true;
+        }
+        catch (Exception)
+        {
+            snapshot = Array.Empty<ProviderResolvedFileChange>();
+            failureCondition = GitHubApiFailureCondition.ValidationFailure;
             return false;
         }
-
-        HashSet<string> paths = new(StringComparer.Ordinal);
-        long aggregateBytes = 0;
-        for (int index = 0; index < changes.Count; index++)
-        {
-            ProviderResolvedFileChange change = changes[index];
-            if (change is null
-                || !IsSafeGitPath(change.Path)
-                || !paths.Add(change.Path)
-                || paths.Any(path => !string.Equals(path, change.Path, StringComparison.Ordinal)
-                    && (path.StartsWith(change.Path + "/", StringComparison.Ordinal)
-                        || change.Path.StartsWith(path + "/", StringComparison.Ordinal))))
-            {
-                failureCondition = GitHubApiFailureCondition.PathPolicyViolation;
-                return false;
-            }
-
-            if (change.Sequence != index
-                || !Enum.IsDefined(change.Kind)
-                || change.ContentType != ProviderFileContentType.RegularFile
-                || change.Content.Length > MaximumFileBytes
-                || (change.Kind == ProviderFileChangeKind.Remove && !change.Content.IsEmpty))
-            {
-                return false;
-            }
-
-            if (aggregateBytes > MaximumAggregateContentBytes - change.Content.Length)
-            {
-                return false;
-            }
-
-            aggregateBytes += change.Content.Length;
-        }
-
-        return true;
     }
 
     private static bool IsSafeGitPath(string? path)
         => !string.IsNullOrWhiteSpace(path)
             && path.Length <= 4096
+            && ProviderGitOperationResolvedTarget.IsCanonicalUnicode(path)
             && path[0] != '/'
             && !path.EndsWith("/", StringComparison.Ordinal)
             && !path.Contains("\\", StringComparison.Ordinal)
             && !path.Any(char.IsControl)
             && !path.Split('/').Any(static segment => segment is "" or "." or "..");
+
+    private static bool IsSafeProviderTreePath(string? path)
+        => !string.IsNullOrWhiteSpace(path)
+            && path.Length <= 4096
+            && IsWellFormedUnicode(path)
+            && path[0] != '/'
+            && !path.EndsWith("/", StringComparison.Ordinal)
+            && !path.Contains("\\", StringComparison.Ordinal)
+            && !path.Any(char.IsControl)
+            && !path.Split('/').Any(static segment => segment is "" or "." or "..");
+
+    private static bool IsWellFormedUnicode(string value)
+    {
+        try
+        {
+            _ = value.Normalize(NormalizationForm.FormC);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
 
     private static GitHubRepositoryBindingResult MapBindingObservationFailure(
         Exception exception,
