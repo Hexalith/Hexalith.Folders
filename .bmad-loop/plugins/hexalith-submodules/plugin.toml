@@ -1,0 +1,11 @@
+[plugin]
+name = "hexalith-submodules"
+version = "1.0.0"
+api_version = 1
+description = "Initialize root-declared reference submodules in isolated worktrees."
+
+[hooks.pre_worktree_setup]
+cmd = 'bash "{scripts}/init-reference-submodules.sh"'
+timeout_sec = 1800
+blocking = true
+fail_closed = true
