@@ -1140,7 +1140,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:252-288
 reason: `EnumerateNamedFields` yields the same property names twice via the recursion path. Harmless but quadratic-ish on deep trees; revisit if test runtime grows. (`tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:252-288`)
-status: open
+status: done 2026-08-28
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/WorkspaceLockContractGroupTests.cs:366-404 yields each properties key only in its dedicated loop and recursively visits child values, eliminating the former duplicate-yield path.
 
 ### DW-156: `GetOptionalScalar` uses `ShouldBeOfType<YamlScalarNode>()` and throws an opaque Shouldly error on a malformed mapping/sequence value
 
@@ -1612,7 +1613,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/nswag.json:1474-1486
 reason: `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — the new location works; original-location ineffectiveness is folklore.
-status: open
+status: done 2026-08-28
+resolution: already resolved: src/Hexalith.Folders.Client/nswag.json:9-12 places newLineBehavior under openApiToCSharpClient, and tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:35-38 rejects the obsolete fromDocument placement.
 
 ### DW-220: `ComputeCorpusHash` uses `GetRawText` for non-string types [`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:1779-1790`] — equivalence-only comparison so string-vs-string is acceptable.
 
@@ -2164,7 +2166,8 @@ origin: code review of spec-3-10-github-repository-provisioning-binding-and-bran
 location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs
 source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: Story 3.10 added `ProviderIdempotencyAdmission` to `ProviderRepositoryCreationRequest` and `ProviderRepositoryBindingRequest`, and `GitHubProvider` now gates on it. `ForgejoProvider` accepts the member and enforces nothing (`grep IdempotencyAdmission src/Hexalith.Folders/Providers/Forgejo/` returns no hits), so once a caller emits a real disposition a replayed or expired intent would execute live against Forgejo. This is not a regression — Forgejo enforced no idempotency before either — and Story 3.12 owns the Forgejo slice. No test pins the deliberate no-op today.
-status: open
+status: done 2026-08-28
+resolution: already resolved: Commit 485fcf38; src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:282-288 and :775-864 enforce creation and binding idempotency admission, with expiry and replay coverage at tests/Hexalith.Folders.Tests/Providers/Forgejo/ForgejoProviderTests.cs:704-954.
 
 ### DW-295: The repository provisioning admission seam fails open and is never checked against the requesting intent.
 
