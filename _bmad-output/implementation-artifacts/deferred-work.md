@@ -68,7 +68,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 4 (2026-05-20)"), 2026-08-24
 location: InMemoryFolderRepository
 reason: **(Round-3 echo)** `InMemoryFolderRepository` mixes `lock (_gate)` with an internal `ConcurrentDictionary` — the lock is the real serialization primitive. Deferred — style cleanup; revisit when an EventStore-backed repository replaces the in-memory implementation as the production default.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-inmemory-repository-lock-cleanup
+resolution-undo: 0f576fc559595d239f0a8032672b2a2033e87f3e1ec77133cdd65ef323dca046 2026-08-28 7374617475733a206f70656e
 
 ### DW-11: (Round-3 echo) `FolderCommandRejected` projection/event-routing boundary between `IFolderEvent` (projection-bound) and `IRejectionEvent` (gateway-bound) is implicit
 
@@ -158,7 +160,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: InMemoryFolderRepository
 reason: `InMemoryFolderRepository` mixes `lock (_gate)` with an internal `ConcurrentDictionary`; the lock is the real serialization primitive and the dictionary's thread-safety adds nothing. Deferred — style cleanup; revisit when an EventStore-backed `IFolderRepository` replaces the in-memory implementation as the production default.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-inmemory-repository-lock-cleanup
+resolution-undo: 0f576fc559595d239f0a8032672b2a2033e87f3e1ec77133cdd65ef323dca046 2026-08-28 7374617475733a206f70656e
 
 ### DW-22: `SequentialRequestsShouldNotReusePriorLayeredAuthorizationEvidence` does not detect a scenario where the scoped accessor is accidentally re-registered as singleton; a singleton accessor with…
 
@@ -2341,4 +2345,36 @@ location: n/a
 source_spec: `spec-archive-process-integration.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-001531-d5cf; this entry preserves the lingering recommendation for a deliberate later review.
+status: open
+
+### DW-310: The pre-existing Int32 EventsAppended test affordance can wrap after more than Int32.MaxValue appended events.
+origin: spec-deferred eacd388efd79
+location: src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:152
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: low
+reason: Before this change the int auto-property used unchecked +=, and the refactor preserves that behavior in the gate-protected backing field. This is not caused by the synchronization cleanup and is not observable through IFolderRepository, but an extreme-lifetime test repository could report a negative diagnostic count.
+status: open
+
+### DW-311: A single per-folder `_lastObservedAt` watermark is shared by all six read-model snapshot writers, so one projection's newer timestamp can advance another projection's reported freshness.
+origin: spec-deferred 94fcd8bf7ae7
+location: src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:255
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: medium
+reason: Every `Save*Snapshot` clamps against the same `LifecycleKey(managedTenantId, folderId)` entry while sourcing a different candidate time (`state.ArchivedAt`, `policy.ConfiguredAt`, `state.WorkspaceLifecycleUpdatedAt`, or the append's `observedAt`). The clamp is a max, so whichever writer runs with the newest candidate pins `ObservedAt` for every other projection of the same folder. This predates the change -- the same key and the same max semantics were previously expressed through `ConcurrentDictionary.AddOrUpdate` -- and this story only relocated the operation under the gate. It is invisible in the current suite because the new coverage constructs the repository with no read models and `BranchRefPolicyReadModelTests` registers only the branch-policy read model; registering a second read model would surface the interference.
+status: open
+
+### DW-312: The sibling `InMemoryOrganizationProviderBindingRepository` still mixes `ConcurrentDictionary` with `lock (_gate)` and publishes state before its idempotency ledger entry where readers can observe the
+origin: spec-deferred 49c81b636fb6
+location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProviderBindingRepository.cs:61
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: medium
+reason: Its file comment states it "mirrors the folder repository policy", yet `Load` (line 25) and `TryGetIdempotencyFingerprint` (line 69) never take `_gate`, while `AppendIfFingerprintAbsent` writes `_states[...]` at line 61 and `_idempotencyFingerprints[ledgerKey]` at line 62. A concurrent reader can therefore see appended organization state whose fingerprint is not yet visible, and a caller retrying the same idempotent command would treat it as new work. The only tests touching the type run single-threaded, so nothing observes the window. This story's intent scopes sibling `ConcurrentDictionary` users out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), so it is recorded here rather than fixed.
+status: open
+
+### DW-313: The sibling `InMemoryOrganizationProviderBindingRepository` file comment claims it "mirrors the folder repository policy", a claim this change made false.
+origin: spec-deferred c9d27f6533b9
+location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProviderBindingRepository.cs:6
+source_spec: `spec-inmemory-repository-lock-cleanup.md`
+severity: low
+reason: Lines 6-7 of that file describe it as mirroring the folder repository's synchronization policy. After this story, `InMemoryFolderRepository` owns all mutable state under one gate with plain `Dictionary` stores, while the sibling still mixes `ConcurrentDictionary` with `lock (_gate)`, leaves `Load` and `TryGetIdempotencyFingerprint` un-gated, keeps `EventsAppended` as an un-gated auto-property, and calls its own public `Load` from inside the gate. The comment now points a reader at a policy the file does not implement. It cannot be corrected here: this story's intent scopes that file out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), which covers a comment edit in it as much as a code edit. Distinct from the synchronization gap already recorded for the same file: that entry is about the publication window, this one is about the documentation now misdescribing the type.
 status: open
