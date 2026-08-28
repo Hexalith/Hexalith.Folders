@@ -35,6 +35,15 @@
     "label": "Specialize error schemas",
     "resolution": ""
   },
+  "DW-229": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Validate explicitly NFC-declared path metadata before hashing and fail closed on decomposed input, preserving hashes for already-valid requests.",
+    "key": "1",
+    "label": "Reject non-NFC",
+    "resolution": ""
+  },
   "DW-256": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

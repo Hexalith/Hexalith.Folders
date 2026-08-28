@@ -1723,6 +1723,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-ns
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
 reason: NFC/NFD/NFKC normalization not implemented in hasher [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`] — AC 6 reads "Unicode normalization where declared" and no current spine field declares normalization-eligibility. Revisit when a field declares it.
 status: open
+decision: 2026-08-28 Reject non-NFC — Validate explicitly NFC-declared path metadata before hashing and fail closed on decomposed input, preserving hashes for already-valid requests.
 
 ### DW-230: Tempdir cleanup catches that swallow `IOException`/`UnauthorizedAccessException`
 
