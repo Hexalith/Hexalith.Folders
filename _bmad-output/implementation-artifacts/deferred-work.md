@@ -1063,6 +1063,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-10-author-
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OpaqueIdentifier
 reason: W4: `OpaqueIdentifier` does not reject the new namespace prefixes `branchref_`, `digest_`, `provref_`, `authorref_`. Cross-namespace collision is theoretical; global hardening better handled with the wider opaque-identifier vocabulary review. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OpaqueIdentifier`)
 status: open
+decision: 2026-08-28 Reserve typed prefixes — Exclude typed prefixes from OpaqueIdentifier, migrate legitimate sites to namespace schemas, regenerate clients, and add compatibility tests.
 
 ### DW-145: W5: Wire `OperatorDispositionLabel` (defined at yaml:5329) into the relevant status schemas as part of Story 6.3
 

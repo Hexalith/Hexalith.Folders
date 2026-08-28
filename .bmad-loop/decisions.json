@@ -8,6 +8,15 @@
     "label": "Add explicit 429",
     "resolution": ""
   },
+  "DW-144": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Exclude typed prefixes from OpaqueIdentifier, migrate legitimate sites to namespace schemas, regenerate clients, and add compatibility tests.",
+    "key": "1",
+    "label": "Reserve typed prefixes",
+    "resolution": ""
+  },
   "DW-256": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
