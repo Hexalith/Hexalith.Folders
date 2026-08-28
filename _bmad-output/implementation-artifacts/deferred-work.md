@@ -1167,6 +1167,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-w
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: WorkspaceTransitionEvidence
 reason: `WorkspaceTransitionEvidence.auditMetadata.additionalProperties: oneOf string|boolean` permits unbounded keys; a non-conformant server could flood audit metadata. Schema-robustness enhancement; not Story 1.8 scope. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: WorkspaceTransitionEvidence`)
 status: open
+decision: 2026-08-28 Bound audit metadata — Add an approved maxProperties bound, update examples and tests, regenerate clients, and enforce the limit in server responses.
 
 ### DW-159: Read-consistency token form drift: story prose uses hyphenated `snapshot-per-task` / `read-your-writes` / `eventually-consistent`, OpenAPI `ReadConsistencyClass` enum uses underscore form
 

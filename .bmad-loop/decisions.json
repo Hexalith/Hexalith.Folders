@@ -17,6 +17,15 @@
     "label": "Reserve typed prefixes",
     "resolution": ""
   },
+  "DW-158": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add an approved maxProperties bound, update examples and tests, regenerate clients, and enforce the limit in server responses.",
+    "key": "1",
+    "label": "Bound audit metadata",
+    "resolution": ""
+  },
   "DW-256": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
