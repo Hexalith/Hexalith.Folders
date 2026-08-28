@@ -797,7 +797,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-218
 reason: Generator test `HelperGenerationTargetRegeneratesWhenContractSpineChanges` writes mutated spine via `Encoding.UTF8` with BOM preamble (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:214-218`).
-status: open
+status: done 2026-08-28
+resolution: already resolved: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:295-296 uses Encoding.UTF8 under the .NET 10 SDK pinned by global.json; modern Encoding.UTF8 is BOM-less, so the alleged BOM preamble is not emitted.
 
 ### DW-108: Test corpus classification polarity is forward-fragile (`tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs:315-322`). Flips when AC 6 normalization implemented.
 
@@ -1639,7 +1640,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222
 reason: `dotnet run --project Generation` runs implicit build per outer build [`src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:1220-1222`] — perf concern; ties into Story 1.14 CI gate review.
-status: open
+status: done 2026-08-28
+resolution: already resolved: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj:40-47 declares Inputs and Outputs for GenerateHexalithFoldersIdempotencyHelpers, so MSBuild skips the generator when its output is current.
 
 ### DW-219: `nswag.json` `newLineBehavior` claim about old location [`src/Hexalith.Folders.Client/nswag.json:1474-1486`] — the new location works; original-location ineffectiveness is folklore.
 
@@ -1754,7 +1756,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: `InventoryChannel.Clone()` use-after-dispose latent risk [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `InventoryChannel`] — current code correct per .NET docs; revisit if accessor returns raw `JsonElement`.
-status: open
+status: done 2026-08-28
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:506-514 returns channel.Clone() before the owning JsonDocument is disposed, eliminating the alleged JsonElement use-after-dispose risk.
 
 ### DW-235: `schema_version "1.0.0"` hard-coded coupling between corpus and test
 
@@ -2017,7 +2020,8 @@ resolution: already resolved: _bmad-output/implementation-artifacts/sprint-statu
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: InMemoryFolderRepository.EventsAppended
 reason: P1: `InMemoryFolderRepository.EventsAppended`/`ResetAppendCounters` are not lock-guarded for reads. Now `internal` (test-only via InternalsVisibleTo), single-threaded per test host. Already tracked rounds 3/4; revisit when an EventStore-backed repository replaces the in-memory default.
-status: open
+status: done 2026-08-28
+resolution: already resolved: Commit f9cf754; src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs:109-117 and :257-262 now guard both EventsAppended reads and ResetAppendCounters with _gate.
 
 ### DW-271: P4: No foreign-tenant-smuggling integration row exercising `HasCompetingClientTenant`/`TenantMismatch` end-to-end
 
