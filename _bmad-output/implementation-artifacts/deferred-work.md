@@ -175,7 +175,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: FolderListProjection.Apply
 reason: `FolderListProjection.Apply` throw-on-missing-create tears down multi-tenant rebuild while `FolderStateApply` is per-stream — asymmetric blast radius. Deferred — revisit when projection-rebuild tooling and replay diagnostics are introduced (Epic 6/7).
-status: open
+status: done 2026-08-28
+resolution: closed by human decision: Treat missing-create ordering as repository corruption that must stop the rebuild and require operator intervention.
+decision: 2026-08-28 Keep fail-fast rebuild — Treat missing-create ordering as repository corruption that must stop the rebuild and require operator intervention.
 
 ### DW-26: `FolderArchiveAclEvidence` is an unsigned value object
 
