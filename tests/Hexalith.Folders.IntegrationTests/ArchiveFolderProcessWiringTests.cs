@@ -18,6 +18,7 @@ using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
+using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,26 @@ namespace Hexalith.Folders.IntegrationTests;
 public sealed class ArchiveFolderProcessWiringTests
 {
     private static readonly DateTimeOffset Now = new(2026, 5, 20, 11, 0, 0, TimeSpan.Zero);
+
+    /// <summary>Upper bound on any server-side handshake signal, so a broken signal fails instead of hanging.</summary>
+    private static readonly TimeSpan SignalTimeout = TimeSpan.FromSeconds(30);
+
+    /// <summary>Scoped identifiers seeded by the denial rows; none may appear in a safe-denial body.</summary>
+    /// <remarks>
+    /// The acting principal belongs here too: an actor identity interpolated into a denial message is a
+    /// disclosure, not diagnostics. The idempotency key deliberately does not, because the safe denial
+    /// legitimately carries the key-derived <c>correlationId</c> that
+    /// <see cref="AssertMetadataOnlySafeDenial"/> pins.
+    /// </remarks>
+    private static readonly string[] ForbiddenDenialDisclosures =
+    [
+        "tenant-a",
+        "tenant-b",
+        "org-a",
+        "folder-a",
+        "user-a",
+        "v1-test-denied",
+    ];
 
     [Fact]
     public async Task ArchiveRequestShouldRoundTripThroughProcessAndPersistOneArchiveEvent()
@@ -197,6 +218,198 @@ public sealed class ArchiveFolderProcessWiringTests
 
             conflict.StatusCode.ShouldBe(HttpStatusCode.Conflict);
             host.Repository.EventsAppended.ShouldBe(1);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveRequestCancelledMidProcessorShouldUnwindAuthorizationWithoutAppending()
+    {
+        using CancellationTokenSource requestCancellation = new();
+        CancelMidFlightFolderArchivePolicyEvidenceProvider policyProvider = new(requestCancellation);
+        ScopedLayeredFolderAuthorizationResultAccessor authorizationAccessor = new();
+        TestHost host = await StartHostAsync(
+            policyProvider,
+            authorizationAccessor: authorizationAccessor).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            Task<HttpResponseMessage> responseTask = host.Client.SendAsync(request, requestCancellation.Token);
+
+            // Every handshake signal is bounded: if a future change stops the OperationCanceledException
+            // from escaping /process, the middleware never signals and an unbounded wait would hang the
+            // whole run instead of failing this row.
+            await policyProvider.Entered
+                .WaitAsync(SignalTimeout, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            await Should.ThrowAsync<OperationCanceledException>(
+                async () => await responseTask.ConfigureAwait(true));
+            await policyProvider.ServerCancellationObserved
+                .WaitAsync(SignalTimeout, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            await policyProvider.Completion
+                .WaitAsync(SignalTimeout, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            policyProvider.Calls.ShouldBe(1);
+            authorizationAccessor.Current.ShouldBeNull();
+            host.Repository.EventsAppended.ShouldBe(0);
+            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+                .LifecycleState.ShouldBe(FolderLifecycleState.Active);
+
+            using HttpRequestMessage retryRequest = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage retryResponse = await host.Client
+                .SendAsync(retryRequest, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            string retryJson = await retryResponse.Content
+                .ReadAsStringAsync(TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            retryResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted, retryJson);
+            using JsonDocument retryDocument = JsonDocument.Parse(retryJson);
+
+            // A false replay flag is the caller-visible proof that the cancelled attempt left no
+            // idempotency ledger entry behind for the same key.
+            retryDocument.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
+            host.Gateway.ProcessCalls.ShouldBe(2);
+            policyProvider.Calls.ShouldBe(2);
+            host.Repository.EventsAppended.ShouldBe(1);
+            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+                .LifecycleState.ShouldBe(FolderLifecycleState.Archived);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted()
+    {
+        TestHost host = await StartHostAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using HttpRequestMessage firstRequest = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage first = await host.Client
+                .SendAsync(firstRequest, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            using HttpRequestMessage replayRequest = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage replay = await host.Client
+                .SendAsync(replayRequest, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            string firstJson = await first.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string replayJson = await replay.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            first.StatusCode.ShouldBe(HttpStatusCode.Accepted, firstJson);
+            replay.StatusCode.ShouldBe(HttpStatusCode.Accepted, replayJson);
+            using JsonDocument firstDocument = JsonDocument.Parse(firstJson);
+            using JsonDocument replayDocument = JsonDocument.Parse(replayJson);
+            firstDocument.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
+            firstDocument.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-archive-key-a");
+            firstDocument.RootElement.GetProperty("taskId").GetString().ShouldBe("task-archive-key-a");
+            firstDocument.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
+            replayDocument.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
+            replayDocument.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-archive-key-a");
+            replayDocument.RootElement.GetProperty("taskId").GetString().ShouldBe("task-archive-key-a");
+            replayDocument.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
+
+            host.Gateway.ProcessCalls.ShouldBe(2);
+            host.Repository.EventsAppended.ShouldBe(1);
+            FolderState archived = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));
+            archived.LifecycleState.ShouldBe(FolderLifecycleState.Archived);
+            archived.ArchiveActorPrincipalId.ShouldBe("user-a");
+            archived.ArchiveCorrelationId.ShouldBe("correlation-archive-key-a");
+            archived.ArchiveTaskId.ShouldBe("task-archive-key-a");
+            archived.ArchiveReasonCode.ShouldBe(FolderArchiveReasonCode.CallerRequested);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveRequestShouldRejectWhenEnvelopeTenantDisagreesWithAuthenticatedTenant()
+    {
+        DenyingFolderArchivePolicyEvidenceProvider policyProvider = new();
+        ScopedLayeredFolderAuthorizationResultAccessor authorizationAccessor = new();
+        TestHost host = await StartHostAsync(
+            policyProvider,
+            _ => "tenant-b",
+            authorizationAccessor).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string responseJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden, responseJson);
+            using JsonDocument document = JsonDocument.Parse(responseJson);
+            AssertMetadataOnlySafeDenial(document.RootElement);
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            policyProvider.Calls.ShouldBe(0);
+
+            // This denial returns before BeginScope, so a null accessor is a leak guard on the
+            // early-return path -- not evidence that a scope was begun and torn down. The
+            // begin-then-clear chain is proven only on the policy-denial row, where `Calls == 1`
+            // shows the processor ran inside the scope that `Current is null` shows was cleared.
+            authorizationAccessor.Current.ShouldBeNull();
+            host.Repository.EventsAppended.ShouldBe(0);
+            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+                .LifecycleState.ShouldBe(FolderLifecycleState.Active);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchivePolicyDenialShouldReturnSafeForbiddenWithoutAppending()
+    {
+        DenyingFolderArchivePolicyEvidenceProvider policyProvider = new();
+        ScopedLayeredFolderAuthorizationResultAccessor authorizationAccessor = new();
+        TestHost host = await StartHostAsync(
+            policyProvider,
+            authorizationAccessor: authorizationAccessor).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string responseJson = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden, responseJson);
+            using JsonDocument document = JsonDocument.Parse(responseJson);
+            AssertMetadataOnlySafeDenial(document.RootElement);
+            host.Gateway.ProcessCalls.ShouldBe(1);
+            policyProvider.Calls.ShouldBe(1);
+            policyProvider.LastManagedTenantId.ShouldBe("tenant-a");
+            policyProvider.LastOrganizationId.ShouldBe("org-a");
+            policyProvider.LastFolderId.ShouldBe("folder-a");
+            authorizationAccessor.Current.ShouldBeNull();
+            host.Repository.EventsAppended.ShouldBe(0);
+            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+                .LifecycleState.ShouldBe(FolderLifecycleState.Active);
         }
         finally
         {
@@ -545,6 +758,19 @@ public sealed class ArchiveFolderProcessWiringTests
             first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
             replay.StatusCode.ShouldBe(HttpStatusCode.Accepted);
             host.OrganizationRepository.EventsAppended.ShouldBe(1);
+
+            // The shared gateway double now forwards the /process result payload, which is what makes
+            // `idempotentReplay` observable through this harness at all. That flag is built by a
+            // different payload writer than the folder path -- `OrganizationAcceptedNoOp`'s
+            // `AlreadyApplied` branch -- so without these two assertions that branch could be inverted
+            // with every test in the repository still green, and an existing caller of the double would
+            // silently report a replay as a first-time accept.
+            using JsonDocument firstDocument = JsonDocument.Parse(
+                await first.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            using JsonDocument replayDocument = JsonDocument.Parse(
+                await replay.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            firstDocument.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
+            replayDocument.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
         }
         finally
         {
@@ -725,7 +951,100 @@ public sealed class ArchiveFolderProcessWiringTests
         return "fld-" + Convert.ToHexString(hash)[..40].ToLowerInvariant();
     }
 
-    private static async Task<TestHost> StartHostAsync()
+    private static void AssertMetadataOnlySafeDenial(JsonElement root)
+    {
+        root.GetProperty("category").GetString().ShouldBe("tenant_access_denied");
+        root.GetProperty("code").GetString().ShouldBe("denied_safe");
+        root.GetProperty("retryable").GetBoolean().ShouldBeFalse();
+        root.GetProperty("clientAction").GetString().ShouldBe("no_action");
+        root.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("metadata_only");
+
+        // Metadata-only is only operable if the denial stays correlatable. Pinning the exact
+        // correlation id also proves the two scans below run against a populated body rather than
+        // passing vacuously over an empty or truncated one.
+        root.GetProperty("correlationId").GetString().ShouldBe("correlation-archive-key-a");
+        HasScopedMetadataProperty(root).ShouldBeFalse(
+            "safe denials must not disclose tenant, organization, folder, policy, or existence fields");
+
+        // A name-only scan cannot see the likeliest leak vector: a scoped identifier interpolated into
+        // a free-text `message`, `title`, `detail`, or `type` value. Scan the values too.
+        FindDisclosedValue(root).ShouldBeNull(
+            "safe denials must not disclose seeded tenant, organization, folder, or policy-version values");
+    }
+
+    private static string? FindDisclosedValue(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (JsonProperty property in element.EnumerateObject())
+                {
+                    string? disclosed = FindDisclosedValue(property.Value);
+                    if (disclosed is not null)
+                    {
+                        return disclosed;
+                    }
+                }
+
+                return null;
+
+            case JsonValueKind.Array:
+                foreach (JsonElement item in element.EnumerateArray())
+                {
+                    string? disclosed = FindDisclosedValue(item);
+                    if (disclosed is not null)
+                    {
+                        return disclosed;
+                    }
+                }
+
+                return null;
+
+            case JsonValueKind.String:
+                string value = element.GetString() ?? string.Empty;
+                return ForbiddenDenialDisclosures
+                    .FirstOrDefault(forbidden => value.Contains(forbidden, StringComparison.OrdinalIgnoreCase));
+
+            default:
+                return null;
+        }
+    }
+
+    private static bool HasScopedMetadataProperty(JsonElement element)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            foreach (JsonProperty property in element.EnumerateObject())
+            {
+                if (property.Name.Contains("tenant", StringComparison.OrdinalIgnoreCase)
+                    || property.Name.Contains("organization", StringComparison.OrdinalIgnoreCase)
+                    || property.Name.Contains("folder", StringComparison.OrdinalIgnoreCase)
+                    || property.Name.Contains("policy", StringComparison.OrdinalIgnoreCase)
+                    || property.Name.Contains("exist", StringComparison.OrdinalIgnoreCase)
+                    || HasScopedMetadataProperty(property.Value))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (JsonElement item in element.EnumerateArray())
+            {
+                if (HasScopedMetadataProperty(item))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static async Task<TestHost> StartHostAsync(
+        IFolderArchivePolicyEvidenceProvider? archivePolicyEvidenceProvider = null,
+        Func<string, string>? envelopeTenantTransform = null,
+        ScopedLayeredFolderAuthorizationResultAccessor? authorizationAccessor = null)
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
@@ -735,7 +1054,10 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryFolderRepository repository = new(lifecycleReadModel, timeProvider: timeProvider);
         InMemoryOrganizationProviderBindingRepository organizationRepository = new();
         Uri? hostUri = null;
-        InProcessRejectionPropagatingGatewayClient gateway = new(() => new HttpClient { BaseAddress = hostUri! }, () => context.PrincipalId);
+        InProcessRejectionPropagatingGatewayClient gateway = new(
+            () => new HttpClient { BaseAddress = hostUri! },
+            () => context.PrincipalId,
+            envelopeTenantTransform);
 
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -762,6 +1084,26 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton<IEffectivePermissionsReadModel>(permissions);
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
+        if (authorizationAccessor is not null)
+        {
+            // Production registers this accessor TryAddScoped. The test override is deliberately a
+            // singleton so the caller can observe one instance across requests: that is what makes
+            // `Current is null` after an unwind, and a successful second BeginScope on the retry leg,
+            // observable at all. It also means these assertions prove EndScope ran -- not the
+            // per-request isolation that production gets from the scoped lifetime.
+            builder.Services.RemoveAll<ILayeredFolderAuthorizationResultAccessor>();
+            builder.Services.AddSingleton<ILayeredFolderAuthorizationResultAccessor>(authorizationAccessor);
+        }
+
+        if (archivePolicyEvidenceProvider is not null)
+        {
+            // Register against the interface explicitly: an inferred service type would silently stop
+            // replacing the baseline allow-everything provider if this parameter were ever narrowed to
+            // a concrete fake, and the denial rows would then pass for the wrong reason.
+            builder.Services.RemoveAll<IFolderArchivePolicyEvidenceProvider>();
+            builder.Services.AddSingleton<IFolderArchivePolicyEvidenceProvider>(archivePolicyEvidenceProvider);
+        }
+
         builder.Services.RemoveAll<IRepositoryCreationReadinessValidator>();
         builder.Services.AddSingleton<IRepositoryCreationReadinessValidator>(new ReadyRepositoryCreationReadinessValidator());
         builder.Services.RemoveAll<IUtcClock>();
@@ -770,10 +1112,44 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton(timeProvider);
 
         WebApplication app = builder.Build();
+        if (archivePolicyEvidenceProvider is CancelMidFlightFolderArchivePolicyEvidenceProvider cancellationProvider)
+        {
+            app.Use(async (context, next) =>
+            {
+                bool isProcessRequest = context.Request.Path
+                    .StartsWithSegments("/process", StringComparison.OrdinalIgnoreCase);
+                try
+                {
+                    await next(context).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (isProcessRequest)
+                {
+                    cancellationProvider.ObserveServerCancellation();
+                    throw;
+                }
+                finally
+                {
+                    if (isProcessRequest)
+                    {
+                        cancellationProvider.CompleteRequest();
+                    }
+                }
+            });
+        }
+
         app.MapFoldersServerEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
         hostUri = new Uri(app.Urls.First());
-        return new TestHost(app, new HttpClient { BaseAddress = hostUri }, gateway, context, repository, tenantStore, permissions, lifecycleReadModel, organizationRepository);
+        return new TestHost(
+            app,
+            new HttpClient { BaseAddress = hostUri },
+            gateway,
+            context,
+            repository,
+            tenantStore,
+            permissions,
+            lifecycleReadModel,
+            organizationRepository);
     }
 
     private static HttpRequestMessage CreateValidArchiveRequest(string folderId, string key, string reasonCode)

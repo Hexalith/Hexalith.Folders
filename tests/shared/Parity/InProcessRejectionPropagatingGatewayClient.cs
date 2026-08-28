@@ -37,10 +37,19 @@ namespace Hexalith.Folders.Parity.Testing;
 /// <c>TestServer</c> client or a loopback-Kestrel client); the <c>principalIdAccessor</c> is read per call so
 /// a host that mutates the acting principal mid-test is honored. The <c>FolderResultCode</c> → HTTP-status
 /// table mirrors the one proven green in <c>ArchiveFolderProcessWiringTests</c>.</para>
+/// <para>Successful round-trips propagate the <c>/process</c> result payload into the returned
+/// <see cref="SubmitCommandResponse"/> rather than discarding it, so endpoints that derive caller-visible
+/// fields from it (e.g. <c>idempotentReplay</c>) behave as they do over the production gateway. Two known
+/// fidelity gaps remain: the returned <c>MessageId</c> echoes the submitted request instead of the wire
+/// result, and the production client's oversized-payload guard is not reproduced.</para>
+/// <para><c>envelopeTenantTransform</c> is an opt-in seam for tenant-smuggling rows: it rewrites only the
+/// <c>/process</c> envelope tenant, leaving the authenticated REST tenant intact. It defaults to null, so
+/// existing callers observe unchanged envelope behavior.</para>
 /// </remarks>
 internal sealed class InProcessRejectionPropagatingGatewayClient(
     Func<HttpClient> clientFactory,
-    Func<string?> principalIdAccessor) : IEventStoreGatewayClient
+    Func<string?> principalIdAccessor,
+    Func<string, string>? envelopeTenantTransform = null) : IEventStoreGatewayClient
 {
     /// <summary>Gets the number of <c>/process</c> round-trips performed (one per submitted command).</summary>
     public int ProcessCalls { get; private set; }
@@ -53,11 +62,12 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
         SubmitCommandRequest request,
         CancellationToken cancellationToken = default)
     {
+        string envelopeTenant = envelopeTenantTransform?.Invoke(request.Tenant) ?? request.Tenant;
         ProcessCalls++;
         using HttpClient client = clientFactory();
         CommandEnvelope envelope = new(
             request.MessageId,
-            request.Tenant,
+            envelopeTenant,
             request.Domain,
             request.AggregateId,
             request.CommandType,
@@ -85,7 +95,17 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
             throw ToGatewayException(result, request.CorrelationId ?? request.MessageId);
         }
 
-        return new SubmitCommandResponse(request.CorrelationId ?? request.MessageId);
+        JsonElement? resultPayload = null;
+        if (!string.IsNullOrWhiteSpace(result.ResultPayload))
+        {
+            using JsonDocument document = JsonDocument.Parse(result.ResultPayload);
+            resultPayload = document.RootElement.Clone();
+        }
+
+        return new SubmitCommandResponse(
+            request.CorrelationId ?? request.MessageId,
+            resultPayload,
+            request.MessageId);
     }
 
     /// <inheritdoc/>
