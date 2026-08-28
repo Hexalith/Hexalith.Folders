@@ -152,6 +152,15 @@
     "label": "Add action grants",
     "resolution": ""
   },
+  "DW-59": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Define provider-aware canonicalization at the authentication boundary, document it, and add equality and projection tests.",
+    "key": "1",
+    "label": "Normalize per identity provider",
+    "resolution": ""
+  },
   "DW-65": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
