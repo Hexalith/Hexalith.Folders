@@ -89,6 +89,15 @@
     "label": "Register logging",
     "resolution": ""
   },
+  "DW-302": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Reject archived and disabled repositories before branch observation, map a bounded outcome, and add no-write binding tests.",
+    "key": "1",
+    "label": "Reject inactive repositories",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
