@@ -2018,7 +2018,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: HasCompetingClientTenant
 reason: P4: No foreign-tenant-smuggling integration row exercising `HasCompetingClientTenant`/`TenantMismatch` end-to-end. Already deferred round 3 with documented defense-in-depth rationale (gate-unit coverage + layered-auth tenant comparison at the request handler).
-status: open
+status: done 2026-08-28
+resolution: already resolved: Commit 1dcd53d; tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs:343 now exercises authenticated-tenant versus envelope-tenant mismatch through REST, gateway, and /process with zero append.
 
 ### DW-272: W1: `CancellationToken` cannot propagate into `IDomainProcessor.ProcessAsync`
 
@@ -2063,7 +2064,8 @@ resolution: already resolved: src/Hexalith.Folders/Aggregates/Folder/FolderArchi
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8b-wire-folder-domain-processor (2026-05-31)"), 2026-08-24
 location: validation.IdempotencyFingerprint!
 reason: W7: `FolderArchiveTenantGate` calls `BindArchiveDecisionFingerprint` before `EvaluatePolicy`; `validation.IdempotencyFingerprint!` null-forgiving dereference would NRE if a custom validator returns `IsAccepted=true` with null fingerprint. Pre-existing; baseline policy provider always supplies valid fingerprint.
-status: open
+status: done 2026-08-28
+resolution: already resolved: src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs:65 validates the command, ACL, and policy before binding the archive decision fingerprint, and the gate has no custom-validator seam.
 
 ### DW-278: W8: `FolderAccessTenantGate.cs:110` null-forgiving `validation.IdempotencyFingerprint!` after `IsAccepted` guard
 
