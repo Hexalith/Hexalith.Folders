@@ -26,6 +26,15 @@
     "label": "Bound audit metadata",
     "resolution": ""
   },
+  "DW-179": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add subtype category and code constraints, update examples and gates, and regenerate SDK, CLI, and MCP consumers.",
+    "key": "1",
+    "label": "Specialize error schemas",
+    "resolution": ""
+  },
   "DW-256": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

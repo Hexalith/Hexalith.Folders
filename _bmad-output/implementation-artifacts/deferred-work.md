@@ -1323,6 +1323,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-c
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:292-307
 reason: Error subtypes (`SafeAuthorizationDenial`, `ValidationFailure`, `IdempotencyConflict`, `ReconciliationRequired`) `allOf` `ProblemDetails` with no own discriminating properties (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:292-307`). Downstream stories 1.7-1.11 must specialize each with operation-relevant required fields.
 status: open
+decision: 2026-08-28 Specialize error schemas — Add subtype category and code constraints, update examples and gates, and regenerate SDK, CLI, and MCP consumers.
 
 ### DW-180: `OperatorDispositionLabel` and `SensitiveMetadataTier` schemas defined but never referenced in this story
 
