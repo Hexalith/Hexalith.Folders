@@ -71,6 +71,15 @@
     "label": "Create prerequisite story",
     "resolution": ""
   },
+  "DW-297": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Introduce an additive replay outcome event with bounded prior evidence and update projections, audit mapping, serialization, and replay tests.",
+    "key": "1",
+    "label": "Add replay outcome event",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

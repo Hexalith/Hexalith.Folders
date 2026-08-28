@@ -2202,6 +2202,7 @@ location: src/Hexalith.Folders.Workers/RepositoryProvisioning/RepositoryProvisio
 source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: Both outcome mappers branch on `IsSuccess` only and discard `EquivalentExisting`, so an `existing_equivalent` replay appends a plain `RepositoryBound`. Nothing durable records that no provider work happened, which weakens later reconciliation and audit evidence. Pre-existing shape, but Story 3.10 makes replay reachable through the provider gate.
 status: open
+decision: 2026-08-28 Add replay outcome event — Introduce an additive replay outcome event with bounded prior evidence and update projections, audit mapping, serialization, and replay tests.
 
 ### DW-298: Four Story 3.11 test failures were unmasked by the Story 3.10 compile repair and have no owner.
 
