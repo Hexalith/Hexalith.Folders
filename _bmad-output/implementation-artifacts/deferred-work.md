@@ -1247,7 +1247,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-2-establish-root-configuration-and-submodule-policy (2026-05-12)"), 2026-08-24
 location: AGENTS.md
 reason: Submodule policy text is triplicated across `AGENTS.md`, `CLAUDE.md`, `README.md`. Drift risk but intentional per spec for discoverability. Revisit when an automated single-source-of-truth pattern (e.g., generated includes) becomes available.
-status: open
+status: done 2026-08-28
+resolution: closed by human decision: Keep discoverable copies protected by byte-identity and policy tests.
+decision: 2026-08-28 Close as intentional — Keep discoverable copies protected by byte-identity and policy tests.
 
 ### DW-170: `nuget.config` uses `<clear/>` then only nuget.org — destructive to corporate-mirror users but matches AC2 "no private feed assumptions". Revisit if a private feed becomes legitimate later.
 
