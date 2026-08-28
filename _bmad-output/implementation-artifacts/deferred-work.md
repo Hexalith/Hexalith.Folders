@@ -1713,7 +1713,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:215-221
 reason: `oneOf` traversal without explicit OpenAPI `discriminator` [`src/Hexalith.Folders.Client/Generation/Program.cs:215-221`] — `FileMutationRequest` is the only schema needing this today and is handled via `SpecialFields.Registry` projection. Story 1.13 owns generic discriminator-driven `oneOf` resolution.
-status: open
+status: done 2026-08-28
+resolution: closed by human decision: Document the two-axis const union as the reason for retaining SpecialFields until another hash-relevant union requires generalization.
+decision: 2026-08-28 Keep special case — Document the two-axis const union as the reason for retaining SpecialFields until another hash-relevant union requires generalization.
 
 ### DW-229: NFC/NFD/NFKC normalization not implemented in hasher
 
