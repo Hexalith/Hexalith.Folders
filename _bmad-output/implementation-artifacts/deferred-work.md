@@ -1256,7 +1256,9 @@ decision: 2026-08-28 Close as intentional — Keep discoverable copies protected
 origin: migrated from legacy ledger ("Deferred from: code review of 1-2-establish-root-configuration-and-submodule-policy (2026-05-12)"), 2026-08-24
 location: nuget.config
 reason: `nuget.config` uses `<clear/>` then only nuget.org — destructive to corporate-mirror users but matches AC2 "no private feed assumptions". Revisit if a private feed becomes legitimate later.
-status: open
+status: done 2026-08-28
+resolution: closed by human decision: Retain deterministic nuget.org-only source mapping until a real private-feed requirement is approved.
+decision: 2026-08-28 Keep public-only policy — Retain deterministic nuget.org-only source mapping until a real private-feed requirement is approved.
 
 ### DW-171: `Deterministic=true` paired with `ContinuousIntegrationBuild` gated to `'$(CI)' == 'true'` means local PDBs still carry absolute paths
 
