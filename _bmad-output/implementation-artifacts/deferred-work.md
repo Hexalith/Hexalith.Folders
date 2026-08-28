@@ -1714,6 +1714,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-ns
 location: src/Hexalith.Folders.Client/Generation/Program.cs:215-221
 reason: `oneOf` traversal without explicit OpenAPI `discriminator` [`src/Hexalith.Folders.Client/Generation/Program.cs:215-221`] — `FileMutationRequest` is the only schema needing this today and is handled via `SpecialFields.Registry` projection. Story 1.13 owns generic discriminator-driven `oneOf` resolution.
 status: done 2026-08-28
+decision: 2026-08-28 Keep special case — Document the two-axis const union as the reason for retaining SpecialFields until another hash-relevant union requires generalization.
 resolution: closed by human decision: Document the two-axis const union as the reason for retaining SpecialFields until another hash-relevant union requires generalization.
 decision: 2026-08-28 Keep special case — Document the two-axis const union as the reason for retaining SpecialFields until another hash-relevant union requires generalization.
 
@@ -1723,6 +1724,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-ns
 location: src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs
 reason: NFC/NFD/NFKC normalization not implemented in hasher [`src/Hexalith.Folders.Client/Idempotency/HexalithIdempotencyHasher.cs`] — AC 6 reads "Unicode normalization where declared" and no current spine field declares normalization-eligibility. Revisit when a field declares it.
 status: open
+decision: 2026-08-28 Reject non-NFC — Validate explicitly NFC-declared path metadata before hashing and fail closed on decomposed input, preserving hashes for already-valid requests.
 decision: 2026-08-28 Reject non-NFC — Validate explicitly NFC-declared path metadata before hashing and fail closed on decomposed input, preserving hashes for already-valid requests.
 
 ### DW-230: Tempdir cleanup catches that swallow `IOException`/`UnauthorizedAccessException`
