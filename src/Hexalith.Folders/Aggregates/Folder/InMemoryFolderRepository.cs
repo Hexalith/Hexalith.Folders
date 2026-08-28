@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 using Hexalith.Folders.Queries.Folders;
@@ -9,11 +9,28 @@ using Hexalith.Folders.Queries.Folders;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
+/// <summary>
+/// In-memory <see cref="IFolderRepository"/> for dev/test hosts. Production hosts MUST register an
+/// EventStore-backed implementation instead: this store keeps folder state in process memory and does
+/// not survive a restart.
+/// </summary>
+/// <remarks>
+/// Synchronization invariant: <c>_gate</c> is the single serialization primitive for every piece of
+/// mutable state this repository owns -- <c>_states</c>, <c>_idempotencyFingerprints</c>,
+/// <c>_lastObservedAt</c> and <c>_eventsAppended</c>. The three maps are deliberately plain
+/// <see cref="Dictionary{TKey, TValue}"/> instances rather than concurrent collections, and the counter is
+/// a plain field rather than an interlocked one, so an un-gated access is a defect rather than a second,
+/// redundant synchronization model. Members whose name ends in
+/// <c>UnderGate</c> require the caller to already hold <c>_gate</c> and assert it in debug builds.
+/// Because the gate is reentrant, code invoked from inside the critical section (event enumerators,
+/// <c>Apply</c>, read-model snapshot writes) must not call back into this repository: it would observe
+/// half-published state instead of blocking.
+/// </remarks>
 public sealed class InMemoryFolderRepository : IFolderRepository
 {
-    private readonly ConcurrentDictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, FolderState> _states = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, DateTimeOffset> _lastObservedAt = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, string> _idempotencyFingerprints = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, FolderState> _states = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, DateTimeOffset> _lastObservedAt = new(StringComparer.Ordinal);
     private readonly object _gate = new();
     private readonly InMemoryBranchRefPolicyReadModel? _branchRefPolicyReadModel;
     private readonly InMemoryFolderLifecycleStatusReadModel? _lifecycleReadModel;
@@ -22,6 +39,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     private readonly InMemoryWorkspaceCleanupStatusReadModel? _workspaceCleanupStatusReadModel;
     private readonly InMemoryTaskStatusReadModel? _taskStatusReadModel;
     private readonly TimeProvider _timeProvider;
+    private int _eventsAppended;
 
     public InMemoryFolderRepository(
         IFolderLifecycleStatusReadModel? lifecycleReadModel = null,
@@ -88,7 +106,16 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
     // Internal test affordance: read-only counter visible to test assemblies via
     // InternalsVisibleTo. Production code cannot see this property.
-    internal int EventsAppended { get; private set; }
+    internal int EventsAppended
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _eventsAppended;
+            }
+        }
+    }
 
     public FolderStreamName CreateStreamName(string managedTenantId, string folderId)
         => FolderStreamName.Create(managedTenantId, folderId);
@@ -97,9 +124,10 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     {
         ArgumentNullException.ThrowIfNull(streamName);
 
-        return _states.TryGetValue(streamName.Value, out FolderState? state)
-            ? state
-            : FolderState.Empty;
+        lock (_gate)
+        {
+            return LoadUnderGate(streamName);
+        }
     }
 
     public FolderAppendOutcome AppendIfFingerprintAbsent(
@@ -135,11 +163,11 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                     : FolderAppendOutcome.FingerprintConflict;
             }
 
-            FolderState current = Load(streamName);
+            FolderState current = LoadUnderGate(streamName);
             FolderState next = current.Apply(events, streamName);
             _states[streamName.Value] = next;
             _idempotencyFingerprints[ledgerKey] = fingerprint;
-            EventsAppended += events.Count;
+            _eventsAppended += events.Count;
             SaveLifecycleSnapshot(next, observedAt);
             SaveBranchRefPolicySnapshot(next, observedAt);
             SaveWorkspaceLockStatusSnapshot(next, observedAt);
@@ -158,9 +186,12 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         ArgumentNullException.ThrowIfNull(streamName);
         ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
 
-        return _idempotencyFingerprints.TryGetValue(LedgerKey(streamName, idempotencyKey), out fingerprint)
-            ? FolderIdempotencyLookupResult.Found
-            : FolderIdempotencyLookupResult.Missing;
+        lock (_gate)
+        {
+            return _idempotencyFingerprints.TryGetValue(LedgerKey(streamName, idempotencyKey), out fingerprint)
+                ? FolderIdempotencyLookupResult.Found
+                : FolderIdempotencyLookupResult.Missing;
+        }
     }
 
     public void Seed(FolderStreamName streamName, IReadOnlyList<IFolderEvent> events)
@@ -223,10 +254,41 @@ public sealed class InMemoryFolderRepository : IFolderRepository
     // Internal test affordance — production code cannot see this method (InternalsVisibleTo
     // exposes it only to the test assemblies). Resets the appended-event counter so a test
     // fixture can assert deltas across phases without splitting state between instances.
-    internal void ResetAppendCounters() => EventsAppended = 0;
+    internal void ResetAppendCounters()
+    {
+        lock (_gate)
+        {
+            _eventsAppended = 0;
+        }
+    }
 
     private static string LedgerKey(FolderStreamName streamName, string idempotencyKey)
         => $"{streamName.Value}|{idempotencyKey}";
+
+    private FolderState LoadUnderGate(FolderStreamName streamName)
+    {
+        Debug.Assert(Monitor.IsEntered(_gate), "LoadUnderGate reads _states and requires the repository gate.");
+
+        return _states.TryGetValue(streamName.Value, out FolderState? state)
+            ? state
+            : FolderState.Empty;
+    }
+
+    // Clamps a candidate observation time to the per-folder monotonic maximum and returns the value the
+    // snapshot should publish, so a rewound clock never moves a projection's freshness watermark back.
+    private DateTimeOffset ClampObservedAtUnderGate(string folderKey, DateTimeOffset candidate)
+    {
+        Debug.Assert(Monitor.IsEntered(_gate), "ClampObservedAtUnderGate mutates _lastObservedAt and requires the repository gate.");
+
+        if (_lastObservedAt.TryGetValue(folderKey, out DateTimeOffset previous)
+            && previous > candidate)
+        {
+            return previous;
+        }
+
+        _lastObservedAt[folderKey] = candidate;
+        return candidate;
+    }
 
     private void SaveLifecycleSnapshot(FolderState state, DateTimeOffset observedAt)
     {
@@ -249,10 +311,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         // backwards across concurrent writers. The monotonic guarantee is per-stream, not
         // global; that matches the freshness contract consumers rely on.
         string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
-        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
-            folderKey,
-            rawObservedAt,
-            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
 
         string? evidencePrincipalId = state.LifecycleState == FolderLifecycleState.Archived
             ? state.ArchiveActorPrincipalId
@@ -298,10 +357,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
         BranchRefPolicyMetadata policy = state.BranchRefPolicy;
         string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = policy.ConfiguredAt > observedAt ? policy.ConfiguredAt : observedAt;
-        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
-            folderKey,
-            rawObservedAt,
-            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
 
         _branchRefPolicyReadModel.Save(new BranchRefPolicyReadModelSnapshot(
             state.ManagedTenantId,
@@ -335,10 +391,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
-            folderKey,
-            rawObservedAt,
-            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
 
         _workspaceLockStatusReadModel.Save(new WorkspaceLockStatusReadModelSnapshot(
             state.ManagedTenantId,
@@ -378,10 +431,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
-            folderKey,
-            rawObservedAt,
-            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
 
         string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
         FolderLifecycleFreshness freshness = new(
@@ -447,10 +497,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
-            folderKey,
-            rawObservedAt,
-            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
 
         string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
         (string cleanupStatus, string reasonCode, WorkspaceStatusRetryEligibility retryEligibility) = CleanupVisibilityFor(currentState);
@@ -496,10 +543,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         string folderKey = LifecycleKey(state.ManagedTenantId, state.FolderId);
         DateTimeOffset rawObservedAt = state.WorkspaceLifecycleUpdatedAt ?? observedAt;
-        DateTimeOffset clamped = _lastObservedAt.AddOrUpdate(
-            folderKey,
-            rawObservedAt,
-            (_, previous) => previous > rawObservedAt ? previous : rawObservedAt);
+        DateTimeOffset clamped = ClampObservedAtUnderGate(folderKey, rawObservedAt);
 
         string currentState = FolderStateTransitions.ToWireName(state.WorkspaceLifecycleState.Value);
         string operationId = string.IsNullOrWhiteSpace(state.WorkspaceOperationId)

@@ -131,25 +131,48 @@ public sealed class BranchRefPolicyReadModelTests
                 PayloadTenantId: null),
             Now);
 
+        // Both appends must land: a snapshot is only re-published on an accepted append, so an outcome of
+        // FingerprintMatched or FingerprintConflict would leave the assertions below reading the previous
+        // snapshot and passing without ever exercising the clamp.
         repository.AppendIfFingerprintAbsent(
             streamName,
             "idempotency-policy-a",
             configured.Events.ShouldHaveSingleItem().ShouldBeOfType<BranchRefPolicyConfigured>().IdempotencyFingerprint,
-            configured.Events);
+            configured.Events)
+            .ShouldBe(FolderAppendOutcome.Appended);
 
-        BranchRefPolicyReadModelResult result = await readModel.GetAsync(
-            new BranchRefPolicyReadModelRequest(
-                "tenant-a",
-                "folder-a",
-                "principal-a",
-                "read_branch_ref_policy",
-                "task-a",
-                "correlation-a",
-                AuthorizationWatermark: null,
-                "eventually_consistent"),
+        BranchRefPolicyReadModelRequest request = new(
+            "tenant-a",
+            "folder-a",
+            "principal-a",
+            "read_branch_ref_policy",
+            "task-a",
+            "correlation-a",
+            AuthorizationWatermark: null,
+            "eventually_consistent");
+        BranchRefPolicyReadModelResult laterResult = await readModel.GetAsync(
+            request,
             TestContext.Current.CancellationToken);
+        laterResult.Snapshot.ShouldNotBeNull().Freshness.ObservedAt.ShouldBe(Now.AddMinutes(2));
 
-        result.Snapshot.ShouldNotBeNull().Freshness.ObservedAt.ShouldBe(Now.AddMinutes(2));
+        timeProvider.UtcNow = Now.AddMinutes(-2);
+        FolderResult archived = FolderAggregate.Handle(
+            repository.Load(streamName),
+            FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-monotonic-a"),
+            Now.AddMinutes(3));
+        FolderArchived archivedEvent = archived.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderArchived>();
+
+        repository.AppendIfFingerprintAbsent(
+            streamName,
+            archivedEvent.IdempotencyKey,
+            archivedEvent.IdempotencyFingerprint,
+            archived.Events)
+            .ShouldBe(FolderAppendOutcome.Appended);
+
+        BranchRefPolicyReadModelResult regressedClockResult = await readModel.GetAsync(
+            request,
+            TestContext.Current.CancellationToken);
+        regressedClockResult.Snapshot.ShouldNotBeNull().Freshness.ObservedAt.ShouldBe(Now.AddMinutes(2));
     }
 
     private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
