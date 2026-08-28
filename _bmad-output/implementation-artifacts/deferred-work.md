@@ -83,14 +83,18 @@ resolution: already resolved: src/Hexalith.Folders.Server/FolderCommandRejected.
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable
 reason: Add gateway 5xx Theory cases for 503/505/507/599 in `ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable`. Deferred — the `>= 500 and < 600` catch-all production arm covers the behavior; this is regression-trap coverage.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-archive-endpoint-hardening
+resolution-undo: 6f917a24a4b79a2f7714e8b3186622f47192753a30463ad014765f32d9daddf9 2026-08-28 7374617475733a206f70656e
 
 ### DW-13: Add a `GatewayCorrelationRegex` header-injection Theory in `ArchiveFolderEndpointTests` proving CR/LF / oversized / control-character bytes are rejected before being reflected into `X-Correlation-Id`
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: GatewayCorrelationRegex
 reason: Add a `GatewayCorrelationRegex` header-injection Theory in `ArchiveFolderEndpointTests` proving CR/LF / oversized / control-character bytes are rejected before being reflected into `X-Correlation-Id`. Deferred.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-archive-endpoint-hardening
+resolution-undo: 6f917a24a4b79a2f7714e8b3186622f47192753a30463ad014765f32d9daddf9 2026-08-28 7374617475733a206f70656e
 
 ### DW-14: Add a cancel-mid-flight integration test to `ArchiveFolderProcessWiringTests` that exercises the in-processor cancellation/cleanup path (current `CancelledRequestShouldStopBeforeGatewayRoundTrip`…
 

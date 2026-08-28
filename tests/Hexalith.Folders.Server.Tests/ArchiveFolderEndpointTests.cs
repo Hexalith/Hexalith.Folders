@@ -427,7 +427,11 @@ public sealed class ArchiveFolderEndpointTests
     [Theory]
     [InlineData(500)]
     [InlineData(502)]
+    [InlineData(503)]
     [InlineData(504)]
+    [InlineData(505)]
+    [InlineData(507)]
+    [InlineData(599)]
     public async Task ArchiveFolderEndpointShouldMapGatewayServerErrorsToSafeUnavailable(int gatewayStatus)
     {
         RecordingEventStoreGatewayClient gateway = new()
@@ -456,7 +460,62 @@ public sealed class ArchiveFolderEndpointTests
             document.RootElement.GetProperty("category").GetString().ShouldBe("read_model_unavailable");
             document.RootElement.GetProperty("code").GetString().ShouldBe("evidence_unavailable");
             document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeTrue();
+            document.RootElement.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("metadata_only");
             json.ShouldNotContain("internal gateway exception text");
+            gateway.Requests.Count.ShouldBe(1);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    public static TheoryData<string> HostileGatewayCorrelationIds()
+        => new()
+        {
+            "correlation gateway",
+            new string('a', 129),
+            "correlation\rheader",
+            "correlation\nheader",
+            "correlation\r\nheader",
+            "correlation\u0001header",
+        };
+
+    [Theory]
+    [MemberData(nameof(HostileGatewayCorrelationIds))]
+    public async Task ArchiveFolderEndpointShouldDiscardHostileGatewayCorrelationId(string gatewayCorrelationId)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Response = new SubmitCommandResponse(gatewayCorrelationId),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            string responseCorrelationId = response.Headers.GetValues("X-Correlation-Id").Single();
+            string.Equals(responseCorrelationId, "correlation-a", StringComparison.Ordinal).ShouldBeTrue();
+
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            string? bodyCorrelationId = document.RootElement.GetProperty("correlationId").GetString();
+            string.Equals(bodyCorrelationId, "correlation-a", StringComparison.Ordinal).ShouldBeTrue();
+            document.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
+            document.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
+
+            response.Headers
+                .Concat(response.Content.Headers)
+                .SelectMany(header => header.Value)
+                .Any(value => value.Contains(gatewayCorrelationId, StringComparison.Ordinal))
+                .ShouldBeFalse();
+            json.Contains(JsonEncodedText.Encode(gatewayCorrelationId).ToString(), StringComparison.Ordinal).ShouldBeFalse();
+            gateway.Requests.Count.ShouldBe(1);
         }
         finally
         {
