@@ -176,6 +176,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-
 location: FolderListProjection.Apply
 reason: `FolderListProjection.Apply` throw-on-missing-create tears down multi-tenant rebuild while `FolderStateApply` is per-stream — asymmetric blast radius. Deferred — revisit when projection-rebuild tooling and replay diagnostics are introduced (Epic 6/7).
 status: done 2026-08-28
+decision: 2026-08-28 Keep fail-fast rebuild — Treat missing-create ordering as repository corruption that must stop the rebuild and require operator intervention.
 resolution: closed by human decision: Treat missing-create ordering as repository corruption that must stop the rebuild and require operator intervention.
 decision: 2026-08-28 Keep fail-fast rebuild — Treat missing-create ordering as repository corruption that must stop the rebuild and require operator intervention.
 
@@ -1064,6 +1065,7 @@ location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: Opaqu
 reason: W4: `OpaqueIdentifier` does not reject the new namespace prefixes `branchref_`, `digest_`, `provref_`, `authorref_`. Cross-namespace collision is theoretical; global hardening better handled with the wider opaque-identifier vocabulary review. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: OpaqueIdentifier`)
 status: open
 decision: 2026-08-28 Reserve typed prefixes — Exclude typed prefixes from OpaqueIdentifier, migrate legitimate sites to namespace schemas, regenerate clients, and add compatibility tests.
+decision: 2026-08-28 Reserve typed prefixes — Exclude typed prefixes from OpaqueIdentifier, migrate legitimate sites to namespace schemas, regenerate clients, and add compatibility tests.
 
 ### DW-145: W5: Wire `OperatorDispositionLabel` (defined at yaml:5329) into the relevant status schemas as part of Story 6.3
 
@@ -1168,6 +1170,7 @@ location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: Works
 reason: `WorkspaceTransitionEvidence.auditMetadata.additionalProperties: oneOf string|boolean` permits unbounded keys; a non-conformant server could flood audit metadata. Schema-robustness enhancement; not Story 1.8 scope. (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: WorkspaceTransitionEvidence`)
 status: open
 decision: 2026-08-28 Bound audit metadata — Add an approved maxProperties bound, update examples and tests, regenerate clients, and enforce the limit in server responses.
+decision: 2026-08-28 Bound audit metadata — Add an approved maxProperties bound, update examples and tests, regenerate clients, and enforce the limit in server responses.
 
 ### DW-159: Read-consistency token form drift: story prose uses hyphenated `snapshot-per-task` / `read-your-writes` / `eventually-consistent`, OpenAPI `ReadConsistencyClass` enum uses underscore form
 
@@ -1248,6 +1251,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-2-establis
 location: AGENTS.md
 reason: Submodule policy text is triplicated across `AGENTS.md`, `CLAUDE.md`, `README.md`. Drift risk but intentional per spec for discoverability. Revisit when an automated single-source-of-truth pattern (e.g., generated includes) becomes available.
 status: done 2026-08-28
+decision: 2026-08-28 Close as intentional — Keep discoverable copies protected by byte-identity and policy tests.
 resolution: closed by human decision: Keep discoverable copies protected by byte-identity and policy tests.
 decision: 2026-08-28 Close as intentional — Keep discoverable copies protected by byte-identity and policy tests.
 
@@ -1257,6 +1261,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-2-establis
 location: nuget.config
 reason: `nuget.config` uses `<clear/>` then only nuget.org — destructive to corporate-mirror users but matches AC2 "no private feed assumptions". Revisit if a private feed becomes legitimate later.
 status: done 2026-08-28
+decision: 2026-08-28 Keep public-only policy — Retain deterministic nuget.org-only source mapping until a real private-feed requirement is approved.
 resolution: closed by human decision: Retain deterministic nuget.org-only source mapping until a real private-feed requirement is approved.
 decision: 2026-08-28 Keep public-only policy — Retain deterministic nuget.org-only source mapping until a real private-feed requirement is approved.
 
@@ -1323,6 +1328,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-6-author-c
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:292-307
 reason: Error subtypes (`SafeAuthorizationDenial`, `ValidationFailure`, `IdempotencyConflict`, `ReconciliationRequired`) `allOf` `ProblemDetails` with no own discriminating properties (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:292-307`). Downstream stories 1.7-1.11 must specialize each with operation-relevant required fields.
 status: open
+decision: 2026-08-28 Specialize error schemas — Add subtype category and code constraints, update examples and gates, and regenerate SDK, CLI, and MCP consumers.
 decision: 2026-08-28 Specialize error schemas — Add subtype category and code constraints, update examples and gates, and regenerate SDK, CLI, and MCP consumers.
 
 ### DW-180: `OperatorDispositionLabel` and `SensitiveMetadataTier` schemas defined but never referenced in this story
@@ -2203,6 +2209,7 @@ source_spec: _bmad-output/implementation-artifacts/spec-3-10-github-repository-p
 reason: Both outcome mappers branch on `IsSuccess` only and discard `EquivalentExisting`, so an `existing_equivalent` replay appends a plain `RepositoryBound`. Nothing durable records that no provider work happened, which weakens later reconciliation and audit evidence. Pre-existing shape, but Story 3.10 makes replay reachable through the provider gate.
 status: open
 decision: 2026-08-28 Add replay outcome event — Introduce an additive replay outcome event with bounded prior evidence and update projections, audit mapping, serialization, and replay tests.
+decision: 2026-08-28 Add replay outcome event — Introduce an additive replay outcome event with bounded prior evidence and update projections, audit mapping, serialization, and replay tests.
 
 ### DW-298: Four Story 3.11 test failures were unmasked by the Story 3.10 compile repair and have no owner.
 
@@ -2250,6 +2257,7 @@ source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provis
 reason: DW-298 diagnosed `ProviderReadinessCompositionResolvesGitHubAndForgejoExactlyOnce` as a test defect and fixed it by adding `services.AddLogging()` to the bare `ValidateOnBuild` container. That is a defensible reading, but it converts a genuine signal — `AddFoldersProviderReadiness()` is not self-contained, because `AddFoldersObservability` registers `FolderTelemetryEmitter(IEnumerable<IFolderAuditObserver>, ILogger<FolderTelemetryEmitter>)` — into a green test by mutating the test rather than the extension. Nothing now asserts what the composition root must supply, and any host calling the extension without logging registered still fails at resolution. Either the extension should call `AddLogging()` itself, or a test should pin the prerequisite explicitly.
 status: open
 decision: 2026-08-28 Register logging — Call AddLogging from readiness or observability composition and restore a bare-container ValidateOnBuild regression test.
+decision: 2026-08-28 Register logging — Call AddLogging from readiness or observability composition and restore a bare-container ValidateOnBuild regression test.
 
 ### DW-302: An archived or disabled GitHub repository binds successfully.
 
@@ -2259,6 +2267,7 @@ source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provis
 reason: `ValidateRepositoryBindingAsync` checks access, canonical identity, permission posture, default branch, selected ref, and protection posture, but never inspects `Repository.Archived` or the disabled flag. A binding to an archived repository validates cleanly and then fails on every subsequent write. AC4 enumerates the checks it requires and does not name archival, so this is a gap in the acceptance criteria rather than a deviation from it — it needs a product decision before it becomes a required check.
 status: open
 decision: 2026-08-28 Reject inactive repositories — Reject archived and disabled repositories before branch observation, map a bounded outcome, and add no-write binding tests.
+decision: 2026-08-28 Reject inactive repositories — Reject archived and disabled repositories before branch observation, map a bounded outcome, and add no-write binding tests.
 
 ### DW-303: No bounded per-request deadline on the GitHub transport.
 
@@ -2267,6 +2276,7 @@ location: src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClientFactory.cs
 source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: `GitHubApiVersionHttpClient.SetRequestTimeout` delegates to the inner client, but the factory never calls it, so no story-owned deadline is established and Octokit's default applies. Combined with Octokit 14's high-level repository/branch methods accepting no `CancellationToken`, a hung GitHub response blocks the calling worker for that default. The `TimeoutDuringMutation` / `TimeoutDuringObservation` conditions were added specifically to model timeouts, so the taxonomy is ready but the bound is not chosen. Picking the value is a policy decision, not a mechanical fix.
 status: open
+decision: 2026-08-28 Configurable default — Add validated timeout options with a 30-second default and safe bounds, apply them in the factory, and test overrides.
 decision: 2026-08-28 Configurable default — Add validated timeout options with a 30-second default and safe bounds, apply them in the factory, and test overrides.
 
 ### DW-304: Sibling digits-only SHA constants carry the `ToUpperInvariant()` vacuity hazard DW-298 fixed once.
