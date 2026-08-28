@@ -112,7 +112,9 @@ resolution-undo: d36348236959b561c92d23156c47b3ced1f7bf75ebe08511194d0dafa28cce3
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: InProcessEventStoreGatewayClient.ToGatewayException
 reason: Replace `InProcessEventStoreGatewayClient.ToGatewayException`'s ad-hoc `FolderResultCode → HTTP status` mapping with a shared mapping path used by the production EventStore gateway. Deferred — current test mapping is consistent with the safe-denial REST contract but duplicates logic.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-archive-gateway-canonical-mapping
+resolution-undo: 131c1f336964dd52c5eba9e851a53d7590b7df8753625e01e11ab2eda25ad0ee 2026-08-29 7374617475733a206f70656e
 
 ### DW-16: Add `FolderCommandRejected` to `FolderArchiveMetadataLeakageTests` sentinel iteration so every `tests/fixtures/audit-leakage-corpus.json` value is asserted absent across the new rejection-event…
 
@@ -2387,4 +2389,60 @@ location: src/Hexalith.Folders/Aggregates/Organization/InMemoryOrganizationProvi
 source_spec: `spec-inmemory-repository-lock-cleanup.md`
 severity: low
 reason: Lines 6-7 of that file describe it as mirroring the folder repository's synchronization policy. After this story, `InMemoryFolderRepository` owns all mutable state under one gate with plain `Dictionary` stores, while the sibling still mixes `ConcurrentDictionary` with `lock (_gate)`, leaves `Load` and `TryGetIdempotencyFingerprint` un-gated, keeps `EventsAppended` as an un-gated auto-property, and calls its own public `Load` from inside the gate. The comment now points a reader at a policy the file does not implement. It cannot be corrected here: this story's intent scopes that file out ("Never: modify submodules or unrelated `ConcurrentDictionary` users"), which covers a comment edit in it as much as a code edit. Distinct from the synchronization gap already recorded for the same file: that entry is about the publication window, this one is about the documentation now misdescribing the type.
+status: open
+
+### DW-314: FolderCommandRejected.Create accepts noncanonical numeric and whitespace-padded FolderResultCode strings because its whitelist uses permissive Enum.TryParse semantics.
+origin: spec-deferred ad076c3a4bd1
+location: src/Hexalith.Folders.Server/FolderCommandRejected.cs:97
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: The production factory calls Enum.TryParse<FolderResultCode>(code, out _) without an exact ordinal round-trip or Enum.IsDefined check, despite its strict-whitelist comment. The parity gateway now defends its own wire boundary, but changing the production event factory is outside DW-15.
+status: open
+
+### DW-315: Rejection conversion assumes DomainServiceWireResult contains exactly one event and throws when a rejected result contains zero or multiple events.
+origin: spec-deferred 3d92cf7432ed
+location: tests/shared/Parity/InProcessRejectionPropagatingGatewayClient.cs:134
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: ToGatewayException still selects result.Events.Single(), while the wire result contract represents Events as a collection. Defining multi-event rejection semantics is broader than replacing the duplicated canonical mapping requested by DW-15.
+status: open
+
+### DW-316: The Hexalith.Folders.IntegrationTests project has no unfiltered CI lane, so most of its classes -- including this story's gateway-boundary suite and the pre-existing ArchiveFolderProcessWiringTests --
+origin: spec-deferred 0135b9f76686
+location: tests/tools/run-contract-parity-ci-gates.ps1:71-94
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: tests/tools/run-contract-parity-ci-gates.ps1 reaches this project only through two `--filter` expressions naming GoldenLifecycleParityTests, CrossAdapterBehavioralParityTests, and MixedSurfaceHandoffTests; run-baseline-ci-gates.ps1 enumerates nine test projects and does not list this one. Reverting the canonical mapping fails 33 assertions locally while every CI lane stays green. Registering classes changes a CI contract that ContractParityCiWorkflowConformanceTests pins, which is broader than DW-15.
+status: open
+
+### DW-317: Roughly twenty result codes now reach a different caller-visible REST status through ToArchiveGatewayProblem, and no test drives the REST leg for any of them.
+origin: spec-deferred 7434a398b12a
+location: src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:3909
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: FolderCanonicalErrorMapper emits categories that SafeGatewayReasonCode does not whitelist (state_transition_invalid, validation_error, not_found, policy_denied, already_archived, authentication_failure, repository_conflict), so those rejections fall through to the status-only default arm; StateTransitionInvalid reaches 422 at the gateway exception but still renders 403 denied_safe at REST. This story's acceptance criteria and I/O matrix are all stated at the gateway exception boundary, so cross-surface REST coverage is outside its scope. The four codes existing suites actually drive are unchanged end-to-end (IntegrationTests 667/667 green).
+status: open
+
+### DW-318: The parity double's rejection reason code matches neither spelling the real EventStore gateway produces, so its "production fidelity" claim is unverified against the actual gateway hop.
+origin: spec-deferred 7cb3e93d48f6
+location: references/Hexalith.EventStore/src/Hexalith.EventStore/ErrorHandling/DomainCommandRejectedExceptionHandler.cs:43
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: In production a Folders rejection reaches EventStoreGatewayException through DomainCommandRejectedExceptionHandler, which derives ProblemDetails reasonCode from DomainRejectionProblemCatalog.FromRejectionType(rejection.RejectionType) -- a kebab-case name derived from the rejection EVENT TYPE (folder-command-rejected), with a status drawn from a small set. The FolderResultCode never reaches the gateway exception in production at all. The double previously emitted the PascalCase enum name and now emits the snake_case canonical category; neither is the production wire spelling. Reconciling the two vocabularies would change the EventStore submodule or the caller-visible canonical error vocabulary, both of which this story's Block If and Never lists forbid.
+status: open
+
+### DW-319: FolderCanonicalErrorMapper.CategoryFor and StatusFor have no production caller, so the table this story adopts as canonical is documentation rather than the mapping that runs.
+origin: spec-deferred bc225eef2edc
+location: src/Hexalith.Folders.Server/FolderCanonicalErrorMapper.cs:9
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: medium
+reason: grep over src/ finds exactly one call into the mapper -- FoldersDomainServiceEndpoints.cs:5733 calls ClientActionFor. CategoryFor and StatusFor are called only by their own unit test and, after this change, by the parity double. FoldersDomainServiceEndpoints never references FolderResultCode; its caller-visible surface is keyed on SafeGatewayReasonCode instead. Wiring the mapper into the endpoint path would change caller-visible canonical error vocabulary, which this story's Never list forbids.
+status: open
+
+### DW-320: Follow-up review still recommended for dw-archive-gateway-canonical-mapping after the damping cap was spent
+origin: review-budget-followup
+location: n/a
+source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: low
+reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
 status: open
