@@ -41,6 +41,10 @@
     <!-- Story 8.3: shared rejection-propagating in-process gateway (linked, not copied). Replaces the
          per-file flattening stubs so aggregate rejections surface as canonical wire-level problems
          (folder_acl_denied → 403, idempotency_conflict → 409) across all four surfaces. -->
+    <!-- The linked source resolves rejection status and reason code through the internal
+         Hexalith.Folders.Server.FolderCanonicalErrorMapper, so any project that links this file must also
+         hold an InternalsVisibleTo grant from Hexalith.Folders.Server (today only this project and
+         Hexalith.Folders.Server.Tests do). -->
     <Compile Include="..\shared\Parity\InProcessRejectionPropagatingGatewayClient.cs">
       <Link>Parity\InProcessRejectionPropagatingGatewayClient.cs</Link>
     </Compile>
