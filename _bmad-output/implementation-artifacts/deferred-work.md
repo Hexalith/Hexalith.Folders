@@ -878,7 +878,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-audit-and-ops-console-query-contract-groups follow-up (2026-05-15)"), 2026-08-24
 location: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: AuditRecord, AuditTrailEntryRedacted example
 reason: W2: Cross-redaction invariant between record-level `redaction.visibility: redacted` and per-field `evidenceTimestamp.precision: redacted` (and similar paired fields on `actorReference`, `operationId`, future audience-conditional fields) is unenforced. A server could legitimately emit `record-redacted` with `evidenceTimestamp.precision: exact` and a real timestamp. Fix needs the same JSON-Schema-2020-12 `if/then` conditional design pattern P-Schema-8 used for trust/freshness; best bundled with the operator-audience hardening story that closes D4 (`AuditRecord` correlation-ID exposure). (`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml: AuditRecord, AuditTrailEntryRedacted example`)
-status: open
+status: done 2026-08-28
+resolution: already resolved: Commit 5d13a83a; src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml:9470-9490 forbids exact values under redacted timestamp states, with regression coverage at tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuditOpsConsoleContractGroupTests.cs:547-587.
 
 ### DW-119: W3: `PrincipalMismatchSafeDenialProblem` example uses HTTP 404 + `category: not_found`
 
