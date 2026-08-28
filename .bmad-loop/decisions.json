@@ -98,6 +98,15 @@
     "label": "Reject inactive repositories",
     "resolution": ""
   },
+  "DW-303": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Add validated timeout options with a 30-second default and safe bounds, apply them in the factory, and test overrides.",
+    "key": "2",
+    "label": "Configurable default",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
