@@ -443,6 +443,7 @@ location: src/Hexalith.Folders/Authorization/EffectivePermissionPrincipal.cs
 reason: `EffectivePermissionPrincipal` record equality is case-sensitive on `PrincipalId` [`src/Hexalith.Folders/Authorization/EffectivePermissionPrincipal.cs`] — deferred, convention; production auth pipeline is expected to canonicalize casing before the handler sees it. Add explicit `StringComparer.OrdinalIgnoreCase` or pipeline-side normalization when a real IDP integration requires it.
 status: open
 decision: 2026-08-28 Normalize per identity provider — Define provider-aware canonicalization at the authentication boundary, document it, and add equality and projection tests.
+decision: 2026-08-28 Normalize per identity provider — Define provider-aware canonicalization at the authentication boundary, document it, and add equality and projection tests.
 
 ### DW-60: `EffectivePermissionsTaskScope.AllowedActions` is `IReadOnlySet<string>` without an enforced comparer
 
