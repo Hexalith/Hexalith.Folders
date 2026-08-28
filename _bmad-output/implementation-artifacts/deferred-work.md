@@ -101,7 +101,9 @@ resolution-undo: 6f917a24a4b79a2f7714e8b3186622f47192753a30463ad014765f32d9daddf
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: ArchiveFolderProcessWiringTests
 reason: Add a cancel-mid-flight integration test to `ArchiveFolderProcessWiringTests` that exercises the in-processor cancellation/cleanup path (current `CancelledRequestShouldStopBeforeGatewayRoundTrip` only verifies the HttpClient-level cancel before the request leaves the test). Deferred.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-archive-process-integration
+resolution-undo: d36348236959b561c92d23156c47b3ced1f7bf75ebe08511194d0dafa28cce3e 2026-08-28 7374617475733a206f70656e
 
 ### DW-15: Replace `InProcessEventStoreGatewayClient.ToGatewayException`'s ad-hoc `FolderResultCode → HTTP status` mapping with a shared mapping path used by the production EventStore gateway
 
@@ -122,21 +124,27 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted
 reason: Add `ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted` integration test covering REST → gateway → `/process` → gate same-key + equivalent-payload replay path. Deferred — gate-unit and endpoint-unit replay coverage exists; the round-trip is unverified end-to-end.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-archive-process-integration
+resolution-undo: d36348236959b561c92d23156c47b3ced1f7bf75ebe08511194d0dafa28cce3e 2026-08-28 7374617475733a206f70656e
 
 ### DW-18: Add a foreign-tenant smuggling integration test (`ArchiveRequestShouldRejectWhenEnvelopeTenantDisagreesWithAuthenticatedTenant`)
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: ArchiveRequestShouldRejectWhenEnvelopeTenantDisagreesWithAuthenticatedTenant
 reason: Add a foreign-tenant smuggling integration test (`ArchiveRequestShouldRejectWhenEnvelopeTenantDisagreesWithAuthenticatedTenant`). Deferred — gate-unit coverage of `HasCompetingClientTenant` plus layered-auth tenant comparison at the request handler provide defense-in-depth.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-archive-process-integration
+resolution-undo: d36348236959b561c92d23156c47b3ced1f7bf75ebe08511194d0dafa28cce3e 2026-08-28 7374617475733a206f70656e
 
 ### DW-19: Add a `DenyingFolderArchivePolicyEvidenceProvider` test fake and an integration test exercising the AC8 policy-denied path end-to-end through `/process`
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: FolderArchivePolicyOutcome.Denied
 reason: Add a `DenyingFolderArchivePolicyEvidenceProvider` test fake and an integration test exercising the AC8 policy-denied path end-to-end through `/process`. Deferred to Epic 7 when the production policy provider lands; gate-unit coverage of `FolderArchivePolicyOutcome.Denied` exists.
-status: open
+status: done 2026-08-28
+resolution: resolved by sweep bundle dw-archive-process-integration
+resolution-undo: d36348236959b561c92d23156c47b3ced1f7bf75ebe08511194d0dafa28cce3e 2026-08-28 7374617475733a206f70656e
 
 ### DW-20: `IDomainProcessor.ProcessAsync` lacks `CancellationToken`, so `FolderDomainProcessor` passes `CancellationToken.None` into the ACL/policy evidence providers
 
@@ -2289,4 +2297,44 @@ origin: code review of 3-10-github-repository-provisioning-binding-and-branch-re
 location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs
 source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: DW-298 changed `OctokitGitHubApiClientTests.CommitSha` from digits-only to `"...cc"` because the non-canonical-SHA scenarios uppercase it, and `ToUpperInvariant()` on a digits-only string is a no-op that silently vacates the assertion. The sibling constants `StagedTreeSha = "2222..."` and `PriorOutcomeFingerprint = "1111..."` are still digits-only, and no helper or assertion (e.g. `value.ToUpperInvariant().ShouldNotBe(value)`) prevents a future test from reintroducing the same vacuity. Story 3.11's slice.
+status: open
+
+### DW-305: ArchiveFolderProcessWiringTests is not selected by a blocking CI lane.
+origin: spec-deferred 22f7160f19de
+location: tests/tools/run-contract-parity-ci-gates.ps1
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: The integration class was already excluded before this bundle: the blocking parity script selects GoldenLifecycleParityTests, CrossAdapterBehavioralParityTests, and MixedSurfaceHandoffTests, while the baseline allow-list omits the IntegrationTests project. The four new archive-process rows therefore run locally but inherit the pre-existing CI selection gap.
+status: open
+
+### DW-306: The shared gateway double's new `/process` result-payload propagation is asserted by no gate-selected test.
+origin: spec-deferred 2143e3ee7943
+location: tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: `InProcessRejectionPropagatingGatewayClient` now forwards `ResultPayload`, which is the sole input to the REST `idempotentReplay` field. The only assertion on it lives in `ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted`, in the class no blocking lane selects. `MixedSurfaceHandoffTests` is gate-selected and drives the same double through a four-surface replay, but asserts 202 / no conflict / no second append without ever reading `idempotentReplay`. Reverting the propagation would leave every gate green while every replay silently reported `idempotentReplay: false`. Closing this means adding an assertion to `MixedSurfaceHandoffTests`, which is outside this intent's "add four archive tests" approach.
+status: open
+
+### DW-307: Only the `Denied` archive-policy outcome has an integration row; the retryable outcomes have none at the `/process` boundary.
+origin: spec-deferred 3563da68a6d4
+location: tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: `FolderArchivePolicyOutcome` also carries `ScopeMismatch`, `Unavailable`, `Malformed`, and `Stale`, and `EvaluatePolicy` additionally returns `PolicyEvidenceMalformed` when an *Allowed* evidence's tenant/organization/folder do not match the command or its `PolicyVersion` is blank -- the load-bearing anti-forgery check. Those codes are asserted only in `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveAuthorizationGateTests.cs`, never across REST -> gateway -> `/process`. `Unavailable`/`Stale` map to a retryable 503, a materially different caller contract than the non-retryable 403 this bundle pins, so a regression that collapsed one into the other would keep every row green. Adding those rows is outside this intent's four-scenario matrix.
+status: open
+
+### DW-308: `HasScopedMetadataProperty` rejects any property name containing `policy`, which production's own richer safe-denial body carries.
+origin: spec-deferred 2aadb3b7b785
+location: tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+source_spec: `spec-archive-process-integration.md`
+severity: medium
+reason: `FolderAuthorizationDenialMapper.ToHttpResult` emits `details.policyClass` (alongside `reasonCategory`, `layer`, `freshnessClass`, `timingBucket`) on every layered-authorization denial. The helper passes today only because the gateway double flattens the `/process` 403 into an `EventStoreGatewayException`, so the caller sees `ToArchiveGatewayProblem`'s leaner `SafeProblem` body instead. Any future change that propagates the richer -- and still metadata-only -- denial body to the caller would red these rows on a body that discloses nothing. Closing this means matching exact field names, or exempting the known-safe classifier fields, rather than substring-matching property names.
+status: open
+
+### DW-309: Follow-up review still recommended for dw-archive-process-integration after the damping cap was spent
+origin: review-budget-followup
+location: n/a
+source_spec: `spec-archive-process-integration.md`
+severity: low
+reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-001531-d5cf; this entry preserves the lingering recommendation for a deliberate later review.
 status: open
