@@ -2249,6 +2249,7 @@ location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubDependencyGuardTes
 source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: DW-298 diagnosed `ProviderReadinessCompositionResolvesGitHubAndForgejoExactlyOnce` as a test defect and fixed it by adding `services.AddLogging()` to the bare `ValidateOnBuild` container. That is a defensible reading, but it converts a genuine signal — `AddFoldersProviderReadiness()` is not self-contained, because `AddFoldersObservability` registers `FolderTelemetryEmitter(IEnumerable<IFolderAuditObserver>, ILogger<FolderTelemetryEmitter>)` — into a green test by mutating the test rather than the extension. Nothing now asserts what the composition root must supply, and any host calling the extension without logging registered still fails at resolution. Either the extension should call `AddLogging()` itself, or a test should pin the prerequisite explicitly.
 status: open
+decision: 2026-08-28 Register logging — Call AddLogging from readiness or observability composition and restore a bare-container ValidateOnBuild regression test.
 
 ### DW-302: An archived or disabled GitHub repository binds successfully.
 

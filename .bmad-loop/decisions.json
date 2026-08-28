@@ -80,6 +80,15 @@
     "label": "Add replay outcome event",
     "resolution": ""
   },
+  "DW-301": {
+    "answered_at": "2026-08-28",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Call AddLogging from readiness or observability composition and restore a bare-container ValidateOnBuild regression test.",
+    "key": "1",
+    "label": "Register logging",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",
