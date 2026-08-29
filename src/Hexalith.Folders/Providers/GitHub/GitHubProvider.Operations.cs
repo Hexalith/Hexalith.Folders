@@ -1593,6 +1593,7 @@ public sealed partial class GitHubProvider
         return admission.PriorOutcomeDisposition switch
         {
             ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorReconciliationReference is null
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
                 && admission.PriorReasonCode is null
@@ -1600,6 +1601,7 @@ public sealed partial class GitHubProvider
                 && !admission.PriorRetryable
                 && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.Unknown => admission.PriorSafeOutcomeFingerprint is null
+                && admission.PriorCanonicalRepositoryId is null
                 && IsSafeOpaqueReference(admission.PriorReconciliationReference)
                 && admission.PriorFailureCategory == ProviderFailureCategory.None
                 && admission.PriorReasonCode is null
@@ -1607,6 +1609,7 @@ public sealed partial class GitHubProvider
                 && !admission.PriorRetryable
                 && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.KnownFailure => admission.PriorFailureCategory != ProviderFailureCategory.None
+                && admission.PriorCanonicalRepositoryId is null
                 && admission.PriorFailureCategory != ProviderFailureCategory.UnknownProviderOutcome
                 && Enum.IsDefined(admission.PriorFailureCategory)
                 && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
@@ -1629,7 +1632,8 @@ public sealed partial class GitHubProvider
             && admission.PriorReasonCode is null
             && admission.PriorRemediationCode is null
             && !admission.PriorRetryable
-            && admission.PriorRetryAfter is null;
+            && admission.PriorRetryAfter is null
+            && admission.PriorCanonicalRepositoryId is null;
 
     private static bool IsReservationWellFormed(ProviderOperationReservationResult reservation)
     {

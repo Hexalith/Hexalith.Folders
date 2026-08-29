@@ -20,6 +20,12 @@ internal sealed class ForgejoHttpApiClient : IForgejoApiClient
         _authorizedBaseUri = authorizedBaseUri ?? throw new ArgumentNullException(nameof(authorizedBaseUri));
     }
 
+    public ValueTask DisposeAsync()
+    {
+        _client.Dispose();
+        return ValueTask.CompletedTask;
+    }
+
     public async Task<ForgejoReadinessResult> GetReadinessAsync(
         ForgejoReadinessRequest request,
         CancellationToken cancellationToken = default)

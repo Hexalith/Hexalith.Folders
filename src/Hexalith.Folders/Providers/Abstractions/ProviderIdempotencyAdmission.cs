@@ -14,6 +14,7 @@ namespace Hexalith.Folders.Providers.Abstractions;
 /// <param name="PriorRemediationCode">The exact prior allow-listed remediation.</param>
 /// <param name="PriorRetryable">Whether the exact prior known-terminal result was retryable.</param>
 /// <param name="PriorRetryAfter">The exact prior bounded retry posture.</param>
+/// <param name="PriorCanonicalRepositoryId">The exact prior canonical repository identity for a repository success.</param>
 public sealed record ProviderIdempotencyAdmission(
     ProviderIdempotencyDisposition Disposition,
     string IntentFingerprint,
@@ -25,4 +26,37 @@ public sealed record ProviderIdempotencyAdmission(
     string? PriorReasonCode = null,
     string? PriorRemediationCode = null,
     bool PriorRetryable = false,
-    TimeSpan? PriorRetryAfter = null);
+    TimeSpan? PriorRetryAfter = null,
+    string? PriorCanonicalRepositoryId = null)
+{
+    /// <summary>
+    /// Preserves the original eleven-parameter constructor for already-compiled consumers.
+    /// </summary>
+    public ProviderIdempotencyAdmission(
+        ProviderIdempotencyDisposition disposition,
+        string intentFingerprint,
+        string? priorSafeOutcomeFingerprint,
+        string? priorReconciliationReference,
+        string? priorOperationReference,
+        ProviderPriorOutcomeDisposition? priorOutcomeDisposition,
+        ProviderFailureCategory priorFailureCategory,
+        string? priorReasonCode,
+        string? priorRemediationCode,
+        bool priorRetryable,
+        TimeSpan? priorRetryAfter)
+        : this(
+            disposition,
+            intentFingerprint,
+            priorSafeOutcomeFingerprint,
+            priorReconciliationReference,
+            priorOperationReference,
+            priorOutcomeDisposition,
+            priorFailureCategory,
+            priorReasonCode,
+            priorRemediationCode,
+            priorRetryable,
+            priorRetryAfter,
+            PriorCanonicalRepositoryId: null)
+    {
+    }
+}

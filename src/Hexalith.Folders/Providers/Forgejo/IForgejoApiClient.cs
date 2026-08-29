@@ -1,6 +1,6 @@
 namespace Hexalith.Folders.Providers.Forgejo;
 
-internal interface IForgejoApiClient
+internal interface IForgejoApiClient : IAsyncDisposable
 {
     Task<ForgejoReadinessResult> GetReadinessAsync(
         ForgejoReadinessRequest request,
