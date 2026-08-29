@@ -278,7 +278,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: EffectivePermissionsActionCatalog
 reason: `EffectivePermissionsActionCatalog` insertion order untested — cosmetic until a positional consumer appears. Deferred.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-effective-action-contracts
+resolution-undo: 8c06abcaac18bf48049224e367f28b74323a66545b9d73cdbce66560c048d443 2026-08-29 7374617475733a206f70656e
 
 ### DW-36: `IFolderEvent` interface coupling — `FolderProjectionEnvelope.Event` was widened from `FolderCreated` to `IFolderEvent`
 
@@ -464,7 +466,9 @@ decision: 2026-08-28 Normalize per identity provider — Define provider-aware c
 origin: migrated from legacy ledger ("Deferred from: code review of 2-5-inspect-effective-permissions (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Authorization/EffectivePermissionsTaskScope.cs
 reason: `EffectivePermissionsTaskScope.AllowedActions` is `IReadOnlySet<string>` without an enforced comparer [`src/Hexalith.Folders/Authorization/EffectivePermissionsTaskScope.cs`] — deferred, testing-only seam; production task-scope projection must construct the set with `StringComparer.Ordinal` to match the action catalog. Document the contract on the type when the production task-scope projection lands.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-effective-action-contracts
+resolution-undo: 8c06abcaac18bf48049224e367f28b74323a66545b9d73cdbce66560c048d443 2026-08-29 7374617475733a206f70656e
 
 ### DW-61: Async port for `FolderAccessTenantGate` [`src/Hexalith.Folders/Aggregates/Folder/FolderAccessTenantGate.cs`]
 
