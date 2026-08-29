@@ -34,6 +34,8 @@ internal sealed class RecordingFolderRepository : IFolderRepository
 
     public bool SimulateAppendConflict { get; set; }
 
+    public bool SimulateFingerprintConflict { get; set; }
+
     public IReadOnlyList<IFolderEvent> ConcurrentAppendEvents { get; set; } = [];
 
     public string? LastDurableKey { get; private set; }
@@ -74,6 +76,11 @@ internal sealed class RecordingFolderRepository : IFolderRepository
             return string.Equals(priorFingerprint, fingerprint, StringComparison.Ordinal)
                 ? FolderAppendOutcome.FingerprintMatched
                 : FolderAppendOutcome.FingerprintConflict;
+        }
+
+        if (SimulateFingerprintConflict)
+        {
+            return FolderAppendOutcome.FingerprintConflict;
         }
 
         if (SimulateAppendConflict)
