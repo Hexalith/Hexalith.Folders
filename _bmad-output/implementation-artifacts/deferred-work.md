@@ -173,7 +173,9 @@ resolution-undo: 0f576fc559595d239f0a8032672b2a2033e87f3e1ec77133cdd65ef323dca04
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: SequentialRequestsShouldNotReusePriorLayeredAuthorizationEvidence
 reason: `SequentialRequestsShouldNotReusePriorLayeredAuthorizationEvidence` does not detect a scenario where the scoped accessor is accidentally re-registered as singleton; a singleton accessor with manual clearing in `finally` would also pass. Deferred — architectural test-design concern; revisit when DI lifetime auditing tooling is in place.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-archive-accessor-lifetime-guard
+resolution-undo: 8074c733b44d14cabce95cbf923fe8eeda11ad3a80fa107663b65ae29345066c 2026-08-29 7374617475733a206f70656e
 
 ### DW-23: `FolderCommandRejected` is a new `IRejectionEvent` type; the projection/event-routing boundary between `IFolderEvent` (projection-bound) and `IRejectionEvent` (gateway-bound) is implicit
 

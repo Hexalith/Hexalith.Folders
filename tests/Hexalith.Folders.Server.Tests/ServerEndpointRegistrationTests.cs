@@ -1,6 +1,7 @@
 using Dapr;
 
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Testing;
 
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,19 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class ServerEndpointRegistrationTests
 {
+    [Fact]
+    public void AddFoldersServerShouldRegisterLayeredAuthorizationAccessorAsScoped()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+
+        builder.Services.AddFoldersServer();
+
+        ServiceDescriptor descriptor = builder.Services
+            .Single(static descriptor => descriptor.ServiceType == typeof(ILayeredFolderAuthorizationResultAccessor));
+        descriptor.ImplementationType.ShouldBe(typeof(ScopedLayeredFolderAuthorizationResultAccessor));
+        descriptor.Lifetime.ShouldBe(ServiceLifetime.Scoped);
+    }
+
     [Fact]
     public void FoldersServerModuleShouldExposeStableDomainAndTenantRoutes()
     {
