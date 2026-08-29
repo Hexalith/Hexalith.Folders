@@ -254,7 +254,9 @@ resolution-undo: 97be6c1f7934e86d73a377d9abaf72fc20778f943083b4fcbdef5459ac0f70b
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: FolderArchivePolicyOutcome.ScopeMismatch
 reason: Untested branches: `FolderArchivePolicyOutcome.ScopeMismatch`, several `FolderArchiveAclOutcome` variants, `FolderAppendOutcome.FingerprintConflict` mapping — become live once the gate is wired into production. Deferred until that happens.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-archive-gate-outcome-coverage
+resolution-undo: 42f54c5f9b4c96c48c0c8c4827569fd192cf4549979c3bcd8a2d0f77e64b9233 2026-08-29 7374617475733a206f70656e
 
 ### DW-33: `FolderArchiveTenantGate(TimeProvider)` constructor never exercised by tests or production callers. Deferred — moot until the gate is wired.
 

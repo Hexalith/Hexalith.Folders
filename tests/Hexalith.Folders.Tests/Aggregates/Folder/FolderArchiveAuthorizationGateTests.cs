@@ -78,6 +78,45 @@ public sealed class FolderArchiveAuthorizationGateTests
         repository.AppendsAttempted.ShouldBe(0);
     }
 
+    [Theory]
+    [InlineData(FolderArchiveAclOutcome.Unavailable, FolderResultCode.AclEvidenceUnavailable)]
+    [InlineData(FolderArchiveAclOutcome.Malformed, FolderResultCode.AclEvidenceUnavailable)]
+    [InlineData(FolderArchiveAclOutcome.Stale, FolderResultCode.AclEvidenceUnavailable)]
+    [InlineData(FolderArchiveAclOutcome.TenantMismatch, FolderResultCode.TenantMismatch)]
+    [InlineData(FolderArchiveAclOutcome.FolderMismatch, FolderResultCode.AclEvidenceForeignFolder)]
+    [InlineData(FolderArchiveAclOutcome.UnsupportedAction, FolderResultCode.AclEvidenceUnsupportedAction)]
+    public void RejectedAclEvidenceShouldPreventArchiveObservation(
+        FolderArchiveAclOutcome outcome,
+        FolderResultCode expectedCode)
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            FolderCommandFactory.Archive(),
+            Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
+            new FolderArchiveAclEvidence(
+                outcome,
+                "tenant-a",
+                "organization-a",
+                "folder-a",
+                "principal-a",
+                FolderArchiveAclEvidence.ArchiveAction),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+
+        result.Code.ShouldBe(expectedCode);
+        result.Events.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+        repository.DiagnosticsQueried.ShouldBe(0);
+        repository.AuditResourcesQueried.ShouldBe(0);
+        repository.ProviderReadinessChecked.ShouldBe(0);
+        repository.RepositoriesCreated.ShouldBe(0);
+    }
+
     [Fact]
     public void AllowedAclEvidenceForDifferentPrincipalShouldFailClosedBeforeStreamConstruction()
     {
@@ -120,7 +159,8 @@ public sealed class FolderArchiveAuthorizationGateTests
     [InlineData(FolderArchivePolicyOutcome.Stale, FolderResultCode.PolicyEvidenceStale)]
     [InlineData(FolderArchivePolicyOutcome.Unavailable, FolderResultCode.PolicyEvidenceUnavailable)]
     [InlineData(FolderArchivePolicyOutcome.Malformed, FolderResultCode.PolicyEvidenceMalformed)]
-    public void StaleUnavailableOrMalformedPolicyEvidenceShouldRejectBeforeStreamConstruction(
+    [InlineData(FolderArchivePolicyOutcome.ScopeMismatch, FolderResultCode.PolicyEvidenceScopeMismatch)]
+    public void RejectedPolicyEvidenceShouldRejectBeforeStreamConstruction(
         FolderArchivePolicyOutcome outcome,
         FolderResultCode expectedCode)
     {
@@ -140,6 +180,10 @@ public sealed class FolderArchiveAuthorizationGateTests
         repository.StreamsLoaded.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(0);
         repository.EventsAppended.ShouldBe(0);
+        repository.DiagnosticsQueried.ShouldBe(0);
+        repository.AuditResourcesQueried.ShouldBe(0);
+        repository.ProviderReadinessChecked.ShouldBe(0);
+        repository.RepositoriesCreated.ShouldBe(0);
     }
 
     [Fact]

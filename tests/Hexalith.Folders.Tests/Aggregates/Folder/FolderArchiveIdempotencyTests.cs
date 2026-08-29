@@ -186,6 +186,30 @@ public sealed class FolderArchiveIdempotencyTests
     }
 
     [Fact]
+    public void AppendFingerprintConflictShouldReturnIdempotencyConflictWithoutRereadOrDurableAppend()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        repository.SimulateFingerprintConflict = true;
+        FolderArchiveTenantGate gate = new(repository);
+
+        FolderResult result = gate.Handle(
+            FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a"),
+            TenantEvidence(),
+            AclEvidence(),
+            PolicyEvidence());
+
+        result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
+        result.Events.ShouldBeEmpty();
+        repository.StreamNamesConstructed.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(1);
+        repository.StreamsLoaded.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
+        repository.EventsAppended.ShouldBe(0);
+        repository.LastDurableKey.ShouldBeNull();
+        repository.LastAppendedEvents.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void SameOpaqueFolderIdInDifferentTenantsShouldUseDifferentArchiveLedgerKeys()
     {
         RecordingFolderRepository repository = new();
