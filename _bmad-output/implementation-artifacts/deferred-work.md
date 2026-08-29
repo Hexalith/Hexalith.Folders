@@ -121,7 +121,9 @@ resolution-undo: 131c1f336964dd52c5eba9e851a53d7590b7df8753625e01e11ab2eda25ad0e
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 3 (2026-05-20)"), 2026-08-24
 location: tests/fixtures/audit-leakage-corpus.json
 reason: Add `FolderCommandRejected` to `FolderArchiveMetadataLeakageTests` sentinel iteration so every `tests/fixtures/audit-leakage-corpus.json` value is asserted absent across the new rejection-event payload. Deferred — the production `FolderCommandRejected.Create` factory canonicalizes all identifiers at construction time which mitigates the leak vector, but corpus-driven coverage remains a regression trap.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-archive-leakage-regression-coverage
+resolution-undo: 97be6c1f7934e86d73a377d9abaf72fc20778f943083b4fcbdef5459ac0f70be 2026-08-29 7374617475733a206f70656e
 
 ### DW-17: Add `ArchiveRequestShouldReturnIdempotentReplayWhenSameKeyEquivalentPayloadIsResubmitted` integration test covering REST → gateway → `/process` → gate same-key + equivalent-payload replay path
 
@@ -241,7 +243,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: FolderArchiveMetadataLeakageTests
 reason: `FolderArchiveMetadataLeakageTests` asserts the validator's input restriction indirectly via factory defaults — gives confirmation, not coverage. Deferred — expand to a corpus-driven property test in a future hardening pass.
-status: open
+status: done 2026-08-29
+resolution: resolved by sweep bundle dw-archive-leakage-regression-coverage
+resolution-undo: 97be6c1f7934e86d73a377d9abaf72fc20778f943083b4fcbdef5459ac0f70be 2026-08-29 7374617475733a206f70656e
 
 ### DW-32: Untested branches: `FolderArchivePolicyOutcome.ScopeMismatch`, several `FolderArchiveAclOutcome` variants, `FolderAppendOutcome.FingerprintConflict` mapping
 
@@ -2443,6 +2447,110 @@ status: open
 origin: review-budget-followup
 location: n/a
 source_spec: `spec-archive-gateway-canonical-mapping.md`
+severity: low
+reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
+status: open
+
+### DW-321: Corpus loading (`RepositoryRoot()` + parse of `tests/fixtures/audit-leakage-corpus.json`) is copy-pasted across at least nine test classes instead of one shared labelled reader.
+origin: spec-deferred a56b1f5a32a1
+location: tests/ (nine call sites); candidate home: src/Hexalith.Folders.Testing or tests/shared
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: The same discovery-and-parse block appears in FolderArchiveMetadataLeakageTests, FolderWorkspaceFileMutationAggregateTests, FolderWorkspaceCommitAggregateTests, WorkspaceLifecycleProjectionDeterminismTests, FolderAuditObservationTests, AuditEndpointsTests, AuditEndpointsSentinelTests, WorkspaceStatusEndpointTests and MemoriesFolderSearchSourceTests. Each copy is free to drift in labelling and in blank-value filtering, so "every sentinel is covered" cannot be checked centrally. Pre-existing; this story adds another consumer.
+status: open
+
+### DW-322: The archive surface map uses an invented channel vocabulary that never meets the declared channel inventory, so archive-path channel coverage cannot be measured by any gate.
+origin: spec-deferred 20ac1ac18ee0
+location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: FolderArchiveMetadataLeakageTests keys its surfaces `event`, `audit-record`, `projection`, `problem-details`, `log-template`, `trace-tags`, `generated-client-exception`, while tests/fixtures/audit-leakage-corpus.json (`forbidden_output_surfaces`) and tests/fixtures/safety-channel-inventory.json (`channels`) declare `events`, `audit-records`, `projections`, `problem-details-examples`, `logs`, `traces`, `generated-sdk` and ~18 more. Only 8 of 25 declared channels are swept on the archive path and nothing pins the shortfall. Pre-existing shape of the original [Fact]; not introduced by this story.
+status: open
+
+### DW-323: The per-sample `forbidden_output_surfaces` scoping in the corpus is ignored; every sentinel is asserted against every surface, encoding a stricter contract than the fixture's own policy.
+origin: spec-deferred 7c040f72a129
+location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: low
+reason: `correlation-metadata` deliberately omits `events`/`projections` from its forbidden list (with the note that production policies decide where correlation may remain visible), and `safe-provenance-operation-id` forbids only `provider-diagnostics`. The tests also ignore `participates_in` and `classification`. The suite passes only because the archive surfaces are built from safe defaults. Pre-existing.
+status: open
+
+### DW-324: `AcceptedArchiveEventShouldCarryOnlyMetadataEvidence` hand-joins 8 of the 10 `FolderArchived` members, so a newly added property escapes that assertion silently.
+origin: spec-deferred dde60fc80c0f
+location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: low
+reason: The [Fact] builds its subject with an explicit '|'-join that omits `IdempotencyFingerprint` and `OccurredAt`, unlike the corpus theories which serialize the whole record. Pre-existing and untouched by this story.
+status: open
+
+### DW-325: A trailing bare LF defeats every canonical-identifier gate in the repository, because .NET's `$` matches before a final newline unless `RegexOptions.Multiline` is set.
+origin: spec-deferred 97e78371a3e9
+location: src/Hexalith.Folders.Server/FolderCommandRejected.cs:30 and src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:952
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: high
+reason: Verified: `^[a-z0-9._-]+$` accepts "safe-identifier\n" (it rejects "safe-identifier\r\n" and "safe\nidentifier"). So `FolderCommandRejected.CanonicalIdentifierOrNull("safe-identifier\n")` returns the value with the newline intact, and `FolderCommandValidator.IsSafeEvidenceIdentifier` / `FolderStreamName.IsValidSegment` accept a trailing newline too. That is a live log-injection vector on exactly the surfaces these canonical gates exist to protect. Pre-existing and out of scope here: the Intent's Block-If forbids changing production canonicalization. Fix shape: anchor with `\A...\z` instead of `^...$`.
+status: open
+
+### DW-326: Sibling corpus sweeps still assert leakage with value-printing `ShouldNotContain`, the exact idiom these two files ban, and they are the sites that drive sentinels through production.
+origin: spec-deferred 3be07b46afe5
+location: tests/Hexalith.Folders.Server.Tests/MemoriesFolderSearchSourceTests.cs:84
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `MemoriesFolderSearchSourceTests.ShouldDropEveryLeakageCorpusSnippetFromResults:84` and `WorkspaceStatusEndpointTests:271` use bare `ShouldNotContain(sentinel)`, which renders both the sentinel and the actual payload into the assertion-messages channel that audit-leakage-corpus.json declares forbidden. They also use a raw substring scan, so a future corpus sample containing any character `JavaScriptEncoder.Default` escapes would serialize as `\uXXXX` and read as clean. Today's corpus is entirely plain ASCII, so the gap is latent rather than live. `AuditEndpointsSentinelTests:76` already truncates for this reason; the repo is inconsistent.
+status: open
+
+### DW-327: Two semantically incompatible leakage detectors now exist in the repository, and nothing pins which one is authoritative.
+origin: spec-deferred 45155f26ae3f
+location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` scans `OrdinalIgnoreCase` with a token-boundary rule, driven by each sample's declared `forbidden_output_surfaces` plus safety-channel-inventory.json. The detector added by this story is `Ordinal` with no token boundary but adds a JSON-decoded walk -- weaker against case mutation, stronger against `\uXXXX` escaping. Neither subsumes the other and no test records the divergence.
+status: open
+
+### DW-328: The accepted-archive-surface sweep is structurally incapable of failing; its 18 corpus rows scan constant payloads that no sentinel can ever reach.
+origin: spec-deferred c062d48a285d
+location: tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `AcceptedArchiveSurfaces()` builds all eight channel strings from `FolderCommandFactory.Archive()` safe defaults, and every corpus sentinel is rejected by `IsSafeEvidenceIdentifier`, so no corpus value can reach an accepted archive surface. Demonstrated: replacing all eight surface values with `string.Empty` still passes 18/18. Pre-existing (the original [Fact] had the same property) and intent-mandated -- the Intent's matrix row 3 and its "preserve existing accepted-surface checks" clause specify exactly this shape, so it was not in scope to change. Real coverage on this path would need a hostile-but-accepted caller value threaded into the archive command.
+status: open
+
+### DW-329: The entire `tests/Hexalith.Folders.Server.Tests` project runs in no CI gate lane, so this story's rejection-event regression trap gates nothing in CI.
+origin: spec-deferred da328fd3ef5d
+location: tests/tools/run-baseline-ci-gates.ps1 and tests/Hexalith.Folders.Server.Tests
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: high
+reason: Verified: the project appears in no `$unitTestProjects` list across `tests/tools/*.ps1` and in no `.github/workflows/*.yml`; its only cross-project references are the `ScaffoldContractTests` assertions that it exists. 644 tests -- including the sibling corpus sweeps in `AuditEndpointsSentinelTests`, `WorkspaceStatusEndpointTests` and `MemoriesFolderSearchSourceTests` -- therefore gate nothing. Demonstrated: the mandated `SafeIdentifierRegex` widening turns 13 rows red locally while CI stays green. Pre-existing and far wider than this story, which merely inherited the project as its home (`ScaffoldContractTests` forbids the alternative). Attempted in this pass and reverted: enrolment needs a four-file lockstep -- `run-baseline-ci-gates.ps1`, `BaselineCiWorkflowConformanceTests._baselineUnitProjects`, `docs/operations/baseline-ci-gates.md` and the generated `_bmad-output/gates/baseline-ci/latest.json` (pinned by `BaselineGateReportShouldStayMetadataOnlyWhenPresent`) -- and an honest rege
+status: open
+
+### DW-330: The blocking baseline CI lane is red on `main` today: `dotnet format whitespace --verify-no-changes` fails with 13 errors on one untouched production file.
+origin: spec-deferred ce17c1f3fb7c
+location: src/Hexalith.Folders/Providers/Abstractions/ProviderOperationSourceResolutionResult.cs:22
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: high
+reason: Reproduced on a clean tree at this story's baseline: `dotnet format whitespace Hexalith.Folders.slnx --verify-no-changes --no-restore --include ./src/ ./tests/ ./samples/` reports 13 `error WHITESPACE: Fix whitespace formatting. Insert '\s\s\s\s'` on src/Hexalith.Folders/Providers/Abstractions/ProviderOperationSourceResolutionResult.cs (lines 22-25 among others), a collection-expression indentation shape. The file is unmodified by this story and last changed by commit be36435 (2026-08-26, on main). The `format` gate runs before `unit-tests` and exits on failure, so every unit lane behind it is unreachable. Out of scope here: the fix edits a production source file, which this story's AC8 forbids.
+status: open
+
+### DW-331: Two of the three rejection events emitted by `/process` have zero test coverage anywhere, and the argument mapping that feeds all three is untested.
+origin: spec-deferred 13fa8eedbbe5
+location: src/Hexalith.Folders.Server/FolderDomainProcessor.cs:1292-1330
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `grep -rn "DuplicateWorkspaceLockRejected\|WorkspaceTransitionInvalidRejected" tests/` returns nothing, as does `grep -rn "IRejectionEvent" tests/`. Both records re-invoke `FolderCommandRejected.CanonicalIdentifierOrNull` / `NormalizeCommandTypeForRejection` inline (src/Hexalith.Folders.Server/DuplicateWorkspaceLockRejected.cs:22-46 and WorkspaceTransitionInvalidRejected.cs:22-46) and are emitted from FolderDomainProcessor.CreateRejectionEvent:1301,1325. Separately, that method sources its arguments from `result?.ActorPrincipalId`, `envelope.CorrelationId`, `envelope.MessageId` and `TryReadCanonicalExtension(...)`, none of which any test drives -- so a regression that echoed an envelope-supplied raw actor instead of the aggregate-nulled one leaves every new row green. Pre-existing; this story's rows call the factory directly, as the Intent's matrix specifies.
+status: open
+
+### DW-332: The leakage detector and its fixture readers are now duplicated verbatim across the story's two test files, so a hardening applied to one copy silently does not apply to the other.
+origin: spec-deferred bf02dc3614f3
+location: tests/Hexalith.Folders.Server.Tests/FolderCommandRejectedLeakageTests.cs and tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderArchiveMetadataLeakageTests.cs
+source_spec: `spec-archive-leakage-regression-coverage.md`
+severity: medium
+reason: `ContainsSentinel`, `JsonElementContainsSentinel`, `EscapeEveryCharacter`, `RequireWellFormedJson`, `SentinelById`, both fixture loaders, `RepositoryRoot` and both records (~150 lines) exist twice, as do three detector self-tests. Introduced by this story rather than pre-existing, but not fixable within it: the spec pins `Hexalith.Folders.Tests.csproj` to baseline, so the sanctioned `tests/shared` + `<Compile Include>` route is closed, and the alternative -- a shared helper in `src/Hexalith.Folders.Testing` -- is a public API addition to a packable library. Belongs with the nine-call-site corpus-reader consolidation already on the ledger.
+status: open
+
+### DW-333: Follow-up review still recommended for dw-archive-leakage-regression-coverage after the damping cap was spent
+origin: review-budget-followup
+location: n/a
+source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
 status: open
