@@ -7,6 +7,60 @@ namespace Hexalith.Folders.Tests.Authorization;
 public sealed class EffectivePermissionsTaskScopeTests
 {
     [Fact]
+    public void ConstructionShouldSnapshotActionsWithOrdinalMembership()
+    {
+        HashSet<string> suppliedActions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "read_metadata",
+        };
+
+        EffectivePermissionsTaskScope scope = new(
+            Status: EffectivePermissionsTaskScopeStatus.Available,
+            OpaqueTaskId: "task-a",
+            OpaqueWorkspaceId: null,
+            AllowedActions: suppliedActions);
+        suppliedActions.Clear();
+        suppliedActions.Add("mutate_files");
+
+        scope.AllowedActions.Contains("read_metadata").ShouldBeTrue();
+        scope.AllowedActions.Contains("READ_METADATA").ShouldBeFalse();
+        scope.AllowedActions.Contains("mutate_files").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void InitAssignmentShouldSnapshotActionsWithOrdinalMembership()
+    {
+        EffectivePermissionsTaskScope scope = new(
+            Status: EffectivePermissionsTaskScopeStatus.Available,
+            OpaqueTaskId: "task-a",
+            OpaqueWorkspaceId: null,
+            AllowedActions: new HashSet<string>(StringComparer.Ordinal));
+        HashSet<string> assignedActions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "READ_METADATA",
+        };
+
+        scope = scope with { AllowedActions = assignedActions };
+        assignedActions.Clear();
+        assignedActions.Add("read_metadata");
+        assignedActions.Add("mutate_files");
+
+        scope.AllowedActions.Contains("READ_METADATA").ShouldBeTrue();
+        scope.AllowedActions.Contains("read_metadata").ShouldBeFalse();
+        scope.AllowedActions.Contains("mutate_files").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ConstructionShouldRejectNullAllowedActions()
+    {
+        Should.Throw<ArgumentNullException>(() => new EffectivePermissionsTaskScope(
+            Status: EffectivePermissionsTaskScopeStatus.Available,
+            OpaqueTaskId: "task-a",
+            OpaqueWorkspaceId: null,
+            AllowedActions: null!));
+    }
+
+    [Fact]
     public async Task ValidTaskContextCanOnlyNarrowEffectivePermissions()
     {
         EffectivePermissionsReadModelSnapshot snapshot = EffectivePermissionsTestSupport.Snapshot(
@@ -32,6 +86,52 @@ public sealed class EffectivePermissionsTaskScopeTests
         result.Permissions.ShouldBe([EffectivePermissionLevel.Read]);
         result.TaskContextId.ShouldBe("task-a");
         result.WorkspaceContextId.ShouldBe("workspace-a");
+    }
+
+    [Fact]
+    public async Task CaseVariantFromIncompatibleComparerShouldBeDeniedSafe()
+    {
+        EffectivePermissionsReadModelSnapshot snapshot = EffectivePermissionsTestSupport.Snapshot(
+            EffectivePermissionsTestSupport.OrganizationGrant("read_metadata")) with
+        {
+            TaskScope = new EffectivePermissionsTaskScope(
+                Status: EffectivePermissionsTaskScopeStatus.Available,
+                OpaqueTaskId: "task-a",
+                OpaqueWorkspaceId: null,
+                AllowedActions: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    "READ_METADATA",
+                }),
+        };
+
+        EffectivePermissionsQueryResult result = await ExecuteAsync(snapshot, taskContextId: "task-a").ConfigureAwait(true);
+
+        result.Code.ShouldBe(EffectivePermissionsResultCode.DeniedSafe);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Permissions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ExactActionFromIncompatibleComparerShouldRemainAllowed()
+    {
+        EffectivePermissionsReadModelSnapshot snapshot = EffectivePermissionsTestSupport.Snapshot(
+            EffectivePermissionsTestSupport.OrganizationGrant("read_metadata")) with
+        {
+            TaskScope = new EffectivePermissionsTaskScope(
+                Status: EffectivePermissionsTaskScopeStatus.Available,
+                OpaqueTaskId: "task-a",
+                OpaqueWorkspaceId: null,
+                AllowedActions: new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    "read_metadata",
+                }),
+        };
+
+        EffectivePermissionsQueryResult result = await ExecuteAsync(snapshot, taskContextId: "task-a").ConfigureAwait(true);
+
+        result.Code.ShouldBe(EffectivePermissionsResultCode.Allowed);
+        result.AuthorizationOutcome.ShouldBe("allowed");
+        result.Permissions.ShouldBe([EffectivePermissionLevel.Read]);
     }
 
     [Fact]

@@ -28,6 +28,8 @@ public static class EffectivePermissionsActionCatalog
         "create_folder",
     ];
 
+    private static readonly IReadOnlyList<string> OrderedActionsView = Array.AsReadOnly(OrderedActions);
+
     private static readonly Dictionary<string, EffectivePermissionLevel> PermissionByAction = new(StringComparer.Ordinal)
     {
         ["read_metadata"] = EffectivePermissionLevel.Read,
@@ -53,6 +55,21 @@ public static class EffectivePermissionsActionCatalog
         ["read_branch_ref_policy"] = EffectivePermissionLevel.Read,
         ["create_folder"] = EffectivePermissionLevel.Administer,
     };
+
+    /// <summary>
+    /// Gets the canonical action sequence through a read-only test seam.
+    /// </summary>
+    internal static IReadOnlyList<string> OrderedActionsForTesting => OrderedActionsView;
+
+    /// <summary>
+    /// Gets the number of actions with permission mappings through a test seam.
+    /// </summary>
+    internal static int MappedActionCountForTesting => PermissionByAction.Count;
+
+    /// <summary>
+    /// Determines whether an action has a permission mapping through a test seam.
+    /// </summary>
+    internal static bool HasPermissionMappingForTesting(string action) => PermissionByAction.ContainsKey(action);
 
     public static bool IsSupported(string action)
         => !string.IsNullOrWhiteSpace(action)
