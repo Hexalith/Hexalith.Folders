@@ -2562,3 +2562,11 @@ source_spec: `spec-archive-leakage-regression-coverage.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
 status: open
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-update-dotnet-packages-submodules.md`
+  summary: Make opted-in Aspire/Dapr behavioral probes fail closed and observe subscriber receipt instead of passing with skipped endpoint checks.
+  evidence: Both Debug/source and Release/package AppHost runs booted all six services, but `CreateDaprClient` converted unresolved sidecar HTTP endpoints into skips, and the publish probe does not assert that the worker received the event.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-update-dotnet-packages-submodules.md`
+  summary: Add the opted-in AppHost runtime suite to a regular automated DCP-capable CI lane.
+  evidence: The existing baseline and release workflows build the topology but do not set `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION` or execute `Hexalith.Folders.AppHost.Tests`, so later startup regressions are not continuously gated.

@@ -239,7 +239,9 @@ localization pass would externalize. No localization resource files are introduc
 
 ## 12. Automated verification — actually-run results
 
-Run on the Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`, `global.json` pin `10.0.300`).
+The recorded Story 6.11 results below ran on the Windows SDK (`/mnt/c/Program Files/dotnet/dotnet.exe`,
+historical `global.json` pin `10.0.300`). Preserve that historical evidence as recorded. Current reproductions use
+the repository `global.json` pin `10.0.400` with `rollForward: latestPatch`.
 
 ```yaml
 # Release-validation evidence (Story 6.11). Automated results are actually run; manual checks that require a

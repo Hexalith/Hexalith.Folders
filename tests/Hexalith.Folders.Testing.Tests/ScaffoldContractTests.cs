@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Shouldly;
@@ -289,13 +290,23 @@ public sealed class ScaffoldContractTests
     public void RootBuildConfigurationOwnsTargetFrameworkAndPackageVersions()
     {
         string root = RepositoryRoot();
+        using JsonDocument globalJson = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "global.json")));
         XDocument buildProps = XDocument.Load(Path.Combine(root, "Directory.Build.props"));
         XDocument packagesProps = XDocument.Load(Path.Combine(root, "Directory.Packages.props"));
+        XDocument catalogProps = XDocument.Load(Path.Combine(root, "references", "Hexalith.Builds", "Props", "Directory.Packages.props"));
+        XDocument appHostProject = XDocument.Load(Path.Combine(root, "src", "Hexalith.Folders.AppHost", "Hexalith.Folders.AppHost.csproj"));
+        using JsonDocument exceptionInventory = JsonDocument.Parse(File.ReadAllText(
+            Path.Combine(root, "references", "Hexalith.Builds", "Tools", "package-version-exceptions.json")));
         string[] projectsWithInlineVersions = ExpectedRootPolicyProjects
             .Select(project => Path.Combine(root, project.Replace('/', Path.DirectorySeparatorChar)))
             .Where(ProjectHasPackageReferenceVersion)
             .Select(path => Normalize(Path.GetRelativePath(root, path)))
             .ToArray();
+
+        JsonElement sdk = globalJson.RootElement.GetProperty("sdk");
+        sdk.GetProperty("version").GetString().ShouldBe("10.0.400");
+        sdk.GetProperty("rollForward").GetString().ShouldBe("latestPatch");
+        sdk.GetProperty("allowPrerelease").GetBoolean().ShouldBeFalse();
 
         DescendantsByLocalName(buildProps, "TargetFramework").Single().Value.ShouldBe("net10.0");
         DescendantsByLocalName(buildProps, "Nullable").Single().Value.ShouldBe("enable");
@@ -304,6 +315,35 @@ public sealed class ScaffoldContractTests
         DescendantsByLocalName(buildProps, "LangVersion").Single().Value.ShouldBe("latest");
         DescendantsByLocalName(packagesProps, "ManagePackageVersionsCentrally").Single().Value.ShouldBe("true");
         projectsWithInlineVersions.ShouldBeEmpty();
+
+        string aspireHostingVersion = ((string?)DescendantsByLocalName(catalogProps, "PackageVersion")
+            .Single(package => string.Equals((string?)package.Attribute("Include"), "Aspire.Hosting", StringComparison.Ordinal))
+            .Attribute("Version")).ShouldNotBeNull();
+        string appHostSdk = ((string?)appHostProject.Root?.Attribute("Sdk")).ShouldNotBeNull();
+        appHostSdk.ShouldBe($"Aspire.AppHost.Sdk/{aspireHostingVersion}");
+        XElement aspireUseCliBundle = DescendantsByLocalName(appHostProject, "AspireUseCliBundle").Single();
+        aspireUseCliBundle.Value.ShouldBe("false");
+        aspireUseCliBundle.Attribute("Condition").ShouldBeNull();
+        aspireUseCliBundle.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
+
+        XElement noWarn = DescendantsByLocalName(appHostProject, "NoWarn").Single();
+        noWarn.Value.ShouldBe("$(NoWarn);ASPIRE010");
+        noWarn.Attribute("Condition").ShouldBeNull();
+        noWarn.Parent.ShouldNotBeNull().Attribute("Condition").ShouldBeNull();
+
+        JsonElement[] foldersExceptions = exceptionInventory.RootElement
+            .GetProperty("exceptions")
+            .EnumerateArray()
+            .Where(entry => string.Equals(entry.GetProperty("owner").GetString(), "Hexalith.Folders", StringComparison.Ordinal))
+            .ToArray();
+        foldersExceptions.Length.ShouldBe(1);
+        JsonElement foldersException = foldersExceptions[0];
+        foldersException.GetProperty("kind").GetString().ShouldBe("apphost-sdk");
+        foldersException.GetProperty("path").GetString().ShouldBe("src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj");
+        foldersException.GetProperty("id").GetString().ShouldBe("Aspire.AppHost.Sdk");
+        foldersException.GetProperty("version").GetString().ShouldBe(aspireHostingVersion);
+        foldersException.GetProperty("alignmentRule").GetString().ShouldBe("exact-catalog-package");
+        foldersException.GetProperty("catalogPackage").GetString().ShouldBe("Aspire.Hosting");
     }
 
     [Fact]
