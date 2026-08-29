@@ -101,7 +101,7 @@ development_status:
   3-9-inspect-tenant-and-per-provider-readiness-evidence: done
   3-10-github-repository-provisioning-binding-and-branch-ref-behavior: done
   3-11-github-file-mutation-commit-status-and-failure-behavior: awaiting-operator
-  3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior: backlog
+  3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior: done
   3-13-forgejo-file-mutation-commit-status-and-failure-behavior: backlog
   3-14-complete-asynchronous-repository-creation-and-binding: backlog
   epic-3-retrospective: optional

@@ -550,7 +550,9 @@ public sealed partial class GitHubProvider : IGitProvider
     private static bool IsAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
         => admission is not null
             && Enum.IsDefined(admission.Disposition)
-            && IsSafeOpaqueValue(admission.IntentFingerprint);
+            && IsSafeOpaqueValue(admission.IntentFingerprint)
+            && (admission.Disposition == ProviderIdempotencyDisposition.EquivalentReplay
+                || HasNoPriorOutcomeFields(admission));
 
     /// <summary>
     /// Repository-scoped reason codes that may be replayed from a durable admission. The Story 3.11
@@ -628,11 +630,19 @@ public sealed partial class GitHubProvider : IGitProvider
         return admission.PriorOutcomeDisposition switch
         {
             ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
-                && admission.PriorReconciliationReference is null,
-            ProviderPriorOutcomeDisposition.Unknown => IsSafeOpaqueReference(admission.PriorReconciliationReference),
+                && SafeCanonicalRepositoryId(admission.PriorCanonicalRepositoryId) is not null
+                && admission.PriorReconciliationReference is null
+                && admission.PriorFailureCategory == ProviderFailureCategory.None
+                && admission.PriorReasonCode is null
+                && admission.PriorRemediationCode is null
+                && !admission.PriorRetryable
+                && admission.PriorRetryAfter is null,
+            ProviderPriorOutcomeDisposition.Unknown => IsSafeOpaqueReference(admission.PriorReconciliationReference)
+                && admission.PriorCanonicalRepositoryId is null,
             ProviderPriorOutcomeDisposition.KnownFailure => admission.PriorFailureCategory != ProviderFailureCategory.None
                 && Enum.IsDefined(admission.PriorFailureCategory)
                 && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && admission.PriorCanonicalRepositoryId is null
                 && IsRepositoryReasonAllowed(admission.PriorReasonCode)
                 && (admission.PriorRemediationCode is null || AllowedOperationRemediationCodes.Contains(admission.PriorRemediationCode))
                 && (admission.PriorRetryAfter is null || SafeRetryAfter(admission.PriorRetryAfter) == admission.PriorRetryAfter),
@@ -731,7 +741,7 @@ public sealed partial class GitHubProvider : IGitProvider
                 request,
                 equivalentExisting: true,
                 safeTargetFingerprint,
-                canonicalRepositoryId: null,
+                canonicalRepositoryId: admission.PriorCanonicalRepositoryId,
                 priorSafeOutcomeFingerprint: admission.PriorSafeOutcomeFingerprint,
                 priorOperationReference: admission.PriorOperationReference),
         };
@@ -791,7 +801,7 @@ public sealed partial class GitHubProvider : IGitProvider
                 request,
                 equivalentExisting: true,
                 safeTargetFingerprint,
-                canonicalRepositoryId: null,
+                canonicalRepositoryId: admission.PriorCanonicalRepositoryId,
                 priorSafeOutcomeFingerprint: admission.PriorSafeOutcomeFingerprint,
                 priorOperationReference: admission.PriorOperationReference),
         };

@@ -5,15 +5,18 @@ namespace Hexalith.Folders.Providers.Forgejo;
 
 public sealed class ForgejoProvider : IGitProvider
 {
+    private static readonly TimeSpan MaximumAuthorizationAge = TimeSpan.FromMinutes(5);
     private readonly IForgejoCredentialResolver _credentialResolver;
     private readonly IForgejoApiClientFactory _apiClientFactory;
     private readonly IProviderRepositoryTargetResolver _targetResolver;
+    private readonly TimeProvider _timeProvider;
 
     public ForgejoProvider()
         : this(
             new UnconfiguredForgejoCredentialResolver(),
             new ForgejoHttpApiClientFactory(),
-            new UnconfiguredProviderRepositoryTargetResolver())
+            new UnconfiguredProviderRepositoryTargetResolver(),
+            TimeProvider.System)
     {
     }
 
@@ -23,7 +26,8 @@ public sealed class ForgejoProvider : IGitProvider
         : this(
             credentialResolver,
             apiClientFactory,
-            new UnconfiguredProviderRepositoryTargetResolver())
+            new UnconfiguredProviderRepositoryTargetResolver(),
+            TimeProvider.System)
     {
     }
 
@@ -31,10 +35,20 @@ public sealed class ForgejoProvider : IGitProvider
         IForgejoCredentialResolver credentialResolver,
         IForgejoApiClientFactory apiClientFactory,
         IProviderRepositoryTargetResolver targetResolver)
+        : this(credentialResolver, apiClientFactory, targetResolver, TimeProvider.System)
+    {
+    }
+
+    internal ForgejoProvider(
+        IForgejoCredentialResolver credentialResolver,
+        IForgejoApiClientFactory apiClientFactory,
+        IProviderRepositoryTargetResolver targetResolver,
+        TimeProvider timeProvider)
     {
         _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
         _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
         _targetResolver = targetResolver ?? throw new ArgumentNullException(nameof(targetResolver));
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
     }
 
     public string ProviderFamily => ForgejoProviderConstants.ProviderFamily;
@@ -697,6 +711,7 @@ public sealed class ForgejoProvider : IGitProvider
     private static readonly HashSet<string> AllowedRepositoryReasonCodes = new(StringComparer.Ordinal)
     {
         "authorization_evidence_stale",
+        "authorization_evidence_malformed",
         "forgejo_administration_permission_insufficient",
         "forgejo_authentication_required",
         "forgejo_branch_or_path_missing",
@@ -710,6 +725,8 @@ public sealed class ForgejoProvider : IGitProvider
         "forgejo_malformed_response",
         "forgejo_mutation_cancellation_outcome_unknown",
         "forgejo_mutation_outcome_unknown",
+        "forgejo_operation_evidence_malformed",
+        "forgejo_operation_scope_mismatch",
         "forgejo_observation_cancelled",
         "forgejo_permission_insufficient",
         "forgejo_rate_limited",
@@ -732,6 +749,7 @@ public sealed class ForgejoProvider : IGitProvider
         "provider_repository_creation_target_unconfigured",
         "resolved_provider_target_malformed",
         "target_evidence_stale",
+        "target_evidence_malformed",
         "unsafe_forgejo_target_metadata",
         "unsupported_forgejo_credential_mode",
         "unsupported_provider_family",
@@ -740,7 +758,9 @@ public sealed class ForgejoProvider : IGitProvider
     private static bool IsAdmissionWellFormed(ProviderIdempotencyAdmission? admission)
         => admission is not null
             && Enum.IsDefined(admission.Disposition)
-            && IsSafeOpaqueValue(admission.IntentFingerprint);
+            && IsSafeOpaqueValue(admission.IntentFingerprint)
+            && (admission.Disposition == ProviderIdempotencyDisposition.EquivalentReplay
+                || HasNoPriorOutcomeFields(admission));
 
     private static bool IsReplayEvidenceWellFormed(ProviderIdempotencyAdmission admission)
     {
@@ -759,17 +779,45 @@ public sealed class ForgejoProvider : IGitProvider
         return admission.PriorOutcomeDisposition switch
         {
             ProviderPriorOutcomeDisposition.Success => IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
-                && admission.PriorReconciliationReference is null,
+                && SafeCanonicalRepositoryId(admission.PriorCanonicalRepositoryId) is not null
+                && admission.PriorReconciliationReference is null
+                && admission.PriorFailureCategory == ProviderFailureCategory.None
+                && admission.PriorReasonCode is null
+                && admission.PriorRemediationCode is null
+                && !admission.PriorRetryable
+                && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.Unknown => IsSafeOpaqueValue(admission.PriorReconciliationReference)
-                && (admission.PriorSafeOutcomeFingerprint is null || IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)),
+                && admission.PriorCanonicalRepositoryId is null
+                && (admission.PriorSafeOutcomeFingerprint is null || IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint))
+                && admission.PriorFailureCategory == ProviderFailureCategory.None
+                && admission.PriorReasonCode is null
+                && admission.PriorRemediationCode is null
+                && !admission.PriorRetryable
+                && admission.PriorRetryAfter is null,
             ProviderPriorOutcomeDisposition.KnownFailure => admission.PriorFailureCategory is not (ProviderFailureCategory.None or ProviderFailureCategory.UnknownProviderOutcome)
                 && Enum.IsDefined(admission.PriorFailureCategory)
                 && IsSafeFingerprint(admission.PriorSafeOutcomeFingerprint)
+                && admission.PriorCanonicalRepositoryId is null
+                && admission.PriorReconciliationReference is null
                 && IsRepositoryReasonAllowed(admission.PriorReasonCode)
+                && admission.PriorRemediationCode is not null
                 && IsSafeRemediation(admission.PriorRemediationCode, admission.PriorFailureCategory)
+                && (admission.PriorRetryable || admission.PriorRetryAfter is null)
                 && (admission.PriorRetryAfter is null || SafeRetryAfter(admission.PriorRetryAfter) == admission.PriorRetryAfter),
             _ => false,
         };
+
+    private static bool HasNoPriorOutcomeFields(ProviderIdempotencyAdmission admission)
+        => admission.PriorSafeOutcomeFingerprint is null
+            && admission.PriorReconciliationReference is null
+            && admission.PriorOperationReference is null
+            && admission.PriorOutcomeDisposition is null
+            && admission.PriorFailureCategory == ProviderFailureCategory.None
+            && admission.PriorReasonCode is null
+            && admission.PriorRemediationCode is null
+            && !admission.PriorRetryable
+            && admission.PriorRetryAfter is null
+            && admission.PriorCanonicalRepositoryId is null;
     }
 
     private static ProviderRepositoryCreationResult? ReplayOrReject(
@@ -820,7 +868,7 @@ public sealed class ForgejoProvider : IGitProvider
                 request,
                 equivalentExisting: true,
                 safeTargetFingerprint,
-                canonicalRepositoryId: null,
+                canonicalRepositoryId: admission.PriorCanonicalRepositoryId,
                 priorSafeOutcomeFingerprint: admission.PriorSafeOutcomeFingerprint,
                 priorOperationReference: admission.PriorOperationReference),
         };
@@ -873,7 +921,7 @@ public sealed class ForgejoProvider : IGitProvider
                 request,
                 equivalentExisting: true,
                 safeTargetFingerprint,
-                canonicalRepositoryId: null,
+                canonicalRepositoryId: admission.PriorCanonicalRepositoryId,
                 priorSafeOutcomeFingerprint: admission.PriorSafeOutcomeFingerprint,
                 priorOperationReference: admission.PriorOperationReference),
         };
@@ -942,7 +990,7 @@ public sealed class ForgejoProvider : IGitProvider
             && (target.ExpectedCanonicalRepositoryId is null
                 || SafeCanonicalRepositoryId(target.ExpectedCanonicalRepositoryId) is not null);
 
-    private static ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
+    private ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
     {
         try
         {
@@ -959,20 +1007,29 @@ public sealed class ForgejoProvider : IGitProvider
             return Failure(ProviderFailureCategory.ProviderValidationFailed, "provider_identity_malformed", request);
         }
 
-        if (!string.Equals(request.AuthorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase))
+        if (request.AuthorizationEvidence is null
+            || request.TargetEvidence is null
+            || request.TargetEvidence.Metadata is null)
         {
-            return Failure(ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale", request);
+            return Failure(ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed", request);
         }
 
-        if (request.TargetEvidence.IsStale)
+        string? evidenceFailure = ValidateOperationEvidence(
+            request.AuthorizationEvidence,
+            request.TargetEvidence,
+            "readiness");
+        if (evidenceFailure is not null)
         {
-            return Failure(ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale", request);
+            ProviderFailureCategory category = evidenceFailure is "authorization_evidence_stale" or "target_evidence_stale"
+                ? ProviderFailureCategory.ReconciliationRequired
+                : ProviderFailureCategory.ProviderValidationFailed;
+            return Failure(category, evidenceFailure, request);
         }
 
         return null;
     }
 
-    private static ProviderRepositoryCreationResult? ValidateBoundary(ProviderRepositoryCreationRequest request)
+    private ProviderRepositoryCreationResult? ValidateBoundary(ProviderRepositoryCreationRequest request)
     {
         try
         {
@@ -996,14 +1053,23 @@ public sealed class ForgejoProvider : IGitProvider
             return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed");
         }
 
-        if (!string.Equals(request.AuthorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase))
+        if (request.AuthorizationEvidence is null
+            || request.TargetEvidence is null
+            || request.TargetEvidence.Metadata is null)
         {
-            return RepositoryFailure(request, ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale");
+            return RepositoryFailure(request, ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed");
         }
 
-        if (request.TargetEvidence.IsStale)
+        string? evidenceFailure = ValidateOperationEvidence(
+            request.AuthorizationEvidence,
+            request.TargetEvidence,
+            "repository_creation");
+        if (evidenceFailure is not null)
         {
-            return RepositoryFailure(request, ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale");
+            ProviderFailureCategory category = evidenceFailure is "authorization_evidence_stale" or "target_evidence_stale"
+                ? ProviderFailureCategory.ReconciliationRequired
+                : ProviderFailureCategory.ProviderValidationFailed;
+            return RepositoryFailure(request, category, evidenceFailure);
         }
 
         if (!IsAdmissionWellFormed(request.IdempotencyAdmission))
@@ -1019,7 +1085,7 @@ public sealed class ForgejoProvider : IGitProvider
         return null;
     }
 
-    private static ProviderRepositoryBindingResult? ValidateBoundary(ProviderRepositoryBindingRequest request)
+    private ProviderRepositoryBindingResult? ValidateBoundary(ProviderRepositoryBindingRequest request)
     {
         try
         {
@@ -1043,14 +1109,23 @@ public sealed class ForgejoProvider : IGitProvider
             return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed");
         }
 
-        if (!string.Equals(request.AuthorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase))
+        if (request.AuthorizationEvidence is null
+            || request.TargetEvidence is null
+            || request.TargetEvidence.Metadata is null)
         {
-            return RepositoryBindingFailure(request, ProviderFailureCategory.ReconciliationRequired, "authorization_evidence_stale");
+            return RepositoryBindingFailure(request, ProviderFailureCategory.ProviderValidationFailed, "forgejo_operation_evidence_malformed");
         }
 
-        if (request.TargetEvidence.IsStale)
+        string? evidenceFailure = ValidateOperationEvidence(
+            request.AuthorizationEvidence,
+            request.TargetEvidence,
+            "existing_repository_binding");
+        if (evidenceFailure is not null)
         {
-            return RepositoryBindingFailure(request, ProviderFailureCategory.ReconciliationRequired, "target_evidence_stale");
+            ProviderFailureCategory category = evidenceFailure is "authorization_evidence_stale" or "target_evidence_stale"
+                ? ProviderFailureCategory.ReconciliationRequired
+                : ProviderFailureCategory.ProviderValidationFailed;
+            return RepositoryBindingFailure(request, category, evidenceFailure);
         }
 
         if (!IsAdmissionWellFormed(request.IdempotencyAdmission))
@@ -1064,6 +1139,40 @@ public sealed class ForgejoProvider : IGitProvider
         }
 
         return null;
+    }
+
+    private string? ValidateOperationEvidence(
+        ProviderAuthorizationEvidenceSnapshot authorizationEvidence,
+        ProviderTargetEvidence targetEvidence,
+        string requiredScope)
+    {
+        DateTimeOffset now = _timeProvider.GetUtcNow();
+        if (authorizationEvidence.CapturedAt == default
+            || authorizationEvidence.CapturedAt > now)
+        {
+            return "authorization_evidence_malformed";
+        }
+
+        if (!string.Equals(authorizationEvidence.FreshnessClass, "fresh", StringComparison.OrdinalIgnoreCase)
+            || now - authorizationEvidence.CapturedAt > MaximumAuthorizationAge)
+        {
+            return "authorization_evidence_stale";
+        }
+
+        if (targetEvidence.ObservedAt is { } observedAt && observedAt > now)
+        {
+            return "target_evidence_malformed";
+        }
+
+        if (targetEvidence.IsStale)
+        {
+            return "target_evidence_stale";
+        }
+
+        return targetEvidence.Metadata.TryGetValue("operation_scope", out string? operationScope)
+            && string.Equals(operationScope, requiredScope, StringComparison.Ordinal)
+                ? null
+                : "forgejo_operation_scope_mismatch";
     }
 
     private static ProviderCapabilityDiscoveryResult Failure(
