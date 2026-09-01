@@ -2283,8 +2283,6 @@ amended (2026-08-25, code review of story 3.10): the drift was not merely a risk
 resolution (2026-08-25): closed on the Story 3.10 side. `IsReplayEvidenceWellFormed` in `GitHubProvider.cs` now applies the same per-disposition rules as `IsOperationAdmissionWellFormed`, and both call the shared `IsSafeOpaqueReference` / `IsSafeFingerprint` / `SafeRetryAfter` / `AllowedOperationRemediationCodes` members of the same partial class. Reason codes are checked against the Story 3.11 allow-list first, with a repository-scoped set for the create/bind additions. The remaining item is the structural one: four gates still exist and a single shared helper would make future divergence impossible. That refactor still needs Story 3.11's authority.
 status: open
 
-## Deferred from: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
-
 ### DW-300: `IsMalformedJsonException` cites a nonexistent Octokit type, keeps a name-substring heuristic, and ships untested.
 
 origin: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)
@@ -2563,10 +2561,16 @@ severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260828-230804-913d; this entry preserves the lingering recommendation for a deliberate later review.
 status: open
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-update-dotnet-packages-submodules.md`
-  summary: Make opted-in Aspire/Dapr behavioral probes fail closed and observe subscriber receipt instead of passing with skipped endpoint checks.
-  evidence: Both Debug/source and Release/package AppHost runs booted all six services, but `CreateDaprClient` converted unresolved sidecar HTTP endpoints into skips, and the publish probe does not assert that the worker received the event.
+### DW-334: Make opted-in Aspire/Dapr behavioral probes fail closed and observe subscriber receipt instead of passing with skipped endpoint checks.
 
-- source_spec: `_bmad-output/implementation-artifacts/spec-update-dotnet-packages-submodules.md`
-  summary: Add the opted-in AppHost runtime suite to a regular automated DCP-capable CI lane.
-  evidence: The existing baseline and release workflows build the topology but do not set `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION` or execute `Hexalith.Folders.AppHost.Tests`, so later startup regressions are not continuously gated.
+origin: migrated from legacy ledger ("Deferred from: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)"), 2026-09-01
+location: tests/Hexalith.Folders.AppHost.Tests/FoldersTopologyCrossProcessTests.cs:91,149,279
+reason: Both Debug/source and Release/package AppHost runs booted all six services, but `CreateDaprClient` converts unresolved Dapr sidecar HTTP endpoints into skipped tests and the publish probe does not assert that the worker received the event. Make the opted-in behavioral probes fail closed and observe subscriber receipt.
+status: open
+
+### DW-335: Add the opted-in AppHost runtime suite to a regular automated DCP-capable CI lane.
+
+origin: migrated from legacy ledger ("Deferred from: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)"), 2026-09-01
+location: .github/workflows/ci.yml:40-43; .github/workflows/release-packages.yml:136-148
+reason: The existing baseline and release workflows build the topology but do not set `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION` or execute `Hexalith.Folders.AppHost.Tests`, so later startup regressions are not continuously gated. Add the opted-in suite to a regular automated DCP-capable CI lane.
+status: open
