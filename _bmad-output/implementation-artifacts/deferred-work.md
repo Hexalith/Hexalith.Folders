@@ -287,7 +287,8 @@ resolution-undo: 8c06abcaac18bf48049224e367f28b74323a66545b9d73cdbce66560c048d44
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation (2026-05-20)"), 2026-08-24
 location: FolderProjectionEnvelope.Event
 reason: `IFolderEvent` interface coupling — `FolderProjectionEnvelope.Event` was widened from `FolderCreated` to `IFolderEvent`. Other consumers of the envelope (workers, snapshots, generated code, tests outside this diff) must remain consistent. Deferred — broader event-interface design beyond Story 2.8 scope.
-status: open
+status: done 2026-09-01
+resolution: already resolved: src/Hexalith.Folders/Projections/FolderList/FolderProjectionEnvelope.cs:5-8 accepts IFolderEvent, and tests/Hexalith.Folders.Workers.Tests/SemanticIndexingProcessManagerTests.cs:173-181 verifies an archived event through the widened envelope.
 
 ### DW-37: Archive metadata fields not cleared on a hypothetical unarchive event
 
@@ -339,7 +340,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs:12
 reason: `DiagnosticSentinels` on `FolderLifecycleStatusReadModelSnapshot` is never read by the handler [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusReadModelSnapshot.cs:12`] — deferred, harmless dead state; may anchor future redaction-enforcement logic.
-status: open
+status: done 2026-09-01
+resolution: already resolved: tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusMetadataLeakageTests.cs:53-75 now uses DiagnosticSentinels as an active redaction negative control and proves each sentinel is absent from the serialized response.
 
 ### DW-44: `HasNoBindingReferences` duplicates `HasValue` logic [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:321-326`] — deferred, cosmetic consolidation.
 
@@ -790,7 +792,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers round 4 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj:5-7
 reason: Generator csproj relies on MSBuild item-ordering to exclude `Shared/**/*.cs` (`src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj:5-7`).
-status: open
+status: done 2026-09-01
+resolution: already resolved: Commit b117e56 and src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj:7-16 explicitly remove Shared/**/*.cs from compilation and consume the shared code through a ProjectReference.
 
 ### DW-105: `ParsedProblemDetailsCache` is a nested `private sealed class` visible to Newtonsoft reflection (`src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs:104-118`).
 
@@ -1518,7 +1521,8 @@ resolution: already resolved: Directory.Build.props:23-27 derives the shared *Fr
 origin: migrated from legacy ledger ("Deferred from: code review of 1-1-establish-a-consumer-buildable-module-scaffold (2026-05-11)"), 2026-08-24
 location: predev-preflight-2026-05-10T200403Z.json
 reason: Predev preflight gate `result: "fail"` recorded in `predev-preflight-2026-05-10T200403Z.json` and latest pointer due to a dirty working tree (sprint-status + story 1-6 staged). Process concern outside the code-review scope — track via the preflight gate, not in this story.
-status: open
+status: done 2026-09-01
+resolution: already resolved: _bmad-output/process-notes/predev-preflight-latest.json:4,66 identifies the later 2026-05-21 run and a different 19-path dirty set, so the original Story 1.6 latest-pointer condition is superseded.
 
 ### DW-201: `.gitmodules` declares 5 root submodules including `Hexalith.Memories`, but `Directory.Build.props` only detects `Hexalith.EventStore` and `Hexalith.Tenants`
 
@@ -1686,7 +1690,8 @@ resolution: already resolved: src/Hexalith.Folders.Contracts/openapi/hexalith.fo
 origin: migrated from legacy ledger ("Deferred from: code review of 1-12-wire-nswag-sdk-generation-with-idempotency-helpers Round 3 (2026-05-16)"), 2026-08-24
 location: src/Hexalith.Folders.Client/Generation/Program.cs:929
 reason: `Render` uses `AppendLine` + final `ReplaceLineEndings("\n")` [`src/Hexalith.Folders.Client/Generation/Program.cs:929`] — Round 2 P28 was marked done with this approach; functionally deterministic.
-status: open
+status: done 2026-09-01
+resolution: already resolved: src/Hexalith.Folders.Client/Generation/Program.cs:534 normalizes rendered output with ReplaceLineEndings("\n"), providing deterministic line endings.
 
 ### DW-223: `ReadProperties` does not follow `allOf` / `$ref` composition
 
