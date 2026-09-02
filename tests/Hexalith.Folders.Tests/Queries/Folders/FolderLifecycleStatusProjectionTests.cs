@@ -5,13 +5,16 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class FolderLifecycleStatusProjectionTests
 {
     [Fact]
     public async Task ActiveUnboundFolderReturnsReadyMetadataOnlyStatus()
     {
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(FolderLifecycleStatusReadModelResult.Available(
-            FolderLifecycleStatusTestSupport.ActiveUnbound())).ConfigureAwait(true);
+            FolderLifecycleStatusTestSupport.ActiveUnbound())).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         result.FolderId.ShouldBe("folder-a");
@@ -31,7 +34,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(FolderLifecycleStatusReadModelResult.Available(
             FolderLifecycleStatusTestSupport.ActiveBound(
                 "repository_binding_opaque_safe",
-                "provider_binding_opaque_safe"))).ConfigureAwait(true);
+                "provider_binding_opaque_safe"))).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         result.LifecycleState.ShouldBe("ready");
@@ -52,7 +55,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             diagnosticSentinels: []);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         result.LifecycleState.ShouldBe("inaccessible");
@@ -79,7 +82,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             diagnosticSentinels: []);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed, consumerSurface);
         result.LifecycleState.ShouldBe("inaccessible", consumerSurface);
@@ -110,7 +113,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             "provider_binding_opaque_safe");
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         result.LifecycleState.ShouldBe(expectedLifecycleState);
@@ -131,7 +134,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ArchiveStateUnsupported);
         result.LifecycleState.ShouldBeNull();
@@ -151,7 +154,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             FolderRepositoryBindingStatus.Unknown);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -168,7 +171,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             evidenceScope: evidenceScope);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -185,7 +188,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Stale(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Stale(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         result.Freshness.Stale.ShouldBeTrue();
@@ -204,7 +207,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -219,10 +222,10 @@ public sealed class FolderLifecycleStatusProjectionTests
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         await tenantStore.SaveAsync(
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-a", "user-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         await tenantStore.SaveAsync(
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-b", "user-b"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         InMemoryFolderLifecycleStatusReadModel readModel = new(new FixedUtcClock(DateTimeOffset.UtcNow));
         readModel.Save(FolderLifecycleStatusTestSupport.Snapshot(
             "tenant-a",
@@ -244,7 +247,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         FolderLifecycleStatusQueryResult tenantA = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query("shared-folder-id", "tenant-a", "user-a", correlationId: "corr-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         FolderLifecycleStatusQueryResult tenantB = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(
                 "shared-folder-id",
@@ -255,7 +258,7 @@ public sealed class FolderLifecycleStatusProjectionTests
                     "tenant-b",
                     "user-b",
                     ["read_metadata"])),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         tenantA.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         tenantB.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
@@ -275,7 +278,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -291,7 +294,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             FolderLifecycleStatusReadModelStatus.Unavailable,
             Snapshot: null,
             FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_projection_unavailable"));
-        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -313,7 +316,7 @@ public sealed class FolderLifecycleStatusProjectionTests
                 Stale: false,
                 "source_outer_unavailable"));
 
-        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionUnavailable);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -328,7 +331,7 @@ public sealed class FolderLifecycleStatusProjectionTests
     public async Task MalformedReadModelStatusReturnsReadModelUnavailableResultCode()
     {
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Malformed(FolderLifecycleStatusTestSupport.Freshness())).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Malformed(FolderLifecycleStatusTestSupport.Freshness())).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -345,7 +348,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Stale(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Stale(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         result.Freshness.Stale.ShouldBeTrue();
@@ -363,7 +366,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             FolderRepositoryBindingStatus.Unbound);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -380,7 +383,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -401,7 +404,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound(evidenceScope: scope);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
@@ -420,7 +423,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(folderId: " "),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.NotFoundSafe);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -446,7 +449,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             Snapshot: null,
             FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_specific_reason"));
 
-        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(false);
 
         result.Code.ShouldBe(expectedCode);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -477,7 +480,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(expectedCode);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -502,7 +505,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             providerBindingRef);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -523,7 +526,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             Snapshot: null,
             FolderLifecycleStatusTestSupport.Freshness(reasonCode: null));
 
-        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(false);
 
         result.Code.ShouldBe(expectedCode);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -547,7 +550,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             FolderRepositoryBindingStatus.Unbound);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(expectedCode);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -565,7 +568,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         result.Freshness.ProjectionWatermark.ShouldBeNull();
@@ -590,7 +593,7 @@ public sealed class FolderLifecycleStatusProjectionTests
             providerBindingRef);
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         result.AuthorizationOutcome.ShouldBe("allowed");
@@ -626,7 +629,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -647,7 +650,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         return await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
     }
 
     private static string ArchiveFolderParityRow()
@@ -677,3 +680,4 @@ public sealed class FolderLifecycleStatusProjectionTests
         throw new InvalidOperationException("Could not locate repository root.");
     }
 }
+#pragma warning restore xUnit1030

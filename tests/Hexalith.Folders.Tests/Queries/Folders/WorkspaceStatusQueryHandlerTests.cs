@@ -7,6 +7,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class WorkspaceStatusQueryHandlerTests
 {
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
@@ -58,7 +61,7 @@ public sealed class WorkspaceStatusQueryHandlerTests
 
         WorkspaceStatusQueryResult result = await handler.HandleAsync(
             Query(tenantId: null, principalId: null, claimTransformEvidence: EventStoreClaimTransformEvidence.Missing()),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(WorkspaceStatusQueryResultCode.AuthenticationRequired);
         readModel.Requests.ShouldBe(0);
@@ -76,7 +79,7 @@ public sealed class WorkspaceStatusQueryHandlerTests
 
         WorkspaceStatusQueryResult result = await handler.HandleAsync(
             Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(WorkspaceStatusQueryResultCode.AuthorizationDenied);
         tenantStore.Gets.ShouldBe(1);
@@ -100,7 +103,7 @@ public sealed class WorkspaceStatusQueryHandlerTests
 
         WorkspaceStatusQueryResult result = await handler.HandleAsync(
             Query(folderId: folderId, workspaceId: workspaceId, correlationId: correlationId, taskId: taskId),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(WorkspaceStatusQueryResultCode.NotFoundSafe);
         tenantStore.Gets.ShouldBe(0);
@@ -258,9 +261,9 @@ public sealed class WorkspaceStatusQueryHandlerTests
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         await tenantStore.SaveAsync(
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-a", "user-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         WorkspaceStatusQueryHandler handler = Handler(tenantStore, new CountingWorkspaceStatusReadModel(readModelResult));
-        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(false);
     }
 
     private static WorkspaceStatusQueryHandler Handler(
@@ -409,6 +412,7 @@ public sealed class WorkspaceStatusQueryHandlerTests
         DateTimeOffset? observedAt = null)
         => new("read_your_writes", observedAt ?? Now, "workspace_status_watermark_v1", stale, reasonCode);
 }
+#pragma warning restore xUnit1030
 
 internal sealed class CountingWorkspaceStatusReadModel(WorkspaceStatusReadModelResult result)
     : IWorkspaceStatusReadModel

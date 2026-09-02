@@ -5,6 +5,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class FolderLifecycleStatusAuthorizationGateTests
 {
     [Fact]
@@ -17,8 +20,10 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
         FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
-            FolderLifecycleStatusTestSupport.Query(tenantId: null),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            FolderLifecycleStatusTestSupport.Query(
+                tenantId: null,
+                claimTransformEvidence: EventStoreClaimTransformEvidence.Missing()),
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthenticationRequired);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -33,6 +38,32 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
     }
 
     [Fact]
+    public void DefaultClaimTransformEvidenceUsesExactAuthorityValuesAndReadMetadataPermission()
+    {
+        FolderLifecycleStatusQuery query = FolderLifecycleStatusTestSupport.Query(
+            tenantId: " tenant-a ",
+            principalId: " user-a ");
+
+        query.ClaimTransformEvidence.TenantId.ShouldBe(" tenant-a ");
+        query.ClaimTransformEvidence.PrincipalId.ShouldBe(" user-a ");
+        query.ClaimTransformEvidence.IsPresent.ShouldBeTrue();
+        query.ClaimTransformEvidence.Malformed.ShouldBeFalse();
+        query.ClaimTransformEvidence.PermissionTokens.ShouldBe(["read_metadata"], ignoreOrder: true);
+    }
+
+    [Theory]
+    [InlineData(null, "user-a")]
+    [InlineData("", "user-a")]
+    [InlineData(" ", "user-a")]
+    [InlineData("tenant-a", null)]
+    [InlineData("tenant-a", "")]
+    [InlineData("tenant-a", " ")]
+    public void DefaultClaimTransformEvidenceRejectsInvalidAuthority(string? tenantId, string? principalId)
+        => Should.Throw<ArgumentException>(() => FolderLifecycleStatusTestSupport.Query(
+            tenantId: tenantId,
+            principalId: principalId));
+
+    [Fact]
     public async Task RejectsBeforeFolderProjectionWhenTenantDenied()
     {
         CountingTenantAccessProjectionStore tenantStore = new(
@@ -43,7 +74,7 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthorizationDenied);
         result.FolderId.ShouldBeNull();
@@ -67,7 +98,7 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
             {
                 ["header_hexalith_tenant_id"] = "tenant-b",
             }),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthorizationDenied);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -96,7 +127,7 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.NotFoundSafe);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -127,7 +158,7 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
         result.AuthorizationOutcome.ShouldBe("allowed");
@@ -157,7 +188,7 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.AuthorizationOutcome.ShouldBe("denied_safe");
@@ -171,3 +202,4 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
         readModel.Requests.ShouldBe(1);
     }
 }
+#pragma warning restore xUnit1030

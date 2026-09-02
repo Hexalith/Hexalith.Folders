@@ -8,6 +8,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 /// <summary>
 /// Negative-control tests proving the lifecycle-status handler does not fall back to
 /// aggregate scans, provider calls, repository reads, filesystem reads, or audit queries
@@ -39,7 +42,7 @@ public sealed class FolderLifecycleStatusNoFallbackTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         // Result must be a safe stale/unavailable outcome, not a permissive active default.
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionUnavailable);
@@ -73,7 +76,7 @@ public sealed class FolderLifecycleStatusNoFallbackTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
 
@@ -121,9 +124,10 @@ public sealed class FolderLifecycleStatusNoFallbackTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         readModel.Requests.ShouldBe(1);
     }
 }
+#pragma warning restore xUnit1030

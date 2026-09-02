@@ -16,6 +16,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class WorkspaceLifecycleProjectionDeterminismTests
 {
     private static readonly DateTimeOffset ProjectionObservedAt = new(2026, 5, 27, 12, 0, 0, TimeSpan.Zero);
@@ -27,8 +30,8 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
     [Fact]
     public async Task InMemoryReadModelsShouldRebuildDeterministicNormalizedSnapshots()
     {
-        ProjectionSnapshots first = await BuildProjectionSnapshotsAsync().ConfigureAwait(true);
-        ProjectionSnapshots second = await BuildProjectionSnapshotsAsync().ConfigureAwait(true);
+        ProjectionSnapshots first = await BuildProjectionSnapshotsAsync().ConfigureAwait(false);
+        ProjectionSnapshots second = await BuildProjectionSnapshotsAsync().ConfigureAwait(false);
 
         NormalizeProjectionPayload(first).ShouldBe(NormalizeProjectionPayload(second));
         first.LifecycleStatus.BindingStatus.ShouldBe(FolderRepositoryBindingStatus.Bound);
@@ -53,7 +56,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
     [Fact]
     public async Task NormalizedComparisonShouldStillFailForNonFreshnessDrift()
     {
-        ProjectionSnapshots baseline = await BuildProjectionSnapshotsAsync().ConfigureAwait(true);
+        ProjectionSnapshots baseline = await BuildProjectionSnapshotsAsync().ConfigureAwait(false);
         ProjectionSnapshots drifted = baseline with
         {
             WorkspaceStatus = baseline.WorkspaceStatus with
@@ -68,7 +71,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
     [Fact]
     public async Task NormalizedComparisonShouldStillFailForTenantAccessWatermarkDrift()
     {
-        ProjectionSnapshots baseline = await BuildProjectionSnapshotsAsync().ConfigureAwait(true);
+        ProjectionSnapshots baseline = await BuildProjectionSnapshotsAsync().ConfigureAwait(false);
         ProjectionSnapshots drifted = baseline with
         {
             TenantAccess = baseline.TenantAccess with
@@ -120,8 +123,8 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
         bool expectedRetryEligible,
         string expectedRetryReasonCode)
     {
-        WorkspaceCleanupStatusReadModelSnapshot first = await BuildCleanupStatusSnapshotAsync(events).ConfigureAwait(true);
-        WorkspaceCleanupStatusReadModelSnapshot second = await BuildCleanupStatusSnapshotAsync(events).ConfigureAwait(true);
+        WorkspaceCleanupStatusReadModelSnapshot first = await BuildCleanupStatusSnapshotAsync(events).ConfigureAwait(false);
+        WorkspaceCleanupStatusReadModelSnapshot second = await BuildCleanupStatusSnapshotAsync(events).ConfigureAwait(false);
 
         NormalizeProjectionPayload(first).ShouldBe(NormalizeProjectionPayload(second), scenario);
         first.Status.ShouldBe(expectedStatus, scenario);
@@ -133,7 +136,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
     [Fact]
     public async Task SerializedSnapshotsAndAuditEvidenceShouldRemainMetadataOnly()
     {
-        ProjectionSnapshots snapshots = await BuildProjectionSnapshotsAsync().ConfigureAwait(true);
+        ProjectionSnapshots snapshots = await BuildProjectionSnapshotsAsync().ConfigureAwait(false);
         string serialized = JsonSerializer.Serialize(new
         {
             Raw = snapshots,
@@ -229,18 +232,18 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             IsRetry = false,
             IsIdempotentReplay = false,
             IsDuplicate = false,
-        }.Build(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        }.Build(), TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         return new ProjectionSnapshots(
-            await LifecycleSnapshotAsync(lifecycle).ConfigureAwait(true),
-            await BranchRefPolicySnapshotAsync(branchRefPolicy).ConfigureAwait(true),
-            await WorkspaceLockSnapshotAsync(workspaceLock).ConfigureAwait(true),
-            await WorkspaceStatusSnapshotAsync(workspaceStatus).ConfigureAwait(true),
-            await WorkspaceCleanupSnapshotAsync(workspaceCleanup).ConfigureAwait(true),
-            await TaskStatusSnapshotAsync(taskStatus).ConfigureAwait(true),
+            await LifecycleSnapshotAsync(lifecycle).ConfigureAwait(false),
+            await BranchRefPolicySnapshotAsync(branchRefPolicy).ConfigureAwait(false),
+            await WorkspaceLockSnapshotAsync(workspaceLock).ConfigureAwait(false),
+            await WorkspaceStatusSnapshotAsync(workspaceStatus).ConfigureAwait(false),
+            await WorkspaceCleanupSnapshotAsync(workspaceCleanup).ConfigureAwait(false),
+            await TaskStatusSnapshotAsync(taskStatus).ConfigureAwait(false),
             folderList,
             ToAccessSnapshot(folderAccess),
-            await BuildTenantAccessProjectionSnapshotAsync().ConfigureAwait(true),
+            await BuildTenantAccessProjectionSnapshotAsync().ConfigureAwait(false),
             auditObserver.Observations);
     }
 
@@ -271,7 +274,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             FolderLifecycleReplayFixture.TaskId,
             FolderLifecycleReplayFixture.CorrelationId,
             AuthorizationWatermark: null,
-            ReadConsistency: "eventually_consistent"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            ReadConsistency: "eventually_consistent"), TestContext.Current.CancellationToken).ConfigureAwait(false);
         result.Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Available);
         return result.Snapshot.ShouldNotBeNull();
     }
@@ -287,7 +290,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             FolderLifecycleReplayFixture.TaskId,
             FolderLifecycleReplayFixture.CorrelationId,
             AuthorizationWatermark: null,
-            ReadConsistency: "eventually_consistent"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            ReadConsistency: "eventually_consistent"), TestContext.Current.CancellationToken).ConfigureAwait(false);
         result.Status.ShouldBe(BranchRefPolicyReadModelStatus.Available);
         return result.Snapshot.ShouldNotBeNull();
     }
@@ -304,7 +307,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             FolderLifecycleReplayFixture.TaskId,
             FolderLifecycleReplayFixture.CorrelationId,
             AuthorizationWatermark: null,
-            ReadConsistency: "read_your_writes"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            ReadConsistency: "read_your_writes"), TestContext.Current.CancellationToken).ConfigureAwait(false);
         result.Status.ShouldBe(WorkspaceLockStatusReadModelStatus.Available);
         return result.Snapshot.ShouldNotBeNull();
     }
@@ -321,7 +324,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             FolderLifecycleReplayFixture.TaskId,
             FolderLifecycleReplayFixture.CorrelationId,
             AuthorizationWatermark: null,
-            ReadConsistency: "read_your_writes"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            ReadConsistency: "read_your_writes"), TestContext.Current.CancellationToken).ConfigureAwait(false);
         result.Status.ShouldBe(WorkspaceStatusReadModelStatus.Available);
         return result.Snapshot.ShouldNotBeNull();
     }
@@ -338,7 +341,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             FolderLifecycleReplayFixture.TaskId,
             FolderLifecycleReplayFixture.CorrelationId,
             AuthorizationWatermark: null,
-            ReadConsistency: "read_your_writes"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            ReadConsistency: "read_your_writes"), TestContext.Current.CancellationToken).ConfigureAwait(false);
         result.Status.ShouldBe(WorkspaceCleanupStatusReadModelStatus.Available);
         return result.Snapshot.ShouldNotBeNull();
     }
@@ -351,7 +354,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
 
         repository.Seed(FolderLifecycleReplayFixture.StreamName, events);
 
-        return await WorkspaceCleanupSnapshotAsync(cleanup).ConfigureAwait(true);
+        return await WorkspaceCleanupSnapshotAsync(cleanup).ConfigureAwait(false);
     }
 
     private static async Task<TaskStatusReadModelSnapshot> TaskStatusSnapshotAsync(
@@ -363,7 +366,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
             FolderLifecycleReplayFixture.ActorPrincipalId,
             TaskStatusQueryHandler.ActionToken,
             FolderLifecycleReplayFixture.CorrelationId,
-            "eventually_consistent"), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            "eventually_consistent"), TestContext.Current.CancellationToken).ConfigureAwait(false);
         result.Status.ShouldBe(TaskStatusReadModelStatus.Available);
         return result.Snapshot.ShouldNotBeNull();
     }
@@ -405,9 +408,9 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
                 "01J00000000000000000000415A",
                 1,
                 payloadFingerprint: "tenant-access-created-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
-        await handler.HandleAsync(userAdded, TestContext.Current.CancellationToken).ConfigureAwait(true);
-        await handler.HandleAsync(userAdded, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
+        await handler.HandleAsync(userAdded, TestContext.Current.CancellationToken).ConfigureAwait(false);
+        await handler.HandleAsync(userAdded, TestContext.Current.CancellationToken).ConfigureAwait(false);
         await handler.HandleAsync(
             TenantAccessEvent(
                 FolderTenantAccessEventKind.TenantConfigurationSet,
@@ -415,11 +418,11 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
                 3,
                 configurationKey: "folders.lifecycle.replay.enabled",
                 payloadFingerprint: "tenant-access-configuration-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         FolderTenantAccessProjection projection = (await store
             .GetAsync(FolderLifecycleReplayFixture.ManagedTenantId, TestContext.Current.CancellationToken)
-            .ConfigureAwait(true)).ShouldNotBeNull();
+            .ConfigureAwait(false)).ShouldNotBeNull();
 
         return new FolderTenantAccessProjectionSnapshot(
             projection.TenantId,
@@ -570,3 +573,4 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
         public override DateTimeOffset GetUtcNow() => utcNow;
     }
 }
+#pragma warning restore xUnit1030

@@ -7,6 +7,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class WorkspaceCleanupStatusQueryHandlerTests
 {
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
@@ -47,7 +50,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
 
         WorkspaceCleanupStatusQueryResult result = await handler.HandleAsync(
             Query(tenantId: null, principalId: null, claimTransformEvidence: EventStoreClaimTransformEvidence.Missing()),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(WorkspaceCleanupStatusQueryResultCode.AuthenticationRequired);
         readModel.Requests.ShouldBe(0);
@@ -66,7 +69,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
 
         WorkspaceCleanupStatusQueryResult result = await handler.HandleAsync(
             Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(WorkspaceCleanupStatusQueryResultCode.AuthorizationDenied);
         tenantStore.Gets.ShouldBe(1);
@@ -91,7 +94,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
 
         WorkspaceCleanupStatusQueryResult result = await handler.HandleAsync(
             Query(folderId: folderId, workspaceId: workspaceId, correlationId: correlationId, taskId: taskId),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(WorkspaceCleanupStatusQueryResultCode.NotFoundSafe);
         tenantStore.Gets.ShouldBe(0);
@@ -149,7 +152,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         await tenantStore.SaveAsync(
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-a", "user-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         InMemoryWorkspaceCleanupStatusReadModel readModel = new(new FixedUtcClock(Now));
         readModel.Save(Snapshot(
             status: "status_only",
@@ -167,13 +170,13 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
 
         WorkspaceCleanupStatusQueryResult first = await handler.HandleAsync(
             Query(taskId: "task-a", correlationId: "corr-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         WorkspaceCleanupStatusQueryResult second = await handler.HandleAsync(
             Query(taskId: "task-b", correlationId: "corr-b"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         WorkspaceCleanupStatusQueryResult unscoped = await handler.HandleAsync(
             Query(taskId: null, correlationId: null),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         first.Code.ShouldBe(WorkspaceCleanupStatusQueryResultCode.Allowed);
         first.TaskId.ShouldBe("task-a");
@@ -226,9 +229,9 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         await tenantStore.SaveAsync(
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-a", "user-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         WorkspaceCleanupStatusQueryHandler handler = Handler(tenantStore, new CountingWorkspaceCleanupStatusReadModel(readModelResult));
-        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(false);
     }
 
     private static WorkspaceCleanupStatusQueryHandler Handler(
@@ -346,6 +349,7 @@ public sealed class WorkspaceCleanupStatusQueryHandlerTests
         string? reasonCode = null)
         => new("read_your_writes", Now, "cleanup_status_watermark_v1", stale, reasonCode);
 }
+#pragma warning restore xUnit1030
 
 internal sealed class CountingWorkspaceCleanupStatusReadModel(WorkspaceCleanupStatusReadModelResult result)
     : IWorkspaceCleanupStatusReadModel

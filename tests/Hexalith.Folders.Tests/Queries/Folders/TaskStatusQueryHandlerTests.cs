@@ -7,6 +7,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class TaskStatusQueryHandlerTests
 {
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
@@ -46,7 +49,7 @@ public sealed class TaskStatusQueryHandlerTests
 
         TaskStatusQueryResult result = await handler.HandleAsync(
             Query(tenantId: null, principalId: null, claimTransformEvidence: EventStoreClaimTransformEvidence.Missing()),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(TaskStatusQueryResultCode.AuthenticationRequired);
         result.TaskId.ShouldBeNull();
@@ -67,7 +70,7 @@ public sealed class TaskStatusQueryHandlerTests
             {
                 ["header_hexalith_tenant_id"] = "tenant-b",
             }),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(TaskStatusQueryResultCode.AuthorizationDenied);
         result.TaskId.ShouldBeNull();
@@ -85,7 +88,7 @@ public sealed class TaskStatusQueryHandlerTests
 
         TaskStatusQueryResult result = await handler.HandleAsync(
             Query(claimTransformEvidence: EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", ["read_workspace_status"])),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(TaskStatusQueryResultCode.AuthorizationDenied);
         tenantStore.Gets.ShouldBe(0);
@@ -102,7 +105,7 @@ public sealed class TaskStatusQueryHandlerTests
 
         TaskStatusQueryResult result = await handler.HandleAsync(
             Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(TaskStatusQueryResultCode.NotFoundSafe);
         result.TaskId.ShouldBeNull();
@@ -124,7 +127,7 @@ public sealed class TaskStatusQueryHandlerTests
 
         TaskStatusQueryResult result = await handler.HandleAsync(
             Query(taskId: taskId, correlationId: correlationId),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(TaskStatusQueryResultCode.NotFoundSafe);
         result.TaskId.ShouldBeNull();
@@ -209,7 +212,7 @@ public sealed class TaskStatusQueryHandlerTests
 
         TaskStatusQueryResult result = await handler.HandleAsync(
             Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
         result.TaskId.ShouldBeNull();
@@ -223,7 +226,7 @@ public sealed class TaskStatusQueryHandlerTests
             FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
         TaskStatusQueryHandler handler = Handler(tenantStore, new CountingTaskStatusReadModel(readModelResult));
 
-        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(false);
     }
 
     private static TaskStatusQueryHandler Handler(
@@ -338,3 +341,4 @@ public sealed class TaskStatusQueryHandlerTests
         }
     }
 }
+#pragma warning restore xUnit1030
