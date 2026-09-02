@@ -8,15 +8,29 @@ namespace Hexalith.Folders.Client.Tests;
 
 public sealed class ArchiveFolderClientConformanceTests
 {
-    [Fact]
-    public void GeneratedClientExposesArchiveFolderOperationWithRequiredHeaders()
-    {
-        MethodInfo method = typeof(IClient).GetMethods()
-            .Single(method => method.Name == "ArchiveFolderAsync" && method.GetParameters().Length == 6);
+    private const string OperationName = "ArchiveFolderAsync";
 
-        method.ReturnType.ShouldBe(typeof(Task<AcceptedCommand>));
-        method.GetParameters().Select(static parameter => parameter.Name).ToArray()
-            .ShouldBe(["folderId", "idempotency_Key", "x_Correlation_Id", "x_Hexalith_Task_Id", "body", "cancellationToken"]);
+    /// <summary>
+    /// Pins the archive operation's return type, required parameter-type multiset, and parameter
+    /// requiredness. Generated parameter names and positions are deliberately not asserted; header
+    /// identity remains covered by the oracle-driven <c>TransportParityConformanceTests</c>.
+    /// </summary>
+    [Fact]
+    public void GeneratedClientExposesArchiveFolderOperationWithRequiredSignature()
+    {
+        MethodInfo[] candidates = [.. typeof(IClient).GetMethods()
+            .Where(static method => string.Equals(method.Name, OperationName, StringComparison.Ordinal))];
+
+        candidates.ShouldNotBeEmpty($"{OperationName} must remain exposed on the generated client surface.");
+
+        candidates
+            .Any(static method => GeneratedClientMethodConformance.HasRequiredSignature(
+                method,
+                typeof(Task<AcceptedCommand>),
+                GeneratedClientMethodConformance.ArchiveFolderParameterTypes))
+            .ShouldBeTrue(
+                $"{OperationName} must preserve its return type and required parameter-type multiset. Observed: "
+                + GeneratedClientMethodConformance.DescribeOverloads(typeof(IClient), OperationName));
     }
 
     [Theory]

@@ -238,7 +238,9 @@ resolution: already resolved: src/Hexalith.Folders/Aggregates/Folder/FolderComma
 origin: migrated from legacy ledger ("Deferred from: code review of 2-8-archive-folders-with-audit-preservation round 2 (2026-05-20)"), 2026-08-24
 location: ArchiveFolderClientConformanceTests
 reason: `ArchiveFolderClientConformanceTests` parameter-order assertion is brittle to NSwag generator changes — currently passing. Deferred — relax to a set-equality assertion when a generator upgrade breaks it.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-generated-client-conformance
+resolution-undo: ef4b096a597db99515c9fb5fd152ab76f1be034dca947c7297c3c5207593bd6f 2026-09-02 7374617475733a206f70656e
 
 ### DW-31: `FolderArchiveMetadataLeakageTests` asserts the validator's input restriction indirectly via factory defaults
 
@@ -406,7 +408,9 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs
 reason: `LifecycleStatusClientConformanceTests` asserts `methods.Single(m => ...)` and locks NSwag parameter mangling [`tests/Hexalith.Folders.Client.Tests/LifecycleStatusClientConformanceTests.cs`] — deferred, brittle to generator upgrades.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-generated-client-conformance
+resolution-undo: ef4b096a597db99515c9fb5fd152ab76f1be034dca947c7297c3c5207593bd6f 2026-09-02 7374617475733a206f70656e
 
 ### DW-53: `MapFoldersServerEndpointsShouldRegisterLifecycleStatusRoute` builds an app without `await using` disposal
 
@@ -2582,4 +2586,12 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 3-10-github-repository-provisioning-binding-and-branch-ref-behavior (2026-08-25)"), 2026-09-01
 location: .github/workflows/ci.yml:40-43; .github/workflows/release-packages.yml:136-148
 reason: The existing baseline and release workflows build the topology but do not set `HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION` or execute `Hexalith.Folders.AppHost.Tests`, so later startup regressions are not continuously gated. Add the opted-in suite to a regular automated DCP-capable CI lane.
+status: open
+
+### DW-336: Pre-existing Forgejo provider syntax errors block the normal Client.Tests project build.
+origin: spec-deferred 14115ac2c839
+location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808
+source_spec: `spec-generated-client-conformance.md`
+severity: high
+reason: `dotnet build tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0` fails before compiling the changed tests with CS1513 at ForgejoProvider.cs:808 and CS1519 at ForgejoProvider.cs:821. A source-isolated client conformance project builds and runs the changed tests successfully.
 status: open
