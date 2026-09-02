@@ -14,8 +14,6 @@ public sealed class FolderLifecycleStatusQueryHandler(
 {
     private const string ActionToken = "read_metadata";
     private const string ActorPresentIdentifier = "actor_present";
-    private const string AllowedOutcome = "allowed";
-    private const string DeniedSafeOutcome = "denied_safe";
     private const string EventuallyConsistent = "eventually_consistent";
     private const string OperationId = "GetFolderLifecycleStatus";
 
@@ -113,16 +111,16 @@ public sealed class FolderLifecycleStatusQueryHandler(
             FolderLifecycleStatusReadModelStatus.Available when readModelResult.Snapshot is not null =>
                 Compute(query, allowed, readModelResult.Snapshot),
             FolderLifecycleStatusReadModelStatus.Available =>
-                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = "projection_malformed" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             FolderLifecycleStatusReadModelStatus.Stale =>
-                SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_stale" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, readModelResult.Freshness.ToUnavailableWithFallback("projection_stale"), query, null),
             FolderLifecycleStatusReadModelStatus.Unavailable =>
-                SafeResult(FolderLifecycleStatusResultCode.ProjectionUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_unavailable" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ProjectionUnavailable, readModelResult.Freshness.ToUnavailableWithFallback("projection_unavailable"), query, null),
             FolderLifecycleStatusReadModelStatus.Malformed =>
-                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true, ReasonCode = readModelResult.Freshness.ReasonCode ?? "projection_malformed" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("projection_malformed"), query, null),
             FolderLifecycleStatusReadModelStatus.NotFound =>
-                SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, readModelResult.Freshness, query, null),
-            _ => SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness with { Stale = true }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, readModelResult.Freshness.ToUnavailableForHandler("safe_not_found"), query, null),
+            _ => SafeResult(FolderLifecycleStatusResultCode.ReadModelUnavailable, readModelResult.Freshness.ToUnavailableForHandler("read_model_status_unknown"), query, null),
         };
     }
 
@@ -144,11 +142,11 @@ public sealed class FolderLifecycleStatusQueryHandler(
             FolderLifecycleProjectionState.ArchiveUnsupported =>
                 ArchiveUnsupportedResult(query, snapshot.Freshness),
             FolderLifecycleProjectionState.Missing =>
-                SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, snapshot.Freshness, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.NotFoundSafe, snapshot.Freshness.ToUnavailableForHandler("safe_not_found"), query, null),
             FolderLifecycleProjectionState.Stale =>
-                SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "lifecycle_stale" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ProjectionStale, snapshot.Freshness.ToUnavailableWithFallback("lifecycle_stale"), query, null),
             FolderLifecycleProjectionState.Unavailable =>
-                SafeResult(FolderLifecycleStatusResultCode.ProjectionUnavailable, snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "lifecycle_unavailable" }, query, null),
+                SafeResult(FolderLifecycleStatusResultCode.ProjectionUnavailable, snapshot.Freshness.ToUnavailableWithFallback("lifecycle_unavailable"), query, null),
             FolderLifecycleProjectionState.Malformed =>
                 Unavailable(query, snapshot.Freshness, "lifecycle_malformed"),
             FolderLifecycleProjectionState.Unknown =>
@@ -220,7 +218,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
         {
             return SafeResult(
                 FolderLifecycleStatusResultCode.ProjectionStale,
-                snapshot.Freshness with { Stale = true, ReasonCode = snapshot.Freshness.ReasonCode ?? "projection_stale" },
+                snapshot.Freshness.ToUnavailableWithFallback("projection_stale"),
                 query,
                 null);
         }
@@ -272,8 +270,8 @@ public sealed class FolderLifecycleStatusQueryHandler(
         string lifecycleState,
         bool archived = false)
     {
-        if (string.IsNullOrWhiteSpace(snapshot.RepositoryBindingId)
-            || string.IsNullOrWhiteSpace(snapshot.ProviderBindingRef))
+        if (!HasValue(snapshot.RepositoryBindingId)
+            || !HasValue(snapshot.ProviderBindingRef))
         {
             return Unavailable(query, snapshot.Freshness, "binding_metadata_malformed");
         }
@@ -301,7 +299,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
             archived,
             repositoryBindingId,
             providerBindingRef,
-            AllowedOutcome,
+            FolderLifecycleAuthorizationOutcome.Allowed.ToToken(),
             snapshot.Freshness,
             query.CorrelationId,
             query.TaskId,
@@ -314,7 +312,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
         string reasonCode)
         => SafeResult(
             FolderLifecycleStatusResultCode.ReadModelUnavailable,
-            freshness with { Stale = true, ReasonCode = freshness.ReasonCode ?? reasonCode },
+            freshness.ToUnavailableForHandler(reasonCode),
             query,
             authorizationDenial: null);
 
@@ -323,7 +321,7 @@ public sealed class FolderLifecycleStatusQueryHandler(
         FolderLifecycleFreshness freshness)
         => SafeResult(
             FolderLifecycleStatusResultCode.ArchiveStateUnsupported,
-            freshness with { Stale = true, ReasonCode = freshness.ReasonCode ?? "archive_state_unsupported" },
+            freshness.ToUnavailableForHandler("archive_state_unsupported"),
             query,
             authorizationDenial: null);
 
@@ -339,8 +337,8 @@ public sealed class FolderLifecycleStatusQueryHandler(
             Archived: false,
             RepositoryBindingId: null,
             ProviderBindingRef: null,
-            DeniedSafeOutcome,
-            freshness,
+            FolderLifecycleAuthorizationOutcome.DeniedSafe.ToToken(),
+            freshness.ToUnavailable(),
             query.CorrelationId,
             query.TaskId,
             OperationId,
@@ -367,8 +365,8 @@ public sealed class FolderLifecycleStatusQueryHandler(
         };
 
     private static bool HasNoBindingReferences(FolderLifecycleStatusReadModelSnapshot snapshot)
-        => string.IsNullOrWhiteSpace(snapshot.RepositoryBindingId)
-            && string.IsNullOrWhiteSpace(snapshot.ProviderBindingRef);
+        => !HasValue(snapshot.RepositoryBindingId)
+            && !HasValue(snapshot.ProviderBindingRef);
 
     private static bool HasValue(string? value)
         => !string.IsNullOrWhiteSpace(value);

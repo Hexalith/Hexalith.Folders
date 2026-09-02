@@ -350,7 +350,9 @@ resolution: already resolved: tests/Hexalith.Folders.Tests/Queries/Folders/Folde
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:321-326
 reason: `HasNoBindingReferences` duplicates `HasValue` logic [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:321-326`] — deferred, cosmetic consolidation.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-result-normalization
+resolution-undo: 20384003a3ab721aa676d555ac211048ed294c230b6d2536c139f25928f3d33e 2026-09-02 7374617475733a206f70656e
 
 ### DW-45: `Save` is not on `IFolderLifecycleStatusReadModel` interface
 
@@ -387,21 +389,27 @@ resolution: already resolved: src/Hexalith.Folders/Queries/Folders/FolderLifecyc
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:12-13
 reason: `AllowedOutcome` and `DeniedSafeOutcome` string constants in handler instead of an enum [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:12-13`] — deferred, parallel representation to `Code` invites drift.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-result-normalization
+resolution-undo: 20384003a3ab721aa676d555ac211048ed294c230b6d2536c139f25928f3d33e 2026-09-02 7374617475733a206f70656e
 
 ### DW-50: `ReasonCode` null-coalesce ordering is inconsistent across branches and can bury handler-determined reasons
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:93-99,126,189-194,279-287
 reason: `ReasonCode` null-coalesce ordering is inconsistent across branches and can bury handler-determined reasons [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:93-99,126,189-194,279-287`] — deferred, refactor pass to consolidate.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-result-normalization
+resolution-undo: 20384003a3ab721aa676d555ac211048ed294c230b6d2536c139f25928f3d33e 2026-09-02 7374617475733a206f70656e
 
 ### DW-51: Snapshot freshness mutation idiom repeated and `ProjectionWatermark` preserved on `Unavailable` outcomes
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:93-99,189-194,279-287
 reason: Snapshot freshness mutation idiom repeated and `ProjectionWatermark` preserved on `Unavailable` outcomes [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:93-99,189-194,279-287`] — deferred, refactor pass.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-result-normalization
+resolution-undo: 20384003a3ab721aa676d555ac211048ed294c230b6d2536c139f25928f3d33e 2026-09-02 7374617475733a206f70656e
 
 ### DW-52: `LifecycleStatusClientConformanceTests` asserts `methods.Single(m => ...)` and locks NSwag parameter mangling
 
@@ -2594,4 +2602,28 @@ location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808
 source_spec: `spec-generated-client-conformance.md`
 severity: high
 reason: `dotnet build tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0` fails before compiling the changed tests with CS1513 at ForgejoProvider.cs:808 and CS1519 at ForgejoProvider.cs:821. A source-isolated client conformance project builds and runs the changed tests successfully.
+status: open
+
+### DW-337: Non-available lifecycle read-model statuses can return a future observation time without compatibility validation.
+origin: spec-deferred 16522b0d63aa
+location: src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:109
+source_spec: `spec-lifecycle-result-normalization.md`
+severity: medium
+reason: ValidateSnapshotCompatibility rejects future ObservedAt values only for an Available result with a snapshot. Stale, Unavailable, Malformed, and NotFound outer statuses return their freshness without the same temporal check; this behavior predates the normalization change and requires a separate contract decision.
+status: open
+
+### DW-338: Sibling query handlers still duplicate the unavailable-freshness idiom and the authorization-outcome string constants that this spec normalized for the lifecycle handler.
+origin: spec-deferred d6a12601aedf
+location: src/Hexalith.Folders/Queries/Folders/WorkspaceLockStatusQueryHandler.cs:96-105,220
+source_spec: `spec-lifecycle-result-normalization.md`
+severity: medium
+reason: `WorkspaceStatusQueryHandler`, `WorkspaceLockStatusQueryHandler`, `WorkspaceCleanupStatusQueryHandler`, `BranchRefPolicyQueryHandler`, and `TaskStatusQueryHandler` each declare their own `allowed`/`denied_safe` constants and repeat `Freshness with { Stale = true, ReasonCode = ... ?? ... }` over the same `FolderLifecycleFreshness` record, and they still return a `ProjectionWatermark` on unavailable results. The canonical helpers introduced here are `internal` to the same assembly, so those sites could adopt them, but this spec's intent is scoped to the lifecycle handler.
+status: open
+
+### DW-339: Follow-up review still recommended for dw-lifecycle-result-normalization after the damping cap was spent
+origin: review-budget-followup
+location: n/a
+source_spec: `spec-lifecycle-result-normalization.md`
+severity: low
+reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260901-122019-16be; this entry preserves the lingering recommendation for a deliberate later review.
 status: open
