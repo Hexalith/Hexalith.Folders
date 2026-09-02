@@ -2421,6 +2421,7 @@ source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: medium
 reason: ToGatewayException still selects result.Events.Single(), while the wire result contract represents Events as a collection. Defining multi-event rejection semantics is broader than replacing the duplicated canonical mapping requested by DW-15.
 status: open
+decision: 2026-09-02 Fail closed — Validate exactly one rejection event and convert zero or multiple events into a bounded MalformedEvidence gateway failure, with focused tests.
 
 ### DW-316: The Hexalith.Folders.IntegrationTests project has no unfiltered CI lane, so most of its classes -- including this story's gateway-boundary suite and the pre-existing ArchiveFolderProcessWiringTests --
 origin: spec-deferred 0135b9f76686
@@ -2444,7 +2445,9 @@ location: references/Hexalith.EventStore/src/Hexalith.EventStore/ErrorHandling/D
 source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: medium
 reason: In production a Folders rejection reaches EventStoreGatewayException through DomainCommandRejectedExceptionHandler, which derives ProblemDetails reasonCode from DomainRejectionProblemCatalog.FromRejectionType(rejection.RejectionType) -- a kebab-case name derived from the rejection EVENT TYPE (folder-command-rejected), with a status drawn from a small set. The FolderResultCode never reaches the gateway exception in production at all. The double previously emitted the PascalCase enum name and now emits the snake_case canonical category; neither is the production wire spelling. Reconciling the two vocabularies would change the EventStore submodule or the caller-visible canonical error vocabulary, both of which this story's Block If and Never lists forbid.
-status: open
+status: done 2026-09-02
+resolution: closed by human decision: Treat the parity double as adapter-specific, remove its production-fidelity claim, and leave the production vocabulary unchanged.
+decision: 2026-09-02 Document simulator — Treat the parity double as adapter-specific, remove its production-fidelity claim, and leave the production vocabulary unchanged.
 
 ### DW-319: FolderCanonicalErrorMapper.CategoryFor and StatusFor have no production caller, so the table this story adopts as canonical is documentation rather than the mapping that runs.
 origin: spec-deferred bc225eef2edc
@@ -2453,6 +2456,7 @@ source_spec: `spec-archive-gateway-canonical-mapping.md`
 severity: medium
 reason: grep over src/ finds exactly one call into the mapper -- FoldersDomainServiceEndpoints.cs:5733 calls ClientActionFor. CategoryFor and StatusFor are called only by their own unit test and, after this change, by the parity double. FoldersDomainServiceEndpoints never references FolderResultCode; its caller-visible surface is keyed on SafeGatewayReasonCode instead. Wiring the mapper into the endpoint path would change caller-visible canonical error vocabulary, which this story's Never list forbids.
 status: open
+decision: 2026-09-02 Relocate test mapping — Move CategoryFor and StatusFor to explicit parity or test support while retaining ClientActionFor as the only production mapping.
 
 ### DW-320: Follow-up review still recommended for dw-archive-gateway-canonical-mapping after the damping cap was spent
 origin: review-budget-followup
