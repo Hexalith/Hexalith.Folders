@@ -19,6 +19,7 @@ public sealed class FolderLifecycleStatusProjectionTests
         result.Archived.ShouldBeFalse();
         result.RepositoryBindingId.ShouldBeNull();
         result.ProviderBindingRef.ShouldBeNull();
+        result.AuthorizationOutcome.ShouldBe("allowed");
         result.Freshness.ReadConsistency.ShouldBe("eventually_consistent");
         result.Freshness.ProjectionWatermark.ShouldBe(FolderLifecycleStatusTestSupport.LifecycleWatermark);
         result.Freshness.Stale.ShouldBeFalse();
@@ -124,14 +125,19 @@ public sealed class FolderLifecycleStatusProjectionTests
             "tenant-a",
             "folder-a",
             FolderLifecycleProjectionState.ArchiveUnsupported,
-            FolderRepositoryBindingStatus.Unbound);
+            FolderRepositoryBindingStatus.Unbound) with
+        {
+            Freshness = FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_archive_reason"),
+        };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
             FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ArchiveStateUnsupported);
         result.LifecycleState.ShouldBeNull();
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("archive_state_unsupported");
     }
 
@@ -149,6 +155,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("binding_state_unknown");
     }
 
@@ -165,6 +172,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("incompatible_authorization_watermark");
     }
 
@@ -181,7 +189,28 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("projection_stale");
+    }
+
+    [Fact]
+    public async Task AvailableSnapshotWithStaleFreshnessFailsClosedDuringCompatibilityValidation()
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound() with
+        {
+            Freshness = FolderLifecycleStatusTestSupport.Freshness(
+                stale: true,
+                reasonCode: "source_snapshot_stale"),
+        };
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.ReasonCode.ShouldBe("source_snapshot_stale");
     }
 
     [Fact]
@@ -240,25 +269,59 @@ public sealed class FolderLifecycleStatusProjectionTests
     public async Task MismatchedTaskEvidenceFailsClosedInsteadOfReusingCachedStatus()
     {
         FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound(
-            evidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(taskId: "different-task"));
+            evidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(taskId: "different-task")) with
+        {
+            Freshness = FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_task_scope_reason"),
+        };
 
         FolderLifecycleStatusQueryResult result = await ExecuteAsync(
             FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("task_mismatch");
     }
 
     [Fact]
     public async Task UnavailableProjectionStatusReturnsProjectionUnavailableResultCode()
     {
-        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
-            FolderLifecycleStatusReadModelResult.Unavailable("projection_unavailable", FolderLifecycleStatusTestSupport.Now)).ConfigureAwait(true);
+        FolderLifecycleStatusReadModelResult readModelResult = new(
+            FolderLifecycleStatusReadModelStatus.Unavailable,
+            Snapshot: null,
+            FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_projection_unavailable"));
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
-        result.Freshness.ReasonCode.ShouldBe("projection_unavailable");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.ReasonCode.ShouldBe("source_projection_unavailable");
+    }
+
+    [Fact]
+    public async Task OuterUnavailableStatusPreservesReadContextWhileSuppressingWatermark()
+    {
+        DateTimeOffset sourceObservedAt = FolderLifecycleStatusTestSupport.Now.AddMinutes(-17);
+        FolderLifecycleStatusReadModelResult readModelResult = new(
+            FolderLifecycleStatusReadModelStatus.Unavailable,
+            Snapshot: null,
+            new FolderLifecycleFreshness(
+                "snapshot_per_task",
+                sourceObservedAt,
+                "source_watermark_to_suppress",
+                Stale: false,
+                "source_outer_unavailable"));
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionUnavailable);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ReadConsistency.ShouldBe("snapshot_per_task");
+        result.Freshness.ObservedAt.ShouldBe(sourceObservedAt);
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe("source_outer_unavailable");
     }
 
     [Fact]
@@ -269,6 +332,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("projection_malformed");
     }
 
@@ -285,6 +349,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("binding_projection_stale");
     }
 
@@ -302,6 +367,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("lifecycle_state_unknown");
     }
 
@@ -318,6 +384,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("incompatible_authorization_watermark");
     }
 
@@ -338,6 +405,7 @@ public sealed class FolderLifecycleStatusProjectionTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
         result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         result.Freshness.ReasonCode.ShouldBe("evidence_principal_missing");
     }
 
@@ -355,8 +423,219 @@ public sealed class FolderLifecycleStatusProjectionTests
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.NotFoundSafe);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         readModel.Requests.ShouldBe(0);
         tenantStore.Gets.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Available, FolderLifecycleStatusResultCode.ReadModelUnavailable, "projection_malformed")]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Stale, FolderLifecycleStatusResultCode.ProjectionStale, "source_specific_reason")]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Unavailable, FolderLifecycleStatusResultCode.ProjectionUnavailable, "source_specific_reason")]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Malformed, FolderLifecycleStatusResultCode.ReadModelUnavailable, "projection_malformed")]
+    [InlineData(FolderLifecycleStatusReadModelStatus.NotFound, FolderLifecycleStatusResultCode.NotFoundSafe, "safe_not_found")]
+    [InlineData((FolderLifecycleStatusReadModelStatus)int.MaxValue, FolderLifecycleStatusResultCode.ReadModelUnavailable, "read_model_status_unknown")]
+    public async Task FailClosedReadModelStatusesSuppressWatermarkAndPreserveExactCode(
+        FolderLifecycleStatusReadModelStatus status,
+        FolderLifecycleStatusResultCode expectedCode,
+        string expectedReason)
+    {
+        FolderLifecycleStatusReadModelResult readModelResult = new(
+            status,
+            Snapshot: null,
+            FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_specific_reason"));
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+
+        result.Code.ShouldBe(expectedCode);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe(expectedReason);
+    }
+
+    [Theory]
+    [InlineData(FolderLifecycleProjectionState.Missing, FolderLifecycleStatusResultCode.NotFoundSafe, "safe_not_found")]
+    [InlineData(FolderLifecycleProjectionState.Stale, FolderLifecycleStatusResultCode.ProjectionStale, "source_specific_reason")]
+    [InlineData(FolderLifecycleProjectionState.Unavailable, FolderLifecycleStatusResultCode.ProjectionUnavailable, "source_specific_reason")]
+    [InlineData(FolderLifecycleProjectionState.Malformed, FolderLifecycleStatusResultCode.ReadModelUnavailable, "lifecycle_malformed")]
+    [InlineData(FolderLifecycleProjectionState.Unknown, FolderLifecycleStatusResultCode.ReadModelUnavailable, "lifecycle_state_unknown")]
+    [InlineData((FolderLifecycleProjectionState)int.MaxValue, FolderLifecycleStatusResultCode.ReadModelUnavailable, "lifecycle_state_unknown")]
+    public async Task FailClosedLifecycleStatesSuppressWatermarkAndPreserveExactCode(
+        FolderLifecycleProjectionState state,
+        FolderLifecycleStatusResultCode expectedCode,
+        string expectedReason)
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            state,
+            FolderRepositoryBindingStatus.Unbound) with
+        {
+            Freshness = FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_specific_reason"),
+        };
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(expectedCode);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe(expectedReason);
+    }
+
+    [Theory]
+    [InlineData("repository_binding_opaque_safe", null)]
+    [InlineData(null, "provider_binding_opaque_safe")]
+    public async Task OneSidedUnboundBindingReferencesRemainMalformed(
+        string? repositoryBindingId,
+        string? providerBindingRef)
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            FolderLifecycleProjectionState.Active,
+            FolderRepositoryBindingStatus.Unbound,
+            repositoryBindingId,
+            providerBindingRef);
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.ReasonCode.ShouldBe("unbound_binding_metadata_malformed");
+    }
+
+    [Theory]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Stale, FolderLifecycleStatusResultCode.ProjectionStale, "projection_stale")]
+    [InlineData(FolderLifecycleStatusReadModelStatus.Unavailable, FolderLifecycleStatusResultCode.ProjectionUnavailable, "projection_unavailable")]
+    public async Task GenericReadModelStatusesUseTheirOwnFallbackReasonWhenNoSourceReasonExists(
+        FolderLifecycleStatusReadModelStatus status,
+        FolderLifecycleStatusResultCode expectedCode,
+        string expectedReason)
+    {
+        FolderLifecycleStatusReadModelResult readModelResult = new(
+            status,
+            Snapshot: null,
+            FolderLifecycleStatusTestSupport.Freshness(reasonCode: null));
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(readModelResult).ConfigureAwait(true);
+
+        result.Code.ShouldBe(expectedCode);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe(expectedReason);
+    }
+
+    [Theory]
+    [InlineData(FolderLifecycleProjectionState.Stale, FolderLifecycleStatusResultCode.ProjectionStale, "lifecycle_stale")]
+    [InlineData(FolderLifecycleProjectionState.Unavailable, FolderLifecycleStatusResultCode.ProjectionUnavailable, "lifecycle_unavailable")]
+    public async Task GenericLifecycleStatesUseTheirOwnFallbackReasonWhenNoSourceReasonExists(
+        FolderLifecycleProjectionState state,
+        FolderLifecycleStatusResultCode expectedCode,
+        string expectedReason)
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            state,
+            FolderRepositoryBindingStatus.Unbound);
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(expectedCode);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe(expectedReason);
+    }
+
+    [Fact]
+    public async Task StaleSnapshotWithoutSourceReasonUsesTheCompatibilityFallbackReason()
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.ActiveUnbound() with
+        {
+            Freshness = FolderLifecycleStatusTestSupport.Freshness(stale: true, reasonCode: null),
+        };
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ProjectionStale);
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe("projection_stale");
+    }
+
+    [Theory]
+    [InlineData("   ", null)]
+    [InlineData(null, "\t")]
+    [InlineData(" ", "   ")]
+    public async Task WhitespaceOnlyBindingReferencesCountAsAbsentForUnboundFolders(
+        string? repositoryBindingId,
+        string? providerBindingRef)
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            FolderLifecycleProjectionState.Active,
+            FolderRepositoryBindingStatus.Unbound,
+            repositoryBindingId,
+            providerBindingRef);
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
+        result.AuthorizationOutcome.ShouldBe("allowed");
+        result.LifecycleState.ShouldBe("ready");
+        result.RepositoryBindingId.ShouldBeNull();
+        result.ProviderBindingRef.ShouldBeNull();
+        result.Freshness.ProjectionWatermark.ShouldBe(FolderLifecycleStatusTestSupport.LifecycleWatermark);
+    }
+
+    [Theory]
+    [InlineData(FolderLifecycleProjectionState.Active, FolderRepositoryBindingStatus.Bound, "repository_binding_opaque_001", null, "binding_metadata_malformed")]
+    [InlineData(FolderLifecycleProjectionState.Active, FolderRepositoryBindingStatus.BindingRequested, null, "provider_binding_opaque_001", "binding_metadata_malformed")]
+    [InlineData(FolderLifecycleProjectionState.Active, FolderRepositoryBindingStatus.Failed, "   ", "provider_binding_opaque_001", "binding_metadata_malformed")]
+    [InlineData(FolderLifecycleProjectionState.Active, FolderRepositoryBindingStatus.Unsupported, null, null, "binding_state_unsupported")]
+    [InlineData(FolderLifecycleProjectionState.Archived, FolderRepositoryBindingStatus.Bound, "repository_binding_opaque_001", " ", "binding_metadata_malformed")]
+    [InlineData(FolderLifecycleProjectionState.Archived, FolderRepositoryBindingStatus.Failed, null, null, "archived_binding_state_unsupported")]
+    public async Task BindingBranchFailuresOverrideSourceReasonAndSuppressWatermark(
+        FolderLifecycleProjectionState lifecycleState,
+        FolderRepositoryBindingStatus bindingStatus,
+        string? repositoryBindingId,
+        string? providerBindingRef,
+        string expectedReason)
+    {
+        FolderLifecycleStatusReadModelSnapshot snapshot = FolderLifecycleStatusTestSupport.Snapshot(
+            "tenant-a",
+            "folder-a",
+            lifecycleState,
+            bindingStatus,
+            repositoryBindingId,
+            providerBindingRef) with
+        {
+            Freshness = FolderLifecycleStatusTestSupport.Freshness(reasonCode: "source_specific_reason"),
+        };
+
+        FolderLifecycleStatusQueryResult result = await ExecuteAsync(
+            FolderLifecycleStatusReadModelResult.Available(snapshot)).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.LifecycleState.ShouldBeNull();
+        result.RepositoryBindingId.ShouldBeNull();
+        result.ProviderBindingRef.ShouldBeNull();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.Stale.ShouldBeTrue();
+        result.Freshness.ReasonCode.ShouldBe(expectedReason);
     }
 
     private static async Task<FolderLifecycleStatusQueryResult> ExecuteAsync(FolderLifecycleStatusReadModelResult readModelResult)

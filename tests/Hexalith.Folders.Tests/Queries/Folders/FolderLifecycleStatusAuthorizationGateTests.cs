@@ -8,6 +8,31 @@ namespace Hexalith.Folders.Tests.Queries.Folders;
 public sealed class FolderLifecycleStatusAuthorizationGateTests
 {
     [Fact]
+    public async Task MissingAuthenticationReturnsBeforeAuthorizationOrReadModelLookup()
+    {
+        CountingTenantAccessProjectionStore tenantStore = new(
+            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        CountingLifecycleStatusReadModel readModel = new(FolderLifecycleStatusReadModelResult.Available(
+            FolderLifecycleStatusTestSupport.ActiveUnbound()));
+        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
+
+        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
+            FolderLifecycleStatusTestSupport.Query(tenantId: null),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthenticationRequired);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.FolderId.ShouldBeNull();
+        result.LifecycleState.ShouldBeNull();
+        result.RepositoryBindingId.ShouldBeNull();
+        result.ProviderBindingRef.ShouldBeNull();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.ReasonCode.ShouldBe("denied_safe");
+        tenantStore.Gets.ShouldBe(0);
+        readModel.Requests.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task RejectsBeforeFolderProjectionWhenTenantDenied()
     {
         CountingTenantAccessProjectionStore tenantStore = new(
@@ -22,6 +47,8 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthorizationDenied);
         result.FolderId.ShouldBeNull();
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         tenantStore.Gets.ShouldBe(1);
         readModel.Requests.ShouldBe(0);
     }
@@ -43,6 +70,8 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.AuthorizationDenied);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         tenantStore.Gets.ShouldBe(0);
         readModel.Requests.ShouldBe(0);
     }
@@ -70,6 +99,8 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.NotFoundSafe);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
         readModel.Requests.ShouldBe(0);
         folderEvidence.Requests.Count.ShouldBe(1);
         validator.Requests.Count.ShouldBe(0);
@@ -99,6 +130,8 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
             TestContext.Current.CancellationToken).ConfigureAwait(true);
 
         result.Code.ShouldBe(FolderLifecycleStatusResultCode.Allowed);
+        result.AuthorizationOutcome.ShouldBe("allowed");
+        result.Freshness.ProjectionWatermark.ShouldBe(FolderLifecycleStatusTestSupport.LifecycleWatermark);
         tenantStore.Gets.ShouldBe(1);
         folderEvidence.Requests.Count.ShouldBe(1);
         validator.Requests.Count.ShouldBe(1);
@@ -112,5 +145,29 @@ public sealed class FolderLifecycleStatusAuthorizationGateTests
         readModel.LastRequest.TaskId.ShouldBe("task-a");
         readModel.LastRequest.CorrelationId.ShouldBe("corr-a");
         readModel.LastRequest.AuthorizationWatermark.ShouldBe(FolderLifecycleStatusTestSupport.AuthorizationWatermark);
+    }
+
+    [Fact]
+    public async Task ThrowingLifecycleReadModelReturnsMetadataOnlyUnavailableResult()
+    {
+        CountingTenantAccessProjectionStore tenantStore = new(
+            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        ThrowingLifecycleStatusReadModel readModel = new();
+        FolderLifecycleStatusQueryHandler handler = FolderLifecycleStatusTestSupport.Handler(tenantStore, readModel);
+
+        FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
+            FolderLifecycleStatusTestSupport.Query(),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.Code.ShouldBe(FolderLifecycleStatusResultCode.ReadModelUnavailable);
+        result.AuthorizationOutcome.ShouldBe("denied_safe");
+        result.FolderId.ShouldBeNull();
+        result.LifecycleState.ShouldBeNull();
+        result.RepositoryBindingId.ShouldBeNull();
+        result.ProviderBindingRef.ShouldBeNull();
+        result.Freshness.ProjectionWatermark.ShouldBeNull();
+        result.Freshness.ReasonCode.ShouldBe("read_model_unavailable");
+        tenantStore.Gets.ShouldBe(1);
+        readModel.Requests.ShouldBe(1);
     }
 }
