@@ -106,9 +106,9 @@ public sealed class WorkspaceLockStatusProjectionTests
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
         await tenantStore.SaveAsync(
             FolderLifecycleStatusTestSupport.TenantProjection("tenant-a", "user-a"),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
         WorkspaceLockStatusQueryHandler handler = Handler(tenantStore, new CountingWorkspaceLockStatusReadModel(readModelResult));
-        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        return await handler.HandleAsync(Query(), TestContext.Current.CancellationToken).ConfigureAwait(false);
     }
 
     private static WorkspaceLockStatusQueryHandler Handler(

@@ -19,7 +19,7 @@ public sealed class FolderLifecycleStatusEndpointTests
     private static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
-    public void MapFoldersServerEndpointsShouldRegisterLifecycleStatusRoute()
+    public async Task MapFoldersServerEndpointsShouldRegisterLifecycleStatusRoute()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore("tenant-a", "user-a"));
@@ -31,7 +31,7 @@ public sealed class FolderLifecycleStatusEndpointTests
         builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
-        WebApplication app = builder.Build();
+        await using WebApplication app = builder.Build();
 
         app.MapFoldersServerEndpoints();
 

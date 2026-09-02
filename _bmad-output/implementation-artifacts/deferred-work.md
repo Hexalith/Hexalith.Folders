@@ -374,7 +374,9 @@ resolution: already resolved: src/Hexalith.Folders/Queries/Folders/FolderLifecyc
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: tests/Hexalith.Folders.Tests/Queries/Folders/*.cs
 reason: Test files use `ConfigureAwait(true)` while production handler uses `ConfigureAwait(false)` [`tests/Hexalith.Folders.Tests/Queries/Folders/*.cs`] — deferred, style inconsistency.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-test-hygiene
+resolution-undo: 9ffcf9ab21c47fbee1041561963d8a61a6e0c8d5a978d40e48b6584ea52dfbcb 2026-09-02 7374617475733a206f70656e
 
 ### DW-48: `ActorSafeIdentifier: "actor_present"` magic string [`src/Hexalith.Folders/Queries/Folders/FolderLifecycleStatusQueryHandler.cs:43`] — deferred, extract to a named constant.
 
@@ -425,14 +427,18 @@ resolution-undo: ef4b096a597db99515c9fb5fd152ab76f1be034dca947c7297c3c5207593bd6
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs
 reason: `MapFoldersServerEndpointsShouldRegisterLifecycleStatusRoute` builds an app without `await using` disposal [`tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs`] — deferred, resource leak in test process.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-test-hygiene
+resolution-undo: 9ffcf9ab21c47fbee1041561963d8a61a6e0c8d5a978d40e48b6584ea52dfbcb 2026-09-02 7374617475733a206f70656e
 
 ### DW-54: `FolderLifecycleStatusTestSupport` builds `EventStoreClaimTransformEvidence.Allowed(...)` with nullable tenant/principal parameters
 
 origin: migrated from legacy ledger ("Deferred from: code review of 2-7-inspect-folder-lifecycle-and-binding-status (2026-05-19)"), 2026-08-24
 location: tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs
 reason: `FolderLifecycleStatusTestSupport` builds `EventStoreClaimTransformEvidence.Allowed(...)` with nullable tenant/principal parameters [`tests/Hexalith.Folders.Tests/Queries/Folders/FolderLifecycleStatusTestSupport.cs`] — deferred, opaque test scaffolding.
-status: open
+status: done 2026-09-02
+resolution: resolved by sweep bundle dw-lifecycle-test-hygiene
+resolution-undo: 9ffcf9ab21c47fbee1041561963d8a61a6e0c8d5a978d40e48b6584ea52dfbcb 2026-09-02 7374617475733a206f70656e
 
 ### DW-55: Lifecycle 200 response does not echo `taskId` body field even when `X-Hexalith-Task-Id` is read
 
@@ -2626,4 +2632,52 @@ location: n/a
 source_spec: `spec-lifecycle-result-normalization.md`
 severity: low
 reason: The follow-up-review damping cap (limits.max_followup_reviews = 1) was spent with the story finalized (status: done, verify green) while the review pass still recommended an independent follow-up. The work was committed by bmad-loop run 20260901-122019-16be; this entry preserves the lingering recommendation for a deliberate later review.
+status: open
+
+### DW-340: Four local lifecycle-area query fixtures still synthesize allowed claim evidence from nullable authority values.
+origin: spec-deferred f11951ef4e1b
+location: tests/Hexalith.Folders.Tests/Queries/Folders
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: medium
+reason: This predates the bundle and is outside DW-54's named FolderLifecycleStatusTestSupport surface. TaskStatusQueryHandlerTests.cs, WorkspaceCleanupStatusQueryHandlerTests.cs, WorkspaceLockStatusProjectionTests.cs, and WorkspaceStatusQueryHandlerTests.cs each pass nullable tenant/principal values to EventStoreClaimTransformEvidence.Allowed.
+status: open
+
+### DW-341: Project-level dotnet test is incompatible with the pinned Microsoft.Testing.Platform invocation on .NET 10.
+origin: spec-deferred a2da41ed4f8d
+location: tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj and tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: medium
+reason: Both focused project commands fail before test execution because Microsoft.Testing.Platform 2.3.3 rejects the VSTest target under the .NET 10 SDK; direct xUnit v3 assembly execution remains green for the in-scope lanes.
+status: open
+
+### DW-342: The unchanged Forgejo provider source blocks a clean rebuild of the core test assembly.
+origin: spec-deferred 3f2fb6265e4e
+location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: high
+reason: The baseline contains a brace error at ForgejoProvider.cs:808, so the in-scope test assembly was rebuilt only with that pre-existing source problem isolated out of tree. No production source was changed by this bundle.
+status: open
+
+### DW-343: Three pre-existing GitHub provider tests fail in the broad core direct-runner lane.
+origin: spec-deferred 88457e107f6a
+location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: medium
+reason: The 1,658-test partial core run failed FreshRepositoryCreationCarryingPriorEvidenceStillExecutesInsteadOfReplaying, ReplaysEquivalentRepositoryCreationWithoutProviderAccess, and ReplaysEquivalentRepositoryBindingWithoutProviderAccess; the lifecycle namespace remained green.
+status: open
+
+### DW-344: The `Hexalith.Folders.Server.Tests` assembly is executed by no CI workflow and no gate script.
+origin: spec-deferred 993cd4b24598
+location: tests/tools/run-baseline-ci-gates.ps1 and .github/workflows/ci.yml
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: medium
+reason: `Hexalith.Folders.Server.Tests` appears only in `Hexalith.Folders.slnx`; it is matched by no file under `.github/workflows/` and by no script under `tests/tools/`. The solution build compiles it, but its 645 tests -- including the lifecycle endpoint test this bundle repaired -- never execute in an automated lane. The lifecycle-status route itself remains covered by the integration contract-parity lane.
+status: open
+
+### DW-345: The `BuildApp` helper leaks its built `WebApplication` if endpoint mapping throws before the value is returned.
+origin: spec-deferred a5d9369ad96d
+location: tests/Hexalith.Folders.Server.Tests/FolderLifecycleStatusEndpointTests.cs:258
+source_spec: `spec-lifecycle-test-hygiene.md`
+severity: low
+reason: All seven callers bind the returned application with `await using`, but `BuildApp` itself calls `builder.Build()` and then `app.MapFoldersServerEndpoints()` before returning, so a mapping failure escapes with the built host undisposed. This is the same leak class the bundle fixed at line 34 and predates the bundle.
 status: open

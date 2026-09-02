@@ -46,11 +46,21 @@ internal static class FolderLifecycleStatusTestSupport
             folderId,
             tenantId,
             principalId,
-            claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, ["read_metadata"]),
+            claimTransformEvidence ?? DefaultClaimTransformEvidence(tenantId, principalId),
             correlationId,
             taskId,
             clientTenantValues,
             ClientControlledPrincipalValues: null);
+
+    private static EventStoreClaimTransformEvidence DefaultClaimTransformEvidence(
+        string? tenantId,
+        string? principalId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(principalId);
+
+        return EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, ["read_metadata"]);
+    }
 
     internal static FolderLifecycleStatusReadModelSnapshot ActiveUnbound(
         string tenantId = "tenant-a",

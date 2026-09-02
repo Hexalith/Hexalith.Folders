@@ -5,6 +5,9 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Queries.Folders;
 
+// These tests follow the production ConfigureAwait(false) convention.
+#pragma warning disable xUnit1030
+
 public sealed class FolderLifecycleStatusMetadataLeakageTests
 {
     [Fact]
@@ -26,7 +29,7 @@ public sealed class FolderLifecycleStatusMetadataLeakageTests
                 {
                     ["header"] = "tenant-secret-victim",
                 }),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         string serialized = JsonSerializer.Serialize(result);
 
@@ -65,7 +68,7 @@ public sealed class FolderLifecycleStatusMetadataLeakageTests
 
         FolderLifecycleStatusQueryResult result = await handler.HandleAsync(
             FolderLifecycleStatusTestSupport.Query(),
-            TestContext.Current.CancellationToken).ConfigureAwait(true);
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
 
         string serialized = JsonSerializer.Serialize(result);
 
@@ -75,3 +78,4 @@ public sealed class FolderLifecycleStatusMetadataLeakageTests
         serialized.ShouldNotContain(sentinel, Case.Sensitive);
     }
 }
+#pragma warning restore xUnit1030
