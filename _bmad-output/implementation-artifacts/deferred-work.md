@@ -1020,6 +1020,7 @@ location: src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-v
 reason: P-Vocab-2: `x-hexalith-reference-pending` extension for marking individual enum values or properties as reference-pending was attempted and rolled back because it is not in the approved vocabulary. Reference-pending state is currently carried in `description:` strings; promoting to a dedicated extension would let validators enforce reference-pending discipline. Bundle with the vocabulary-extension follow-up. (`src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`)
 status: open
 decision: 2026-09-05 Register extension — Register x-hexalith-reference-pending, apply it to approved sites, and update the foundation allow-list, tests, and derived artifacts.
+decision: 2026-09-05 Register extension — Register x-hexalith-reference-pending, apply it to approved sites, and update the foundation allow-list, tests, and derived artifacts.
 
 ### DW-132: P-Test-1: Cursor/filter tamper, principal-mismatch, invalid-sort, boundary-duplicate, empty-page negative-case tests absent (AC 19 / AC 22 / Tasks line 100)
 
@@ -2620,6 +2621,7 @@ severity: medium
 reason: ValidateSnapshotCompatibility rejects future ObservedAt values only for an Available result with a snapshot. Stale, Unavailable, Malformed, and NotFound outer statuses return their freshness without the same temporal check; this behavior predates the normalization change and requires a separate contract decision.
 status: open
 decision: 2026-09-05 Normalize future times — Validate freshness for every outer status, replace future observations with clock-based safe-unavailable freshness, and add status-matrix tests.
+decision: 2026-09-05 Normalize future times — Validate freshness for every outer status, replace future observations with clock-based safe-unavailable freshness, and add status-matrix tests.
 
 ### DW-338: Sibling query handlers still duplicate the unavailable-freshness idiom and the authorization-outcome string constants that this spec normalized for the lifecycle handler.
 origin: spec-deferred d6a12601aedf
@@ -2700,6 +2702,7 @@ location: references/Hexalith.EventStore/references/Hexalith.FrontComposer; refe
 source_spec: `spec-update-submodules-and-hexalith-package-versions.md`
 reason: EventStore recorded nested FrontComposer `20d62abd…` while the selected root gitlink was `d71790bb…`, and nested Memories `3a7a7025…` while the advanced root gitlink was `2f85536d…`; the Memories-only root bump correctly left those pre-existing EventStore nested pointers unchanged.
 status: done 2026-09-05
+decision: 2026-09-05 Retain independent pins — Root repositories own compatible dependency selections independently; current nonrecursive development and the EventStore build are unaffected.
 resolution: closed by human decision: Root repositories own compatible dependency selections independently; current nonrecursive development and the EventStore build are unaffected.
 decision: 2026-09-05 Retain independent pins — Root repositories own compatible dependency selections independently; current nonrecursive development and the EventStore build are unaffected.
 
