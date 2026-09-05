@@ -125,6 +125,15 @@
     "label": "Configurable default",
     "resolution": ""
   },
+  "DW-337": {
+    "answered_at": "2026-09-05",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Validate freshness for every outer status, replace future observations with clock-based safe-unavailable freshness, and add status-matrix tests.",
+    "key": "1",
+    "label": "Normalize future times",
+    "resolution": ""
+  },
   "DW-38": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

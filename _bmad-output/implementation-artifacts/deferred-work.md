@@ -2619,6 +2619,7 @@ source_spec: `spec-lifecycle-result-normalization.md`
 severity: medium
 reason: ValidateSnapshotCompatibility rejects future ObservedAt values only for an Available result with a snapshot. Stale, Unavailable, Malformed, and NotFound outer statuses return their freshness without the same temporal check; this behavior predates the normalization change and requires a separate contract decision.
 status: open
+decision: 2026-09-05 Normalize future times — Validate freshness for every outer status, replace future observations with clock-based safe-unavailable freshness, and add status-matrix tests.
 
 ### DW-338: Sibling query handlers still duplicate the unavailable-freshness idiom and the authorization-outcome string constants that this spec normalized for the lifecycle handler.
 origin: spec-deferred d6a12601aedf
