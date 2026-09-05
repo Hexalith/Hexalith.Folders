@@ -1232,7 +1232,8 @@ decision: 2026-08-28 Bound audit metadata — Add an approved maxProperties boun
 origin: migrated from legacy ledger ("Deferred from: code review of 1-8-author-workspace-and-lock-contract-groups (2026-05-13)"), 2026-08-24
 location: ReadConsistencyClass
 reason: Read-consistency token form drift: story prose uses hyphenated `snapshot-per-task` / `read-your-writes` / `eventually-consistent`, OpenAPI `ReadConsistencyClass` enum uses underscore form. Enum is canonical; revisit prose during vocabulary documentation.
-status: open
+status: done 2026-09-05
+resolution: already resolved: Commit 5a4fa0f; tests/tools/parity-oracle-generator/Program.cs:713-726 explicitly converts canonical underscore values to the hyphenated parity vocabulary, including not_applicable, while tests/fixtures/parity-contract.schema.json:50-56 pins the output vocabulary.
 
 ### DW-160: Contract test uses `FindRepositoryRoot()` keyed on `Hexalith.Folders.slnx` filename
 
@@ -2704,4 +2705,5 @@ origin: migrated from legacy ledger (""), 2026-09-05
 location: references/Hexalith.EventStore/src/Hexalith.EventStore.Server/Actors/AggregateActor.cs:1114,3212
 source_spec: `spec-update-submodules-and-hexalith-package-versions.md`
 reason: The unchanged EventStore gitlink fails `dotnet build` with CS0103 at AggregateActor.cs:1114 and :3212 because `InspectPublicationRecoverySaveFailureAsync` is missing; the failure pre-existed and was not caused by the Memories pointer advance.
-status: open
+status: done 2026-09-05
+resolution: already resolved: Commit 8532f2b advanced references/Hexalith.EventStore from broken 5583e207 to 4ae9cee1; dotnet build src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj --no-restore -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0 now succeeds with 0 warnings and 0 errors.
