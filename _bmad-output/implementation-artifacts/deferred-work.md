@@ -2681,3 +2681,15 @@ source_spec: `spec-lifecycle-test-hygiene.md`
 severity: low
 reason: All seven callers bind the returned application with `await using`, but `BuildApp` itself calls `builder.Build()` and then `app.MapFoldersServerEndpoints()` before returning, so a mapping failure escapes with the built host undisposed. This is the same leak class the bundle fixed at line 34 and predates the bundle.
 status: open
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-update-submodules-and-hexalith-package-versions.md`
+  summary: Align project-context default submodule init list with the eight-root inventory (add PolymorphicSerializations).
+  evidence: Technology Stack lists eight roots including PolymorphicSerializations, but Development Workflow Rules omit `references/Hexalith.PolymorphicSerializations` from the default init list; pre-existing doc drift untouched by this Memories gitlink bump.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-update-submodules-and-hexalith-package-versions.md`
+  summary: Reconcile EventStore nested FrontComposer/Memories gitlink objects with independently selected root gitlinks when EventStore advances.
+  evidence: EventStore nested FrontComposer is `20d62abd…` vs root `d71790bb…`, nested Memories `3a7a7025…` vs advanced root `2f85536d…`; Memories-only root bump correctly left EventStore nested pointers alone.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-update-submodules-and-hexalith-package-versions.md`
+  summary: Restore Debug build of EventStore AggregateActor (`InspectPublicationRecoverySaveFailureAsync` missing on current EventStore tip).
+  evidence: Unchanged EventStore gitlink fails `dotnet build` with CS0103 at AggregateActor.cs:1114 and :3212; not caused by the Memories pointer advance.

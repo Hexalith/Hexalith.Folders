@@ -168,4 +168,4 @@ _This file contains critical rules and patterns that AI agents must follow when 
 - Update it when the technology stack, architecture decisions, or workflow policies change.
 - Remove rules that become obvious or mechanically enforced everywhere.
 
-Last Updated: 2026-08-29
+Last Updated: 2026-09-05
