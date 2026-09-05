@@ -2699,7 +2699,9 @@ origin: migrated from legacy ledger (""), 2026-09-05
 location: references/Hexalith.EventStore/references/Hexalith.FrontComposer; references/Hexalith.EventStore/references/Hexalith.Memories
 source_spec: `spec-update-submodules-and-hexalith-package-versions.md`
 reason: EventStore recorded nested FrontComposer `20d62abd…` while the selected root gitlink was `d71790bb…`, and nested Memories `3a7a7025…` while the advanced root gitlink was `2f85536d…`; the Memories-only root bump correctly left those pre-existing EventStore nested pointers unchanged.
-status: open
+status: done 2026-09-05
+resolution: closed by human decision: Root repositories own compatible dependency selections independently; current nonrecursive development and the EventStore build are unaffected.
+decision: 2026-09-05 Retain independent pins — Root repositories own compatible dependency selections independently; current nonrecursive development and the EventStore build are unaffected.
 
 ### DW-348: Restore Debug build of EventStore AggregateActor (`InspectPublicationRecoverySaveFailureAsync` missing on current EventStore tip).
 
