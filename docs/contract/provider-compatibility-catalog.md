@@ -1,10 +1,14 @@
 # Provider Compatibility Catalog
 
-This catalog records the compatibility assumptions used by the provider adapters. It is implementation evidence, not an approval record. Human acceptance of the product and provider profile remains a release decision.
+This catalog records the compatibility assumptions used by the provider adapters.
+The GitHub profile OQ4 status below is the human approval record for that profile.
+Forgejo remains pending live operator evidence. Product release acceptance still
+requires the remaining open release items.
 
 ## GitHub profile
 
-- OQ4 status: pending-operator-approval
+- OQ4 status: approved
+- OQ4 approval record: 2026-09-05 by jpiquot; GitHub profile in this catalog is the approved compatibility profile for Stories 3.10 and 3.11. Forgejo live evidence and full provider-ready closure remain separate.
 - Story authority: Story 3.10 comes from the approved 2026-07-14 structural correction as amended on 2026-07-15. Historical Story 3.3 completion does not complete this split story.
 - SDK: Octokit `14.0.0`, centrally pinned in `references/Hexalith.Builds/Props/Directory.Packages.props`.
 - REST profile: every owned request sends `X-GitHub-Api-Version: 2022-11-28`. Updating this value is compatibility work and requires focused transport and mapping verification.
@@ -55,6 +59,6 @@ This catalog records the compatibility assumptions used by the provider adapters
 - Safe target fingerprints are not durable. The repository-creation fingerprint binds the repository profile reference under the `github-target-v1` label, and no worker, aggregate, projection, or emitted event reads a stored fingerprint today. Whoever first persists one owes a version-label bump, because a fingerprint whose inputs changed under an unchanged label silently invalidates stored evidence.
 - The existing OpenAPI Contract Spine already carries opaque repository binding identities and canonical failure categories, including provider conflict, idempotency conflict/expiry, unknown outcome, and reconciliation required. Story 3.10 therefore introduces no public contract change.
 
-Full GitHub provider-ready status requires human OQ4 and OQ8 acceptance plus completion evidence from Stories 3.3, 3.10, 3.11, and 3.14. This catalog must not be interpreted as that acceptance.
+Full GitHub provider-ready status requires OQ8 acceptance plus completion evidence from Stories 3.3, 3.10, 3.11, and 3.14. The GitHub OQ4 profile in this catalog is approved; this catalog must not be interpreted as complete provider-ready or release acceptance.
 
 Forgejo provider-ready status additionally requires an operator to run the opt-in evidence lane against an approved isolated HTTPS deployment with least-privilege positive, denial, and tenant-isolation credentials. The configured-policy source for `IProviderRepositoryTargetResolver` remains fail-closed until an authoritative tenant policy source is composed, and Story 3.14 still owns durable outer orchestration and final folder-binding transitions.

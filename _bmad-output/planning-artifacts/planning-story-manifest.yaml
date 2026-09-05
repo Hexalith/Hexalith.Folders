@@ -514,6 +514,7 @@ open_questions:
   - Architecture
   - PM
   status: open
+  notes: '2026-09-05 jpiquot approved the GitHub profile in the catalog. Full OQ4 remains open until Forgejo live evidence and remaining provider-ready closure conditions are satisfied.'
   blocks:
   - '12.1'
   - '3.10'

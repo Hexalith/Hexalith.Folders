@@ -47,7 +47,7 @@ public sealed class GitHubDependencyGuardTests
     }
 
     [Fact]
-    public void CompatibilityCatalogPinsGitHubProviderAssumptionsWithoutApprovingOq4()
+    public void CompatibilityCatalogPinsGitHubProviderAssumptionsWithApprovedOq4()
     {
         string root = FindRepositoryRoot();
         string catalogPath = Path.Combine(root, "docs", "contract", "provider-compatibility-catalog.md");
@@ -67,7 +67,8 @@ public sealed class GitHubDependencyGuardTests
             "secondary rate limit",
             "unknown_provider_outcome",
             "no blind retry",
-            "OQ4 status: pending-operator-approval",
+            "OQ4 status: approved",
+            "OQ4 approval record: 2026-09-05 by jpiquot",
             "Story 3.3",
             "Story 3.11",
             "Story 3.14",
@@ -86,8 +87,10 @@ public sealed class GitHubDependencyGuardTests
 
         catalog.Split('\n').Count(static line => string.Equals(
             line.TrimEnd('\r'),
-            "- OQ4 status: pending-operator-approval",
+            "- OQ4 status: approved",
             StringComparison.Ordinal)).ShouldBe(1);
+
+        catalog.ShouldNotContain("OQ4 status: pending-operator-approval", Case.Sensitive);
 
         Regex approvalClaim = new(
             @"\b(approved|accepted)\b",
@@ -95,10 +98,22 @@ public sealed class GitHubDependencyGuardTests
             TimeSpan.FromSeconds(1));
         foreach (string line in catalog.Split('\n'))
         {
-            if (line.Contains("OQ4", StringComparison.OrdinalIgnoreCase))
+            if (!line.Contains("OQ4", StringComparison.OrdinalIgnoreCase))
             {
-                approvalClaim.IsMatch(line).ShouldBeFalse($"OQ4 approval claim is forbidden: '{line.Trim()}'");
+                continue;
             }
+
+            string trimmed = line.TrimEnd('\r');
+            bool isStatusLine = string.Equals(trimmed.Trim(), "- OQ4 status: approved", StringComparison.Ordinal);
+            bool isApprovalRecord = trimmed.TrimStart().StartsWith("- OQ4 approval record:", StringComparison.Ordinal);
+            bool isFooter = trimmed.Contains("The GitHub OQ4 profile in this catalog is approved", StringComparison.Ordinal);
+            if (isStatusLine || isApprovalRecord || isFooter)
+            {
+                approvalClaim.IsMatch(line).ShouldBeTrue($"Expected OQ4 approval wording on: '{trimmed.Trim()}'");
+                continue;
+            }
+
+            approvalClaim.IsMatch(line).ShouldBeFalse($"Unexpected OQ4 approval claim: '{trimmed.Trim()}'");
         }
     }
 

@@ -14,8 +14,9 @@ warnings:
   - oversized
 deferred: []
 operator_actions:
-  - 'Approve or reject the pending OQ4 GitHub compatibility profile documented in docs/contract/provider-compatibility-catalog.md.'
   - 'Run the credential-gated live GitHub mutation, commit, and status evidence suite against an approved tenant/provider configuration and archive the metadata-only results.'
+operator_actions_completed:
+  - '2026-09-05: jpiquot approved the pending OQ4 GitHub compatibility profile in docs/contract/provider-compatibility-catalog.md.'
 ---
 
 <intent-contract>
@@ -94,6 +95,7 @@ operator_actions:
 
 ## Spec Change Log
 
+- 2026-09-05: Operator jpiquot approved the GitHub OQ4 compatibility profile in `docs/contract/provider-compatibility-catalog.md`. Story status remains `awaiting-operator` until credential-gated live GitHub mutation/commit/status evidence is archived.
 - 2026-08-25: Human resolution selected layered ownership. Story 3.11 owns the production-registered provider/Octokit mutation, commit, and status seam; Stories 12.3, 12.4, 4.20, and 4.21 retain durable orchestration and end-to-end workspace ownership.
 - 2026-08-25: Reset the execution checklist because the attempted implementation was reverted. The saved intent-gap patch remains evidence only and must not be restored; re-drive this story from scratch.
 - 2026-08-25: Review found that the re-derived provider seam structurally validated private resolver output without binding it to admitted target/content/commit/status fingerprints, synthesized replay identities, lost private created-commit evidence on ambiguous ref updates, and left transport/status edge cases under-specified. The specification now requires versioned source bindings, exact replay identity, a persistence-neutral private outcome-recording seam, explicit staging-ambiguity semantics, pooled and escaped raw transport, complete tree/object validation, and bounded retry posture. The known-bad state to avoid is any provider call that can substitute private data, re-dispatch after a possible commit, fabricate branch status for staging, or return an opaque identity that no downstream resolver can resolve. KEEP: retain the provider-component ownership boundary, the canonical `IGitProvider` extension, production registration with fail-closed durable seams, ordered Git Data staging, one explicit non-force ref update, provider-neutral safe outcomes, stable known-failure mapping, and hermetic real-transport evidence.
@@ -375,5 +377,5 @@ Completed the agent-executable Story 3.11 hardening delta and committed it as `b
 
 ### Residual Risks
 
-- OQ4 approval and credential-gated live GitHub evidence require operator action outside the repository.
+- OQ4 GitHub profile approval is recorded; credential-gated live GitHub evidence still requires operator action outside the repository.
 - Durable target/content resolution, workspace execution, reconciliation scheduling, and end-to-end task completion remain intentionally owned by later stories.
