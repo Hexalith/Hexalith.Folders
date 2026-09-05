@@ -1,4 +1,13 @@
 {
+  "DW-131": {
+    "answered_at": "2026-09-05",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Register x-hexalith-reference-pending, apply it to approved sites, and update the foundation allow-list, tests, and derived artifacts.",
+    "key": "1",
+    "label": "Register extension",
+    "resolution": ""
+  },
   "DW-143": {
     "answered_at": "2026-08-25",
     "bundle_name": "",

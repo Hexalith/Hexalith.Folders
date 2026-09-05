@@ -1019,6 +1019,7 @@ origin: migrated from legacy ledger ("Deferred from: code review of 1-11-author-
 location: src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml
 reason: P-Vocab-2: `x-hexalith-reference-pending` extension for marking individual enum values or properties as reference-pending was attempted and rolled back because it is not in the approved vocabulary. Reference-pending state is currently carried in `description:` strings; promoting to a dedicated extension would let validators enforce reference-pending discipline. Bundle with the vocabulary-extension follow-up. (`src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`)
 status: open
+decision: 2026-09-05 Register extension — Register x-hexalith-reference-pending, apply it to approved sites, and update the foundation allow-list, tests, and derived artifacts.
 
 ### DW-132: P-Test-1: Cursor/filter tamper, principal-mismatch, invalid-sort, boundary-duplicate, empty-page negative-case tests absent (AC 19 / AC 22 / Tasks line 100)
 
