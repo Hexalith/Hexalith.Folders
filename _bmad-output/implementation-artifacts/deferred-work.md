@@ -2793,3 +2793,7 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: Add a generator fail-closed rule when a mutation omits expired-key categories or matrix evidence, and update `tests/fixtures/previous-spine.yaml` with the live spine.
   evidence: Remaining Story 12.6 contract-completeness tasks. Frozen split deferred completeness gates and the durable OQ8 matrix; `parity-contract.yaml` already lists the new category from the oracle generator.
 
+## Deferred from: code review of 11-2-land-platform-prerequisite-apis-in-shared-modules.md (2026-09-06)
+
+- “Python YAML/schema assertions” have no schema or script in the File List. Maybe-false (would be medium). Settle from the 2026-07-14 Task 1 command/script; if none existed, `verification_runs` overclaims.
+
