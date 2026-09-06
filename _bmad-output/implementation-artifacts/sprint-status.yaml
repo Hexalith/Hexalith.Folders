@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '2026-05-12T07:11:18+02:00'
-last_updated: '09-06-2026 15:31'
+last_updated: '09-06-2026 23:45'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -208,7 +208,7 @@ development_status:
 
   epic-11: in-progress
   11-1-establish-refactor-baseline-and-governance-pin-map: done
-  11-2-inventory-assign-and-pin-platform-prerequisites: review
+  11-2-inventory-assign-and-pin-platform-prerequisites: done
   11-3-apply-wire-preserving-repository-hygiene: backlog
   11-4-consolidate-server-transport-envelope-and-route-helper-dupli: backlog
   11-5-consolidate-domain-and-provider-helper-duplication: backlog

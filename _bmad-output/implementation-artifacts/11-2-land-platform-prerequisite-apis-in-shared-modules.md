@@ -4,7 +4,7 @@ baseline_commit: c953461e0943415e4c2b4be258233008339486c7
 
 # Story 11.2: Inventory, assign, and pin platform prerequisites
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -180,7 +180,7 @@ The dev agent must make the upstream API match these so the later deletion stori
 - **Search consumer** — `src/Hexalith.Folders.Server/ContextSearch/MemoriesFolderSearchSource.cs` (`internal sealed : IFolderSearchSource`): 2s linked-CTS timeout → `Timeout`; `SearchRequest(TenantId, Axis, Query, MaxResults, Offset, AttributeFilters)`; `IsMemoriesUnavailable` switch (`MemoriesRemoteException`/`HttpRequestException`/`InvalidOperationException`/non-caller cancel) → `Unavailable`; in-band `Degraded || UnavailableAxes.Contains(axis)`; identity from `ScoredResult.SourceUri` only. **Wrapper → Memories; the folder security-trim + `folders.*` mapping stays in Folders.**
 - **Secret client** — `src/Hexalith.Folders/Providers/…`: `IProviderCredentialSecretStoreClient.GetSecretAsync(secretStoreName, credentialReferenceId, metadata, ct)` → `ProviderCredentialSecretLookupResult` with `{ Found, Missing, Denied, Unavailable }` + `RetryAfter`; `DaprProviderCredentialSecretStoreClient` classifies `RpcException{PermissionDenied}` → `Denied`, other `DaprApiException` → `Unavailable(30s)`, empty dict → `Missing`.
 - **Eventually** — `src/Hexalith.Folders.Testing/Polling/Eventually.cs`: `public static Task<T> UntilAsync<T>(Func<CancellationToken,Task<T>> probe, Predicate<T> isReady, TimeSpan timeout, TimeSpan interval, CancellationToken ct=default)`; linked-CTS, `Task.Delay(interval)`, `TimeoutException` on timeout (distinct from caller cancel).
-- **UI copy targets** — `FoldersConsoleIcons.LockClosed16()/Clock16()` vector paths (Fluent icon package is deliberately off the reference graph per Story 6.4 AC#7 — the upstream `FcFluentIcons` members must supply equivalent paths); `SafeCopyId.razor` + `CorrelationCopyButton.razor` (`fc-safe-copy*`, `data-testid="safe-copy"`, must not trip the 5-selector command-suppression guard). No RFC-7807 parser exists in `Folders.UI` (parsers live in Client/Cli/Mcp) — the FrontComposer addition has no UI-local copy to delete.
+- **UI copy targets** — `FoldersConsoleIcons.LockClosed16()/Clock16()` vector paths (Fluent icon package is deliberately off the reference graph per Story 6.4 AC#7 — the upstream `FcFluentIcons` members must supply equivalent paths); `SafeCopyId.razor` + `CorrelationCopyButton.razor` (`fc-safe-copy*`, `data-testid="safe-copy"`, must not trip the five selectors `form`, `fluentinputform`, `fluentdialog`, `[data-fc-command]`, `[data-fc-mutation]`). No RFC-7807 parser exists in `Folders.UI` (parsers live in Client/Cli/Mcp) — the FrontComposer addition has no UI-local copy to delete.
 [Source: three prerequisite-audit passes over `references/**` @ current pins + `src/Hexalith.Folders.*`, 2026-07-08]
 
 ### What must NOT change (wire preservation + lockstep)
@@ -196,9 +196,9 @@ The dev agent must make the upstream API match these so the later deletion stori
 - No new Folders test project or gate row is added by 11.2 (test-helper consolidation + `FakeEventStoreGatewayClient` adoption is **Story 11.7**, not here; the `Eventually` **consumption** switch is 11.7 too — this story only *lands* `Eventually` upstream).
 
 ### Cross-story sequencing (do not front-run)
-- **11.2 blocks 11.8–11.12** (adoption/deletion). Land + pin before those start; keep each consumable against a pinned SHA. [Source: `fable_…` §12, §11.1 §10 "Platform-first"]
-- **Not in 11.2:** Folders in-repo dedup (11.3–11.7), domain adoption/deletion (11.8), ServiceDefaults deletion (11.9), Server/Workers SDK-seam adoption + the Memories bridge-read-model wiring (11.10), UI-below-shell (11.11), STJ client regen (11.12), ADRs/close-out (11.13). The G3/`Commons.ServiceDefaults` confirm here **enables** 11.9; the EventStore cursor/read-model confirm **enables** 11.10; the FC Shell confirm **enables** 11.11.
-- **Story 10.6** (reopened Epic 10, metadata-derived materializer) lands **before** 11.10 and rewrites the same Workers indexing code the Memories publish seam touches — the G1 publisher must not re-freeze the fail-closed placeholder; keep the Folders mapping intact. [Source: `11-1-…-pin-map.md` §12; `epics.md` Epic 10 note]
+- **11.2 blocks later adoption, not by landing APIs here.** Consuming stories: 11.6 (CLI/MCP bearer, EventStore inbound forward), 11.7 (`Eventually`), 11.8 (Commons/EventStore domain primitives), 11.9 (ServiceDefaults), 11.10 (admission/mapping), 11.11 (shell/hermetic auth), 11.12 (ULID), 11.14 (Memories publish/search), 11.17 (gateway fake), 11.19 (icons/copy/banner). Each starts only when its YAML row is landable at a pin.
+- **Not in 11.2:** in-repo dedup (11.3–11.7), domain adoption (11.8), ServiceDefaults deletion (11.9), Server/Workers SDK seams (11.10), UI-below-shell (11.11), STJ client (11.12), planning sync (11.13), Memories adoption (11.14), ADRs (11.20), final verification (11.21).
+- **Story 10.6** rewrites Workers indexing the G1 publisher touches — keep the Folders mapping intact; do not re-freeze the fail-closed placeholder.
 
 ### Project Structure Notes
 - Module layouts (for placing new upstream types): **Commons** libraries under `references/Hexalith.Commons/src/libraries/` (`.`, `.Http`, `.Publication`, `.ServiceDefaults`, `.TenantAccess`, `.UniqueIds`, `.Aspire`, …). **EventStore** libraries under `references/Hexalith.EventStore/src/` (`.Client`, `.Contracts`, `.DomainService`, `.Testing`, `.Aspire`, …; `RestApi.Generators` is the only analyzer project). **FrontComposer** under `references/Hexalith.FrontComposer/src/` (`.Shell`, `.Testing`, `.Contracts`, …). **Memories** under `references/Hexalith.Memories/src/` (`.Contracts`, `.Contracts.V1`, `.Client.Rest`, `.EventStore`, …).
@@ -223,13 +223,14 @@ The AC's "**When upstream stories land** and Folders pins the resulting submodul
 
 The audit leans **B** in wording (per-gap upstream stories) but Model A is operationally common when one maintainer drives all repos. The register, consuming-side contracts, mechanism, and verification are identical either way — only the "who authors / how many stories" differs.
 
-**RATIFIED: Model B**, by `{user_name}` on 2026-07-08. This story therefore confirms + specifies + pins-what's-landable, and opens **one per-repo platform story per gap** (in `Hexalith/Hexalith.{Memories,EventStore,Commons,FrontComposer}`) for each missing seam; it authors **no** upstream implementation in-session. The register and §Consuming-Side Contracts are the binding spec those per-repo stories implement. The two Step-4 ratifications (AppHost/Aspire+ServiceDefaults ADR direction; `FolderStreamName` reserved-tenant semantics) remain open — resolve in Task 0.
+**RATIFIED: Model B**, by Jerome on 2026-07-08. This story confirms + specifies + pins-what's-landable, and opens **one per-repo platform story per gap**. It authors **no** upstream implementation in-session. YAML `required_behavior` and §Consuming-Side Contracts are the binding spec those per-repo stories implement. Task 0 AppHost/Aspire and reserved-tenant **decisions are ratified**; ADR authorship is Story **11.20**.
 
 ## Change Log
 
 | Date | Change |
 | --- | --- |
 | 2026-07-14 | Implemented ratified Model B: confirmed 30 public API paths, specified and assigned every missing G1–G9/P6–P9 seam through 15 upstream issues, authored the Commons.Cli/Mcp proposal, recorded the no-bump pin outcome, and completed build/gate/regression evidence. Story moved to review. |
+| 2026-09-06 | Code review: rewritten dedicated ACs to inventory-and-assign; YAML consuming_story / G1 Workers-reachability / G6 `AddEventStoreDaprServiceInvocation` / G9 vector-path+five-selectors / Builds packaging blockers; proposal credential stop-the-chain, loopback, Sysexits defaults. |
 
 ## Dev Agent Record
 
@@ -239,8 +240,9 @@ GPT-5 Codex
 
 ### Debug Log References
 
-- 2026-07-14: Administrator ratified Step-4 decision (a): retain AppHost/Aspire as the sanctioned local/test exception and delete `Hexalith.Folders.ServiceDefaults` in Story 11.9; the ADR remains assigned to Story 11.13.
-- 2026-07-14: Administrator ratified Step-4 decision (b): standardize on the strict ordinal/no-trim `system` reserved-tenant rule; Story 11.5 owns the code/test lockstep and Story 11.13 owns the ADR.
+- 2026-07-14: Administrator ratified Step-4 decision (a): retain AppHost/Aspire as the sanctioned local/test exception and delete `Hexalith.Folders.ServiceDefaults` in Story 11.9; ADR authorship later moved to Story 11.20.
+- 2026-07-14: Administrator ratified Step-4 decision (b): standardize on the strict ordinal/no-trim `system` reserved-tenant rule; ADR authorship later moved to Story 11.20; Story 11.5 must not expand into reserved-tenant.
+- 2026-09-06: Code review applied recommended decisions and patches (inventory ACs, consuming_story, G1/G6/G8/G9/P6 YAML contracts, proposal credential/exit maps).
 - 2026-07-14: Task 1 plan/verification — resolve parent-pinned SHAs with `git ls-tree HEAD`; query each exact commit with `git grep`; record public type, namespace, project, source path, SHA, and package/pin notes in a YAML manifest; validate every recorded path with `git cat-file -e`.
 - 2026-07-14: The first broad `dotnet restore` + Release `--no-restore` build reused Debug/source-mode assets and failed with missing package namespaces. Per the repository fallback ladder, `dotnet restore Hexalith.Folders.slnx --property Configuration=Release -m:1 -p:NuGetAudit=false` followed by the serialized Release build passed with 0 warnings/0 errors.
 - 2026-07-14: Full per-project regression sweep passed 5,255 tests; four DCP-gated AppHost tests skipped as configured; the UI E2E assembly ran 63/63 with no skips.
@@ -267,14 +269,16 @@ GPT-5 Codex
 - Task 2 specified the missing Memories publisher, public event-type constants, and resilient search wrapper in [Hexalith.Memories issue 28](https://github.com/Hexalith/Hexalith.Memories/issues/28). Under ratified Model B, each checkbox records specification/tracking completion; the manifest retains the unlanded implementation and absent pin bump as an explicit owned blocker.
 - Task 3 specified and assigned EventStore G6 auth seams ([issue 283](https://github.com/Hexalith/Hexalith.EventStore/issues/283)), G8 classified secret lookup ([issue 284](https://github.com/Hexalith/Hexalith.EventStore/issues/284)), and G9 async polling ([issue 285](https://github.com/Hexalith/Hexalith.EventStore/issues/285)). No EventStore submodule content or pointer was changed; the manifest records all three as owned blockers pending upstream release.
 - Task 4 specified Commons P6 safe HTTP helpers ([issue 19](https://github.com/Hexalith/Hexalith.Commons/issues/19)), P7 sensitive-value detection ([issue 20](https://github.com/Hexalith/Hexalith.Commons/issues/20)), P8 deterministic hashing ([issue 21](https://github.com/Hexalith/Hexalith.Commons/issues/21)), P9 authorized base URLs ([issue 22](https://github.com/Hexalith/Hexalith.Commons/issues/22)), and G7 cursor/offset paging consolidation ([issue 23](https://github.com/Hexalith/Hexalith.Commons/issues/23)). Under Model B these checkboxes record exact specification and ownership; no Commons package or Builds pin is claimed before those upstream releases exist.
-- Task 5 specified the FrontComposer G9 icon, safe-copy, bounded ProblemDetails parser, and hermetic-auth surfaces in [issue 60](https://github.com/Hexalith/Hexalith.FrontComposer/issues/60). The UX instructions shaped the safe-copy contract toward Fluent UI v5 reuse while preserving Folders' compatibility hooks and five-selector no-mutation proof. No FrontComposer pointer changed before the upstream release exists.
+- Task 5 specified the FrontComposer G9 icon, safe-copy, bounded ProblemDetails parser, and hermetic-auth surfaces in [issue 60](https://github.com/Hexalith/Hexalith.FrontComposer/issues/60). Icons must match Folders vector paths (not the Fluent icon package). Safe-copy must preserve the five-selector no-mutation proof. No FrontComposer pointer changed.
+- Task 8 completed without a pin bump because no missing prerequisite is landable. The manifest records empty gitlink/Builds changes and consuming Folders stories. Downstream adoption remains gated by owned upstream issues (11.6–11.12, 11.14, 11.17, 11.19).
+- 2026-09-06 review: un-checked bump subtasks; aligned ACs with `epics.md`; patched YAML/proposal per review findings.
 - Task 6 recorded optional G2 as an owned platform follow-up: Commons canonicalization in [issue 24](https://github.com/Hexalith/Hexalith.Commons/issues/24), EventStore migration/copy removal in [issue 286](https://github.com/Hexalith/Hexalith.EventStore/issues/286), and Memories project-path copy removal in [issue 29](https://github.com/Hexalith/Hexalith.Memories/issues/29). Exact-pin inspection corrected the stale register premise: Memories now also carries a narrower `RepositoryProjectPaths` copy.
-- Task 7 delivered the written [Commons.Cli / Commons.Mcp proposal](./11-2-commons-cli-mcp-proposal.md), tracked by Commons [issue 25](https://github.com/Hexalith/Hexalith.Commons/issues/25) and [issue 26](https://github.com/Hexalith/Hexalith.Commons/issues/26). It selects explicit token input over ambient sources, keeps inline plaintext config tokens disabled by default, and uses explicit compatibility policies for numeric exits. Folders Story 11.6 remains an in-repo consolidation; no CLI/MCP source changed here.
-- Task 8 completed without a `chore(deps):` commit because no missing prerequisite is landable at a released/pinned revision. The manifest explicitly records empty gitlink/Builds changes rather than presenting the unrelated ahead FrontComposer, Memories, or Tenants working checkouts as Story 11.2 pins. All acceptance evidence is ready for review; downstream Stories 11.8–11.12 remain gated by the owned upstream issues.
+- Task 7 delivered the written [Commons.Cli / Commons.Mcp proposal](./11-2-commons-cli-mcp-proposal.md), tracked by Commons [issue 25](https://github.com/Hexalith/Hexalith.Commons/issues/25) and [issue 26](https://github.com/Hexalith/Hexalith.Commons/issues/26). Credential Denied/Unavailable stop the chain; stdin/secret-agent and opt-in inline JSON are numbered; Sysexits ships Folders 0/1/64–76 defaults; HTTP 429 maps to UnavailableOrReconciliationRequired.
 
 ### File List
 
 - `_bmad-output/implementation-artifacts/11-2-land-platform-prerequisite-apis-in-shared-modules.md`
 - `_bmad-output/implementation-artifacts/11-2-platform-prerequisite-api-availability.yaml`
 - `_bmad-output/implementation-artifacts/11-2-commons-cli-mcp-proposal.md`
-- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (review close-out 2026-09-06; not in `8188d97`)
+- `_bmad-output/implementation-artifacts/deferred-work.md`
