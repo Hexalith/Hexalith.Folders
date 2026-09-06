@@ -209,7 +209,7 @@ Epic 12 is the product data plane the control-plane shell was built around: auth
 - **12.1** EventStore-backed `IFolderRepository` + projection replay (retire the ADR-0001 NoOp; replace the `/project` 501; make Production boot).
 - **12.2** Durable projections + task-completion pipeline (excludes transition/diagnostic/search-bridge projections, which stay owned by the consuming product Epics 4/6/10).
 - **12.3** Durable workspace file-content store + content-read source (server-side hash verification).
-- **12.4** Real Git commit executor + provider write path (replace the `NotImplementedException` GitHub/Forgejo write methods; wire the provisioning process manager).
+- **12.4** Real Git commit executor + durable provider-write orchestration (replace the `NotImplementedException` workspace executor methods; compose the production-registered provider-private mutation/commit/status adapters owned by Stories 3.11/3.13; wire the provisioning process manager).
 - **12.5** At-least-once Memories egress + reconciler (commit-then-append ordering).
 
 **Dependency spine:** `OQ1–OQ4 → Epic 12 durable substrate → {Epic 4 lifecycle/transition evidence, Epic 6 console diagnostics/incident proof, Epic 10 deployed search bridge/round trip} → OQ5–OQ9 evidence → OQ10 → readiness rerun`.

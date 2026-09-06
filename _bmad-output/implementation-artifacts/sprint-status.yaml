@@ -34,9 +34,11 @@
 # - Developer typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-05-12T07:11:18+02:00
-last_updated: '2026-08-25 (Story 3.10 code review complete -> done; four review layers over the exact 3.10 change, 5 decisions resolved by Jerome, 24 patches applied, 7 deferred as DW-294/295/300-304, 11 dismissed. Headline fixes: the equivalent-replay gate returned unconditional success for every prior disposition, so a replayed ambiguous creation was reported as a created repository - it now returns the exact prior terminal outcome, unknown staying unknown with a reconciliation reference; the DW-299 gate drift was already real, 3.10 requiring a 64-hex PriorReconciliationReference where 3.11 requires an opaque ULID, and is now aligned on shared helpers; canonical repository identity was computed then dropped at the provider boundary and now crosses it; untrusted target-resolver reason/category/retry-after are allow-listed; reserved-tenant denial added; pre-dispatch cancellation no longer manufactures reconciliation; owner/repo/ref grammar hardened against path injection; branch-protection rate limits no longer read as permission failures. Test gaps closed: create-request visibility was unpinned so a swap to Public shipped green, both canonical-ID tests were tautologies with no mismatch case, and RepositoryProfileRef forwarding was unasserted at the worker hop. AC12 re-verified: Octokit still pinned 14.0.0. Build 0W/0E; Folders 1574, Workers 81, Contracts 284, Server 565, Integration 630, Cli 708, Mcp 662 all green. Prior: 2026-08-25 (Story 3.10 completed -> review; AC7 closed by adopting the Story 3.11 caller-supplied ProviderIdempotencyAdmission seam for repository create/bind, so replay, conflict, and expiry are rejected before target, credential, client, or GitHub access without Folders owning durable admission storage (that stays with Story 12.6/EventStore); pre-existing CS8122 in OctokitGitHubApiClientTests repaired, which had made Hexalith.Folders.Tests unbuildable since a69dd84 and had masked four Story 3.11 failures now tracked as DW-298; both recorded HALT blockers resolved (the NFR-traceability and OQ8 governance rows are green, Contracts 284/284); stale EXECUTION HOLD comment on 3-10 cleared from evidence; build 0W/0E, Folders 1531 passed/4 pre-existing reds, Workers 81, Server 565, Integration 630; review findings DW-294..DW-299 recorded. Prior: 2026-07-19 (Story 12.6 implementation started -> in-progress. Prior: 2026-07-19 (Story 3.10 implementation started -> in-progress. Prior: 2026-07-19 (Story 3.10 contexted via bmad-create-story -> ready-for-dev; authoritative GitHub provisioning/binding/ref split, post-authorization opaque-target resolution, duplicate/alias equivalence, no-blind-retry unknown outcomes, OQ4 release gate, and hermetic Octokit transport evidence pinned. Prior: 2026-07-15 (Story 10.8 contexted via bmad-create-story -> ready-for-dev; metadata-only FR58 authority, hard prerequisite gates, no-seed DCP proof, authorization/hydration/redaction/replay/parity/OQ5 evidence pinned. Prior: 2026-07-14 (Implementation-readiness structural correction approved: Epics 3-6 reopened, production closure and split stories registered, Epic 10 projection ownership moved from 11.10 to 10.7, and Major-scope planning handoff recorded. Prior: 2026-07-14 (Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green))))))))))'
-closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
+generated: '2026-05-12T07:11:18+02:00'
+last_updated: '09-06-2026 15:31'
+closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
+  to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
+  Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
 project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
@@ -58,8 +60,8 @@ development_status:
   1-3-seed-minimally-valid-normative-fixtures: done
   1-4-author-phase-0-5-pre-spine-workshop-deliverables: done
   1-5-finalize-idempotency-equivalence-and-adapter-parity-rules: done
-  1-6-author-contract-spine-foundation-and-shared-extension-vocabulary: done
-  1-7-author-tenant-folder-provider-and-repository-binding-contract-groups: done
+  1-6-author-contract-spine-foundation-and-shared-extension-vocabu: done
+  1-7-author-tenant-folder-provider-and-repository-binding-contrac: done
   1-8-author-workspace-and-lock-contract-groups: done
   1-9-author-file-mutation-and-context-query-contract-groups: done
   1-10-author-commit-and-workspace-status-contract-groups: done
@@ -71,7 +73,6 @@ development_status:
   1-16-wire-exit-criteria-and-parity-completeness-gates: done
   epic-1-retrospective: done
 
-  # Epic 2: Tenant-Scoped Folder Access And Lifecycle
   epic-2: done
   2-1-stand-up-domain-service-host-with-tenants-integration: done
   2-2-implement-organization-aggregate-acl-baseline: done
@@ -81,47 +82,40 @@ development_status:
   2-6-enforce-layered-authorization-with-safe-denials: done
   2-7-inspect-folder-lifecycle-and-binding-status: done
   2-8-archive-folders-with-audit-preservation: done
-  2-8b-wire-folder-domain-processor: done
   2-9-react-to-tenants-events-through-worker-handlers: done
   epic-2-retrospective: done
 
-  # Epic 3: Provider Readiness And Repository Binding
-  # Reopened 2026-07-14 by the approved implementation-readiness structural correction.
-  # Completed adapter work remains historical; split provider evidence and the terminal
-  # asynchronous repository-creation outcome remain active backlog.
   epic-3: in-progress
   3-1-configure-provider-binding-and-credential-reference: done
   3-2-define-igitprovider-port-and-capability-model: done
-  3-3-implement-github-provider-adapter: done
-  3-4-implement-forgejo-provider-adapter-and-drift-detection: done
+  3-3-github-capability-discovery-and-safe-readiness: done
+  3-4-forgejo-capability-discovery-safe-readiness-and-contract-dri: done
   3-5-validate-provider-readiness-with-safe-diagnostics: done
-  3-6-create-a-new-repository-backed-folder: done
+  3-6-request-asynchronous-creation-of-a-repository-backed-folder: done
   3-7-bind-an-existing-repository-to-a-folder: done
   3-8-define-branch-and-ref-policy: done
   3-9-inspect-tenant-and-per-provider-readiness-evidence: done
-  3-10-github-repository-provisioning-binding-and-branch-ref-behavior: done
-  3-11-github-file-mutation-commit-status-and-failure-behavior: awaiting-operator
-  3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior: done
+  3-10-github-repository-provisioning-binding-and-branch-ref-behavi: done
+  3-11-github-file-mutation-commit-status-and-failure-behavior: done
+  3-12-forgejo-repository-provisioning-binding-and-branch-ref-behav: done
   3-13-forgejo-file-mutation-commit-status-and-failure-behavior: backlog
   3-14-complete-asynchronous-repository-creation-and-binding: backlog
   epic-3-retrospective: optional
 
-  # Epic 4: Repository-Backed Workspace Task Lifecycle
-  # Reopened 2026-07-14 for production transition evidence and durable lifecycle proof.
   epic-4: in-progress
-  4-1-implement-folder-aggregate-state-machine-with-c6-transition-matrix: done
+  4-1-implement-folder-aggregate-state-machine-with-c6-transition: done
   4-2-prepare-workspace-from-a-ready-repository-backed-folder: done
   4-3-acquire-task-scoped-workspace-lock: done
   4-4-inspect-lock-state-and-release-the-workspace-lock: done
   4-5-enforce-workspace-path-policy-before-file-mutations: done
-  4-6-add-and-change-files-with-inline-and-streamed-content-transport: done
-  4-7-remove-files-with-metadata-only-events-and-provider-safe-ordering: done
+  4-6-add-and-change-files-with-inline-and-streamed-content-transp: done
+  4-7-remove-files-with-metadata-only-events-and-provider-safe-ord: done
   4-8-query-file-context-with-policy-boundaries: done
   4-9-inspect-workspace-and-projection-currency: done
   4-10-surface-workspace-cleanup-status-without-repair-automation: done
   4-11-propagate-idempotency-keys-correlation-and-task-ids: done
   4-12-commit-workspace-changes-with-unknown-outcome-reconciliation: done
-  4-13-surface-canonical-errors-and-operational-evidence-after-failure: done
+  4-13-surface-canonical-errors-and-operational-evidence-after-fail: done
   4-14-emit-metadata-only-audit-and-observability: done
   4-15-validate-lifecycle-replay-and-projection-determinism: done
   4-16-validate-lifecycle-security-boundaries: done
@@ -129,15 +123,13 @@ development_status:
   4-18-eventstore-backed-workspace-transition-evidence-projection: backlog
   4-19-prove-durable-workspace-prepare-and-lock-lifecycle: backlog
   4-20-prove-durable-file-mutation-and-bounded-context-lifecycle: backlog
-  4-21-prove-real-commit-retry-conflict-and-unknown-outcome-reconciliation: backlog
+  4-21-prove-real-commit-retry-conflict-and-unknown-outcome-reconci: backlog
   epic-4-retrospective: optional
 
-  # Epic 5: Cross-Surface Workflow Parity
-  # Reopened 2026-07-14 for independently verifiable CLI and MCP capability slices.
   epic-5: in-progress
   5-1-ship-sdk-convenience-helpers-samples-and-quickstart: done
-  5-2-implement-cli-commands-with-behavioral-parity-rules: done
-  5-3-implement-mcp-tools-resources-and-failure-kinds: done
+  5-2-cli-tenant-folder-provider-readiness-and-binding-commands: done
+  5-3-mcp-tenant-folder-provider-readiness-and-binding-tools-resou: done
   5-4-consume-parity-oracle-in-cli-and-mcp-tests: done
   5-5-validate-golden-lifecycle-parity-across-rest-and-sdk: done
   5-6-validate-behavioral-parity-across-cli-and-mcp: done
@@ -148,8 +140,6 @@ development_status:
   5-11-mcp-file-context-commit-status-error-and-audit-behavior: backlog
   epic-5-retrospective: done
 
-  # Epic 6: Read-Only Workspace Trust Console And Audit Review
-  # Reopened 2026-07-14 for populated production diagnostics and deployed-host evidence.
   epic-6: in-progress
   6-1-audit-and-operation-timeline-query-endpoints: done
   6-2-scaffold-frontcomposer-hosted-read-only-operations-console: done
@@ -162,23 +152,11 @@ development_status:
   6-9-implement-incident-mode-last-resort-read-path: done
   6-10-enforce-console-performance-and-perceived-wait-ux: done
   6-11-verify-no-mutation-enforcement-and-accessibility: done
-  6-12-populate-readiness-lock-dirty-state-and-failed-operation-projections: backlog
-  6-13-populate-provider-status-sync-status-and-projection-freshness-projections: backlog
-  6-14-prove-populated-deployed-host-diagnostic-and-transition-evidence-journeys: backlog
+  6-12-populate-readiness-lock-dirty-state-and-failed-operation-pro: backlog
+  6-13-populate-provider-status-sync-status-and-projection-freshnes: backlog
+  6-14-prove-populated-deployed-host-diagnostic-and-transition-evid: backlog
   epic-6-retrospective: done
 
-  # Epic 7: MVP Release Readiness And Operational Evidence
-  # Reopened 2026-05-31 to own Story 7-18 (systemic test-host composition red from
-  # 2-8b verification). 7-18 closed GREEN 2026-05-31 (Server.Tests 434/0/0,
-  # IntegrationTests 592/0, Folders.Tests 1314/0). Epic-7 close-out completed
-  # 2026-06-22 via bmad-correct-course (sprint-change-proposal-2026-06-22).
-  # HONESTY ANNOTATION 2026-07-14 (sprint-change-proposal-2026-07-14 audit, Option B ratified): this epic
-  # closed CONTROL-PLANE / contract / operational-evidence / gate readiness — NOT durable product
-  # capability. The 6-agent audit established that no accepted mutation persists durably (InMemory repo +
-  # ADR-0001 NoOp + Prod won't boot), content is discarded on upload, tasks never complete, and the Git
-  # write path is stubbed. "MVP Release Readiness" here means the control-plane MVP; the PRODUCT MVP is not
-  # ready until new Epic 12 (durable persistence + Git round-trip) lands. Status stays 'done' for its
-  # bounded scope; the naming is retained for traceability but must not be read as product-shippable.
   epic-7: done
   7-1-deploy-production-dapr-deny-by-default-access-control: done
   7-2-configure-production-oidc-and-secret-store-integration: done
@@ -197,183 +175,83 @@ development_status:
   7-15-publish-provider-and-error-documentation: done
   7-16-publish-nfr-traceability-bridge: done
   7-17-publish-adr-set-and-maintenance-runbooks: done
-  7-18-restore-test-host-composition-baseline: done
+  7-18-restore-shared-test-host-composition-baseline: done
   epic-7-retrospective: done
 
-  # Epic 8: MVP Release Acceptance Closure
-  # Created 2026-06-22 via bmad-correct-course (sprint-change-proposal-2026-06-22) as a
-  # release-acceptance closure epic (not a feature workstream). Closes the bounded MVP-release
-  # conditions: 47/47 REST parity (8-1/8-2), wire-exercised parity + claim gate (8-3), axe a11y
-  # gate (8-4), residual-reds honest-green baseline (8-5), C3 Legal sign-off (8-6).
-  # Story 8.5 split 2026-06-23 (sprint-change-proposal-2026-06-23-story-8-5-legal-blocker-split):
-  # AC1 (C3 Legal sign-off) extracted to 8-6; 8-5 retains the residual-reds honest-green-baseline scope (done).
-  # HONESTY ANNOTATION 2026-07-14 (sprint-change-proposal-2026-07-14 audit, Option B ratified): this
-  # "acceptance closure" (incl. the C3 Legal sign-off) accepted PARITY + a11y + honest-green-gate +
-  # governance criteria — it did NOT accept durable document persistence/retrieval/versioning/commit,
-  # which the audit shows are non-functional (all Unavailable*/InMemory* stubs). The Legal sign-off scope
-  # should be re-examined against what actually ships once the MVP is reframed as control-plane. Status
-  # stays 'done' for its bounded acceptance criteria; product acceptance is deferred to Epic 12.
   epic-8: done
-  8-1-implement-bucket-a-missing-rest-server-routes: done
-  8-2-implement-ops-console-diagnostics-rest-routes: done
-  8-3-wire-exercise-cross-surface-parity-and-close-claim: done
-  8-4-stand-up-axe-wcag-ci-gate: done
-  # 8-5 (key retained for traceability; rescoped to residual-reds honest-green baseline — ACs 2-6 of the
-  # original story): complete and review-approved 2026-06-23.
-  8-5-close-c3-legal-signoff-and-residual-reds: done
-  # 8-6: Legal sign-off RECORDED 2026-06-24 (Jérôme Piquot, Louveciennes; PM Jerome 2026-06-22) -> in-lockstep C3
-  # cascade applied via bmad-dev-story: governance YAML C3 -> approved (placeholder cleared); c3-retention.md;
-  # run-retention-deletion-gates.ps1 now emits status=passed/policy_status=approved (exit 0, non-blocking);
-  # RetentionAndTenantDeletionConformanceTests + narrating docs + architecture. DEVIATION from the story edit set:
-  # nfr-traceability.md NFR57 kept reference-pending because NfrTraceabilityConformanceTests.
-  # ReferencePendingRowsAreOwnedAndSurfaceKnownGaps:202 hard-pins C3/C4/C7/C12 as surfaced gaps (C4 already shows
-  # this approved-in-governance/pending-in-doc precedent) — flipping it reddens the contract-spine lane, violating
-  # AC1's "no red contract-spine lane". Contracts.Tests 275/275; governance-completeness 11/11; format clean.
-  # 2026-06-26 code-review patches applied: latest retention evidence regenerated, stale approved-policy prose fixed,
-  # C3-scoped governance gate strengthened, and exact Legal signer/date/location asserted. Focused C3 conformance
-  # 8/8 plus retention gate green. 2026-06-27 retrospective completed; epic-8 explicit close-out -> done.
-  8-6-record-c3-legal-signoff-and-apply-cascade: done
+  8-1-implement-the-8-missing-bucket-a-canonical-rest-server-route: done
+  8-2-implement-the-7-ops-console-diagnostics-rest-server-routes-b: done
+  8-3-wire-exercise-cross-surface-parity-and-gate-the-four-surface: done
+  8-4-stand-up-an-automated-axe-wcag-2-2-aa-ci-gate-for-the-operat: done
+  8-5-drive-the-residual-test-baseline-honestly-green: done
+  8-6-record-c3-legal-sign-off-and-apply-the-in-lockstep-c3-retent: done
   epic-8-retrospective: done
 
-  # Epic 9: AppHost Platform Alignment And Memories Search-Index Topology
-  # Created 2026-06-22 via bmad-correct-course
-  # (sprint-change-proposal-2026-06-22-apphost-memories-platform-alignment).
-  # Adopt platform Aspire helpers (EventStore gateway-only + Tenants + Memories),
-  # add Memories topology, apply hexalith-folders->folders-index routing config.
-  # Closed 2026-06-23: all 3 stories done + review-approved; retrospective complete
-  # (epic-9-retro-2026-06-23.md). Phase-1 close-out of the Memories integration track;
-  # Phase 2 = Epic 10. Residual: aspire-run live boot owed to a DCP-capable env/CI
-  # (env-wide CLI 13.4.5/DCP --tls-cert-file mismatch; not a topology defect).
   epic-9: done
-  9-1-adopt-eventstore-and-tenants-platform-aspire-helpers: done
-  9-2-add-memories-search-index-server-to-the-apphost-topology: done
-  9-3-apply-folders-to-memories-routing-config-and-sync-artifacts: done
+  9-1-adopt-the-eventstore-and-tenants-platform-aspire-helpers: done
+  9-2-add-the-memories-search-index-server-to-the-apphost-topology: done
+  9-3-apply-folders-memories-routing-config-and-synchronize-artifa: done
   epic-9-retrospective: done
 
-  # Epic 10: Folders Worker-Side Semantic-Indexing Producer And Bridge Projection
-  # Phase 2 (gated on Epic 9 + C4 large-file + C9 path-exposure). Stubs pending create-story.
-  # Correction 2026-06-23 (sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism):
-  # the producer updates the Memories SEARCH INDEX by PUBLISHING SearchIndexEntryChanged /
-  # SearchIndexEntryRemoved CloudEvents to pubsub/memories-events (source hexalith-folders ->
-  # folders-index, upsert by (TenantId, AggregateId)), NOT by calling MemoriesClient.IngestAsync
-  # (the separate experimental-HXL001 RAG memory-ingestion subsystem). Story 10.3's IngestAsync egress
-  # is reworked; the bridge projection (10.2), /folders/events subscription, orchestration, and
-  # authorization gating are preserved. 10.4's SearchIndexEntryChanged emission folded forward into 10.3.
-  # REOPENED 2026-07-07 via bmad-correct-course (sprint-change-proposal-2026-07-07-content-materializer.md) to
-  # own Story 10.6: replace the fail-closed content materializer with a metadata-derived materializer so real
-  # folder mutation evidence populates the Memories search index under C4/C9 (delivers the open Epic 10 retro
-  # action item; FR58). Metadata-derived now; authorized real-content materialization is a C9-gated follow-up.
-  # Lands BEFORE Epic 11 Story 11.10 (which rewrites the same Workers indexing code); Story 11.1 pin map annotated.
   epic-10: in-progress
-  10-1-define-worker-side-semantic-indexing-port-and-memories-dependency: done
-  10-2-build-folders-owned-indexing-bridge-projection: done
-  # 10-3 reworked to publish SearchIndexEntryChanged via Dapr pub/sub (not IngestAsync); the 9 code-review
-  # findings were applied, then the D1 production follow-ups closed (2026-06-23, bmad-dev-story): the production
-  # folders.events pub/sub scope + EventStore TopicOverride override are wired and pinned (dev AppHost helper +
-  # hermetic Aspire test; prod deployment fragment + operator doc + conformance), and the Tier-3 Aspire
-  # cross-process harness (tests/Hexalith.Folders.AppHost.Tests) is created (opt-in; runs on a DCP-capable lane —
-  # the Epic 9 live-boot residual). All 9 findings ticked; full suite green. 2026-06-26 code-review chunk:
-  # AC3 ACL/action freshness, AC4 materialized curated text/attributes, tombstone retry intent, null/empty
-  # envelope drop, and Tier-3 EventStore-sidecar publish probe fixed. Focused verification green; normal full
-  # build/test blocked locally by missing nested Hexalith.Memories/Hexalith.PolymorphicSerializations submodule
-  # per repo policy. -> done.
-  10-3-author-authorized-async-indexing-on-file-write-and-commit: done
-  # 10-4 contexted via bmad-create-story 2026-06-23 (refs verified at HEAD 4d9cd21 by a 4-agent adversarial
-  # review). Jerome's decisions: HYBRID removal — file-remove -> hard SearchIndexEntryRemoved; folder-archive ->
-  # soft SearchIndexEntryChanged{folders.status=archived} (full-document re-send, the Memories upsert is
-  # destructive); + folders.status=active on the live upsert path (10.5 filter enabler). Live verification =
-  # the real `aspire run` 6-service round-trip (AC9) extending the opt-in Tier-3 harness — BLOCKED-PENDING the
-  # DCP-capable lane (open Epic 9 action item); the gated test seeds via the port to prove remove/archive, while
-  # full real-mutation->index stays gated on a metadata-derived materializer (tracked, not 10.4 scope). The "D1
-  # inbound wiring" Jerome scoped to 10.4 was found ALREADY COMMITTED (27c22ff/3dc0db4) — 10.4 verifies + extends
-  # it, does NOT re-implement (no Dapr scope change; removal reuses the memories-events outbound topic).
-  10-4-emit-search-index-entry-changed-cloudevents-from-workers: done
-  10-5-expose-authorized-folders-query-facade-over-memories: done
-  10-6-replace-fail-closed-content-materializer-with-metadata-derived: done
-  10-7-eventstore-backed-search-bridge-and-deployed-server-registration: backlog
-  10-8-real-produce-index-authorize-hydrate-redact-search-round-trip: ready-for-dev
+  10-1-define-the-worker-side-semantic-indexing-port-and-memories-d: done
+  10-2-build-the-folders-owned-indexing-bridge-projection: done
+  10-3-author-authorized-asynchronous-indexing-on-file-write-and-co: done
+  10-4-emit-searchindexentryremoved-on-removal-archive-and-prove-en: done
+  10-5-expose-an-authorized-folders-query-facade-over-memories: done
+  10-6-replace-the-fail-closed-content-materializer-with-a-metadata: done
+  10-7-eventstore-backed-search-bridge-and-deployed-server-registra: backlog
+  10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: 
+    ready-for-dev
   10-9-authorized-body-content-materialization-c9-gated: backlog
   epic-10-retrospective: done
 
-  # Epic 11: Domain-Focus Platform Refactoring And Governance Closure
-  # Created 2026-07-07 via bmad-correct-course from fable_Folders_changes.md.
-  # Non-product technical alignment epic: removes local platform copies, consumes shared
-  # Commons/EventStore/FrontComposer/Memories primitives, deletes ServiceDefaults, and
-  # preserves existing wire behavior through governance gates.
-  # 2026-07-07: Story 11.1 was implemented + inline-reviewed + committed via the spec-kernel /
-  # bmad-loop (codex adapter) pipeline, NOT the classic create-story flow: spec-11-1-*.md
-  # (status=done, followup_review_recommended=false) + the committed baseline evidence artifact
-  # 11-1-establish-refactor-baseline-and-governance-pin-map.md (commits d6e9f47/40cc5e1). Status
-  # here reconciled backlog->done to match that committed reality; the evidence artifact was NOT
-  # overwritten by a classic story file (user decision, /bmad-create-story 11.1). epic-11 -> in-progress.
   epic-11: in-progress
   11-1-establish-refactor-baseline-and-governance-pin-map: done
-  11-2-land-platform-prerequisite-apis-in-shared-modules: review
+  11-2-inventory-assign-and-pin-platform-prerequisites: review
   11-3-apply-wire-preserving-repository-hygiene: backlog
-  11-4-consolidate-server-transport-envelope-and-route-helper-duplication: backlog
-  11-5-consolidate-domain-provider-duplication-and-fix-provider-correctness-defects: backlog
+  11-4-consolidate-server-transport-envelope-and-route-helper-dupli: backlog
+  11-5-consolidate-domain-and-provider-helper-duplication: backlog
   11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport: backlog
   11-7-consolidate-deterministic-time-context-and-path-test-helpers: backlog
   11-8-adopt-commons-eventstore-primitives-in-the-folders-domain: backlog
-  11-9-delete-service-defaults-and-consume-commons-service-defaults: backlog
+  11-9-delete-hexalith-folders-servicedefaults-and-consume-commons: backlog
   11-10-adopt-eventstore-admission-and-subscription-mapping-seams: backlog
-  11-11-adopt-frontcomposer-user-context-token-oidc-and-shared-shell-helpers: backlog
-  11-12-modernize-generated-client-and-shared-idempotency-ulid-helpers: backlog
-  11-13-delete-obsolete-local-code-and-synchronize-planning-maintenance-documents: backlog
+  11-11-adopt-frontcomposer-user-context-token-oidc-and-shared-shell: backlog
+  11-12-modernize-the-generated-client-and-shared-idempotency-ulid-h: backlog
+  11-13-delete-obsolete-local-code-and-synchronize-planning-maintena: backlog
   11-14-adopt-memories-publication-and-search-client-seams: backlog
-  11-15-maintain-dcp-capable-cross-repository-verification-lane: backlog
+  11-15-maintain-the-dcp-capable-cross-repository-verification-lane: backlog
   11-16-replace-brittle-governance-and-ci-pins-with-behavioral-gates: backlog
-  11-17-consolidate-eventstore-gateway-doubles-and-rejection-conformance: backlog
+  11-17-consolidate-eventstore-gateway-doubles-and-rejection-conform: backlog
   11-18-consolidate-provider-and-repository-fakes-in-folders-testing: backlog
-  11-19-adopt-fluent-ui-tables-controls-icons-loading-and-layout-primitives: backlog
-  11-20-record-apphost-servicedefaults-query-handler-and-tenant-semantic-adrs: backlog
-  11-21-run-final-boundary-package-test-e2e-accessibility-and-governance-verification: backlog
+  11-19-adopt-fluent-ui-tables-controls-icons-loading-and-layout-pri: backlog
+  11-20-record-apphost-servicedefaults-query-handler-and-tenant-sema: backlog
+  11-21-run-final-boundary-package-test-e2e-accessibility-and-govern: backlog
   epic-11-retrospective: optional
 
-  # Epic 12: Durable Repository-Backed Round Trip
-  # Created 2026-07-14 via bmad-correct-course (sprint-change-proposal-2026-07-14.md) from a 6-agent,
-  # evidence-based production-readiness audit. This is THE PRODUCT epic: today every seam that touches
-  # document bytes or durable state is an Unavailable*/InMemory* placeholder with no production impl, so
-  # an agent can receive 202s but cannot persist/retrieve/version/search/commit a document, tasks never
-  # complete, and Production cannot boot. Blocker findings HXF-CORE-001..005 + HXF-REL-001/003/004.
-  # STRUCTURAL CORRECTION 2026-07-14: Epic 12 owns the durable repository, task/projection
-  # substrate, content source, real Git path, and at-least-once egress. Product projections
-  # are owned by Stories 4.18, 6.12-6.13, and 10.7; Story 11.10 no longer owns them.
-  # RATIFIED 2026-07-14 (Jerome, "do recommended"): OPTION B — build this
-  # data plane; durable-IFolderRepository home = new Epic 12 (not an expansion of 11.10). Stories may now
-  # be created (bmad-create-story) with acceptance criteria that assert restart-surviving, real-Git
-  # round-trip behavior (NOT fake-backed). Do NOT auto-start implementation on the CI-red tree — land the
-  # HXF-OPS-001 CI fix first, then sequence 12-1 -> 12-2/12-3 -> 12-4 -> 12-5.
   epic-12: in-progress
-  12-1-eventstore-backed-folder-repository-retire-noop-and-implement-projection-replay: backlog
+  12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: backlog
   12-2-durable-projections-and-task-completion-pipeline: backlog
   12-3-durable-workspace-file-content-store-and-content-read-source: backlog
   12-4-real-git-commit-executor-and-provider-write-path: backlog
   12-5-at-least-once-memories-egress-and-reconciler: backlog
-  12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence: in-progress
+  12-6-implement-durable-all-mutations-idempotency-and-expired-key: in-progress
   epic-12-retrospective: optional
 
-  # Epic 13: Security And Operational Hardening
-  # Created 2026-07-14 via bmad-correct-course (sprint-change-proposal-2026-07-14.md). Owns the genuine,
-  # NON-deferred defects the audit surfaced on the surfaces that DO claim to work, that are NOT already
-  # homed in Epic 11. (Already in Epic 11 — do NOT duplicate: bearer https/loopback guard HXF-SEC-001 ->
-  # 11.6 [elevate priority]; Forgejo socket leak HXF-PERF-002 -> 11.5; probe-path alignment HXF-REL-006
-  # -> 11.9; UI sync-over-async/token-relay HXF-UI-001 -> 11.11.) Phase-0 items 13-1/13-2/13-3 are small
-  # and independent of the Epic 12 data-plane work and can start immediately (A/B decision RATIFIED
-  # Option B 2026-07-14) — sequence right after the HXF-OPS-001 CI-red fix.
   epic-13: backlog
-  13-1-forgejo-ssrf-egress-guard-private-and-metadata-ip-block: backlog                 # HXF-SEC-002
-  13-2-fail-safe-fallback-authorization-policy-and-sidecar-only-app-port: backlog       # HXF-SEC-003
-  13-3-credential-file-0600-permissions: backlog                                        # HXF-SEC-004
-  13-4-real-readiness-snapshot-source-and-ui-health-endpoints: backlog                  # HXF-REL-002
-  13-5-wire-alert-instruments-and-production-dapr-statestore-and-resiliency: backlog    # HXF-OBS-001 / HXF-REL-005
-  13-6-rate-limiting-timeouts-body-caps-and-converge-sensitive-value-filters: backlog   # HXF-SEC-005 / HXF-SEC-006
+  13-1-forgejo-ssrf-egress-guard-for-private-and-metadata-ips: backlog
+  13-2-fail-safe-fallback-authorization-policy-and-sidecar-only-app: backlog
+  13-3-credential-file-0600-permissions: backlog
+  13-4-real-readiness-snapshot-source-and-ui-health-endpoints: backlog
+  13-5-wire-alert-instruments-and-production-dapr-state-store-and-r: backlog
+  13-6-rate-limiting-timeouts-body-caps-and-sensitive-value-filter: backlog
   epic-13-retrospective: optional
-
-# Action items recorded from epic retrospectives. Status: open | in-progress | done.
 action_items:
   - epic: planning
-    action: "Apply the 2026-06-27 correct-course artifact synchronization: epics.md counts/classification/FR58 coverage, UX FR58 addendum, wireflow FR58 note, C3/C4 NFR traceability clarification, and architecture live-state wording."
+    action: "Apply the 2026-06-27 correct-course artifact synchronization: epics.md
+      counts/classification/FR58 coverage, UX FR58 addendum, wireflow FR58 note, C3/C4
+      NFR traceability clarification, and architecture live-state wording."
     owner: "Paige / Winston / Amelia"
     priority: high
     status: done
@@ -381,12 +259,21 @@ action_items:
     # Approved 2026-07-14 and recovered/re-approved 2026-08-04 via
     # sprint-change-proposal-2026-08-04.md after the non-propagated correction
     # caused a repeat NOT READY implementation-readiness result.
-    action: "Execute the approved Major planning-authority recovery: create the canonical story manifest; reconcile epics.md requirements, classifications, ratified story inventory, ownership, dependencies, acceptance floors, and generated counts; reconcile UX vocabulary, authorized search, incident authorization, and MVP component phasing; reconcile lifecycle statuses and active contexts from evidence; add planning-consistency validation; then rerun implementation readiness into a non-overwriting report. Preserve the Story 12.6/10.8 allowance and hold new story starts plus Story 3.10 until authority reconciliation completes."
+    action: "Execute the approved Major planning-authority recovery: create the canonical
+      story manifest; reconcile epics.md requirements, classifications, ratified story
+      inventory, ownership, dependencies, acceptance floors, and generated counts;
+      reconcile UX vocabulary, authorized search, incident authorization, and MVP
+      component phasing; reconcile lifecycle statuses and active contexts from evidence;
+      add planning-consistency validation; then rerun implementation readiness into
+      a non-overwriting report. Preserve the Story 12.6/10.8 allowance and hold new
+      story starts plus Story 3.10 until authority reconciliation completes."
     owner: "John / Winston / Product Owner / Sally / Amelia / Murat / Security"
     priority: high
     status: open
   - epic: 10
-    action: "Stand up and run the DCP-capable AppHost lane for Epic 10 live evidence: topology boot, folders-index auto-provisioning, SearchIndexEntryChanged, SearchIndexEntryRemoved, archived status filtering, and query-facade search/hydration."
+    action: "Stand up and run the DCP-capable AppHost lane for Epic 10 live evidence:
+      topology boot, folders-index auto-provisioning, SearchIndexEntryChanged, SearchIndexEntryRemoved,
+      archived status filtering, and query-facade search/hydration."
     owner: "Jerome / Platform"
     priority: high
     status: open
@@ -394,19 +281,24 @@ action_items:
     # The 2026-07-07 record-limitation branch remains valid historical evidence. The approved
     # 2026-07-14 structural correction supersedes its ownership deferral: production wiring is
     # now Epic 10 Story 10.7, not Workstream 11 Story 11.10.
-    action: "Implement the Server-side EventStore-backed search bridge read model and deployed registration for query-facade hydration and indexing-status paths under Story 10.7."
+    action: "Implement the Server-side EventStore-backed search bridge read model
+      and deployed registration for query-facade hydration and indexing-status paths
+      under Story 10.7."
     owner: "Amelia / Winston"
     priority: high
     status: open
   - epic: 10
-    action: "Replace or extend the fail-closed content materializer so real folder mutation evidence can populate the search index under C4/C9 policy."
+    action: "Replace or extend the fail-closed content materializer so real folder
+      mutation evidence can populate the search index under C4/C9 policy."
     owner: "Amelia / Murat"
     priority: high
     status: done   # 2026-07-14 Story 10.6 delivered metadata-derived materialization; authorized real-content remains the separate C9-gated follow-up below.
   - epic: 10
     # 2026-07-14 follow-up recorded from bmad-correct-course provenance:
     # sprint-change-proposal-2026-07-07-content-materializer.md section 5; Story 10.6 AC9.
-    action: "Authorize and implement real-content (body-text) materialization only after explicit C9 content-exposure sign-off; metadata-derived materialization remains the safe default until Security and PM approve the exposure contract."
+    action: "Authorize and implement real-content (body-text) materialization only
+      after explicit C9 content-exposure sign-off; metadata-derived materialization
+      remains the safe default until Security and PM approve the exposure contract."
     owner: "Security / PM / Amelia"
     priority: high
     status: open
@@ -420,7 +312,9 @@ action_items:
     # owned requirements minus two consolidations, not three tail bullets. PRD and epics remain unchanged
     # at 73; the Story 7.16 table/tests/gate/report now relock all 73 current hashes and owned evidence gaps.
     # Verification: focused NFR gate 16/16; complete Contracts.Tests 284/284.
-    action: "Reconciled the PRD/NFR traceability bridge to the authoritative 73-row PRD/epics inventory, including current hashes, category ranges, ownership, and exact-cardinality conformance. Story 10.6 AC11 is green."
+    action: "Reconciled the PRD/NFR traceability bridge to the authoritative 73-row
+      PRD/epics inventory, including current hashes, category ranges, ownership, and
+      exact-cardinality conformance. Story 10.6 AC11 is green."
     owner: "John / Murat"
     priority: high
     status: done
@@ -435,52 +329,74 @@ action_items:
     # direct-URL override for hermetic tests. New hermetic FoldersContextSearchFacadeRegistrationTests pins
     # the composed endpoint; existing DaprPolicyConformanceTests now validate a path the live client exercises.
     # Live aspire-run proof remains BLOCKED-PENDING the DCP lane (carried Epic 9 residual, not new).
-    action: "Resolve the Memories read-facade egress policy: route Memories:BaseAddress through Dapr sidecar invoke or revise policy evidence so it does not over-claim Dapr enforcement. RESOLVED (route-through-sidecar branch)."
+    action: "Resolve the Memories read-facade egress policy: route Memories:BaseAddress
+      through Dapr sidecar invoke or revise policy evidence so it does not over-claim
+      Dapr enforcement. RESOLVED (route-through-sidecar branch)."
     owner: "Winston / Platform"
     priority: medium
     status: done
   - epic: 10
-    action: "Reconcile .slnx canonical inventory drift in ScaffoldContractTests.SolutionContainsOnlyCanonicalBuildableProjects while preserving intentional submodule project entries."
+    action: "Reconcile .slnx canonical inventory drift in ScaffoldContractTests.SolutionContainsOnlyCanonicalBuildableProjects
+      while preserving intentional submodule project entries."
     owner: "Amelia"
     priority: medium
     status: open
   - epic: 10
-    action: "Resolve SemanticIndexing versus SearchIndexing naming drift by renaming safely or adding a clear ADR explaining the retained term and its limits."
+    action: "Resolve SemanticIndexing versus SearchIndexing naming drift by renaming
+      safely or adding a clear ADR explaining the retained term and its limits."
     owner: "Paige / Winston / Amelia"
     priority: low
     status: open
   - epic: 9
-    action: "Stand up a DCP-capable `aspire run` boot lane (CI or local) — or `aspire update` to align CLI 13.4.5 to DCP/Hosting 13.4.6 — and record live-boot evidence (all 6 services healthy, no eventstore-admin*, folders-index auto-provisioned). Closes the live-boot half of AC6/AC7 owed across 9.1/9.2/9.3."
+    action: "Stand up a DCP-capable `aspire run` boot lane (CI or local) — or `aspire
+      update` to align CLI 13.4.5 to DCP/Hosting 13.4.6 — and record live-boot evidence
+      (all 6 services healthy, no eventstore-admin*, folders-index auto-provisioned).
+      Closes the live-boot half of AC6/AC7 owed across 9.1/9.2/9.3."
     owner: "Jerome / Platform"
     priority: high
     status: open
   - epic: 9
-    action: "Reconcile the three-way Aspire version drift: update architecture.md, epics.md AR-INFRA-01, and project-context.md to the authoritative Directory.Packages.props pins (Aspire 13.4.6 + CommunityToolkit.Aspire.Hosting.Dapr 13.4.0-preview.1.260602-0230)."
+    action: "Reconcile the three-way Aspire version drift: update architecture.md,
+      epics.md AR-INFRA-01, and project-context.md to the authoritative Directory.Packages.props
+      pins (Aspire 13.4.6 + CommunityToolkit.Aspire.Hosting.Dapr 13.4.0-preview.1.260602-0230)."
     owner: "Winston"
     priority: medium
     status: done
   - epic: 9
-    action: "Resolve the inert resiliency.yaml in gateway-only mode (9.1 LOW-1): enhance Hexalith.EventStore.Aspire to load resiliency for gateway-only sidecars, or remove the dead file with documented rationale."
+    action: "Resolve the inert resiliency.yaml in gateway-only mode (9.1 LOW-1): enhance
+      Hexalith.EventStore.Aspire to load resiliency for gateway-only sidecars, or
+      remove the dead file with documented rationale."
     owner: "Amelia"
     priority: medium
     status: open
   - epic: 9
-    action: "REVISED 2026-06-23 (sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism): the producer PUBLISHES SearchIndexEntryChanged via Dapr pub/sub, so a folders/folders-workers -> memories SERVICE-INVOKE authorization is NOT required and was never the right model. Production Dapr access-control already models this correctly (deny-by-default; folders-workers publishes to memories-events via the pubsub component; memories subscribes). Remaining work lands in Story 10.3: update tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs expectations (assert publish/subscribe scopes for memories-events; drop the 'deferred to Epic 10' framing), keeping the conformance closed-sets in lockstep."
+    action: "REVISED 2026-06-23 (sprint-change-proposal-2026-06-23-story-10-3-searchindexentrychanged-mechanism):
+      the producer PUBLISHES SearchIndexEntryChanged via Dapr pub/sub, so a folders/folders-workers
+      -> memories SERVICE-INVOKE authorization is NOT required and was never the right
+      model. Production Dapr access-control already models this correctly (deny-by-default;
+      folders-workers publishes to memories-events via the pubsub component; memories
+      subscribes). Remaining work lands in Story 10.3: update tests/Hexalith.Folders.Contracts.Tests/OpenApi/DaprPolicyConformanceTests.cs
+      expectations (assert publish/subscribe scopes for memories-events; drop the
+      'deferred to Epic 10' framing), keeping the conformance closed-sets in lockstep."
     owner: "Murat / Amelia"
     priority: high
     status: done
   - epic: 9
-    action: "Run create-story for Epic 10 stubs 10.1-10.5 and confirm C4 (large-file) + C9 (path-exposure) gating readiness before Epic 10 kickoff."
+    action: "Run create-story for Epic 10 stubs 10.1-10.5 and confirm C4 (large-file)
+      + C9 (path-exposure) gating readiness before Epic 10 kickoff."
     owner: "John"
     priority: high
     status: done
   - epic: 9
-    action: "Document and proactively align the cross-repo CommunityToolkit.Aspire.Hosting.Dapr / Aspire version coupling between Folders and the platform .Aspire submodules to prevent NU1605 recurrence."
+    action: "Document and proactively align the cross-repo CommunityToolkit.Aspire.Hosting.Dapr
+      / Aspire version coupling between Folders and the platform .Aspire submodules
+      to prevent NU1605 recurrence."
     owner: "Amelia"
     priority: medium
     status: in-progress
   - epic: 9
-    action: "Reconcile dev-record test counts at story close (not only at review) — minor under-counts recurred in 9.2/9.3."
+    action: "Reconcile dev-record test counts at story close (not only at review)
+      — minor under-counts recurred in 9.2/9.3."
     owner: "Amelia"
     priority: low
     status: done
@@ -494,12 +410,16 @@ action_items:
     # rejects new ad-hoc IEventStoreGatewayClient doubles + a positive test proving canonical FolderResultCode
     # rejection propagation. Completion signal (no flattening copies exist; shared propagating helper is the
     # approved pattern) is delivered when Story 11.7 reaches done.
-    action: "Add or extend a guard that rejects new in-process EventStore gateway test doubles which do not propagate DomainServiceWireResult rejections with canonical reason codes. RE-HOMED to Epic 11 Story 11.7 (two ACs added)."
+    action: "Add or extend a guard that rejects new in-process EventStore gateway
+      test doubles which do not propagate DomainServiceWireResult rejections with
+      canonical reason codes. RE-HOMED to Epic 11 Story 11.7 (two ACs added)."
     owner: "Amelia / Murat"
     priority: high
     status: in-progress
   - epic: 8
-    action: "Reconcile the remaining Epic 5 provider-readiness idempotency_key_not_accepted strings to canonical idempotency_key_not_allowed, or document a deliberate exception in contract/parity evidence."
+    action: "Reconcile the remaining Epic 5 provider-readiness idempotency_key_not_accepted
+      strings to canonical idempotency_key_not_allowed, or document a deliberate exception
+      in contract/parity evidence."
     owner: "Amelia"
     priority: medium
     status: done
@@ -511,17 +431,22 @@ action_items:
     # (3) op7 GetWorkspaceRetryEligibility 404 (unknown workspace) + 503 (throwing read model);
     # (4) op3 UpdateFolderAclEntry route-level 404 via faulting-gateway double. No src/spine/parity change.
     # Stays open pending implementation (recommended: focused bmad-dev-story). Owner Amelia impl / Murat verify.
-    action: "Extend Story 8.1 REST negative-path coverage for authenticated 403 safe denial, selected 404/503 read legs, and route-level ListFolderAclEntries 200 shape."
+    action: "Extend Story 8.1 REST negative-path coverage for authenticated 403 safe
+      denial, selected 404/503 read legs, and route-level ListFolderAclEntries 200
+      shape."
     owner: "Murat / Amelia"
     priority: medium
     status: open
   - epic: 8
-    action: "Generalize governance gate freshness and exact approval-record checks so approval-backed criteria cannot pass with stale reports or generic Legal-approved text."
+    action: "Generalize governance gate freshness and exact approval-record checks
+      so approval-backed criteria cannot pass with stale reports or generic Legal-approved
+      text."
     owner: "Murat"
     priority: high
     status: open
   - epic: 8
-    action: "Codify the C3/C4 precedent that governance-approved criteria may still have separately owned reference-pending NFR traceability rows."
+    action: "Codify the C3/C4 precedent that governance-approved criteria may still
+      have separately owned reference-pending NFR traceability rows."
     owner: "Paige / Winston"
     priority: medium
     status: open
@@ -536,7 +461,10 @@ action_items:
     # guard tests/Hexalith.Folders.Contracts.Tests/Deployment/HonestGreenGateBaselineConformanceTests.cs (both gate
     # jobs present+blocking, no-filter, AD7 absent, five sibling conformance classes referenced) — authored + GREEN
     # (build 0 warnings; 4/4 pass; 42/42 across the CI-workflow conformance classes).
-    action: "Preserve full UI E2E and accessibility gates as part of the honest-green baseline; keep no-filter and forbidden-substring conformance checks intact when CI changes. RESOLVED: pinned in Story 11.1 register + Epic 11 ACs (11.3/11.7/11.11/11.13) + new HonestGreenGateBaselineConformanceTests guard (green)."
+    action: "Preserve full UI E2E and accessibility gates as part of the honest-green
+      baseline; keep no-filter and forbidden-substring conformance checks intact when
+      CI changes. RESOLVED: pinned in Story 11.1 register + Epic 11 ACs (11.3/11.7/11.11/11.13)
+      + new HonestGreenGateBaselineConformanceTests guard (green)."
     owner: "Murat / Amelia"
     priority: high
     status: done
@@ -552,7 +480,11 @@ action_items:
     # Evidence Read Models (MVP limitation)"; epics.md Epic 6/Epic 4 notes; Story 11.10 gained an AC; deferred-
     # work.md dated section. NFR51/NFR52 remain honestly covered (nfr-traceability.md untouched; optional gate-
     # lockstep follow-up owned by Murat). Wiring re-homed to Epic 11 Story 11.10.
-    action: "Decide whether seed-backed MVP diagnostics and transition-evidence read models become projection-backed production implementations or remain explicitly owned limitations. RESOLVED (record-limitation branch): owned limitation for MVP; drift reconciled in architecture.md/epics.md/deferred-work.md; production-projection wiring re-homed to Epic 11 Story 11.10 (AC added)."
+    action: "Decide whether seed-backed MVP diagnostics and transition-evidence read
+      models become projection-backed production implementations or remain explicitly
+      owned limitations. RESOLVED (record-limitation branch): owned limitation for
+      MVP; drift reconciled in architecture.md/epics.md/deferred-work.md; production-projection
+      wiring re-homed to Epic 11 Story 11.10 (AC added)."
     owner: "Winston / Amelia"
     priority: medium
     status: done
@@ -571,32 +503,69 @@ action_items:
     # OrganizationStreamName reserved-tenant semantics (HXF-LOW-001, not exploitable) — recommendation is
     # the strict ordinal/no-trim anti-disclosure variant; apply with test-pin lockstep whenever Epic 13
     # touches the stream-name code.
-    action: "RATIFY the MVP definition against runtime reality: Option A (control-plane MVP) vs Option B (build the durable data plane via new Epic 12). RESOLVED (Option B): Epic 12 owns durable persistence + Git round-trip; MVP reframed as control-plane; Epic 7/8 annotated; FR traceability reconciliation carried in the claims-correction item below. Governance risk HXF-GOV-001."
+    action: "RATIFY the MVP definition against runtime reality: Option A (control-plane
+      MVP) vs Option B (build the durable data plane via new Epic 12). RESOLVED (Option
+      B): Epic 12 owns durable persistence + Git round-trip; MVP reframed as control-plane;
+      Epic 7/8 annotated; FR traceability reconciliation carried in the claims-correction
+      item below. Governance risk HXF-GOV-001."
     owner: "John / Winston"
     priority: high
     status: done
   - epic: planning
-    action: "Correct over-advertised claims once A/B is decided: architecture.md diverged/aspirational lines (working-copy D-8 path + WorkingCopyManager.cs/IdempotencyRecordStore.cs that do not exist; 'preparing (clone, materialize)'; ADR-0004 idempotency-TTL that has no impl); docs/sdk golden-lifecycle (passes fake-backed only) + nonexistent staging-API upload instructions + op count 47->49. HXF-INFO-002."
+    action: "Correct over-advertised claims once A/B is decided: architecture.md diverged/aspirational
+      lines (working-copy D-8 path + WorkingCopyManager.cs/IdempotencyRecordStore.cs
+      that do not exist; 'preparing (clone, materialize)'; ADR-0004 idempotency-TTL
+      that has no impl); docs/sdk golden-lifecycle (passes fake-backed only) + nonexistent
+      staging-API upload instructions + op count 47->49. HXF-INFO-002."
     owner: "Paige / Winston"
     priority: medium
     status: open
   - epic: 13
-    action: "CI IS RED ON main (HXF-OPS-001): the AGENTS.md/CLAUDE.md/README.md/tests/README.md instruction-file refactor (4c8f16a/ba433ab/fcd8606) dropped the canonical submodule-init command -> ScaffoldContractTests.SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup fails baseline-ci on every push; contract-spine.yml has no submodule-init step at all; accessibility-gates fails a Contracts.deps.json build race. NOTE: a ~60-file uncommitted working-tree fix already re-adds the init command + adds Hexalith.PolymorphicSerializations to ci.yml init (why local gates pass but CI is red) — commit it, add non-recursive root init to contract-spine.yml, serialize the deps.json provisioning race."
+    action: "CI IS RED ON main (HXF-OPS-001): the AGENTS.md/CLAUDE.md/README.md/tests/README.md
+      instruction-file refactor (4c8f16a/ba433ab/fcd8606) dropped the canonical submodule-init
+      command -> ScaffoldContractTests.SubmodulePolicyIsDiscoverableAndForbidsRecursiveDefaultSetup
+      fails baseline-ci on every push; contract-spine.yml has no submodule-init step
+      at all; accessibility-gates fails a Contracts.deps.json build race. NOTE: a
+      ~60-file uncommitted working-tree fix already re-adds the init command + adds
+      Hexalith.PolymorphicSerializations to ci.yml init (why local gates pass but
+      CI is red) — commit it, add non-recursive root init to contract-spine.yml, serialize
+      the deps.json provisioning race."
     owner: "Amelia / Jerome"
     priority: high
     status: open
   - epic: 12
-    action: "Deliver durable persistence + Git round-trip (Epic 12): EventStore-backed IFolderRepository retiring the ADR-0001 NoOp + /project replay (HXF-CORE-001, HXF-REL-001); durable projections + task-completion pipeline (HXF-CORE-005); real IWorkspaceFileContentStore + content read source + hash verify (HXF-CORE-002/003); real Git commit executor + provider write path + provisioning trigger (HXF-CORE-004); at-least-once Memories egress + reconciler + commit-then-append (HXF-REL-003/004). ACs must assert restart-surviving, real-Git round-trip behavior (NOT fake-backed). GATES Stories 10.6 and 11.10."
+    action: "Deliver durable persistence + Git round-trip (Epic 12): EventStore-backed
+      IFolderRepository retiring the ADR-0001 NoOp + /project replay (HXF-CORE-001,
+      HXF-REL-001); durable projections + task-completion pipeline (HXF-CORE-005);
+      real IWorkspaceFileContentStore + content read source + hash verify (HXF-CORE-002/003);
+      real Git commit executor + provider write path + provisioning trigger (HXF-CORE-004);
+      at-least-once Memories egress + reconciler + commit-then-append (HXF-REL-003/004).
+      ACs must assert restart-surviving, real-Git round-trip behavior (NOT fake-backed).
+      GATES Stories 10.6 and 11.10."
     owner: "Amelia / Winston / Murat"
     priority: high
     status: open
   - epic: 13
-    action: "Phase-0 security/ops hardening (Epic 13, mostly independent of Epic 12): Forgejo SSRF egress guard (HXF-SEC-002); fail-safe fallback authorization policy + sidecar-only app port (HXF-SEC-003); credential-file 0600 (HXF-SEC-004); real IReadinessSnapshotSource + UI health endpoints (HXF-REL-002); wire the 5 declared-only alert instruments + production Dapr statestore/resiliency components (HXF-OBS-001/HXF-REL-005); rate-limiting/timeouts/body-caps + converge the 4 IsSensitiveDiagnosticValue copies onto the superset (HXF-SEC-005/006). ELEVATE Story 11.6 (CLI/MCP plaintext-bearer guard HXF-SEC-001) priority."
+    action: "Phase-0 security/ops hardening (Epic 13, mostly independent of Epic 12):
+      Forgejo SSRF egress guard (HXF-SEC-002); fail-safe fallback authorization policy
+      + sidecar-only app port (HXF-SEC-003); credential-file 0600 (HXF-SEC-004); real
+      IReadinessSnapshotSource + UI health endpoints (HXF-REL-002); wire the 5 declared-only
+      alert instruments + production Dapr statestore/resiliency components (HXF-OBS-001/HXF-REL-005);
+      rate-limiting/timeouts/body-caps + converge the 4 IsSensitiveDiagnosticValue
+      copies onto the superset (HXF-SEC-005/006). ELEVATE Story 11.6 (CLI/MCP plaintext-bearer
+      guard HXF-SEC-001) priority."
     owner: "Amelia / Murat"
     priority: high
     status: open
   - epic: 12
-    action: "Verification honesty (Murat): add real lanes the suite lacks — restart-survival, real-Git commit round-trip, parallel-mutation concurrency (Task.WhenAll through /process, exactly-one-winner), property/fuzz over paths/refs/cursors, and an ENABLED Tier-3 real-infra job; label the ~25/31 prose/source-text conformance gates as documentation checks (not behavior). HXF-VER-001. Add MCP tool annotations + typed request bodies + structured output + authorized content read-back (HXF-MCP-001); provenance pins/hash/media-type + fileVersionReference->path resolver (HXF-PROV-001); untrusted-content contract language (HXF-INFO-001)."
+    action: "Verification honesty (Murat): add real lanes the suite lacks — restart-survival,
+      real-Git commit round-trip, parallel-mutation concurrency (Task.WhenAll through
+      /process, exactly-one-winner), property/fuzz over paths/refs/cursors, and an
+      ENABLED Tier-3 real-infra job; label the ~25/31 prose/source-text conformance
+      gates as documentation checks (not behavior). HXF-VER-001. Add MCP tool annotations
+      + typed request bodies + structured output + authorized content read-back (HXF-MCP-001);
+      provenance pins/hash/media-type + fileVersionReference->path resolver (HXF-PROV-001);
+      untrusted-content contract language (HXF-INFO-001)."
     owner: "Murat / Amelia"
     priority: medium
     status: open

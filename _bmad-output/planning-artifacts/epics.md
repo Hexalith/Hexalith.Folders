@@ -250,7 +250,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-CURRENT-02: The OpenAPI 3.1 Contract Spine is the operation/schema authority; NSwag generates the SDK, CLI and MCP wrap that SDK, REST-emitted schemas validate against the spine, and every current operation has exactly one generated C13 parity row.
 - AR-CURRENT-03: Hexalith.EventStore owns durable command admission and event persistence. Production must replace the ADR-0001 NoOp repository and `/project` 501 with an EventStore-backed `IFolderRepository`, durable replay, and a bootable deployed host.
 - AR-CURRENT-04: Operational state is classified explicitly. Locks, fencing tokens, idempotency admission/tombstones, in-flight checkpoints, and reconciliation tasks are durable and fail closed when unavailable; working copies are disposable caches, never authority.
-- AR-CURRENT-05: Epic 12 owns durable source events, authoritative file content/state, restart replay, task completion, real Git persistence, and recoverable at-least-once egress. It does not own consuming product projections.
+- AR-CURRENT-05: Epic 12 owns durable source events, authoritative file content/state, restart replay, task completion, durable Git-execution orchestration, and recoverable at-least-once egress. Stories 3.11 and 3.13 own the production-registered provider-private mutation, explicit-commit, and status adapter seams that Epic 12 consumes; Epic 12 does not reimplement those transports or own consuming product projections.
 - AR-CURRENT-06: Epic 4 owns workspace transition evidence and durable prepare/lock/mutation/context/commit/reconciliation proof; Epic 6 owns seven populated diagnostic projections and deployed operator/incident journeys; Epic 10 owns the search bridge, deployed Server registration, current-authority hydration/redaction/pruning, and the non-empty FR58 round trip.
 - AR-CURRENT-07: Story 11.10 owns EventStore admission and subscription-mapping seam adoption only. Story 11.14 owns Memories publication/search-client seams, and Story 11.15 owns the DCP-capable cross-repository verification lane. Workstream 11 owns no product projection.
 - AR-CURRENT-08: The governing dependency sequence is OQ1–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun.
@@ -1128,8 +1128,10 @@ So that repository-backed work remains deterministic across supported Forgejo ve
 **Given** a supported Forgejo version and an authorized lock-owning task
 **When** add, change, remove, commit, or status behavior executes
 **Then** the adapter enforces path/ref/C4 policy, preserves ordering and canonical metadata, and maps version-specific responses to the shared success, conflict, failure, and unknown-outcome model
+**And** Story 3.13 owns the production-registered, provider-private Forgejo HTTP adapter implementation of the canonical mutation, explicit-commit, and read-only status seams; it consumes caller-supplied authoritative authorization, lock, ref-policy, idempotency, target, content, and reconciliation-budget evidence but does not persist or orchestrate those decisions
+**And** Stories 12.3 and 12.4 own durable target/content state, executor and process-manager composition, reconciliation scheduling, provider-confirmed commit persistence, terminal task/projection state, and end-to-end workspace proof; Story 12.4 consumes rather than reimplements the adapter seam established here
 **And** equivalent/conflicting replay, wrong-tenant denial, known failure, timeout/ambiguity, cancellation, file-size/type/path boundaries, and contract-drift behavior are proven without duplicate effects or secret/content leakage
-**And** completion requires real deployed Forgejo composition and restart-safe evidence; mocks, fakes, NoOp, unavailable, or safe-empty results alone cannot satisfy it.
+**And** for this story, real deployed Forgejo composition means production registration resolves the canonical provider port to the concrete version-aware Forgejo HTTP adapter for mutation, commit, and status; production-registration plus hermetic real-adapter/transport evidence completes this adapter surface but is not successful outer workspace-task execution evidence, and mocks, fakes, NoOp, unavailable, or safe-empty results alone cannot satisfy it.
 
 ### Story 3.14: Complete asynchronous repository creation and binding
 
@@ -2661,9 +2663,9 @@ So that repository-backed work produces a provider-confirmed durable commit.
 
 **Acceptance Criteria:**
 
-**Given** Stories 12.1–12.3 provide durable state/content and the selected provider binding/ref policy is current
-**When** the real GitHub or Forgejo provider write path stages changes and commits
-**Then** `NotImplementedException`/fake executors are replaced, exactly one eligible provider mutation occurs, provider-confirmed commit identity is persisted, the task/projections reach the correct clean terminal state, and the provisioning process manager is wired where required
+**Given** Stories 12.1–12.3 provide durable state/content, Stories 3.11 and 3.13 provide production-registered provider-private mutation/commit/status adapters, and the selected provider binding/ref policy is current
+**When** the real GitHub or Forgejo write executor applies durable staged changes and commits through the selected provider seam
+**Then** `NotImplementedException`/fake workspace executors are replaced, the executor composes rather than reimplements provider-private transports, exactly one eligible provider mutation occurs, provider-confirmed commit identity is persisted, the task/projections reach the correct clean terminal state, and the provisioning process manager is wired where required
 **And** denial/wrong-tenant, lock/ref/path conflict, equivalent/conflicting replay, known provider failure, timeout/cancellation or unknown post-dispatch outcome, restart, and content/metadata boundary evidence prove no blind duplicate commit
 **And** mocks, fake Git, NoOp, in-memory, seed, unavailable, or safe-empty evidence cannot satisfy completion.
 
