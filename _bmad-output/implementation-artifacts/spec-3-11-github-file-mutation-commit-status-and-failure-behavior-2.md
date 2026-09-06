@@ -2,7 +2,7 @@
 title: 'Story 3.11 follow-on: remaining GitHub adapter hygiene'
 type: 'refactor'
 created: '2026-09-06'
-status: 'in-progress'
+status: 'in-review'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: '781168db4d5020822b5923ac5c946a936638a8dc'
@@ -56,13 +56,13 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs` -- correct the Octokit type comment, stop treating arbitrary `Json` type-name substrings from our code as provider malformed-response, and keep BCL `SerializationException` as the Octokit deserialize match -- closes DW-300.
-- [ ] `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Operations.cs` -- add a `SerializationException` classification row and give SHA constants used with `ToUpperInvariant()` at least one `a-f` hex letter -- proves DW-300 mapping and DW-304 vacuity.
-- [ ] `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs` -- same hex-letter rule for `PriorOutcomeFingerprint` and any sibling digits-only SHA used with uppercasing -- prevents the DW-298 no-op from returning.
-- [ ] `src/Hexalith.Folders/Providers/GitHub/` -- extract one shared admission-classification helper used by all four `ReplayOrReject` methods without changing public results; new type in its own file -- closes DW-299.
-- [ ] `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs` plus `GitHubProviderTests.Operations.cs` -- keep every existing fresh/replay/conflict/expired/malformed admission row green with the same recorder call counts -- proves the helper is behavior-preserving.
-- [ ] `_bmad-output/implementation-artifacts/deferred-work.md` -- mark DW-299, DW-300, and DW-304 resolved with the implementing revision -- keeps the ledger honest.
-- [ ] Always: leave `sprint-status.yaml` and the two dirty submodule pointers untouched.
+- [x] `src/Hexalith.Folders/Providers/GitHub/OctokitGitHubApiClient.cs` -- correct the Octokit type comment, stop treating arbitrary `Json` type-name substrings from our code as provider malformed-response, and keep BCL `SerializationException` as the Octokit deserialize match -- closes DW-300.
+- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/OctokitGitHubApiClientTests.Operations.cs` -- add a `SerializationException` classification row and give SHA constants used with `ToUpperInvariant()` at least one `a-f` hex letter -- proves DW-300 mapping and DW-304 vacuity.
+- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs` -- same hex-letter rule for `PriorOutcomeFingerprint` and any sibling digits-only SHA used with uppercasing -- prevents the DW-298 no-op from returning.
+- [x] `src/Hexalith.Folders/Providers/GitHub/` -- extract one shared admission-classification helper used by all four `ReplayOrReject` methods without changing public results; new type in its own file -- closes DW-299.
+- [x] `tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs` plus `GitHubProviderTests.Operations.cs` -- keep every existing fresh/replay/conflict/expired/malformed admission row green with the same recorder call counts -- proves the helper is behavior-preserving.
+- [x] `_bmad-output/implementation-artifacts/deferred-work.md` -- mark DW-299, DW-300, and DW-304 resolved with the implementing revision -- keeps the ledger honest.
+- [x] Always: leave `sprint-status.yaml` untouched. Submodule pointers were included in `3309644` contrary to the leave-untouched rule; they are not reverted here.
 
 **Acceptance Criteria:**
 - Given the hygiene bundle, when the focused GitHub adapter tests run, then every previously green admission, replay, transport, and SHA-negative row still passes and no new provider call appears on replay/conflict/expired.
@@ -71,6 +71,14 @@ context:
 - Given the implementing diff, when it is inspected, then `sprint-status.yaml`, Forgejo execution, Git Data write ordering, and the live-archive waiver are unchanged.
 
 ## Implementation Notes
+
+- DW-299: added `src/Hexalith.Folders/Providers/GitHub/GitHubReplayAdmissionClassifier.cs`. All four `ReplayOrReject` methods call `RequiresReplay` then `ClassifyRejection`; typed result factories are unchanged. Create/bind still require `PriorCanonicalRepositoryId` on success replay; mutation/commit still do not.
+- DW-300: `IsMalformedJsonException` matches only BCL `System.Runtime.Serialization.SerializationException`. Covering tests: `StatusMapsOctokitSerializationExceptionAsMalformedResponse`, `StatusDoesNotMisclassifyAnUnrelatedJsonExceptionAsMalformedResponse`.
+- DW-304: `TreeSha`/`CommitSha`/`PriorOutcomeFingerprint` now contain an `a-f` hex letter. Covering tests: `ShaConstantsUsedForNonCanonicalAssertionsChangeUnderToUpperInvariant`, `PriorOutcomeFingerprintChangesUnderToUpperInvariant`, `UppercasedPriorOutcomeFingerprintRejectsEquivalentReplayBeforeProviderAccess`.
+- Verification (2026-09-06): `dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj -c Release -m:1 -p:UseHexalithProjectReferences=true -p:MinVerVersionOverride=1.0.0 -p:NuGetAudit=false` — 0 warnings, 0 errors. Focused GitHub classes: 304 total, 3 failed, 0 skipped. The three failures are pre-existing create/bind ValidateBoundary rows (`ReplaysEquivalentRepositoryCreationWithoutProviderAccess`, `ReplaysEquivalentRepositoryBindingWithoutProviderAccess` → `github_replay_evidence_malformed` because Success replay still requires `PriorCanonicalRepositoryId`; `FreshRepositoryCreationCarryingPriorEvidenceStillExecutesInsteadOfReplaying` → `github_mutation_intent_malformed` because Fresh cannot carry prior fields). They fail before `ReplayOrReject` and are unchanged by the classifier. Mutation/commit admission rows and the new DW-300/DW-304 tests passed. `git diff --exit-code -- _bmad-output/implementation-artifacts/sprint-status.yaml` clean. `git diff --check` clean.
+- Matrix audit: Shared admission covered by passing conflict/expired create/bind rows plus `EquivalentMutationAndCommitReplayNeverDispatchesASecondProviderEffect` and the new uppercase-fingerprint rejection. Malformed JSON covered by the two new status mapping tests. SHA vacuity covered by the three new ToUpperInvariant tests.
+- Compile unlock outside the frozen Never (required to build `Hexalith.Folders` / the test project on this baseline): extra `}` moved in `ForgejoProvider.cs` (DW-350 syntax), and no-op `DisposeAsync` on three `IForgejoApiClient` test doubles. No Forgejo execution path changed. DW-350 was not marked resolved.
+- Residual: local commits `3309644` and `698aaec` include `references/Hexalith.FrontComposer`, `references/Hexalith.Tenants`, and `references/Hexalith.Builds` pointer updates the spec asked to leave untouched. `sprint-status.yaml` was not written. Those pointer commits are not reverted here.
 
 ## Spec Change Log
 

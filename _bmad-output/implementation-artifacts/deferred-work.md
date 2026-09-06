@@ -1370,7 +1370,8 @@ status: open
 origin: migrated from legacy ledger ("Deferred from: code review of 1-4-author-phase-0-5-pre-spine-workshop-deliverables (2026-05-12)"), 2026-08-24
 location: docs/Exit-Criteria/C3-Retention.md
 reason: Windows case-insensitive filesystem path normalization in `ExitCriteriaDecisionArtifactTests` could hide an accidental rename to non-canonical casing (e.g., `docs/Exit-Criteria/C3-Retention.md`). Convention is enforced by PR diff review; revisit if a regression appears.
-status: open
+status: done 2026-09-06
+resolution: already resolved: .github/workflows/ci.yml:18,47,82,117,152,186 all select ubuntu-latest, so canonical path casing is exercised on case-sensitive CI.
 
 ### DW-178: C6 transition-matrix mapping artifact maps every state to a single Story 4.1 consumer
 
@@ -1781,7 +1782,8 @@ resolution: already resolved: tests/Hexalith.Folders.Client.Tests/ClientGenerati
 origin: migrated from legacy ledger ("Deferred from: code review of 1-15-wire-safety-invariant-ci-gates round 3 (2026-05-18)"), 2026-08-24
 location: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs
 reason: YamlDotNet duplicate-keys detection [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `LoadYamlMapping`] — overlaps prior JSON-duplicate-keys defer; fixtures are gate-owned and deterministic.
-status: open
+status: done 2026-09-06
+resolution: already resolved: tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs:800-805 loads mappings through YamlStream/YamlMappingNode, whose pinned representation loader rejects duplicate mapping keys.
 
 ### DW-232: File encoding fallback (UTF-16/Latin-1/no-BOM) [`tests/Hexalith.Folders.Contracts.Tests/OpenApi/SafetyInvariantGateTests.cs` `ScanText` via `File.ReadAllText`] — overlaps prior BOM defer.
 
@@ -2355,7 +2357,7 @@ origin: code review of 3-10-github-repository-provisioning-binding-and-branch-re
 location: tests/Hexalith.Folders.Tests/Providers/GitHub/GitHubProviderTests.cs
 source_spec: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
 reason: DW-298 changed `OctokitGitHubApiClientTests.CommitSha` from digits-only to `"...cc"` because the non-canonical-SHA scenarios uppercase it, and `ToUpperInvariant()` on a digits-only string is a no-op that silently vacates the assertion. The sibling constants `StagedTreeSha = "2222..."` and `PriorOutcomeFingerprint = "1111..."` are still digits-only, and no helper or assertion (e.g. `value.ToUpperInvariant().ShouldNotBe(value)`) prevents a future test from reintroducing the same vacuity. Story 3.11's slice.
-resolution (2026-09-06, spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2): gave every named sibling constant at least one lowercase `a`-`f` hex letter so `ToUpperInvariant()` can never be a silent no-op on them again. `OctokitGitHubApiClientTests.Operations.cs`'s `TreeSha` is now `"...222a"` and `CommitSha` is now `"...333c"` (both still 40 characters and valid Git object IDs); `GitHubProviderTests.cs`'s `PriorOutcomeFingerprint` is now `"...111a"` (still exactly 64 lowercase-hex characters, so `IsSafeFingerprint` still accepts it). No test currently calls `ToUpperInvariant()` on any of these constants, so this is a preventive fix, not a behavior change; the focused GitHub suite's admission, replay, transport, and SHA-negative rows are unchanged.
+resolution (2026-09-06, spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2): gave every named sibling constant at least one lowercase `a`-`f` hex letter so `ToUpperInvariant()` can never be a silent no-op on them again. `OctokitGitHubApiClientTests.Operations.cs`'s `TreeSha` is now `"...222a"` and `CommitSha` is now `"...333c"` (both still 40 characters and valid Git object IDs); `GitHubProviderTests.cs`'s `PriorOutcomeFingerprint` is now `"...111a"` (still exactly 64 lowercase-hex characters, so `IsSafeFingerprint` still accepts it). Covering tests: `ShaConstantsUsedForNonCanonicalAssertionsChangeUnderToUpperInvariant`, `PriorOutcomeFingerprintChangesUnderToUpperInvariant`, and `UppercasedPriorOutcomeFingerprintRejectsEquivalentReplayBeforeProviderAccess` (uppercase fingerprint is rejected as malformed replay evidence with zero provider calls).
 status: resolved
 
 ### DW-305: ArchiveFolderProcessWiringTests is not selected by a blocking CI lane.
@@ -2614,7 +2616,8 @@ location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808
 source_spec: `spec-generated-client-conformance.md`
 severity: high
 reason: `dotnet build tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0` fails before compiling the changed tests with CS1513 at ForgejoProvider.cs:808 and CS1519 at ForgejoProvider.cs:821. A source-isolated client conformance project builds and runs the changed tests successfully.
-status: open
+status: done 2026-09-06
+resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808-823 now closes IsReplayEvidenceWellFormed correctly.
 
 ### DW-337: Non-available lifecycle read-model statuses can return a future observation time without compatibility validation.
 origin: spec-deferred 16522b0d63aa
@@ -2664,7 +2667,8 @@ location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808
 source_spec: `spec-lifecycle-test-hygiene.md`
 severity: high
 reason: The baseline contains a brace error at ForgejoProvider.cs:808, so the in-scope test assembly was rebuilt only with that pre-existing source problem isolated out of tree. No production source was changed by this bundle.
-status: open
+status: done 2026-09-06
+resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808-823 repairs the same duplicate syntax defect.
 
 ### DW-343: Three pre-existing GitHub provider tests fail in the broad core direct-runner lane.
 origin: spec-deferred 88457e107f6a
@@ -2732,4 +2736,5 @@ origin: bmad-build review of Story 3.11 live-evidence path C waiver, 2026-09-06
 location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:821
 source_spec: `_bmad-output/implementation-artifacts/spec-3-11-live-github-evidence-operator-action.md`
 reason: HEAD fails `dotnet build` of Hexalith.Folders with CS1513/CS1519: extra `}` after `HasNoPriorOutcomeFields`. Pre-existing on main (Story 3.12 lineage); blocks rebuilding GitHubDependencyGuardTests in this session. Outside path C waiver scope.
-status: open
+status: done 2026-09-06
+resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808-823 now has the closing brace before HasNoPriorOutcomeFields.
