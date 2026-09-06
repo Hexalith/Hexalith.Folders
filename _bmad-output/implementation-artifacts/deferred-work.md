@@ -2757,3 +2757,23 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: Octokit may wrap SerializationException as InnerException, which IsMalformedJsonException would miss.
   evidence: Unverified (maybe-false, would be medium). Settle by inspecting Octokit 14.0.0 SimpleJson throw sites; if the thrown exception is never a direct SerializationException, status mapping would report UnexpectedTransportFailure instead of MalformedResponse.
 
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: EventStore DomainService adapter seam and Folders trusted IIdempotencyIntentAdapter registrations for every mutation command type.
+  evidence: Split from Story 12.6 this session. Adapters must run in the EventStore command host, not Folders.Server DI; DomainService does not expose the interface; sending IdempotencyKey without them fail-closes mutations with 503.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Split SubmitCommandRequest MessageId from the opaque IdempotencyKey (ULID execution identity plus key field).
+  evidence: Split from Story 12.6 this session. Changing MessageId without admission drops EventStore duplicate detection; populating IdempotencyKey without adapters 503s every keyed mutation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Produce ProviderIdempotencyAdmission from durable EventStore decisions and stop defaulting Fresh (DW-295/DW-296).
+  evidence: Split from Story 12.6 this session. GitHub/Forgejo already enforce a carried-in admission; production callers cannot stop hard-coding Fresh until EventStore actually admits Folders commands.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Reorder mutation services so readiness, path policy, provider, and Git work run only after durable admission.
+  evidence: Split from Story 12.6 this session. Ordering is meaningless until EventStore admission is on the Folders submit path.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Generated OQ8 mutation/read matrix with TimeProvider expiry bounds, concurrency, restart, and persisted tombstone assertions.
+  evidence: Split from Story 12.6 this session. In-memory folder ledgers and missing adapters cannot close OQ8; Story 12.1 remains the durable-repository prerequisite.
+
