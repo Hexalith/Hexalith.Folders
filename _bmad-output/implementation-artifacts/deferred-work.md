@@ -2714,3 +2714,19 @@ source_spec: `spec-update-submodules-and-hexalith-package-versions.md`
 reason: The unchanged EventStore gitlink fails `dotnet build` with CS0103 at AggregateActor.cs:1114 and :3212 because `InspectPublicationRecoverySaveFailureAsync` is missing; the failure pre-existed and was not caused by the Memories pointer advance.
 status: done 2026-09-05
 resolution: already resolved: Commit 8532f2b advanced references/Hexalith.EventStore from broken 5583e207 to 4ae9cee1; dotnet build src/Hexalith.EventStore.Server/Hexalith.EventStore.Server.csproj --no-restore -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0 now succeeds with 0 warnings and 0 errors.
+
+### DW-349: Epic 3 context regen dropped prior rate-limit, idempotency-tier, and Contract Spine detail
+
+origin: bmad-build review of Story 3.11 live-evidence path C waiver, 2026-09-06
+location: _bmad-output/implementation-artifacts/epic-3-context.md
+source_spec: `_bmad-output/implementation-artifacts/spec-3-11-live-github-evidence-operator-action.md`
+reason: Step-01 regenerated epic-3-context because planning artifacts were newer. Relative to the prior cache, Technical Decisions / Requirements / Cross-Story / UX sections lost previously pinned rate-limit bucket, EventStore idempotency tier, OpenAPI Contract Spine parity, and some readiness vocabulary detail. Not caused by the path C waiver docs; refresh epic context separately if those constraints must remain in the cache.
+status: open
+
+### DW-350: ForgejoProvider has an extra closing brace that blocks Release rebuild of Hexalith.Folders
+
+origin: bmad-build review of Story 3.11 live-evidence path C waiver, 2026-09-06
+location: src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:821
+source_spec: `_bmad-output/implementation-artifacts/spec-3-11-live-github-evidence-operator-action.md`
+reason: HEAD fails `dotnet build` of Hexalith.Folders with CS1513/CS1519: extra `}` after `HasNoPriorOutcomeFields`. Pre-existing on main (Story 3.12 lineage); blocks rebuilding GitHubDependencyGuardTests in this session. Outside path C waiver scope.
+status: open

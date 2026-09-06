@@ -2,7 +2,7 @@
 title: 'Story 3.11: GitHub file mutation, commit, status, and failure behavior'
 type: 'feature'
 created: '2026-08-24'
-status: awaiting-operator
+status: done
 baseline_revision: '6bc000c06a1427ea2cfaedb3a405b4939571aa6b'
 baseline_commit: '02ef9f87e61dd2057ed9a3760ca2a32f86888f5d'
 review_loop_iteration: 5
@@ -13,10 +13,10 @@ context:
 warnings:
   - oversized
 deferred: []
-operator_actions:
-  - 'Run the credential-gated live GitHub mutation, commit, and status evidence suite against an approved tenant/provider configuration and archive the metadata-only results.'
+operator_actions: []
 operator_actions_completed:
   - '2026-09-05: jpiquot approved the pending OQ4 GitHub compatibility profile in docs/contract/provider-compatibility-catalog.md.'
+  - '2026-09-06: Live GitHub mutation/commit/status evidence archive waived (closure path C). No in-repo GitHub live suite exists; hermetic adapter/transport proof plus the 2026-09-05 OQ4 profile approval complete Story 3.11. Live archive remains residual full provider-ready debt — not a completed live run.'
 ---
 
 <intent-contract>
@@ -95,6 +95,7 @@ operator_actions_completed:
 
 ## Spec Change Log
 
+- 2026-09-06: Operator waived the remaining live GitHub mutation/commit/status evidence archive (closure path C). Investigation found no in-repository GitHub live suite; hermetic adapter/transport proof plus the 2026-09-05 OQ4 profile approval complete Story 3.11. Open `operator_actions` cleared; status set to `done`. Live archive remains residual full provider-ready debt and must not be read as a completed live run.
 - 2026-09-05: Operator jpiquot approved the GitHub OQ4 compatibility profile in `docs/contract/provider-compatibility-catalog.md`. Story status remains `awaiting-operator` until credential-gated live GitHub mutation/commit/status evidence is archived.
 - 2026-08-25: Human resolution selected layered ownership. Story 3.11 owns the production-registered provider/Octokit mutation, commit, and status seam; Stories 12.3, 12.4, 4.20, and 4.21 retain durable orchestration and end-to-end workspace ownership.
 - 2026-08-25: Reset the execution checklist because the attempted implementation was reverted. The saved intent-gap patch remains evidence only and must not be restored; re-drive this story from scratch.
@@ -343,11 +344,13 @@ Credential and replay inputs are hostile boundary data. An `IsSuccess` credentia
 
 ## Auto Run Result
 
-Status: awaiting-operator
+Status: done
 
 ### Summary
 
 Completed the agent-executable Story 3.11 hardening delta and committed it as `be36435fa7ff4de5e8283c18bc7e7d8abd1b6427`. GitHub mutation, commit, and read-only status behavior now fail closed across hostile mutable inputs, canonical evidence, credential-resolution anomalies, outcome recording, retry metadata, and bounded tree traversal while preserving the provider-neutral and metadata-only contract.
+
+On 2026-09-06 the remaining live GitHub mutation/commit/status evidence operator action was waived (closure path C): no in-repository GitHub live suite exists, so Story 3.11 closes on hermetic proof plus the approved OQ4 catalog profile. No live archive was invented or claimed.
 
 ### Files Changed
 
@@ -377,5 +380,5 @@ Completed the agent-executable Story 3.11 hardening delta and committed it as `b
 
 ### Residual Risks
 
-- OQ4 GitHub profile approval is recorded; credential-gated live GitHub evidence still requires operator action outside the repository.
+- Story 3.11 live GitHub mutation/commit/status archive was waived 2026-09-06 (path C). Hermetic adapter/transport proof plus the approved OQ4 catalog profile complete Story 3.11; a live metadata-only archive remains residual full provider-ready debt and is not evidence that a live run occurred.
 - Durable target/content resolution, workspace execution, reconciliation scheduling, and end-to-end task completion remain intentionally owned by later stories.

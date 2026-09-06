@@ -1,10 +1,10 @@
 # Epic 3 Context: Provider Readiness And Repository Binding
 
-<!-- Generated from planning artifacts. Regenerate with compile-epic-context if planning docs change. -->
+<!-- Compiled from planning artifacts. Edit freely. Regenerate with compile-epic-context if planning docs change. -->
 
 ## Goal
 
-Enable tenant administrators to establish provider, credential-reference, repository/default-ref, and capability policy; let authorized actors create or bind GitHub and Forgejo repositories; and give scoped platform engineers safe readiness evidence without tenant-policy mutation authority, secret exposure, provider-specific leakage, or ambiguous external effects. This epic establishes the provider-neutral repository boundary required by the durable workspace lifecycle.
+Platform engineers and authorized actors can configure Git provider bindings and opaque credential references, validate readiness with secret-safe diagnostics, create or bind repository-backed folders asynchronously, define branch/ref policy, and inspect per-provider capability evidence. This epic is the gate before workspace task work: agents must not start prepare/lock/mutate/commit until provider configuration, access, and ref policy are proven ready without leaking secrets or unauthorized repository existence.
 
 ## Stories
 
@@ -25,31 +25,32 @@ Enable tenant administrators to establish provider, credential-reference, reposi
 
 ## Requirements & Constraints
 
-- Tenant administrators own provider bindings, opaque credential references, repository naming/default-ref policy, and required capability policy. Scoped platform engineers may validate and diagnose readiness but may not silently mutate tenant policy.
-- Authorize against current tenant, folder, delegated-actor, binding, credential, and operation scope before resolving credentials, observing protected provider state, or dispatching a side effect. Wrong-tenant and hidden-resource cases must fail without revealing existence.
-- Readiness must validate provider support and version/profile, credential-reference availability, required permissions/capabilities, repository provisioning or binding support, and branch/ref compatibility. Results expose a safe reason, retryability, remediation category, provider reference, and correlation identity, never secret material.
-- The provider capability contract must support an open-ended provider set and report operation support, ref behavior, file limits, credential mode, version/capability evidence, retry hints, and stable failure categories explicitly. GitHub and Forgejo differences must not leak into product contracts or be reduced to a lowest-common-denominator model.
-- Repository creation and existing-repository binding are asynchronous, idempotent operations. Canonical provider/repository identity plus normalized target ref must distinguish success, equivalent replay, duplicate or alias binding, conflict, known failure, and ambiguous outcome without duplicate provider effects.
-- File mutation, commit, and status behavior must preserve requested ordering, exact ref and commit identity, task-lock ownership, path/size/type policy, cancellation boundaries, and provider-neutral success/failure mapping. A successful commit requires provider-confirmed durable remote/ref state.
-- Unknown external outcomes enter `unknown_provider_outcome`; perform at most five automatic read-only evidence checks within 15 minutes, never blind mutation retry. Exhausted or conflicting evidence enters `reconciliation_required` and permits only read-only evidence collection and human escalation.
-- Events, logs, traces, metrics, projections, audit, diagnostics, errors, and restart evidence must exclude credentials, tokens, file contents, diffs, provider response bodies, raw URLs/locators, and unauthorized existence. Repository, ref, path, and commit-message metadata follows tenant-sensitive classification and redaction policy.
-- Completion requires real deployed GitHub and Forgejo evidence across positive, denial, conflict, replay, failure, timeout/unknown, cancellation, tenant-isolation, restart, and boundary scenarios. Fakes, mocks, NoOp adapters, seeds, unavailable defaults, or safe-empty results alone are not completion evidence.
+- Tenant administrators own provider bindings, credential-reference IDs, repository naming/default-ref policy, and minimum capability policy. Scoped platform engineers may validate and diagnose readiness but must not mutate tenant policy.
+- Readiness must run before create or bind. Diagnostics expose ready/failed state, safe reason code, retryability, remediation category, provider reference, and correlation ID — never tokens, credential values, raw endpoints, response bodies, or unauthorized resource existence.
+- Create and bind are separate paths: create provisions a new provider repository for an existing logical folder; bind attaches a pre-created repository after access, duplicate/alias, and branch/ref checks. Failed readiness or authorization must leave no repository or binding side effect.
+- Accepted branch/ref policy becomes part of readiness, binding, and the canonical serializing target (managed tenant + canonical provider/repository identity + normalized ref). Invalid or unauthorized policy changes must not alter the active binding.
+- Capability metadata must surface supported operations, branch/ref behavior, file limits, credential mode, version/profile, retryability hints, and failure categories for GitHub and Forgejo differences required by the lifecycle. Unknown or incompatible evidence cannot report ready.
+- Completion evidence for real provider behavior requires deployed composition and positive/negative/tenant-isolation/boundary paths. Fake-only, NoOp, seed-only, unavailable, or safe-empty results prove fail-safe shape, not product completion.
+- File contents, diffs, secrets, and unauthorized existence must never appear in events, logs, traces, metrics, audit, diagnostics, or errors.
 
 ## Technical Decisions
 
-- Provider bindings and policy belong to the organization aggregate; folder lifecycle and the canonical repository binding belong to the folder aggregate. Both persist through Hexalith.EventStore. Aggregate handlers remain pure; workers/process managers perform provider calls, durable handoff, retries, and reconciliation.
-- All adapters implement one capability-discoverable `IGitProvider` port. GitHub uses Octokit 14.0.0 inside its adapter. Forgejo uses a typed HTTP client with per-version OpenAPI snapshots, a supported-version manifest, hermetic contract tests, response-equivalence tests, and nightly schema-drift classification; incompatible or unknown evidence cannot report ready.
-- Every mutation uses durable EventStore-owned idempotency admission after authorization and canonical validation. Equivalent live intent replays one logical result; conflicting live intent returns a safe conflict; expired keys never execute as new work. Non-commit replay results use a 24-hour tier and commit results use the seven-year tier.
-- The serializing identity is managed tenant plus canonical provider/repository identity plus normalized target ref. Aliases collide; folder, workspace, and task identifiers are metadata rather than lock identity. Revoked lock instances never reactivate.
-- Provider rate limiting uses per-tenant, per-provider buckets for user-driven calls and per-provider global buckets for reconciliation, with bounded timeout, retry/backoff, retry-hint preservation, and explicit rate-limit/unavailable/unknown-outcome states.
-- REST schemas derive from the OpenAPI 3.1 Contract Spine; the generated SDK is the typed client and CLI/MCP wrap it. Provider readiness, repository behavior, operation identity, authorization, idempotency, lifecycle, error, and audit semantics must remain equivalent across required surfaces.
+- Model providers through a capability-discoverable `IGitProvider` port sized for N providers, not a hardcoded two-provider or base-URL-swap design. GitHub and Forgejo are not interchangeable APIs.
+- GitHub adapter uses Octokit inside the adapter boundary. Forgejo uses a typed HttpClient wrapper with pinned per-version OpenAPI snapshots, a supported-versions manifest, and hermetic PR-gate plus live-nightly drift checks (additive warn vs breaking fail). Provider-specific permission scoping stays inside adapters.
+- Port surfaces only credential references and capability metadata. Folders never stores secret material.
+- Organization aggregate holds provider bindings, credential references, repository defaults, and related policy; Folder aggregate owns folder lifecycle and binding state. Provisioning, retries, and reconciliation belong in workers/process managers, not aggregate handlers.
+- Mutating create/bind flows are idempotent: authorization and evidence freshness precede credential or target resolution; exactly one eligible mutation; equivalent replay must not duplicate; conflicting replay rejects; known failures are terminal as defined; unknown provider outcome enters bounded read-only reconciliation (at most five checks within 15 minutes) then `reconciliation_required` — never blind mutation retry.
+- Async create/bind advances through the canonical lifecycle from `requested` with inspectable non-terminal then terminal folder/task/binding results and sanitized, restart-safe, provider-neutral evidence.
+- Provider contract suite must cover fixture-to-failure-mode mapping for known categories (auth, not-found, conflict, rate limit, protection, drift, timeout) vs unknown outcome.
 
 ## UX & Interaction Patterns
 
-Provider-readiness evidence is read-only and metadata-only. Show tenant scope and authorization posture before provider, binding, credential-reference status, capability state, retryability, remediation category, correlation ID, and freshness. Ready, failed, denied, stale, unavailable, unknown, redacted, and not-configured states must be visibly and semantically distinct, with text and icons rather than color alone; redaction must never look like missing data or reveal credential values.
+- Readiness and binding semantics must stay explainable for later console consumption: ready, degraded, safe blockers, retryability, and secret-safe evidence — no UI-only states.
+- Surfaces that show provider readiness should lead with what is broken, who is affected, and what can safely happen next, using stable reason categories, correlation IDs, and remediation posture without mutation or credential reveal.
+- Repository binding and provider identity are first-class orientation cues alongside tenant and folder scope.
 
 ## Cross-Story Dependencies
 
-- Stories 3.1–3.2 establish configuration and the provider-neutral port used by readiness, diagnostics, repository, and file/commit stories. Stories 3.3–3.5 gate create and bind work; Story 3.8 supplies the ref policy used by binding, locking, mutation, and commit behavior.
-- Story 3.14 consumes the request from Story 3.6 and the applicable real provider behavior from Story 3.10 or 3.12 to reach a durable terminal binding result. Stories 3.11 and 3.13 depend on the canonical task lock and file-policy semantics owned by Epic 4.
-- Epic 1 supplies the Contract Spine, error taxonomy, lifecycle vocabulary, and parity fixtures. Epic 2 supplies logical folders, tenant/folder authorization, and safe denial behavior. Epic 4 consumes the binding and provider operations for workspace tasks; Epic 5 proves cross-surface equivalence; Epic 6 renders the readiness evidence produced here without inventing UI-only states.
+- 3.1 → 3.5/3.9 (configuration before readiness evidence); 3.2 → 3.3/3.4 (port before adapters); 3.5 gates 3.6/3.7; 3.8 constrains bind and later prepare/commit refs.
+- 3.6 accepts async create; 3.10/3.12 execute provider create/bind/ref; 3.14 completes durable terminal binding/lifecycle. 3.11/3.13 implement provider file/commit/status seams used by later workspace lifecycle work.
+- Epic 4 depends on successful binding and ref policy for prepare/lock/mutate/commit. Epic 6 renders readiness/provider evidence but must not invent semantics. Epic 12 supplies durable substrate and real Git write path required for positive completion claims on 3.10–3.14.

@@ -101,6 +101,16 @@ composition remains fail-closed until an authoritative tenant policy source supp
 resolver, and live GitHub readiness is still owned by Story 3.3. These limits mean the implementation must not
 be advertised as full GitHub provider readiness.
 
+### Story 3.11 live evidence residual
+
+Story 3.11 does not require a credential-gated live GitHub mutation, commit, or status archive for story
+closure. On 2026-09-06 the operator chose closure path C (waive/close without live archive): hermetic adapter
+and transport proof plus the catalog GitHub profile complete Story 3.11. No in-repository GitHub live evidence
+runner exists today; if one is added later, mirror the Forgejo opt-in pattern in
+`tests/tools/run-forgejo-provider-evidence-gates.ps1` (env gate, hermetic prelude, metadata-only JSON under
+`_bmad-output/gates/`, absent from PR and scheduled CI). Until then, a live mutation archive remains residual
+full provider-ready debt — not a completed live run — separate from Story 3.11 `done`.
+
 ## Forgejo integration behavior, supported versions, and drift
 
 The Forgejo adapter (`ForgejoProvider`) uses a **typed HTTP** client (`ForgejoHttpApiClient`,
