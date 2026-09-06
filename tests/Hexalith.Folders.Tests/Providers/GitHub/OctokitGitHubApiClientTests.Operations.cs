@@ -961,6 +961,13 @@ public sealed partial class OctokitGitHubApiClientTests
     }
 
     [Fact]
+    public void ShaConstantsUsedForNonCanonicalAssertionsChangeUnderToUpperInvariant()
+    {
+        TreeSha.ToUpperInvariant().ShouldNotBe(TreeSha);
+        CommitSha.ToUpperInvariant().ShouldNotBe(CommitSha);
+    }
+
+    [Fact]
     public async Task StatusMapsMismatchedRefIdentityToConflictingEvidence()
     {
         RecordingGitHubHttpMessageHandler handler = new((_, _) => Task.FromResult(

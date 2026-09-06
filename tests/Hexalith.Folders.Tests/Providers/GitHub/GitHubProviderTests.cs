@@ -919,6 +919,33 @@ public sealed partial class GitHubProviderTests
     }
 
     [Fact]
+    public void PriorOutcomeFingerprintChangesUnderToUpperInvariant()
+        => PriorOutcomeFingerprint.ToUpperInvariant().ShouldNotBe(PriorOutcomeFingerprint);
+
+    [Fact]
+    public async Task UppercasedPriorOutcomeFingerprintRejectsEquivalentReplayBeforeProviderAccess()
+    {
+        string uppercased = PriorOutcomeFingerprint.ToUpperInvariant();
+        uppercased.ShouldNotBe(PriorOutcomeFingerprint);
+
+        RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest(ProviderIdempotencyDisposition.EquivalentReplay, uppercased),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_replay_evidence_malformed");
+        targetResolver.CreationCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task ReplaysEquivalentRepositoryCreationWithoutProviderAccess()
     {
         RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
