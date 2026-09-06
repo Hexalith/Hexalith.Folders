@@ -690,6 +690,58 @@ public sealed partial class OctokitGitHubApiClientTests
         handler.Requests.Count.ShouldBe(1);
     }
 
+    /// <summary>
+    /// <c>IsMalformedJsonException</c> is also consulted after a mutation has been dispatched, where
+    /// both branches of its caller collapse to <see cref="GitHubApiFailureCondition.AmbiguousMutationResponse"/>
+    /// (DW-300). This proves the Octokit <see cref="System.Runtime.Serialization.SerializationException"/>
+    /// branch is still reached once the commit-creation POST has gone out.
+    /// </summary>
+    [Fact]
+    public async Task CommitMapsPostDispatchSerializationExceptionAsAmbiguousMutationResponse()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => ++calls switch
+        {
+            1 => Task.FromResult(JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha))),
+            _ => throw new System.Runtime.Serialization.SerializationException("provider-body-sentinel"),
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubCommitResult result = await client.CommitAsync(
+            CommitTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        handler.Requests.Count.ShouldBe(2);
+    }
+
+    /// <summary>
+    /// A <see cref="System.Text.Json.JsonException"/> from our own code must not be misclassified as a
+    /// provider malformed response once a mutation has been dispatched, exactly as on the read-only
+    /// status seam (DW-300).
+    /// </summary>
+    [Fact]
+    public async Task CommitDoesNotMisclassifyAPostDispatchJsonExceptionAsMalformedResponse()
+    {
+        int calls = 0;
+        RecordingGitHubHttpMessageHandler handler = new((_, _) => ++calls switch
+        {
+            1 => Task.FromResult(JsonResponse(HttpStatusCode.OK, ReferenceJson(HeadSha))),
+            _ => throw new System.Text.Json.JsonException("provider-body-sentinel"),
+        });
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubCommitResult result = await client.CommitAsync(
+            CommitTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.AmbiguousMutationResponse);
+        result.FailureCondition.ShouldNotBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.Count.ShouldBe(2);
+    }
+
     [Theory]
     [InlineData(false, false)]
     [InlineData(true, false)]

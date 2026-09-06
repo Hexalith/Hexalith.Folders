@@ -84,6 +84,23 @@ context:
 
 ## Review Triage Log
 
+### 2026-09-06 — Review pass (iteration 0)
+
+- `[medium]` `[patch]` `[BH1-Builds]` The Builds gitlink moved from `d004983` to `aee36f4` though it was clean at baseline. Restoring the pointer is a direct checkout; FrontComposer/Tenants were the operator-requested leftover dirt.
+- `[medium]` `[defer]` `[BH2]` Forgejo extra-brace and no-op `DisposeAsync` on three `IForgejoApiClient` doubles. Pre-existing DW-350 / `IAsyncDisposable` compile blockers; syntax-only, no execution-path change. Not this story's Forgejo work.
+- `[false]` `[BH3]` Remaining `if (RequiresReplay) return Replay` in each `ReplayOrReject` is the typed result mapping the spec required; classification is already shared. Callers cannot drift on conflict/expired/fresh without editing `ClassifyRejection`.
+- `[false]` `[BH4]` `ClassifyRejection(EquivalentReplay)` falling to expired is unreachable: all four gates call `RequiresReplay` first. No other callers.
+- `[false]` `[BH5]` Checking the admission-row task is a spec-honesty issue (fix would edit this spec). The three red create/bind rows fail in `ValidateBoundary` before `ReplayOrReject` and are the pre-existing `PriorCanonicalRepositoryId` fixture hole, not a classifier regression.
+- `[medium]` `[patch]` `[BH6]`/`[VG1]` `UppercasedPriorOutcomeFingerprintRejectsEquivalentReplayBeforeProviderAccess` uses `CreationRequest(EquivalentReplay)` without `PriorCanonicalRepositoryId`, so `github_replay_evidence_malformed` is already true for a lowercase fingerprint. Casing is not what the assertion proves.
+- `[medium]` `[defer]` `[BH7]` `ExplicitCommitRejectsMalformedCreatedCommitBeforeRefMovement(uppercase-sha)` and `MutationStatusRejectsEqualOrNonCanonicalExpectedShasWithoutObservation` are absent from this tree (pre-existing DW-298 test loss). This story covers vacuity via fingerprint + constant-difference tests, not by restoring those rows.
+- `[false]` `[BH8]` `HeadSha` / `BaseTreeSha` / `BlobSha` staying digits-only matches frozen "digits-only constants remain only where uppercasing is not the assertion."
+- `[medium]` `[patch]` `[BH9]` `IsMalformedJsonException` is used on mutation (`mutationDispatched: true` → `AmbiguousMutationResponse`) and create observation; only `GetOperationStatusAsync` is covered.
+- `[false]` `[BH10]` Stale Code Map, empty Spec Change Log, ledger citing the spec filename, and `UseHexalithProjectReferences` mismatch are spec-file edits; reject findings whose fix is to edit this build's spec.
+- `[maybe-false]` `[defer]` `[EC1]` Whether Octokit wraps `SerializationException` as `InnerException` was not demonstrated. If true, status mapping would miss malformed-response (medium, unverified). Direct `is SerializationException` matches the tests and the DW-300 comment.
+- `[medium]` `[defer]` `[EC2]`/`[VG-other]` `Admission()` never sets `PriorCanonicalRepositoryId` on Success equivalent replay, so `ReplaysEquivalentRepositoryCreationWithoutProviderAccess` and `ReplaysEquivalentRepositoryBindingWithoutProviderAccess` were already `github_replay_evidence_malformed` before this classifier. Pre-existing fixture hole.
+- `[false]` `[EC3]` `IsGitObjectId` allowing `A-F` is pre-existing and unchanged. This story's SHA-vacuity tests use fingerprint canonicity (`IsSafeFingerprint` is lowercase-only), not Git object-id rejection.
+- `[medium]` `[patch]` `[VG2]` After commit `ReplayOrReject` moved onto the shared classifier, no `CommitAsync` Conflict/Expired row asserts `idempotency_conflict` / `idempotency_key_expired` with zero provider calls. Mutation DenialStaleness only stages file changes.
+
 ## Design Notes
 
 DW-299 is a classification extract, not a behavior merge. Create/bind success still carries `PriorCanonicalRepositoryId`; mutation/commit success must not start requiring it. A shared helper should return a disposition/reason classification (the existing `ValidateBoundary` tuple shape is the pattern); each `ReplayOrReject` overload still builds its own result type.

@@ -66,6 +66,35 @@ public sealed partial class GitHubProviderTests
         apiClient.CommitCalls.ShouldBe(1);
     }
 
+    [Theory]
+    [InlineData(ProviderIdempotencyDisposition.Conflict, "idempotency_conflict")]
+    [InlineData(ProviderIdempotencyDisposition.Expired, "idempotency_key_expired")]
+    public async Task RejectsCommitAdmissionBeforeAnyProviderAccess(
+        ProviderIdempotencyDisposition disposition,
+        string expectedReasonCode)
+    {
+        RecordingProviderOperationSourceResolver sourceResolver = RecordingProviderOperationSourceResolver.Success();
+        RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
+        RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
+        GitHubProvider provider = new(
+            credentialResolver,
+            apiClientFactory,
+            RecordingProviderRepositoryTargetResolver.Success(),
+            sourceResolver);
+
+        ProviderCommitRequest baseline = CommitRequest();
+        ProviderCommitResult result = await provider.CommitAsync(
+            baseline with { IdempotencyAdmission = baseline.IdempotencyAdmission with { Disposition = disposition } },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConflict);
+        result.ReasonCode.ShouldBe(expectedReasonCode);
+        sourceResolver.CommitCalls.ShouldBe(0);
+        credentialResolver.Calls.ShouldBe(0);
+        apiClientFactory.Calls.ShouldBe(0);
+    }
+
     [Fact]
     public async Task DenialStalenessPolicyAndIntentFailuresShortCircuitBeforePrivateSources()
     {

@@ -933,8 +933,20 @@ public sealed partial class GitHubProviderTests
         RecordingGitHubApiClientFactory apiClientFactory = new(RecordingGitHubApiClient.Success());
         GitHubProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
 
+        // Every other Success-replay field is otherwise well-formed (including the numeric
+        // PriorCanonicalRepositoryId a Success disposition requires), so the uppercased fingerprint
+        // is the only reason ValidateBoundary rejects this admission.
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
-            CreationRequest(ProviderIdempotencyDisposition.EquivalentReplay, uppercased),
+            CreationRequest() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.EquivalentReplay,
+                    "intent-repository-creation-a",
+                    uppercased,
+                    PriorOperationReference: PriorOperationReference,
+                    PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Success,
+                    PriorCanonicalRepositoryId: "101"),
+            },
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.ShouldBeFalse();
