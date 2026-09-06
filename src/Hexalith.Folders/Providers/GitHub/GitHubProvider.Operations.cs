@@ -1441,22 +1441,26 @@ public sealed partial class GitHubProvider
             commitSha);
 
     private static ProviderFileMutationResult? ReplayOrReject(ProviderFileMutationRequest request, string safeTargetFingerprint)
-        => request.IdempotencyAdmission.Disposition switch
+    {
+        if (GitHubReplayAdmissionClassifier.RequiresReplay(request.IdempotencyAdmission.Disposition))
         {
-            ProviderIdempotencyDisposition.Fresh => null,
-            ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
-            ProviderIdempotencyDisposition.Conflict => FileMutationFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_conflict"),
-            _ => FileMutationFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_key_expired"),
-        };
+            return Replay(request, safeTargetFingerprint, request.IdempotencyAdmission);
+        }
+
+        (ProviderFailureCategory Category, string ReasonCode)? rejection = GitHubReplayAdmissionClassifier.ClassifyRejection(request.IdempotencyAdmission.Disposition);
+        return rejection is null ? null : FileMutationFailure(request, rejection.Value.Category, rejection.Value.ReasonCode);
+    }
 
     private static ProviderCommitResult? ReplayOrReject(ProviderCommitRequest request, string safeTargetFingerprint)
-        => request.IdempotencyAdmission.Disposition switch
+    {
+        if (GitHubReplayAdmissionClassifier.RequiresReplay(request.IdempotencyAdmission.Disposition))
         {
-            ProviderIdempotencyDisposition.Fresh => null,
-            ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
-            ProviderIdempotencyDisposition.Conflict => CommitFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_conflict"),
-            _ => CommitFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_key_expired"),
-        };
+            return Replay(request, safeTargetFingerprint, request.IdempotencyAdmission);
+        }
+
+        (ProviderFailureCategory Category, string ReasonCode)? rejection = GitHubReplayAdmissionClassifier.ClassifyRejection(request.IdempotencyAdmission.Disposition);
+        return rejection is null ? null : CommitFailure(request, rejection.Value.Category, rejection.Value.ReasonCode);
+    }
 
     private static ProviderFileMutationResult Replay(ProviderFileMutationRequest request, string safeTargetFingerprint, ProviderIdempotencyAdmission admission)
         => admission.PriorOutcomeDisposition switch

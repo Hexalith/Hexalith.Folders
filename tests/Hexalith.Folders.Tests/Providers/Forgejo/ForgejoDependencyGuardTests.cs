@@ -283,6 +283,8 @@ public sealed class ForgejoDependencyGuardTests
             ForgejoRepositoryBindingRequest request,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 
     private static string FindRepositoryRoot()

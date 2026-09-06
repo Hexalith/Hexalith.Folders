@@ -1109,8 +1109,10 @@ public sealed partial class GitHubProviderTests
         apiClient.RepositoryBindingCalls.ShouldBe(1);
     }
 
+    // Carries a trailing hex letter (not a bare digit) so a future ToUpperInvariant()
+    // negative assertion on this constant is not a silent no-op (DW-304).
     private const string PriorOutcomeFingerprint =
-        "1111111111111111111111111111111111111111111111111111111111111111";
+        "111111111111111111111111111111111111111111111111111111111111111a";
 
     private const string PriorOperationReference = "01JBQ8Z4R7WYVX2K5N9M3T6P0A";
 

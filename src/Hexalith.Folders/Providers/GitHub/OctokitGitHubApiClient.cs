@@ -1983,7 +1983,14 @@ internal sealed class OctokitGitHubApiClient : IGitHubApiClient
         return canonicalRepositoryId is not null;
     }
 
+    /// <summary>
+    /// Octokit 14.0.0's bundled SimpleJson deserializer surfaces an unparseable response body as the
+    /// BCL <see cref="System.Runtime.Serialization.SerializationException"/>; there is no
+    /// <c>Octokit.SerializationException</c> type in the pinned package. Matching only this exact
+    /// type -- rather than any exception whose type name happens to contain "Json" -- keeps an
+    /// unrelated <see cref="System.Text.Json.JsonException"/> thrown by our own code from being
+    /// misclassified as a provider malformed-response (DW-300).
+    /// </summary>
     private static bool IsMalformedJsonException(Exception exception)
-        => exception is System.Runtime.Serialization.SerializationException
-            || exception.GetType().Name.Contains("Json", StringComparison.Ordinal);
+        => exception is System.Runtime.Serialization.SerializationException;
 }

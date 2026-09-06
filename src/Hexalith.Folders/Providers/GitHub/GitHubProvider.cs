@@ -691,19 +691,17 @@ public sealed partial class GitHubProvider : IGitProvider
     private static ProviderRepositoryCreationResult? ReplayOrReject(
         ProviderRepositoryCreationRequest request,
         string safeTargetFingerprint)
-        => request.IdempotencyAdmission.Disposition switch
+    {
+        if (GitHubReplayAdmissionClassifier.RequiresReplay(request.IdempotencyAdmission.Disposition))
         {
-            ProviderIdempotencyDisposition.Fresh => null,
-            ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
-            ProviderIdempotencyDisposition.Conflict => ProviderRepositoryCreationResult.Failure(
-                request,
-                ProviderFailureCategory.ProviderConflict,
-                "idempotency_conflict"),
-            _ => ProviderRepositoryCreationResult.Failure(
-                request,
-                ProviderFailureCategory.ProviderConflict,
-                "idempotency_key_expired"),
-        };
+            return Replay(request, safeTargetFingerprint, request.IdempotencyAdmission);
+        }
+
+        (ProviderFailureCategory Category, string ReasonCode)? rejection = GitHubReplayAdmissionClassifier.ClassifyRejection(request.IdempotencyAdmission.Disposition);
+        return rejection is null
+            ? null
+            : ProviderRepositoryCreationResult.Failure(request, rejection.Value.Category, rejection.Value.ReasonCode);
+    }
 
     /// <summary>
     /// Returns the exact prior terminal outcome carried by an equivalent replay. A prior ambiguous
@@ -753,19 +751,17 @@ public sealed partial class GitHubProvider : IGitProvider
     private static ProviderRepositoryBindingResult? ReplayOrReject(
         ProviderRepositoryBindingRequest request,
         string safeTargetFingerprint)
-        => request.IdempotencyAdmission.Disposition switch
+    {
+        if (GitHubReplayAdmissionClassifier.RequiresReplay(request.IdempotencyAdmission.Disposition))
         {
-            ProviderIdempotencyDisposition.Fresh => null,
-            ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
-            ProviderIdempotencyDisposition.Conflict => ProviderRepositoryBindingResult.Failure(
-                request,
-                ProviderFailureCategory.ProviderConflict,
-                "idempotency_conflict"),
-            _ => ProviderRepositoryBindingResult.Failure(
-                request,
-                ProviderFailureCategory.ProviderConflict,
-                "idempotency_key_expired"),
-        };
+            return Replay(request, safeTargetFingerprint, request.IdempotencyAdmission);
+        }
+
+        (ProviderFailureCategory Category, string ReasonCode)? rejection = GitHubReplayAdmissionClassifier.ClassifyRejection(request.IdempotencyAdmission.Disposition);
+        return rejection is null
+            ? null
+            : ProviderRepositoryBindingResult.Failure(request, rejection.Value.Category, rejection.Value.ReasonCode);
+    }
 
     /// <summary>
     /// Returns the exact prior terminal outcome carried by an equivalent replay of a binding intent.

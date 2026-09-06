@@ -806,6 +806,7 @@ public sealed class ForgejoProvider : IGitProvider
                 && (admission.PriorRetryAfter is null || SafeRetryAfter(admission.PriorRetryAfter) == admission.PriorRetryAfter),
             _ => false,
         };
+    }
 
     private static bool HasNoPriorOutcomeFields(ProviderIdempotencyAdmission admission)
         => admission.PriorSafeOutcomeFingerprint is null
@@ -818,7 +819,6 @@ public sealed class ForgejoProvider : IGitProvider
             && !admission.PriorRetryable
             && admission.PriorRetryAfter is null
             && admission.PriorCanonicalRepositoryId is null;
-    }
 
     private static ProviderRepositoryCreationResult? ReplayOrReject(
         ProviderRepositoryCreationRequest request,

@@ -1464,6 +1464,8 @@ public sealed class ForgejoProviderTests
 
             return Task.FromResult(_repositoryBindingResult ?? ForgejoRepositoryBindingResult.Success(canonicalRepositoryId: "42"));
         }
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 
     private sealed class ThrowingForgejoApiClientFactory(Exception exception) : IForgejoApiClientFactory

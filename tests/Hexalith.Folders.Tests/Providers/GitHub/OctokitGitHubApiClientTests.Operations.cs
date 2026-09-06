@@ -11,8 +11,11 @@ namespace Hexalith.Folders.Tests.Providers.GitHub;
 public sealed partial class OctokitGitHubApiClientTests
 {
     private const string HeadSha = "1111111111111111111111111111111111111111";
-    private const string TreeSha = "2222222222222222222222222222222222222222";
-    private const string CommitSha = "3333333333333333333333333333333333333333";
+
+    // Carries a trailing hex letter (not a bare digit) so a future ToUpperInvariant()
+    // negative assertion on this constant is not a silent no-op (DW-304).
+    private const string TreeSha = "222222222222222222222222222222222222222a";
+    private const string CommitSha = "333333333333333333333333333333333333333c";
     private const string BaseTreeSha = "4444444444444444444444444444444444444444";
     private const string BlobSha = "5555555555555555555555555555555555555555";
 
@@ -911,6 +914,50 @@ public sealed partial class OctokitGitHubApiClientTests
         result.FailureCondition.ShouldBe((GitHubApiFailureCondition)expectedCondition);
         result.FailureCondition.ShouldNotBe(GitHubApiFailureCondition.TimeoutDuringMutation);
         handler.Requests.Count.ShouldBe(statusCode == HttpStatusCode.NotFound ? 2 : 1);
+    }
+
+    /// <summary>
+    /// Octokit's bundled SimpleJson deserializer surfaces an unparseable response body as the BCL
+    /// <see cref="System.Runtime.Serialization.SerializationException"/> (DW-300). This is the one
+    /// exception type <c>IsMalformedJsonException</c> matches, so it must still be classified as a
+    /// provider malformed response on the read-only status seam.
+    /// </summary>
+    [Fact]
+    public async Task StatusMapsOctokitSerializationExceptionAsMalformedResponse()
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) =>
+            throw new System.Runtime.Serialization.SerializationException("provider-body-sentinel"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubOperationStatusResult result = await client.GetOperationStatusAsync(
+            StatusTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.MalformedResponse);
+        handler.Requests.Count.ShouldBe(1);
+    }
+
+    /// <summary>
+    /// A <see cref="System.Text.Json.JsonException"/> from our own code is unrelated to Octokit's
+    /// deserializer and must not be misclassified as a provider malformed response now that
+    /// <c>IsMalformedJsonException</c> no longer matches any exception whose type name contains
+    /// "Json" (DW-300). It falls through to the generic transport-failure mapping instead.
+    /// </summary>
+    [Fact]
+    public async Task StatusDoesNotMisclassifyAnUnrelatedJsonExceptionAsMalformedResponse()
+    {
+        RecordingGitHubHttpMessageHandler handler = new((_, _) =>
+            throw new System.Text.Json.JsonException("provider-body-sentinel"));
+        IGitHubApiClient client = await CreateClientAsync(handler);
+
+        GitHubOperationStatusResult result = await client.GetOperationStatusAsync(
+            StatusTransportRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(GitHubApiFailureCondition.UnexpectedTransportFailure);
+        handler.Requests.Count.ShouldBe(1);
     }
 
     [Fact]

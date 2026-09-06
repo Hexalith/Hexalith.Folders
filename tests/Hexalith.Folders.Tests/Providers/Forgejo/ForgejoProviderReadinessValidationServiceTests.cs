@@ -240,6 +240,8 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(ForgejoRepositoryBindingResult.Success());
         }
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 
     private sealed class FixedClock(DateTimeOffset now) : IUtcClock
