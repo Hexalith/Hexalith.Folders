@@ -2739,3 +2739,20 @@ source_spec: `_bmad-output/implementation-artifacts/spec-3-11-live-github-eviden
 reason: HEAD fails `dotnet build` of Hexalith.Folders with CS1513/CS1519: extra `}` after `HasNoPriorOutcomeFields`. Pre-existing on main (Story 3.12 lineage); blocks rebuilding GitHubDependencyGuardTests in this session. Outside path C waiver scope.
 status: done 2026-09-06
 resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/Forgejo/ForgejoProvider.cs:808-823 now has the closing brace before HasNoPriorOutcomeFields.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
+  summary: Three IForgejoApiClient test doubles needed no-op DisposeAsync so Hexalith.Folders.Tests could compile after IForgejoApiClient became IAsyncDisposable.
+  evidence: Pre-existing on baseline; this story added ValueTask DisposeAsync() => ValueTask.CompletedTask on ForgejoDependencyGuardTests, ForgejoProviderReadinessValidationServiceTests, and ForgejoProviderTests doubles. No Forgejo execution path changed.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
+  summary: Create/bind Success equivalent-replay fixtures still omit PriorCanonicalRepositoryId, so ReplaysEquivalentRepositoryCreationWithoutProviderAccess and ReplaysEquivalentRepositoryBindingWithoutProviderAccess fail github_replay_evidence_malformed before ReplayOrReject.
+  evidence: Admission() in GitHubProviderTests.cs never sets PriorCanonicalRepositoryId; IsReplayEvidenceWellFormed Success requires SafeCanonicalRepositoryId. Pre-existing; this story did not change that fixture. FreshRepositoryCreationCarryingPriorEvidenceStillExecutesInsteadOfReplaying also fails github_mutation_intent_malformed because Fresh cannot carry prior fields.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
+  summary: DW-298 uppercase Git SHA operation tests that called CommitSha.ToUpperInvariant() and asserted no ref movement are still missing from this tree.
+  evidence: ExplicitCommitRejectsMalformedCreatedCommitBeforeRefMovement(uppercase-sha) and MutationStatusRejectsEqualOrNonCanonicalExpectedShasWithoutObservation are absent. This story covers ToUpperInvariant vacuity via fingerprint rejection and constant-difference tests only.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior-2.md`
+  summary: Octokit may wrap SerializationException as InnerException, which IsMalformedJsonException would miss.
+  evidence: Unverified (maybe-false, would be medium). Settle by inspecting Octokit 14.0.0 SimpleJson throw sites; if the thrown exception is never a direct SerializationException, status mapping would report UnexpectedTransportFailure instead of MalformedResponse.
+

@@ -2,7 +2,7 @@
 title: 'Story 3.11 follow-on: remaining GitHub adapter hygiene'
 type: 'refactor'
 created: '2026-09-06'
-status: 'in-review'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: '781168db4d5020822b5923ac5c946a936638a8dc'
@@ -77,8 +77,9 @@ context:
 - DW-304: `TreeSha`/`CommitSha`/`PriorOutcomeFingerprint` now contain an `a-f` hex letter. Covering tests: `ShaConstantsUsedForNonCanonicalAssertionsChangeUnderToUpperInvariant`, `PriorOutcomeFingerprintChangesUnderToUpperInvariant`, `UppercasedPriorOutcomeFingerprintRejectsEquivalentReplayBeforeProviderAccess`.
 - Verification (2026-09-06): `dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj -c Release -m:1 -p:UseHexalithProjectReferences=true -p:MinVerVersionOverride=1.0.0 -p:NuGetAudit=false` — 0 warnings, 0 errors. Focused GitHub classes: 304 total, 3 failed, 0 skipped. The three failures are pre-existing create/bind ValidateBoundary rows (`ReplaysEquivalentRepositoryCreationWithoutProviderAccess`, `ReplaysEquivalentRepositoryBindingWithoutProviderAccess` → `github_replay_evidence_malformed` because Success replay still requires `PriorCanonicalRepositoryId`; `FreshRepositoryCreationCarryingPriorEvidenceStillExecutesInsteadOfReplaying` → `github_mutation_intent_malformed` because Fresh cannot carry prior fields). They fail before `ReplayOrReject` and are unchanged by the classifier. Mutation/commit admission rows and the new DW-300/DW-304 tests passed. `git diff --exit-code -- _bmad-output/implementation-artifacts/sprint-status.yaml` clean. `git diff --check` clean.
 - Matrix audit: Shared admission covered by passing conflict/expired create/bind rows plus `EquivalentMutationAndCommitReplayNeverDispatchesASecondProviderEffect` and the new uppercase-fingerprint rejection. Malformed JSON covered by the two new status mapping tests. SHA vacuity covered by the three new ToUpperInvariant tests.
-- Compile unlock outside the frozen Never (required to build `Hexalith.Folders` / the test project on this baseline): extra `}` moved in `ForgejoProvider.cs` (DW-350 syntax), and no-op `DisposeAsync` on three `IForgejoApiClient` test doubles. No Forgejo execution path changed. DW-350 was not marked resolved.
-- Residual: local commits `3309644` and `698aaec` include `references/Hexalith.FrontComposer`, `references/Hexalith.Tenants`, and `references/Hexalith.Builds` pointer updates the spec asked to leave untouched. `sprint-status.yaml` was not written. Those pointer commits are not reverted here.
+- Compile unlock: extra `}` moved in `ForgejoProvider.cs`; no-op `DisposeAsync` on three `IForgejoApiClient` test doubles. No Forgejo execution path changed. DW-350 later marked done 2026-09-06 on the brace.
+- Residual: commits `3309644` and `698aaec` include FrontComposer/Tenants pointer updates the spec asked to leave untouched. Builds gitlink was restored to `d004983` in `e8fc93c`. `sprint-status.yaml` was not written.
+- Review patches (2026-09-06): uppercase-fingerprint Success replay now carries `PriorCanonicalRepositoryId: "101"`; added `RejectsCommitAdmissionBeforeAnyProviderAccess`; added post-dispatch commit `SerializationException`/`JsonException` rows; focused GitHub suite 308 total, same 3 pre-existing create/bind failures, 0 skipped. Build 0W/0E.
 
 ## Spec Change Log
 
