@@ -150,6 +150,9 @@ Replay and conflict semantics are enforced server-side and surfaced through gene
 - Same key + equivalent payload ⇒ the same logical result; `AcceptedCommand.IdempotentReplay` is `true`.
 - Same key + different payload ⇒ a `409` carrying canonical `idempotency_conflict`
   (`HexalithFoldersApiException<ProblemDetails>` with `Result.Code == "idempotency_conflict"`).
+- Expired key ⇒ a `409` carrying canonical `idempotency_key_expired`
+  (`HexalithFoldersApiException<ProblemDetails>` with `Result.Code == "idempotency_key_expired"`;
+  refresh state, then submit with a new key).
 
 Other request DTOs expose `ComputeIdempotencyHash(...)` with parameters matching the spine path declaration
 (for example, `PrepareWorkspaceRequest.ComputeIdempotencyHash(folderId, workspaceId, taskId)`). The parameter

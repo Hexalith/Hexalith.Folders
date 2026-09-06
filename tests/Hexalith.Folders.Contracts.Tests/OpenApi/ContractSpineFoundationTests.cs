@@ -68,6 +68,7 @@ public sealed class ContractSpineFoundationTests
         RequiredMapping(schemas, "SafeAuthorizationDenial");
         RequiredMapping(schemas, "ValidationFailure");
         RequiredMapping(schemas, "IdempotencyConflict");
+        RequiredMapping(schemas, "IdempotencyKeyExpired");
         RequiredMapping(schemas, "ReconciliationRequired");
 
         YamlMappingNode parameters = RequiredMapping(components, "parameters");
@@ -180,7 +181,7 @@ public sealed class ContractSpineFoundationTests
 
         RequiredEnumValues(schemas, "IdempotencyTtlTier").ShouldBe(["mutation", "commit"]);
         RequiredEnumValues(schemas, "ReadConsistencyClass").ShouldBe(["snapshot_per_task", "read_your_writes", "eventually_consistent"]);
-        RequiredEnumValues(schemas, "CliExitCode").ShouldBe(["0", "1", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75"]);
+        RequiredEnumValues(schemas, "CliExitCode").ShouldBe(["0", "1", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76"]);
 
         string[] canonicalCategories = RequiredEnumValues(schemas, "CanonicalErrorCategory");
         string[] mcpFailureKinds = RequiredEnumValues(schemas, "McpFailureKind");

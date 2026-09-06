@@ -37,6 +37,7 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.Lock_not_owned, 67)]
     [InlineData(CanonicalErrorCategory.Stale_workspace, 67)]
     [InlineData(CanonicalErrorCategory.Idempotency_conflict, 68)]
+    [InlineData(CanonicalErrorCategory.Idempotency_key_expired, 76)]
     [InlineData(CanonicalErrorCategory.Validation_error, 69)]
     [InlineData(CanonicalErrorCategory.Input_limit_exceeded, 69)]
     [InlineData(CanonicalErrorCategory.Path_validation_failed, 69)]
@@ -82,7 +83,7 @@ public sealed class ErrorProjectionTests
         foreach (CanonicalErrorCategory category in Enum.GetValues<CanonicalErrorCategory>())
         {
             int exit = ErrorProjection.Project(category);
-            exit.ShouldBeOneOf(0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75);
+            exit.ShouldBeOneOf(0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76);
         }
     }
 }

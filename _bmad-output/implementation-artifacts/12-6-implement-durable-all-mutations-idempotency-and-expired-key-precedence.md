@@ -61,15 +61,15 @@ so that retries, conflicts, restarts, concurrent replicas, and expired-key reuse
   - [ ] Preserve bounded read-only reconciliation for unknown external outcomes; never turn an expired, pending, recoverable, or unknown key into permission for blind retry.
 
 - [ ] Synchronize the Contract Spine, equivalence rules, generated SDK, and C13. (AC: 2, 5, 7-10)
-  - [ ] Update `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` so every generated mutation declares the complete equivalence/tier/error behavior and every read declares key rejection. Add the approved expired-key response/example and canonical error vocabulary.
+  - [x] Update `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` so every generated mutation declares the complete equivalence/tier/error behavior and every read declares key rejection. Add the approved expired-key response/example and canonical error vocabulary.
   - [ ] Expand `docs/contract/idempotency-and-parity-rules.md` from its stale mutation subset to the complete generated inventory, including `UpdateFolderAclEntry`, `ConfigureProviderBinding`, and `ConfigureBranchRefPolicy`, live/expired precedence, and consumed-key rules.
   - [ ] Update the extension vocabulary, canonical error catalog, generator inputs/templates, parity schema, parity generator, governed previous-spine snapshot, contract rules, and completeness gates together.
-  - [ ] Regenerate the client, helpers, and `tests/fixtures/parity-contract.yaml` with repository tooling. Do not hand-edit generated files or hard-code 14/35/49 as the future denominator.
+  - [x] Regenerate the client, helpers, and `tests/fixtures/parity-contract.yaml` with repository tooling. Do not hand-edit generated files or hard-code 14/35/49 as the future denominator.
   - [ ] Add a generator failure for any mutation missing key requirement, canonical equivalence, tier, conflict, expired result, and matrix evidence, or any read missing canonical key rejection.
 
 - [ ] Preserve one canonical expired-key result across REST, SDK, CLI, MCP, and domain processing. (AC: 3-5, 8, 9)
-  - [ ] Map the approved EventStore expired reason through gateway exceptions, `FolderDomainProcessor`, Folder/Organization result codes, `FolderCanonicalErrorMapper`, and RFC 9457 Problem Details without loss or category collapse.
-  - [ ] Update generated SDK error/result models, CLI `ErrorProjection`/exit mapping, MCP `FailureKindProjection`, and adapter parity tests with the approved status/code/retry/client-action values.
+  - [x] Map the approved EventStore expired reason through gateway exceptions, `FolderDomainProcessor`, Folder/Organization result codes, `FolderCanonicalErrorMapper`, and RFC 9457 Problem Details without loss or category collapse.
+  - [x] Update generated SDK error/result models, CLI `ErrorProjection`/exit mapping, MCP `FailureKindProjection`, and adapter parity tests with the approved status/code/retry/client-action values.
   - [ ] Centralize read-key rejection so every generated read rejects `Idempotency-Key` before query handler, read model, provider, Memories, audit stream, or diagnostic source execution.
   - [ ] Prove expired-equivalent and expired-different responses are indistinguishable except approved request correlation fields and reveal no prior-intent metadata.
 

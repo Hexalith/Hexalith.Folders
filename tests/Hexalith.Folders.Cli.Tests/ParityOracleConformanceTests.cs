@@ -31,7 +31,7 @@ public sealed class ParityOracleConformanceTests
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
 
-    private static readonly int[] CanonicalExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75];
+    private static readonly int[] CanonicalExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76];
 
     // ---------------------------------------------------------------------------------------------------
     // AC #2 — post-SDK exit-code conformance, oracle-driven.
@@ -102,7 +102,7 @@ public sealed class ParityOracleConformanceTests
     [Fact]
     public void RangeUnsatisfiableIsAbsentFromTheOracleAndProjectsToInternalError()
     {
-        // The documented drift exception: SDK enum member 43 is deliberately not in the oracle → CLI exit 1.
+        // The documented drift exception: range_unsatisfiable is deliberately not in the oracle → CLI exit 1.
         ParityOracle.DistinctCategories().ShouldNotContain("range_unsatisfiable");
         FoldersExitCodes.InternalError.ShouldBe(1);
         ErrorProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(FoldersExitCodes.InternalError);
@@ -136,7 +136,7 @@ public sealed class ParityOracleConformanceTests
                 $"enum member '{member}' is absent from the oracle outcome_mapping and is not a documented exception — the oracle dropped a category or a new category needs handling.");
         }
 
-        oracleCategories.Count.ShouldBe(43); // 43 post-SDK categories carry an outcome_mapping row.
+        oracleCategories.Count.ShouldBe(44); // 44 post-SDK categories carry an outcome_mapping row.
     }
 
     [Fact]

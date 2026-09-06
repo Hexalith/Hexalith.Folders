@@ -3757,6 +3757,17 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "idempotency_key_expired")
+        {
+            return SafeProblem(
+                StatusCodes.Status409Conflict,
+                category: "idempotency_key_expired",
+                code: "idempotency_key_expired",
+                retryable: false,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable
             && reasonCode is "read_model_unavailable" or "projection_stale" or "projection_unavailable")
         {
@@ -3954,6 +3965,9 @@ public static class FoldersDomainServiceEndpoints
             "idempotency_conflict" => "idempotency_conflict",
             "idempotency-conflict" => "idempotency_conflict",
             "IdempotencyConflict" => "idempotency_conflict",
+            "idempotency_key_expired" => "idempotency_key_expired",
+            "idempotency-key-expired" => "idempotency_key_expired",
+            "IdempotencyKeyExpired" => "idempotency_key_expired",
             // Story 8.3: surface the canonical folder_acl_denied category (403) for an aggregate-gate ACL
             // rejection propagated through the gateway hop. The PascalCase variants are the FolderResultCode
             // names the /process rejection carries; the snake/kebab forms cover the gateway's problem reason.
@@ -5582,7 +5596,9 @@ public static class FoldersDomainServiceEndpoints
                 StatusCodes.Status401Unauthorized => "Authentication required.",
                 StatusCodes.Status404NotFound => "Resource not available.",
                 StatusCodes.Status408RequestTimeout => "Query timeout.",
-                StatusCodes.Status409Conflict => "Idempotency conflict.",
+                StatusCodes.Status409Conflict => category == "idempotency_key_expired"
+                    ? "Idempotency key expired."
+                    : "Idempotency conflict.",
                 StatusCodes.Status413PayloadTooLarge => "Response limit exceeded.",
                 StatusCodes.Status416RangeNotSatisfiable => "Range not satisfiable.",
                 StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
@@ -5759,6 +5775,7 @@ public static class FoldersDomainServiceEndpoints
         "commit_failed" => "Commit failed with a known final outcome.",
         "provider_failure_known" => "Provider failure was observed with a known final outcome.",
         "idempotency_conflict" => "Idempotency key conflicts with a prior operation.",
+        "idempotency_key_expired" => "The supplied idempotency key is no longer reusable. Refresh state, then submit with a new key.",
         "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
         "reconciliation_required" => "Reconciliation is required before this operation can continue.",
         "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",

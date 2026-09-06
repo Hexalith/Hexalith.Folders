@@ -17,9 +17,9 @@ and [`docs/sdk/authentication.md`](../sdk/authentication.md). For provider failu
 [`audit-and-redaction.md`](audit-and-redaction.md) and
 [`incident-alerting-and-recovery.md`](incident-alerting-and-recovery.md).
 
-## Generated canonical category vocabulary (47)
+## Generated canonical category vocabulary (48)
 
-The wire vocabulary is the generated `CanonicalErrorCategory` enum — **exactly 47 members**, emitted on the
+The wire vocabulary is the generated `CanonicalErrorCategory` enum — **exactly 48 members**, emitted on the
 RFC 9457 `category` extension. This is the authoritative SDK-facing set; the catalog never invents categories
 the generated enum does not declare.
 
@@ -38,6 +38,7 @@ the generated enum does not declare.
 | `audit_access_denied` |
 | `validation_error` |
 | `idempotency_conflict` |
+| `idempotency_key_expired` |
 | `provider_readiness_failed` |
 | `provider_permission_insufficient` |
 | `provider_unavailable` |
@@ -75,10 +76,10 @@ the generated enum does not declare.
 | `redacted` |
 | `internal_error` |
 
-## Parity oracle outcome mappings (43)
+## Parity oracle outcome mappings (44)
 
 The parity oracle `tests/fixtures/parity-contract.yaml` is the source of truth for cross-surface outcome
-mappings. Its `outcome_mapping` rows currently carry **43 distinct canonical categories**. The **four**
+mappings. Its `outcome_mapping` rows currently carry **44 distinct canonical categories**. The **four**
 generated categories intentionally outside the oracle path are `success` (the non-error outcome),
 `client_configuration_error` and `credential_missing` (pre-SDK behavior with no HTTP call), and
 `range_unsatisfiable` (the documented fallback below).
@@ -100,6 +101,7 @@ generated categories intentionally outside the oracle path are `success` (the no
 | `file_operation_failed` |
 | `folder_acl_denied` |
 | `idempotency_conflict` |
+| `idempotency_key_expired` |
 | `input_limit_exceeded` |
 | `internal_error` |
 | `lock_conflict` |
@@ -137,7 +139,7 @@ Errors are returned as RFC 9457 Problem Details. Beyond the standard `type`, `ti
 `instance` members, the server emits the extensions `category` (a canonical category above), `clientAction`,
 `retryable`, `retryAfterSeconds` (when a bounded hint is available), and `correlationId`. The server mapper
 `FolderCanonicalErrorMapper.StatusFor` maps categories to HTTP status: `authentication_failure` to `401`;
-`not_found` to `404`; idempotency/repository/lock/reconciliation conflicts to `409`; `lock_expired` to `410`;
+`not_found` to `404`; idempotency/repository/lock/reconciliation conflicts and expired keys to `409`; `lock_expired` to `410`;
 `provider_rate_limited` to `429`; `validation_error` to `400`; readiness/capability/transition/path/file
 classes to `422`; unavailable/projection/internal classes to `503`; and all remaining denials to `403`.
 
@@ -148,7 +150,7 @@ classes to `422`; unavailable/projection/internal classes to `503`; and all rema
 and `query_timeout`. The two ambiguous-outcome categories `unknown_provider_outcome` and
 `reconciliation_required` are deliberately **not** retryable — retrying them could duplicate a repository,
 file change, or commit. The typed client-action vocabulary is the generated `ProblemDetailsClientAction`
-enum — **exactly 6 wire tokens**.
+enum — **exactly 7 wire tokens**.
 
 <!-- client-action-tokens -->
 
@@ -160,11 +162,12 @@ enum — **exactly 6 wire tokens**.
 | `wait_for_reconciliation` | The outcome is pending; wait, do not blindly retry |
 | `contact_operator` | An operator must act before the request can succeed |
 | `no_action` | No client action is useful for this outcome |
+| `refresh_state_then_submit_with_new_key` | Refresh current state, then submit equivalent intent with a new key |
 
-## CLI exit-code behavior (14)
+## CLI exit-code behavior (15)
 
 The CLI projects each canonical category to a sysexits-style exit code through `ErrorProjection`, drawing on
-the canonical table in `FoldersExitCodes` — **14 distinct values**. These are the Folders projection of the
+the canonical table in `FoldersExitCodes` — **15 distinct values**. These are the Folders projection of the
 oracle `cli_exit_code` column and are deliberately not the EventStore admin CLI scheme.
 
 <!-- cli-exit-codes -->
@@ -184,6 +187,7 @@ oracle `cli_exit_code` column and are deliberately not the EventStore admin CLI 
 | `73` | NotFound | `not_found` / `authorization_revocation_detected` |
 | `74` | StateTransitionInvalid | `state_transition_invalid` |
 | `75` | Redacted | `redacted`, visibly distinct from missing/unknown |
+| `76` | IdempotencyKeyExpired | `idempotency_key_expired` |
 | `1` | InternalError | `internal_error` / `query_timeout` / unmapped fallback |
 
 ## SDK error/result behavior
@@ -197,7 +201,7 @@ for the full surface; this catalog does not duplicate them.
 ## MCP failure-kind behavior
 
 The MCP projection `FailureKindProjection` projects each post-SDK oracle category to a failure kind where
-**the kind equals the category name verbatim** (the 43 oracle values). Two pre-SDK kinds are layered by the
+**the kind equals the category name verbatim** (the 44 oracle values). Two pre-SDK kinds are layered by the
 tool pipeline and never produced by the projection, and the one generated category absent from the oracle
 falls through to `internal_error` as a documented spine/oracle drift signal — never a silent collapse.
 
@@ -205,7 +209,7 @@ falls through to `internal_error` as a documented spine/oracle drift signal — 
 
 | Rule | Behavior |
 |---|---|
-| `verbatim` | Oracle category name equals the MCP failure kind (43 post-SDK values) |
+| `verbatim` | Oracle category name equals the MCP failure kind (44 post-SDK values) |
 | `usage_error` | Pre-SDK only; layered by the tool pipeline; never produced by the projection |
 | `credential_missing` | Pre-SDK only; layered by the tool pipeline; never produced by the projection |
 | `range_unsatisfiable` | Absent from the oracle set; falls through to `internal_error` |

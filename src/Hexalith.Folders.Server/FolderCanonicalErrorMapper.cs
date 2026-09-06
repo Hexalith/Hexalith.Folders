@@ -16,6 +16,7 @@ internal static class FolderCanonicalErrorMapper
             FolderResultCode.DuplicateEntry or FolderResultCode.DuplicateFolder => "duplicate_binding",
             FolderResultCode.ConflictingEntry or FolderResultCode.AppendConflict or FolderResultCode.ReplayConflict => "repository_conflict",
             FolderResultCode.IdempotencyConflict => "idempotency_conflict",
+            FolderResultCode.IdempotencyKeyExpired => "idempotency_key_expired",
             FolderResultCode.IdempotencyUnavailable => "read_model_unavailable",
             FolderResultCode.InvalidFolderId
                 or FolderResultCode.InvalidFolderMetadata
@@ -62,6 +63,7 @@ internal static class FolderCanonicalErrorMapper
             "authentication_failure" => StatusCodes.Status401Unauthorized,
             "not_found" or "not_found_to_caller" => StatusCodes.Status404NotFound,
             "idempotency_conflict"
+                or "idempotency_key_expired"
                 or "repository_conflict"
                 or "duplicate_binding"
                 or "lock_conflict"
@@ -111,6 +113,7 @@ internal static class FolderCanonicalErrorMapper
             "lock_conflict" or "workspace_locked" => "retry_after_release",
             "lock_expired" or "query_timeout" => "retry",
             "lock_not_owned" or "path_policy_denied" or "path_validation_failed" => "revise_request",
+            "idempotency_key_expired" => "refresh_state_then_submit_with_new_key",
             "input_limit_exceeded" or "response_limit_exceeded" or "range_unsatisfiable" => "revise_request",
             _ => retryable ? "retry" : "no_action",
         };

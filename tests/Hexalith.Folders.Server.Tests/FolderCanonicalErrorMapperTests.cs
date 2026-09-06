@@ -26,6 +26,7 @@ public sealed class FolderCanonicalErrorMapperTests
     [InlineData(FolderResultCode.UnknownProviderOutcome, "unknown_provider_outcome", StatusCodes.Status503ServiceUnavailable, false, "wait_for_reconciliation")]
     [InlineData(FolderResultCode.ReconciliationRequired, "reconciliation_required", StatusCodes.Status409Conflict, false, "wait_for_reconciliation")]
     [InlineData(FolderResultCode.IdempotencyConflict, "idempotency_conflict", StatusCodes.Status409Conflict, false, "no_action")]
+    [InlineData(FolderResultCode.IdempotencyKeyExpired, "idempotency_key_expired", StatusCodes.Status409Conflict, false, "refresh_state_then_submit_with_new_key")]
     [InlineData(FolderResultCode.StaleProjection, "projection_stale", StatusCodes.Status503ServiceUnavailable, true, "retry")]
     [InlineData(FolderResultCode.UnavailableProjection, "projection_unavailable", StatusCodes.Status503ServiceUnavailable, true, "retry")]
     [InlineData(FolderResultCode.StateTransitionInvalid, "state_transition_invalid", StatusCodes.Status422UnprocessableEntity, false, "revise_request")]

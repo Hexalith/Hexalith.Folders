@@ -44,7 +44,8 @@ examples.
   gated on Stories 8.1–8.3 and is now satisfied: all 47 operations have REST server routes (8.1/8.2), and the
   golden-lifecycle and mixed-surface scenarios are exercised end-to-end over the real transport across
   REST/SDK/CLI/MCP (8.3) — including canonical cross-surface error parity (`idempotency_conflict` → HTTP 409 /
-  CLI exit 68 / MCP `idempotency_conflict`; ACL denials as the safe denial `not_found_to_caller`). See the
+  CLI exit 68 / MCP `idempotency_conflict`; `idempotency_key_expired` → HTTP 409 / CLI exit 76 / MCP
+  `idempotency_key_expired`; ACL denials as the safe denial `not_found_to_caller`). See the
   [contract & parity CI gates](../contract/contract-parity-ci-gates.md) for the enforcing test lanes.
 
 ### Security
@@ -86,7 +87,7 @@ spine `ProblemDetails` schema requires, in addition to `type`/`title`/`status`:
 | `message` | Metadata-only human message; no secrets, file contents, or existence hints. |
 | `correlationId` | Opaque correlation reference for the failed operation. |
 | `retryable` | Whether the caller may retry. |
-| `clientAction` | One of `retry`, `revise_request`, `check_credentials`, `wait_for_reconciliation`, `contact_operator`, `no_action`. |
+| `clientAction` | One of `retry`, `revise_request`, `check_credentials`, `wait_for_reconciliation`, `contact_operator`, `no_action`, `refresh_state_then_submit_with_new_key`. |
 | `details.visibility` | Visibility class for the metadata-only `details` map; file contents, diffs, tokens, and unauthorized existence hints are forbidden. |
 
 Task-scoped failures may include `taskId` as optional metadata-only additional evidence, but it is not a

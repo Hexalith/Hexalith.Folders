@@ -1551,7 +1551,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1856,7 +1856,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2187,7 +2187,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2481,7 +2481,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -3602,7 +3602,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5011,7 +5011,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 410)
@@ -5249,7 +5249,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 410)
@@ -5487,7 +5487,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 410)
@@ -12726,206 +12726,8 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
         Idempotency_conflict = 10,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
-        Provider_permission_insufficient = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
-        Provider_rate_limited = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
-        Repository_binding_unavailable = 15,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
-        Branch_ref_policy_invalid = 16,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
-        Workspace_not_ready = 17,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 18,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 19,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
-        Lock_conflict = 20,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 21,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
-        Lock_not_owned = 22,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
-        Stale_workspace = 23,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 24,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 25,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 26,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
-        Unsupported_provider_capability = 27,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
-        Path_validation_failed = 28,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
-        File_operation_failed = 29,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 30,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 31,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 32,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 33,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 34,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"not_found")]
-        Not_found = 35,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 36,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
-        Input_limit_exceeded = 37,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
-        Response_limit_exceeded = 38,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
-        Query_timeout = 39,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 40,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 41,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 42,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 43,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 44,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 45,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 46,
-
-    }
-
-    /// <summary>
-    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum CliExitCode
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"0")]
-        _0 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"1")]
-        _1 = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"64")]
-        _64 = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"65")]
-        _65 = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"66")]
-        _66 = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"67")]
-        _67 = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"68")]
-        _68 = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"69")]
-        _69 = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"70")]
-        _70 = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"71")]
-        _71 = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"72")]
-        _72 = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"73")]
-        _73 = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"74")]
-        _74 = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"75")]
-        _75 = 13,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum McpFailureKind
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"none")]
-        None = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
-        Authentication_failure = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
-        Usage_error = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
-        Client_configuration_error = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
-        Credential_missing = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
-        Credential_reference_invalid = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
-        Tenant_access_denied = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"cross_tenant_access_denied")]
-        Cross_tenant_access_denied = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
-        Folder_acl_denied = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"audit_access_denied")]
-        Audit_access_denied = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 11,
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 11,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
         Provider_readiness_failed = 12,
@@ -13034,6 +12836,213 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
         Internal_error = 47,
+
+    }
+
+    /// <summary>
+    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CliExitCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"0")]
+        _0 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"1")]
+        _1 = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"64")]
+        _64 = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"65")]
+        _65 = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"66")]
+        _66 = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"67")]
+        _67 = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"68")]
+        _68 = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"69")]
+        _69 = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"70")]
+        _70 = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"71")]
+        _71 = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"72")]
+        _72 = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"73")]
+        _73 = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"74")]
+        _74 = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"75")]
+        _75 = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"76")]
+        _76 = 14,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum McpFailureKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"none")]
+        None = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
+        Authentication_failure = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
+        Usage_error = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
+        Client_configuration_error = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
+        Credential_missing = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
+        Credential_reference_invalid = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"cross_tenant_access_denied")]
+        Cross_tenant_access_denied = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
+        Folder_acl_denied = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"audit_access_denied")]
+        Audit_access_denied = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
+        Idempotency_conflict = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
+        Provider_readiness_failed = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
+        Provider_permission_insufficient = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
+        Provider_rate_limited = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
+        Repository_binding_unavailable = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
+        Branch_ref_policy_invalid = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
+        Workspace_not_ready = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
+        Workspace_preparation_failed = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
+        Workspace_locked = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
+        Lock_conflict = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
+        Lock_expired = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
+        Lock_not_owned = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
+        Stale_workspace = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
+        Authorization_revocation_detected = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
+        Repository_conflict = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
+        Duplicate_binding = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
+        Unsupported_provider_capability = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
+        Path_validation_failed = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
+        File_operation_failed = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
+        Dirty_workspace = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
+        Commit_failed = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 36,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"not_found")]
+        Not_found = 37,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
+        State_transition_invalid = 38,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
+        Response_limit_exceeded = 40,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 41,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 42,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
+        Projection_stale = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 44,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 45,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
+        Failed_operation = 46,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 47,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
+        Internal_error = 48,
 
     }
 
@@ -13196,6 +13205,9 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"no_action")]
         No_action = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"refresh_state_then_submit_with_new_key")]
+        Refresh_state_then_submit_with_new_key = 6,
 
     }
 

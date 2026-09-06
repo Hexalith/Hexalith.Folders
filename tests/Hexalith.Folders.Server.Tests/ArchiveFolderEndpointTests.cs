@@ -177,6 +177,53 @@ public sealed class ArchiveFolderEndpointTests
     }
 
     [Theory]
+    [InlineData("idempotency_key_expired")]
+    [InlineData("idempotency-key-expired")]
+    [InlineData("IdempotencyKeyExpired")]
+    public async Task ArchiveFolderEndpointShouldMapGatewayExpiredKeyWithoutCollapsingToConflict(string reasonCode)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                409,
+                "Gateway rejection",
+                type: "https://hexalith.dev/errors/internal-detail",
+                detail: "folder folder-a prior fingerprint abcdef reused after expiry",
+                correlationId: "correlation-gateway",
+                reasonCode: reasonCode),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("idempotency_key_expired");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("idempotency_key_expired");
+            document.RootElement.GetProperty("title").GetString().ShouldBe("Idempotency key expired.");
+            document.RootElement.GetProperty("message").GetString().ShouldBe("The supplied idempotency key is no longer reusable. Refresh state, then submit with a new key.");
+            document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeFalse();
+            document.RootElement.GetProperty("clientAction").GetString().ShouldBe("refresh_state_then_submit_with_new_key");
+            document.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-gateway");
+            document.RootElement.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("metadata_only");
+            json.ShouldNotContain("idempotency_conflict");
+            json.ShouldNotContain("folder folder-a prior fingerprint");
+            json.ShouldNotContain("abcdef");
+            gateway.Requests.Count.ShouldBe(1);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
     [InlineData("FolderAclDenied")]
     [InlineData("folder_acl_denied")]
     [InlineData("folder-acl-denied")]

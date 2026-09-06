@@ -19,6 +19,7 @@ public enum FolderResultCode
     DuplicateEntry,
     ConflictingEntry,
     IdempotencyConflict,
+    IdempotencyKeyExpired,
     IdempotencyUnavailable,
     DuplicateFolder,
     AppendConflict,

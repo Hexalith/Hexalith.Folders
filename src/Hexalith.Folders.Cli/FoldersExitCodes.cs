@@ -8,7 +8,7 @@ namespace Hexalith.Folders.Cli;
 /// (<c>tests/fixtures/parity-contract.yaml</c>). They are deliberately NOT the
 /// <c>Hexalith.EventStore.Admin.Cli.ExitCodes</c> <c>Success=0/Degraded=1/Error=2</c> scheme — that is a
 /// different adapter's UX-DR52 convention and is wrong for Folders. The full canonical table is
-/// <c>{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 1}</c>. See <see cref="ErrorProjection"/> for the
+/// <c>{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 1}</c>. See <see cref="ErrorProjection"/> for the
 /// single category-to-code projection map.
 /// </remarks>
 internal static class FoldersExitCodes
@@ -51,6 +51,9 @@ internal static class FoldersExitCodes
 
     /// <summary>Result was redacted and is visibly distinct from missing/unknown (<c>redacted</c>).</summary>
     public const int Redacted = 75;
+
+    /// <summary>Expired idempotency key (<c>idempotency_key_expired</c>); refresh state, then submit with a new key.</summary>
+    public const int IdempotencyKeyExpired = 76;
 
     /// <summary>Unexpected/unmapped server outcome or transport failure (<c>internal_error</c>, <c>query_timeout</c>, unmapped categories).</summary>
     public const int InternalError = 1;

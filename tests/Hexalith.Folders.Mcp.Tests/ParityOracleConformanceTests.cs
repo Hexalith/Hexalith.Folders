@@ -131,7 +131,7 @@ public sealed class ParityOracleConformanceTests
                 $"enum member '{member}' is absent from the oracle outcome_mapping and is not a documented exception — the oracle dropped a category or a new category needs handling.");
         }
 
-        oracleCategories.Count.ShouldBe(43); // 43 post-SDK categories carry an outcome_mapping row.
+        oracleCategories.Count.ShouldBe(44); // 44 post-SDK categories carry an outcome_mapping row.
     }
 
     [Fact]

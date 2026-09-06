@@ -2777,3 +2777,19 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: Generated OQ8 mutation/read matrix with TimeProvider expiry bounds, concurrency, restart, and persisted tombstone assertions.
   evidence: Split from Story 12.6 this session. In-memory folder ledgers and missing adapters cannot close OQ8; Story 12.1 remains the durable-repository prerequisite.
 
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Unrelated dirty tree mixed into the Story 12.6 review diff, including `.bmad-loop/policy.toml` flipping `scm.isolation` from `worktree` to `none`.
+  evidence: Working tree also rewrites `epic-3-context.md` and adds untracked `bmad-build-auto-result-3-13-forgejo-file-mutation-commit-status-and-failure-behavior-2.md`. Isolation `none` would make later loop runs mutate the checked-out branch. None of this implements expired-key mapping.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: `SafeProblem` still titles every non-expired HTTP 409 as "Idempotency conflict.", including lock, duplicate-binding, repository-conflict, and reconciliation outcomes.
+  evidence: Pre-existing: the 409 title was already that string; this slice only added an expired ternary. Callers that read `title` instead of `category` still see a conflict label for those other 409s.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Expand `docs/contract/idempotency-and-parity-rules.md` from its stale mutation subset to the complete generated inventory, including `UpdateFolderAclEntry`, `ConfigureProviderBinding`, and `ConfigureBranchRefPolicy`.
+  evidence: This slice appended `idempotency_key_expired` only onto existing inventory rows. The story subtask to rewrite the table remains open; frozen split left full inventory expansion out of this mapping work.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-implement-durable-all-mutations-idempotency-and-expired-key-precedence.md`
+  summary: Add a generator fail-closed rule when a mutation omits expired-key categories or matrix evidence, and update `tests/fixtures/previous-spine.yaml` with the live spine.
+  evidence: Remaining Story 12.6 contract-completeness tasks. Frozen split deferred completeness gates and the durable OQ8 matrix; `parity-contract.yaml` already lists the new category from the oracle generator.
+

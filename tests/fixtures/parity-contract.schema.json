@@ -271,6 +271,7 @@
         "file_operation_failed",
         "path_validation_failed",
         "idempotency_conflict",
+        "idempotency_key_expired",
         "input_limit_exceeded",
         "response_limit_exceeded",
         "query_timeout",
@@ -312,7 +313,8 @@
         72,
         73,
         74,
-        75
+        75,
+        76
       ]
     },
     "mcp_failure_kind": {
@@ -333,6 +335,7 @@
         "stale_workspace",
         "authorization_revocation_detected",
         "idempotency_conflict",
+        "idempotency_key_expired",
         "validation_error",
         "input_limit_exceeded",
         "response_limit_exceeded",

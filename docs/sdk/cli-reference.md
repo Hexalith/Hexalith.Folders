@@ -156,7 +156,7 @@ The root `folders` command exposes **7 top-level groups**. Each leaf maps to one
 
 ## Exit codes
 
-The CLI uses the canonical sysexits-style table `{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 1}` from
+The CLI uses the canonical sysexits-style table `{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 1}` from
 `src/Hexalith.Folders.Cli/FoldersExitCodes.cs`, projected per canonical error category by
 `src/Hexalith.Folders.Cli/Errors/ErrorProjection.cs`. This is deliberately **not** the
 `Hexalith.EventStore.Admin.Cli` `Success=0/Degraded=1/Error=2` scheme. Every row is verified against the parity
@@ -177,6 +177,7 @@ oracle (`tests/fixtures/parity-contract.yaml`).
 | `73` | `NotFound` | `not_found`, `authorization_revocation_detected` |
 | `74` | `StateTransitionInvalid` | `state_transition_invalid` |
 | `75` | `Redacted` | `redacted` (visibly distinct from missing/unknown) |
+| `76` | `IdempotencyKeyExpired` | `idempotency_key_expired` (refresh state, then submit with a new key) |
 | `1` | `InternalError` | `internal_error`, `query_timeout`, and any category not present in the oracle (e.g. `range_unsatisfiable`) — the documented drift fallback |
 
 ## Examples

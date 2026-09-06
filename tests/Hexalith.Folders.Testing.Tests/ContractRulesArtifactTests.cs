@@ -249,6 +249,7 @@ public sealed class ContractRulesArtifactTests
         failureKinds.ShouldContain("query_timeout");
         failureKinds.ShouldContain("read_model_unavailable");
         failureKinds.ShouldContain("idempotency_conflict");
+        failureKinds.ShouldContain("idempotency_key_expired");
         // Story 1.13 P-26 collapsed the duplicate spelling 'provider_outcome_unknown' to the canonical
         // 'unknown_provider_outcome'. Both still describe the same failure kind.
         failureKinds.ShouldContain("unknown_provider_outcome");
@@ -270,7 +271,8 @@ public sealed class ContractRulesArtifactTests
             "provider_permission_insufficient",
             "unsupported_provider_capability",
             "repository_conflict",
-            "duplicate_binding"
+            "duplicate_binding",
+            "idempotency_key_expired"
         })
         {
             errorCategories.ShouldContain(category, $"canonical_error_category enum must include {category} so operation inventory rows validate.");

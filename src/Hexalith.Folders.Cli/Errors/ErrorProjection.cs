@@ -48,6 +48,9 @@ internal static class ErrorProjection
         // Idempotency conflict → 68.
         CanonicalErrorCategory.Idempotency_conflict => FoldersExitCodes.IdempotencyConflict,
 
+        // Expired idempotency key → 76.
+        CanonicalErrorCategory.Idempotency_key_expired => FoldersExitCodes.IdempotencyKeyExpired,
+
         // Validation / input-shape → 69.
         CanonicalErrorCategory.Validation_error => FoldersExitCodes.ValidationError,
         CanonicalErrorCategory.Input_limit_exceeded => FoldersExitCodes.ValidationError,

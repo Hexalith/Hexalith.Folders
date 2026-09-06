@@ -1262,6 +1262,7 @@ internal static class GeneratorConstants
             ["file_operation_failed"] = new(70, "file_operation_failed", "none"),
             ["path_validation_failed"] = new(69, "path_validation_failed", "none"),
             ["idempotency_conflict"] = new(68, "idempotency_conflict", "none"),
+            ["idempotency_key_expired"] = new(76, "idempotency_key_expired", "none"),
             ["input_limit_exceeded"] = new(69, "input_limit_exceeded", "none"),
             ["response_limit_exceeded"] = new(69, "response_limit_exceeded", "none"),
             ["query_timeout"] = new(1, "query_timeout", "none"),

@@ -96,6 +96,7 @@ paths:
         - tenant_access_denied
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -259,6 +260,7 @@ paths:
         - folder_acl_denied
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -415,6 +417,7 @@ paths:
         - folder_acl_denied
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -569,6 +572,7 @@ paths:
         - provider_unavailable
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: provider_binding_ref
@@ -880,6 +884,7 @@ paths:
         - failed_operation
         - reconciliation_required
         - idempotency_conflict
+        - idempotency_key_expired
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -987,6 +992,7 @@ paths:
         - failed_operation
         - reconciliation_required
         - idempotency_conflict
+        - idempotency_key_expired
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -1158,6 +1164,7 @@ paths:
         - folder_acl_denied
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1303,6 +1310,8 @@ paths:
               examples:
                 idempotencyConflict:
                   $ref: "#/components/examples/IdempotencyConflictGeneric"
+                idempotencyKeyExpired:
+                  $ref: "#/components/examples/IdempotencyKeyExpiredGeneric"
                 lockConflict:
                   $ref: "#/components/examples/WorkspaceLockConflictProblem"
                 reconciliationRequired:
@@ -1375,6 +1384,7 @@ paths:
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1469,6 +1479,8 @@ paths:
               examples:
                 idempotencyConflict:
                   $ref: "#/components/examples/IdempotencyConflictGeneric"
+                idempotencyKeyExpired:
+                  $ref: "#/components/examples/IdempotencyKeyExpiredGeneric"
                 lockConflict:
                   $ref: "#/components/examples/WorkspaceLockConflictProblem"
         "410":
@@ -1517,6 +1529,7 @@ paths:
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -1720,6 +1733,8 @@ paths:
               examples:
                 idempotencyConflict:
                   $ref: "#/components/examples/IdempotencyConflictGeneric"
+                idempotencyKeyExpired:
+                  $ref: "#/components/examples/IdempotencyKeyExpiredGeneric"
                 reconciliationRequired:
                   $ref: "#/components/examples/ReconciliationRequiredProblem"
         "410":
@@ -1766,6 +1781,7 @@ paths:
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -2134,6 +2150,7 @@ paths:
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -2300,6 +2317,7 @@ paths:
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -2450,6 +2468,7 @@ paths:
         - state_transition_invalid
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - internal_error
       x-hexalith-audit-metadata-keys:
         - name: folder_id
@@ -3384,6 +3403,8 @@ paths:
               examples:
                 idempotencyConflict:
                   $ref: "#/components/examples/IdempotencyConflictGeneric"
+                idempotencyKeyExpired:
+                  $ref: "#/components/examples/IdempotencyKeyExpiredGeneric"
                 dirtyWorkspace:
                   $ref: "#/components/examples/DirtyWorkspaceProblem"
                 unknownProviderOutcome:
@@ -3469,6 +3490,7 @@ paths:
         - projection_unavailable
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - state_transition_invalid
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -5419,11 +5441,25 @@ components:
           schema:
             $ref: "#/components/schemas/ValidationFailure"
     IdempotencyConflict:
-      description: Same idempotency key with non-equivalent tenant-scoped payload semantics.
+      description: Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.
       content:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/IdempotencyConflict"
+          examples:
+            conflict:
+              $ref: "#/components/examples/IdempotencyConflictGeneric"
+            expired:
+              $ref: "#/components/examples/IdempotencyKeyExpiredGeneric"
+    IdempotencyKeyExpired:
+      description: Idempotency key is past its retention window and is no longer reusable. Distinct from `idempotency_conflict`.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/IdempotencyKeyExpired"
+          examples:
+            expired:
+              $ref: "#/components/examples/IdempotencyKeyExpiredGeneric"
     ReconciliationRequired:
       description: Provider outcome requires explicit reconciliation before the task can be treated as complete.
       content:
@@ -5967,6 +6003,20 @@ components:
         correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
         retryable: false
         clientAction: revise_request
+        details:
+          visibility: metadata_only
+    IdempotencyKeyExpiredGeneric:
+      summary: Authorized caller — an expired idempotency key was reused, regardless of submitted intent.
+      value:
+        type: about:blank
+        title: Idempotency key expired
+        status: 409
+        category: idempotency_key_expired
+        code: idempotency_key_expired
+        message: The supplied idempotency key is no longer reusable. Refresh state, then submit with a new key.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+        retryable: false
+        clientAction: refresh_state_then_submit_with_new_key
         details:
           visibility: metadata_only
     ReconciliationRequiredProblem:
@@ -7289,6 +7339,7 @@ components:
             - wait_for_reconciliation
             - contact_operator
             - no_action
+            - refresh_state_then_submit_with_new_key
         details:
           type: object
           additionalProperties:
@@ -7309,6 +7360,10 @@ components:
       allOf:
         - $ref: "#/components/schemas/ProblemDetails"
       description: Idempotency conflict for same key and non-equivalent semantic request.
+    IdempotencyKeyExpired:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+      description: Expired idempotency key that cannot be reused for equivalent or different intent.
     ReconciliationRequired:
       allOf:
         - $ref: "#/components/schemas/ProblemDetails"
@@ -10114,6 +10169,7 @@ components:
         - audit_access_denied
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - provider_readiness_failed
         - provider_permission_insufficient
         - provider_unavailable
@@ -10167,6 +10223,7 @@ components:
         - "73"
         - "74"
         - "75"
+        - "76"
       description: CLI exit codes are string enums here to avoid accidental numeric range expansion.
     McpFailureKind:
       type: string
@@ -10183,6 +10240,7 @@ components:
         - audit_access_denied
         - validation_error
         - idempotency_conflict
+        - idempotency_key_expired
         - provider_readiness_failed
         - provider_permission_insufficient
         - provider_unavailable

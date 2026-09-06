@@ -41,7 +41,7 @@ Every tool result carries `correlationId`. Failure results add four more fields:
 | `kind` | failures | The failure kind (see the [catalog](#failure-kind-catalog)). |
 | `code` | failures | Stable lowercase canonical error code. |
 | `retryable` | failures | Whether the caller may retry. |
-| `clientAction` | failures | Recommended client action (`retry`, `revise_request`, `check_credentials`, `wait_for_reconciliation`, `contact_operator`, `no_action`). |
+| `clientAction` | failures | Recommended client action (`retry`, `revise_request`, `check_credentials`, `wait_for_reconciliation`, `contact_operator`, `no_action`, `refresh_state_then_submit_with_new_key`). |
 
 - **Mutating tools** take a caller-supplied `idempotencyKey`; there is **no auto-key path** in the MCP server
   (unlike the CLI's `--allow-auto-key`). The caller always supplies the key.
@@ -180,6 +180,7 @@ failed_operation
 file_operation_failed
 folder_acl_denied
 idempotency_conflict
+idempotency_key_expired
 input_limit_exceeded
 internal_error
 lock_conflict

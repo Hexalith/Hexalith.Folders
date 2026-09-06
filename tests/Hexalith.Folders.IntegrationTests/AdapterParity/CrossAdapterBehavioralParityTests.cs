@@ -35,7 +35,7 @@ namespace Hexalith.Folders.IntegrationTests.AdapterParity;
 /// </summary>
 public sealed class CrossAdapterBehavioralParityTests
 {
-    private static readonly int[] CanonicalCliExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75];
+    private static readonly int[] CanonicalCliExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76];
 
     /// <summary>
     /// The MCP failure-kind vocabulary the cross-adapter assertions accept: every canonical post-SDK category
@@ -156,8 +156,8 @@ public sealed class CrossAdapterBehavioralParityTests
             }
         }
 
-        oracleCategories.Count.ShouldBe(43);
-        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(47);
+        oracleCategories.Count.ShouldBe(44);
+        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(48);
     }
 
     // =====================================================================================================
@@ -460,6 +460,7 @@ public sealed class CrossAdapterBehavioralParityTests
         data.Add("authentication_failure", 401, 65, "authentication_failure", false, "check_credentials");
         data.Add("folder_acl_denied", 403, 66, "folder_acl_denied", false, "no_action");
         data.Add("idempotency_conflict", 409, 68, "idempotency_conflict", false, "revise_request");
+        data.Add("idempotency_key_expired", 409, 76, "idempotency_key_expired", false, "refresh_state_then_submit_with_new_key");
         data.Add("validation_error", 422, 69, "validation_error", false, "revise_request");
         data.Add("workspace_locked", 409, 67, "workspace_locked", true, "retry");
         data.Add("not_found", 404, 73, "not_found", false, "no_action");

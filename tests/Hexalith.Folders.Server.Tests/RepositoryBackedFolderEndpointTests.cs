@@ -644,6 +644,7 @@ public sealed class RepositoryBackedFolderEndpointTests
 
     [Theory]
     [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "idempotency_conflict", "idempotency_conflict")]
+    [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "idempotency_key_expired", "idempotency_key_expired")]
     [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "reconciliation_required", "reconciliation_required")]
     [InlineData(StatusCodes.Status422UnprocessableEntity, HttpStatusCode.UnprocessableEntity, "provider_readiness_failed", "provider_readiness_failed")]
     [InlineData(StatusCodes.Status422UnprocessableEntity, HttpStatusCode.UnprocessableEntity, "workspace_transition_invalid", "workspace_transition_invalid")]
@@ -684,6 +685,7 @@ public sealed class RepositoryBackedFolderEndpointTests
                 "provider_readiness_failed" => "contact_operator",
                 "workspace_preparation_failed" or "workspace_transition_invalid" => "revise_request",
                 "provider_unavailable" => "retry",
+                "idempotency_key_expired" => "refresh_state_then_submit_with_new_key",
                 _ => "no_action",
             });
             json.ShouldNotContain("repository-secret", Case.Sensitive);
@@ -957,6 +959,7 @@ public sealed class RepositoryBackedFolderEndpointTests
 
     [Theory]
     [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "idempotency_conflict", "idempotency_conflict")]
+    [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "idempotency_key_expired", "idempotency_key_expired")]
     [InlineData(StatusCodes.Status409Conflict, HttpStatusCode.Conflict, "duplicate_binding", "duplicate_binding")]
     [InlineData(StatusCodes.Status422UnprocessableEntity, HttpStatusCode.UnprocessableEntity, "provider_readiness_failed", "provider_readiness_failed")]
     [InlineData(StatusCodes.Status429TooManyRequests, HttpStatusCode.TooManyRequests, "provider_rate_limited", "provider_rate_limited")]

@@ -203,7 +203,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocGeneratedCategoryInventoryEqualsClient()
     {
         HashSet<string> generated = ParseGeneratedEnumValues("CanonicalErrorCategory");
-        generated.Count.ShouldBe(47, "the generated CanonicalErrorCategory must declare exactly 47 members.");
+        generated.Count.ShouldBe(48, "the generated CanonicalErrorCategory must declare exactly 48 members.");
 
         HashSet<string> docCategories = FirstColumnBacktickTokens(ErrorDocPath, "<!-- generated-canonical-categories -->");
         AssertSetEquals(docCategories, generated, "error doc generated categories must equal the generated enum exactly.");
@@ -213,7 +213,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocOracleCategoryInventoryEqualsParityContract()
     {
         HashSet<string> oracle = ParseParityOracleCategories();
-        oracle.Count.ShouldBe(43, "the parity oracle must carry exactly 43 distinct canonical categories.");
+        oracle.Count.ShouldBe(44, "the parity oracle must carry exactly 44 distinct canonical categories.");
 
         HashSet<string> docOracle = FirstColumnBacktickTokens(ErrorDocPath, "<!-- oracle-carried-categories -->");
         AssertSetEquals(docOracle, oracle, "error doc oracle categories must equal the parity oracle exactly.");
@@ -230,8 +230,8 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocClientActionTokensEqualGeneratedEnum()
     {
         HashSet<string> actions = ParseGeneratedEnumValues("ProblemDetailsClientAction");
-        AssertSetEquals(actions, ["retry", "revise_request", "check_credentials", "wait_for_reconciliation", "contact_operator", "no_action"],
-            "ProblemDetailsClientAction must declare exactly the 6 wire tokens.");
+        AssertSetEquals(actions, ["retry", "revise_request", "check_credentials", "wait_for_reconciliation", "contact_operator", "no_action", "refresh_state_then_submit_with_new_key"],
+            "ProblemDetailsClientAction must declare exactly the 7 wire tokens.");
 
         HashSet<string> docActions = FirstColumnBacktickTokens(ErrorDocPath, "<!-- client-action-tokens -->");
         AssertSetEquals(docActions, actions, "error doc client-action tokens must equal the generated enum exactly.");
@@ -241,7 +241,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocCliExitCodesEqualFoldersExitCodes()
     {
         HashSet<string> codes = ParseCliExitCodes();
-        codes.Count.ShouldBe(14, "FoldersExitCodes must declare exactly 14 canonical exit-code values.");
+        codes.Count.ShouldBe(15, "FoldersExitCodes must declare exactly 15 canonical exit-code values.");
 
         HashSet<string> docCodes = FirstColumnBacktickTokens(ErrorDocPath, "<!-- cli-exit-codes -->");
         AssertSetEquals(docCodes, codes, "error doc CLI exit codes must equal FoldersExitCodes exactly.");

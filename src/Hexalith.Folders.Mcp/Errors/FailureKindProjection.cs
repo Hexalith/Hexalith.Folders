@@ -6,7 +6,7 @@ namespace Hexalith.Folders.Mcp.Errors;
 /// The single canonical <see cref="CanonicalErrorCategory"/> → MCP failure-kind projection used by every
 /// tool and resource. Encoded verbatim from the deduplicated <c>outcome_mapping.mcp_failure_kind</c> column
 /// of the parity oracle (<c>tests/fixtures/parity-contract.yaml</c>), where <b>kind == the canonical
-/// category name verbatim</b> (one-to-one, 43 post-SDK values). Story 5.4 proves this map against that
+/// category name verbatim</b> (one-to-one, 44 post-SDK values). Story 5.4 proves this map against that
 /// oracle; this story encodes and unit-tests it directly.
 /// </summary>
 /// <remarks>
@@ -14,7 +14,7 @@ namespace Hexalith.Folders.Mcp.Errors;
 /// §"Adapter Parity Contract" (which also misspells <c>unknown_provider_outcome</c> as
 /// <c>provider_outcome_unknown</c>). Distinct categories are never collapsed for adapter convenience
 /// (project-context Critical Don't-Miss rule).</para>
-/// <para><see cref="CanonicalErrorCategory.Range_unsatisfiable"/> (enum 43) is <b>absent</b> from the
+/// <para><see cref="CanonicalErrorCategory.Range_unsatisfiable"/> is <b>absent</b> from the
 /// oracle <c>mcp_failure_kind</c> set, so it falls through to <see cref="InternalError"/> — exactly as
 /// Story 5.2 handled it for CLI exit codes. That fall-through is a deliberate spine/oracle drift signal,
 /// not a silent collapse. The two pre-SDK kinds (<c>usage_error</c>, <c>credential_missing</c>) are layered
@@ -49,6 +49,7 @@ internal static class FailureKindProjection
         CanonicalErrorCategory.Audit_access_denied => "audit_access_denied",
         CanonicalErrorCategory.Validation_error => "validation_error",
         CanonicalErrorCategory.Idempotency_conflict => "idempotency_conflict",
+        CanonicalErrorCategory.Idempotency_key_expired => "idempotency_key_expired",
         CanonicalErrorCategory.Provider_readiness_failed => "provider_readiness_failed",
         CanonicalErrorCategory.Provider_permission_insufficient => "provider_permission_insufficient",
         CanonicalErrorCategory.Provider_unavailable => "provider_unavailable",
@@ -85,7 +86,7 @@ internal static class FailureKindProjection
         CanonicalErrorCategory.Redacted => "redacted",
         CanonicalErrorCategory.Internal_error => "internal_error",
 
-        // range_unsatisfiable (enum 43) is absent from the oracle mcp_failure_kind set → internal_error
+        // range_unsatisfiable is absent from the oracle mcp_failure_kind set → internal_error
         // as a documented drift signal; mirrors Story 5.2's CLI exit-code handling. Any future unmapped
         // category likewise falls through here rather than being collapsed into a convenient neighbour.
         _ => InternalError,
@@ -105,6 +106,7 @@ internal static class FailureKindProjection
         ProblemDetailsClientAction.Wait_for_reconciliation => "wait_for_reconciliation",
         ProblemDetailsClientAction.Contact_operator => "contact_operator",
         ProblemDetailsClientAction.No_action => "no_action",
+        ProblemDetailsClientAction.Refresh_state_then_submit_with_new_key => "refresh_state_then_submit_with_new_key",
         _ => "no_action",
     };
 }

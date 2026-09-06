@@ -23,6 +23,7 @@ public sealed class InProcessRejectionPropagatingGatewayClientTests
     [InlineData(nameof(FolderResultCode.ValidationFailed), 400, "validation_error")]
     [InlineData(nameof(FolderResultCode.FolderAclDenied), 403, "folder_acl_denied")]
     [InlineData(nameof(FolderResultCode.IdempotencyConflict), 409, "idempotency_conflict")]
+    [InlineData(nameof(FolderResultCode.IdempotencyKeyExpired), 409, "idempotency_key_expired")]
     [InlineData(nameof(FolderResultCode.LockNotOwned), 409, "lock_not_owned")]
     [InlineData(nameof(FolderResultCode.LockExpired), 410, "lock_expired")]
     [InlineData(nameof(FolderResultCode.StateTransitionInvalid), 422, "state_transition_invalid")]
