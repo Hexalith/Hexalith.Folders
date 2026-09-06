@@ -125,6 +125,15 @@
     "label": "Configurable default",
     "resolution": ""
   },
+  "DW-317": {
+    "answered_at": "2026-09-06",
+    "bundle_name": "",
+    "effect": "build",
+    "intent": "Wire the canonical mapping into the REST leg, update OpenAPI and generated consumers, and add the missing cross-surface matrix.",
+    "key": "1",
+    "label": "Align REST canonically",
+    "resolution": ""
+  },
   "DW-337": {
     "answered_at": "2026-09-05",
     "bundle_name": "",

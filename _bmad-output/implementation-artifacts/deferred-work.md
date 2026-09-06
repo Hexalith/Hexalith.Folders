@@ -2465,6 +2465,7 @@ severity: medium
 reason: FolderCanonicalErrorMapper emits categories that SafeGatewayReasonCode does not whitelist (state_transition_invalid, validation_error, not_found, policy_denied, already_archived, authentication_failure, repository_conflict), so those rejections fall through to the status-only default arm; StateTransitionInvalid reaches 422 at the gateway exception but still renders 403 denied_safe at REST. This story's acceptance criteria and I/O matrix are all stated at the gateway exception boundary, so cross-surface REST coverage is outside its scope. The four codes existing suites actually drive are unchanged end-to-end (IntegrationTests 667/667 green).
 status: open
 decision: 2026-09-06 Align REST canonically — Wire the canonical mapping into the REST leg, update OpenAPI and generated consumers, and add the missing cross-surface matrix.
+decision: 2026-09-06 Align REST canonically — Wire the canonical mapping into the REST leg, update OpenAPI and generated consumers, and add the missing cross-surface matrix.
 
 ### DW-318: The parity double's rejection reason code matches neither spelling the real EventStore gateway produces, so its "production fidelity" claim is unverified against the actual gateway hop.
 origin: spec-deferred 7cb3e93d48f6
