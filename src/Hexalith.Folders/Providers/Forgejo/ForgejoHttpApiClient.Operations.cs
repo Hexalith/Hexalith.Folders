@@ -42,12 +42,12 @@ internal sealed partial class ForgejoHttpApiClient
         }
 
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        deadline.CancelAfter(OperationResponseTimeout);
-        bool gateAcquired = false;
+        deadline.CancelAfter(EffectiveOperationTimeout());
+        ForgejoNativeOperationPermit? nativePermit = null;
         try
         {
             await NativeOperationGate.WaitAsync(deadline.Token).ConfigureAwait(false);
-            gateAcquired = true;
+            nativePermit = new ForgejoNativeOperationPermit(NativeOperationGate);
             if (!await request.ValidateReservationAsync(deadline.Token).ConfigureAwait(false))
             {
                 return ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated);
@@ -68,7 +68,15 @@ internal sealed partial class ForgejoHttpApiClient
                 _certificateCheck,
                 _beforeReceivePackDispatch,
                 _transportTestHooks);
-            return await transport.StageAsync(request, deadline.Token).ConfigureAwait(false);
+            ForgejoFileMutationResult result = await transport.StageAsync(
+                request,
+                deadline.Token,
+                nativePermit).ConfigureAwait(false);
+            return result.FailureCondition == ForgejoApiFailureCondition.CancellationBeforeDispatch
+                && !cancellationToken.IsCancellationRequested
+                && deadline.IsCancellationRequested
+                    ? ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.OperationTimedOut)
+                    : result;
         }
         catch (OperationCanceledException)
         {
@@ -83,10 +91,7 @@ internal sealed partial class ForgejoHttpApiClient
         }
         finally
         {
-            if (gateAcquired)
-            {
-                NativeOperationGate.Release();
-            }
+            nativePermit?.ReleaseByCaller();
         }
     }
 
@@ -120,13 +125,13 @@ internal sealed partial class ForgejoHttpApiClient
         }
 
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        deadline.CancelAfter(OperationResponseTimeout);
-        bool gateAcquired = false;
+        deadline.CancelAfter(EffectiveOperationTimeout());
+        ForgejoNativeOperationPermit? nativePermit = null;
         string? dispatchedCommitSha = null;
         try
         {
             await NativeOperationGate.WaitAsync(deadline.Token).ConfigureAwait(false);
-            gateAcquired = true;
+            nativePermit = new ForgejoNativeOperationPermit(NativeOperationGate);
             if (!await request.ValidateReservationAsync(deadline.Token).ConfigureAwait(false))
             {
                 return ForgejoCommitResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated);
@@ -147,7 +152,20 @@ internal sealed partial class ForgejoHttpApiClient
                 _certificateCheck,
                 _beforeReceivePackDispatch,
                 _transportTestHooks);
-            ForgejoCommitResult result = await transport.CommitAsync(request, deadline.Token).ConfigureAwait(false);
+            ForgejoCommitResult result = await transport.CommitAsync(
+                request,
+                deadline.Token,
+                nativePermit).ConfigureAwait(false);
+            if (!result.IsSuccess
+                && result.FailureCondition == ForgejoApiFailureCondition.CancellationBeforeDispatch
+                && !cancellationToken.IsCancellationRequested
+                && deadline.IsCancellationRequested)
+            {
+                return ForgejoCommitResult.Failure(
+                    ForgejoApiFailureCondition.OperationTimedOut,
+                    observedCommitSha: result.ObservedCommitSha);
+            }
+
             if (!result.IsSuccess)
             {
                 if (result.FailureCondition == ForgejoApiFailureCondition.RemoteRejected)
@@ -202,12 +220,14 @@ internal sealed partial class ForgejoHttpApiClient
         }
         finally
         {
-            if (gateAcquired)
-            {
-                NativeOperationGate.Release();
-            }
+            nativePermit?.ReleaseByCaller();
         }
     }
+
+    private TimeSpan EffectiveOperationTimeout()
+        => _transportTestHooks?.OperationTimeout is { } timeout && timeout > TimeSpan.Zero
+            ? timeout
+            : OperationResponseTimeout;
 
     public async Task<ForgejoOperationStatusResult> GetOperationStatusAsync(
         ForgejoOperationStatusRequest request,

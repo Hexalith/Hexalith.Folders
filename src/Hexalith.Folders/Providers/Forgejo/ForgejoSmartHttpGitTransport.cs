@@ -47,7 +47,8 @@ internal sealed class ForgejoSmartHttpGitTransport(
     /// </summary>
     public async Task<ForgejoFileMutationResult> StageAsync(
         ForgejoFileMutationRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        ForgejoNativeOperationPermit? nativePermit = null)
     {
         ForgejoApiFailureCondition? advertisementFailure = await ValidateAdvertisementAsync(
             request.Target,
@@ -61,9 +62,10 @@ internal sealed class ForgejoSmartHttpGitTransport(
 
         try
         {
-            return await Task.Run(
+            Task<ForgejoFileMutationResult> nativeTask = StartNativeTask(
                 () => StageCore(request, cancellationToken),
-                CancellationToken.None).WaitAsync(NativeOperationDeadline, cancellationToken).ConfigureAwait(false);
+                nativePermit);
+            return await nativeTask.WaitAsync(NativeOperationDeadline, cancellationToken).ConfigureAwait(false);
         }
         catch (TimeoutException)
         {
@@ -92,7 +94,8 @@ internal sealed class ForgejoSmartHttpGitTransport(
     /// </summary>
     public async Task<ForgejoCommitResult> CommitAsync(
         ForgejoCommitRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        ForgejoNativeOperationPermit? nativePermit = null)
     {
         ForgejoCommitDispatchState dispatchState = new();
         ForgejoApiFailureCondition? uploadFailure = await ValidateAdvertisementAsync(
@@ -117,9 +120,10 @@ internal sealed class ForgejoSmartHttpGitTransport(
 
         try
         {
-            return await Task.Run(
+            Task<ForgejoCommitResult> nativeTask = StartNativeTask(
                 () => CommitCore(request, dispatchState, cancellationToken),
-                CancellationToken.None).WaitAsync(NativeOperationDeadline, cancellationToken).ConfigureAwait(false);
+                nativePermit);
+            return await nativeTask.WaitAsync(NativeOperationDeadline, cancellationToken).ConfigureAwait(false);
         }
         catch (TimeoutException)
         {
@@ -151,6 +155,42 @@ internal sealed class ForgejoSmartHttpGitTransport(
                 dispatchState,
                 ForgejoApiFailureCondition.ServerUnavailable);
         }
+    }
+
+    private Task<TResult> StartNativeTask<TResult>(
+        Func<TResult> operation,
+        ForgejoNativeOperationPermit? nativePermit)
+    {
+        nativePermit?.TransferToNativeTask();
+        Task<TResult> nativeTask;
+        try
+        {
+            nativeTask = Task.Run(operation, CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            nativePermit?.ReleaseByNativeTask();
+            throw;
+        }
+
+        _ = nativeTask.ContinueWith(
+            completed =>
+            {
+                _ = completed.Exception;
+                nativePermit?.ReleaseByNativeTask();
+                try
+                {
+                    testHooks?.NativeOperationCompleted?.Invoke();
+                }
+                catch (Exception)
+                {
+                    // Test observers cannot affect production cleanup or permit release.
+                }
+            },
+            CancellationToken.None,
+            TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+        return nativeTask;
     }
 
     private ForgejoFileMutationResult StageCore(

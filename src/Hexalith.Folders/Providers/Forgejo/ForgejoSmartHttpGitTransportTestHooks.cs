@@ -31,6 +31,16 @@ internal sealed class ForgejoSmartHttpGitTransportTestHooks
     public long? MaximumTransferBytes { get; init; }
 
     /// <summary>
+    /// Gets or sets the caller-visible operation deadline override.
+    /// </summary>
+    public TimeSpan? OperationTimeout { get; init; }
+
+    /// <summary>
+    /// Gets or sets an observer invoked after native work and temporary-repository cleanup complete.
+    /// </summary>
+    public Action? NativeOperationCompleted { get; init; }
+
+    /// <summary>
     /// Gets or sets an observer invoked at the receive-pack dispatch boundary.
     /// </summary>
     public Action? ReceivePackDispatched { get; init; }

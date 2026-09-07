@@ -215,6 +215,90 @@ public sealed class ForgejoSmartHttpGitTransportTests
             (ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_repository_cleanup_failed"));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TimedOutOrCancelledNativeWorkerRetainsPermitUntilExactlyOnceCleanup(bool cancelCaller)
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        AdvertisementHandler handler = new(target);
+        using HttpClient firstHttpClient = AuthorizedHttpClient(handler);
+        using HttpClient secondHttpClient = AuthorizedHttpClient(handler);
+        using ManualResetEventSlim releaseWorker = new(initialState: false);
+        TaskCompletionSource workerStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource workerCompleted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        int cleanupAttempts = 0;
+        int secondWorkerStarts = 0;
+        string? temporaryPath = null;
+        ForgejoSmartHttpGitTransportTestHooks firstHooks = new()
+        {
+            OperationTimeout = cancelCaller ? TimeSpan.FromSeconds(5) : TimeSpan.FromMilliseconds(250),
+            BeforeFetch = (path, _) =>
+            {
+                temporaryPath = path;
+                workerStarted.TrySetResult();
+                releaseWorker.Wait();
+            },
+            CleanupAttempted = () => Interlocked.Increment(ref cleanupAttempts),
+            NativeOperationCompleted = () => workerCompleted.TrySetResult(),
+        };
+        ForgejoSmartHttpGitTransportTestHooks secondHooks = new()
+        {
+            OperationTimeout = TimeSpan.FromMilliseconds(100),
+            BeforeFetch = (_, _) => Interlocked.Increment(ref secondWorkerStarts),
+        };
+        ForgejoHttpApiClient firstClient = new(
+            firstHttpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            transportTestHooks: firstHooks);
+        ForgejoHttpApiClient secondClient = new(
+            secondHttpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            transportTestHooks: secondHooks);
+        using CancellationTokenSource callerCancellation = CancellationTokenSource.CreateLinkedTokenSource(
+            TestContext.Current.CancellationToken);
+        if (cancelCaller)
+        {
+            callerCancellation.CancelAfter(TimeSpan.FromMilliseconds(250));
+        }
+
+        ForgejoFileMutationResult? firstResult = null;
+        ForgejoFileMutationResult? secondResult = null;
+        try
+        {
+            Task<ForgejoFileMutationResult> firstCall = firstClient.StageFileChangesAsync(
+                StageRequest(target),
+                cancelCaller ? callerCancellation.Token : TestContext.Current.CancellationToken);
+            await workerStarted.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            firstResult = await firstCall.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            secondResult = await secondClient.StageFileChangesAsync(
+                StageRequest(target),
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            secondWorkerStarts.ShouldBe(0);
+            cleanupAttempts.ShouldBe(0);
+            temporaryPath.ShouldNotBeNull();
+            Directory.Exists(temporaryPath).ShouldBeTrue();
+        }
+        finally
+        {
+            releaseWorker.Set();
+            await workerCompleted.Task.WaitAsync(
+                TimeSpan.FromSeconds(5),
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await firstClient.DisposeAsync().ConfigureAwait(true);
+            await secondClient.DisposeAsync().ConfigureAwait(true);
+        }
+
+        firstResult.ShouldNotBeNull().FailureCondition.ShouldBe(
+            cancelCaller
+                ? ForgejoApiFailureCondition.CancellationBeforeDispatch
+                : ForgejoApiFailureCondition.OperationTimedOut);
+        secondResult.ShouldNotBeNull().FailureCondition.ShouldBe(ForgejoApiFailureCondition.OperationTimedOut);
+        cleanupAttempts.ShouldBe(1);
+        Directory.Exists(temporaryPath).ShouldBeFalse();
+    }
+
     [Fact]
     public void ReceiveAdvertisementRequiresSha1ExpectedHeadAndReportStatus()
     {
@@ -268,6 +352,20 @@ public sealed class ForgejoSmartHttpGitTransportTests
             static _ => ValueTask.FromResult(true),
             static _ => ValueTask.FromResult(true));
 
+    private static ForgejoFileMutationRequest StageRequest(ProviderGitOperationResolvedTarget target)
+        => new(
+            target,
+            [new ProviderResolvedFileChange(0, ProviderFileChangeKind.Add, "file.txt", new byte[] { 1 }, ProviderFileContentType.RegularFile)],
+            "16.0.3",
+            static _ => ValueTask.FromResult(true));
+
+    private static HttpClient AuthorizedHttpClient(HttpMessageHandler handler)
+    {
+        HttpClient client = new(handler, disposeHandler: false);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "token");
+        return client;
+    }
+
     private sealed class AdvertisementHandler(ProviderGitOperationResolvedTarget target) : HttpMessageHandler
     {
         public List<(HttpMethod Method, Uri Uri)> Requests { get; } = [];
@@ -279,6 +377,15 @@ public sealed class ForgejoSmartHttpGitTransportTests
             cancellationToken.ThrowIfCancellationRequested();
             Uri uri = request.RequestUri.ShouldNotBeNull();
             Requests.Add((request.Method, uri));
+            if (uri.AbsolutePath.EndsWith("/api/v1/version", StringComparison.Ordinal))
+            {
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("{\"version\":\"16.0.3\"}", Encoding.UTF8, "application/json"),
+                    RequestMessage = request,
+                });
+            }
+
             string service = uri.Query.Contains("git-receive-pack", StringComparison.Ordinal)
                 ? "git-receive-pack"
                 : "git-upload-pack";
