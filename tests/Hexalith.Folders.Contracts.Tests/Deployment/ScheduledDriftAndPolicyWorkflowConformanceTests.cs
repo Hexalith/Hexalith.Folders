@@ -14,6 +14,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
     private const string NightlyWorkflowPath = ".github/workflows/nightly-drift.yml";
     private const string PolicyWorkflowPath = ".github/workflows/policy-conformance.yml";
     private const string NightlyScriptPath = "tests/tools/run-nightly-drift-gates.ps1";
+    private const string ForgejoAlpineSmokeScriptPath = "tests/tools/run-forgejo-smart-http-alpine-smoke.ps1";
     private const string PolicyScriptPath = "tests/tools/run-scheduled-policy-conformance-gates.ps1";
     private const string OperatorDocPath = "docs/operations/scheduled-drift-and-policy-conformance.md";
     private const string NightlyReportPath = "_bmad-output/gates/nightly-drift/latest.json";
@@ -113,9 +114,11 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         script.ShouldContain("tests/contracts/forgejo/supported-versions.json");
         script.ShouldContain("tests/tools/forgejo-drift/classification-fixtures.json");
         script.ShouldContain("tests/tools/forgejo-drift/Write-SanitizedForgejoDriftReport.ps1");
+        script.ShouldContain("'/version'");
+        script.ShouldContain("'/repos/{owner}/{repo}/git/refs/{ref}'");
         script.ShouldContain("ForgejoManifestAndDriftTests");
-        script.ShouldContain("expected_test_count = 7");
-        script.ShouldContain("$executedTests -ne 7");
+        script.ShouldContain("expected_test_count = 8");
+        script.ShouldContain("$executedTests -ne 8");
         script.ShouldContain("fallback=xunit-in-process");
         script.ShouldContain("zero-or-partial-test-selection");
         script.ShouldContain("missing-test-assembly");
@@ -135,6 +138,28 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         }
 
         AssertNoForbiddenReleaseLanes(script);
+    }
+
+    [Fact]
+    public void NightlyWorkflowShouldRunTheForgejoAlpineSmartHttpSmoke()
+    {
+        string workflow = ReadText(NightlyWorkflowPath);
+
+        workflow.ShouldContain("./tests/tools/run-forgejo-smart-http-alpine-smoke.ps1", Case.Sensitive);
+        workflow.ShouldContain("Run Forgejo Alpine smart-HTTP smoke", Case.Sensitive);
+
+        string runner = ReadText(ForgejoAlpineSmokeScriptPath);
+        runner.ShouldContain("'16.0.3', '15.0.7'", Case.Sensitive);
+        runner.ShouldContain("$hostUid = (& id -u).Trim()", Case.Sensitive);
+        runner.ShouldContain("$hostGid = (& id -g).Trim()", Case.Sensitive);
+        runner.ShouldContain("\"USER_UID=$hostUid\"", Case.Sensitive);
+        runner.ShouldContain("\"USER_GID=$hostGid\"", Case.Sensitive);
+        runner.ShouldContain("Total:\\s*1", Case.Sensitive);
+        runner.ShouldContain("Skipped:\\s*0", Case.Sensitive);
+        runner.ShouldContain("SSL_CERT_FILE=/certs/cert.pem", Case.Sensitive);
+        runner.ShouldContain("$dockerAvailable = $false", Case.Sensitive);
+        runner.ShouldContain("if ($dockerAvailable)", Case.Sensitive);
+        runner.ShouldContain("if (Test-Path $temporaryDirectory)", Case.Sensitive);
     }
 
     [Fact]

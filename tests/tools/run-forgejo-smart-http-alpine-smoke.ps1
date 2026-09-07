@@ -12,6 +12,7 @@ $testProject = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Tests/Hexalith.
 $testOutput = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Tests/bin/Release/net10.0/linux-musl-x64'
 $testMethod = 'Hexalith.Folders.Tests.Providers.Forgejo.ForgejoSmartHttpGitTransportIntegrationTests.AlpineTlsProfileReceivesExactPackAndRejectsPostAdvertisementStaleOld'
 $containers = [System.Collections.Generic.List[string]]::new()
+$dockerAvailable = $false
 
 function Invoke-Checked {
     param(
@@ -30,6 +31,12 @@ function Invoke-Checked {
 
 try {
     New-Item -ItemType Directory -Path $temporaryDirectory | Out-Null
+    $hostUid = (& id -u).Trim()
+    $hostGid = (& id -g).Trim()
+    if ($LASTEXITCODE -ne 0 -or $hostUid -notmatch '^\d+$' -or $hostGid -notmatch '^\d+$') {
+        throw 'Could not determine the host checkout UID/GID for the private TLS key handoff.'
+    }
+
     Invoke-Checked 'openssl' @(
         'req', '-x509', '-newkey', 'rsa:2048', '-sha256', '-nodes', '-days', '1',
         '-subj', '/CN=forgejo-smoke',
@@ -42,6 +49,8 @@ try {
     }
 
     $certificateSha256 = $Matches[1].Replace(':', '')
+    Invoke-Checked 'docker' @('version', '--format', '{{.Server.Version}}')
+    $dockerAvailable = $true
     Invoke-Checked 'docker' @('network', 'create', $networkName)
     Invoke-Checked 'dotnet' @(
         'build', $testProject,
@@ -62,8 +71,8 @@ try {
             '--network-alias', 'forgejo-smoke',
             '--volume', "${certificatePath}:/certs/cert.pem:ro",
             '--volume', "${keyPath}:/certs/key.pem:ro",
-            '--env', 'USER_UID=1000',
-            '--env', 'USER_GID=1000',
+            '--env', "USER_UID=$hostUid",
+            '--env', "USER_GID=$hostGid",
             '--env', 'FORGEJO__database__DB_TYPE=sqlite3',
             '--env', 'FORGEJO__server__PROTOCOL=https',
             '--env', 'FORGEJO__server__CERT_FILE=/certs/cert.pem',
@@ -106,12 +115,14 @@ try {
         $env:HEXALITH_FORGEJO_SMART_HTTP_TOKEN = $Matches[1]
         $env:HEXALITH_FORGEJO_SMART_HTTP_CERT_SHA256 = $certificateSha256
         $env:HEXALITH_FORGEJO_SMART_HTTP_VERSION = $version
-        Invoke-Checked 'docker' @(
+        $smokeArguments = @(
             'run', '--rm',
             '--user', 'app',
             '--network', $networkName,
             '--volume', "${testOutput}:/app:ro",
+            '--volume', "${certificatePath}:/certs/cert.pem:ro",
             '--workdir', '/app',
+            '--env', 'SSL_CERT_FILE=/certs/cert.pem',
             '--env', 'HEXALITH_FORGEJO_SMART_HTTP_BASE_URL',
             '--env', 'HEXALITH_FORGEJO_SMART_HTTP_TOKEN',
             '--env', 'HEXALITH_FORGEJO_SMART_HTTP_CERT_SHA256',
@@ -119,6 +130,17 @@ try {
             'mcr.microsoft.com/dotnet/aspnet:10.0-alpine',
             'dotnet', 'Hexalith.Folders.Tests.dll',
             '-noLogo', '-noColor', '-method', $testMethod)
+        $smokeOutput = & docker @smokeArguments 2>&1
+        $smokeExitCode = $LASTEXITCODE
+        $smokeOutput | ForEach-Object { Write-Host $_ }
+        if ($smokeExitCode -ne 0) {
+            throw "Forgejo $version Alpine smart-HTTP smoke failed with exit code $smokeExitCode."
+        }
+
+        $smokeSummary = $smokeOutput -join [Environment]::NewLine
+        if ($smokeSummary -notmatch '(?i)Total:\s*1' -or $smokeSummary -notmatch '(?i)Skipped:\s*0') {
+            throw "Forgejo $version Alpine smart-HTTP smoke did not execute exactly one non-skipped test."
+        }
 
         Invoke-Checked 'docker' @('rm', '--force', $containerName)
         [void]$containers.Remove($containerName)
@@ -129,11 +151,24 @@ finally {
     Remove-Item Env:HEXALITH_FORGEJO_SMART_HTTP_TOKEN -ErrorAction SilentlyContinue
     Remove-Item Env:HEXALITH_FORGEJO_SMART_HTTP_CERT_SHA256 -ErrorAction SilentlyContinue
     Remove-Item Env:HEXALITH_FORGEJO_SMART_HTTP_VERSION -ErrorAction SilentlyContinue
-    foreach ($containerName in $containers) {
-        & docker rm --force $containerName 2>$null | Out-Null
+    if ($dockerAvailable) {
+        foreach ($containerName in $containers) {
+            try {
+                & docker rm --force $containerName 2>$null | Out-Null
+            }
+            catch {
+                Write-Warning "Could not remove isolated Forgejo smoke container '$containerName'."
+            }
+        }
+
+        try {
+            & docker network rm $networkName 2>$null | Out-Null
+        }
+        catch {
+            Write-Warning "Could not remove isolated Forgejo smoke network '$networkName'."
+        }
     }
 
-    & docker network rm $networkName 2>$null | Out-Null
     if (Test-Path $temporaryDirectory) {
         Remove-Item -Recurse -Force $temporaryDirectory
     }

@@ -10,16 +10,16 @@ internal static class ForgejoFailureMapper
             ["success"] = ProviderFailureCategory.None.ToCategoryCode(),
             ["existing_equivalent"] = ProviderFailureCategory.None.ToCategoryCode(),
             ["validation"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
-            ["cancellation_before_dispatch"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["cancellation_before_dispatch"] = ProviderFailureCategory.ProviderTransientFailure.ToCategoryCode(),
             ["reservation_invalidated"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
-            ["observation_cancelled"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["observation_cancelled"] = ProviderFailureCategory.ProviderUnavailable.ToCategoryCode(),
             ["authentication"] = ProviderFailureCategory.ProviderAuthenticationRequired.ToCategoryCode(),
             ["permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["contents_permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["administration_permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["hidden_or_missing"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["missing_repository"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
-            ["missing_branch_or_path"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
+            ["missing_branch_or_path"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["default_branch_conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["ref_head_conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
@@ -35,8 +35,8 @@ internal static class ForgejoFailureMapper
             ["timeout_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["cancellation_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["ambiguous_mutation_response"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
-            ["outcome_recording_failed"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
-            ["response_limit_exceeded"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["outcome_recording_failed"] = ProviderFailureCategory.ProviderUnavailable.ToCategoryCode(),
+            ["response_limit_exceeded"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
             ["status_evidence_conflicting"] = ProviderFailureCategory.ReconciliationRequired.ToCategoryCode(),
             ["unexpected_transport"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["object_format_unsupported"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
@@ -45,6 +45,7 @@ internal static class ForgejoFailureMapper
             ["transfer_limit_exceeded"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
             ["temporary_disk_limit_exceeded"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
             ["temporary_repository_cleanup_failed"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["ambient_configuration_unsupported"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
             ["operation_timed_out"] = ProviderFailureCategory.ProviderTransientFailure.ToCategoryCode(),
             ["remote_policy_rejected"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
             ["remote_rejected"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
@@ -87,9 +88,9 @@ internal static class ForgejoFailureMapper
             ForgejoApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
             ForgejoApiFailureCondition.CancellationDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
             ForgejoApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
-            ForgejoApiFailureCondition.OutcomeRecordingFailed => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_outcome_recording_failed"),
+            ForgejoApiFailureCondition.OutcomeRecordingFailed => (ProviderFailureCategory.ProviderUnavailable, "forgejo_outcome_recording_failed"),
             ForgejoApiFailureCondition.ResponseLimitExceeded => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_response_limit_exceeded"),
-            ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
+            ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_malformed_response"),
             ForgejoApiFailureCondition.UnexpectedTransportFailure => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_transport_outcome_unknown"),
             ForgejoApiFailureCondition.ObjectFormatUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_object_format_unsupported"),
             ForgejoApiFailureCondition.SmartHttpUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_smart_http_unsupported"),
@@ -97,11 +98,65 @@ internal static class ForgejoFailureMapper
             ForgejoApiFailureCondition.TransferLimitExceeded => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_transfer_limit_exceeded"),
             ForgejoApiFailureCondition.TemporaryDiskLimitExceeded => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_disk_limit_exceeded"),
             ForgejoApiFailureCondition.TemporaryRepositoryCleanupFailed => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_repository_cleanup_failed"),
+            ForgejoApiFailureCondition.AmbientConfigurationUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ambient_configuration_unsupported"),
             ForgejoApiFailureCondition.OperationTimedOut => (ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_timed_out"),
             ForgejoApiFailureCondition.RemotePolicyRejected => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_remote_policy_rejected"),
             ForgejoApiFailureCondition.RemoteRejected => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_remote_rejected"),
             _ => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
         };
+
+    /// <summary>
+    /// Maps a failure known to have occurred before receive-pack dispatch.
+    /// </summary>
+    /// <param name="condition">The Forgejo-private failure condition.</param>
+    /// <returns>A conclusive metadata-safe no-dispatch failure.</returns>
+    public static (ProviderFailureCategory Category, string ReasonCode) ToProviderNoDispatchFailure(
+        ForgejoApiFailureCondition condition)
+    {
+        (ProviderFailureCategory Category, string ReasonCode) mapped = ToProviderOperationFailure(condition);
+        if (mapped.Category != ProviderFailureCategory.UnknownProviderOutcome)
+        {
+            return mapped;
+        }
+
+        return condition switch
+        {
+            ForgejoApiFailureCondition.TimeoutDuringMutation
+                => (ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_timed_out"),
+            ForgejoApiFailureCondition.CancellationDuringMutation
+                => (ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_cancelled_before_dispatch"),
+            _ => (ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable"),
+        };
+    }
+
+    /// <summary>
+    /// Gets the exact category produced by the operation mapper for an allow-listed reason.
+    /// </summary>
+    /// <param name="reasonCode">The metadata-safe operation reason.</param>
+    /// <returns>The mapped category, or <see langword="null"/> when the reason is not produced by the operation mapper.</returns>
+    public static ProviderFailureCategory? GetProviderOperationFailureCategory(string? reasonCode)
+    {
+        if (reasonCode is null)
+        {
+            return null;
+        }
+
+        foreach (ForgejoApiFailureCondition condition in Enum.GetValues<ForgejoApiFailureCondition>())
+        {
+            if (condition == ForgejoApiFailureCondition.None)
+            {
+                continue;
+            }
+
+            (ProviderFailureCategory Category, string ReasonCode) mapped = ToProviderOperationFailure(condition);
+            if (string.Equals(mapped.ReasonCode, reasonCode, StringComparison.Ordinal))
+            {
+                return mapped.Category;
+            }
+        }
+
+        return null;
+    }
 
     public static ProviderCapabilityDiscoveryResult ToProviderFailure(
         ForgejoReadinessResult readiness,

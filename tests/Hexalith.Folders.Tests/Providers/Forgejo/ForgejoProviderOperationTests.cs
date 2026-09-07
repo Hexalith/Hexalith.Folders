@@ -133,13 +133,54 @@ public sealed class ForgejoProviderOperationTests
         serialized.ShouldNotContain(OperationSourceResolver.HeadSha, Case.Sensitive);
     }
 
+    [Theory]
+    [InlineData(true, "provider_unavailable", "forgejo_outcome_recording_failed")]
+    [InlineData(false, "unknown_provider_outcome", "forgejo_outcome_recording_failed")]
+    public async Task RejectedCreatedCommitRecordFinalizesAsConclusiveNoDispatchOrUnknown(
+        bool finalizationSucceeds,
+        string expectedCategory,
+        string expectedReason)
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoOperationClient client = new();
+        SequencedOutcomeStore store = new(false) { FinalizeResult = finalizationSucceeds };
+        ForgejoProvider provider = Provider(source, client, store);
+
+        ProviderCommitResult result = await provider.CommitAsync(
+            CommitRequest(source.CommitSource),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ToCategoryCode().ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+        result.ReconciliationReference.ShouldBe(finalizationSucceeds ? null : OperationReference);
+        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.CreatedCommit);
+        store.Finalizations.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.NoDispatch);
+    }
+
+    [Fact]
+    public void OperationFailureReasonCategoriesStaySymmetricWithTheCanonicalMapper()
+    {
+        foreach (ForgejoApiFailureCondition condition in Enum.GetValues<ForgejoApiFailureCondition>()
+            .Where(static value => value != ForgejoApiFailureCondition.None))
+        {
+            (ProviderFailureCategory Category, string ReasonCode) mapped =
+                ForgejoFailureMapper.ToProviderOperationFailure(condition);
+
+            ForgejoFailureMapper.GetProviderOperationFailureCategory(mapped.ReasonCode).ShouldBe(mapped.Category);
+        }
+    }
+
     [Fact]
     public async Task AmbiguousCommitIsRecordedUnknownAndCannotAuthorizeRedispatch()
     {
         OperationSourceResolver source = new();
         RecordingForgejoOperationClient client = new()
         {
-            CommitResult = ForgejoCommitResult.Failure(ForgejoApiFailureCondition.AmbiguousMutationResponse),
+            CommitResult = ForgejoCommitResult.Failure(
+                ForgejoApiFailureCondition.AmbiguousMutationResponse,
+                observedCommitSha: OperationSourceResolver.CommitSha,
+                mutationDispatched: true),
         };
         RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired();
 
@@ -174,7 +215,7 @@ public sealed class ForgejoProviderOperationTests
         result.ReasonCode.ShouldBe("forgejo_rate_limited");
         result.Retryable.ShouldBeTrue();
         result.RetryAfter.ShouldBe(TimeSpan.FromSeconds(30));
-        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.KnownTerminalFailure);
+        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.NoDispatch);
     }
 
     [Fact]
@@ -194,7 +235,7 @@ public sealed class ForgejoProviderOperationTests
         result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
         result.ReasonCode.ShouldBe("forgejo_validation_failed");
         result.ReconciliationReference.ShouldBeNull();
-        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.KnownTerminalFailure);
+        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.NoDispatch);
     }
 
     [Fact]
@@ -452,7 +493,7 @@ public sealed class ForgejoProviderOperationTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task CreatedCommitRecordingRejectionOrExceptionReturnsMetadataOnlyUnknown(bool throwOnRecord)
+    public async Task CreatedCommitRecordingRejectionOrExceptionRemainsConclusiveNoDispatch(bool throwOnRecord)
     {
         OperationSourceResolver source = new();
         RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired(
@@ -463,7 +504,11 @@ public sealed class ForgejoProviderOperationTests
             CommitRequest(source.CommitSource),
             TestContext.Current.CancellationToken);
 
-        AssertCommitUnknown(result, "forgejo_outcome_recording_failed");
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+        result.ReasonCode.ShouldBe("forgejo_outcome_recording_failed");
+        result.OpaqueOperationReference.ShouldBe(OperationReference);
+        result.ReconciliationReference.ShouldBeNull();
         store.ValidateCalls.ShouldBe(1);
         store.Records.ShouldNotContain(static record => record.Kind == ProviderOperationOutcomeKind.RefUpdateConfirmed);
     }
@@ -476,7 +521,10 @@ public sealed class ForgejoProviderOperationTests
         OperationSourceResolver source = new();
         RecordingForgejoOperationClient client = new()
         {
-            CommitResult = ForgejoCommitResult.Failure(ForgejoApiFailureCondition.ValidationFailure),
+            CommitResult = ForgejoCommitResult.Failure(
+                ForgejoApiFailureCondition.RemoteRejected,
+                observedCommitSha: OperationSourceResolver.CommitSha,
+                mutationDispatched: true),
         };
         RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired(
             recordResult: false,
@@ -542,6 +590,56 @@ public sealed class ForgejoProviderOperationTests
         store.FinalizeCalls.ShouldBe(1);
         store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.NoDispatch);
         store.Records.ShouldNotContain(static record => record.Kind == ProviderOperationOutcomeKind.KnownTerminalFailure);
+    }
+
+    [Fact]
+    public async Task MalformedStagePreflightReturnsAndPersistsTheSameKnownNoDispatchFailure()
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoOperationClient client = new()
+        {
+            StageResult = ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.MalformedResponse),
+        };
+        RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired();
+
+        ProviderFileMutationResult result = await Provider(source, client, store).StageFileChangesAsync(
+            FileMutationRequest(source.FileMutationSource),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderFailureKnown);
+        result.ReasonCode.ShouldBe("forgejo_malformed_response");
+        result.ReconciliationReference.ShouldBeNull();
+        ProviderOperationOutcomeRecord record = store.Records.ShouldHaveSingleItem();
+        record.Kind.ShouldBe(ProviderOperationOutcomeKind.NoDispatch);
+        record.FailureCategory.ShouldBe(result.FailureCategory);
+        record.ReasonCode.ShouldBe(result.ReasonCode);
+    }
+
+    [Theory]
+    [InlineData(true, ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_cancelled_before_dispatch")]
+    [InlineData(false, ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable")]
+    public async Task ReservationRevalidationCancellationAndStoreFailureNeverBecomeInvalidation(
+        bool cancelled,
+        ProviderFailureCategory expectedCategory,
+        string expectedReason)
+    {
+        OperationSourceResolver source = new();
+        SequencedOutcomeStore store = new(true)
+        {
+            ValidationException = cancelled
+                ? new OperationCanceledException()
+                : new InvalidOperationException("metadata-only store failure"),
+        };
+
+        ProviderCommitResult result = await Provider(source, new RecordingForgejoOperationClient(), store).CommitAsync(
+            CommitRequest(source.CommitSource),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCategory.ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+        result.ReasonCode.ShouldNotBe("forgejo_operation_reservation_invalidated");
+        result.ReconciliationReference.ShouldBeNull();
+        store.Finalizations.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.NoDispatch);
     }
 
     [Fact]
@@ -735,7 +833,71 @@ public sealed class ForgejoProviderOperationTests
     }
 
     [Fact]
-    public async Task StatusSupportsUnknownCommitIdentityAndConfirmsAtTheFirstCheck()
+    public async Task UnavailableReservationRequiresAReasonMatchingItsFailureCategory()
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoCredentialResolver credentials = new();
+        RecordingForgejoOperationClient client = new();
+        RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.WithReservations(
+            new ProviderOperationReservationResult(
+                ProviderOperationReservationDisposition.Unavailable,
+                OperationReference: null,
+                Generation: 0,
+                FailureCategory: ProviderFailureCategory.ProviderConfigurationMissing,
+                ReasonCode: "forgejo_server_unavailable"));
+
+        ProviderCommitResult result = await Provider(source, client, store, credentials).CommitAsync(
+            CommitRequest(source.CommitSource),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderConfigurationMissing);
+        result.ReasonCode.ShouldBe("forgejo_operation_outcome_store_unavailable");
+        credentials.Calls.ShouldBe(0);
+        client.CommitCalls.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task EscapedCommitClientCancellationIsUnknownBecauseDispatchEvidenceIsUnavailable()
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoOperationClient client = new()
+        {
+            CommitException = new OperationCanceledException("private provider cancellation"),
+        };
+        RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired();
+
+        ProviderCommitResult result = await Provider(source, client, store).CommitAsync(
+            CommitRequest(source.CommitSource),
+            TestContext.Current.CancellationToken);
+
+        AssertCommitUnknown(result, "forgejo_commit_outcome_unknown");
+        client.CommitCalls.ShouldBe(1);
+        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.Unknown);
+    }
+
+    [Fact]
+    public async Task DispatchedCommitCannotCarryAPreDispatchOnlyFailureCondition()
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoOperationClient client = new()
+        {
+            CommitResult = ForgejoCommitResult.Failure(
+                ForgejoApiFailureCondition.ValidationFailure,
+                observedCommitSha: OperationSourceResolver.CommitSha,
+                mutationDispatched: true),
+        };
+        RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired();
+
+        ProviderCommitResult result = await Provider(source, client, store).CommitAsync(
+            CommitRequest(source.CommitSource),
+            TestContext.Current.CancellationToken);
+
+        AssertCommitUnknown(result, "forgejo_commit_outcome_unknown");
+        store.Records.ShouldHaveSingleItem().Kind.ShouldBe(ProviderOperationOutcomeKind.Unknown);
+    }
+
+    [Fact]
+    public async Task StatusWithIntendedCommitIdentityConfirmsAtTheFirstCheck()
     {
         OperationSourceResolver source = new();
         RecordingForgejoOperationClient client = new();
@@ -810,6 +972,40 @@ public sealed class ForgejoProviderOperationTests
         client.StatusCalls.ShouldBe(1);
     }
 
+    [Theory]
+    [InlineData("MalformedResponse", 1, ProviderFailureCategory.ProviderFailureKnown, "forgejo_status_evidence_malformed")]
+    [InlineData("ResponseLimitExceeded", 1, ProviderFailureCategory.ProviderFailureKnown, "forgejo_response_limit_exceeded")]
+    [InlineData("MalformedResponse", 5, ProviderFailureCategory.ReconciliationRequired, "forgejo_reconciliation_checks_exhausted")]
+    [InlineData("ResponseLimitExceeded", 5, ProviderFailureCategory.ReconciliationRequired, "forgejo_reconciliation_checks_exhausted")]
+    [InlineData("RateLimit", 5, ProviderFailureCategory.ReconciliationRequired, "forgejo_reconciliation_checks_exhausted")]
+    [InlineData("ObservationCancelled", 5, ProviderFailureCategory.ReconciliationRequired, "forgejo_reconciliation_checks_exhausted")]
+    [InlineData("ServerUnavailable", 5, ProviderFailureCategory.ReconciliationRequired, "forgejo_reconciliation_checks_exhausted")]
+    public async Task StatusPreservesMalformedEvidenceAndExhaustsEveryInconclusiveRead(
+        string failureName,
+        int checkNumber,
+        ProviderFailureCategory expectedCategory,
+        string expectedReason)
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoOperationClient client = new()
+        {
+            StatusResult = ForgejoOperationStatusResult.Failure(Enum.Parse<ForgejoApiFailureCondition>(failureName)),
+        };
+
+        ProviderOperationStatusResult result = await Provider(
+            source,
+            client,
+            RecordingProviderOperationOutcomeStore.Acquired()).GetOperationStatusAsync(
+                StatusRequest(source.StatusSource, checkNumber),
+                TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+        result.CheckNumber.ShouldBe(checkNumber);
+        result.Retryable.ShouldBe(expectedCategory.IsRetryableByDefault());
+    }
+
     [Fact]
     public async Task CheckFiveNotAppliedEvidenceRequiresReconciliation()
     {
@@ -835,6 +1031,66 @@ public sealed class ForgejoProviderOperationTests
         result.CheckNumber.ShouldBe(5);
         result.Retryable.ShouldBeFalse();
         client.StatusCalls.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData("TransferLimitExceeded", ProviderFailureCategory.ProviderFailureKnown, "forgejo_transfer_limit_exceeded")]
+    [InlineData("TemporaryDiskLimitExceeded", ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_disk_limit_exceeded")]
+    [InlineData("TemporaryRepositoryCleanupFailed", ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_repository_cleanup_failed")]
+    [InlineData("AmbientConfigurationUnsupported", ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ambient_configuration_unsupported")]
+    [InlineData("OperationTimedOut", ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_timed_out")]
+    public async Task NativeBoundaryFailuresHaveExplicitPublicCategoryAndReason(
+        string conditionName,
+        ProviderFailureCategory expectedCategory,
+        string expectedReason)
+    {
+        OperationSourceResolver source = new();
+        RecordingForgejoOperationClient client = new()
+        {
+            StageResult = ForgejoFileMutationResult.Failure(
+                Enum.Parse<ForgejoApiFailureCondition>(conditionName)),
+        };
+
+        ProviderFileMutationResult result = await Provider(
+            source,
+            client,
+            RecordingProviderOperationOutcomeStore.Acquired()).StageFileChangesAsync(
+                FileMutationRequest(source.FileMutationSource),
+                TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(expectedCategory);
+        result.ReasonCode.ShouldBe(expectedReason);
+    }
+
+    [Fact]
+    public async Task ConfirmedStatusRequiresTheExactNonNullIntendedCommit()
+    {
+        ProviderOperationStatusResolvedSource statusSource = new(
+            OperationSourceResolver.Target(),
+            IntendedCommitSha: null,
+            new OperationSourceResolver().StatusSource.StagedChanges,
+            "atomic message");
+        OperationSourceResolver source = new(statusSource: statusSource);
+        RecordingForgejoOperationClient client = new()
+        {
+            StatusResult = ForgejoOperationStatusResult.Observed(
+                ProviderOperationStatusKind.Confirmed,
+                OperationSourceResolver.CommitSha,
+                statusSource.Target.FullRef),
+        };
+
+        ProviderOperationStatusResult result = await Provider(
+            source,
+            client,
+            RecordingProviderOperationOutcomeStore.Acquired()).GetOperationStatusAsync(
+                StatusRequest(source.StatusSource),
+                TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.Status.ShouldBe(ProviderOperationStatusKind.Unavailable);
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderUnavailable);
+        result.ReasonCode.ShouldBe("forgejo_status_evidence_unavailable");
     }
 
     [Fact]
@@ -975,6 +1231,37 @@ public sealed class ForgejoProviderOperationTests
             "2222222222222222222222222222222222222222",
             "atomic message",
             changes);
+        OperationSourceResolver source = new(commitSource: commitSource);
+        RecordingForgejoOperationClient client = new();
+        RecordingForgejoCredentialResolver credentials = new();
+        RecordingProviderOperationOutcomeStore store = RecordingProviderOperationOutcomeStore.Acquired();
+
+        ProviderCommitResult result = await Provider(source, client, store, credentials).CommitAsync(
+            CommitRequest(source.CommitSource),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("forgejo_commit_source_malformed");
+        source.CommitCalls.ShouldBe(1);
+        store.ReserveCalls.ShouldBe(0);
+        credentials.Calls.ShouldBe(0);
+        client.CommitCalls.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData(39, false)]
+    [InlineData(64, false)]
+    [InlineData(40, true)]
+    public async Task InvalidRehydratedTreeIdentityFailsBeforeReservationOrCredentialAccess(
+        int width,
+        bool nonHex)
+    {
+        string treeSha = nonHex ? new string('z', width) : new string('2', width);
+        ProviderCommitResolvedSource commitSource = new(
+            OperationSourceResolver.Target(),
+            treeSha,
+            "atomic message",
+            new OperationSourceResolver().CommitSource.StagedChanges);
         OperationSourceResolver source = new(commitSource: commitSource);
         RecordingForgejoOperationClient client = new();
         RecordingForgejoCredentialResolver credentials = new();
@@ -1173,7 +1460,7 @@ public sealed class ForgejoProviderOperationTests
     private static ForgejoProvider Provider(
         OperationSourceResolver source,
         RecordingForgejoOperationClient client,
-        RecordingProviderOperationOutcomeStore store,
+        IProviderOperationOutcomeStore store,
         RecordingForgejoCredentialResolver? credentials = null)
         => new(
             credentials ?? new RecordingForgejoCredentialResolver(),
@@ -1316,7 +1603,7 @@ public sealed class ForgejoProviderOperationTests
 
         public ProviderCommitResolvedSource CommitSource { get; } = commitSource ?? new(Target(), "2222222222222222222222222222222222222222", "atomic message", Changes());
 
-        public ProviderOperationStatusResolvedSource StatusSource { get; } = statusSource ?? new(Target(), null, Changes(), "atomic message");
+        public ProviderOperationStatusResolvedSource StatusSource { get; } = statusSource ?? new(Target(), CommitSha, Changes(), "atomic message");
 
         public int FileMutationCalls { get; private set; }
 
@@ -1387,7 +1674,12 @@ public sealed class ForgejoProviderOperationTests
 
     private sealed class RecordingForgejoOperationClient : IForgejoApiClient
     {
+        public ForgejoFileMutationResult StageResult { get; init; } =
+            ForgejoFileMutationResult.Success("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
         public ForgejoCommitResult CommitResult { get; init; } = ForgejoCommitResult.Success(OperationSourceResolver.CommitSha);
+
+        public Exception? CommitException { get; init; }
 
         public ForgejoOperationStatusResult StatusResult { get; init; } = ForgejoOperationStatusResult.Observed(
             ProviderOperationStatusKind.Confirmed,
@@ -1411,9 +1703,27 @@ public sealed class ForgejoProviderOperationTests
         public async Task<ForgejoCommitResult> CommitAsync(ForgejoCommitRequest request, CancellationToken cancellationToken = default)
         {
             CommitCalls++;
-            if (!await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
+            if (CommitException is not null)
             {
-                return ForgejoCommitResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated);
+                throw CommitException;
+            }
+
+            ForgejoReservationValidationStatus reservation;
+            try
+            {
+                reservation = await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return ForgejoCommitResult.Failure(ForgejoApiFailureCondition.CancellationBeforeDispatch);
+            }
+
+            if (reservation != ForgejoReservationValidationStatus.Valid)
+            {
+                return ForgejoCommitResult.Failure(
+                    reservation == ForgejoReservationValidationStatus.Invalidated
+                        ? ForgejoApiFailureCondition.ReservationInvalidated
+                        : ForgejoApiFailureCondition.ServerUnavailable);
             }
 
             if (CommitResult.IsSuccess && !await request.RecordCreatedCommitAsync(CommitResult.CommitSha!).ConfigureAwait(false))
@@ -1445,10 +1755,13 @@ public sealed class ForgejoProviderOperationTests
             return ValueTask.CompletedTask;
         }
 
-        private static async Task<ForgejoFileMutationResult> StageAsync(ForgejoFileMutationRequest request, CancellationToken cancellationToken)
-            => await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false)
-                ? ForgejoFileMutationResult.Success("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-                : ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated);
+        private async Task<ForgejoFileMutationResult> StageAsync(ForgejoFileMutationRequest request, CancellationToken cancellationToken)
+            => await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false) switch
+            {
+                ForgejoReservationValidationStatus.Valid => StageResult,
+                ForgejoReservationValidationStatus.Invalidated => ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated),
+                _ => ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.ServerUnavailable),
+            };
     }
 
     private sealed class ConcreteOperationClientFactory(QueueHttpHandler handler) : IForgejoApiClientFactory
@@ -1483,6 +1796,12 @@ public sealed class ForgejoProviderOperationTests
 
         public List<ProviderOperationOutcomeRecord> Records { get; } = [];
 
+        public List<ProviderOperationOutcomeRecord> Finalizations { get; } = [];
+
+        public bool FinalizeResult { get; init; } = true;
+
+        public Exception? ValidationException { get; init; }
+
         public ValueTask<ProviderOperationReservationResult> ReserveAsync(
             ProviderOperationReservationRequest request,
             CancellationToken cancellationToken = default)
@@ -1494,7 +1813,14 @@ public sealed class ForgejoProviderOperationTests
         public ValueTask<bool> ValidateAsync(
             ProviderOperationReservationValidationRequest request,
             CancellationToken cancellationToken = default)
-            => ValueTask.FromResult(true);
+        {
+            if (ValidationException is not null)
+            {
+                throw ValidationException;
+            }
+
+            return ValueTask.FromResult(true);
+        }
 
         public ValueTask<bool?> RecordAsync(
             ProviderOperationOutcomeRecord record,
@@ -1507,6 +1833,9 @@ public sealed class ForgejoProviderOperationTests
         public ValueTask<bool?> FinalizeNoDispatchAsync(
             ProviderOperationOutcomeRecord record,
             CancellationToken cancellationToken = default)
-            => ValueTask.FromResult<bool?>(true);
+        {
+            Finalizations.Add(record);
+            return ValueTask.FromResult<bool?>(FinalizeResult);
+        }
     }
 }

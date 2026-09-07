@@ -590,6 +590,28 @@ public sealed class ForgejoProviderTests
         apiClient.ReadinessCalls.ShouldBe(0);
     }
 
+    [Theory]
+    [InlineData("file_mutation")]
+    [InlineData("commit")]
+    [InlineData("status")]
+    [InlineData("repository_creation")]
+    public async Task ReadinessRequiresTheExactReadinessOperationScope(string operationScope)
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("token");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        ForgejoProvider provider = CreateProvider(credentialResolver, new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderCapabilityDiscoveryResult result = await provider.DiscoverCapabilitiesAsync(
+            Request(targetEvidence: TargetEvidence(operationScope)),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("forgejo_operation_scope_mismatch");
+        credentialResolver.Calls.ShouldBe(0);
+        apiClient.ReadinessCalls.ShouldBe(0);
+    }
+
     [Fact]
     public async Task UnsupportedSameFamilyLiveVersionCannotDowngradeToPinnedSnapshot()
     {

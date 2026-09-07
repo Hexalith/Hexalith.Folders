@@ -6,7 +6,7 @@ internal sealed record ForgejoFileMutationRequest(
     ProviderGitOperationResolvedTarget Target,
     IReadOnlyList<ProviderResolvedFileChange> Changes,
     string SupportedSnapshotVersion,
-    Func<CancellationToken, ValueTask<bool>> ValidateReservationAsync)
+    Func<CancellationToken, ValueTask<ForgejoReservationValidationStatus>> ValidateReservationAsync)
 {
     public override string ToString() => nameof(ForgejoFileMutationRequest);
 }

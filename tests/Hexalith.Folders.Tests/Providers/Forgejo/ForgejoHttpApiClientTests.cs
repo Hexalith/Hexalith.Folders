@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Hexalith.Folders.Providers.Abstractions;
@@ -8,6 +9,7 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Providers.Forgejo;
 
+[Collection(ForgejoNativeOperationGateCollection.Name)]
 public sealed class ForgejoHttpApiClientTests
 {
     [Fact]
@@ -453,6 +455,352 @@ public sealed class ForgejoHttpApiClientTests
         handler.Requests.ShouldBeEmpty();
     }
 
+    [Fact]
+    public async Task OperationStatusUsesVersionAndExactEscapedRefReads()
+    {
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            JsonResponse(
+                HttpStatusCode.OK,
+                """[{"ref":"refs/heads/main","object":{"type":"commit","sha":"2222222222222222222222222222222222222222"}}]"""));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(
+            OperationStatusRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.FailureCondition.ToString());
+        result.Status.ShouldBe(ProviderOperationStatusKind.Confirmed);
+        result.ObservedSha.ShouldBe("2222222222222222222222222222222222222222");
+        handler.Requests.Select(static request => request.Uri.AbsoluteUri).ShouldBe(
+        [
+            "https://forgejo.example.test/api/v1/version",
+            "https://forgejo.example.test/api/v1/repos/forgejo-owner/forgejo-repository/git/refs/heads%2Fmain",
+        ]);
+        handler.Requests.Select(static request => request.Method).ShouldAllBe(static method => method == HttpMethod.Get);
+    }
+
+    [Theory]
+    [InlineData(HttpStatusCode.Unauthorized, "AuthenticationRequired")]
+    [InlineData(HttpStatusCode.Forbidden, "PermissionInsufficient")]
+    [InlineData(HttpStatusCode.TooManyRequests, "RateLimit")]
+    [InlineData(HttpStatusCode.InternalServerError, "ServerUnavailable")]
+    public async Task MissingStatusRefPreservesRepositoryObservationFailures(
+        HttpStatusCode repositoryStatus,
+        string expectedFailureName)
+    {
+        HttpResponseMessage repositoryResponse = new(repositoryStatus);
+        if (repositoryStatus == HttpStatusCode.TooManyRequests)
+        {
+            repositoryResponse.Headers.TryAddWithoutValidation("Retry-After", "30");
+        }
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            new HttpResponseMessage(HttpStatusCode.NotFound),
+            repositoryResponse);
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(
+            OperationStatusRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(Enum.Parse<ForgejoApiFailureCondition>(expectedFailureName));
+        result.RetryAfter.ShouldBe(repositoryStatus == HttpStatusCode.TooManyRequests
+            ? TimeSpan.FromSeconds(30)
+            : null);
+        handler.Requests.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public async Task MissingStatusRefWithVisibleRepositoryIsConflicting()
+    {
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            new HttpResponseMessage(HttpStatusCode.NotFound),
+            JsonResponse(HttpStatusCode.OK, """{"id":42,"name":"forgejo-repository"}"""));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(
+            OperationStatusRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Status.ShouldBe(ProviderOperationStatusKind.Conflicting);
+        handler.Requests.Count.ShouldBe(3);
+    }
+
+    [Theory]
+    [InlineData(true, "ResponseLimitExceeded")]
+    [InlineData(false, "MalformedResponse")]
+    public async Task OperationStatusDistinguishesOversizedAndMalformedJson(
+        bool oversized,
+        string expectedFailureName)
+    {
+        HttpResponseMessage refResponse = oversized
+            ? JsonResponse(HttpStatusCode.OK, "{\"padding\":\"" + new string('x', (256 * 1024) + 1) + "\"}")
+            : JsonResponse(HttpStatusCode.OK, "not-json");
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            refResponse);
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(
+            OperationStatusRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(Enum.Parse<ForgejoApiFailureCondition>(expectedFailureName));
+        handler.Requests.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task MissingStatusRefPreservesMalformedRepositoryObservation()
+    {
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            new HttpResponseMessage(HttpStatusCode.NotFound),
+            JsonResponse(HttpStatusCode.OK, "not-json"));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(
+            OperationStatusRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.MalformedResponse);
+    }
+
+    [Theory]
+    [InlineData("stage")]
+    [InlineData("commit")]
+    [InlineData("status")]
+    public async Task VersionRateLimitPreservesRetryAfterForEveryOperation(string operation)
+    {
+        HttpResponseMessage rateLimited = new(HttpStatusCode.TooManyRequests);
+        rateLimited.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(30));
+        RecordingHttpMessageHandler handler = new(rateLimited);
+        ForgejoHttpApiClient client = CreateOperationClient(handler);
+
+        (ForgejoApiFailureCondition Failure, TimeSpan? RetryAfter) outcome = operation switch
+        {
+            "stage" => await StageVersionFailureAsync(client).ConfigureAwait(true),
+            "commit" => await CommitVersionFailureAsync(client).ConfigureAwait(true),
+            _ => await StatusVersionFailureAsync(client).ConfigureAwait(true),
+        };
+
+        outcome.Failure.ShouldBe(ForgejoApiFailureCondition.RateLimit);
+        outcome.RetryAfter.ShouldBe(TimeSpan.FromSeconds(30));
+        handler.Requests.ShouldHaveSingleItem().Uri.AbsolutePath.ShouldBe("/api/v1/version");
+    }
+
+    [Theory]
+    [InlineData("request", "ServerUnavailable")]
+    [InlineData("timeout", "OperationTimedOut")]
+    [InlineData("unexpected", "ServerUnavailable")]
+    public async Task CommitAdvertisementTransportFailureIsTypedAsNoDispatch(
+        string failureKind,
+        string expectedCondition)
+    {
+        Exception failure = failureKind switch
+        {
+            "request" => new HttpRequestException("private advertisement transport failure"),
+            "timeout" => new TaskCanceledException("private advertisement timeout"),
+            _ => new InvalidOperationException("private advertisement failure"),
+        };
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            failure);
+        ForgejoHttpApiClient client = CreateOperationClient(handler);
+
+        ForgejoCommitResult result = await client.CommitAsync(
+            CommitOperationRequest(OperationStatusRequest().Target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(Enum.Parse<ForgejoApiFailureCondition>(expectedCondition));
+        result.MutationDispatched.ShouldBeFalse();
+        JsonSerializer.Serialize(result).ShouldNotContain("private", Case.Sensitive);
+        handler.Requests.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task CommitAdvertisementResponseReadFailureIsTypedAsNoDispatch()
+    {
+        HttpResponseMessage advertisement = new(HttpStatusCode.OK)
+        {
+            Content = new ForgejoThrowingHttpContent(new IOException("private response read failure")),
+        };
+        advertisement.Content.Headers.ContentType = new MediaTypeHeaderValue(
+            "application/x-git-upload-pack-advertisement");
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            advertisement);
+        ForgejoHttpApiClient client = CreateOperationClient(handler);
+
+        ForgejoCommitResult result = await client.CommitAsync(
+            CommitOperationRequest(OperationStatusRequest().Target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ServerUnavailable);
+        result.MutationDispatched.ShouldBeFalse();
+        JsonSerializer.Serialize(result).ShouldNotContain("private", Case.Sensitive);
+        handler.Requests.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task CommitAdvertisementCallerCancellationIsTypedAsNoDispatch()
+    {
+        using CancellationTokenSource cancellation = CancellationTokenSource.CreateLinkedTokenSource(
+            TestContext.Current.CancellationToken);
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            (Func<HttpResponseMessage>)(() =>
+            {
+                cancellation.Cancel();
+                throw new OperationCanceledException("private advertisement cancellation", cancellation.Token);
+            }));
+        ForgejoHttpApiClient client = CreateOperationClient(handler);
+
+        ForgejoCommitResult result = await client.CommitAsync(
+            CommitOperationRequest(OperationStatusRequest().Target),
+            cancellation.Token).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.CancellationBeforeDispatch);
+        result.MutationDispatched.ShouldBeFalse();
+        JsonSerializer.Serialize(result).ShouldNotContain("private", Case.Sensitive);
+        handler.Requests.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task CommitReceiveAdvertisementRateLimitPreservesBoundedRetryAfter()
+    {
+        ProviderGitOperationResolvedTarget target = OperationStatusRequest().Target;
+        HttpResponseMessage rateLimited = new(HttpStatusCode.TooManyRequests);
+        rateLimited.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(30));
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            SmartHttpAdvertisementResponse("git-upload-pack", target, "object-format=sha1"),
+            rateLimited);
+        ForgejoHttpApiClient client = CreateOperationClient(handler);
+
+        ForgejoCommitResult result = await client.CommitAsync(
+            CommitOperationRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.RateLimit);
+        result.RetryAfter.ShouldBe(TimeSpan.FromSeconds(30));
+        result.MutationDispatched.ShouldBeFalse();
+        handler.Requests.Count.ShouldBe(3);
+    }
+
+    [Theory]
+    [InlineData(".", "forgejo-repository")]
+    [InlineData("..", "forgejo-repository")]
+    [InlineData("forgejo-owner", ".")]
+    [InlineData("forgejo-owner", "..")]
+    public async Task DotSegmentRepositoryTargetsFailBeforeBearerAuthenticatedAccess(string owner, string repository)
+    {
+        RecordingHttpMessageHandler handler = new();
+        ForgejoHttpApiClient client = CreateOperationClient(handler);
+        ProviderGitOperationResolvedTarget target = OperationStatusRequest().Target with
+        {
+            Owner = owner,
+            RepositoryName = repository,
+        };
+
+        ForgejoFileMutationResult stage = await client.StageFileChangesAsync(
+            FileMutationRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        ForgejoCommitResult commit = await client.CommitAsync(
+            CommitOperationRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        ForgejoOperationStatusResult status = await client.GetOperationStatusAsync(
+            OperationStatusRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        stage.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ValidationFailure);
+        commit.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ValidationFailure);
+        commit.MutationDispatched.ShouldBeFalse();
+        status.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ValidationFailure);
+        handler.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task CommitCallerReconcilesDispatchedRejectionAndConfirmsTheIntendedCommit()
+    {
+        const string intendedCommit = "2222222222222222222222222222222222222222";
+        ProviderGitOperationResolvedTarget target = OperationStatusRequest().Target;
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            JsonResponse(
+                HttpStatusCode.OK,
+                JsonSerializer.Serialize(new[]
+                {
+                    new { @ref = target.FullRef, @object = new { type = "commit", sha = intendedCommit } },
+                })));
+        ForgejoSmartHttpGitTransportTestHooks hooks = new()
+        {
+            CommitOperation = async (request, cancellationToken) =>
+            {
+                (await request.ValidateReservationAsync(cancellationToken).ConfigureAwait(false))
+                    .ShouldBe(ForgejoReservationValidationStatus.Valid);
+                (await request.RecordCreatedCommitAsync(intendedCommit).ConfigureAwait(false)).ShouldBeTrue();
+                return ForgejoCommitResult.Failure(
+                    ForgejoApiFailureCondition.RemoteRejected,
+                    observedCommitSha: intendedCommit,
+                    mutationDispatched: true);
+            },
+        };
+        ForgejoHttpApiClient client = CreateOperationClient(handler, hooks);
+
+        ForgejoCommitResult result = await client.CommitAsync(
+            CommitOperationRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.IsSuccess.ShouldBeTrue(result.FailureCondition.ToString());
+        result.CommitSha.ShouldBe(intendedCommit);
+        result.MutationDispatched.ShouldBeTrue();
+        handler.Requests.Select(static request => request.Uri.AbsolutePath).ShouldBe(
+        [
+            "/api/v1/version",
+            "/api/v1/repos/forgejo-owner/forgejo-repository/git/refs/heads%2Fmain",
+        ]);
+    }
+
+    [Fact]
+    public void RejectedReceivePackObservationConfirmsIntendedCommitBeforeConsideringConflict()
+    {
+        ProviderGitOperationResolvedTarget target = OperationStatusRequest().Target;
+        const string intendedCommit = "2222222222222222222222222222222222222222";
+        ForgejoCommitResult rejected = ForgejoCommitResult.Failure(
+            ForgejoApiFailureCondition.RemoteRejected,
+            observedCommitSha: intendedCommit,
+            mutationDispatched: true);
+
+        ForgejoCommitResult confirmed = ForgejoHttpApiClient.ReconcileRejectedCommit(
+            rejected,
+            target,
+            (null, new ForgejoRefObservation(target.FullRef, "commit", intendedCommit), null));
+        ForgejoCommitResult unchanged = ForgejoHttpApiClient.ReconcileRejectedCommit(
+            rejected,
+            target,
+            (null, new ForgejoRefObservation(target.FullRef, "commit", target.ExpectedHeadSha), null));
+        ForgejoCommitResult conflicting = ForgejoHttpApiClient.ReconcileRejectedCommit(
+            rejected,
+            target,
+            (null, new ForgejoRefObservation(target.FullRef, "commit", new string('3', 40)), null));
+        ForgejoCommitResult unavailable = ForgejoHttpApiClient.ReconcileRejectedCommit(
+            rejected,
+            target,
+            (ForgejoApiFailureCondition.ServerUnavailable, null, null));
+
+        confirmed.IsSuccess.ShouldBeTrue();
+        confirmed.CommitSha.ShouldBe(intendedCommit);
+        unchanged.ShouldBe(rejected);
+        conflicting.FailureCondition.ShouldBe(ForgejoApiFailureCondition.RefHeadConflict);
+        unavailable.FailureCondition.ShouldBe(ForgejoApiFailureCondition.AmbiguousMutationResponse);
+        unavailable.MutationDispatched.ShouldBeTrue();
+    }
+
     private static ForgejoHttpApiClient CreateClient(HttpMessageHandler handler)
     {
         HttpClient httpClient = new(handler)
@@ -461,6 +809,79 @@ public sealed class ForgejoHttpApiClientTests
         };
         return new ForgejoHttpApiClient(httpClient, httpClient.BaseAddress);
     }
+
+    private static ForgejoHttpApiClient CreateOperationClient(
+        HttpMessageHandler handler,
+        ForgejoSmartHttpGitTransportTestHooks? hooks = null)
+    {
+        HttpClient httpClient = new(handler)
+        {
+            BaseAddress = new Uri("https://forgejo.example.test/"),
+        };
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "operation-token");
+        return new ForgejoHttpApiClient(httpClient, httpClient.BaseAddress, transportTestHooks: hooks);
+    }
+
+    private static async Task<(ForgejoApiFailureCondition Failure, TimeSpan? RetryAfter)> StageVersionFailureAsync(
+        ForgejoHttpApiClient client)
+    {
+        ForgejoFileMutationResult result = await client.StageFileChangesAsync(
+            FileMutationRequest(OperationStatusRequest().Target),
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
+        return (result.FailureCondition, result.RetryAfter);
+    }
+
+    private static async Task<(ForgejoApiFailureCondition Failure, TimeSpan? RetryAfter)> CommitVersionFailureAsync(
+        ForgejoHttpApiClient client)
+    {
+        ForgejoCommitResult result = await client.CommitAsync(
+            CommitOperationRequest(OperationStatusRequest().Target),
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
+        return (result.FailureCondition, result.RetryAfter);
+    }
+
+    private static async Task<(ForgejoApiFailureCondition Failure, TimeSpan? RetryAfter)> StatusVersionFailureAsync(
+        ForgejoHttpApiClient client)
+    {
+        ForgejoOperationStatusResult result = await client.GetOperationStatusAsync(
+            OperationStatusRequest(),
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
+        return (result.FailureCondition, result.RetryAfter);
+    }
+
+    private static ForgejoFileMutationRequest FileMutationRequest(ProviderGitOperationResolvedTarget target)
+        => new(
+            target,
+            OperationStatusRequest().Changes,
+            "16.0.3",
+            static _ => ValueTask.FromResult(ForgejoReservationValidationStatus.Valid));
+
+    private static ForgejoCommitRequest CommitOperationRequest(ProviderGitOperationResolvedTarget target)
+        => new(
+            target,
+            OperationStatusRequest().Changes,
+            new string('b', 40),
+            "commit",
+            "16.0.3",
+            static _ => ValueTask.FromResult(ForgejoReservationValidationStatus.Valid),
+            static _ => ValueTask.FromResult(true));
+
+    private static ForgejoOperationStatusRequest OperationStatusRequest(ProviderGitOperationResolvedTarget? target = null)
+        => new(
+            target ?? new ProviderGitOperationResolvedTarget(
+                "forgejo-owner",
+                "forgejo-repository",
+                "heads/main",
+                "1111111111111111111111111111111111111111"),
+            "2222222222222222222222222222222222222222",
+            [new ProviderResolvedFileChange(
+                0,
+                ProviderFileChangeKind.Add,
+                "file.txt",
+                "content"u8.ToArray(),
+                ProviderFileContentType.RegularFile)],
+            "commit",
+            "16.0.3");
 
     private static ForgejoRepositoryCreationRequest CreationRequest(ProviderRepositoryResolvedTarget? target = null)
         => new(
@@ -514,6 +935,19 @@ public sealed class ForgejoHttpApiClientTests
             Content = new StringContent(json, Encoding.UTF8, "application/json"),
         };
 
+    private static HttpResponseMessage SmartHttpAdvertisementResponse(
+        string service,
+        ProviderGitOperationResolvedTarget target,
+        string capabilities)
+    {
+        string serviceLine = $"# service={service}\n";
+        string refLine = $"{target.ExpectedHeadSha} {target.FullRef}\0{capabilities}\n";
+        ByteArrayContent content = new(Encoding.UTF8.GetBytes(
+            $"{serviceLine.Length + 4:x4}{serviceLine}0000{refLine.Length + 4:x4}{refLine}0000"));
+        content.Headers.ContentType = new MediaTypeHeaderValue($"application/x-{service}-advertisement");
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = content };
+    }
+
     private sealed record RecordedHttpRequest(
         HttpMethod Method,
         Uri Uri,
@@ -555,6 +989,7 @@ public sealed class ForgejoHttpApiClientTests
             {
                 HttpResponseMessage response => response,
                 Exception exception => throw exception,
+                Func<HttpResponseMessage> responseFactory => responseFactory(),
                 _ => throw new InvalidOperationException("Unsupported HTTP test outcome."),
             };
         }

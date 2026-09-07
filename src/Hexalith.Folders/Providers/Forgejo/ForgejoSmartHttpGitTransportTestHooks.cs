@@ -6,6 +6,36 @@ namespace Hexalith.Folders.Providers.Forgejo;
 internal sealed class ForgejoSmartHttpGitTransportTestHooks
 {
     /// <summary>
+    /// Gets or sets whether tests may bypass rejection of the test runner's ambient Git configuration.
+    /// </summary>
+    public bool AllowAmbientConfigurationForTests { get; init; }
+
+    /// <summary>
+    /// Gets or sets an effective configuration source used to exercise the production ambient-configuration scanner.
+    /// </summary>
+    public Func<string, LibGit2Sharp.Configuration>? EffectiveConfigurationFactory { get; init; }
+
+    /// <summary>
+    /// Gets or sets a deterministic temporary-repository path factory.
+    /// </summary>
+    public Func<string>? TemporaryRepositoryPathFactory { get; init; }
+
+    /// <summary>
+    /// Gets or sets a deterministic commit transport result used to exercise the concrete HTTP client caller boundary.
+    /// </summary>
+    public Func<ForgejoCommitRequest, CancellationToken, Task<ForgejoCommitResult>>? CommitOperation { get; init; }
+
+    /// <summary>
+    /// Gets or sets an observer invoked after a repository is opened and before it is configured.
+    /// </summary>
+    public Action<LibGit2Sharp.Repository>? RepositoryOpened { get; init; }
+
+    /// <summary>
+    /// Gets or sets an observer invoked after the private temporary directory is created and before the repository is opened.
+    /// </summary>
+    public Action<string>? BeforeRepositoryOpen { get; init; }
+
+    /// <summary>
     /// Gets or sets an observer invoked immediately before the native fetch.
     /// </summary>
     public Action<string, ForgejoNativeOperationState>? BeforeFetch { get; init; }

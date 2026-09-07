@@ -41,6 +41,7 @@ internal enum ForgejoApiFailureCondition
     TransferLimitExceeded,
     TemporaryDiskLimitExceeded,
     TemporaryRepositoryCleanupFailed,
+    AmbientConfigurationUnsupported,
     OperationTimedOut,
     RemotePolicyRejected,
     RemoteRejected,

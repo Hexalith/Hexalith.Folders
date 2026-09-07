@@ -5,8 +5,11 @@ namespace Hexalith.Folders.Providers.Forgejo;
 /// </summary>
 internal sealed class ForgejoCommitDispatchState
 {
+    private const int Pending = 0;
+    private const int DispatchClaimed = 1;
+    private const int CallerInterrupted = 2;
     private string? _createdCommitSha;
-    private int _mutationDispatched;
+    private int _dispatchBoundary;
 
     /// <summary>
     /// Gets the locally created commit identity, when it has been recorded.
@@ -16,7 +19,7 @@ internal sealed class ForgejoCommitDispatchState
     /// <summary>
     /// Gets whether receive-pack crossed the final pre-upload callback.
     /// </summary>
-    public bool MutationDispatched => Volatile.Read(ref _mutationDispatched) != 0;
+    public bool MutationDispatched => Volatile.Read(ref _dispatchBoundary) == DispatchClaimed;
 
     /// <summary>
     /// Records the local commit identity before the remote mutation boundary.
@@ -29,7 +32,22 @@ internal sealed class ForgejoCommitDispatchState
     }
 
     /// <summary>
-    /// Marks the final receive-pack upload boundary.
+    /// Atomically claims the final receive-pack upload boundary.
     /// </summary>
-    public void MarkMutationDispatched() => Interlocked.Exchange(ref _mutationDispatched, 1);
+    /// <returns><see langword="true"/> when dispatch won before caller interruption.</returns>
+    public bool TryClaimMutationDispatch()
+        => Interlocked.CompareExchange(ref _dispatchBoundary, DispatchClaimed, Pending) == Pending;
+
+    /// <summary>
+    /// Atomically records conclusive caller interruption before receive-pack dispatch.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when interruption won or was already recorded;
+    /// <see langword="false"/> when dispatch had already claimed the boundary.
+    /// </returns>
+    public bool TryRecordCallerInterruption()
+    {
+        int observed = Interlocked.CompareExchange(ref _dispatchBoundary, CallerInterrupted, Pending);
+        return observed is Pending or CallerInterrupted;
+    }
 }

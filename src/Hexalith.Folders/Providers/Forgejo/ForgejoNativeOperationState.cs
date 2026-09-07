@@ -13,29 +13,32 @@ internal sealed class ForgejoNativeOperationState(
     long maximumDiskBytes)
 {
     private readonly Stopwatch _elapsed = Stopwatch.StartNew();
+    private int _failureCondition;
     private long _maximumObservedTransferBytes;
 
-    public ForgejoApiFailureCondition FailureCondition { get; private set; }
+    public ForgejoApiFailureCondition FailureCondition => (ForgejoApiFailureCondition)Volatile.Read(ref _failureCondition);
 
     public bool Check(long receivedBytes)
     {
+        if (FailureCondition != ForgejoApiFailureCondition.None)
+        {
+            return false;
+        }
+
         if (cancellationToken.IsCancellationRequested)
         {
-            FailureCondition = ForgejoApiFailureCondition.CancellationBeforeDispatch;
-            return false;
+            return Fail(ForgejoApiFailureCondition.CancellationBeforeDispatch);
         }
 
         if (_elapsed.Elapsed >= deadline)
         {
-            FailureCondition = ForgejoApiFailureCondition.OperationTimedOut;
-            return false;
+            return Fail(ForgejoApiFailureCondition.OperationTimedOut);
         }
 
         _maximumObservedTransferBytes = Math.Max(_maximumObservedTransferBytes, receivedBytes);
         if (_maximumObservedTransferBytes > maximumTransferBytes)
         {
-            FailureCondition = ForgejoApiFailureCondition.TransferLimitExceeded;
-            return false;
+            return Fail(ForgejoApiFailureCondition.TransferLimitExceeded);
         }
 
         try
@@ -46,22 +49,28 @@ internal sealed class ForgejoNativeOperationState(
                 size += new FileInfo(file).Length;
                 if (size > maximumDiskBytes)
                 {
-                    FailureCondition = ForgejoApiFailureCondition.TemporaryDiskLimitExceeded;
-                    return false;
+                    return Fail(ForgejoApiFailureCondition.TemporaryDiskLimitExceeded);
                 }
             }
         }
         catch (IOException)
         {
-            FailureCondition = ForgejoApiFailureCondition.ServerUnavailable;
-            return false;
+            return Fail(ForgejoApiFailureCondition.ServerUnavailable);
         }
         catch (UnauthorizedAccessException)
         {
-            FailureCondition = ForgejoApiFailureCondition.ServerUnavailable;
-            return false;
+            return Fail(ForgejoApiFailureCondition.ServerUnavailable);
         }
 
         return true;
+    }
+
+    private bool Fail(ForgejoApiFailureCondition condition)
+    {
+        _ = Interlocked.CompareExchange(
+            ref _failureCondition,
+            (int)condition,
+            (int)ForgejoApiFailureCondition.None);
+        return false;
     }
 }

@@ -52,3 +52,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 20
         run: ./tests/tools/run-nightly-drift-gates.ps1 -SkipRestoreBuild -ProviderProfile '${{ inputs.provider_profile || 'pinned-snapshots' }}'
+
+      - name: Run Forgejo Alpine smart-HTTP smoke
+        shell: pwsh
+        timeout-minutes: 30
+        run: ./tests/tools/run-forgejo-smart-http-alpine-smoke.ps1

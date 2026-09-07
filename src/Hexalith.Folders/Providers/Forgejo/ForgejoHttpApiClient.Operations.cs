@@ -48,17 +48,22 @@ internal sealed partial class ForgejoHttpApiClient
         {
             await NativeOperationGate.WaitAsync(deadline.Token).ConfigureAwait(false);
             nativePermit = new ForgejoNativeOperationPermit(NativeOperationGate);
-            if (!await request.ValidateReservationAsync(deadline.Token).ConfigureAwait(false))
+            ForgejoReservationValidationStatus reservation =
+                await request.ValidateReservationAsync(deadline.Token).ConfigureAwait(false);
+            if (reservation != ForgejoReservationValidationStatus.Valid)
             {
-                return ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated);
+                return ForgejoFileMutationResult.Failure(
+                    reservation == ForgejoReservationValidationStatus.Invalidated
+                        ? ForgejoApiFailureCondition.ReservationInvalidated
+                        : ForgejoApiFailureCondition.ServerUnavailable);
             }
 
-            ForgejoApiFailureCondition? versionFailure = await RecheckVersionAsync(
+            (ForgejoApiFailureCondition? Failure, TimeSpan? RetryAfter) version = await RecheckVersionAsync(
                 request.SupportedSnapshotVersion,
                 deadline.Token).ConfigureAwait(false);
-            if (versionFailure is not null)
+            if (version.Failure is not null)
             {
-                return ForgejoFileMutationResult.Failure(versionFailure.Value);
+                return ForgejoFileMutationResult.Failure(version.Failure.Value, version.RetryAfter);
             }
 
             ForgejoSmartHttpGitTransport transport = new(
@@ -128,21 +133,28 @@ internal sealed partial class ForgejoHttpApiClient
         deadline.CancelAfter(EffectiveOperationTimeout());
         ForgejoNativeOperationPermit? nativePermit = null;
         string? dispatchedCommitSha = null;
+        bool mutationDispatched = false;
+        bool transportInvoked = false;
         try
         {
             await NativeOperationGate.WaitAsync(deadline.Token).ConfigureAwait(false);
             nativePermit = new ForgejoNativeOperationPermit(NativeOperationGate);
-            if (!await request.ValidateReservationAsync(deadline.Token).ConfigureAwait(false))
+            ForgejoReservationValidationStatus reservation =
+                await request.ValidateReservationAsync(deadline.Token).ConfigureAwait(false);
+            if (reservation != ForgejoReservationValidationStatus.Valid)
             {
-                return ForgejoCommitResult.Failure(ForgejoApiFailureCondition.ReservationInvalidated);
+                return ForgejoCommitResult.Failure(
+                    reservation == ForgejoReservationValidationStatus.Invalidated
+                        ? ForgejoApiFailureCondition.ReservationInvalidated
+                        : ForgejoApiFailureCondition.ServerUnavailable);
             }
 
-            ForgejoApiFailureCondition? versionFailure = await RecheckVersionAsync(
+            (ForgejoApiFailureCondition? Failure, TimeSpan? RetryAfter) version = await RecheckVersionAsync(
                 request.SupportedSnapshotVersion,
                 deadline.Token).ConfigureAwait(false);
-            if (versionFailure is not null)
+            if (version.Failure is not null)
             {
-                return ForgejoCommitResult.Failure(versionFailure.Value);
+                return ForgejoCommitResult.Failure(version.Failure.Value, version.RetryAfter);
             }
 
             ForgejoSmartHttpGitTransport transport = new(
@@ -152,10 +164,14 @@ internal sealed partial class ForgejoHttpApiClient
                 _certificateCheck,
                 _beforeReceivePackDispatch,
                 _transportTestHooks);
-            ForgejoCommitResult result = await transport.CommitAsync(
-                request,
-                deadline.Token,
-                nativePermit).ConfigureAwait(false);
+            transportInvoked = true;
+            ForgejoCommitResult result = _transportTestHooks?.CommitOperation is { } commitOperation
+                ? await commitOperation(request, deadline.Token).ConfigureAwait(false)
+                : await transport.CommitAsync(
+                    request,
+                    deadline.Token,
+                    nativePermit).ConfigureAwait(false);
+            mutationDispatched = result.MutationDispatched;
             if (!result.IsSuccess
                 && result.FailureCondition == ForgejoApiFailureCondition.CancellationBeforeDispatch
                 && !cancellationToken.IsCancellationRequested
@@ -168,20 +184,24 @@ internal sealed partial class ForgejoHttpApiClient
 
             if (!result.IsSuccess)
             {
-                if (result.FailureCondition == ForgejoApiFailureCondition.RemoteRejected)
+                if (result.FailureCondition is ForgejoApiFailureCondition.RemoteRejected
+                    or ForgejoApiFailureCondition.RemotePolicyRejected)
                 {
+                    if (!result.MutationDispatched)
+                    {
+                        return result;
+                    }
+
+                    dispatchedCommitSha = result.ObservedCommitSha;
                     (ForgejoApiFailureCondition? RefFailure, ForgejoRefObservation? Observation, TimeSpan? RetryAfter) rejectedRef =
                         await ObserveExactRefAsync(request.Target, deadline.Token).ConfigureAwait(false);
-                    if (rejectedRef.RefFailure is null
-                        && !string.Equals(
-                            rejectedRef.Observation!.ObjectSha,
-                            request.Target.ExpectedHeadSha,
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        return ForgejoCommitResult.Failure(
-                            ForgejoApiFailureCondition.RefHeadConflict,
-                            observedCommitSha: result.ObservedCommitSha);
-                    }
+                    return ReconcileRejectedCommit(result, request.Target, rejectedRef);
+                }
+                else if (result.FailureCondition == ForgejoApiFailureCondition.AmbiguousMutationResponse)
+                {
+                    dispatchedCommitSha = result.MutationDispatched
+                        ? result.ObservedCommitSha
+                        : null;
                 }
 
                 return result;
@@ -198,25 +218,44 @@ internal sealed partial class ForgejoHttpApiClient
                     : ForgejoCommitResult.Failure(
                         ForgejoApiFailureCondition.AmbiguousMutationResponse,
                         confirmation.RetryAfter,
-                        result.CommitSha);
+                        result.CommitSha,
+                        mutationDispatched: true);
         }
         catch (OperationCanceledException)
         {
+            if (transportInvoked && !mutationDispatched)
+            {
+                return ForgejoCommitResult.Failure(
+                    ForgejoApiFailureCondition.AmbiguousMutationResponse,
+                    observedCommitSha: dispatchedCommitSha,
+                    mutationDispatched: true);
+            }
+
             return ForgejoCommitResult.Failure(
-                dispatchedCommitSha is not null
+                mutationDispatched
                     ? ForgejoApiFailureCondition.AmbiguousMutationResponse
                     : cancellationToken.IsCancellationRequested
                     ? ForgejoApiFailureCondition.CancellationBeforeDispatch
                     : ForgejoApiFailureCondition.OperationTimedOut,
-                observedCommitSha: dispatchedCommitSha);
+                observedCommitSha: dispatchedCommitSha,
+                mutationDispatched: mutationDispatched);
         }
         catch (Exception)
         {
+            if (transportInvoked && !mutationDispatched)
+            {
+                return ForgejoCommitResult.Failure(
+                    ForgejoApiFailureCondition.AmbiguousMutationResponse,
+                    observedCommitSha: dispatchedCommitSha,
+                    mutationDispatched: true);
+            }
+
             return ForgejoCommitResult.Failure(
-                dispatchedCommitSha is null
-                    ? ForgejoApiFailureCondition.ServerUnavailable
-                    : ForgejoApiFailureCondition.AmbiguousMutationResponse,
-                observedCommitSha: dispatchedCommitSha);
+                mutationDispatched
+                    ? ForgejoApiFailureCondition.AmbiguousMutationResponse
+                    : ForgejoApiFailureCondition.ServerUnavailable,
+                observedCommitSha: dispatchedCommitSha,
+                mutationDispatched: mutationDispatched);
         }
         finally
         {
@@ -228,6 +267,49 @@ internal sealed partial class ForgejoHttpApiClient
         => _transportTestHooks?.OperationTimeout is { } timeout && timeout > TimeSpan.Zero
             ? timeout
             : OperationResponseTimeout;
+
+    /// <summary>
+    /// Reconciles a dispatched receive-pack rejection against one exact ref observation.
+    /// </summary>
+    /// <param name="rejectedResult">The structured dispatched rejection.</param>
+    /// <param name="target">The exact expected target.</param>
+    /// <param name="observedRef">The bounded exact-ref observation.</param>
+    /// <returns>The confirmed, preserved rejection, conflict, or ambiguous result.</returns>
+    internal static ForgejoCommitResult ReconcileRejectedCommit(
+        ForgejoCommitResult rejectedResult,
+        ProviderGitOperationResolvedTarget target,
+        (ForgejoApiFailureCondition? RefFailure, ForgejoRefObservation? Observation, TimeSpan? RetryAfter) observedRef)
+    {
+        ArgumentNullException.ThrowIfNull(rejectedResult);
+        ArgumentNullException.ThrowIfNull(target);
+        if (observedRef.RefFailure is not null || observedRef.Observation is null)
+        {
+            return ForgejoCommitResult.Failure(
+                ForgejoApiFailureCondition.AmbiguousMutationResponse,
+                observedRef.RetryAfter,
+                rejectedResult.ObservedCommitSha,
+                mutationDispatched: true);
+        }
+
+        if (rejectedResult.ObservedCommitSha is not null
+            && string.Equals(
+                observedRef.Observation.ObjectSha,
+                rejectedResult.ObservedCommitSha,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return ForgejoCommitResult.Success(rejectedResult.ObservedCommitSha);
+        }
+
+        return string.Equals(
+            observedRef.Observation.ObjectSha,
+            target.ExpectedHeadSha,
+            StringComparison.OrdinalIgnoreCase)
+                ? rejectedResult
+                : ForgejoCommitResult.Failure(
+                    ForgejoApiFailureCondition.RefHeadConflict,
+                    observedCommitSha: rejectedResult.ObservedCommitSha,
+                    mutationDispatched: true);
+    }
 
     public async Task<ForgejoOperationStatusResult> GetOperationStatusAsync(
         ForgejoOperationStatusRequest request,
@@ -255,12 +337,12 @@ internal sealed partial class ForgejoHttpApiClient
 
         try
         {
-            ForgejoApiFailureCondition? versionFailure = await RecheckVersionAsync(
+            (ForgejoApiFailureCondition? Failure, TimeSpan? RetryAfter) version = await RecheckVersionAsync(
                 request.SupportedSnapshotVersion,
                 cancellationToken).ConfigureAwait(false);
-            if (versionFailure is not null)
+            if (version.Failure is not null)
             {
-                return ForgejoOperationStatusResult.Failure(versionFailure.Value);
+                return ForgejoOperationStatusResult.Failure(version.Failure.Value, version.RetryAfter);
             }
 
             (ForgejoApiFailureCondition? RefFailure, ForgejoRefObservation? Observation, TimeSpan? RetryAfter) reference =
@@ -275,7 +357,14 @@ internal sealed partial class ForgejoHttpApiClient
                 // A ref 404 alone cannot distinguish a deleted ref from a concealed or missing
                 // repository. Only a second, bounded authorized repository observation may turn
                 // that absence into terminal conflicting evidence.
-                return await IsRepositoryVisibleAsync(request.Target, cancellationToken).ConfigureAwait(false)
+                (ForgejoApiFailureCondition? Failure, bool IsVisible, TimeSpan? RetryAfter) repository =
+                    await ObserveRepositoryVisibilityAsync(request.Target, cancellationToken).ConfigureAwait(false);
+                if (repository.Failure is not null)
+                {
+                    return ForgejoOperationStatusResult.Failure(repository.Failure.Value, repository.RetryAfter);
+                }
+
+                return repository.IsVisible
                     ? ForgejoOperationStatusResult.Conflicting(null, request.Target.FullRef, null)
                     : ForgejoOperationStatusResult.Failure(ForgejoApiFailureCondition.NotFoundOrHidden);
             }
@@ -315,7 +404,7 @@ internal sealed partial class ForgejoHttpApiClient
         }
     }
 
-    private async Task<ForgejoApiFailureCondition?> RecheckVersionAsync(
+    private async Task<(ForgejoApiFailureCondition? Failure, TimeSpan? RetryAfter)> RecheckVersionAsync(
         string supportedSnapshotVersion,
         CancellationToken cancellationToken)
     {
@@ -325,21 +414,32 @@ internal sealed partial class ForgejoHttpApiClient
             ForgejoApiFailureCondition? responseFailure = MapObservationResponse(response, ForgejoApiFailureCondition.NotFoundOrHidden);
             if (responseFailure is not null)
             {
-                return responseFailure;
+                return (responseFailure, RetryAfter(response));
             }
 
-            using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
-            if (document is null
-                || document.RootElement.ValueKind != JsonValueKind.Object
+            (JsonDocument? Document, ForgejoApiFailureCondition? Failure) body =
+                await ReadOperationJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
+            using JsonDocument? document = body.Document;
+            if (body.Failure is not null)
+            {
+                return (body.Failure, null);
+            }
+
+            if (document!.RootElement.ValueKind != JsonValueKind.Object
                 || !document.RootElement.TryGetProperty("version", out JsonElement version)
                 || version.ValueKind != JsonValueKind.String
-                || !ForgejoSupportedVersionCatalog.TryFind(version.GetString()!, out ForgejoSupportedVersionEntry supported)
-                || !string.Equals(supported.Version, supportedSnapshotVersion, StringComparison.Ordinal))
+                || string.IsNullOrWhiteSpace(version.GetString()))
             {
-                return ForgejoApiFailureCondition.VersionIncompatible;
+                return (ForgejoApiFailureCondition.MalformedResponse, null);
             }
 
-            return null;
+            if (!ForgejoSupportedVersionCatalog.TryFind(version.GetString()!, out ForgejoSupportedVersionEntry supported)
+                || !string.Equals(supported.Version, supportedSnapshotVersion, StringComparison.Ordinal))
+            {
+                return (ForgejoApiFailureCondition.VersionIncompatible, null);
+            }
+
+            return (null, null);
         }
         catch (OperationCanceledException)
         {
@@ -347,7 +447,7 @@ internal sealed partial class ForgejoHttpApiClient
         }
         catch (Exception)
         {
-            return ForgejoApiFailureCondition.ServerUnavailable;
+            return (ForgejoApiFailureCondition.ServerUnavailable, null);
         }
     }
 
@@ -364,7 +464,14 @@ internal sealed partial class ForgejoHttpApiClient
             return (responseFailure, null, RetryAfter(response));
         }
 
-        using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
+        (JsonDocument? Document, ForgejoApiFailureCondition? Failure) body =
+            await ReadOperationJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
+        using JsonDocument? document = body.Document;
+        if (body.Failure is not null)
+        {
+            return (body.Failure, null, null);
+        }
+
         if (!TryReadExactReference(document, target.FullRef, out ForgejoRefObservation? observation))
         {
             return (ForgejoApiFailureCondition.MalformedResponse, null, null);
@@ -373,27 +480,107 @@ internal sealed partial class ForgejoHttpApiClient
         return (null, observation, null);
     }
 
-    private async Task<bool> IsRepositoryVisibleAsync(
+    private async Task<(ForgejoApiFailureCondition? Failure, bool IsVisible, TimeSpan? RetryAfter)> ObserveRepositoryVisibilityAsync(
         ProviderGitOperationResolvedTarget target,
         CancellationToken cancellationToken)
     {
         using HttpResponseMessage response = await SendObservationAsync(
             ApiUri($"repos/{Escape(target.Owner)}/{Escape(target.RepositoryName)}"),
             cancellationToken).ConfigureAwait(false);
-        if (response.StatusCode != HttpStatusCode.OK)
+        ForgejoApiFailureCondition? responseFailure = MapObservationResponse(
+            response,
+            ForgejoApiFailureCondition.NotFoundOrHidden);
+        if (responseFailure is not null)
         {
-            return false;
+            return responseFailure == ForgejoApiFailureCondition.NotFoundOrHidden
+                ? (null, false, null)
+                : (responseFailure, false, RetryAfter(response));
         }
 
-        using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
-        return document is not null
-            && document.RootElement.ValueKind == JsonValueKind.Object
+        (JsonDocument? Document, ForgejoApiFailureCondition? Failure) body =
+            await ReadOperationJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
+        using JsonDocument? document = body.Document;
+        if (body.Failure is not null)
+        {
+            return (body.Failure, false, null);
+        }
+
+        bool visible = document!.RootElement.ValueKind == JsonValueKind.Object
             && document.RootElement.TryGetProperty("id", out JsonElement id)
             && id.ValueKind == JsonValueKind.Number
             && id.TryGetInt64(out long numericId)
             && numericId > 0
             && TryReadString(document.RootElement, "name", out string? repositoryName)
             && string.Equals(repositoryName, target.RepositoryName, StringComparison.Ordinal);
+        return visible
+            ? (null, true, null)
+            : (ForgejoApiFailureCondition.MalformedResponse, false, null);
+    }
+
+    private static async Task<(JsonDocument? Document, ForgejoApiFailureCondition? Failure)> ReadOperationJsonDocumentAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken)
+    {
+        if (!IsJson(response.Content.Headers.ContentType))
+        {
+            return (null, ForgejoApiFailureCondition.MalformedResponse);
+        }
+
+        if (response.Content.Headers.ContentLength is > MaximumJsonResponseBytes)
+        {
+            return (null, ForgejoApiFailureCondition.ResponseLimitExceeded);
+        }
+
+        try
+        {
+            using CancellationTokenSource bodyDeadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            bodyDeadline.CancelAfter(ResponseBodyTimeout);
+            using Stream stream = await response.Content.ReadAsStreamAsync(bodyDeadline.Token).ConfigureAwait(false);
+            using MemoryStream buffer = new();
+            byte[] chunk = new byte[8192];
+            while (true)
+            {
+                int read = await stream.ReadAsync(chunk.AsMemory(), bodyDeadline.Token).ConfigureAwait(false);
+                if (read == 0)
+                {
+                    break;
+                }
+
+                if (buffer.Length > MaximumJsonResponseBytes - read)
+                {
+                    return (null, ForgejoApiFailureCondition.ResponseLimitExceeded);
+                }
+
+                await buffer.WriteAsync(chunk.AsMemory(0, read), bodyDeadline.Token).ConfigureAwait(false);
+            }
+
+            if (buffer.Length == 0)
+            {
+                return (null, ForgejoApiFailureCondition.MalformedResponse);
+            }
+
+            buffer.Position = 0;
+            JsonDocument document = await JsonDocument.ParseAsync(
+                buffer,
+                cancellationToken: bodyDeadline.Token).ConfigureAwait(false);
+            return (document, null);
+        }
+        catch (JsonException)
+        {
+            return (null, ForgejoApiFailureCondition.MalformedResponse);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return (null, ForgejoApiFailureCondition.ServerUnavailable);
+        }
+        catch (IOException)
+        {
+            return (null, ForgejoApiFailureCondition.ServerUnavailable);
+        }
+        catch (HttpRequestException)
+        {
+            return (null, ForgejoApiFailureCondition.ServerUnavailable);
+        }
     }
 
     private static bool TryReadExactReference(
@@ -477,6 +664,8 @@ internal sealed partial class ForgejoHttpApiClient
         string supportedSnapshotVersion)
         => target is not null
             && target.TryValidate(out _)
+            && ForgejoSmartHttpGitTransport.IsSafeRepositoryPathSegment(target.Owner)
+            && ForgejoSmartHttpGitTransport.IsSafeRepositoryPathSegment(target.RepositoryName)
             && target.RefName["heads/".Length..].Length <= MaximumOperationBranchCharacters
             && ForgejoSupportedVersionCatalog.IsSupported(supportedSnapshotVersion);
 

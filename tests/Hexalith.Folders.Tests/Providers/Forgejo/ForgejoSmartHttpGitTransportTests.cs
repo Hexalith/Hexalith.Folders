@@ -1,5 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Runtime.Versioning;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.Forgejo;
@@ -9,8 +12,11 @@ using Xunit;
 
 namespace Hexalith.Folders.Tests.Providers.Forgejo;
 
+[Collection(ForgejoNativeOperationGateCollection.Name)]
 public sealed class ForgejoSmartHttpGitTransportTests
 {
+    private static readonly SemaphoreSlim NativePermitVerificationGate = new(1, 1);
+
     [Fact]
     public void NativeRuntimeBuildsExactOrderedTreeWithoutChangingUnrelatedPaths()
     {
@@ -93,6 +99,97 @@ public sealed class ForgejoSmartHttpGitTransportTests
         }
     }
 
+    [Theory]
+    [InlineData(100644)]
+    [InlineData(160000)]
+    public void AddBelowBlobOrGitlinkAncestorIsRejected(int rawMode)
+    {
+        string path = CreateRepositoryPath();
+        try
+        {
+            using Repository repository = new(path);
+            TreeDefinition original = new();
+            if (rawMode == 100644)
+            {
+                original.Add("parent", Blob(repository, "source"), Mode.NonExecutableFile);
+            }
+            else
+            {
+                Commit gitlink = Commit(repository, repository.ObjectDatabase.CreateTree(new TreeDefinition()));
+                original.Add("parent", gitlink.Id, Mode.GitLink);
+            }
+
+            Commit parent = Commit(repository, repository.ObjectDatabase.CreateTree(original));
+            ProviderResolvedFileChange[] changes =
+            [
+                new(0, ProviderFileChangeKind.Add, "parent/child.txt", "replacement"u8.ToArray(), ProviderFileContentType.RegularFile),
+            ];
+            ForgejoNativeOperationState state = new(path, CancellationToken.None, TimeSpan.FromMinutes(1), long.MaxValue, long.MaxValue);
+
+            ForgejoSmartHttpGitTransport.TryCreateTree(
+                repository,
+                Target(parent.Id.Sha),
+                changes,
+                state,
+                out _,
+                out _).ShouldBeFalse();
+        }
+        finally
+        {
+            Directory.Delete(path, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void NativeCallbackFailureIsSticky()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"hxf-forgejo-test-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(path);
+        try
+        {
+            using CancellationTokenSource cancellation = new();
+            ForgejoNativeOperationState state = new(path, cancellation.Token, TimeSpan.FromMinutes(1), 8, long.MaxValue);
+
+            state.Check(9).ShouldBeFalse();
+            state.FailureCondition.ShouldBe(ForgejoApiFailureCondition.TransferLimitExceeded);
+            cancellation.Cancel();
+            state.Check(0).ShouldBeFalse();
+            state.FailureCondition.ShouldBe(ForgejoApiFailureCondition.TransferLimitExceeded);
+        }
+        finally
+        {
+            Directory.Delete(path, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task UserCancelledExceptionPreservesTheCallbackSelectedCeiling()
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        AdvertisementHandler handler = new(target);
+        using HttpClient httpClient = new(handler);
+        ForgejoSmartHttpGitTransport transport = new(
+            httpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            new ForgejoAuthorizationHeader("Bearer", "token"),
+            testHooks: new ForgejoSmartHttpGitTransportTestHooks
+            {
+                AllowAmbientConfigurationForTests = true,
+                MaximumTransferBytes = 8,
+                BeforeFetch = (_, state) =>
+                {
+                    state.Check(9).ShouldBeFalse();
+                    throw new UserCancelledException();
+                },
+            });
+
+        ForgejoFileMutationResult result = await transport.StageAsync(
+            StageRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.TransferLimitExceeded);
+    }
+
     [Fact]
     public void TransferAndTemporaryDiskCeilingsFailWhileProgressIsObserved()
     {
@@ -128,6 +225,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
         string? temporaryPath = null;
         ForgejoSmartHttpGitTransportTestHooks hooks = new()
         {
+            AllowAmbientConfigurationForTests = true,
             MaximumTransferBytes = 8,
             MaximumTemporaryDiskBytes = crossDiskCeiling ? 16 : long.MaxValue,
             BeforeFetch = (path, state) =>
@@ -161,6 +259,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
             crossDiskCeiling
                 ? ForgejoApiFailureCondition.TemporaryDiskLimitExceeded
                 : ForgejoApiFailureCondition.TransferLimitExceeded);
+        result.MutationDispatched.ShouldBeFalse();
         dispatches.ShouldBe(0);
         cleanupAttempts.ShouldBe(1);
         temporaryPath.ShouldNotBeNull();
@@ -181,6 +280,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
         string? temporaryPath = null;
         ForgejoSmartHttpGitTransportTestHooks hooks = new()
         {
+            AllowAmbientConfigurationForTests = true,
             MaximumTransferBytes = 8,
             BeforeFetch = (path, state) =>
             {
@@ -216,9 +316,273 @@ public sealed class ForgejoSmartHttpGitTransportTests
     }
 
     [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task PartialSetupAndUnexpectedExecutionFailuresCleanExactlyOnce(bool failDuringSetup)
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        AdvertisementHandler handler = new(target);
+        using HttpClient httpClient = new(handler);
+        int cleanupAttempts = 0;
+        string? temporaryPath = null;
+        ForgejoSmartHttpGitTransport transport = new(
+            httpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            new ForgejoAuthorizationHeader("Bearer", "token"),
+            testHooks: new ForgejoSmartHttpGitTransportTestHooks
+            {
+                AllowAmbientConfigurationForTests = true,
+                RepositoryOpened = failDuringSetup
+                    ? repository =>
+                    {
+                        temporaryPath = repository.Info.Path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                        throw new InvalidOperationException("setup failure");
+                    }
+                    : null,
+                BeforeFetch = failDuringSetup
+                    ? (path, _) => temporaryPath = path
+                    : (path, _) =>
+                    {
+                        temporaryPath = path;
+                        throw new InvalidOperationException("execution failure");
+                    },
+                CleanupAttempted = () => Interlocked.Increment(ref cleanupAttempts),
+            });
+
+        ForgejoFileMutationResult result = await transport.StageAsync(
+            StageRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ServerUnavailable);
+        cleanupAttempts.ShouldBe(1);
+        temporaryPath.ShouldNotBeNull();
+        Directory.Exists(temporaryPath).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void EffectiveGlobalXdgOrSystemConfigurationIsRejected()
+    {
+        string root = Path.Combine(Path.GetTempPath(), $"hxf-forgejo-config-{Guid.NewGuid():N}");
+        string repositoryPath = Path.Combine(root, "repository");
+        Directory.CreateDirectory(root);
+        try
+        {
+            Repository.Init(repositoryPath, isBare: true);
+            string global = Path.Combine(root, "global.config");
+            string xdg = Path.Combine(root, "xdg.config");
+            string system = Path.Combine(root, "system.config");
+            File.WriteAllText(global, "[http]\n\tproxy = https://proxy.invalid\n");
+            File.WriteAllText(xdg, string.Empty);
+            File.WriteAllText(system, string.Empty);
+            using Configuration configuration = Configuration.BuildFrom(repositoryPath, global, xdg, system);
+
+            ForgejoSmartHttpGitTransport.HasForbiddenAmbientConfiguration(configuration).ShouldBeTrue();
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task StageAndCommitUseTheProductionAmbientConfigurationScannerBeforeFetch(bool commit)
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        AdvertisementHandler handler = new(target);
+        using HttpClient httpClient = new(handler);
+        string root = Path.Combine(Path.GetTempPath(), $"hxf-forgejo-config-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(root);
+        string global = Path.Combine(root, "global.config");
+        string xdg = Path.Combine(root, "xdg.config");
+        string system = Path.Combine(root, "system.config");
+        File.WriteAllText(global, "[http]\n\tproxy = https://proxy.invalid\n");
+        File.WriteAllText(xdg, string.Empty);
+        File.WriteAllText(system, string.Empty);
+        int configurationSources = 0;
+        int fetches = 0;
+        int cleanupAttempts = 0;
+        ForgejoSmartHttpGitTransport transport = new(
+            httpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            new ForgejoAuthorizationHeader("Bearer", "token"),
+            testHooks: new ForgejoSmartHttpGitTransportTestHooks
+            {
+                EffectiveConfigurationFactory = repositoryPath =>
+                {
+                    Interlocked.Increment(ref configurationSources);
+                    return Configuration.BuildFrom(repositoryPath, global, xdg, system);
+                },
+                BeforeFetch = (_, _) => Interlocked.Increment(ref fetches),
+                CleanupAttempted = () => Interlocked.Increment(ref cleanupAttempts),
+            });
+
+        try
+        {
+            if (commit)
+            {
+                ForgejoCommitResult result = await transport.CommitAsync(
+                    CommitRequest(target),
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+                result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.AmbientConfigurationUnsupported);
+                result.MutationDispatched.ShouldBeFalse();
+            }
+            else
+            {
+                ForgejoFileMutationResult result = await transport.StageAsync(
+                    StageRequest(target),
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+                result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.AmbientConfigurationUnsupported);
+            }
+
+            configurationSources.ShouldBe(1);
+            fetches.ShouldBe(0);
+            cleanupAttempts.ShouldBe(1);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PreExistingTemporaryPathIsNeverClaimedOrDeleted(bool commit)
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        AdvertisementHandler handler = new(target);
+        using HttpClient httpClient = new(handler);
+        string path = Path.Combine(Path.GetTempPath(), $"hxf-forgejo-owned-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(path);
+        string sentinel = Path.Combine(path, "owned-by-someone-else");
+        File.WriteAllText(sentinel, "sentinel");
+        int cleanupAttempts = 0;
+        ForgejoSmartHttpGitTransport transport = new(
+            httpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            new ForgejoAuthorizationHeader("Bearer", "token"),
+            testHooks: new ForgejoSmartHttpGitTransportTestHooks
+            {
+                TemporaryRepositoryPathFactory = () => path,
+                CleanupAttempted = () => Interlocked.Increment(ref cleanupAttempts),
+            });
+
+        try
+        {
+            if (commit)
+            {
+                ForgejoCommitResult result = await transport.CommitAsync(
+                    CommitRequest(target),
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+                result.IsSuccess.ShouldBeFalse();
+                result.MutationDispatched.ShouldBeFalse();
+            }
+            else
+            {
+                ForgejoFileMutationResult result = await transport.StageAsync(
+                    StageRequest(target),
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+                result.IsSuccess.ShouldBeFalse();
+            }
+
+            cleanupAttempts.ShouldBe(0);
+            File.ReadAllText(sentinel).ShouldBe("sentinel");
+        }
+        finally
+        {
+            Directory.Delete(path, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task StageCreatesTheProductionTemporaryDirectoryWithCurrentUserOnlyProtection()
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        AdvertisementHandler handler = new(target);
+        using HttpClient httpClient = new(handler);
+        bool protectionObserved = false;
+        string? temporaryPath = null;
+        ForgejoSmartHttpGitTransport transport = new(
+            httpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            new ForgejoAuthorizationHeader("Bearer", "token"),
+            testHooks: new ForgejoSmartHttpGitTransportTestHooks
+            {
+                AllowAmbientConfigurationForTests = true,
+                MaximumTransferBytes = 0,
+                BeforeFetch = (path, state) =>
+                {
+                    temporaryPath = path;
+                    if (OperatingSystem.IsWindows())
+                    {
+                        AssertWindowsDirectoryProtection(path);
+                    }
+                    else
+                    {
+                        File.GetUnixFileMode(path).ShouldBe(
+                            UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+                    }
+
+                    protectionObserved = true;
+                    state.Check(1).ShouldBeFalse();
+                },
+            });
+
+        ForgejoFileMutationResult result = await transport.StageAsync(
+            StageRequest(target),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.TransferLimitExceeded);
+        protectionObserved.ShouldBeTrue();
+        temporaryPath.ShouldNotBeNull();
+        Directory.Exists(temporaryPath).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task DeclaredAndStreamedAdvertisementOverflowHaveTheSameClassification(bool declaredLength)
+    {
+        byte[] oversized = new byte[(1024 * 1024) + 1];
+        HttpContent content = declaredLength
+            ? new ByteArrayContent(oversized)
+            : new ForgejoUnknownLengthContent(oversized);
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/x-git-upload-pack-advertisement");
+        using HttpClient httpClient = new(new ForgejoStaticHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = content,
+        }));
+        ForgejoSmartHttpGitTransport transport = new(
+            httpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            new ForgejoAuthorizationHeader("Bearer", "token"));
+
+        ForgejoFileMutationResult result = await transport.StageAsync(
+            StageRequest(Target(new string('a', 40))),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ResponseLimitExceeded);
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task TimedOutOrCancelledNativeWorkerRetainsPermitUntilExactlyOnceCleanup(bool cancelCaller)
+    {
+        await NativePermitVerificationGate.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            await VerifyTimedOutOrCancelledNativeWorkerAsync(cancelCaller).ConfigureAwait(true);
+        }
+        finally
+        {
+            NativePermitVerificationGate.Release();
+        }
+    }
+
+    private static async Task VerifyTimedOutOrCancelledNativeWorkerAsync(bool cancelCaller)
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -232,18 +596,21 @@ public sealed class ForgejoSmartHttpGitTransportTests
         string? temporaryPath = null;
         ForgejoSmartHttpGitTransportTestHooks firstHooks = new()
         {
+            AllowAmbientConfigurationForTests = true,
             OperationTimeout = cancelCaller ? TimeSpan.FromSeconds(5) : TimeSpan.FromMilliseconds(250),
-            BeforeFetch = (path, _) =>
+            BeforeRepositoryOpen = path =>
             {
                 temporaryPath = path;
                 workerStarted.TrySetResult();
                 releaseWorker.Wait();
+                throw new InvalidOperationException("controlled worker completion");
             },
             CleanupAttempted = () => Interlocked.Increment(ref cleanupAttempts),
             NativeOperationCompleted = () => workerCompleted.TrySetResult(),
         };
         ForgejoSmartHttpGitTransportTestHooks secondHooks = new()
         {
+            AllowAmbientConfigurationForTests = true,
             OperationTimeout = TimeSpan.FromMilliseconds(100),
             BeforeFetch = (_, _) => Interlocked.Increment(ref secondWorkerStarts),
         };
@@ -299,6 +666,126 @@ public sealed class ForgejoSmartHttpGitTransportTests
         Directory.Exists(temporaryPath).ShouldBeFalse();
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TimedOutOrCancelledCommitWorkerRetainsPermitUntilExactlyOnceCleanup(bool cancelCaller)
+    {
+        await NativePermitVerificationGate.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        try
+        {
+            await VerifyTimedOutOrCancelledCommitWorkerAsync(cancelCaller).ConfigureAwait(true);
+        }
+        finally
+        {
+            NativePermitVerificationGate.Release();
+        }
+    }
+
+    private static async Task VerifyTimedOutOrCancelledCommitWorkerAsync(bool cancelCaller)
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        ForgejoCommitRequest commitRequest = CommitRequest(target) with
+        {
+            Changes = StageRequest(target).Changes,
+        };
+        AdvertisementHandler handler = new(target);
+        using HttpClient firstHttpClient = AuthorizedHttpClient(handler);
+        using HttpClient secondHttpClient = AuthorizedHttpClient(handler);
+        using ManualResetEventSlim releaseWorker = new(initialState: false);
+        TaskCompletionSource workerStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource workerCompleted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        int cleanupAttempts = 0;
+        int secondWorkerStarts = 0;
+        string? temporaryPath = null;
+        ForgejoSmartHttpGitTransportTestHooks firstHooks = new()
+        {
+            AllowAmbientConfigurationForTests = true,
+            OperationTimeout = cancelCaller ? TimeSpan.FromSeconds(5) : TimeSpan.FromMilliseconds(250),
+            BeforeRepositoryOpen = path =>
+            {
+                temporaryPath = path;
+                workerStarted.TrySetResult();
+                releaseWorker.Wait();
+                throw new InvalidOperationException("controlled worker completion");
+            },
+            CleanupAttempted = () => Interlocked.Increment(ref cleanupAttempts),
+            NativeOperationCompleted = () => workerCompleted.TrySetResult(),
+        };
+        ForgejoSmartHttpGitTransportTestHooks secondHooks = new()
+        {
+            AllowAmbientConfigurationForTests = true,
+            OperationTimeout = TimeSpan.FromMilliseconds(100),
+            BeforeFetch = (_, _) => Interlocked.Increment(ref secondWorkerStarts),
+        };
+        ForgejoHttpApiClient firstClient = new(
+            firstHttpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            transportTestHooks: firstHooks);
+        ForgejoHttpApiClient secondClient = new(
+            secondHttpClient,
+            new Uri("https://forgejo.invalid/", UriKind.Absolute),
+            transportTestHooks: secondHooks);
+        using CancellationTokenSource callerCancellation = CancellationTokenSource.CreateLinkedTokenSource(
+            TestContext.Current.CancellationToken);
+        if (cancelCaller)
+        {
+            callerCancellation.CancelAfter(TimeSpan.FromMilliseconds(250));
+        }
+
+        ForgejoCommitResult? firstResult = null;
+        ForgejoCommitResult? secondResult = null;
+        try
+        {
+            Task<ForgejoCommitResult> firstCall = firstClient.CommitAsync(
+                commitRequest,
+                cancelCaller ? callerCancellation.Token : TestContext.Current.CancellationToken);
+            await workerStarted.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            firstResult = await firstCall.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(true);
+            secondResult = await secondClient.CommitAsync(
+                commitRequest,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            secondWorkerStarts.ShouldBe(0);
+            cleanupAttempts.ShouldBe(0);
+            temporaryPath.ShouldNotBeNull();
+            Directory.Exists(temporaryPath).ShouldBeTrue();
+        }
+        finally
+        {
+            releaseWorker.Set();
+            await workerCompleted.Task.WaitAsync(
+                TimeSpan.FromSeconds(5),
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await firstClient.DisposeAsync().ConfigureAwait(true);
+            await secondClient.DisposeAsync().ConfigureAwait(true);
+        }
+
+        firstResult.ShouldNotBeNull().FailureCondition.ShouldBe(
+            cancelCaller
+                ? ForgejoApiFailureCondition.CancellationBeforeDispatch
+                : ForgejoApiFailureCondition.OperationTimedOut);
+        firstResult.MutationDispatched.ShouldBeFalse();
+        secondResult.ShouldNotBeNull().FailureCondition.ShouldBe(ForgejoApiFailureCondition.OperationTimedOut);
+        secondResult.MutationDispatched.ShouldBeFalse();
+        cleanupAttempts.ShouldBe(1);
+        Directory.Exists(temporaryPath).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void CallerInterruptionAndReceivePackDispatchAreMutuallyExclusive()
+    {
+        ForgejoCommitDispatchState interruptedFirst = new();
+        interruptedFirst.TryRecordCallerInterruption().ShouldBeTrue();
+        interruptedFirst.TryClaimMutationDispatch().ShouldBeFalse();
+        interruptedFirst.MutationDispatched.ShouldBeFalse();
+
+        ForgejoCommitDispatchState dispatchedFirst = new();
+        dispatchedFirst.TryClaimMutationDispatch().ShouldBeTrue();
+        dispatchedFirst.TryRecordCallerInterruption().ShouldBeFalse();
+        dispatchedFirst.MutationDispatched.ShouldBeTrue();
+    }
+
     [Fact]
     public void ReceiveAdvertisementRequiresSha1ExpectedHeadAndReportStatus()
     {
@@ -313,11 +800,51 @@ public sealed class ForgejoSmartHttpGitTransportTests
         failure.ShouldBe(ForgejoApiFailureCondition.ObjectFormatUnsupported);
     }
 
+    [Fact]
+    public void AdvertisementRequiresServiceFlushAndCapabilitiesOnTheFirstAdvertisedRef()
+    {
+        ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
+        string serviceLine = "# service=git-receive-pack\n";
+        string targetLine = $"{target.ExpectedHeadSha} {target.FullRef}\0report-status object-format=sha1\n";
+        byte[] missingServiceFlush = Encoding.UTF8.GetBytes(
+            $"{serviceLine.Length + 4:x4}{serviceLine}{targetLine.Length + 4:x4}{targetLine}0000");
+        string firstLine = $"{target.ExpectedHeadSha} refs/heads/other\0delete-refs object-format=sha1\n";
+        string laterTargetLine = $"{target.ExpectedHeadSha} {target.FullRef}\0report-status\n";
+        byte[] laterRefCapability = Encoding.UTF8.GetBytes(
+            $"{serviceLine.Length + 4:x4}{serviceLine}0000{firstLine.Length + 4:x4}{firstLine}{laterTargetLine.Length + 4:x4}{laterTargetLine}0000");
+
+        ForgejoSmartHttpGitTransport.TryValidateAdvertisement(
+            missingServiceFlush,
+            "git-receive-pack",
+            target,
+            requireReportStatus: true,
+            out _).ShouldBeFalse();
+        ForgejoSmartHttpGitTransport.TryValidateAdvertisement(
+            laterRefCapability,
+            "git-receive-pack",
+            target,
+            requireReportStatus: true,
+            out _).ShouldBeFalse();
+    }
+
     private static byte[] Advertisement(string service, string objectId, string fullRef, string capabilities)
     {
         string serviceLine = $"# service={service}\n";
         string refLine = $"{objectId} {fullRef}\0{capabilities}\n";
         return Encoding.UTF8.GetBytes($"{serviceLine.Length + 4:x4}{serviceLine}0000{refLine.Length + 4:x4}{refLine}0000");
+    }
+
+    [SupportedOSPlatform("windows")]
+    private static void AssertWindowsDirectoryProtection(string path)
+    {
+        DirectorySecurity security = new DirectoryInfo(path).GetAccessControl(
+            AccessControlSections.Access | AccessControlSections.Owner);
+        SecurityIdentifier current = WindowsIdentity.GetCurrent().User.ShouldNotBeNull();
+        security.AreAccessRulesProtected.ShouldBeTrue();
+        security.GetOwner(typeof(SecurityIdentifier)).ShouldBe(current);
+        security.GetAccessRules(includeExplicit: true, includeInherited: false, typeof(SecurityIdentifier))
+            .Cast<FileSystemAccessRule>()
+            .ShouldAllBe(rule => rule.IdentityReference == current);
     }
 
     private static Blob Blob(Repository repository, string content)
@@ -349,7 +876,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
             new string('b', 40),
             "commit",
             "16.0.3",
-            static _ => ValueTask.FromResult(true),
+            static _ => ValueTask.FromResult(ForgejoReservationValidationStatus.Valid),
             static _ => ValueTask.FromResult(true));
 
     private static ForgejoFileMutationRequest StageRequest(ProviderGitOperationResolvedTarget target)
@@ -357,7 +884,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
             target,
             [new ProviderResolvedFileChange(0, ProviderFileChangeKind.Add, "file.txt", new byte[] { 1 }, ProviderFileContentType.RegularFile)],
             "16.0.3",
-            static _ => ValueTask.FromResult(true));
+            static _ => ValueTask.FromResult(ForgejoReservationValidationStatus.Valid));
 
     private static HttpClient AuthorizedHttpClient(HttpMessageHandler handler)
     {

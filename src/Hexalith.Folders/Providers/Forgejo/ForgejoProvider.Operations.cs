@@ -18,6 +18,7 @@ public sealed partial class ForgejoProvider
         "canonical_lock_evidence_invalid",
         "existing_equivalent",
         "forgejo_administration_permission_insufficient",
+        "forgejo_ambient_configuration_unsupported",
         "forgejo_authentication_required",
         "forgejo_branch_protection_conflict",
         "forgejo_capability_unsupported",
@@ -40,6 +41,7 @@ public sealed partial class ForgejoProvider
         "forgejo_file_mutation_source_unavailable",
         "forgejo_file_policy_evidence_stale_or_malformed",
         "forgejo_mutation_evidence_ambiguous",
+        "forgejo_malformed_response",
         "missing_forgejo_credential_mode",
         "ambiguous_forgejo_credential_mode",
         "forgejo_operation_cancelled_before_dispatch",
@@ -182,6 +184,10 @@ public sealed partial class ForgejoProvider
                     token => ValidateReservationAsync(operationReference, generation, request.IdempotencyAdmission.IntentFingerprint, token)),
                 cancellationToken).ConfigureAwait(false);
         }
+        catch (OperationCanceledException)
+        {
+            result = ForgejoFileMutationResult.Failure(ForgejoApiFailureCondition.CancellationBeforeDispatch);
+        }
         catch (Exception)
         {
             result = null;
@@ -197,15 +203,16 @@ public sealed partial class ForgejoProvider
                 operationReference,
                 generation,
                 ProviderFailureCategory.ProviderUnavailable,
-                "forgejo_file_mutation_outcome_unknown").ConfigureAwait(false);
+                "forgejo_server_unavailable").ConfigureAwait(false);
             return finalized
-                ? FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "forgejo_file_mutation_outcome_unknown", operationReference: operationReference)
+                ? FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable", operationReference: operationReference)
                 : FileMutationFailure(request, ProviderFailureCategory.ProviderUnavailable, "forgejo_outcome_recording_failed", operationReference: operationReference);
         }
 
         if (!result.IsSuccess)
         {
-            (ProviderFailureCategory Category, string ReasonCode) mapped = ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition);
+            (ProviderFailureCategory Category, string ReasonCode) mapped =
+                ForgejoFailureMapper.ToProviderNoDispatchFailure(result.FailureCondition);
             bool finalized = await FinalizeNoDispatchAsync(operationReference, generation, mapped.Category, mapped.ReasonCode, result.RetryAfter).ConfigureAwait(false);
             return finalized
                 ? FileMutationFailure(request, mapped.Category, mapped.ReasonCode, result.RetryAfter, operationReference)
@@ -354,9 +361,10 @@ public sealed partial class ForgejoProvider
 
         if (!result.IsSuccess)
         {
-            (ProviderFailureCategory Category, string ReasonCode) mapped = ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition);
-            if (result.FailureCondition is ForgejoApiFailureCondition.CancellationBeforeDispatch
-                or ForgejoApiFailureCondition.ReservationInvalidated)
+            (ProviderFailureCategory Category, string ReasonCode) mapped = result.MutationDispatched
+                ? ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition)
+                : ForgejoFailureMapper.ToProviderNoDispatchFailure(result.FailureCondition);
+            if (!result.MutationDispatched)
             {
                 bool finalized = await FinalizeNoDispatchAsync(
                     operationReference,
@@ -520,10 +528,14 @@ public sealed partial class ForgejoProvider
             }
 
             (ProviderFailureCategory Category, string ReasonCode) mapped =
-                ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition);
-            if (exhausted && mapped.Category is ProviderFailureCategory.ProviderUnavailable
-                or ProviderFailureCategory.ProviderRateLimited
-                or ProviderFailureCategory.ProviderTransientFailure)
+                result.FailureCondition == ForgejoApiFailureCondition.MalformedResponse
+                    ? (ProviderFailureCategory.ProviderFailureKnown, "forgejo_status_evidence_malformed")
+                    : ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition);
+            if (exhausted && (mapped.Category is ProviderFailureCategory.ProviderUnavailable
+                    or ProviderFailureCategory.ProviderRateLimited
+                    or ProviderFailureCategory.ProviderTransientFailure
+                || result.FailureCondition is ForgejoApiFailureCondition.MalformedResponse
+                    or ForgejoApiFailureCondition.ResponseLimitExceeded))
             {
                 return StatusFailure(request, ProviderFailureCategory.ReconciliationRequired, "forgejo_reconciliation_checks_exhausted");
             }
@@ -1126,6 +1138,8 @@ public sealed partial class ForgejoProvider
         if (source.Target is null
             || !source.Target.TryValidate(out _)
             || !IsOperationTargetWithinBounds(source.Target)
+            || source.TreeSha is not { Length: 40 }
+            || !ProviderGitOperationResolvedTarget.IsGitObjectId(source.TreeSha)
             || !TryValidateResolvedChanges(source.StagedChanges)
             || !HaveConsistentObjectIdWidths(source.Target, source.StagedChanges!)
             || !TryNormalizeCommitMessage(source.CommitMessage, out string normalizedMessage))
@@ -1444,22 +1458,22 @@ public sealed partial class ForgejoProvider
                 result.RetryAfter);
     }
 
-    private async ValueTask<bool> ValidateReservationAsync(
+    private async ValueTask<ForgejoReservationValidationStatus> ValidateReservationAsync(
         string operationReference,
         long generation,
         string intentFingerprint,
         CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return false;
-        }
+        cancellationToken.ThrowIfCancellationRequested();
 
         try
         {
-            return await _operationOutcomeStore.ValidateAsync(
+            bool valid = await _operationOutcomeStore.ValidateAsync(
                 new ProviderOperationReservationValidationRequest(operationReference, generation, intentFingerprint),
                 cancellationToken).ConfigureAwait(false);
+            return valid
+                ? ForgejoReservationValidationStatus.Valid
+                : ForgejoReservationValidationStatus.Invalidated;
         }
         catch (OperationCanceledException)
         {
@@ -1467,7 +1481,7 @@ public sealed partial class ForgejoProvider
         }
         catch (Exception)
         {
-            return false;
+            return ForgejoReservationValidationStatus.Unavailable;
         }
     }
 
@@ -1796,6 +1810,7 @@ public sealed partial class ForgejoProvider
                     && reservation.ReconciliationReference is null
                     && reservation.FailureCategory is ProviderFailureCategory.ProviderConfigurationMissing or ProviderFailureCategory.ProviderUnavailable
                     && AllowedOperationReasonCodes.Contains(reservation.ReasonCode ?? string.Empty)
+                    && KnownFailureReasonCategory(reservation.ReasonCode) == reservation.FailureCategory
                     && reservation.RemediationCode is null && !reservation.Retryable && reservation.RetryAfter is null,
             _ => false,
         };
@@ -1811,15 +1826,26 @@ public sealed partial class ForgejoProvider
             && reservation.RetryAfter is null;
 
     private static bool IsFileMutationResultWellFormed(ForgejoFileMutationResult result)
-        => result.IsSuccess
-            ? result.FailureCondition == default
+    {
+        if (result.IsSuccess)
+        {
+            return result.FailureCondition == default
                 && result.RetryAfter is null
                 && result.TreeSha is { Length: 40 }
-                && ProviderGitOperationResolvedTarget.IsGitObjectId(result.TreeSha)
-            : Enum.IsDefined(result.FailureCondition)
-                && result.FailureCondition != default
-                && result.TreeSha is null
-                && (result.RetryAfter is null || result.RetryAfter >= TimeSpan.Zero && result.RetryAfter <= TimeSpan.FromHours(24));
+                && ProviderGitOperationResolvedTarget.IsGitObjectId(result.TreeSha);
+        }
+
+        if (!Enum.IsDefined(result.FailureCondition)
+            || result.FailureCondition == default
+            || result.TreeSha is not null)
+        {
+            return false;
+        }
+
+        (ProviderFailureCategory Category, _) =
+            ForgejoFailureMapper.ToProviderNoDispatchFailure(result.FailureCondition);
+        return IsRetryAfterCoherent(Category, result.RetryAfter);
+    }
 
     private static bool IsCommitResultWellFormed(ForgejoCommitResult result, ProviderCommitResolvedSource source)
     {
@@ -1827,16 +1853,50 @@ public sealed partial class ForgejoProvider
         {
             return result.FailureCondition == default
                 && result.RetryAfter is null
+                && result.MutationDispatched
+                && result.CommitSha is { Length: 40 }
                 && ProviderGitOperationResolvedTarget.IsGitObjectId(result.CommitSha)
                 && string.Equals(result.CommitSha, result.ObservedCommitSha, StringComparison.OrdinalIgnoreCase)
                 && !string.Equals(result.CommitSha, source.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase);
         }
 
-        return Enum.IsDefined(result.FailureCondition)
-            && result.FailureCondition != default
-            && result.CommitSha is null
-            && (result.ObservedCommitSha is null || ProviderGitOperationResolvedTarget.IsGitObjectId(result.ObservedCommitSha))
-            && (result.RetryAfter is null || result.RetryAfter >= TimeSpan.Zero && result.RetryAfter <= TimeSpan.FromHours(24));
+        if (!Enum.IsDefined(result.FailureCondition)
+            || result.FailureCondition == default
+            || result.CommitSha is not null
+            || result.ObservedCommitSha is not null
+                && (result.ObservedCommitSha.Length != 40
+                    || !ProviderGitOperationResolvedTarget.IsGitObjectId(result.ObservedCommitSha)))
+        {
+            return false;
+        }
+
+        if (result.MutationDispatched)
+        {
+            if (result.FailureCondition is not (ForgejoApiFailureCondition.AmbiguousMutationResponse
+                or ForgejoApiFailureCondition.RefHeadConflict
+                or ForgejoApiFailureCondition.RemotePolicyRejected
+                or ForgejoApiFailureCondition.RemoteRejected))
+            {
+                return false;
+            }
+
+            if (result.FailureCondition != ForgejoApiFailureCondition.AmbiguousMutationResponse
+                && result.ObservedCommitSha is null)
+            {
+                return false;
+            }
+        }
+        else if (result.FailureCondition is ForgejoApiFailureCondition.AmbiguousMutationResponse
+            or ForgejoApiFailureCondition.RemotePolicyRejected
+            or ForgejoApiFailureCondition.RemoteRejected)
+        {
+            return false;
+        }
+
+        (ProviderFailureCategory Category, _) = result.MutationDispatched
+            ? ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition)
+            : ForgejoFailureMapper.ToProviderNoDispatchFailure(result.FailureCondition);
+        return IsRetryAfterCoherent(Category, result.RetryAfter);
     }
 
     private static bool IsStatusResultWellFormed(
@@ -1845,12 +1905,20 @@ public sealed partial class ForgejoProvider
     {
         if (!result.IsSuccess)
         {
-            return result.Status == ProviderOperationStatusKind.Unavailable
-                && Enum.IsDefined(result.FailureCondition)
-                && result.FailureCondition != default
-                && result.ObservedSha is null
-                && result.ObservedFullRef is null
-                && result.ObservedObjectType is null;
+            if (result.Status != ProviderOperationStatusKind.Unavailable
+                || !Enum.IsDefined(result.FailureCondition)
+                || result.FailureCondition == default
+                || result.ObservedSha is not null
+                || result.ObservedFullRef is not null
+                || result.ObservedObjectType is not null)
+            {
+                return false;
+            }
+
+            ProviderFailureCategory category = result.FailureCondition == ForgejoApiFailureCondition.MalformedResponse
+                ? ProviderFailureCategory.ProviderFailureKnown
+                : ForgejoFailureMapper.ToProviderOperationFailure(result.FailureCondition).Category;
+            return IsRetryAfterCoherent(category, result.RetryAfter);
         }
 
         if (result.FailureCondition != default
@@ -1872,10 +1940,10 @@ public sealed partial class ForgejoProvider
         {
             return string.Equals(result.ObservedFullRef, source.Target.FullRef, StringComparison.Ordinal)
                 && string.Equals(result.ObservedObjectType, "commit", StringComparison.Ordinal)
+                && source.IntendedCommitSha is { Length: 40 }
                 && ProviderGitOperationResolvedTarget.IsGitObjectId(result.ObservedSha)
                 && !string.Equals(result.ObservedSha, source.Target.ExpectedHeadSha, StringComparison.OrdinalIgnoreCase)
-                && (source.IntendedCommitSha is null
-                    || string.Equals(result.ObservedSha, source.IntendedCommitSha, StringComparison.OrdinalIgnoreCase));
+                && string.Equals(result.ObservedSha, source.IntendedCommitSha, StringComparison.OrdinalIgnoreCase);
         }
 
         return result.Status == ProviderOperationStatusKind.Conflicting
@@ -2061,6 +2129,11 @@ public sealed partial class ForgejoProvider
                 ? value
                 : null;
 
+    private static bool IsRetryAfterCoherent(
+        ProviderFailureCategory category,
+        TimeSpan? retryAfter)
+        => retryAfter is null || SafeOperationRetryAfter(category, retryAfter) == retryAfter;
+
     private static bool IsCoherentKnownFailureTuple(
         ProviderFailureCategory category,
         string? reasonCode,
@@ -2075,32 +2148,17 @@ public sealed partial class ForgejoProvider
             && (retryAfter is null || SafeOperationRetryAfter(category, retryAfter) == retryAfter);
 
     private static ProviderFailureCategory? KnownFailureReasonCategory(string? reasonCode)
-        => reasonCode switch
+        => ForgejoFailureMapper.GetProviderOperationFailureCategory(reasonCode) ?? reasonCode switch
         {
             "forgejo_validation_failed" or "provider_credential_secret_malformed"
                 => ProviderFailureCategory.ProviderValidationFailed,
-            "forgejo_operation_cancelled_before_dispatch" => ProviderFailureCategory.ProviderTransientFailure,
-            "forgejo_operation_reservation_invalidated" => ProviderFailureCategory.ProviderConflict,
-            "forgejo_authentication_required" => ProviderFailureCategory.ProviderAuthenticationRequired,
-            "forgejo_permission_insufficient" or "forgejo_administration_permission_insufficient"
-                or "forgejo_remote_policy_rejected"
-                or "forgejo_resource_hidden_or_missing" or "provider_credential_reference_denied"
-                => ProviderFailureCategory.ProviderPermissionInsufficient,
-            "forgejo_branch_protection_conflict" or "forgejo_ref_head_conflict"
-                or "forgejo_repository_archived" or "idempotency_conflict" or "idempotency_key_expired"
+            "forgejo_status_evidence_malformed" => ProviderFailureCategory.ProviderFailureKnown,
+            "provider_credential_reference_denied" => ProviderFailureCategory.ProviderPermissionInsufficient,
+            "idempotency_conflict" or "idempotency_key_expired"
                 or "canonical_lock_evidence_invalid" => ProviderFailureCategory.ProviderConflict,
-            "forgejo_capability_unsupported" or "unsupported_forgejo_credential_mode" or "unsupported_provider_family"
-                or "forgejo_object_format_unsupported" or "forgejo_smart_http_unsupported"
-                or "forgejo_native_runtime_unavailable"
+            "unsupported_forgejo_credential_mode" or "unsupported_provider_family"
                 => ProviderFailureCategory.UnsupportedProviderCapability,
-            "forgejo_cross_origin_redirect_rejected" => ProviderFailureCategory.ProviderReadinessFailed,
-            "forgejo_rate_limited" => ProviderFailureCategory.ProviderRateLimited,
-            "forgejo_response_limit_exceeded" or "forgejo_transfer_limit_exceeded"
-                or "forgejo_temporary_disk_limit_exceeded" or "forgejo_temporary_repository_cleanup_failed"
-                or "forgejo_remote_rejected"
-                => ProviderFailureCategory.ProviderFailureKnown,
-            "forgejo_operation_timed_out" => ProviderFailureCategory.ProviderTransientFailure,
-            "forgejo_server_unavailable" or "forgejo_client_creation_unavailable"
+            "forgejo_client_creation_unavailable"
                 or "forgejo_credential_resolution_unavailable" or "forgejo_file_mutation_source_unavailable"
                 or "forgejo_commit_source_unavailable" or "forgejo_operation_status_source_unavailable"
                 or "forgejo_status_evidence_unavailable" or "provider_credential_store_unavailable"

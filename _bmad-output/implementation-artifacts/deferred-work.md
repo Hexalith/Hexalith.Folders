@@ -2817,3 +2817,14 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: OrganizationAclTenantGate still uses TryGetIdempotencyFingerprint.
   evidence: Organization ACL is not one of the 13 admitted Folders command types in this slice.
 
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md`
+  summary: Story 12.6 EventStore intent adapters omit credential-reference scope from their canonical fingerprints.
+  evidence: Commands that differ only by credential reference can receive the same durable admission identity even though they authorize different provider access; this code belongs to the separate Story 12.6 admission work.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md`
+  summary: Story 12.6's EventStore host duplicates admission bootstrap composition instead of consuming one shared registration source.
+  evidence: The copied registration paths can drift as adapter construction changes; the host and admission composition were introduced by Story 12.6 and are outside the Forgejo transport intent.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md`
+  summary: Story 12.6 message-ID tests do not prove a new execution identity is generated for every submission independently of the idempotency key.
+  evidence: Existing assertions validate identifier shape but not per-submission uniqueness, so reusing an execution ID could remain green; this belongs to the separate durable-admission implementation.

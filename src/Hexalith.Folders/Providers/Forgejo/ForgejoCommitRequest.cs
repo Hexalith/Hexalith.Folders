@@ -8,7 +8,7 @@ internal sealed record ForgejoCommitRequest(
     string StagedTreeSha,
     string CommitMessage,
     string SupportedSnapshotVersion,
-    Func<CancellationToken, ValueTask<bool>> ValidateReservationAsync,
+    Func<CancellationToken, ValueTask<ForgejoReservationValidationStatus>> ValidateReservationAsync,
     Func<string, ValueTask<bool>> RecordCreatedCommitAsync)
 {
     public override string ToString() => nameof(ForgejoCommitRequest);
